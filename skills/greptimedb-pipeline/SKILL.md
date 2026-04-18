@@ -1,6 +1,6 @@
 ---
 name: greptimedb-pipeline
-description: Guide for creating GreptimeDB Pipeline, by which user can add a process layer to GreptimeDB between ingestion and storage, to transform data.
+description: Guide for creating a GreptimeDB Pipeline — a processing layer between ingestion and storage that parses, transforms, indexes, and optionally routes log data. Use when the user asks to create a pipeline, parse logs, transform fields, write a pipeline YAML, dryrun a pipeline, or fan out logs to multiple tables. Triggers on phrases like "create pipeline", "解析日志", "log parsing", "transform fields", "GreptimeDB pipeline yaml", "dryrun pipeline", "dispatcher 分流", "VRL processor".
 ---
 
 # GreptimeDB Pipeline Guide
@@ -25,8 +25,17 @@ There are pages available, use WebFetch to load and understand them:
 2. Details about pipeline elements and docs for each processor, transform and
    dispatcher
    https://docs.greptime.com/reference/pipeline/pipeline-config/
+3. Built-in pipelines (e.g. `greptime_identity` for zero-config JSON ingestion)
+   https://docs.greptime.com/reference/pipeline/built-in-pipelines/
 
 We will always create version 2 pipeline.
+
+If the user just wants to land arbitrary JSON without caring about schema,
+suggest the built-in `greptime_identity` pipeline first. It auto-creates
+columns for each JSON field, flattens nested objects using dot notation, and
+falls back to a `greptime_timestamp` column when no time index is specified.
+Move on to a custom pipeline only when the user needs parsing, type control,
+indexes, or routing.
 
 ### Phase 2. Create an initial pipeline that works
 
@@ -40,12 +49,34 @@ And try to understand what type of information that user want to extract from
 the sample data.
 
 For text data line, we should try to split it by any potential field separator
-like space or tab. Find out the datetime part and use `date` processor to parse
-it. Try to name each field by its meaning. If it's impossible to understand the
-text line, we try to use a field called `message` for all the line.
+like space or tab using `dissect` or `regex`. Find out the datetime part and
+use `date` processor (for formatted strings) or `epoch` processor (for numeric
+timestamps) to parse it. Try to name each field by its meaning. If it's
+impossible to understand the text line, we try to use a field called `message`
+for all the line.
 
-For ndjson and json, we will find out a datetime field and use `date` processor
-on it to generate the time index. And we will use json key for all other fields.
+For ndjson and json, we will find out a datetime field and use `date` or
+`epoch` processor on it to generate the time index. And we will use json key
+for all other fields.
+
+#### Auto-transform vs explicit transform (v0.15+)
+
+Since v0.15, the `transform` block is optional in a version-2 pipeline. The
+engine will infer column types from the pipeline context and use the produced
+timestamp as the time index automatically, **if and only if**:
+
+- **Exactly one** timestamp field is produced by `date` / `epoch` processors
+  (multiple timestamp fields raise an ambiguity error).
+- The `date` / `epoch` processor producing that timestamp does **not** have
+  `ignore_missing: true`.
+
+Guidance:
+
+- Use **auto-transform** (omit `transform`) for simple flat shapes where
+  default inferred types are acceptable and a single time column is obvious.
+- Write an explicit `transform` block when you need specific types, index
+  configurations (inverted / fulltext / skipping), renames, or when you have
+  multiple candidate time fields.
 
 Provide user a sample of how the initial pipeline definition will look like, as
 well as how the parsed data to be like. We can use a markdown table to show each
@@ -61,32 +92,95 @@ field name, data type in greptimedb and values:
 The user may have more requirements on particular field, use processor to
 address them.
 
-If the user want to dispatch data into multiple tables, or using different
-pipeline to process, there is `dispatch` available to handle this. User can
-provide table suffix for dispatched data.
+**Routing to multiple tables.** If the user wants to dispatch data into
+multiple tables, or hand off to different pipelines, use the `dispatcher`
+element. Each rule matches on a field value and sets `table_suffix` (the
+raw string concatenated onto the base table name — include a leading `_`
+yourself if you want one) and optionally `pipeline` (a downstream pipeline
+name):
 
-If the user requirements are complex enough for declarative processors, there is
-also an advanced VRL processor for remapping data. Check reference for more
-information.
+```yaml
+dispatcher:
+  field: type
+  rules:
+    - value: http
+      table_suffix: _http       # -> <base>_http
+      pipeline: http_pipeline
+    - value: db
+      table_suffix: _db         # -> <base>_db
+```
 
-If the greptimedb-mcp-server is available, there is a `dryrun-pipeline` tool by
-which we can provide pipeline definition and sample data to test against
-GreptimeDB's implementation. The output is a table encoded as json.
+Rows whose `field` value matches no rule stay in the base table.
+
+**Static table suffix from input.** For the simpler case of appending a
+per-row suffix without branching pipelines, use the top-level `table_suffix`
+with `${var}` interpolation (this feature is marked Experimental):
+
+```yaml
+table_suffix: _${app_name}
+```
+
+If `app_name` is missing or not a string/integer at runtime, the input table
+name is used unchanged.
+
+**Advanced remapping.** When declarative processors are not enough (field
+math, conditional logic, array reshaping), use the `vrl` processor. See the
+VRL reference for the language.
+
+**Dryrun.** If the `greptimedb-mcp-server` is available, use its
+`dryrun_pipeline` tool to test pipeline definition + sample data against
+GreptimeDB without persisting. It accepts either inline YAML (`pipeline=`)
+or a saved name (`pipeline_name=`) together with `data` and `data_type`.
+The output is the parsed row(s) encoded as JSON.
 
 ### Phase 4. Check index and table options
 
 The Pipeline system also allow user to specify various index on the result
 table. We will understand how user will query the table and provide suggestion
-on index.
+on index:
 
-Advanced table options can be customized by `.greptime_` variables. Use them if
-user want to customize TTL, append_mode and etc.
+- `timestamp` — required on exactly one column
+- `inverted` — low-cardinality equality / range filters
+- `fulltext` — tokenized text search on message bodies
+- `skipping` — high-cardinality IDs (e.g. request_id, trace_id)
+
+**Advanced table options via `greptime_*` variables.** These are **variable
+names** (no leading dot). The leading dot `.greptime_*` only appears inside a
+VRL script, because VRL uses `.` to address the event being processed.
+
+Recognized variables:
+
+- `greptime_auto_create_table`
+- `greptime_ttl`
+- `greptime_append_mode`
+- `greptime_merge_mode`
+- `greptime_physical_table`
+- `greptime_skip_wal`
+- `greptime_table_suffix` (pipeline-specific)
+
+Example — set suffix and TTL dynamically from input:
+
+```yaml
+processors:
+  - date:
+      fields:
+        - time
+      formats:
+        - "%Y-%m-%dT%H:%M:%S%.3fZ"
+  - vrl:
+      source: |
+        .greptime_table_suffix, err = "_" + .tenant
+        .greptime_ttl = "7d"
+        .
+```
 
 ## Reference
 
 1. GreptimeDB Index Options:
    https://docs.greptime.com/user-guide/manage-data/data-index/
-1. VRL, the advanced processing language from Vector:
+2. VRL, the advanced processing language from Vector:
    https://vector.dev/docs/reference/vrl/
-1. Using Table Options from Pipeline/VRL:
+3. Using Table Options from Pipeline/VRL:
    https://docs.greptime.com/reference/pipeline/write-log-api/#set-table-options
+4. Managing pipelines (create, update, delete, query):
+   https://docs.greptime.com/user-guide/logs/manage-pipelines/

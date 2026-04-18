@@ -138,7 +138,7 @@ processors:
   - vrl:
       source: |
         .greptime_table_suffix, err = "_" + .id
-        .greptime_table_ttl = "1d"
+        .greptime_ttl = "1d"
         .
 ```
 
