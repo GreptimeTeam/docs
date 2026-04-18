@@ -51,7 +51,7 @@ does not exist, but manual creation keeps full control over:
   window function (e.g. `date_bin(...) AS time_window`).
 - **`update_at` column** — the Flow engine automatically appends the update
   time to the end of each computation result row. The sink table schema must
-  include this column (literally named `update_at`, no trailing `d`).
+  include an `update_at` column.
 - **Primary key / tags** — use `PRIMARY KEY` to declare tag columns; together
   with the time index they form the unique key the Flow engine uses to
   insert or update rows.
@@ -81,10 +81,10 @@ GROUP BY sensor_id, loc, time_window
 HAVING max_temp > 100;
 ```
 
-Use `CREATE OR REPLACE FLOW` to update an existing flow task (it only
-replaces the flow definition; source and sink tables are untouched). Use
-`CREATE FLOW IF NOT EXISTS` to make creation idempotent. `OR REPLACE` and
-`IF NOT EXISTS` cannot be combined.
+Use `CREATE OR REPLACE FLOW` to update an existing flow (only the flow
+definition is replaced; source and sink tables are untouched). Use
+`CREATE FLOW IF NOT EXISTS` for idempotent creation. The two clauses
+cannot be combined — pick one based on intent.
 
 ### Phase 3. Bound flow state with `EXPIRE AFTER`
 

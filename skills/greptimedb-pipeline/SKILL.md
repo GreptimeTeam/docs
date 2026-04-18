@@ -94,9 +94,9 @@ address them.
 
 **Routing to multiple tables.** If the user wants to dispatch data into
 multiple tables, or hand off to different pipelines, use the `dispatcher`
-element (the key is `dispatcher`, not `dispatch`). Each rule matches on a
-field value and sets `table_suffix` (appended after an underscore) and
-optionally `pipeline` (a downstream pipeline name):
+element. Each rule matches on a field value and sets `table_suffix`
+(appended after an underscore) and optionally `pipeline` (a downstream
+pipeline name):
 
 ```yaml
 dispatcher:
@@ -127,10 +127,10 @@ math, conditional logic, array reshaping), use the `vrl` processor. See the
 VRL reference for the language.
 
 **Dryrun.** If the `greptimedb-mcp-server` is available, use its
-`dryrun_pipeline` tool (note: underscore, not hyphen) to test pipeline
-definition + sample data against GreptimeDB without persisting. It accepts
-either inline YAML (`pipeline=`) or a saved name (`pipeline_name=`) together
-with `data` and `data_type`. The output is the parsed row(s) encoded as JSON.
+`dryrun_pipeline` tool to test pipeline definition + sample data against
+GreptimeDB without persisting. It accepts either inline YAML (`pipeline=`)
+or a saved name (`pipeline_name=`) together with `data` and `data_type`.
+The output is the parsed row(s) encoded as JSON.
 
 ### Phase 4. Check index and table options
 

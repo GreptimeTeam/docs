@@ -1,6 +1,6 @@
 ---
 name: greptimedb-trigger
-description: "[Enterprise only] Guide for creating GreptimeDB Triggers — periodic SQL-based alerting rules that fire webhooks (Alertmanager-compatible) when conditions are met. Use as an alternative to Prometheus alerting rules when data already lives in GreptimeDB. Triggers on phrases like \"create trigger\", \"alerting rule\", \"告警规则\", \"trigger webhook\", \"alertmanager 对接\", \"migrate prometheus alerts\"."
+description: "[Enterprise only] Guide for creating GreptimeDB Triggers — periodic evaluation rules (SQL or TQL/PromQL via TQL EVAL) that fire Alertmanager-compatible webhooks when conditions are met. Use as an alternative to Prometheus alerting rules, or to host existing PromQL alerts on GreptimeDB. Triggers on phrases like \"create trigger\", \"alerting rule\", \"告警规则\", \"trigger webhook\", \"alertmanager 对接\", \"migrate prometheus alerts\", \"promql alert\"."
 ---
 
 # GreptimeDB Trigger Guide
@@ -10,9 +10,10 @@ description: "[Enterprise only] Guide for creating GreptimeDB Triggers — perio
 > external scheduler.
 
 Create GreptimeDB trigger definition as an alternative to Prometheus alerting
-rules. A trigger periodically runs a SQL query; each row in the result
-becomes an alert instance. Most concepts from Prometheus alerting rules map
-directly onto trigger DDL.
+rules. A trigger periodically runs a query — a SQL `SELECT` or a `TQL EVAL`
+block wrapping a PromQL expression — and turns each result row into an alert
+instance. Most concepts from Prometheus alerting rules map directly onto
+trigger DDL, and existing PromQL rules can be hosted as-is through TQL EVAL.
 
 ## The workflow
 
@@ -31,11 +32,39 @@ There are pages available, use WebFetch to load and understand them:
 
 ### Phase 2. Syntax essentials
 
-Trigger rules are **SQL-native**. The `ON` clause takes a plain SQL `SELECT`
-— TQL / PromQL are not supported inside a trigger. If the user starts from
-a PromQL rule, translate it into SQL aggregation with `GROUP BY` for time
-series and a time window in the `WHERE` clause (e.g.
-`WHERE ts >= NOW() - '1 minutes'::INTERVAL`).
+The `ON` clause accepts either:
+
+- a plain SQL `SELECT` (typical for GreptimeDB-native queries), or
+- a **`TQL EVAL` expression** that embeds a PromQL-style query — this is
+  the migration path for users porting Prometheus alerting rules.
+
+TQL EVAL syntax inside `ON`:
+
+```
+ON (TQL EVAL (<start>, <end>, <step>[, <lookback>]) <promql_expression>)
+```
+
+See the [TQL reference](https://docs.greptime.com/reference/sql/tql/) for
+the `start` / `end` / `step` semantics.
+
+Example:
+
+```sql
+CREATE TRIGGER cpu_monitor
+ON (
+    TQL EVAL (now() - '5 minutes'::interval, now(), '1m')
+    avg_over_time(cpu_usage_total[1m])
+) EVERY '1 minute'::INTERVAL
+NOTIFY (
+    WEBHOOK alert_manager URL 'http://127.0.0.1:9093' WITH (timeout='1m')
+);
+```
+
+When the user starts from a PromQL alert rule, **keep it as TQL EVAL** —
+do not rewrite it to SQL aggregation just to fit the trigger. For cases
+where the rule is natively SQL, write a regular `SELECT` with a time
+window filter (e.g. `WHERE ts >= NOW() - '1 minutes'::INTERVAL`) and
+`GROUP BY` for per-series evaluation.
 
 Skeleton:
 
@@ -69,14 +98,14 @@ Key clauses:
   condition stops matching, the alert stays in `Firing` for at least this
   long before being marked resolved.
 - **`NOTIFY (WEBHOOK ...)`** — currently only the `WEBHOOK` channel is
-  supported. `WITH (timeout='1m')` is the only documented parameter.
-  Payload is compatible with Prometheus Alertmanager, so an existing
-  Alertmanager can receive trigger alerts without glue code.
+  supported, with an optional `WITH (timeout='1m')` parameter. Payload is
+  compatible with Prometheus Alertmanager, so an existing Alertmanager can
+  receive trigger alerts without glue code.
 
 Interval notes: `INTERVAL` expressions may not use `years` or `months`
 (variable-length). Minimum granularity is 1 second.
 
-Worked example (from `enterprise/trigger.md`):
+Worked SQL example:
 
 ```sql
 CREATE TRIGGER IF NOT EXISTS `load1_monitor`
