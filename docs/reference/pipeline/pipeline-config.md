@@ -80,10 +80,10 @@ dispatcher:
   field: type
   rules:
     - value: http
-      table_suffix: http
+      table_suffix: _http
       pipeline: http
     - value: db
-      table_suffix: db
+      table_suffix: _db
 transform:
   - fields:
       - string_field_a
@@ -1096,10 +1096,10 @@ dispatcher:
   field: type
   rules:
     - value: http
-      table_suffix: http
+      table_suffix: _http
       pipeline: http
     - value: db
-      table_suffix: db
+      table_suffix: _db
 
 ```
 
@@ -1113,9 +1113,10 @@ example configuration above, if the `type` of input data is `http`, we will call
 `http` as next pipeline. And if `type` is `db`, we use current data structure to
 store the data.
 
-The target table name is determined by `table_suffix`, appended to the current
-`table` and an underscore `_`. For example, if the table is `applogs` and it
-matches the `http` rule, data is stored in `applogs_http`.
+The target table name is determined by `table_suffix`, appended directly to the
+current `table`. If you want a separator such as an underscore `_`, include it
+in `table_suffix` explicitly. For example, if the table is `applogs` and it
+matches the `http` rule above, data is stored in `applogs_http`.
 
 If no rules match, data is transformed by the current pipeline's
 transformations.

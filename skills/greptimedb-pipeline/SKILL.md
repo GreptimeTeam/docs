@@ -94,19 +94,20 @@ address them.
 
 **Routing to multiple tables.** If the user wants to dispatch data into
 multiple tables, or hand off to different pipelines, use the `dispatcher`
-element. Each rule matches on a field value and sets `table_suffix`
-(appended after an underscore) and optionally `pipeline` (a downstream
-pipeline name):
+element. Each rule matches on a field value and sets `table_suffix` (the
+raw string concatenated onto the base table name — include a leading `_`
+yourself if you want one) and optionally `pipeline` (a downstream pipeline
+name):
 
 ```yaml
 dispatcher:
   field: type
   rules:
     - value: http
-      table_suffix: http        # -> <base>_http
+      table_suffix: _http       # -> <base>_http
       pipeline: http_pipeline
     - value: db
-      table_suffix: db          # -> <base>_db
+      table_suffix: _db         # -> <base>_db
 ```
 
 Rows whose `field` value matches no rule stay in the base table.
@@ -168,7 +169,7 @@ processors:
         - "%Y-%m-%dT%H:%M:%S%.3fZ"
   - vrl:
       source: |
-        .greptime_table_suffix = "_" + .tenant
+        .greptime_table_suffix, err = "_" + .tenant
         .greptime_ttl = "7d"
         .
 ```
