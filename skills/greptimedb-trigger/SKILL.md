@@ -94,9 +94,11 @@ Key clauses:
 - **`FOR <interval>`** — how long the condition must keep matching before
   the alert transitions from `Pending` to `Firing` (and fires a
   notification). Without `FOR`, an alert fires on first appearance.
-- **`KEEP FIRING FOR <interval>`** — debounce the resolved state. After the
-  condition stops matching, the alert stays in `Firing` for at least this
-  long before being marked resolved.
+- **`KEEP FIRING FOR <interval>`** — sets a minimum firing duration. Once an
+  alert enters `Firing`, it remains firing for at least this long, even if
+  the condition later stops matching. After that duration has elapsed, it
+  can be marked resolved on a subsequent evaluation where the condition is
+  absent.
 - **`NOTIFY (WEBHOOK ...)`** — currently only the `WEBHOOK` channel is
   supported, with an optional `WITH (timeout='1m')` parameter. Payload is
   compatible with Prometheus Alertmanager, so an existing Alertmanager can
