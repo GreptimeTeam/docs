@@ -52,7 +52,7 @@ Example:
 ```sql
 CREATE TRIGGER cpu_monitor
 ON (
-    TQL EVAL (now() - '5 minutes'::interval, now(), '1m')
+    TQL EVAL (now(), now(), '1m')
     avg_over_time(cpu_usage_total[1m])
 ) EVERY '1 minute'::INTERVAL
 NOTIFY (
