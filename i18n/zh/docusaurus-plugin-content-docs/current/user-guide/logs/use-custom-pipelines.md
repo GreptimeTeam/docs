@@ -56,7 +56,7 @@ processors:
         - message
   - vrl:
       source: |
-        .greptime_table_ttl = "7d"
+        .greptime_ttl = "7d"
         .
 
 transform:
@@ -91,7 +91,7 @@ transform:
 - **数据提取**：`dissect` 处理器使用 pattern 匹配来解析 `message` 字段并提取结构化数据，包括 `ip_address`、`timestamp`、`http_method`、`request_line`、`status_code`、`response_size` 和 `user_agent`。
 - **时间戳处理**：`date` 处理器使用格式 `%d/%b/%Y:%H:%M:%S %z` 解析提取的 `timestamp` 字段并将其转换为适当的时间戳数据类型。
 - **字段选择**：`select` 处理器从最终输出中排除原始 `message` 字段，同时保留所有其他字段。
-- **表选项**：`vrl` 处理器根据提取的字段设置表选项，例如向表名添加后缀和设置 TTL。`greptime_table_ttl = "7d"` 配置表数据的保存时间为 7 天。
+- **表选项**：`vrl` 处理器根据提取的字段设置表选项，例如向表名添加后缀和设置 TTL。`greptime_ttl = "7d"` 配置表数据的保存时间为 7 天。
 
 **Transform**：定义如何转换和索引提取的字段：
 - **字段转换**：每个提取的字段都转换为适当的数据类型并根据需要配置相应的索引。像 `http_method` 这样的字段在没有提供显式配置时保留其默认数据类型。
@@ -272,10 +272,9 @@ DESC custom_pipeline_logs;
 | user_agent    | String              |      | YES  |         | FIELD         |
 | response_size | Int32               |      | YES  |         | FIELD         |
 | timestamp     | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
-| greptime_table_ttl | String         |      | YES  |         | FIELD         |
 | http_method   | String              |      | YES  |         | FIELD         |
 +---------------+---------------------+------+------+---------+---------------+
-8 rows in set (0.00 sec)
+7 rows in set (0.00 sec)
 ```
 
 ```sql
