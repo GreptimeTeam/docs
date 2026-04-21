@@ -21,11 +21,19 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 导出的文件会生成在执行该查询的 GreptimeDB 服务端节点上，而不是发起 SQL 的客户端机器上。请确保路径在服务端可访问且可写，或使用 `CONNECTION` 导出到 S3、GCS、Azure Blob Storage 等云存储服务。
 :::
 
-例如，可以使用自定义时间戳和日期格式导出数据到 CSV 文件：
+例如，可以使用自定义时间戳和日期格式导出数据到 CSV 或 JSON 文件：
 
 ```sql
 COPY tbl TO '/path/to/file.csv' WITH (
   FORMAT = 'csv',
+  TIMESTAMP_FORMAT = '%Y/%m/%d %H:%M:%S',
+  DATE_FORMAT = '%Y-%m-%d'
+);
+```
+
+```sql
+COPY tbl TO '/path/to/file.json' WITH (
+  FORMAT = 'json',
   TIMESTAMP_FORMAT = '%Y/%m/%d %H:%M:%S',
   DATE_FORMAT = '%Y-%m-%d'
 );
@@ -53,9 +61,9 @@ COPY tbl TO '/path/to/file.csv.gz' WITH (
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 | `START_TIME`/`END_TIME`| 需要导出数据的时间范围，时间范围为左闭右开 | 可选 |
 | `compression_type` | 导出文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
-| `TIMESTAMP_FORMAT` | 导出 CSV 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d %H:%M:%S'`）。仅支持 CSV 格式。 | 可选 |
-| `DATE_FORMAT` | 导出 CSV 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d'`）。仅支持 CSV 格式。 | 可选 |
-| `TIME_FORMAT` | 导出 CSV 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%H:%M:%S'`）。仅支持 CSV 格式。 | 可选 |
+| `TIMESTAMP_FORMAT` | 导出 CSV 或 JSON 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d %H:%M:%S'`）。支持 CSV 和 JSON 格式。 | 可选 |
+| `DATE_FORMAT` | 导出 CSV 或 JSON 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d'`）。支持 CSV 和 JSON 格式。 | 可选 |
+| `TIME_FORMAT` | 导出 CSV 或 JSON 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%H:%M:%S'`）。支持 CSV 和 JSON 格式。 | 可选 |
 
 #### `CONNECTION` 选项
 
@@ -237,9 +245,9 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 | `PATH` | 输出文件的路径 | **是** |
 | `FORMAT` | 输出文件格式：'CSV'、'JSON' 或 'PARQUET' | **是** |
 | `compression_type` | 导出文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
-| `TIMESTAMP_FORMAT` | 导出 CSV 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
-| `DATE_FORMAT` | 导出 CSV 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
-| `TIME_FORMAT` | 导出 CSV 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
+| `TIMESTAMP_FORMAT` | 导出 CSV 或 JSON 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。支持 CSV 和 JSON 格式。 | 可选 |
+| `DATE_FORMAT` | 导出 CSV 或 JSON 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。支持 CSV 和 JSON 格式。 | 可选 |
+| `TIME_FORMAT` | 导出 CSV 或 JSON 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。支持 CSV 和 JSON 格式。 | 可选 |
 
 例如，以下语句将查询结果导出到 CSV 文件中：
 
@@ -256,11 +264,19 @@ COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (
 );
 ```
 
-也可以在导出到 CSV 时指定自定义日期和时间格式：
+也可以在导出到 CSV 或 JSON 时指定自定义日期和时间格式：
 
 ```sql
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (
   FORMAT = 'csv',
+  TIMESTAMP_FORMAT = '%m-%d-%Y %H:%M:%S',
+  DATE_FORMAT = '%Y/%m/%d'
+);
+```
+
+```sql
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json' WITH (
+  FORMAT = 'json',
   TIMESTAMP_FORMAT = '%m-%d-%Y %H:%M:%S',
   DATE_FORMAT = '%Y/%m/%d'
 );

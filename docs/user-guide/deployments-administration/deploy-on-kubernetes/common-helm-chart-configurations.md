@@ -324,6 +324,42 @@ objectStorage:
     endpoint: ""
 ```
 
+#### Using AWS EKS Pod Identity for S3
+
+Instead of providing static access keys, you can use [AWS EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) (IAM Roles for Service Accounts) to grant S3 access to GreptimeDB. This approach is more secure as it eliminates the need to manage long-lived credentials.
+
+First, configure the datanode service account with the IAM role annotation. Only the datanode reads from and writes to S3:
+
+```yaml
+datanode:
+  podTemplate:
+    serviceAccount:
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: ${YOUR_IAM_ROLE_ARN}
+```
+
+Make sure the IAM role has permissions to read and write to the target S3 bucket:
+- `s3:PutObject`
+- `s3:ListBucket`
+- `s3:GetObject`
+- `s3:DeleteObject`
+
+
+Then, configure the object storage without credentials:
+
+```yaml
+objectStorage:
+  s3:
+    bucket: "${YOUR_S3_BUCKET}"
+    region: "${YOUR_S3_REGION}"
+    root: "greptimedb"
+```
+
+:::note
+When using EKS Pod Identity, omit the `objectStorage.credentials` section entirely. The datanode pods will automatically obtain temporary credentials through the IAM role associated with the service account.
+:::
+
 #### Google Cloud Storage
 
 ```yaml
