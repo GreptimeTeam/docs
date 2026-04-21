@@ -6,11 +6,6 @@ description: Provides detailed information about a region's statistics, includin
 # REGION_STATISTICS
 
 The `REGION_STATISTICS` table provides detailed information about a region's statistics, including the total number of rows, disk size, and more. These statistics are approximate values.
-
-:::tip NOTE
-This table is not available on [GreptimeCloud](https://greptime.cloud/).
-:::
-
 ```sql
 USE INFORMATION_SCHEMA;
 DESC REGION_STATISTICS;
@@ -53,16 +48,12 @@ Fields in the `REGION_STATISTICS` table are described as follows:
 - `index_size`: The region's total size of index files.
 - `engine`: The engine type of the region, `mito` or `metric`.
 - `region_role`: The region's role, `Leader` or `Follower`.
-
-
 Retrieve a table's region statistics information as follows:
 
 ```sql
 SELECT r.* FROM REGION_STATISTICS r LEFT JOIN TABLES t on r.table_id = t.table_id \
 WHERE t.table_name = 'system_metrics';
 ```
-
-
 Output:
 ```sql
 +---------------+----------+---------------+-------------+--------------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+

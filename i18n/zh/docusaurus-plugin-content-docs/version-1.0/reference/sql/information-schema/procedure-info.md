@@ -6,9 +6,6 @@ description: PROCEDURE_INFO 表提供各种 Procedure 的详细信息。
 # PROCEDURE_INFO
 
 `PROCEDURE_INFO` 表提供了各种 Procedure 的详细信息。
-:::tip NOTE
-该表在 [GreptimeCloud](https://greptime.cloud/) 中不可用。
-:::
 
 ```sql
 DESC TABLE INFORMATION_SCHEMA.PROCEDURE_INFO;

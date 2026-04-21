@@ -6,11 +6,6 @@ description: 提供从存储层直接获取的 SST（排序字符串表）文件
 # SSTS_STORAGE
 
 `SSTS_STORAGE` 表提供直接从存储层列出的 SST（排序字符串表）文件信息。此表显示来自对象存储的原始文件元数据，可能包括尚未反映在清单中的文件或已孤立的文件。
-
-:::tip 注意
-此表在 [GreptimeCloud](https://greptime.cloud/) 上不可用。
-:::
-
 ```sql
 USE INFORMATION_SCHEMA;
 DESC SSTS_STORAGE;
@@ -79,8 +74,6 @@ SELECT COUNT(*) as file_count, SUM(file_size) as total_size
 FROM INFORMATION_SCHEMA.SSTS_STORAGE
 WHERE file_size IS NOT NULL;
 ```
-
-
 输出样例：
 
 ```sql

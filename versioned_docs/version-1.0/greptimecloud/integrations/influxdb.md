@@ -1,6 +1,7 @@
 ---
 keywords: [InfluxDB, Telegraf, line protocol, data ingestion, API]
 description: Instructions on using InfluxDB line protocol and Telegraf to ingest data into GreptimeCloud.
+unlisted: true
 ---
 
 # InfluxDB and Telegraf

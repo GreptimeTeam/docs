@@ -1,6 +1,7 @@
 ---
 keywords: [request capacity units, WCU, RCU, CU usage, optimization tips]
 description: Introduces the calculation algorithms for request capacity units (WCU and RCU) and provides tips for optimizing CU usage.
+unlisted: true
 ---
 
 # Request Capacity Unit

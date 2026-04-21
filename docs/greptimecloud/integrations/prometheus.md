@@ -1,6 +1,7 @@
 ---
 keywords: [Prometheus, remote write, HTTP API, PromQL, integration]
 description: Guide for integrating Prometheus with GreptimeCloud, including remote write configuration, HTTP API access, and using PromQL.
+unlisted: true
 ---
 
 # Prometheus

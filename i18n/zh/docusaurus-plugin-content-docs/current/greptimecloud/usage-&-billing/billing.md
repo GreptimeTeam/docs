@@ -1,6 +1,7 @@
 ---
 keywords: [账单, 发票, 用量跟踪, 费用计算, GreptimeCloud]
 description: 介绍 GreptimeCloud 的账单生成、用量跟踪和费用计算方法。
+unlisted: true
 ---
 
 # 账单

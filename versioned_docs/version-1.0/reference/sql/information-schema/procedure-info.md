@@ -5,11 +5,6 @@ description: Provides detailed information about various procedures, including p
 
 # PROCEDURE_INFO
 The `PROCEDURE_INFO` table provides detailed information about various procedures.
-
-:::tip NOTE
-This table is not available on [GreptimeCloud](https://greptime.cloud/).
-:::
-
 ```sql
 DESC TABLE INFORMATION_SCHEMA.PROCEDURE_INFO;
 ```

@@ -111,12 +111,6 @@ exporter = OTLPMetricExporter(
 
 </Tabs>
 
-You can find executable demos on GitHub at the links: [Go](https://github.com/GreptimeCloudStarters/quick-start-go), [Java](https://github.com/GreptimeCloudStarters/quick-start-java), [Python](https://github.com/GreptimeCloudStarters/quick-start-python), and [Node.js](https://github.com/GreptimeCloudStarters/quick-start-node-js).
-
-:::tip NOTE
-The example codes above may be outdated according to OpenTelemetry. We recommend that you refer to the official OpenTelemetry documentation for the most up-to-date information.
-:::
-
 For more information on the example code, please refer to the official documentation for your preferred programming language.
 
 ### Prometheus Compatibility
@@ -197,7 +191,7 @@ For more information about the OpenTelemetry SDK, please refer to the official d
 
 ### Example Code
 
-Please refer to the sample code in the [OpenTelemetry Collector documentation](otel-collector.md), which includes how to send OpenTelemetry logs to GreptimeDB.  
+Please refer to the sample code in the [OpenTelemetry Collector documentation](otel-collector.md), which includes how to send OpenTelemetry logs to GreptimeDB.
 You can also refer to the sample code in the [Alloy documentation](alloy.md#logs) to learn how to send OpenTelemetry logs to GreptimeDB.
 
 ### Data Model
@@ -299,7 +293,7 @@ GreptimeDB maps the OTLP traces data model to a table schema. By default, trace 
 
 For more details on the data model and auxiliary tables, please refer to [Trace Data Modeling](/user-guide/traces/data-model.md).
 
-Note: 
+Note:
 1. The `greptime_trace_v1` process uses the `trace_id` field to divide data into partitions for better performance. **Please make sure the first letter of the `trace_id` is evenly distributed**.
 2. For non-test scenarios, you might want to set a `ttl` to the trace table to avoid data overload. Set the HTTP header `x-greptime-hints: ttl=7d` would set a `ttl` of 7 days during the table creation, see [here](/reference/sql/create.md#table-options) for more details about `ttl` in table option.
 

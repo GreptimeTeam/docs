@@ -6,11 +6,6 @@ description: 提供对 SST（排序字符串表）索引元数据的访问，包
 # SSTS_INDEX_META
 
 `SSTS_INDEX_META` 表提供对从清单中收集的 SST（排序字符串表）索引元数据的访问。该表显示 Puffin 索引元数据的信息，包括倒排索引、全文索引和布隆过滤器。
-
-:::tip 注意
-此表在 [GreptimeCloud](https://greptime.cloud/) 上不可用。
-:::
-
 ```sql
 USE INFORMATION_SCHEMA;
 DESC SSTS_INDEX_META;
