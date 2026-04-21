@@ -86,10 +86,11 @@ definition is replaced; source and sink tables are untouched). Use
 `CREATE FLOW IF NOT EXISTS` for idempotent creation. The two clauses
 cannot be combined — pick one based on intent.
 
-### Phase 3. Bound flow state with `EXPIRE AFTER`
+### Phase 3. Limit recomputation window with `EXPIRE AFTER`
 
-For any stateful aggregation (GROUP BY, windowed aggregates), decide whether
-to bound how much history the flow engine keeps in memory.
+For any stateful aggregation (GROUP BY, windowed aggregates), decide how far
+back in time the flow engine should still update results when new data
+arrives.
 
 ```sql
 CREATE FLOW IF NOT EXISTS my_flow
@@ -99,17 +100,19 @@ AS
 SELECT ...;
 ```
 
-`EXPIRE AFTER` tells the flow engine to ignore rows whose time index is older
-than the given interval during aggregation. Think of it like the "Watermark"
-concept in other streaming systems — it caps the in-memory state size and
-prevents unbounded memory growth.
+`EXPIRE AFTER` is a boundary: rows whose time index is older than the given
+interval are considered out of scope — the time windows they fall into are
+no longer updated even if late data arrives. It is a performance knob that
+keeps the flow running without putting too much pressure on the frontend,
+not an in-memory state limiter.
 
 Important caveats:
 
 - It does **not** delete data from the source or the sink table. Use the
   table `TTL` option if you also want physical data expiration.
 - Without `EXPIRE AFTER`, every historical row remains eligible for
-  recomputation; for high-volume source tables this can OOM the flow engine.
+  recomputation whenever new data arrives; for high-volume source tables
+  this creates significant load on the frontend.
 - Set it to a window comfortably larger than the largest time window used in
   the query, plus any tolerable lateness.
 
