@@ -16,18 +16,26 @@ function isExceptionFile(filename) {
   return exceptionPatterns.some(pattern => minimatch(filename, pattern));
 }
 
-// This function checks if a markdown file contains the required front matter.
-function hasFrontMatter(filePath) {
+function getFrontMatter(filePath) {
   const content = fs.readFileSync(filePath, 'utf-8');
-  
-  // Regex to capture the front matter block (between --- lines)
   const frontMatterRegex = /^---\s*([\s\S]*?)\s*---/;
   const match = content.match(frontMatterRegex);
+  return match ? match[1] : null;
+}
 
-  if (!match) return false;
+function isUnlisted(filePath) {
+  const frontMatter = getFrontMatter(filePath);
+  if (!frontMatter) return false;
+  return /^\s*unlisted\s*:\s*true\s*$/m.test(frontMatter);
+}
+
+// This function checks if a markdown file contains the required front matter.
+function hasFrontMatter(filePath) {
+  const frontMatter = getFrontMatter(filePath);
+
+  if (!frontMatter) return false;
 
   // Check if both 'keywords' and 'description' are present
-  const frontMatter = match[1];
   const hasKeywords = /keywords\s*:\s*\[.*\]/.test(frontMatter);
   const hasDescription = /description\s*:\s*.+/.test(frontMatter);
 
@@ -60,13 +68,19 @@ async function checkMarkdownFiles() {
 
     // Check each markdown file for front matter
     for (const file of markdownFiles) {
+      const filePath = path.join(process.cwd(), file.filename);
+
       // Skip files that match exception patterns
       if (isExceptionFile(file.filename)) {
         console.log(`Skipping front matter check for: ${file.filename}`);
         continue;
       }
 
-      const filePath = path.join(process.cwd(), file.filename); // Path to the file
+      // Skip files with unlisted: true
+      if (isUnlisted(filePath)) {
+        console.log(`Skipping front matter check for unlisted file: ${file.filename}`);
+        continue;
+      }
       if (!hasFrontMatter(filePath)) {
         console.log(`File missing front matter: ${filePath}`);
         allValid = false;
