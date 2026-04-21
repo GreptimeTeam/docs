@@ -1,3 +1,7 @@
+---
+unlisted: true
+---
+
 
 After successfully writing data to the service, you can view the data on the GreptimeCloud dashboard. The dashboard provides a variety of visualizations to help you understand, monitor and analyze the data.
 

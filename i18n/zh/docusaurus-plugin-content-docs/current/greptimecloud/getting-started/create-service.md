@@ -1,3 +1,7 @@
+---
+unlisted: true
+---
+
 
 为了充分体验 GreptimeCloud 的强大功能，你需要创建一个包含身份验证数据库的服务。打开 [GreptimeCloud 控制台](https://greptime.cloud)，注册并登录。然后单击 `New Service` 按钮并配置以下内容：
 

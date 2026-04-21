@@ -1,6 +1,7 @@
 ---
 keywords: [Kafka, Vector, logs, metrics, data ingestion]
 description: Guide on using Kafka with Vector to ingest logs and metrics data into GreptimeCloud.
+unlisted: true
 ---
 
 # Kafka

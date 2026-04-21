@@ -1,6 +1,7 @@
 ---
 keywords: [Vector, data ingestion, host metrics, configuration, GreptimeCloud]
 description: Instructions on creating a service, writing data using Vector, and visualizing data in GreptimeDB.
+unlisted: true
 ---
 
 # Vector

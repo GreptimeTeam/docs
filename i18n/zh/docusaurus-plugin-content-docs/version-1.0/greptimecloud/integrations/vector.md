@@ -1,6 +1,7 @@
 ---
 keywords: [Vector, 数据管道, 指标数据, 配置示例, GreptimeCloud]
 description: 介绍如何使用 Vector 将指标数据发送到 GreptimeCloud，包括配置示例和启动 Vector 的步骤。
+unlisted: true
 ---
 
 # Vector

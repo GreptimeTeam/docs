@@ -1,6 +1,7 @@
 ---
 keywords: [Fluent Bit, GreptimeCloud, metrics ingestion, logs ingestion, data pipeline]
 description: Guide for using Fluent Bit with GreptimeCloud, including configuration for metrics and logs ingestion, and running Fluent Bit with a sample configuration.
+unlisted: true
 ---
 
 

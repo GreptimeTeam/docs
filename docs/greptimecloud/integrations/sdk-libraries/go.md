@@ -1,6 +1,7 @@
 ---
 keywords: [Go SDK, gRPC, database connection, authentication, GreptimeCloud]
 description: Instructions on how to use the GreptimeDB Go SDK to connect to GreptimeCloud using gRPC.
+unlisted: true
 ---
 
 # Go SDK
