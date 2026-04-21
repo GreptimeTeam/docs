@@ -45,12 +45,3 @@ GreptimeDB 可以部署在你自己的基础设施上，也可以通过全托管
 
 - **在 Android 上运行：** 了解如何[在 Android 设备上运行 GreptimeDB](run-on-android.md)。
 - **升级：** 按照[升级指南](/user-guide/deployments-administration/upgrade.md)升级 GreptimeDB。
-
-## GreptimeCloud
-
-对于完全托管的体验，
-请考虑 [GreptimeCloud](https://greptime.cloud)。
-GreptimeCloud 使你能够轻松部署、监控和扩展 GreptimeDB 实例，内置指标监控和告警功能。
-它旨在为时序数据平台和 Prometheus 后端提供可扩展、高效的无服务器解决方案。
-
-更多详情，请参阅 [GreptimeCloud 文档](https://docs.greptime.com/nightly/greptimecloud/overview)。

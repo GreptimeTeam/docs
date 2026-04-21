@@ -6,11 +6,6 @@ description: Provides access to SST (Sorted String Table) file information from 
 # SSTS_STORAGE
 
 The `SSTS_STORAGE` table provides access to SST (Sorted String Table) file information listed directly from the storage layer. This table shows raw file metadata from object storage, which may include files that are not yet reflected in the manifest or files that have been orphaned.
-
-:::tip NOTE
-This table is not available on [GreptimeCloud](https://greptime.cloud/).
-:::
-
 ```sql
 USE INFORMATION_SCHEMA;
 DESC SSTS_STORAGE;
@@ -79,8 +74,6 @@ SELECT COUNT(*) as file_count, SUM(file_size) as total_size
 FROM INFORMATION_SCHEMA.SSTS_STORAGE
 WHERE file_size IS NOT NULL;
 ```
-
-
 Output example:
 
 ```sql

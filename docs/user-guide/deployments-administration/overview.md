@@ -46,14 +46,3 @@ This section outlines the key aspects of deploying and administering GreptimeDB 
 
 - **Run on Android:** Learn how to [run GreptimeDB on Android devices](run-on-android.md).
 - **Upgrade:** Follow the [upgrade guide](/user-guide/deployments-administration/upgrade.md) to keep the version of GreptimeDB up to date.
-
-## GreptimeCloud
-
-For a fully managed experience,
-consider [GreptimeCloud](https://greptime.cloud).
-GreptimeCloud enables you to deploy, monitor,
-and scale GreptimeDB instances effortlessly, with built-in metrics monitoring and alerting.
-It is designed to provide a scalable, efficient,
-and serverless solution for time-series data platforms and Prometheus backends.
-
-For more details, refer to the [GreptimeCloud documentation](https://docs.greptime.com/nightly/greptimecloud/overview).
