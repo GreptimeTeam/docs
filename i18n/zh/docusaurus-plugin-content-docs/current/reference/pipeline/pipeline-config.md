@@ -881,7 +881,7 @@ transform:
     type: int32
   - field: timestamp
     type: timestamp, ms
-    index: time
+    index: timestamp
 ```
 
 给定如下输入：
