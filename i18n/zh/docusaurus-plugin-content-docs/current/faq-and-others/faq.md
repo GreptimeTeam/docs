@@ -157,13 +157,12 @@ GreptimeDB 支持多种写入协议，吞吐性能差异很大。以下数据来
 
 | 协议 | 相对吞吐 |
 | --- | --- |
-| gRPC Bulk (Arrow Flight) | 最高（约 55 倍 SQL） |
-| gRPC Stream | 约 40 倍 SQL |
-| gRPC SDK (Unary) | 约 33 倍 SQL |
-| OTLP Logs | 约 29 倍 SQL |
-| InfluxDB Line Protocol | 约 27 倍 SQL |
-| MySQL INSERT | 约 2 倍 PostgreSQL |
-| PostgreSQL INSERT | 基线 |
+| gRPC Bulk (Arrow Flight) | 最高（约 37 倍 SQL） |
+| gRPC Stream | 约 21 倍 SQL |
+| gRPC SDK (Unary) | 约 16 倍 SQL |
+| InfluxDB Line Protocol | 约 12 倍 SQL |
+| OTLP Logs | 约 8.5 倍 SQL |
+| MySQL / PostgreSQL INSERT | 基线 |
 
 **选择建议：**
 
