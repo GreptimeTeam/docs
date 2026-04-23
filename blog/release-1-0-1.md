@@ -8,6 +8,8 @@ date: 2026-04-23
 
 Release date: April 23, 2026
 
+This version brings a set of stability improvements, bug fixes, and performance optimizations, with notable updates in compaction, staging coordination, lease handling, and query execution. 
+
 If you are using [v1.0.0](https://github.com/GreptimeTeam/greptimedb/releases/tag/v1.0.0) , we recommend upgrading to [v1.0.1](https://github.com/GreptimeTeam/greptimedb/releases/tag/v1.0.1).
 
 ### 🚀 Features
