@@ -149,7 +149,8 @@ For append-only tables (commonly used for logs), rows are never deduplicated, so
 - [Rust](https://github.com/GreptimeTeam/greptimedb-ingester-rust)
 - [Erlang](https://github.com/GreptimeTeam/greptimedb-ingester-erl)
 - [.NET](https://github.com/GreptimeTeam/greptimedb-ingester-dotnet)
-- For other languages (Python, Ruby, Node.js, etc.): use any OpenTelemetry SDK, InfluxDB client library, or MySQL/PostgreSQL driver — GreptimeDB is compatible with all of them.
+- [TypeScript](https://github.com/GreptimeTeam/greptimedb-ingester-ts)
+- For other languages (Python, Ruby, etc.): use any OpenTelemetry SDK, InfluxDB client library, or MySQL/PostgreSQL driver — GreptimeDB is compatible with all of them.
 
 ### How do I choose the right ingestion protocol?
 

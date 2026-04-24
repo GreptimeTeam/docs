@@ -149,7 +149,8 @@ GreptimeDB 接受任意时间戳的写入，没有写入时间窗口或顺序要
 - [Rust](https://github.com/GreptimeTeam/greptimedb-ingester-rust)
 - [Erlang](https://github.com/GreptimeTeam/greptimedb-ingester-erl)
 - [.NET](https://github.com/GreptimeTeam/greptimedb-ingester-dotnet)
-- 其他语言（Python、Ruby、Node.js 等）：可以使用任何 OpenTelemetry SDK、InfluxDB 客户端库或 MySQL/PostgreSQL 驱动，GreptimeDB 均兼容。
+- [TypeScript](https://github.com/GreptimeTeam/greptimedb-ingester-ts)
+- 其他语言（Python、Ruby 等）：可以使用任何 OpenTelemetry SDK、InfluxDB 客户端库或 MySQL/PostgreSQL 驱动，GreptimeDB 均兼容。
 
 ### 如何选择合适的写入协议？
 
