@@ -841,9 +841,81 @@ processors:
 这份配置使用 `|` 在 YAML 中开启一个多行的文本。随后即可编写整个脚本。
 
 在使用 `vrl` 处理器时，有一些需要注意的点：
-1. 整个脚本必须以一个单独的 `.` 行作为结尾，表示将整个上下文作为脚本的返回值。
+1. 整个脚本必须以单独的 `.`（返回整个上下文作为单行数据）或一个对象数组（一对多展开，每个元素写入为单独的行）作为结尾。
 2. vrl 脚本的返回值中不能包含任何的 `regex` 类型的变量。在脚本的过程中可以使用这种类型，但是在返回之前需要 `del`（删除） 掉。
 3. 由于 pipeline 的类型和 vrl 的类型之前存在转换，经过 vrl 处理的类型会变成最大的容量类型，即 `i64`， `u64` 和 `Timestamp::nanoseconds`。
+
+#### 一对多展开
+
+`vrl` 处理器支持**一对多**展开：当脚本返回一个数组时，数组中的每个元素都会被写入为独立的行。这在单条日志记录中包含多个事件、需要将其分别存储为独立行时非常有用。
+
+返回数组中的每个元素必须是对象类型。返回空数组时不产生任何行（该记录被丢弃）。
+
+示例：将包含多个事件的日志记录展开为独立行：
+
+```YAML
+processors:
+  - epoch:
+      field: timestamp
+      resolution: ms
+  - vrl:
+      source: |
+        events = del(.events)
+        base_host = del(.host)
+        base_ts = del(.timestamp)
+        map_values(array!(events)) -> |event| {
+            {
+                "host": base_host,
+                "event_type": event.type,
+                "event_value": event.value,
+                "timestamp": base_ts
+            }
+        }
+
+transform:
+  - field: host
+    type: string
+  - field: event_type
+    type: string
+  - field: event_value
+    type: int32
+  - field: timestamp
+    type: timestamp, ms
+    index: timestamp
+```
+
+给定如下输入：
+```json
+{
+    "host": "server1",
+    "timestamp": 1716668197217,
+    "events": [
+        {"type": "cpu", "value": 80},
+        {"type": "memory", "value": 60},
+        {"type": "disk", "value": 45}
+    ]
+}
+```
+
+该 pipeline 会产生三行数据，每个事件对应一行。
+
+也可以在数组元素中设置 `greptime_table_suffix` 字段来为每行指定独立的表后缀，从而将不同的行路由到不同的表：
+
+```YAML
+  - vrl:
+      source: |
+        events = del(.events)
+        base_ts = del(.timestamp)
+        map_values(array!(events)) -> |event| {
+            suffix = "_" + string!(event.category)
+            {
+                "name": event.name,
+                "value": event.value,
+                "timestamp": base_ts,
+                "greptime_table_suffix": suffix
+            }
+        }
+```
 
 ### `filter`
 
