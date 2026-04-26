@@ -76,7 +76,7 @@ metadata:
 spec:
   base:
     main:
-      image: greptime/greptimedb:latest
+      image: greptime/greptimedb:VAR::greptimedbVersion
   frontend:
     replicas: 1
   meta:

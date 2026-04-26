@@ -67,7 +67,7 @@ kubectl -n greptime-cluster get greptimedbclusters.greptime.io greptimedb
 
 ```bash
 NAME         FRONTEND   DATANODE   META   FLOWNODE   PHASE     VERSION   AGE
-greptimedb   1          2          1      1          Running   v0.17.2   33s
+greptimedb   1          2          1      1          Running   v1.0.1    33s
 ```
 
 检查 Pod 状态：

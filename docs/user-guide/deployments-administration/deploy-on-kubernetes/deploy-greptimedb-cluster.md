@@ -33,7 +33,7 @@ helm install greptimedb-operator greptime/greptimedb-operator -n greptimedb-admi
   <summary>Expected Output</summary>
 ```bash
 NAME: greptimedb-operator
-LAST DEPLOYED: Tue Oct 29 18:40:10 2024
+LAST DEPLOYED: Sun Apr 26 20:43:58 2026
 NAMESPACE: greptimedb-admin
 STATUS: deployed
 REVISION: 1
@@ -41,14 +41,14 @@ TEST SUITE: None
 NOTES:
 ***********************************************************************
  Welcome to use greptimedb-operator
- Chart version: 0.2.9
- GreptimeDB Operator version: 0.1.3-alpha.1
+ Chart version: 0.5.9
+ GreptimeDB Operator version: 0.5.5
 ***********************************************************************
 
 Installed components:
 * greptimedb-operator
 
-The greptimedb-operator is starting, use `kubectl get deployments greptimedb-operator -n greptimedb-admin` to check its status.
+The greptimedb-operator is starting, use `kubectl get deployment greptimedb-operator -n greptimedb-admin` to check its status.
 ```
 </details>
 
@@ -83,14 +83,14 @@ greptimedb-operator-68d684c6cf-qr4q4   1/1     Running   0          4m8s
 You also can check the CRD installation:
 
 ```bash
-kubectl get crds | grep greptime
+kubectl get crds | grep greptimedb
 ```
 
 <details>
   <summary>Expected Output</summary>
 ```bash
-greptimedbclusters.greptime.io      2024-10-28T08:46:27Z
-greptimedbstandalones.greptime.io   2024-10-28T08:46:27Z
+greptimedbclusters.greptime.io      2026-04-26T12:43:58Z
+greptimedbstandalones.greptime.io   2026-04-26T12:43:58Z
 ```
 </details>
 
@@ -119,15 +119,17 @@ helm install etcd \
   <summary>Expected Output</summary>
 ```bash
 NAME: etcd
-LAST DEPLOYED: Mon Oct 28 17:01:38 2024
+LAST DEPLOYED: Sun Apr 26 20:49:03 2026
 NAMESPACE: etcd-cluster
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 NOTES:
 CHART NAME: etcd
-CHART VERSION: 10.2.12
-APP VERSION: 3.5.15
+CHART VERSION: 12.0.8
+APP VERSION: 3.6.1
+
+Did you know there are enterprise versions of the Bitnami catalog? For enhanced secure software supply chain features, unlimited pulls from Docker, LTS support, or application customization, see Bitnami Premium or Tanzu Application Catalog. See https://www.arrow.com/globalecs/na/vendors/bitnami for more information.
 
 ** Please be patient while the chart is being deployed **
 
@@ -137,7 +139,7 @@ etcd can be accessed via port 2379 on the following DNS name from within your cl
 
 To create a pod that you can use as a etcd client run the following command:
 
-    kubectl run etcd-client --restart='Never' --image greptime/etcd:VAR::etcdImageVersion --env ETCDCTL_ENDPOINTS="etcd.etcd-cluster.svc.cluster.local:2379" --namespace etcd-cluster --command -- sleep infinity
+    kubectl run etcd-client --restart='Never' --image docker.io/greptime/etcd:3.6.1-debian-12-r3 --env ETCDCTL_ENDPOINTS="etcd.etcd-cluster.svc.cluster.local:2379" --namespace etcd-cluster --command -- sleep infinity
 
 Then, you can set/get a key using the commands below:
 
@@ -151,9 +153,17 @@ To connect to your etcd server from outside the cluster execute the following co
     echo "etcd URL: http://127.0.0.1:2379"
 
 WARNING: There are "resources" sections in the chart not set. Using "resourcesPreset" is not recommended for production. For production installations, please set the following values according to your workload needs:
-- disasterRecovery.cronjob.resources
 - resources
+- preUpgradeJob.resources
+- disasterRecovery.cronjob.resources
   +info https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+
+⚠ SECURITY WARNING: Original containers have been substituted. This Helm chart was designed, tested, and validated on multiple platforms using a specific set of Bitnami and Tanzu Application Catalog containers. Substituting other containers is likely to cause degraded security and performance, broken chart features, and missing environment variables.
+
+Substituted images detected:
+- docker.io/greptime/etcd:3.6.1-debian-12-r3
+
+⚠ SECURITY WARNING: Verifying original container images was skipped. Please note this Helm chart was designed, tested, and validated on multiple platforms using a specific set of Bitnami and Tanzu Application Catalog containers. Substituting other containers is likely to cause degraded security and performance, broken chart features, and missing environment variables.
 ```
 </details>
 
@@ -211,6 +221,7 @@ image:
 initializer:
   registry: docker.io
   repository: greptime/greptimedb-initializer
+  tag: "VAR::greptimedbOperatorVersion"
 
 frontend:
   replicas: 1
@@ -248,21 +259,23 @@ helm upgrade --install mycluster \
 ```bash
 Release "mycluster" does not exist. Installing it now.
 NAME: mycluster
-LAST DEPLOYED: Mon Oct 28 17:19:47 2024
+LAST DEPLOYED: Sun Apr 26 21:00:40 2026
 NAMESPACE: default
 STATUS: deployed
 REVISION: 1
+TEST SUITE: None
 NOTES:
 ***********************************************************************
  Welcome to use greptimedb-cluster
- Chart version: 0.2.25
- GreptimeDB Cluster version: 0.9.5
+ Chart version: 0.8.3
+ GreptimeDB Cluster version: 1.0.1
 ***********************************************************************
 
 Installed components:
-* greptimedb-frontend
-* greptimedb-datanode
 * greptimedb-meta
+* greptimedb-datanode
+* greptimedb-frontend
+* greptimedb-flownode
 
 The greptimedb-cluster is starting, use `kubectl get pods -n default` to check its status.
 ```
@@ -277,8 +290,8 @@ kubectl -n default get greptimedbclusters.greptime.io mycluster
 <details>
   <summary>Expected Output</summary>
 ```bash
-NAME        FRONTEND   DATANODE   META   FLOWNODE   PHASE      VERSION   AGE
-mycluster   1          1          1      0          Running    v0.9.5    5m12s
+NAME        FRONTEND   DATANODE   META   FLOWNODE   PHASE     VERSION   AGE
+mycluster   1          1          1      1          Running   v1.0.1    111s
 ```
 </details>
 
@@ -293,14 +306,15 @@ kubectl -n default get pods
 <details>
   <summary>Expected Output</summary>
 ```bash
-NAME                                 READY   STATUS    RESTARTS   AGE
-mycluster-datanode-0                 2/2     Running   0          77s
-mycluster-frontend-6ffdd549b-9s7gx   2/2     Running   0          66s
-mycluster-meta-58bc88b597-ppzvj      2/2     Running   0          86s
+NAME                                  READY   STATUS    RESTARTS   AGE
+mycluster-datanode-0                  1/1     Running   0          2m51s
+mycluster-flownode-0                  1/1     Running   0          2m26s
+mycluster-frontend-5894994974-w2cls   1/1     Running   0          2m32s
+mycluster-meta-58cd4cff6c-ddbxq       1/1     Running   0          2m58s
 ```
 </details>
 
-As you can see, we have created a minimal GreptimeDB cluster consisting of 1 frontend, 1 datanode, and 1 metasrv by default. For information about the components of a complete GreptimeDB cluster, you can refer to [architecture](/user-guide/concepts/architecture.md).
+As you can see, we have created a minimal GreptimeDB cluster consisting of 1 frontend, 1 datanode, 1 flownode, and 1 metasrv by default. For information about the components of a complete GreptimeDB cluster, you can refer to [architecture](/user-guide/concepts/architecture.md).
 
 ## Explore the GreptimeDB cluster
 

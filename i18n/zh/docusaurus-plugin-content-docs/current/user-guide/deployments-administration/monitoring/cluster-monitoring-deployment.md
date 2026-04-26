@@ -28,6 +28,7 @@ image:
 initializer:
   registry: docker.io
   repository: greptime/greptimedb-initializer
+  tag: "VAR::greptimedbOperatorVersion"
 
 monitoring:
   # 启用监控
@@ -70,6 +71,7 @@ image:
 initializer:
   registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
   repository: greptime/greptimedb-initializer
+  tag: "VAR::greptimedbOperatorVersion"
 
 monitoring:
   # 启用监控
@@ -125,6 +127,7 @@ kubectl -n default get pods
 ```bash
 NAME                                 READY   STATUS    RESTARTS   AGE
 mycluster-datanode-0                 2/2     Running   0          77s
+mycluster-flownode-0                 2/2     Running   0          2m26s
 mycluster-frontend-6ffdd549b-9s7gx   2/2     Running   0          66s
 mycluster-grafana-675b64786-ktqps    1/1     Running   0          6m35s
 mycluster-meta-58bc88b597-ppzvj      2/2     Running   0          86s
@@ -177,7 +180,7 @@ monitoring:
     base:
      main:
        # 用于配置 GreptimeDB Standalone 实例的镜像
-       image: "greptime-registry.cn-hangzhou.cr.aliyuncs.com/greptime/greptimedb:latest"
+       image: "greptime-registry.cn-hangzhou.cr.aliyuncs.com/greptime/greptimedb:VAR::greptimedbVersion"
 
        # 用于配置 GreptimeDB Standalone 实例的资源配置
        resources:
@@ -269,23 +272,41 @@ grafana:
   datasources:
     datasources.yaml:
       datasources:
+        # Query the cluster metrics.
         - name: greptimedb-metrics
           type: prometheus
           url: http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus
           access: proxy
           isDefault: true
 
+        # Query the cluster traces.
+        - name: greptimedb-traces
+          type: jaeger
+          url: http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/jaeger
+          access: proxy
+          isDefault: true
+
+        # Query the cluster logs and slow queries.
         - name: greptimedb-logs
           type: mysql
           url: ${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4002
           access: proxy
           database: public
+
+        # Query the information schema from the cluster.
+        - name: information_schema
+          type: mysql
+          url: ${cluster-name}-frontend.${namespace}.svc.cluster.local:4002
+          access: proxy
+          database: information_schema
 ```
 
 此配置会在 Grafana 中为 GreptimeDB 集群的监控创建以下数据源：
 
-- **`greptimedb-metrics`**：用于存储监控数据的单机数据库中的集群指标，通过 Prometheus 协议提供服务（`type: prometheus`）
+- **`greptimedb-metrics`**：用于存储监控数据的单机数据库中的集群指标，通过 Prometheus 协议提供服务（`type: prometheus`）。
 - **`greptimedb-logs`**：用于存储监控数据的单机数据库中的集群日志，通过 MySQL 协议提供服务（`type: mysql`），默认使用 `public` 数据库。
+- **`greptimedb-traces`**: 用于存储监控数据的单机数据库中的集群 traces，通过 Jaeger 协议提供服务 (`type: jaeger`)。
+- **`information_schema`**: 用于存储数据库中的集群信息，通过 MySQL 协议提供服务 (`type: mysql`)。
 
 ### 访问 Grafana 仪表盘
 
