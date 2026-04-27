@@ -128,7 +128,7 @@ GROUP BY status, time_window;
 
 - **得物（Poizon）**：宽事件的早期生产级落地。Flow 引擎 + 多级持续聚合，P99 延迟从秒级降到毫秒级。[详情 →](https://greptime.cn/blogs/2025-05-06-poizon-greptimedb-observability)
 
-- **OB Cloud**：从 Loki 迁移到 GreptimeDB 一年后，已部署 80+ 集群、300TB 多云日志和 SQL 审计数据，整体存储成本下降 60%+。[详情 →](https://greptime.cn/blogs/2025-07-22-user-case-obcloud-log-storage-greptimedb)
+- **OceanBase Cloud**：从 Loki 迁移到 GreptimeDB 一年后，已部署 80+ 集群、300TB 多云日志和 SQL 审计数据，整体存储成本下降 60%+。[详情 →](https://greptime.cn/blogs/2025-07-22-user-case-obcloud-log-storage-greptimedb)
 
 - **Traces 存储**：某出海物流电商企业用 GreptimeDB 替换 [Elasticsearch](/user-guide/protocols/elasticsearch.md) 存储 [Jaeger](/user-guide/query-data/jaeger.md) Trace 数据。存储成本降低 45 倍，冷数据查询快 3 倍。[详情 →](https://greptime.cn/blogs/2026-01-27-logistics-trace-case)
 

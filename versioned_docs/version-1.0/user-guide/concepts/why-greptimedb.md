@@ -36,7 +36,7 @@ This means you can replace the [Prometheus](/user-guide/ingest-data/for-observab
 GreptimeDB leverages [cloud object storage](/user-guide/concepts/storage-location.md) (like AWS S3 and Azure Blob Storage etc.) as its storage layer, dramatically reducing costs compared to traditional storage solutions. Its optimized columnar storage and advanced compression algorithms achieve up to 50x cost efficiency. Scale flexibly across cloud storage systems (e.g., S3, Azure Blob Storage) for simplified management, dramatic cost efficiency, and **no vendor lock-in**.
 
 In production deployments, teams have achieved:
-- **Logs**: 60%+ storage cost reduction in production at OB Cloud (migrated from [Loki](/user-guide/ingest-data/for-observability/loki.md) — 80+ GreptimeDB clusters, 300TB of multi-cloud logs and SQL audit data)
+- **Logs**: 60%+ storage cost reduction in production at OceanBase Cloud (migrated from [Loki](/user-guide/ingest-data/for-observability/loki.md) — 80+ GreptimeDB clusters, 300TB of multi-cloud logs and SQL audit data)
 - **Traces**: 45x storage cost reduction, 3x faster queries (replaced [Elasticsearch](/user-guide/protocols/elasticsearch.md) as [Jaeger](/user-guide/query-data/jaeger.md) backend — one-week migration)
 - **Metrics**: Replaced Thanos with native compute-storage separation, significantly reducing operational complexity
 

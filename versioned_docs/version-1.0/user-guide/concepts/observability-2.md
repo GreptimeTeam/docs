@@ -126,7 +126,7 @@ Wide events are proven in production at scale:
 
 - **Poizon (得物)**: One of the early production deployments of Wide Events. Flow Engine with multi-level continuous aggregation reduced P99 latency from seconds to milliseconds. [Read more →](https://greptime.com/blogs/2025-05-06-poizon-observability-greptimedb-monitoring-use-case)
 
-- **OB Cloud**: One year after migrating from Loki, running 80+ GreptimeDB clusters with 300TB of multi-cloud logs and SQL audit data, with overall log storage cost down by more than 60%. [Read more →](https://greptime.com/blogs/2025-07-22-user-case-obcloud-log-management-greptimedb)
+- **OceanBase Cloud**: One year after migrating from Loki, running 80+ GreptimeDB clusters with 300TB of multi-cloud logs and SQL audit data, with overall log storage cost down by more than 60%. [Read more →](https://greptime.com/blogs/2025-07-22-user-case-obcloud-log-management-greptimedb)
 
 - **Trace Storage**: Replaced [Elasticsearch](/user-guide/protocols/elasticsearch.md) as [Jaeger](/user-guide/query-data/jaeger.md) backend. 45x storage cost reduction, 3x faster cold queries, enabled full-volume tracing at 400B rows/day. [Read more →](https://greptime.com/blogs/2025-04-24-elasticsearch-greptimedb-comparison-performance)
 
