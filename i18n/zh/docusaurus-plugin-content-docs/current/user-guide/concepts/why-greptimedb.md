@@ -36,7 +36,7 @@ GreptimeDB 通过以下方式统一处理 metrics、logs 和 traces：
 GreptimeDB 以[云对象存储](/user-guide/concepts/storage-location.md)（S3、Azure Blob Storage 等）为主存储层，配合列式压缩，存储成本最高可降低 50 倍。支持灵活扩展到各类云存储，管理简单，**无厂商锁定**。
 
 生产环境实测：
-- **Logs**：查询性能提升 10 倍，TCO 降低 30%（从 [Loki](/user-guide/ingest-data/for-observability/loki.md) 迁移，170+ 可用区日处理数十亿条日志）
+- **Logs**：OceanBase Cloud 生产环境存储成本下降 60%+（从 [Loki](/user-guide/ingest-data/for-observability/loki.md) 迁移到 GreptimeDB，80+ 集群、300TB 多云日志和 SQL 审计数据）
 - **Traces**：存储成本降低 45 倍，查询快 3 倍（替换 [Elasticsearch](/user-guide/protocols/elasticsearch.md) 作为 [Jaeger](/user-guide/query-data/jaeger.md) 后端，一周完成迁移）
 - **Metrics**：用原生计算存储分离替代 Thanos，运维复杂度大幅下降
 
