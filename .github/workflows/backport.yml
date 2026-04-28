@@ -66,6 +66,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Restore lock file changes
+        run: git checkout -- package-lock.json
+
       - name: Run backport command
         run: |
           npm run backport -- --version ${{ steps.extract_version.outputs.version }} --since main
