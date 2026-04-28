@@ -66,7 +66,7 @@ datanode:
 
 你可以使用以下命令应用上述配置：
 ```
-helm upgrade --install ${release-name} greptime/greptimedb-cluster --namespace default -f values.yaml
+helm upgrade --install greptimedb greptime/greptimedb-cluster --namespace default -f values.yaml
 ```
 
 ## 合规配置
@@ -86,12 +86,12 @@ frontendGroups:
 
 ```bash
 kubectl get pods -n default
-NAME                                        READY   STATUS    RESTARTS   AGE
-mycluster-datanode-0                        1/1     Running   0          32s
-mycluster-flownode-0                        1/1     Running   0          17s
-mycluster-frontend-read-6d45bc9b89-hftqz    1/1     Running   0          23s
-mycluster-frontend-write-557b6585c6-jq874   1/1     Running   0          23s
-mycluster-meta-58cd4cff6c-zp7s9             1/1     Running   0          37s
+NAME                                         READY   STATUS    RESTARTS   AGE
+greptimedb-datanode-0                        1/1     Running   0          32s
+greptimedb-flownode-0                        1/1     Running   0          17s
+greptimedb-frontend-read-6d45bc9b89-hftqz    1/1     Running   0          23s
+greptimedb-frontend-write-557b6585c6-jq874   1/1     Running   0          23s
+greptimedb-meta-58cd4cff6c-zp7s9             1/1     Running   0          37s
 ```
 
 检查 services 状态：

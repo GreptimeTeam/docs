@@ -143,8 +143,6 @@ CHART NAME: etcd
 CHART VERSION: 12.0.8
 APP VERSION: 3.6.1
 
-Did you know there are enterprise versions of the Bitnami catalog? For enhanced secure software supply chain features, unlimited pulls from Docker, LTS support, or application customization, see Bitnami Premium or Tanzu Application Catalog. See https://www.arrow.com/globalecs/na/vendors/bitnami for more information.
-
 ** Please be patient while the chart is being deployed **
 
 etcd can be accessed via port 2379 on the following DNS name from within your cluster:
@@ -153,7 +151,7 @@ etcd can be accessed via port 2379 on the following DNS name from within your cl
 
 To create a pod that you can use as a etcd client run the following command:
 
-    kubectl run etcd-client --restart='Never' --image docker.io/greptime/etcd:3.6.1-debian-12-r3 --env ETCDCTL_ENDPOINTS="etcd.etcd-cluster.svc.cluster.local:2379" --namespace etcd-cluster --command -- sleep infinity
+    kubectl run etcd-client --restart='Never' --image docker.io/greptime/etcd:VAR::etcdImageVersion --env ETCDCTL_ENDPOINTS="etcd.etcd-cluster.svc.cluster.local:2379" --namespace etcd-cluster --command -- sleep infinity
 
 Then, you can set/get a key using the commands below:
 
@@ -172,12 +170,9 @@ WARNING: There are "resources" sections in the chart not set. Using "resourcesPr
 - disasterRecovery.cronjob.resources
   +info https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 
-⚠ SECURITY WARNING: Original containers have been substituted. This Helm chart was designed, tested, and validated on multiple platforms using a specific set of Bitnami and Tanzu Application Catalog containers. Substituting other containers is likely to cause degraded security and performance, broken chart features, and missing environment variables.
-
 Substituted images detected:
 - docker.io/greptime/etcd:3.6.1-debian-12-r3
 
-⚠ SECURITY WARNING: Verifying original container images was skipped. Please note this Helm chart was designed, tested, and validated on multiple platforms using a specific set of Bitnami and Tanzu Application Catalog containers. Substituting other containers is likely to cause degraded security and performance, broken chart features, and missing environment variables.
 ```
 </details>
 

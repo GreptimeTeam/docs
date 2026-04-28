@@ -179,13 +179,41 @@ kubectl port-forward svc/greptimedb-standalone 4000:4000 -n default > connection
 ```bash
 curl -X POST \
   -d 'sql=show databases' \
-  http://localhost:4000/v1/sql
+  http://localhost:4000/v1/sql | jq .
 ```
 
 <details>
   <summary>Expected Output</summary>
-```bash
-{"output":[{"records":{"schema":{"column_schemas":[{"name":"Database","data_type":"String"}]},"rows":[["greptime_private"],["information_schema"],["public"]],"total_rows":3}}],"execution_time_ms":167}
+```json
+{
+  "output": [
+    {
+      "records": {
+        "schema": {
+          "column_schemas": [
+            {
+              "name": "Database",
+              "data_type": "String"
+            }
+          ]
+        },
+        "rows": [
+          [
+            "greptime_private"
+          ],
+          [
+            "information_schema"
+          ],
+          [
+            "public"
+          ]
+        ],
+        "total_rows": 3
+      }
+    }
+  ],
+  "execution_time_ms": 2
+}
 ```
 </details>
 
