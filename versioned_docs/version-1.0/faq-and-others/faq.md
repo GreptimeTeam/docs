@@ -158,13 +158,12 @@ GreptimeDB supports multiple ingestion protocols with very different throughput 
 
 | Protocol | Relative throughput |
 | --- | --- |
-| gRPC Bulk (Arrow Flight) | Highest (~55x SQL) |
-| gRPC Stream | ~40x SQL |
-| gRPC SDK (Unary) | ~33x SQL |
-| OTLP Logs | ~29x SQL |
-| InfluxDB Line Protocol | ~27x SQL |
-| MySQL INSERT | ~2x PostgreSQL |
-| PostgreSQL INSERT | Baseline |
+| gRPC Bulk (Arrow Flight) | Highest (~37x SQL) |
+| gRPC Stream | ~21x SQL |
+| gRPC SDK (Unary) | ~16x SQL |
+| InfluxDB Line Protocol | ~12x SQL |
+| OTLP Logs | ~8.5x SQL |
+| MySQL / PostgreSQL INSERT | Baseline |
 
 **How to choose:**
 
