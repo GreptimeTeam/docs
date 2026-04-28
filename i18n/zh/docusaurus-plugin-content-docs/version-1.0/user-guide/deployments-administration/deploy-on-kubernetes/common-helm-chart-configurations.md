@@ -71,7 +71,7 @@ datanode:
     # -- Storage class for datanode persistent volume
     storageClassName: null
     # -- Storage size for datanode persistent volume
-    storageSize: 10Gi
+    storageSize: 20Gi
     # -- Storage retain policy for datanode persistent volume
     storageRetainPolicy: Retain
     # -- The dataHome directory, default is "/data/greptimedb/"
@@ -79,7 +79,7 @@ datanode:
 ```
 
 - `storageClassName`：用于配置 StorageClass，默认使用 Kubernetes 当前默认的 StorageClass；
-- `storageSize`：用于配置 Storage 的大小，默认 10Gi。你可以使用常用的容量单位，如 `10Gi`、`10GB` 等；
+- `storageSize`：用于配置 Storage 的大小，默认 20Gi。你可以使用常用的容量单位，如 `50Gi` 等；
 - `storageRetainPolicy`：用于配置 Storage 的保留策略，默认 `Retain`，如果设置为 `Delete`，则当集群被删除时，相应的 Storage 也会被删除；
 - `dataHome`：用于配置数据目录，默认 `/data/greptimedb/`；
 
@@ -100,7 +100,7 @@ base:
           cpu: "2"
 ```
 
-如果你想为集群中的每个 Role 配置不同的资源，可以使用 `${role}.podTemplate.main.resources` 字段（其中 `role` 可以是 `meta`、`frontend`、`datanode` 等），改字段会**覆盖顶层**变量 `base.podTemplate.main.resources` 的配置，如下所示：
+如果你想为集群中的每个 Role 配置不同的资源，可以使用 `${role}.podTemplate.main.resources` 字段（其中 `role` 可以是 `meta`、`frontend`、`datanode`、`flownode` 等），该字段会**覆盖顶层**变量 `base.podTemplate.main.resources` 的配置，如下所示：
 
 ```yaml
 base:

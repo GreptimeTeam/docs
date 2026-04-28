@@ -30,7 +30,7 @@ helm upgrade --install greptimedb-standalone greptime/greptimedb-standalone -n d
 ```bash
 Release "greptimedb-standalone" does not exist. Installing it now.
 NAME: greptimedb-standalone
-LAST DEPLOYED: Mon May 26 08:06:54 2025
+LAST DEPLOYED: Sun Apr 26 20:30:51 2026
 NAMESPACE: default
 STATUS: deployed
 REVISION: 1
@@ -38,8 +38,8 @@ TEST SUITE: None
 NOTES:
 ***********************************************************************
  Welcome to use greptimedb-standalone
- Chart version: 0.1.53
- GreptimeDB Standalone version: 0.14.3
+ Chart version: 0.4.2
+ GreptimeDB Standalone version: 1.0.1
 ***********************************************************************
 
 Installed components:
@@ -90,7 +90,7 @@ helm upgrade --install greptimedb-standalone greptime/greptimedb-standalone \
 ```bash
 Release "greptimedb-standalone" has been upgraded. Happy Helming!
 NAME: greptimedb-standalone
-LAST DEPLOYED: Mon May 26 08:18:27 2025
+LAST DEPLOYED: Sun Apr 26 20:35:11 2026
 NAMESPACE: default
 STATUS: deployed
 REVISION: 2
@@ -98,8 +98,8 @@ TEST SUITE: None
 NOTES:
 ***********************************************************************
  Welcome to use greptimedb-standalone
- Chart version: 0.1.53
- GreptimeDB Standalone version: 0.14.3
+ Chart version: 0.4.2
+ GreptimeDB Standalone version: 1.0.1
 ***********************************************************************
 
 Installed components:
@@ -163,9 +163,7 @@ psql -h 127.0.0.1 -p 4003 -d public
 <details>
   <summary>Expected Output</summary>
 ```bash
-psql (15.12, server 16.3-greptimedb-0.14.3)
-WARNING: psql major version 15, server major version 16.
-         Some psql features might not work.
+psql (16.2, server 16.3-GreptimeDB-1.0.1)
 Type "help" for help.
 
 public=>
@@ -180,14 +178,42 @@ kubectl port-forward svc/greptimedb-standalone 4000:4000 -n default > connection
 
 ```bash
 curl -X POST \
-  -d 'sql=show tables' \
-  http://localhost:4000/v1/sql
+  -d 'sql=show databases' \
+  http://localhost:4000/v1/sql | jq .
 ```
 
 <details>
   <summary>Expected Output</summary>
-```bash
-{"output":[{"records":{"schema":{"column_schemas":[{"name":"Tables","data_type":"String"}]},"rows":[["numbers"]],"total_rows":1}}],"execution_time_ms":5}[root
+```json
+{
+  "output": [
+    {
+      "records": {
+        "schema": {
+          "column_schemas": [
+            {
+              "name": "Database",
+              "data_type": "String"
+            }
+          ]
+        },
+        "rows": [
+          [
+            "greptime_private"
+          ],
+          [
+            "information_schema"
+          ],
+          [
+            "public"
+          ]
+        ],
+        "total_rows": 3
+      }
+    }
+  ],
+  "execution_time_ms": 2
+}
 ```
 </details>
 

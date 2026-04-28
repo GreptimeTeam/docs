@@ -73,8 +73,8 @@ helm search repo greptime/greptimedb-operator
 <details>
 <summary>预期输出</summary>
 ```bash
-NAME                        	CHART VERSION	APP VERSION  	DESCRIPTION
-greptime/greptimedb-operator	0.2.9        	0.1.3-alpha.1	The greptimedb-operator Helm chart for Kubernetes.
+NAME                             CHART VERSION   APP VERSION     DESCRIPTION
+greptime/greptimedb-operator    0.5.9           0.5.5           The greptimedb-operator Helm chart for Kubernetes.
 ```
 </details>
 
@@ -95,24 +95,23 @@ helm -n greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operato
 <details>
 <summary>期望输出</summary>
 ```bash
-Release "greptimedb-operator" has been upgraded. Happy Helming!
 NAME: greptimedb-operator
-LAST DEPLOYED: Mon Oct 28 19:30:52 2024
+LAST DEPLOYED: Sun Apr 26 20:43:58 2026
 NAMESPACE: greptimedb-admin
 STATUS: deployed
-REVISION: 2
+REVISION: 1
 TEST SUITE: None
 NOTES:
 ***********************************************************************
  Welcome to use greptimedb-operator
- Chart version: 0.2.9
- GreptimeDB Operator version: 0.1.3-alpha.1
+ Chart version: 0.5.9
+ GreptimeDB Operator version: 0.5.5
 ***********************************************************************
 
 Installed components:
 * greptimedb-operator
 
-The greptimedb-operator is starting, use `kubectl get deployments greptimedb-operator -n greptimedb-admin` to check its status.
+The greptimedb-operator is starting, use `kubectl get deployment greptimedb-operator -n greptimedb-admin` to check its status.
 ```
 </details>
 
@@ -131,8 +130,8 @@ helm list -n greptimedb-admin
 <details>
 <summary>期望输出</summary>
 ```bash
-NAME                    NAMESPACE               REVISION        UPDATED                                 STATUS          CHART                           APP VERSION  
-greptimedb-operator     greptimedb-admin        1               2024-10-30 17:46:45.570975 +0800 CST    deployed        greptimedb-operator-0.2.9       0.1.3-alpha.1
+NAME                     NAMESPACE               REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
+greptimedb-operator     greptimedb-admin        1               2026-04-26 20:43:58.003167 +0800 CST    deployed        greptimedb-operator-0.5.9       0.5.5
 ```
 </details>
 
@@ -149,8 +148,8 @@ kubectl get crd | grep greptime
 <details>
   <summary>期望输出</summary>
 ```bash
-greptimedbclusters.greptime.io      2024-10-28T08:46:27Z
-greptimedbstandalones.greptime.io   2024-10-28T08:46:27Z
+greptimedbclusters.greptime.io      2026-04-26T12:43:58Z
+greptimedbstandalones.greptime.io   2026-04-26T12:43:58Z
 ```
 </details>
 
@@ -171,7 +170,7 @@ image:
   # -- The image pull policy for the controller
   imagePullPolicy: IfNotPresent
   # -- The image tag
-  tag: latest
+  tag: "VAR::greptimedbOperatorVersion"
   # -- The image pull secrets
   pullSecrets: []
 
@@ -179,30 +178,18 @@ replicas: 1
 
 resources:
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 500m
+    memory: 512Mi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 250m
+    memory: 256Mi
 ```
 
 :::note
 中国大陆用户如有网络访问问题，可将上文中的 `image.registry` 配置为阿里云镜像仓库地址 `greptime-registry.cn-hangzhou.cr.aliyuncs.com`。
 :::
 
-你可以使用以下命令来安装带有自定义配置的 GreptimeDB Operator：
-
-```bash
-helm -n greptimedb-admin install greptimedb-operator greptime/greptimedb-operator -f values.yaml
-```
-
-如果你想使用自定义配置升级 GreptimeDB Operator，你可以使用以下命令：
-
-```bash
-helm -n greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator -f values.yaml
-```
-
-你可以使用以下一条同样的命令来安装或升级带有自定义配置的 GreptimeDB Operator：
+你可以使用以下的命令来安装或升级带有自定义配置的 GreptimeDB Operator：
 
 ```bash
 helm -n greptimedb-admin upgrade --install greptimedb-operator greptime/greptimedb-operator -f values.yaml

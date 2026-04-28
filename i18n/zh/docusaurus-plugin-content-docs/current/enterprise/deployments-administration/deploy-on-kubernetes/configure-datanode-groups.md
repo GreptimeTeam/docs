@@ -48,7 +48,7 @@ datanodeGroups:
       main:
         resources:
           requests:
-            cpu: 4
+            cpu: '4'
             memory: 8Gi
     storage:
       fs:
@@ -62,7 +62,7 @@ datanodeGroups:
       main:
         resources:
           limits:
-            cpu: 8
+            cpu: '8'
             memory: 16Gi
 
 meta:
@@ -92,6 +92,7 @@ kubectl get pods -n ${namespace}
 NAME                                         READY   STATUS    RESTARTS   AGE
 ${release-name}-datanode-read-0                 1/1     Running   0          30s
 ${release-name}-datanode-write-0                1/1     Running   0          30s
+${release-name}-flownode-0                      1/1     Running   0          60s
 ${release-name}-frontend-774c76cffc-znvrw       1/1     Running   0          30s
 ${release-name}-meta-58977b7897-8k2sf           1/1     Running   0          90s
 ```

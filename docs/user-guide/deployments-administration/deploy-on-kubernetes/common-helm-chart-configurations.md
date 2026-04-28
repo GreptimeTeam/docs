@@ -71,7 +71,7 @@ datanode:
     # -- Storage class for datanode persistent volume
     storageClassName: null
     # -- Storage size for datanode persistent volume
-    storageSize: 10Gi
+    storageSize: 20Gi
     # -- Storage retain policy for datanode persistent volume
     storageRetainPolicy: Retain
     # -- The dataHome directory, default is "/data/greptimedb/"
@@ -79,7 +79,7 @@ datanode:
 ```
 
 - `storageClassName`: Configures the StorageClass, defaults to Kubernetes current default StorageClass
-- `storageSize`: Configures the storage size, default `10Gi`. You can use common capacity units, such as `10Gi`, `10GB`, etc.
+- `storageSize`: Configures the storage size, default `20Gi`. You can use common capacity units, such as `50Gi`, etc.
 - `storageRetainPolicy`: Configures the storage retention policy, default `Retain`. If set to `Delete`, the storage will be deleted when the cluster is deleted
 - `dataHome`: Configures the data directory, default `/data/greptimedb/`
 
@@ -100,7 +100,7 @@ base:
           cpu: "2"
 ```
 
-If you want to configure different resources for each role in the cluster, you can use the `${role}.podTemplate.main.resources` field (where `role` can be `meta`, `frontend`, `datanode`, etc.). This field will **override** the top-level `base.podTemplate.main.resources` configuration, as shown below:
+If you want to configure different resources for each role in the cluster, you can use the `${role}.podTemplate.main.resources` field (where `role` can be `meta`, `frontend`, `datanode`, `flownode`, etc.). This field will **override** the top-level `base.podTemplate.main.resources` configuration, as shown below:
 
 ```yaml
 base:

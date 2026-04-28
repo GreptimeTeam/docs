@@ -66,7 +66,7 @@ datanode:
 
 You can use the following command to apply the configuration:
 ```
-helm upgrade --install ${release-name} greptime/greptimedb-cluster --namespace ${namespace} -f values.yaml
+helm upgrade --install greptimedb greptime/greptimedb-cluster --namespace default -f values.yaml
 ```
 
 ## Validity
@@ -85,12 +85,12 @@ Check the status of the pods:
 
 ```bash
 kubectl get pods -n default
-NAME                                        READY   STATUS    RESTARTS   AGE
-greptimedb-datanode-0                       1/1     Running   0          27s
-greptimedb-frontend-read-66bf68bd5c-8kg8g   1/1     Running   0          21s
-greptimedb-frontend-read-66bf68bd5c-x752l   1/1     Running   0          21s
-greptimedb-frontend-write-bdd944b97-pkf9d   1/1     Running   0          21s
-greptimedb-meta-699f74cd9d-42w2c            1/1     Running   0          87s
+NAME                                         READY   STATUS    RESTARTS   AGE
+greptimedb-datanode-0                        1/1     Running   0          32s
+greptimedb-flownode-0                        1/1     Running   0          17s
+greptimedb-frontend-read-6d45bc9b89-hftqz    1/1     Running   0          23s
+greptimedb-frontend-write-557b6585c6-jq874   1/1     Running   0          23s
+greptimedb-meta-58cd4cff6c-zp7s9             1/1     Running   0          37s
 ```
 
 To check the services:
@@ -99,6 +99,7 @@ To check the services:
 kubectl get service -n default
 NAME                        TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
 greptimedb-datanode         ClusterIP   None            <none>        4001/TCP,4000/TCP                     102s
+greptimedb-flownode         ClusterIP   None            <none>        4001/TCP                              2m5s
 greptimedb-frontend-read    ClusterIP   10.96.174.200   <none>        4001/TCP,4000/TCP,4002/TCP,4003/TCP   42s
 greptimedb-frontend-write   ClusterIP   10.96.223.1     <none>        4001/TCP,4000/TCP,4002/TCP,4003/TCP   42s
 greptimedb-meta             ClusterIP   10.96.195.163   <none>        3002/TCP,4000/TCP                     3m4s

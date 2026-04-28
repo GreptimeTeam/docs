@@ -29,6 +29,7 @@ image:
 initializer:
   registry: docker.io
   repository: greptime/greptimedb-initializer
+  tag: "VAR::greptimedbOperatorVersion"
 
 monitoring:
   # Enable monitoring
@@ -78,6 +79,7 @@ kubectl -n default get pods
 ```bash
 NAME                                 READY   STATUS    RESTARTS   AGE
 mycluster-datanode-0                 2/2     Running   0          77s
+mycluster-flownode-0                 2/2     Running   0          2m26s
 mycluster-frontend-6ffdd549b-9s7gx   2/2     Running   0          66s
 mycluster-grafana-675b64786-ktqps    1/1     Running   0          6m35s
 mycluster-meta-58bc88b597-ppzvj      2/2     Running   0          86s
@@ -129,7 +131,7 @@ monitoring:
     base:
      main:
        # Configure GreptimeDB Standalone instance image
-       image: "greptime/greptimedb:latest"
+       image: "greptime/greptimedb:VAR::greptimedbVersion"
 
        # Configure GreptimeDB Standalone instance resources
        resources:
@@ -221,23 +223,39 @@ grafana:
   datasources:
     datasources.yaml:
       datasources:
+        # Query the cluster metrics.
         - name: greptimedb-metrics
           type: prometheus
           url: http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus
           access: proxy
-          isDefault: true
 
+        # Query the cluster traces.
+        - name: greptimedb-traces
+          type: jaeger
+          url: http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/jaeger
+          access: proxy
+
+        # Query the cluster logs and slow queries.
         - name: greptimedb-logs
           type: mysql
           url: ${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4002
           access: proxy
           database: public
+
+        # Query the information schema from the cluster.
+        - name: information_schema
+          type: mysql
+          url: ${cluster-name}-frontend.${namespace}.svc.cluster.local:4002
+          access: proxy
+          database: information_schema
 ```
 
 This configuration creates the following data sources for GreptimeDB cluster monitoring in Grafana:
 
 - **`greptimedb-metrics`**: Cluster metrics stored in the standalone monitoring database, exposed via Prometheus protocol (`type: prometheus`)
 - **`greptimedb-logs`**: Cluster logs stored in the standalone monitoring database, exposed via MySQL protocol (`type: mysql`). Uses the `public` database by default
+- **`greptimedb-traces`**: Cluster traces stored in the standalone monitoring database, exposed via Jaeger protocol (`type: jaeger`). Uses the `public` database by default
+- **`information_schema`**: Cluster information stored in the frontend database, exposed via MySQL protocol (`type: mysql`). Uses the `information_schema` database by default
 
 ### Access Grafana Dashboard
 
