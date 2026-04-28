@@ -228,14 +228,12 @@ grafana:
           type: prometheus
           url: http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus
           access: proxy
-          isDefault: true
 
         # Query the cluster traces.
         - name: greptimedb-traces
           type: jaeger
           url: http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/jaeger
           access: proxy
-          isDefault: true
 
         # Query the cluster logs and slow queries.
         - name: greptimedb-logs

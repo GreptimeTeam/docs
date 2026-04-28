@@ -100,7 +100,7 @@ base:
           cpu: "2"
 ```
 
-如果你想为集群中的每个 Role 配置不同的资源，可以使用 `${role}.podTemplate.main.resources` 字段（其中 `role` 可以是 `meta`、`frontend`、`datanode`、`flownode` 等），改字段会**覆盖顶层**变量 `base.podTemplate.main.resources` 的配置，如下所示：
+如果你想为集群中的每个 Role 配置不同的资源，可以使用 `${role}.podTemplate.main.resources` 字段（其中 `role` 可以是 `meta`、`frontend`、`datanode`、`flownode` 等），该字段会**覆盖顶层**变量 `base.podTemplate.main.resources` 的配置，如下所示：
 
 ```yaml
 base:
