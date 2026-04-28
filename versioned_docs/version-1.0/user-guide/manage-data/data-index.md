@@ -39,7 +39,7 @@ CREATE TABLE monitoring_data (
 );
 ```
 
-However, when you have a large number of unique tag values (Cartesian product among all columns indexed by inverted index), the inverted index may not be the best choice due to the overhead of maintaining the index. It may bring high memory consumption and large index size. In this case, you may consider using the skipping index.
+However, when a column has very high cardinality, the inverted index may not be the best choice due to the overhead of maintaining the index. It may bring high memory consumption and large index size. In this case, you may consider using the skipping index.
 
 ### Skipping Index
 
