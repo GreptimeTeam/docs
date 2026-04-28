@@ -41,7 +41,7 @@ CREATE TABLE temp_sensor_data (
 
 - **列的顺序和类型**：确保 sink 表中列的顺序和类型与 flow 查询结果匹配。
 - **时间索引**：为 sink 表指定 `TIME INDEX`，通常使用时间窗口函数生成的时间列。
-- **更新时间**：Flow 引擎会自动将更新时间附加到每个计算结果行的末尾。此更新时间存储在 `updated_at` 列中。请确保在 sink 表的 schema 中包含此列。
+- **更新时间**：Flow 引擎会自动将更新时间附加到每个计算结果行的末尾。此更新时间存储在 `update_at` 列中。请确保在 sink 表的 schema 中包含此列。
 - **Tag**：使用 `PRIMARY KEY` 指定 Tag，与 time index 一起作为行数据的唯一标识，并优化查询性能。
 
 例如：

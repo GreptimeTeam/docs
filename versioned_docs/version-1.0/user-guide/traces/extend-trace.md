@@ -24,7 +24,7 @@ We will use OpenTelemetry Django instruments for source data. But the source
 data doesn't really matter because fields used in this example are all generic
 ones.
 
-### Create sink table
+### Create Sink Table
 
 First, we create a sink table which is a materialzed view in Flow. For latency
 quantiles, we will use [uddsketch](https://arxiv.org/abs/2004.08604) for a quick
@@ -45,11 +45,13 @@ This table contains 3 key columns:
 - `latency_sketch`: the uddsketch data structure
 - `time_window`: indicate the time window of current record
 
-### Create flow
+### Create Flow
 
 Next we create a flow task to generate uddsketch data for every 30s time
 window. The example filters spans by the scope name, which is optional depends
-on your data.
+on your data. 
+
+Note: In this example, we use the default table name `opentelemetry_traces` as the source trace table. You should replace it with your own trace table name if it's customized.
 
 ```sql
 CREATE FLOW django_http_request_latency_flow
@@ -61,7 +63,7 @@ SELECT
     span_name,
     uddsketch_state(128, 0.01, "duration_nano") AS "latency_sketch",
     date_bin('30 seconds'::INTERVAL, "timestamp") as "time_window",
-FROM web_trace_demo
+FROM opentelemetry_traces
 WHERE
     scope_name = 'opentelemetry.instrumentation.django'
 GROUP BY
@@ -69,7 +71,7 @@ GROUP BY
     time_window;
 ```
 
-### Query metrics
+### Query Metrics
 
 The sink table will be filled with aggregated data as trace data ingested. We
 can use following SQL to get p90 latency of the each span.

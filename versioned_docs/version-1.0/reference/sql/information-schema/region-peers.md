@@ -6,11 +6,6 @@ description: Shows detailed information of a single Region node in GreptimeDB, s
 # REGION_PEERS
 
 The `REGION_PEERS` table shows detailed information of a single Region node in GreptimeDB, such as whether it is a learner or leader.
-
-:::tip NOTE
-This table is not available on [GreptimeCloud](https://greptime.cloud/).
-:::
-
 ```sql
 USE INFORMATION_SCHEMA;
 DESC REGION_PEERS;

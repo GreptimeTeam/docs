@@ -87,6 +87,7 @@ Supported hints:
 | `physical_table` | String | None | Specifies the physical table name for the [metric engine](/contributor-guide/datanode/metric-engine.md). |
 | `skip_wal` | Boolean | `false` | Skips WAL (Write-Ahead Log) writes for the table. |
 | `sst_format` | String | None | Sets the SST (Sorted String Table) file format for the table. Valid values: `flat`, `primary_key`. |
+| `trace_table_partitions` | Int | None | Override default partition number (16) of trace tables. Set to `1` to disable partitioning. |
 
 For example, the following request sets TTL and append mode for auto-created tables:
 
@@ -116,7 +117,7 @@ To submit a SQL query to the GreptimeDB server via HTTP API, use the following f
 ```shell
 curl -X POST \
   -H 'Authorization: Basic {{authentication}}' \
-  -H 'X-Greptime-Timeout: {{time precision}}' \
+  -H 'X-Greptime-Timeout: {{timeout}}' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'sql={{SQL-statement}}' \
 http://{{API-host}}/v1/sql
@@ -160,7 +161,7 @@ http://{{API-host}}/v1/sql
 
 The response is a JSON object containing the following fields:
 
-- `output`: The SQL executed result. Please refer to the examples blow to see the details.
+- `output`: The SQL executed result. Please refer to the examples below to see the details.
 - `execution_time_ms`: The execution time of the statement in milliseconds.
 
 ### Examples
@@ -373,16 +374,14 @@ curl -X POST \
           "name": "",
           "columns": [
             "host",
+            "ts",
             "cpu",
-            "memory",
-            "ts"
+            "memory"
           ],
           "values": [
-            [
-              ["127.0.0.1", 0.1, 0.4, 1667446797450],
-              ["127.0.0.1", 0.5, 0.2, 1667446798450],
-              ["127.0.0.2", 0.2, 0.3, 1667446798450]
-            ]
+            ["127.0.0.1", 1667446797450, 0.1, 0.4],
+            ["127.0.0.1", 1667446798450, 0.5, 0.2],
+            ["127.0.0.2", 1667446798450, 0.2, 0.3]
           ]
         }
       ]
@@ -412,12 +411,46 @@ curl -X POST \
         "with": null,
         "body": {
           "Select": {
+            "select_token": {
+              "token": {
+                "Word": {
+                  "value": "SELECT",
+                  "quote_style": null,
+                  "keyword": "SELECT"
+                }
+              },
+              "span": {
+                "start": {
+                  "line": 1,
+                  "column": 1
+                },
+                "end": {
+                  "line": 1,
+                  "column": 7
+                }
+              }
+            },
+            "optimizer_hint": null,
             "distinct": null,
+            "select_modifiers": null,
             "top": null,
             "top_before_distinct": false,
             "projection": [
               {
                 "Wildcard": {
+                  "wildcard_token": {
+                    "token": "Mul",
+                    "span": {
+                      "start": {
+                        "line": 1,
+                        "column": 8
+                      },
+                      "end": {
+                        "line": 1,
+                        "column": 9
+                      }
+                    }
+                  },
                   "opt_ilike": null,
                   "opt_exclude": null,
                   "opt_except": null,
@@ -426,6 +459,7 @@ curl -X POST \
                 }
               }
             ],
+            "exclude": null,
             "into": null,
             "from": [
               {
@@ -433,8 +467,20 @@ curl -X POST \
                   "Table": {
                     "name": [
                       {
-                        "value": "monitor",
-                        "quote_style": null
+                        "Identifier": {
+                          "value": "monitor",
+                          "quote_style": null,
+                          "span": {
+                            "start": {
+                              "line": 1,
+                              "column": 15
+                            },
+                            "end": {
+                              "line": 1,
+                              "column": 22
+                            }
+                          }
+                        }
                       }
                     ],
                     "alias": null,
@@ -442,7 +488,10 @@ curl -X POST \
                     "with_hints": [],
                     "version": null,
                     "with_ordinality": false,
-                    "partitions": []
+                    "partitions": [],
+                    "json_path": null,
+                    "sample": null,
+                    "index_hints": []
                   }
                 },
                 "joins": []
@@ -451,6 +500,7 @@ curl -X POST \
             "lateral_views": [],
             "prewhere": null,
             "selection": null,
+            "connect_by": [],
             "group_by": {
               "Expressions": [
                 [],
@@ -465,19 +515,19 @@ curl -X POST \
             "qualify": null,
             "window_before_qualify": false,
             "value_table_mode": null,
-            "connect_by": null
+            "flavor": "Standard"
           }
         },
         "order_by": null,
-        "limit": null,
-        "limit_by": [],
-        "offset": null,
+        "limit_clause": null,
         "fetch": null,
         "locks": [],
         "for_clause": null,
         "settings": null,
-        "format_clause": null
-      }
+        "format_clause": null,
+        "pipe_operators": []
+      },
+      "hybrid_cte": null
     }
   }
 ]
@@ -511,7 +561,7 @@ curl -X GET \
 
 The input parameters are similar to the [`range_query`](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) in Prometheus' HTTP API:
 
-- `db=<database name>`: Required when using GreptimeDB with authorization, otherwise can be omitted if you are using the default `public` database. Note this parameter should bet set in the query param, or using a HTTP header `--header 'x-greptime-db-name: <database name>'`.
+- `db=<database name>`: Required when using GreptimeDB with authorization, otherwise can be omitted if you are using the default `public` database. Note this parameter should be set in the query param, or using a HTTP header `--header 'x-greptime-db-name: <database name>'`.
 - `query=<string>`: Required. Prometheus expression query string.
 - `start=<rfc3339 | unix_timestamp>`: Required. The start timestamp, which is inclusive. It is used to set the range of time in `TIME INDEX` column.
 - `end=<rfc3339 | unix_timestamp>`: Required. The end timestamp, which is inclusive. It is used to set the range of time in `TIME INDEX` column.
@@ -555,7 +605,6 @@ The result format is the same as `/sql` interface described in [Post SQL stateme
 
 ```json
 {
-  "code": 0,
   "output": [
     {
       "records": {
@@ -620,7 +669,7 @@ curl -X POST \
 ```shell
 curl -X POST \
   -d '{{Influxdb-line-protocol-data}}' \
-  http://{{API-host}}/v1/influxdb/api/v1/write?u={{username}}&p={{password}}&precision={{time-precision}}
+  http://{{API-host}}/v1/influxdb/write?u={{username}}&p={{password}}&precision={{time-precision}}
 ```
 
 </TabItem>

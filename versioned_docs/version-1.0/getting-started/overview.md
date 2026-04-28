@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB Getting Started Overview"
 keywords: [getting started, overview, installation, quick start]
 description: Get started with GreptimeDB quickly.
 ---

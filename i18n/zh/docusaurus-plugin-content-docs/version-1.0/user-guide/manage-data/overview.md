@@ -193,7 +193,7 @@ CREATE TABLE app_logs (
     host STRING,
     api_path STRING FULLTEXT INDEX,
     log_level STRING,
-    log STRING FULLTEXT INDEX,
+    `log` STRING FULLTEXT INDEX,
     PRIMARY KEY (host, log_level)
 ) WITH ('append_mode'='true');
 ```
@@ -201,7 +201,7 @@ CREATE TABLE app_logs (
 向 `app_logs` 表中插入一行新数据：
 
 ```sql
-INSERT INTO app_logs (ts, host, api_path, log_level, log)
+INSERT INTO app_logs (ts, host, api_path, log_level, `log`)
 VALUES ('2024-07-11 20:00:10', 'host1', '/api/v1/resource', 'ERROR', 'Connection timeout');
 ```
 
@@ -225,7 +225,7 @@ SELECT * FROM app_logs;
 你可以插入具有相同 tag 和 time index 的新数据：
 
 ```sql
-INSERT INTO app_logs (ts, host, api_path, log_level, log)
+INSERT INTO app_logs (ts, host, api_path, log_level, `log`)
 -- 与现有数据相同的标签 `host1` 和 `ERROR`，相同的时间索引 2024-07-11 20:00:10
 VALUES ('2024-07-11 20:00:10', 'host1', '/api/v1/resource', 'ERROR', 'Connection reset');
 ```

@@ -1,6 +1,7 @@
 ---
 keywords: [billing process, invoice generation, usage tracking, cost calculation, GreptimeCloud]
 description: Explains the billing process, invoice generation, usage tracking, and cost calculation for different plans in GreptimeCloud.
+unlisted: true
 ---
 
 # Billing

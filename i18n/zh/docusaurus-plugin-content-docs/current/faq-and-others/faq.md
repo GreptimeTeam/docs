@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB 常见问题"
 keywords: [FAQ, 常见问题, 故障排查, 部署, 迁移, 数据模型, 集成]
 description: GreptimeDB 常见问题解答，涵盖数据模型、集成、部署运维和版本差异。
 ---
@@ -148,7 +149,8 @@ GreptimeDB 接受任意时间戳的写入，没有写入时间窗口或顺序要
 - [Rust](https://github.com/GreptimeTeam/greptimedb-ingester-rust)
 - [Erlang](https://github.com/GreptimeTeam/greptimedb-ingester-erl)
 - [.NET](https://github.com/GreptimeTeam/greptimedb-ingester-dotnet)
-- 其他语言（Python、Ruby、Node.js 等）：可以使用任何 OpenTelemetry SDK、InfluxDB 客户端库或 MySQL/PostgreSQL 驱动，GreptimeDB 均兼容。
+- [TypeScript](https://github.com/GreptimeTeam/greptimedb-ingester-ts)
+- 其他语言（Python、Ruby 等）：可以使用任何 OpenTelemetry SDK、InfluxDB 客户端库或 MySQL/PostgreSQL 驱动，GreptimeDB 均兼容。
 
 ### 如何选择合适的写入协议？
 
@@ -156,13 +158,12 @@ GreptimeDB 支持多种写入协议，吞吐性能差异很大。以下数据来
 
 | 协议 | 相对吞吐 |
 | --- | --- |
-| gRPC Bulk (Arrow Flight) | 最高（约 55 倍 SQL） |
-| gRPC Stream | 约 40 倍 SQL |
-| gRPC SDK (Unary) | 约 33 倍 SQL |
-| OTLP Logs | 约 29 倍 SQL |
-| InfluxDB Line Protocol | 约 27 倍 SQL |
-| MySQL INSERT | 约 2 倍 PostgreSQL |
-| PostgreSQL INSERT | 基线 |
+| gRPC Bulk (Arrow Flight) | 最高（约 37 倍 SQL） |
+| gRPC Stream | 约 21 倍 SQL |
+| gRPC SDK (Unary) | 约 16 倍 SQL |
+| InfluxDB Line Protocol | 约 12 倍 SQL |
+| OTLP Logs | 约 8.5 倍 SQL |
+| MySQL / PostgreSQL INSERT | 基线 |
 
 **选择建议：**
 

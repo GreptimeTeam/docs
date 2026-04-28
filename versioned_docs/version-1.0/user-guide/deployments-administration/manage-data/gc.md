@@ -15,17 +15,7 @@ GreptimeDB GC delays physical deletion of SST/index files until all references (
 - **Safety windows**: `lingering_time` holds known-removed files a bit longer; `unknown_file_lingering_time` is a rare-case guard.
 - **Listing modes**: Fast mode removes files the system already marked; full listing walks storage to catch stragglers/orphans.
 
-```mermaid
-flowchart LR
-  A[Meta schedules GC] --> B[Pick regions]
-  B --> C[Send GC task]
-  C --> D[Datanode cleans files]
-  D --> E{Fast or Full}
-  E --> F[Fast: remove marked files]
-  E --> G[Full: walk storage for orphans]
-  F --> H[Cleanup recorded]
-  G --> H
-```
+![GC workflow](/gc-flow.svg)
 
 ## Metasrv Configuration
 
@@ -33,7 +23,7 @@ On the Metasrv side, GC schedules cleanup tasks for regions and coordinates when
 
 ```toml
 [gc]
-enable = true              # Turn on meta GC scheduler; must match datanode.
+enable = true              # Enable meta GC scheduler. default to be false; must match datanode.
 gc_cooldown_period = "5m"   # Minimum gap before the same region is GCed again.
 ```
 

@@ -110,13 +110,8 @@ exporter = OTLPMetricExporter(
 
 </TabItem>
 
+
 </Tabs>
-
-你可以在 Github 中找到可执行的 Demo：[Go](https://github.com/GreptimeCloudStarters/quick-start-go), [Java](https://github.com/GreptimeCloudStarters/quick-start-java), [Python](https://github.com/GreptimeCloudStarters/quick-start-python), and [Node.js](https://github.com/GreptimeCloudStarters/quick-start-node-js).
-
-:::tip 注意
-示例代码可能会根据 OpenTelemetry 的发展发生变化，因此建议你参考 OpenTelemetry 官方文档以获取最新信息。
-:::
 
 关于示例代码，请参考 Opentelementry 的官方文档获取它所支持的编程语言获取更多信息。
 
@@ -198,7 +193,7 @@ GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/
 
 ### 示例代码
 
-请参考 [opentelemetry-collector](#opentelemetry-collector) 中的示例代码，里面包含了如何将 OpenTelemetry 日志发送到 GreptimeDB。
+请参考 [OpenTelemetry Collector 文档](otel-collector.md)中的示例代码，里面包含了如何将 OpenTelemetry 日志发送到 GreptimeDB。
 也可参考 [Alloy 文档](alloy.md#日志)中的示例代码，了解如何将 OpenTelemetry 日志发送到 GreptimeDB。
 
 ### 数据模型
@@ -226,16 +221,16 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 | resource_attributes   | Json                |      | YES  |         | FIELD         |
 | resource_schema_url   | String              |      | YES  |         | FIELD         |
 +-----------------------+---------------------+------+------+---------+---------------+
-17 rows in set (0.00 sec)
+14 rows in set (0.00 sec)
 ```
 
 - 您可以使用 `X-Greptime-Log-Table-Name` 指定存储日志的表名。如果未提供，默认表名为 `opentelemetry_logs`。
 - 所有属性，包括资源属性、范围属性和日志属性，将作为 JSON 列存储在 GreptimeDB 表中。
 - 日志的时间戳将用作 GreptimeDB 中的时间戳索引，列名为 `timestamp`。建议使用 `time_unix_nano` 作为时间戳列。如果未提供 `time_unix_nano`，将使用 `observed_time_unix_nano`。
 
-### Append 模式
+### Append-only 模式
 
-通过此接口创建的表，默认为[Append 模式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表).
+通过此接口创建的表，默认为[Append-only 模式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表)。
 
 ## Traces
 
@@ -299,7 +294,7 @@ GreptimeDB 将 OTLP traces 数据模型映射到表结构。默认情况下，Tr
 
 有关数据模型和辅助表的更多详细信息，请参阅 [Trace 数据模型](/user-guide/traces/data-model.md)。
 
-注意: 
+注意:
 1. `greptime_trace_v1` 处理方式默认通过 `trace_id` 字段将数据切分成不同的分区以提升性能。**请确保 `trace_id` 的第一个字符是分布均匀的**。
 2. 在非测试的场合下，可以通过设置 `ttl` 以避免持久化数据量过大。通过设置 `x-greptime-hints: ttl=7d` HTTP 请求头，在创建 trace 表时会添加一个 7 天的 `ttl` 表选项。见[此文档](/reference/sql/create.md#表选项)了解更多关于表选项 `ttl` 的信息。
 

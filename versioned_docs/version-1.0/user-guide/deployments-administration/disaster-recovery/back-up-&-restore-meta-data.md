@@ -64,6 +64,22 @@ greptime cli meta snapshot save \
 
 **Output**: Creates `metadata_snapshot.metadata.fb` file in the current working directory.
 
+#### From RaftEngine Backend
+
+:::note
+RaftEngine locks the metadata directory while the standalone instance is running. Stop the standalone instance before exporting.
+:::
+
+Export metadata from RaftEngine to local directory:
+
+```bash
+greptime cli meta snapshot save \
+    --store-addrs "raftengine:///path/to/metadata" \
+    --backend raft-engine-store
+```
+
+**Output**: Creates `metadata_snapshot.metadata.fb` file in the current working directory.
+
 ## Import Operations
 
 :::warning
@@ -118,4 +134,14 @@ Restore metadata from local backup file to etcd:
 greptime cli meta snapshot restore \
     --store-addrs 127.0.0.1:2379 \
     --backend etcd-store
+```
+
+#### To RaftEngine Backend
+
+Restore metadata from local backup file to RaftEngine:
+
+```bash
+greptime cli meta snapshot restore \
+    --store-addrs "raftengine:///path/to/metadata" \
+    --backend raft-engine-store
 ```

@@ -111,29 +111,14 @@ CREATE TABLE http_logs_v2 (
 A long primary key will negatively affect the insert performance and enlarge the memory footprint. It's recommended to define a primary key with no more than 5 columns.
 
 
-#### Using flat format table for high cardinality primary keys
+#### Choosing the SST format
 
-In order to improve sort and deduplication speed under time-series workloads, GreptimeDB buffers and processes rows by time-series under default SST format.
-So it doesn't need to compare the primary key for each row repeatedly.
-This can be a problem if the tag column has high cardinality:
+GreptimeDB supports two [SST formats](/reference/sql/create.md#create-a-table-with-sst-format): `flat` (the default) and `primary_key`. They are tuned for different primary key cardinalities.
 
-1. Performance degradation since the database can't batch rows efficiently.
-2. It may increase memory and CPU usage as the database has to maintain the metadata for each time-series.
-3. Deduplication may be too expensive.
-
-Currently, the recommended number of values for the primary key is no more than 100 thousand under the default format.
-
-Sometimes, users may want to put a high cardinality column in the primary key:
-
-* They have to deduplicate rows by that column, although it isn't efficient.
-* Ordering rows by that column can improve query performance significantly.
-
-To use high cardinality columns as the primary key, you could set the SST format to `flat`.
-This format has much lower memory usage and better performance under this workload.
-Note that deduplication on high cardinality primary keys is always expensive. So it's still recommended to use append-only table if you can tolerate duplication.
+The default `flat` format works well across a wide range of primary key cardinalities, including high cardinality columns such as `trace_id`, `span_id`, or `user_id`. With `flat`, you can put high cardinality columns into the primary key when ordering by them benefits queries, or when you need to deduplicate by them. Note that deduplication on high cardinality primary keys is always expensive — if you can tolerate duplication, use an append-only table for the best performance.
 
 ```sql
-CREATE TABLE http_logs_flat (
+CREATE TABLE http_logs_v3 (
   access_time TIMESTAMP TIME INDEX,
   application STRING,
   remote_addr STRING,
@@ -144,9 +129,20 @@ CREATE TABLE http_logs_flat (
   request_id STRING,
   request STRING,
   PRIMARY KEY(application, request_id),
-) with ('append_mode'='true', 'sst_format'='flat');
+) with ('append_mode'='true');
 ```
 
+The `primary_key` format may deliver better performance when the primary key cardinality is low (typically no more than 100 thousand unique values). In general, prefer the default `flat` format unless you have measured that `primary_key` is a better fit.
+
+You can switch the format on an existing table with `ALTER TABLE`. Older versions of GreptimeDB used `primary_key` as the default, so if you upgraded from an older version or are not sure which format a table currently uses, you can switch it to `flat`:
+
+```sql
+-- Switch to flat (the default).
+ALTER TABLE http_logs_v3 SET 'sst_format' = 'flat';
+
+-- Opt into primary_key for low cardinality primary keys.
+ALTER TABLE http_logs_v3 SET 'sst_format' = 'primary_key';
+```
 
 Recommendations for tags:
 
@@ -155,8 +151,7 @@ Recommendations for tags:
   For example, `namespace`, `cluster`, or an AWS `region`.
 - No need to set all low cardinality columns as tags since this may impact the performance of ingestion and querying.
 - Typically use short strings and integers for tags, avoiding `FLOAT`, `DOUBLE`, `TIMESTAMP`.
-- Set `sst_format` to `flat` if tags change frequently.
-  For example, when tags contain columns like `trace_id`, `span_id`, and `user_id`.
+- High cardinality columns such as `trace_id`, `span_id`, and `user_id` can also be used as tags under the default `flat` format.
 
 
 ## Index

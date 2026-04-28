@@ -111,12 +111,6 @@ exporter = OTLPMetricExporter(
 
 </Tabs>
 
-You can find executable demos on GitHub at the links: [Go](https://github.com/GreptimeCloudStarters/quick-start-go), [Java](https://github.com/GreptimeCloudStarters/quick-start-java), [Python](https://github.com/GreptimeCloudStarters/quick-start-python), and [Node.js](https://github.com/GreptimeCloudStarters/quick-start-node-js).
-
-:::tip NOTE
-The example codes above may be outdated according to OpenTelemetry. We recommend that you refer to the official OpenTelemetry documentation for the most up-to-date information.
-:::
-
 For more information on the example code, please refer to the official documentation for your preferred programming language.
 
 ### Prometheus Compatibility
@@ -197,7 +191,7 @@ For more information about the OpenTelemetry SDK, please refer to the official d
 
 ### Example Code
 
-Please refer to the sample code in [opentelemetry-collector](#opentelemetry-collector), which includes how to send OpenTelemetry logs to GreptimeDB.  
+Please refer to the sample code in the [OpenTelemetry Collector documentation](otel-collector.md), which includes how to send OpenTelemetry logs to GreptimeDB.
 You can also refer to the sample code in the [Alloy documentation](alloy.md#logs) to learn how to send OpenTelemetry logs to GreptimeDB.
 
 ### Data Model
@@ -225,7 +219,7 @@ Default table schema:
 | resource_attributes   | Json                |      | YES  |         | FIELD         |
 | resource_schema_url   | String              |      | YES  |         | FIELD         |
 +-----------------------+---------------------+------+------+---------+---------------+
-17 rows in set (0.00 sec)
+14 rows in set (0.00 sec)
 ```
 
 - You can use `X-Greptime-Log-Table-Name` to specify the table name for storing the logs. If not provided, the default table name is `opentelemetry_logs`.
@@ -248,14 +242,14 @@ You can use [OpenTelemetry SDK](https://opentelemetry.io/docs/languages/) or oth
 To send OpenTelemetry traces data to GreptimeDB through OpenTelemetry SDK libraries, please use the following information:
 
 - URL: `http{s}://<host>/v1/otlp/v1/traces`
-- Headers: The headers section is the same as the [Logs](#Logs) section, you can refer to the [Logs](#Logs) section for more information.
+- Headers:
+  - `Content-Type`: `application/x-protobuf`
+  - `Authorization`: `Basic` authentication.
+  - `X-Greptime-DB-Name`: `<dbname>`
+  - `X-Greptime-Trace-Table-Name`: `<table_name>` (optional) - The table name to store the traces. If not provided, the default table name is `opentelemetry_traces`.
+  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1` (required) - The pipeline name to process the traces.
 
-By default, GreptimeDB will write traces data to the `opentelemetry_traces` table in the `public` database. If you want to write traces data to a different table, you can use the `X-Greptime-DB-Name` and `X-Greptime-Trace-Table-Name` headers to specify the database and table name.
-
-GreptimeDB will accept **protobuf encoded traces data** via **HTTP protocol** and the following headers are required:
-
-- `content-type` should be configured as `application/x-protobuf`;
-- `x-greptime-pipeline-name` should be configured as `greptime_trace_v1`;
+GreptimeDB accepts **protobuf encoded traces data** via **HTTP protocol**.
 
 ### Example Code
 
@@ -263,7 +257,7 @@ You can directly send OpenTelemetry traces data to GreptimeDB, or use OpenTeleme
 
 ### Data Model
 
-GreptimeDB will map the OTLP traces data model to the following table schema:
+GreptimeDB maps the OTLP traces data model to a table schema. By default, trace data is stored in the `opentelemetry_traces` table.
 
 ```sql
 +------------------------------------+---------------------+------+------+---------+---------------+
@@ -290,16 +284,23 @@ GreptimeDB will map the OTLP traces data model to the following table schema:
 +------------------------------------+---------------------+------+------+---------+---------------+
 ```
 
-- Each row represents a single span
-- The core OpenTelemetry fields such as `trace_id`, `span_id`, and `service_name` are promoted as dedicated table columns
-- Resource attributes and span attributes are automatically flattened into separate columns, with column names being their JSON keys (using `.` to connect multiple levels of nesting)
-- `span_events` and `span_links` are stored as JSON data types by default
+- Each row represents a single span.
+- `service_name` is used as a **Tag** (part of the **Primary Key**).
+- `timestamp` is used as the **Time Index**.
+- Resource attributes and span attributes are automatically flattened into separate columns.
+  - Note: `resource_attributes.service.name` is excluded from flattening as it is already stored in the `service_name` column.
+- `span_events` and `span_links` are stored as `JSON` data types by default.
 
-Note: 
+For more details on the data model and auxiliary tables, please refer to [Trace Data Modeling](/user-guide/traces/data-model.md).
+
+Note:
 1. The `greptime_trace_v1` process uses the `trace_id` field to divide data into partitions for better performance. **Please make sure the first letter of the `trace_id` is evenly distributed**.
 2. For non-test scenarios, you might want to set a `ttl` to the trace table to avoid data overload. Set the HTTP header `x-greptime-hints: ttl=7d` would set a `ttl` of 7 days during the table creation, see [here](/reference/sql/create.md#table-options) for more details about `ttl` in table option.
 
-### Append Only
+### Auxiliary Tables
 
-By default, log table created by OpenTelemetry API are in [append only
-mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
+GreptimeDB automatically creates auxiliary tables (e.g., `opentelemetry_traces_services` and `opentelemetry_traces_operations`) to facilitate searching for services and operations. See [Auxiliary Tables](/user-guide/traces/data-model.md#auxiliary-tables) for details.
+
+### Append-only Mode
+
+By default, trace tables created by the OpenTelemetry API are in [append-only mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).

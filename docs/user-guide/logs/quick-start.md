@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB Logs Quick Start"
 keywords: [logs, log service, pipeline, greptime_identity, quick start, json logs]
 description: Quick start guide for GreptimeDB log service, including basic log ingestion using the built-in greptime_identity pipeline and integration with log collectors.
 ---

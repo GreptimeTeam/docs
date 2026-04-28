@@ -1,6 +1,7 @@
 ---
 keywords: [dedicated plan, dedicated CPUs, resource isolation, cost calculation, GreptimeCloud]
 description: Details the Dedicated Plan, including dedicated CPUs, storage, resource isolation, and cost calculation for GreptimeCloud.
+unlisted: true
 ---
 
 # Dedicated Plan

@@ -252,7 +252,7 @@ affected, err := cli.CloseStream(ctx)
 
 ## Insert data in JSON type
 
-GreptimeDB supports storing complex data structures using [JSON type data](/reference/sql/data-types.md#json-type).
+GreptimeDB supports storing complex data structures using [JSON type data](/reference/sql/data-types.md#json-type-experimental).
 With this ingester library, you can insert JSON data using string values.
 For instance, if you have a table named `sensor_readings` and wish to add a JSON column named `attributes`,
 refer to the following code snippet.

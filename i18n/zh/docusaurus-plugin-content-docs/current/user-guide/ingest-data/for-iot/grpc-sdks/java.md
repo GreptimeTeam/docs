@@ -179,7 +179,8 @@ TableSchema sensorReadings = TableSchema.newBuilder("sensor_readings")
 // 使用 map 插入 JSON 数据
 Map<String, Object> attr = new HashMap<>();
 attr.put("location", "factory-1");
-sensorReadings.addRow(<other-column-values>... , attr);
+Table table = Table.from(sensorReadings);
+table.addRow(<other-column-values>... , attr);
 ```
 
 ##### TableSchema

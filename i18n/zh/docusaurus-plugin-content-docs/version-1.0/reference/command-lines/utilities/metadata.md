@@ -21,8 +21,8 @@ greptime cli meta snapshot save [OPTIONS]
 
 | 选项               | 是否必需 | 默认值            | 描述                                                                                                   |
 | ------------------ | -------- | ----------------- | ------------------------------------------------------------------------------------------------------ |
-| --store-addrs      | 是       | -                 | 要连接的元数据存储服务地址（仅支持 etcd、MySQL、PostgreSQL），格式与 Metasrv 配置中的 store-addrs 一致 |
-| --backend          | 是       | -                 | 元数据存储后端类型，支持 `etcd-store`、`postgres-store`、`mysql-store`                                 |
+| --store-addrs      | 是       | -                 | 要连接的元数据存储服务地址（支持 etcd、MySQL、PostgreSQL 和 RaftEngine），格式与 Metasrv 配置中的 store-addrs 一致。RaftEngine 使用 `raftengine:///path/to/metadata` 格式 |
+| --backend          | 是       | -                 | 元数据存储后端类型，支持 `etcd-store`、`postgres-store`、`mysql-store`、`raft-engine-store`                                                         |
 | --store-key-prefix | 否       | ""                | 元数据存储前缀，参考 Metasrv 配置                                                                      |
 | --meta-table-name  | 否       | greptime_metakv   | 当后端为 `postgres-store` 或 `mysql-store` 时，元数据存储的表名                                        |
 | --max-txn-ops      | 否       | 128               | 最大事务操作数                                                                                         |
@@ -99,8 +99,8 @@ greptime cli meta snapshot restore [OPTIONS]
 
 | 选项               | 是否必需 | 默认值          | 描述                                                                                                   |
 | ------------------ | -------- | --------------- | ------------------------------------------------------------------------------------------------------ |
-| --store-addrs      | 是       | -               | 要连接的元数据存储服务地址（仅支持 etcd、MySQL、PostgreSQL），格式与 Metasrv 配置中的 store-addrs 一致 |
-| --backend          | 是       | -               | 元数据存储后端类型，支持 `etcd-store`、`postgres-store`、`mysql-store`                                 |
+| --store-addrs      | 是       | -               | 要连接的元数据存储服务地址（支持 etcd、MySQL、PostgreSQL 和 RaftEngine），格式与 Metasrv 配置中的 store-addrs 一致。RaftEngine 使用 `raftengine:///path/to/metadata` 格式 |
+| --backend          | 是       | -                 | 元数据存储后端类型，支持 `etcd-store`、`postgres-store`、`mysql-store`、`raft-engine-store`                                                         |
 | --store-key-prefix | 否       | ""              | 元数据存储的 key 前缀，参考 Metasrv 配置                                                               |
 | --meta-table-name  | 否       | greptime_metakv | 当后端为 `postgres-store` 或 `mysql-store` 时，元数据存储的表名                                        |
 | --max-txn-ops      | 否       | 128             | 最大事务操作数                                                                                         |

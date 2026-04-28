@@ -28,7 +28,7 @@ FROM cte_name;
 ### 非递归 CTE
 
 ```sql
-WITH cte AS (SELECT number FROM numbers LIMIT 2) SELECT * FROM cte t1, cte t2;
+WITH cte AS (SELECT 0 AS number UNION ALL SELECT 1) SELECT * FROM cte t1, cte t2;
 ```
 
 ```sql
@@ -69,8 +69,8 @@ SELECT col1, col2 FROM cte;
 
 ```sql
 WITH
-  cte1 AS (SELECT number AS a FROM NUMBERS LIMIT 2),
-  cte2 AS (SELECT number AS b FROM NUMBERS LIMIT 2)
+  cte1 AS (SELECT 0 AS a UNION ALL SELECT 1),
+  cte2 AS (SELECT 0 AS b UNION ALL SELECT 1)
 SELECT * FROM cte1 JOIN cte2
 ON cte1.a = cte2.b;
 ```

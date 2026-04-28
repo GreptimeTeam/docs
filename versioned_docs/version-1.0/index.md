@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB"
 keywords: [observability database, open source observability database, observability data, observability tools, cloud native database, data observability, observability platform, edge database, IoT edge computing, edge cloud computing, log management, log aggregation, high cardinality, sql query examples, opentelemetry collector, GreptimeDB]
 description: Introduction to GreptimeDB, an open-source observability database for metrics, logs, and traces, with links to getting started, user guide, contributor guide, and more.
 ---
@@ -24,7 +25,6 @@ Before getting started, please read the following documents that include instruc
 
 - [Getting Started][1]: Provides an introduction to GreptimeDB for those who are new to it, including installation and database operations.
 - [User Guide][2]: For application developers to use GreptimeDB or build custom integration.
-- [GreptimeCloud][6]: For users of GreptimeCloud to get started.
 - [Contributor Guide][3]: For contributors interested in learning more about the technical details and enhancing GreptimeDB.
 - [Roadmap][7]: The latest GreptimeDB roadmap.
 - [Release Notes][4]: Presents all historical version release notes.
@@ -35,5 +35,4 @@ Before getting started, please read the following documents that include instruc
 [3]: ./contributor-guide/overview.md
 [4]: /release-notes
 [5]: ./faq-and-others/faq.md
-[6]: ./greptimecloud/overview.md
 [7]: https://greptime.com/blogs/2026-02-11-greptimedb-roadmap-2026

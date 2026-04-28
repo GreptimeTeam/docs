@@ -56,11 +56,10 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 | [`BUILD_INFO`](./build-info.md) | 提供了系统构建的信息。 |
 | [`REGION_PEERS`](./region-peers.md) | 提供了表的 Region 存储的详细信息。 |
 | [`REGION_STATISTICS`](./region-statistics.md) | 提供 Region 的详细统计信息，例如行数等。 |
-| [`RUNTIME_METRICS`](./runtime-metrics.md)| 提供了系统运行时指标。|
 | [`CLUSTER_INFO`](./cluster-info.md)| 提供了集群的节点拓扑信息。|
 | [`FLOWS`](./flows.md) | 提供 Flow 相关信息。|
 | [`PROCEDURE_INFO`](./procedure-info.md) | 提供 Procedure 相关信息。|
-| [`PROCESS_LIST`](./process-list.md) | 提供集群内正在执行的查询信息。|
+| [`PROCESS_LIST`](./process-list.md) | 提供集群内正在执行的查询信息。 |
 | [`SSTS_INDEX_META`](./ssts-index-meta.md) | 提供 SST 索引元数据，包括倒排索引、全文索引和布隆过滤器。|
 | [`SSTS_MANIFEST`](./ssts-manifest.md) | 提供从 manifest 获取的 SST 文件信息，包括文件路径、大小、时间范围和行数。|
 | [`SSTS_STORAGE`](./ssts-storage.md) | 提供从存储层获取的 SST 文件信息，用于验证和调试。|

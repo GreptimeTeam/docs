@@ -1,6 +1,7 @@
 ---
 keywords: [OpenTelemetry, observability backend, OTLP, API configuration, SDK setup]
 description: Guide for using GreptimeDB as an observability backend with OpenTelemetry, including API/SDK configuration and OpenTelemetry Collector setup.
+unlisted: true
 ---
 
 # OpenTelemetry

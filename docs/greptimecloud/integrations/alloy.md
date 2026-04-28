@@ -1,6 +1,7 @@
 ---
 keywords: [Grafana Alloy, Prometheus Remote Write, OpenTelemetry, data pipeline]
 description: Instructions on integrating GreptimeCloud with Grafana Alloy for Prometheus Remote Write and OpenTelemetry.
+unlisted: true
 ---
 
 # Alloy

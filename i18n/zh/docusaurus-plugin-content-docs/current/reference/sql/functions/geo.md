@@ -63,7 +63,7 @@ SELECT h3_latlng_to_cell(37.76938, -122.3889, 1);
 类似于 `h3_latlng_to_cell` ，但返回字符串编码格式。
 
 ```sql
-h3_latlng_to_cell_string(37.76938, -122.3889, 1);
+SELECT h3_latlng_to_cell_string(37.76938, -122.3889, 1);
 ```
 
 ### `h3_cell_to_string`
@@ -79,7 +79,7 @@ SELECT h3_cell_to_string(h3_latlng_to_cell(37.76938, -122.3889, 8));
 将十六进制编码的单元 ID 转换为其 UInt64 形式。
 
 ```sql
-h3_string_to_cell(h3_latlng_to_cell_string(37.76938, -122.3889, 8::UInt64));
+SELECT h3_string_to_cell(h3_latlng_to_cell_string(37.76938, -122.3889, 8::UInt64));
 ```
 
 ### `h3_cell_center_latlng`
@@ -121,7 +121,7 @@ SELECT h3_cell_is_pentagon(h3_latlng_to_cell(37.76938, -122.3889, 8));
 返回给定分辨率下单元的父单元。
 
 ```sql
-h3_cell_parent(h3_latlng_to_cell(37.76938, -122.3889, 8), 6);
+SELECT h3_cell_parent(h3_latlng_to_cell(37.76938, -122.3889, 8), 6);
 ```
 
 ### `h3_cell_to_children`
@@ -131,7 +131,7 @@ h3_cell_parent(h3_latlng_to_cell(37.76938, -122.3889, 8), 6);
 请注意，此函数返回一个 UInt64 数组，并且仅在我们的 HTTP 查询 API 和 Postgres 通道上生效。
 
 ```sql
-h3_cell_to_children(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
+SELECT h3_cell_to_children(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
 ```
 
 ### `h3_cell_to_children_size`
@@ -140,7 +140,7 @@ h3_cell_to_children(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
 
 
 ```sql
-h3_cell_to_children_size(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
+SELECT h3_cell_to_children_size(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
 ```
 
 ### `h3_cell_to_child_pos`
@@ -148,7 +148,7 @@ h3_cell_to_children_size(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
 根据给定分辨率，返回单元在其父单元的位置。位置是单元在所有子单元中的索引。
 
 ```sql
-h3_cell_to_child_pos(h3_latlng_to_cell(37.76938, -122.3889, 8), 6)
+SELECT h3_cell_to_child_pos(h3_latlng_to_cell(37.76938, -122.3889, 8), 6)
 ```
 
 ### `h3_child_pos_to_cell`
@@ -162,7 +162,7 @@ h3_cell_to_child_pos(h3_latlng_to_cell(37.76938, -122.3889, 8), 6)
 - 分辨率
 
 ```sql
-h3_child_pos_to_cell(25, h3_latlng_to_cell(37.76938, -122.3889, 8), 11);
+SELECT h3_child_pos_to_cell(25, h3_latlng_to_cell(37.76938, -122.3889, 8), 11);
 ```
 
 ### `h3_cells_contains`
@@ -188,7 +188,7 @@ SELECT
 请注意，此函数返回一个 UInt64 数组，并且仅能在我们的 HTTP 查询 API 和 Postgres 通道上工作。
 
 ```sql
-h3_grid_disk(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
+SELECT h3_grid_disk(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
 ```
 
 ### `h3_grid_disk_distances`
@@ -198,7 +198,7 @@ h3_grid_disk(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
 请注意，此函数返回一个 UInt64 数组，并且仅适用于我们的 HTTP 查询 API 和 Postgres 通道。
 
 ```sql
-h3_grid_disk_distance(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
+SELECT h3_grid_disk_distance(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
 ```
 
 ### `h3_grid_distance`
@@ -354,7 +354,7 @@ FROM
 SELECT
     st_within(p1, polygon1),
     st_within(p1, polygon2),
- ROM
+FROM
     (
         SELECT
             wkt_point_from_latlng(37.383287, -122.01325) AS p1,

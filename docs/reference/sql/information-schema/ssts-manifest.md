@@ -6,11 +6,6 @@ description: Provides access to SST (Sorted String Table) file information from 
 # SSTS_MANIFEST
 
 The `SSTS_MANIFEST` table provides access to SST (Sorted String Table) file information collected from the manifest. This table surfaces detailed information about each SST file, including file paths, sizes, levels, time ranges, and row counts.
-
-:::tip NOTE
-This table is not available on [GreptimeCloud](https://greptime.cloud/).
-:::
-
 ```sql
 USE INFORMATION_SCHEMA;
 DESC SSTS_MANIFEST;
@@ -108,8 +103,6 @@ SELECT table_id, COUNT(*) as sst_count, SUM(file_size) as total_size
 FROM INFORMATION_SCHEMA.SSTS_MANIFEST
 GROUP BY table_id;
 ```
-
-
 Output example:
 
 ```sql

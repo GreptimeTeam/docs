@@ -9,6 +9,14 @@ on:
       - "i18n/zh/**"
       - "variables/**"
       - "blog/**"
+      - "src/**"
+      - "static/**"
+      - "versioned_sidebars/**"
+      - "sidebars.ts"
+      - "docusaurus.config.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "versions.json"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel

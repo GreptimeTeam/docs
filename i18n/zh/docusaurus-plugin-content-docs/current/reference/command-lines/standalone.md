@@ -21,7 +21,7 @@ greptime standalone start --help
 | `--influxdb-enable`               | 是否启用 InfluxDB 协议                            |
 | `--mysql-addr <MYSQL_ADDR>`       | MySQL 服务器地址                                  |
 | `--postgres-addr <POSTGRES_ADDR>` | Postgres 服务器地址                               |
-| `--rpc-bind-addr <RPC_BIND_ADDR>` | gRPC 服务绑定地址                                 |
+| `--grpc-bind-addr <GRPC_BIND_ADDR>` | gRPC 服务绑定地址                                   |
 
 所有的 `addr` 类选项都是 `ip:port` 形式的字符串。
 

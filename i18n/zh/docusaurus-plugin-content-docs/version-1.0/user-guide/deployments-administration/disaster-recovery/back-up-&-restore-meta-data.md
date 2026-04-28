@@ -64,6 +64,22 @@ greptime cli meta snapshot save \
 
 **输出**: 在当前工作目录中创建 `metadata_snapshot.metadata.fb` 文件。
 
+#### 从 RaftEngine 后端导出
+
+:::note
+RaftEngine 在 standalone 实例运行期间会锁定元数据目录，请在导出前停止 standalone 实例。
+:::
+
+将元数据从 RaftEngine 导出到本地目录：
+
+```bash
+greptime cli meta snapshot save \
+    --store-addrs "raftengine:///path/to/metadata" \
+    --backend raft-engine-store
+```
+
+**输出**: 在当前工作目录中创建 `metadata_snapshot.metadata.fb` 文件。
+
 ## 导入操作
 
 :::warning
@@ -117,4 +133,14 @@ greptime cli meta snapshot restore \
 greptime cli meta snapshot restore \
     --store-addrs 127.0.0.1:2379 \
     --backend etcd-store
+```
+
+#### 导入到 RaftEngine 后端
+
+从本地备份文件恢复元数据到 RaftEngine：
+
+```bash
+greptime cli meta snapshot restore \
+    --store-addrs "raftengine:///path/to/metadata" \
+    --backend raft-engine-store
 ```

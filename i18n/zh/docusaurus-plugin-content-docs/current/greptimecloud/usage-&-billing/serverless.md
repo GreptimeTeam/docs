@@ -1,6 +1,7 @@
 ---
 keywords: [Serverless, 容量单元, WCU, RCU, 费用计算, 数据存储, 数据保留策略]
 description: 介绍 Serverless 计划的特点、配置方法和费用计算公式。
+unlisted: true
 ---
 
 # Serverless 计划

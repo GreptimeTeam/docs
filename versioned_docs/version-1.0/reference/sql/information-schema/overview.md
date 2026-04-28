@@ -58,7 +58,6 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | [`BUILD_INFO`](./build-info.md) | Provides the system build info. |
 | [`REGION_PEERS`](./region-peers.md) | Provides details about where regions are stored. |
 | [`REGION_STATISTICS`](./region-statistics.md) | Provides details about region statistics info, such as disk size, etc. |
-| [`RUNTIME_METRICS`](./runtime-metrics.md)| Provides the system runtime metrics.|
 | [`CLUSTER_INFO`](./cluster-info.md)| Provides the topology information of the cluster.|
 | [`FLOWS`](./flows.md) | Provides the flow information.|
 | [`PROCEDURE_INFO`](./procedure-info.md) | Procedure information.|

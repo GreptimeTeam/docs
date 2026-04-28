@@ -6,11 +6,6 @@ description: Provides access to SST (Sorted String Table) index metadata, includ
 # SSTS_INDEX_META
 
 The `SSTS_INDEX_META` table provides access to SST (Sorted String Table) index metadata collected from the manifest. This table surfaces information about Puffin index metadata, including inverted indexes, fulltext indexes, and bloom filters.
-
-:::tip NOTE
-This table is not available on [GreptimeCloud](https://greptime.cloud/).
-:::
-
 ```sql
 USE INFORMATION_SCHEMA;
 DESC SSTS_INDEX_META;
@@ -98,8 +93,6 @@ SELECT index_type, COUNT(*) as count, SUM(index_file_size) as total_size
 FROM INFORMATION_SCHEMA.SSTS_INDEX_META
 GROUP BY index_type;
 ```
-
-
 Output example:
 
 ```sql

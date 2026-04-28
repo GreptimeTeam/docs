@@ -32,8 +32,8 @@ The maximum capacities of `String` and `Binary` are determined by their encoding
 | `Float64` | Double precision IEEE 754 floating point values | 8 Bytes |
 
 :::tip NOTE
-The descriptions here refer to **GreptimeDB native type information**, which are measured in **bits**.  
-However, when using **SQL**, follow the conventions of **PostgreSQL** and **MySQL**, where types like `INT2`, `INT4`, `INT8`, `FLOAT4` and `FLOAT8` are defined in **bytes**.  
+The descriptions here refer to **GreptimeDB native type information**, which are measured in **bits**.
+However, when using **SQL**, follow the conventions of **PostgreSQL** and **MySQL**, where types like `INT2`, `INT4`, `INT8`, `FLOAT4` and `FLOAT8` are defined in **bytes**.
 For example, in an SQL statement, `INT8` actually corresponds to **BigInt** (8 bytes, 64 bits).
 :::
 
@@ -300,7 +300,7 @@ CREATE TABLE bools(
 ```
 
 ```sql
-INSERT INTO bools(b) VALUES (TRUE), (FALSE);
+INSERT INTO bools(b, ts) VALUES (TRUE, '2024-01-01 00:00:00'), (FALSE, '2024-01-01 00:00:01');
 ```
 
 ## Data types compatible with MySQL and PostgreSQL

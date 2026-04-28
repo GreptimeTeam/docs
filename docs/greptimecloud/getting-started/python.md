@@ -1,6 +1,7 @@
 ---
 keywords: [Python, data ingestion, system metrics, OpenTelemetry, GreptimeCloud]
 description: Instructions on creating a service, writing data using Python, and visualizing data in GreptimeDB.
+unlisted: true
 ---
 
 # Python

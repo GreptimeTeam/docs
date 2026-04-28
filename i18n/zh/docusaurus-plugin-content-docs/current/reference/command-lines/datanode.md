@@ -28,8 +28,8 @@ greptime datanode start --help
 | `--http-timeout <HTTP_TIMEOUT>`       | HTTP 超时设置，单位秒                                                                                                                           |
 | `--metasrv-addrs <METASRV_ADDR>`      | Metasrv 服务器列表，用逗号或者空格隔开                                                                                                          |
 | `--node-id <NODE_ID>`                 | 节点 ID                                                                                                                                         |
-| `--rpc-bind-addr <RPC_BIND_ADDR>`     | gRPC 服务绑定地址址                                                                                                                             |
-| `--rpc-server-addr <RPC_SERVER_ADDR>` | 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `rpc_bind_addr` 中指定的相同； |
+| `--grpc-bind-addr <GRPC_BIND_ADDR>`     | gRPC 服务绑定地址                                                                                                                               |
+| `--grpc-server-addr <GRPC_SERVER_ADDR>` | 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `grpc_bind_addr` 中指定的相同； |
 | `--wal-dir <WAL_DIR>`                 | WAL 目录                                                                                                                                        |
 
 所有的 `addr` 类选项都是 `ip:port` 形式的字符串。
@@ -47,7 +47,7 @@ greptime datanode start -c config/datanode.example.toml
 使用命令行参数启动 Datanode，指定 gRPC 服务地址、MySQL 服务地址、Metasrv 地址和该 Datanode 的 ID：
 
 ```sh
-greptime datanode start --rpc-bind-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addrs=0.0.0.0:3002 --node-id=1
+greptime datanode start --grpc-bind-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addrs=0.0.0.0:3002 --node-id=1
 ```
 
 `datanode.example.toml` 配置文件来自 `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` 仓库的 `config` 目录。你可以在那里找到更多示例配置文件。`-c` 选项指定配置文件，更多信息请参考 [Configuration](/user-guide/deployments-administration/configuration.md)。
@@ -101,7 +101,6 @@ greptime datanode objbench --config ./datanode.toml --source data/greptime/publi
 | `--parallelism <N>`                  | 模拟扫描并行度，默认 `1`。                                                                                |
 | `--iterations <N>`                   | 基准测试迭代次数，默认 `1`。                                                                              |
 | `--path-type <bare\|data\|metadata>` | Region 路径类型，默认 `bare`。                                                                            |
-| `--force-flat-format`                | 强制以 flat format 读取 region，默认关闭。                                                                |
 | `--enable-wal`                       | 打开 region 时启用 WAL 回放，默认关闭。                                                                   |
 | `--pprof-file <FILE>`                | pprof 火焰图输出路径（仅 Unix）。                                                                         |
 | `--pprof-after-warmup`               | 在首轮迭代（warmup）后再开始 pprof。需要与 `--pprof-file` 一起使用，默认关闭。                            |
