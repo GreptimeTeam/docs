@@ -34,9 +34,6 @@ replication_factor = 1
 topic_name_prefix = "greptimedb_wal_topic"
 create_topic_timeout = "30s"
 
-# Kafka client timeout options
-connect_timeout = "3s"
-timeout = "3s"
 ```
 
 ### Options
@@ -54,8 +51,6 @@ timeout = "3s"
 | `flush_trigger_size`       | Estimated size threshold (e.g., `"512MB"`) for triggering a flush operation in a region. Calculated as `(latest_entry_id - flushed_entry_id) * avg_record_size`. When this value exceeds `flush_trigger_size`, MetaSrv initiates a flush. Set to `"0"` to let the system automatically determine the flush trigger size. This also controls the maximum replay size from a topic during region replay; using a smaller value can help reduce region replay time during Datanode startup.                |
 | `checkpoint_trigger_size`  | Estimated size threshold (e.g., `"128MB"`) for triggering a checkpoint operation in a region. Calculated as `(latest_entry_id - last_checkpoint_entry_id) * avg_record_size`. When this value exceeds `checkpoint_trigger_size`, MetaSrv initiates a checkpoint. Set to `"0"` to let the system automatically determine the checkpoint trigger size. Using a smaller value can help reduce region replay time during Datanode startup.                                                        |
 | `create_topic_timeout`     | The timeout for creating a Kafka topic. Default is `"30s"`.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `connect_timeout`          | The connect timeout for Kafka client. Default is `"3s"`.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `timeout`                  | The timeout for Kafka client operations. Default is `"3s"`.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
 #### Topic Setup and Kafka Permissions 
 
@@ -175,4 +170,3 @@ server_ca_cert_path = "/path/to/server_cert"
 client_cert_path = "/path/to/client_cert"
 client_key_path = "/path/to/key"
 ```
-

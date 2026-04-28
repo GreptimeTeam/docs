@@ -31,9 +31,6 @@ replication_factor = 1
 topic_name_prefix = "greptimedb_wal_topic"
 create_topic_timeout = "30s"
 
-# Kafka 客户端超时配置
-connect_timeout = "3s"
-timeout = "3s"
 ```
 
 ### 配置
@@ -51,8 +48,6 @@ timeout = "3s"
 | `flush_trigger_size`       | 触发 region flush 操作的预估大小阈值（如 `"512MB"`）。计算公式为 `(latest_entry_id - flushed_entry_id) * avg_record_size`。当此值超过 `flush_trigger_size` 时，MetaSrv 会触发 region flush 操作。设为 `"0"` 时由系统自动控制。该配置还可控制 region 重放期间从 topic 重放的最大数据量，较小的值有助于缩短 Datanode 启动时的重放时间。 |
 | `checkpoint_trigger_size`  | 触发 region checkpoint 操作的预估大小阈值（如 `"128MB"`）。计算公式为 `(latest_entry_id - last_checkpoint_entry_id) * avg_record_size`。当此值超过 `checkpoint_trigger_size` 时，MetaSrv 会启动检查点操作。设为 `"0"` 时由系统自动控制。较小的值有助于缩短 Datanode 启动时的重放时间。                                 |
 | `create_topic_timeout`     | 创建 Kafka topic 的超时时间，默认值为 `"30s"`。                                                                                                                                                                                                                                                      |
-| `connect_timeout`          | Kafka 客户端的连接超时时间，默认值为 `"3s"`。                                                                                                                                                                                                                                                         |
-| `timeout`                  | Kafka 客户端操作的超时时间，默认值为 `"3s"`。                                                                                                                                                                                                                                                         |
 
 #### Kafka Topic 与权限要求
 
@@ -172,4 +167,3 @@ server_ca_cert_path = "/path/to/server_cert"
 client_cert_path = "/path/to/client_cert"
 client_key_path = "/path/to/key"
 ```
-
