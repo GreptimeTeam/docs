@@ -56,7 +56,7 @@ docker run -p 127.0.0.1:4000-4003:4000-4003 \
   --name greptime --rm \
   greptime/greptimedb:VAR::greptimedbVersion standalone start \
   --http-addr 0.0.0.0:4000 \
-  --rpc-bind-addr 0.0.0.0:4001 \
+  --grpc-bind-addr 0.0.0.0:4001 \
   --mysql-addr 0.0.0.0:4002 \
   --postgres-addr 0.0.0.0:4003
 ```
@@ -83,7 +83,7 @@ You can:
      --name greptime --rm \
      greptime/greptimedb:VAR::greptimedbVersion standalone start \
      --http-addr 0.0.0.0:4000 \
-     --rpc-bind-addr 0.0.0.0:4001 \
+     --grpc-bind-addr 0.0.0.0:4001 \
      --mysql-addr 0.0.0.0:4002 \
      --postgres-addr 0.0.0.0:4003
   ```
@@ -105,7 +105,7 @@ GreptimeDB binds to `127.0.0.1` by default. If you need to accept connections fr
 ```shell
 ./greptime standalone start \
    --http-addr 0.0.0.0:4000 \
-   --rpc-bind-addr 0.0.0.0:4001 \
+   --grpc-bind-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \
    --postgres-addr 0.0.0.0:4003
 ```
@@ -120,7 +120,7 @@ docker run -p 0.0.0.0:4000-4003:4000-4003 \
   --name greptime --rm \
   greptime/greptimedb:VAR::greptimedbVersion standalone start \
   --http-addr 0.0.0.0:4000 \
-  --rpc-bind-addr 0.0.0.0:4001 \
+  --grpc-bind-addr 0.0.0.0:4001 \
   --mysql-addr 0.0.0.0:4002 \
   --postgres-addr 0.0.0.0:4003
 ```
