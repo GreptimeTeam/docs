@@ -87,6 +87,7 @@ Supported hints:
 | `physical_table` | String | None | Specifies the physical table name for the [metric engine](/contributor-guide/datanode/metric-engine.md). |
 | `skip_wal` | Boolean | `false` | Skips WAL (Write-Ahead Log) writes for the table. |
 | `sst_format` | String | None | Sets the SST (Sorted String Table) file format for the table. Valid values: `flat`, `primary_key`. |
+| `trace_table_partitions` | Int | None | Override default partition number (16) of trace tables. Set to `1` to disable partitioning. |
 
 For example, the following request sets TTL and append mode for auto-created tables:
 
