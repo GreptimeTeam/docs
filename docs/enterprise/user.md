@@ -6,13 +6,13 @@ description: The overview of GreptimeDB User and Permission mechanism.
 # Built-in User Management
 
 GreptimeDB Enterprise provides a built-in user and permission system backed by
-the Meta Server. It supports Role-Based Access Control (RBAC) and fine-grained
+the Metasrv. It supports Role-Based Access Control (RBAC) and fine-grained
 Access Control Lists (ACLs) to ensure data security and isolation.
 
 ## Key Features
 
 - **Built-in User Management**: User accounts and permissions are stored in the
-  Meta Server, ensuring consistent management across the cluster.
+  Metasrv, ensuring consistent management across the cluster.
 - **Role-Based Access Control (RBAC)**: Assign global privileges to users,
   controlling operations like `SELECT`, `INSERT`, `CREATE TABLE`, and more.
 - **Fine-grained ACLs**: Control table-level access within specific schemas
@@ -29,24 +29,62 @@ perform basic user management.
 
 ### 1. Enable User Provider
 
-To use the enterprise user and permission system, configure the `--user-provider`
-parameter when starting GreptimeDB.
+To use the enterprise user and permission system, enable the
+`greptime_ee_user_provider` in the component that receives client requests.
+Configure it on the standalone server in standalone mode, or on each frontend
+node in cluster mode.
 
-**With a password file for initial seeding:**
+The user provider value is:
+
+```text
+greptime_ee_user_provider:<path-to-password-file>
+```
+
+The password file is optional and is used only for initial account seeding. To
+enable the provider without seeding users, use `greptime_ee_user_provider:`.
+The trailing colon `:` is required by the configuration parser.
+
+**Standalone command line:**
 
 ```shell
 ./greptime standalone start \
   --user-provider=greptime_ee_user_provider:/path/to/passwords.txt
 ```
 
-**Without a password file:**
+**Standalone configuration file:**
+
+```toml
+user_provider = "greptime_ee_user_provider:/path/to/passwords.txt"
+```
 
 ```shell
 ./greptime standalone start \
-  --user-provider=greptime_ee_user_provider:
+  -c /path/to/standalone.toml
 ```
 
-> **Note**: The trailing colon `:` is required by the configuration parser.
+**Frontend command line:**
+
+```shell
+./greptime frontend start \
+  --metasrv-addrs=127.0.0.1:3002 \
+  --user-provider=greptime_ee_user_provider:/path/to/passwords.txt
+```
+
+**Frontend configuration file:**
+
+```toml
+user_provider = "greptime_ee_user_provider:/path/to/passwords.txt"
+
+[meta_client]
+metasrv_addrs = ["127.0.0.1:3002"]
+```
+
+Then start frontend with the configuration file:
+
+```shell
+./greptime frontend start \
+  -c /path/to/frontend.toml
+```
 
 ### 2. Initial Account Seeding (Optional)
 
@@ -70,114 +108,32 @@ bob:rw=bob_pwd
 
 Seeded users are granted full access (`AclType::All`) to the `public` schema by default.
 
-### 3. Manage Users via HTTP API
-
-Once the server is running, admin users can manage other users via the `/v1/users` HTTP API.
-
-#### List all users
-
-```bash
-curl -u admin:strong_password http://localhost:4000/v1/users
-```
-
-Example response:
-
-```json
-[
-  {
-    "username": "admin",
-    "catalog": "greptime",
-    "privileges": 131071,
-    "acl_map": {
-      "public": [{ "type": "all" }]
-    },
-    "created_at": 1704067200000,
-    "updated_at": 1704067200000
-  }
-]
-```
-
-#### Get a specific user
-
-```bash
-curl -u admin:strong_password http://localhost:4000/v1/users/charlie
-```
-
-> **Note**: Non-admin users can only retrieve their own user information.
-
-#### Get current user
-
-```bash
-curl -u charlie:charlie_password http://localhost:4000/v1/users/current
-```
-
-This endpoint returns the authenticated user's information without requiring
-admin privileges.
-
-#### Create a new user
-
-```bash
-curl -u admin:strong_password -X POST http://localhost:4000/v1/users \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "charlie",
-    "password": "charlie_password",
-    "privileges": 8,
-    "acl_map": {
-      "public": [
-        { "type": "match", "table": "cpu" },
-        { "type": "regex", "pattern": "mem_.*" }
-      ]
-    }
-  }'
-```
-
-> **Note**: `privileges` is a bitmask of `UserPrivilege`. `8` corresponds to `SqlSelect`.
-
-#### Update a user
-
-```bash
-curl -u admin:strong_password -X PUT http://localhost:4000/v1/users/charlie \
-  -H "Content-Type: application/json" \
-  -d '{
-    "password": "new_secure_password",
-    "privileges": 24
-  }'
-```
-
-At least one field (`password`, `privileges`, or `acl_map`) must be provided.
-
-#### Delete a user
-
-```bash
-curl -u admin:strong_password -X DELETE http://localhost:4000/v1/users/charlie
-```
-
-> **Note**: The `admin` user cannot be deleted.
+Seed accounts are created only once. If a seeded user already exists on later
+startups, it is skipped. You can modify seeded users later through the UI.
 
 ## Privileges and ACLs
 
 ### Global Privileges
 
-Privileges are defined as a bitmask of the following operations:
+Privileges include the following operations:
 
-| Privilege | Bit Value | Description |
-| :--- | :--- | :--- |
-| `TableCreate` | 1 | Create new tables |
-| `TableAlter` | 2 | Alter existing tables |
-| `TableDrop` | 4 | Drop tables |
-| `SqlSelect` | 8 | Execute `SELECT` queries |
-| `SqlInsert` | 16 | Execute `INSERT` operations |
-| `SqlDelete` | 32 | Execute `DELETE` operations |
-| `FlowCreate` | 256 | Create flows |
-| `FlowDrop` | 512 | Drop flows |
-| `DatabaseCreate` | 1024 | Create databases |
-| `DatabaseAlter` | 2048 | Alter databases |
-| `DatabaseDrop` | 4096 | Drop databases |
-| `Admin` | 8192 | Full administrative privileges |
-| `TriggerCreate` | 16384 | Create triggers |
-| `TriggerDrop` | 32768 | Drop triggers |
-| `TriggerAlter` | 65536 | Alter triggers |
+| Privilege | Description |
+| :--- | :--- |
+| `TableCreate` | Create new tables |
+| `TableAlter` | Alter existing tables |
+| `TableDrop` | Drop tables |
+| `SqlSelect` | Execute `SELECT` queries |
+| `SqlInsert` | Execute `INSERT` operations |
+| `SqlDelete` | Execute `DELETE` operations |
+| `FlowCreate` | Create flows |
+| `FlowDrop` | Drop flows |
+| `DatabaseCreate` | Create databases |
+| `DatabaseAlter` | Alter databases |
+| `DatabaseDrop` | Drop databases |
+| `Admin` | Full administrative privileges |
+| `TriggerCreate` | Create triggers |
+| `TriggerDrop` | Drop triggers |
+| `TriggerAlter` | Alter triggers |
 
 #### Predefined Role Privileges
 
@@ -186,42 +142,32 @@ following privilege combinations:
 
 | Role | Privileges |
 | :--- | :--- |
-| `admin` | All privileges (131071) |
-| `readonly` / `ro` | `SqlSelect` (8) |
+| `admin` | All privileges |
+| `readonly` / `ro` | `SqlSelect` |
 | `writeonly` / `wo` | `SqlInsert`, `SqlDelete`, `TableCreate`, `TableAlter`, `TableDrop`, `FlowCreate`, `FlowDrop`, `TriggerCreate`, `TriggerDrop`, `TriggerAlter`, `DatabaseCreate`, `DatabaseAlter`, `DatabaseDrop` |
 | `readwrite` / `rw` | `readonly` + `writeonly` privileges |
 
 ### Access Control Lists (ACLs)
 
-ACLs provide table-level security within a schema. Supported types:
+ACLs provide table-level security within a schema. Each ACL entry is scoped to a
+schema and controls which tables in that schema the user can access.
 
-- **all**: Access to all tables in the schema.
-  - Example: `{"type": "all"}`
-- **match**: Access to a specific table by exact name.
-  - Example: `{"type": "match", "table": "cpu"}`
-- **regex**: Access to tables matching a regular expression.
-  - Example: `{"type": "regex", "pattern": "mem_.*"}` (matches any table starting with `mem_`)
+The `all` ACL grants access to every table in the schema. Use it when a user
+should be able to read or write all current and future tables in that schema,
+subject to the user's global privileges.
 
-#### ACL Map Example
+The `match` ACL grants access to one table by exact name. Use it when a user
+should only access a specific table and should not automatically gain access to
+other tables with similar names.
 
-The `acl_map` is a JSON object where keys are schema names and values are arrays of ACL entries.
-
-```json
-{
-  "public": [
-    { "type": "match", "table": "cpu" },
-    { "type": "regex", "pattern": "mem_.*" }
-  ],
-  "monitoring": [
-    { "type": "all" }
-  ]
-}
-```
-
-In this example, the user can:
-- Access the `cpu` table in the `public` schema.
-- Access any table starting with `mem_` in the `public` schema.
-- Access all tables in the `monitoring` schema.
+The `regex` ACL grants access to tables whose names match a regular expression.
+Use it when tables follow a naming convention and should be managed as a group.
+For example, `mem_.*` matches table names that start with `mem_`,
+`.*_metrics` matches table names that end with `_metrics`, and
+`sensor_[0-9]+` matches names such as `sensor_1` and `sensor_2024`.
+Regex ACLs are evaluated against table names within the configured schema, so
+use specific patterns when possible to avoid granting access to more tables than
+intended.
 
 ## Validation Rules
 
@@ -229,11 +175,15 @@ In this example, the user can:
 
 Usernames must:
 - Start with a letter (`a-z` or `A-Z`)
-- Contain only letters, digits, and underscores (`[a-zA-Z][a-zA-Z0-9_]*`)
+- Contain only letters, digits, and underscores
+- Match the pattern `[a-zA-Z][a-zA-Z0-9_]*`
 
 ### Password
 
-Passwords must be at least 6 characters long.
+Password validation depends on how the user is created or updated:
+
+- Seeded account passwords must not be empty.
+- Passwords created or updated through the UI must be 6 to 64 characters long.
 
 ## Reference
 
@@ -248,7 +198,6 @@ Passwords must be at least 6 characters long.
   ```text
   Created admin user with auto-generated password <UUID>
   ```
-- **Default Catalog**: Users are associated with the `greptime` catalog by default.
-- **Persistence**: User information is persisted in the Meta Server's KV store,
+- **Persistence**: User information is persisted in the Metasrv's KV store,
   making it available across all frontend nodes in a cluster.
 - **Admin Protection**: The built-in `admin` user cannot be deleted via the API.
