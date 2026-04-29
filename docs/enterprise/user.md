@@ -15,7 +15,7 @@ Access Control Lists (ACLs) to ensure data security and isolation.
   Metasrv, ensuring consistent management across the cluster.
 - **Role-Based Access Control (RBAC)**: Assign global privileges to users,
   controlling operations like `SELECT`, `INSERT`, `CREATE TABLE`, and more.
-- **Fine-grained ACLs**: Control table-level access within specific schemas
+- **Fine-grained ACLs**: Control table-level access within specific databases
   using exact matches or regular expressions.
 - **Dynamic Management**: Manage users dynamically via HTTP APIs without
   restarting the server.
@@ -106,7 +106,7 @@ alice:ro=alice_pwd
 bob:rw=bob_pwd
 ```
 
-Seeded users are granted full access (`AclType::All`) to the `public` schema by default.
+Seeded users are granted full access (`AclType::All`) to the `public` database by default.
 
 Seed accounts are created only once. If a seeded user already exists on later
 startups, it is skipped. You can modify seeded users later through the UI.
@@ -149,11 +149,11 @@ following privilege combinations:
 
 ### Access Control Lists (ACLs)
 
-ACLs provide table-level security within a schema. Each ACL entry is scoped to a
-schema and controls which tables in that schema the user can access.
+ACLs provide table-level security within a database. Each ACL entry is scoped to a
+database and controls which tables in that database the user can access.
 
-The `all` ACL grants access to every table in the schema. Use it when a user
-should be able to read or write all current and future tables in that schema,
+The `all` ACL grants access to every table in the database. Use it when a user
+should be able to read or write all current and future tables in that database,
 subject to the user's global privileges.
 
 The `match` ACL grants access to one table by exact name. Use it when a user
@@ -165,7 +165,7 @@ Use it when tables follow a naming convention and should be managed as a group.
 For example, `mem_.*` matches table names that start with `mem_`,
 `.*_metrics` matches table names that end with `_metrics`, and
 `sensor_[0-9]+` matches names such as `sensor_1` and `sensor_2024`.
-Regex ACLs are evaluated against table names within the configured schema, so
+Regex ACLs are evaluated against table names within the configured database, so
 use specific patterns when possible to avoid granting access to more tables than
 intended.
 
