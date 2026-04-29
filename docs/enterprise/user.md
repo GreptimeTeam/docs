@@ -22,7 +22,7 @@ Access Control Lists (ACLs) to ensure data security and isolation.
 - **Initial Seeding**: Support for seeding initial accounts from a password
   file at startup.
 
-## Quick Start
+## Configuration and Explanation
 
 This section walks through how to enable the enterprise user provider and
 perform basic user management.
@@ -184,6 +184,50 @@ Password validation depends on how the user is created or updated:
 
 - Seeded account passwords must not be empty.
 - Passwords created or updated through the UI must be 6 to 64 characters long.
+
+## User Management in the Enterprise Dashboard
+
+By enabling the `greptime_ee_user_provider`, the database and the dashboard would require user account to login.
+Here is the login page for the enterprise dashboard:
+
+<p align="center">
+    <img src="/ent_user/login.jpeg" alt="login page"/>
+</p>
+
+You can use the auto-created admin account or the accounts in the seeding file to login.
+
+Note: only accounts with the admin privilege could see the database management menu.
+The non-admin account will only see the normal query page much like the open-source dashboard.
+
+After login with the admin user, you can click on the left bottom `User Management` item to enter the main page:
+
+<p align="center">
+    <img src="/ent_user/list.png" alt="login page"/>
+</p>
+
+You would see the full list of current user here. In this page, you can:
+1. create user
+2. update the existing user
+3. delete user
+
+Here is the create user form:
+
+<p align="center">
+    <img src="/ent_user/create.png" alt="login page"/>
+</p>
+
+You can input:
+1. The username of the account
+2. The password of the account
+3. Check whether the account is admin. Currently the difference is only admin or not, the non-admin user would have `readwrite` privilege.
+4. The ACL list of the account
+
+Note that the ACL form has two tabs. You can either click the exact table (or click on the whole database to grant full-database access),
+or use regex to assign a certain range of tables. Here's the regex form:
+
+<p align="center">
+    <img src="/ent_user/regex.png" alt="login page"/>
+</p>
 
 ## Reference
 
