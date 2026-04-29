@@ -187,43 +187,52 @@ Password validation depends on how the user is created or updated:
 
 ## User Management in the Enterprise Dashboard
 
-By enabling the `greptime_ee_user_provider`, the database and the dashboard would require user account to login.
-Here is the login page for the enterprise dashboard:
+After you enable `greptime_ee_user_provider`, both GreptimeDB and the
+Enterprise Dashboard require users to log in with an account.
+The following screenshot shows the Enterprise Dashboard login page:
 
 <p align="center">
     <img src="/ent_user/login.jpeg" alt="login page"/>
 </p>
 
-You can use the auto-created admin account or the accounts in the seeding file to login.
+You can log in with the automatically created admin account or with an account
+defined in the seeding file.
 
-Note: only accounts with the admin privilege could see the database management menu.
-The non-admin account will only see the normal query page much like the open-source dashboard.
+Only accounts with the `Admin` privilege can see the database management menu.
+Non-admin accounts can only access the query page, similar to the open-source
+dashboard.
 
-After login with the admin user, you can click on the left bottom `User Management` item to enter the main page:
+After logging in as an admin user, click `User Management` in the lower-left
+corner to open the user management page:
 
 <p align="center">
     <img src="/ent_user/list.png" alt="login page"/>
 </p>
 
-You would see the full list of current user here. In this page, you can:
-1. create user
-2. update the existing user
-3. delete user
+This page lists all current users. From here, you can:
 
-Here is the create user form:
+1. Create users
+2. Update existing users
+3. Delete users
+
+The following screenshot shows the form for creating a user:
 
 <p align="center">
     <img src="/ent_user/create.png" alt="login page"/>
 </p>
 
-You can input:
-1. The username of the account
-2. The password of the account
-3. Check whether the account is admin. Currently the difference is only admin or not, the non-admin user would have `readwrite` privilege.
-4. The ACL list of the account
+In this form, you can configure:
 
-Note that the ACL form has two tabs. You can either click the exact table (or click on the whole database to grant full-database access),
-or use regex to assign a certain range of tables. Here's the regex form:
+1. The username
+2. The password
+3. Whether the account has the `Admin` privilege. Non-admin users are granted
+   the `readwrite` privilege.
+4. The account ACL list
+
+The ACL form has two tabs. You can select an exact table, select an entire
+database to grant full-database access, or use a regular expression to grant
+access to a range of tables. The following screenshot shows the regular
+expression form:
 
 <p align="center">
     <img src="/ent_user/regex.png" alt="login page"/>
