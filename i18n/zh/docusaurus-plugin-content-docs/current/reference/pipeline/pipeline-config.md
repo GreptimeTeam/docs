@@ -1087,8 +1087,28 @@ GreptimeDB 支持以下四种字段的索引类型：
 - `timestamp`: 用于指定某列是时间索引列
 - `inverted`: 用于指定某列使用 inverted 类型的索引（倒排索引）
 - `fulltext`: 用于指定某列使用 fulltext 类型的索引（全文索引），该列需要是字符串类型
-- `skipping`: 用于指定某列使用 skipping 类型的索引（跳数索引），该列需要是字符串类型
+- `skipping`: 用于指定某列使用 skipping 类型的索引（跳数索引）
 
+`index` 字段同时支持字符串简写和对象写法：
+
+```yaml
+index: fulltext
+
+index:
+  type: fulltext
+  options:
+    analyzer: Chinese
+    case_sensitive: true
+    backend: bloom
+    granularity: 2048
+    false_positive_rate: 0.02
+```
+
+字符串简写仍然兼容，且会使用该索引类型的默认配置。
+使用对象写法时，`type` 是必填项，`options` 是可选项。
+只有 `fulltext` 和 `skipping` 支持 `options`。
+`options` 的名称和校验规则与 [数据索引](/user-guide/manage-data/data-index.md) 中对应的 SQL 索引选项保持一致。
+每个选项值都必须是 YAML 标量值。
 
 不提供 `index` 字段时，GreptimeDB 将不会在该字段上建立索引。
 
@@ -1104,11 +1124,38 @@ GreptimeDB 支持以下四种字段的索引类型：
 
 #### Fulltext 索引
 
-通过 `index: fulltext` 指定在哪个列上建立全文索引，该索引可大大提升 [日志搜索](/user-guide/logs/fulltext-search.md) 的性能，写法请参考下方的 [Transform 示例](#transform-示例)。
+通过 `index: fulltext` 指定在哪个列上建立全文索引，该索引可大大提升 [日志搜索](/user-guide/logs/fulltext-search.md) 的性能。
+如果需要设置全文索引选项，可使用对象写法：
+
+```yaml
+- field: message
+  type: string
+  index:
+    type: fulltext
+    options:
+      analyzer: Chinese
+      case_sensitive: true
+      backend: bloom
+      granularity: 2048
+      false_positive_rate: 0.02
+```
 
 #### Skipping 索引
 
-通过 `index: skipping` 指定在哪个列上建立跳数索引，该索引只需少量存储空间的索引文件即可以加速在高基数列上的查询，写法请参考下方的 [Transform 示例](#transform-示例)。
+通过 `index: skipping` 指定在哪个列上建立跳数索引，该索引只需少量存储空间的索引文件即可以加速在高基数列上的查询。
+与 `fulltext` 不同，`skipping` 不仅限于字符串类型列。
+如果需要设置跳数索引选项，可使用对象写法：
+
+```yaml
+- field: trace_id
+  type: int64
+  index:
+    type: skipping
+    options:
+      granularity: 1024
+      false_positive_rate: 0.05
+      type: BLOOM
+```
 
 ### `tag` 字段
 
