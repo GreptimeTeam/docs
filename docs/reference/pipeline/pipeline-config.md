@@ -1071,7 +1071,28 @@ GreptimeDB supports the following four types of index for fields:
 - `timestamp`: Specifies a column as a timestamp index column.
 - `inverted`: Specifies a column to use the inverted index type.
 - `fulltext`: Specifies a column to use the fulltext index type. The column must be of string type.
-- `skipping`: Specifies a column to use the skipping index type. The column must be of string type.
+- `skipping`: Specifies a column to use the skipping index type.
+
+The `index` field supports both a shorthand string form and a detailed object form:
+
+```yaml
+index: fulltext
+
+index:
+  type: fulltext
+  options:
+    analyzer: Chinese
+    case_sensitive: true
+    backend: bloom
+    granularity: 2048
+    false_positive_rate: 0.02
+```
+
+The shorthand string form remains supported and uses the default index options.
+In the object form, `type` is required and `options` is optional.
+Only `fulltext` and `skipping` support `options`.
+Option names and validation rules are the same as the corresponding SQL index options described in [Data Index](/user-guide/manage-data/data-index.md).
+Each option value must be a scalar YAML value.
 
 When `index` field is not provided, GreptimeDB doesn't create index on the column.
 
@@ -1087,11 +1108,38 @@ Specify which field uses the inverted index. Refer to the [Transform Example](#t
 
 #### The Fulltext Index
 
-Specify which field will be used for full-text search using `index: fulltext`. This index greatly improves the performance of [log search](/user-guide/logs/fulltext-search.md). Refer to the [Transform Example](#transform-example) below for syntax.
+Specify which field will be used for full-text search using `index: fulltext`. This index greatly improves the performance of [log search](/user-guide/logs/fulltext-search.md).
+Use the detailed form when you need to set fulltext index options:
+
+```yaml
+- field: message
+  type: string
+  index:
+    type: fulltext
+    options:
+      analyzer: Chinese
+      case_sensitive: true
+      backend: bloom
+      granularity: 2048
+      false_positive_rate: 0.02
+```
 
 #### The Skipping Index
 
-Specify which field uses the skipping index. This index speeds up the query on high cardinality fields but consumes far less storage for building index files. Refer to the [Transform Example](#transform-example) below for syntax.
+Specify which field uses the skipping index. This index speeds up the query on high cardinality fields but consumes far less storage for building index files.
+Unlike `fulltext`, `skipping` is not limited to string columns.
+Use the detailed form when you need to set skipping index options:
+
+```yaml
+- field: trace_id
+  type: int64
+  index:
+    type: skipping
+    options:
+      granularity: 1024
+      false_positive_rate: 0.05
+      type: BLOOM
+```
 
 ### The `tag` field
 
