@@ -48,6 +48,19 @@ The `/influxdb/write` supports query params including:
 * `db`: Specifies the database to write to. The default value is `public`.
 * `precision`: Defines the precision of the timestamp provided in the request body.  Accepted values are `ns` (nanoseconds), `us` (microseconds), `ms` (milliseconds), and `s` (seconds). The data type of timestamps written by this API is `TimestampNanosecond`, so the default precision is `ns` (nanoseconds). If you use timestamps with other precisions in the request body, you need to specify the precision using this parameter. This parameter ensures that timestamp values are accurately interpreted and stored with nanosecond precision.
 
+You can pass HTTP hints to set options on auto-created tables.
+For example, set the `append_mode` hint to `true` to create an append-only table:
+
+```shell
+curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u={{greptime_user}}&p={{greptimedb_password}}" \
+  -H 'x-greptime-hint-append_mode: true' \
+  --data-binary \
+  'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450'
+```
+
+When `append_mode=true` is explicitly provided, GreptimeDB creates the table with `append_mode = 'true'` and `merge_mode = 'last_row'`.
+If the hint is absent or set to `false`, auto-created InfluxDB line protocol tables keep the default `merge_mode = 'last_non_null'`.
+
 You can also omit the timestamp when sending requests. GreptimeDB will use the current system time (in UTC) of the host machine as the timestamp. For example:
 
 <Tabs>
@@ -148,8 +161,9 @@ While you may already be familiar with [InfluxDB key concepts](https://docs.infl
 Here are the similarities and differences between the data models of GreptimeDB and InfluxDB:
 
 - Both solutions are [schemaless](/user-guide/ingest-data/overview.md#automatic-schema-generation), eliminating the need to define a schema before writing data.
-- The GreptimeDB table is automatically created with the [`merge_mode` option](/reference/sql/create.md#create-a-table-with-merge-mode) set to `last_non_null`.
-That means the table merges rows with the same tags and timestamp by keeping the latest value of each field, which is the same behavior as InfluxDB.
+- The GreptimeDB table is automatically created with the [`merge_mode` option](/reference/sql/create.md#create-a-table-with-merge-mode) set to `last_non_null` by default.
+  That means the table merges rows with the same tags and timestamp by keeping the latest value of each field, which is the same behavior as InfluxDB.
+  If the request explicitly sets the HTTP `append_mode` hint to `true`, the table is created with `append_mode = 'true'` and `merge_mode = 'last_row'`.
 - In InfluxDB, a point represents a single data record with a measurement, tag set, field set, and a timestamp.
 In GreptimeDB, it is represented as a row of data in the time-series table,
 where the table name aligns with the measurement,
@@ -206,4 +220,3 @@ The schema of the `census` table is as follows:
 ## Reference
 
 - [InfluxDB Line protocol](https://docs.influxdata.com/influxdb/v2.7/reference/syntax/line-protocol/)
-

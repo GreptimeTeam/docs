@@ -313,8 +313,12 @@ GreptimeDB 使用基于 LSM-Tree 的存储引擎，
 
 为了与 InfluxDB 的更新行为一致，通过 InfluxDB line protocol 自动创建的表默认启用 `last_non_null` 合并模式。
 
+如果 InfluxDB 行协议写入显式将 HTTP `append_mode` hint 设置为 `true`，
+自动创建的表会改为使用 `append_mode = 'true'` 和 `merge_mode = 'last_row'`。
+
 `last_row` 合并模式不需要检查每个单独的字段值，因此通常比 `last_non_null` 模式更快。
-请注意，append-only 表不能设置 `merge_mode`，因为它们不执行合并。
+对于 append-only 表，只有 `last_row` 与 `append_mode` 兼容；
+其他合并模式会被拒绝，因为 append-only 表不执行按字段合并。
 
 ### 何时使用 append-only 表
 

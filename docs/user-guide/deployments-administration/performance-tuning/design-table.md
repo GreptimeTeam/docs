@@ -321,8 +321,12 @@ allowing updates to provide only the values that need to change.
 The `last_non_null` merge mode is the default for tables created automatically via the InfluxDB line protocol,
 aligning with InfluxDB's update behavior.
 
+If an InfluxDB line protocol write explicitly sets the HTTP `append_mode` hint to `true`,
+the auto-created table uses `append_mode = 'true'` and `merge_mode = 'last_row'` instead.
+
 The `last_row` merge mode doesn't have to check each individual field value so it is usually faster than the `last_non_null` mode.
-Note that `merge_mode` cannot be set for Append-Only tables, as they do not perform merges.
+For Append-Only tables, only `last_row` is compatible with `append_mode`;
+other merge modes are rejected because Append-Only tables do not perform field-wise merges.
 
 ### When to use append-only tables
 

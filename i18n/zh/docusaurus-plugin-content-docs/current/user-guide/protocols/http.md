@@ -64,10 +64,17 @@ http://localhost:4000/v1/sql
 GreptimeDB 支持在 HTTP 请求中使用 `x-greptime-hints` 请求头来传递影响请求行为的键值对。
 这些 hints 主要用于在数据写入时[自动建表](/user-guide/ingest-data/overview.md#自动生成表结构)的场景下设置表选项。
 
-格式为逗号分隔的 `key=value` 对：
+`x-greptime-hints` 格式为逗号分隔的 `key=value` 对：
 
 ```
 x-greptime-hints: key1=value1, key2=value2
+```
+
+你也可以使用 `x-greptime-hint-<key>` 为每个请求头传递一个 hint：
+
+```
+x-greptime-hint-key1: value1
+x-greptime-hint-key2: value2
 ```
 
 支持的 hints：
@@ -76,8 +83,8 @@ x-greptime-hints: key1=value1, key2=value2
 | --- | --- | --- | --- |
 | `auto_create_table` | Boolean | `true` | 插入数据时，如果表不存在是否自动创建。 |
 | `ttl` | 时间字符串 | 无 | 设置表的[数据过期时间](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)，例如 `7d`、`24h`。过期数据将被自动清理。 |
-| `append_mode` | Boolean | `false` | 启用表的 [append-only 模式](/reference/sql/create.md#创建-append-only-表)，该模式禁用按主键去重，支持重复行。 |
-| `merge_mode` | String | 无 | 设置表的 [merge 模式](/reference/sql/create.md#创建带有-merge-模式的表)，例如 `last_non_null`、`last_row`。 |
+| `append_mode` | Boolean | `false` | 启用表的 [append-only 模式](/reference/sql/create.md#创建-append-only-表)，该模式禁用按主键去重，支持重复行。对于 InfluxDB 行协议写入，显式设置 `append_mode=true` hint 时，会使用 `append_mode = 'true'` 和 `merge_mode = 'last_row'` 创建表；未设置该 hint 或设置为 `false` 时，则保留默认的 `merge_mode = 'last_non_null'`。 |
+| `merge_mode` | String | 无 | 设置表的 [merge 模式](/reference/sql/create.md#创建带有-merge-模式的表)，例如 `last_non_null`、`last_row`。启用 `append_mode` 时，仅允许使用 `last_row`。 |
 | `physical_table` | String | 无 | 指定 [metric 引擎](/contributor-guide/datanode/metric-engine.md)的物理表名。 |
 | `skip_wal` | Boolean | `false` | 跳过表的 WAL（Write-Ahead Log）写入。 |
 | `sst_format` | String | 无 | 设置表的 SST（Sorted String Table）文件格式。可选值：`flat`、`primary_key`。 |

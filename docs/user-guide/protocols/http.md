@@ -70,10 +70,17 @@ http://localhost:4000/v1/sql
 GreptimeDB supports the `x-greptime-hints` header in HTTP requests to pass hint key-value pairs that influence request behavior.
 These hints are primarily used to set table options when tables are [automatically created](/user-guide/ingest-data/overview.md#automatic-schema-generation) during data ingestion.
 
-The format is a comma-separated list of `key=value` pairs:
+The `x-greptime-hints` format is a comma-separated list of `key=value` pairs:
 
 ```
 x-greptime-hints: key1=value1, key2=value2
+```
+
+You can also pass one hint per header by using `x-greptime-hint-<key>`:
+
+```
+x-greptime-hint-key1: value1
+x-greptime-hint-key2: value2
 ```
 
 Supported hints:
@@ -82,8 +89,8 @@ Supported hints:
 | --- | --- | --- | --- |
 | `auto_create_table` | Boolean | `true` | Whether to automatically create the table if it does not exist when inserting data. |
 | `ttl` | Duration string | None | Sets the [time-to-live](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) for the table, e.g. `7d`, `24h`. Expired data will be automatically purged. |
-| `append_mode` | Boolean | `false` | Enables [append-only mode](/reference/sql/create.md#create-an-append-only-table) for the table, which disables deduplication by primary key and supports duplicate rows. |
-| `merge_mode` | String | None | Sets the [merge mode](/reference/sql/create.md#create-a-table-with-merge-mode) for the table, e.g. `last_non_null`, `last_row`. |
+| `append_mode` | Boolean | `false` | Enables [append-only mode](/reference/sql/create.md#create-an-append-only-table) for the table, which disables deduplication by primary key and supports duplicate rows. For InfluxDB line protocol writes, an explicit `append_mode=true` hint creates the table with `append_mode = 'true'` and `merge_mode = 'last_row'`; an absent or `false` hint keeps the default `merge_mode = 'last_non_null'`. |
+| `merge_mode` | String | None | Sets the [merge mode](/reference/sql/create.md#create-a-table-with-merge-mode) for the table, e.g. `last_non_null`, `last_row`. When `append_mode` is enabled, only `last_row` is allowed. |
 | `physical_table` | String | None | Specifies the physical table name for the [metric engine](/contributor-guide/datanode/metric-engine.md). |
 | `skip_wal` | Boolean | `false` | Skips WAL (Write-Ahead Log) writes for the table. |
 | `sst_format` | String | None | Sets the SST (Sorted String Table) file format for the table. Valid values: `flat`, `primary_key`. |
