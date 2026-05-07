@@ -290,7 +290,7 @@ SELECT * from metrics ORDER BY host, ts;
 
 #### 创建禁用 WAL 的表
 
-创建一个禁用 WAL 的表。当从 Kafka 等可重放的数据源写入数据时，数据持久性由上游数据源保证，此功能非常有用。请注意，当 WAL 被禁用时，进程重启后尚未 flush 的数据将会丢失。
+创建一个禁用 WAL 的表。请注意，当 WAL 被禁用时，进程重启后尚未 flush 的数据将会丢失。
 
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(

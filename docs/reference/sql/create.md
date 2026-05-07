@@ -286,7 +286,7 @@ SELECT * from metrics ORDER BY host, ts;
 
 #### Create a table with WAL disabled
 
-Create a table with WAL disabled. This is useful when writing data from replayable sources such as Kafka, where data durability is ensured by the upstream source. Please note that when WAL is disabled, unflushed data will be lost on process restart.
+Create a table with WAL disabled. Please note that when WAL is disabled, unflushed data will be lost on process restart.
 
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(
