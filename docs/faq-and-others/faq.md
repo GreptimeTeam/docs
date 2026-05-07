@@ -251,6 +251,47 @@ WAL (Write-Ahead Log) space is cyclically reused after data is flushed to persis
 
 For WAL configuration options, see the [Configuration Guide](/user-guide/deployments-administration/configuration.md).
 
+### Queries fail with `Too many files to read concurrently`. What should I do?
+
+This error means a single query is trying to scan more SST files than the per-query concurrency cap. A typical message:
+
+```
+Too many files to read concurrently: 1528, max allowed: 384
+```
+
+Two common causes:
+
+- **Too many small SST files** — often seen after backfilling historical data with widely-spread timestamps, before compaction has merged them.
+- **The default file concurrency cap is too conservative** for your CPU/memory budget.
+
+**Diagnose**: use the [SSTS_MANIFEST](/reference/sql/information-schema/ssts-manifest.md) view to inspect file counts per table. Filter by `min_ts` to keep the result set manageable:
+
+```sql
+SELECT table_id, COUNT(*) AS files, SUM(num_rows) AS rows
+FROM information_schema.ssts_manifest
+WHERE min_ts > '2026-05-01 00:00:00'
+GROUP BY table_id
+ORDER BY files DESC;
+```
+
+**Mitigate**:
+
+1. Trigger manual compaction using the Strict Window Compaction Strategy. If a single day holds many small files, use a window smaller than the default 1 day — see [Compaction](/user-guide/deployments-administration/manage-data/compaction.md):
+
+   ```sql
+   -- 1-hour window, parallelism=2
+   ADMIN COMPACT_TABLE('<table_name>', 'swcs', 'window=3600,parallelism=2');
+   ```
+
+2. Raise the per-query file cap on the datanode (or standalone) under `[region_engine.mito]`:
+
+   ```toml
+   [region_engine.mito]
+   max_concurrent_scan_files = 1024
+   ```
+
+   The default `384` is intentionally conservative. On hosts with more CPU and memory headroom, a larger value lets heavier scans finish without being rejected. Restart the affected datanodes after editing.
+
 ### What are GreptimeDB's scalability characteristics?
 
 - No strict limitations on table or column count; performance scales with primary key design rather than table count.
@@ -278,6 +319,48 @@ GreptimeDB offers multiple disaster recovery strategies:
 - **Backup and Restore**: Periodic data backups with RPO depending on backup frequency.
 
 See [Disaster Recovery Overview](/user-guide/deployments-administration/disaster-recovery/overview.md).
+
+### What should I do if ingestion fails with `Procedure poison key already exists`?
+
+This error blocks ingestion when a schema-on-write `ALTER TABLE` (typically adding a new column for an incoming attribute) fails after exhausting retries (12 by default), leaving a stale poison key in the metadata store. Subsequent writes that try to evolve the same table are then rejected.
+
+A typical error looks like:
+
+```
+Procedure poison key already exists with a different value
+Key: /__procedure_poison/table/<table_id>
+```
+
+**Recovery steps**:
+
+1. Delete the poison key from the metadata store. Replace `--backend` and `--store-addrs` with your own — see [Metadata Interaction](/reference/command-lines/utilities/metadata-interaction.md#delete-key-value-pair):
+
+   ```bash
+   greptime cli meta del key \
+       --store-addrs=$ENDPOINT \
+       --backend=postgres-store \
+       /__procedure_poison/table/<table_id>
+   ```
+
+2. Run table reconciliation so that Metasrv and Datanode metadata converge. Use the schema and table that were affected — see [Table Reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md):
+
+   ```sql
+   USE <schema>;
+   ADMIN reconcile_table('<table_name>');
+   ```
+
+3. If ingestion still fails with `Column ... not found in logical region`, the logical table's column metadata is out of sync with its physical table. Repair it via the CLI — see [Repair logical tables](/reference/command-lines/utilities/repair-logical-tables.md):
+
+   ```bash
+   greptime cli meta repair logical-tables \
+       --store-addrs=$ENDPOINT \
+       --backend=postgres-store \
+       --table-names=<table_name> \
+       --schema-name=<schema> \
+       --catalog-name=greptime
+   ```
+
+**Troubleshooting tip**: If `ADMIN reconcile_*` returns `Done` immediately but Metasrv logs show no `Reconciling table:` entries, you are likely talking to a different Metasrv than expected — for example, another GreptimeDB cluster deployed in a separate namespace. Verify the topology (e.g. `kubectl get pods -A | grep meta`) before retrying.
 
 ### How do I monitor and troubleshoot GreptimeDB?
 
