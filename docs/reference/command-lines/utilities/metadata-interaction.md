@@ -272,21 +272,6 @@ greptime cli meta get table --table-name=metric_table_2 \
 
 Output: same as the output of the command above.
 
-### Put a key-value pair
-
-```bash
-echo '{"partition_count":4}' | greptime cli meta put key \
-    --store-addrs=$ENDPOINT \
-    --backend=postgres-store \
-    --value-stdin \
-    __topic_name/kafka/my-topic
-```
-
-Output:
-```bash
-Key(__topic_name/kafka/my-topic) updated
-```
-
 ### Put table info
 
 ```bash

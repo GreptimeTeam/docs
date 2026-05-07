@@ -272,21 +272,6 @@ greptime cli meta get table --table-name=metric_table_2 \
 
 输出: 与上述命令的输出相同。
 
-### 写入键值对
-
-```bash
-echo '{"partition_count":4}' | greptime cli meta put key \
-    --store-addrs=$ENDPOINT \
-    --backend=postgres-store \
-    --value-stdin \
-    __topic_name/kafka/my-topic
-```
-
-输出:
-```bash
-Key(__topic_name/kafka/my-topic) updated
-```
-
 ### 写入表信息
 
 ```bash
