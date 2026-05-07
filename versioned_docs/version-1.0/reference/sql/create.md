@@ -284,6 +284,17 @@ SELECT * from metrics ORDER BY host, ts;
 +-------+-------------------------+------+--------+
 ```
 
+#### Create a table with WAL disabled
+
+Create a table with WAL disabled. This is useful when writing data from replayable sources such as Kafka, where data durability is ensured by the upstream source. Please note that when WAL is disabled, unflushed data will be lost on process restart.
+
+```sql
+CREATE TABLE IF NOT EXISTS temperatures(
+  ts TIMESTAMP TIME INDEX,
+  temperature DOUBLE DEFAULT 10
+) with('skip_wal'='true');
+```
+
 #### Create a physical table with metric engine
 
 The metric engine use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. For details, please refer to the [metric engine document](/contributor-guide/datanode/metric-engine) and [Table Engines](/reference/about-greptimedb-engines.md)  introduction.

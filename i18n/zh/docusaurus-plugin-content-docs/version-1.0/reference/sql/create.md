@@ -288,6 +288,17 @@ SELECT * from metrics ORDER BY host, ts;
 +-------+-------------------------+------+--------+
 ```
 
+#### 创建禁用 WAL 的表
+
+创建一个禁用 WAL 的表。当从 Kafka 等可重放的数据源写入数据时，数据持久性由上游数据源保证，此功能非常有用。请注意，当 WAL 被禁用时，进程重启后尚未 flush 的数据将会丢失。
+
+```sql
+CREATE TABLE IF NOT EXISTS temperatures(
+  ts TIMESTAMP TIME INDEX,
+  temperature DOUBLE DEFAULT 10
+) with('skip_wal'='true');
+```
+
 #### 创建 metric engine 的物理表
 
 metric engine 使用合成物理宽表来存储大量的小表数据，实现重用相同列和元数据的效果。详情请参考 [metric engine 文档](/contributor-guide/datanode/metric-engine)和[表引擎](/reference/about-greptimedb-engines.md)介绍。
