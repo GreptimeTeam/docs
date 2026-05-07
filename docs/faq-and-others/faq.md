@@ -264,26 +264,19 @@ Two common causes:
 - **Too many small SST files** — often seen after backfilling historical data with widely-spread timestamps, before compaction has merged them.
 - **The default file concurrency cap is too conservative** for your CPU/memory budget.
 
-**Diagnose**: use the [SSTS_MANIFEST](/reference/sql/information-schema/ssts-manifest.md) view to inspect file counts per table. Filter by `min_ts` to keep the result set manageable:
+**Diagnose**: use the [SSTS_MANIFEST](/reference/sql/information-schema/ssts-manifest.md) view to inspect file counts per table per day. Filter by `min_ts` to keep the result set manageable:
 
 ```sql
-SELECT table_id, COUNT(*) AS files, SUM(num_rows) AS rows
+SELECT table_id, date_trunc('day', min_ts), COUNT(*) AS files, SUM(num_rows) AS rows
 FROM information_schema.ssts_manifest
 WHERE min_ts > '2026-05-01 00:00:00'
-GROUP BY table_id
+GROUP BY table_id, date_trunc('day', min_ts)
 ORDER BY files DESC;
 ```
 
 **Mitigate**:
 
-1. Trigger manual compaction using the Strict Window Compaction Strategy. If a single day holds many small files, use a window smaller than the default 1 day — see [Compaction](/user-guide/deployments-administration/manage-data/compaction.md):
-
-   ```sql
-   -- 1-hour window, parallelism=2
-   ADMIN COMPACT_TABLE('<table_name>', 'swcs', 'window=3600,parallelism=2');
-   ```
-
-2. Raise the per-query file cap on the datanode (or standalone) under `[region_engine.mito]`:
+1. Raise the per-query file cap on the datanode (or standalone) under `[region_engine.mito]`:
 
    ```toml
    [region_engine.mito]
@@ -291,6 +284,13 @@ ORDER BY files DESC;
    ```
 
    The default `384` is intentionally conservative. On hosts with more CPU and memory headroom, a larger value lets heavier scans finish without being rejected. Restart the affected datanodes after editing.
+
+2. Trigger manual compaction using the Strict Window Compaction Strategy. If a single day holds many small files, use a window smaller than the default 1 day — see [Compaction](/user-guide/deployments-administration/manage-data/compaction.md):
+
+   ```sql
+   -- 1-hour window, parallelism=2
+   ADMIN COMPACT_TABLE('<table_name>', 'swcs', 'window=3600,parallelism=2');
+   ```
 
 ### What are GreptimeDB's scalability characteristics?
 

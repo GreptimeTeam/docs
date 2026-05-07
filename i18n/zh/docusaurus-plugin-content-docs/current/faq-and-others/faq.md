@@ -264,26 +264,19 @@ Too many files to read concurrently: 1528, max allowed: 384
 - **小 SST 文件过多** —— 多见于历史数据回填且时间戳跨度大、compaction 还没追上的场景。
 - **默认的并发文件上限对你的硬件来说过于保守**。
 
-**诊断**：用 [SSTS_MANIFEST](/reference/sql/information-schema/ssts-manifest.md) 视图看每张表的文件数。结果集很大时建议按 `min_ts` 过滤：
+**诊断**：用 [SSTS_MANIFEST](/reference/sql/information-schema/ssts-manifest.md) 视图看每张表每天的文件数。结果集很大时建议按 `min_ts` 过滤：
 
 ```sql
-SELECT table_id, COUNT(*) AS files, SUM(num_rows) AS rows
+SELECT table_id, date_trunc('day', min_ts), COUNT(*) AS files, SUM(num_rows) AS rows
 FROM information_schema.ssts_manifest
 WHERE min_ts > '2026-05-01 00:00:00'
-GROUP BY table_id
+GROUP BY table_id, date_trunc('day', min_ts)
 ORDER BY files DESC;
 ```
 
 **处理方式**：
 
-1. 用 SWCS 触发手动 compaction。如果单天的小文件特别多，可以把窗口调到比默认 1 天更小，参见 [Compaction](/user-guide/deployments-administration/manage-data/compaction.md)：
-
-   ```sql
-   -- 1 小时窗口，并行度 2
-   ADMIN COMPACT_TABLE('<table_name>', 'swcs', 'window=3600,parallelism=2');
-   ```
-
-2. 调高 datanode（或 standalone）`[region_engine.mito]` 下的单查询文件上限：
+1. 调高 datanode（或 standalone）`[region_engine.mito]` 下的单查询文件上限：
 
    ```toml
    [region_engine.mito]
@@ -291,6 +284,13 @@ ORDER BY files DESC;
    ```
 
    默认 `384` 是偏保守的值。CPU 和内存余量更充裕的机器，可以适当调大让大查询不被拒。改完需要重启对应 datanode。
+
+2. 用 SWCS 触发手动 compaction。如果单天的小文件特别多，可以把窗口调到比默认 1 天更小，参见 [Compaction](/user-guide/deployments-administration/manage-data/compaction.md)：
+
+   ```sql
+   -- 1 小时窗口，并行度 2
+   ADMIN COMPACT_TABLE('<table_name>', 'swcs', 'window=3600,parallelism=2');
+   ```
 
 ### GreptimeDB 的扩展能力如何？
 
