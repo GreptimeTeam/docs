@@ -48,6 +48,19 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u
 * `db`：指定要写入的数据库。默认值为 `public`。
 * `precision`：定义请求体中提供的时间戳的精度，可接受的值为 `ns`（纳秒）、`us`（微秒）、`ms`（毫秒）和 `s`（秒），默认值为 `ns`（纳秒）。该 API 写入的时间戳类型为 `TimestampNanosecond`，因此默认精度为 `ns`（纳秒）。如果你在请求体中使用了其他精度的时间戳，需要使用此参数指定精度。该参数确保时间戳能够被准确解释并以纳秒精度存储。
 
+你可以通过 HTTP hints 为自动创建的表设置选项。
+例如，将 `append_mode` hint 设置为 `true` 以创建 append-only 表：
+
+```shell
+curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u={{greptime_user}}&p={{greptimedb_password}}" \
+  -H 'x-greptime-hint-append_mode: true' \
+  --data-binary \
+  'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450'
+```
+
+当显式提供 `append_mode=true` 时，GreptimeDB 会使用 `append_mode = 'true'` 和 `merge_mode = 'last_row'` 创建表。
+如果未提供该 hint 或将其设为 `false`，通过 InfluxDB 行协议自动创建的表会继续使用默认的 `merge_mode = 'last_non_null'`。
+
 你还可以在发送请求时省略 timestamp，GreptimeDB 将使用主机机器的当前系统时间（UTC 时间）作为 timestamp。例如：
 
 <Tabs>
@@ -149,8 +162,9 @@ GreptimeDB 的[数据模型](/user-guide/concepts/data-model.md) 是值得了解
 下方解释了 GreptimeDB 和 InfluxDB 数据模型的相似和不同之处：
 
 - 两者都是 [schemaless 写入](/user-guide/ingest-data/overview.md#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
-- GreptimeDB 的表在自动创建时会设置表选项 [`merge_mode`](/reference/sql/create.md#创建带有-merge-模式的表)为 `last_non_null`。
+- GreptimeDB 的表在自动创建时默认会设置表选项 [`merge_mode`](/reference/sql/create.md#创建带有-merge-模式的表)为 `last_non_null`。
   这意味着表会通过保留每个字段的最新值来合并具有相同主键和时间戳的行，该行为与 InfluxDB 相同。
+  如果请求显式将 HTTP `append_mode` hint 设置为 `true`，则会使用 `append_mode = 'true'` 和 `merge_mode = 'last_row'` 创建表。
 - 在 InfluxDB 中，一个点代表一条数据记录，包含一个 measurement、tag 集、field 集和时间戳。
   在 GreptimeDB 中，它被表示为时间序列表中的一行数据。
   表名对应于 measurement，列由三种类型组成：Tag、Field 和 Timestamp。
@@ -205,4 +219,3 @@ census,location=portland,scientist=mullen ants=32 1566086760000000000
 ## 参考
 
 - [InfluxDB Line protocol](https://docs.influxdata.com/influxdb/v2.7/reference/syntax/line-protocol/)
-
