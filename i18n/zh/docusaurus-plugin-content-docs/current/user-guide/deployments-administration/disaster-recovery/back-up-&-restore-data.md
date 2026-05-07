@@ -47,6 +47,15 @@ greptime cli data export \
     --s3-endpoint <YOUR_S3_ENDPOINT> 
 ```
 
+### 使用 Basic Authentication 导出
+如果 GreptimeDB 实例启用了身份认证，请使用 `--auth-basic` 传入凭据：
+```bash
+greptime cli data export \
+    --addr localhost:4000 \
+    --output-dir /tmp/backup/greptimedb \
+    --auth-basic <username>:<password>
+```
+
 ### 仅导出表结构
 仅导出表结构而不包含数据。此操作将 `CREATE TABLE` 语句导出到 SQL 文件中，允许您备份表结构而不包含实际数据。
 ```bash
@@ -84,6 +93,15 @@ greptime cli data export \
 greptime cli data import \
     --addr localhost:4000 \
     --input-dir /tmp/backup/greptimedb
+```
+
+### 使用 Basic Authentication 导入
+如果 GreptimeDB 实例启用了身份认证，请使用 `--auth-basic` 传入凭据：
+```bash
+greptime cli data import \
+    --addr localhost:4000 \
+    --input-dir /tmp/backup/greptimedb \
+    --auth-basic <username>:<password>
 ```
 
 ### 仅导入表结构
@@ -154,4 +172,3 @@ greptime cli data import \
    - 减少并行任务数
    - 确保足够的磁盘空间
    - 在操作期间监控系统资源
-

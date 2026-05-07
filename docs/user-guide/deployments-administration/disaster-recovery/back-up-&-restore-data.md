@@ -47,6 +47,15 @@ greptime cli data export \
     --s3-endpoint <YOUR_S3_ENDPOINT>
 ```
 
+### Export with Basic Authentication
+If the GreptimeDB instance has authentication enabled, pass the credentials with `--auth-basic`:
+```bash
+greptime cli data export \
+    --addr localhost:4000 \
+    --output-dir /tmp/backup/greptimedb \
+    --auth-basic <username>:<password>
+```
+
 ### Schema-Only Operations
 Export only schemas without data. This operation exports `CREATE TABLE` statements into SQL files, allowing you to backup table structures without the actual data.
 ```bash
@@ -84,6 +93,15 @@ Import all databases backup.
 greptime cli data import \
     --addr localhost:4000 \
     --input-dir /tmp/backup/greptimedb
+```
+
+### Import with Basic Authentication
+If the GreptimeDB instance has authentication enabled, pass the credentials with `--auth-basic`:
+```bash
+greptime cli data import \
+    --addr localhost:4000 \
+    --input-dir /tmp/backup/greptimedb \
+    --auth-basic <username>:<password>
 ```
 
 ### Schema-Only Operations
@@ -144,4 +162,3 @@ greptime cli data import \
    - Reduce parallel jobs
    - Ensure sufficient disk space
    - Monitor system resources during operations
-
