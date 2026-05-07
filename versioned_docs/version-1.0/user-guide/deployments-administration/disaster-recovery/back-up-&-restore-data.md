@@ -32,6 +32,15 @@ The output directory structure is as follows:
         └── <data files>
 ```
 
+### Export with Basic Authentication
+If the GreptimeDB instance has authentication enabled, pass the credentials with `--auth-basic`:
+```bash
+greptime cli data export \
+    --addr localhost:4000 \
+    --output-dir /tmp/backup/greptimedb \
+    --auth-basic <username>:<password>
+```
+
 #### Export to S3
 
 Export all databases backup to S3:
@@ -84,6 +93,15 @@ Import all databases backup.
 greptime cli data import \
     --addr localhost:4000 \
     --input-dir /tmp/backup/greptimedb
+```
+
+### Import with Basic Authentication
+If the GreptimeDB instance has authentication enabled, pass the credentials with `--auth-basic`:
+```bash
+greptime cli data import \
+    --addr localhost:4000 \
+    --input-dir /tmp/backup/greptimedb \
+    --auth-basic <username>:<password>
 ```
 
 ### Schema-Only Operations
@@ -144,4 +162,3 @@ greptime cli data import \
    - Reduce parallel jobs
    - Ensure sufficient disk space
    - Monitor system resources during operations
-

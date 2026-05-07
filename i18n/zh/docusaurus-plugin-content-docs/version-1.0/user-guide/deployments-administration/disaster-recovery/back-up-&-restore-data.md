@@ -32,6 +32,15 @@ greptime cli data export \
         └── <数据文件>
 ```
 
+### 使用 Basic Authentication 导出
+如果 GreptimeDB 实例启用了身份认证，请使用 `--auth-basic` 传入凭据：
+```bash
+greptime cli data export \
+    --addr localhost:4000 \
+    --output-dir /tmp/backup/greptimedb \
+    --auth-basic <username>:<password>
+```
+
 #### 导出到 S3
 
 导出所有数据库备份到 S3:
@@ -84,6 +93,15 @@ greptime cli data export \
 greptime cli data import \
     --addr localhost:4000 \
     --input-dir /tmp/backup/greptimedb
+```
+
+### 使用 Basic Authentication 导入
+如果 GreptimeDB 实例启用了身份认证，请使用 `--auth-basic` 传入凭据：
+```bash
+greptime cli data import \
+    --addr localhost:4000 \
+    --input-dir /tmp/backup/greptimedb \
+    --auth-basic <username>:<password>
 ```
 
 ### 仅导入表结构
@@ -154,4 +172,3 @@ greptime cli data import \
    - 减少并行任务数
    - 确保足够的磁盘空间
    - 在操作期间监控系统资源
-
