@@ -553,7 +553,7 @@ The `meta_client` configures the Metasrv client, including:
 
 ### Heartbeat configuration
 
-Heartbeat configuration is available in `frontend` and `datanode`.
+Heartbeat configuration is available in `frontend`, `datanode`, and `standalone`.
 
 ```toml
 [heartbeat]
@@ -561,11 +561,12 @@ interval = "3s"
 retry_interval = "3s"
 ```
 
-| Key                        | Type   | Default | Description                                                                                                                                                                                                                                                                                                                           |
-| -------------------------- | ------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `heartbeat`                | --     | --      | --                                                                                                                                                                                                                                                                                                                                    |
-| `heartbeat.interval`       | String | `3s`    | Interval for sending heartbeat messages to the Metasrv.                                                                                                                                                                                                                                                                               |
-| `heartbeat.retry_interval` | String | `3s`    | Interval for retrying to establish the heartbeat connection to the Metasrv. Note that this option is ignored in Datanode heartbeat implementation because the Datanode must renew its lease through heartbeat within the keep-alive mechanism's lease period. It has a special retry strategy and doesn't allow custom configuration. |
+| Key                        | Type         | Default | Description                                                                                                                                                                                                                                                                                                                           |
+| -------------------------- | ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `heartbeat`                | --           | --      | --                                                                                                                                                                                                                                                                                                                                    |
+| `heartbeat.interval`       | String       | `3s`    | Interval for sending heartbeat messages to the Metasrv.                                                                                                                                                                                                                                                                               |
+| `heartbeat.retry_interval` | String       | `3s`    | Interval for retrying to establish the heartbeat connection to the Metasrv. Note that this option is ignored in Datanode heartbeat implementation because the Datanode must renew its lease through heartbeat within the keep-alive mechanism's lease period. It has a special retry strategy and doesn't allow custom configuration. |
+| `heartbeat_env_vars`       | String Array | `[]`    | Environment variable keys to read at startup and report to Metasrv through heartbeat messages. The values of the listed environment variables will be sent as part of the heartbeat extensions and stored in Metasrv's node information. For example, `heartbeat_env_vars = ["AZ", "REGION"]` will collect the `AZ` and `REGION` environment variables. |
 
 ### Default time zone configuration
 
