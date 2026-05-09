@@ -546,18 +546,19 @@ tcp_nodelay = true
 - `tcp_nodelay`，接受连接时的 `TCP_NODELAY` 选项，默认为 true。
 
 ### 心跳配置
-心跳配置在 `frontend` 和 `datanode` 中可用。
+心跳配置在 `frontend`、`datanode` 和 `standalone` 中可用。
 ```toml
 [heartbeat]
 interval = "3s"
 retry_interval = "3s"
 ```
 
-| 键                          | 类型  | 默认值  | 描述                                                       |
-|----------------------------|-----|------|----------------------------------------------------------|
-| `heartbeat`                | --  | --   | --                                                       |
-| `heartbeat.interval`       | 字符串 | `3s` | 向 Metasrv 发送心跳信息的时间间隔                                    |
-| `heartbeat.retry_interval` | 字符串 | `3s` | 向 Metasrv 重试建立心跳连接的时间间隔。（注意在 Datanode 的心跳实现中，这个配置是被忽略的，因为 Datanode 必须在保活机制的租约期内通过心跳完成续租，也就是说其 retry 有特殊策略不允许自定义配置。） |
+| 键                          | 类型    | 默认值  | 描述                                                       |
+|----------------------------|-------|------|----------------------------------------------------------|
+| `heartbeat`                | --    | --   | --                                                       |
+| `heartbeat.interval`       | 字符串  | `3s` | 向 Metasrv 发送心跳信息的时间间隔                                    |
+| `heartbeat.retry_interval` | 字符串  | `3s` | 向 Metasrv 重试建立心跳连接的时间间隔。（注意在 Datanode 的心跳实现中，这个配置是被忽略的，因为 Datanode 必须在保活机制的租约期内通过心跳完成续租，也就是说其 retry 有特殊策略不允许自定义配置。） |
+| `heartbeat_env_vars`       | 数组   | `[]` | 顶层配置项（不在 `[heartbeat]` 下）。启动时读取并通过心跳消息上报给 Metasrv 的环境变量键名列表。所列环境变量的值将作为心跳扩展信息发送，并存储在 Metasrv 的节点信息中。例如，`heartbeat_env_vars = ["AZ", "REGION"]` 将收集 `AZ` 和 `REGION` 环境变量。**请勿包含敏感变量**（如密钥或凭据），因为其值会被传输并存储在 Metasrv 中。 |
 
 ### 默认时区配置
 
