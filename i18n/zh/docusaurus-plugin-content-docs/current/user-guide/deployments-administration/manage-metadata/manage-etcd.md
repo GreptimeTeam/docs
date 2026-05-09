@@ -350,8 +350,8 @@ spec:
 
 ## Monitoring
 
-- 安装 Prometheus Operator (例如: [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)).
-- 安装 podmonitor CRD.
+- 安装 Prometheus Operator (例如: [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack))。
+- 安装 podmonitor CRD。
 
 将以下配置保存为文件 `etcd-monitoring.yaml`:
 
@@ -421,11 +421,11 @@ helm upgrade \
 
 ### Grafana dashboard
 
-使用 [ETCD Cluster Overview dashboard](https://grafana.com/grafana/dashboards/15308-etcd-cluster-overview/) (ID: 15308) 来监控 etcd 的指标.
+使用 [ETCD Cluster Overview dashboard](https://grafana.com/grafana/dashboards/15308-etcd-cluster-overview/) (ID: 15308) 来监控 etcd 的指标。
 
-1. 登录你的 Grafana.
-2. 导航至 Dashboards -> New -> Import.
-3. 输入 Dashboard ID: 15308, 选择数据源并加载图表.
+1. 登录你的 Grafana。
+2. 导航至 Dashboards -> New -> Import。
+3. 输入 Dashboard ID: 15308, 选择数据源并加载图表。
 
 ![ETCD Cluster Overview dashboard](/etcd-cluster-overview-dashboard.png)
 
