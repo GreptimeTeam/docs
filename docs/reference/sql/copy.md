@@ -258,7 +258,7 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 
 ### PostgreSQL `COPY ... TO STDOUT`
 
-When you connect through the PostgreSQL protocol, you can stream query results to the client with `COPY (<QUERY>) TO STDOUT`. This is useful when you want the output to be handled by the PostgreSQL client, such as `psql`, instead of writing a file on the GreptimeDB server.
+When you connect through the PostgreSQL protocol, you can stream query results to the client with `COPY (<QUERY>) TO STDOUT`. This is useful when you want the output to be handled by the PostgreSQL client, such as `psql`, instead of writing a file on the GreptimeDB server. PostgreSQL-compatible option syntax is supported in both forms: `WITH (...)` and bare `(...)`.
 
 ```sql
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO STDOUT;
