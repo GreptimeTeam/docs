@@ -238,5 +238,9 @@
   "sidebar.docs.category.Read Replicas": {
     "message": "读副本",
     "description": "The label for category Read Replicas in sidebar docs"
+  },
+  "sidebar.docs.category.Built-in User Management": {
+    "message": "用户管理",
+    "description": "The label for category Built-in User Management in sidebar docs"
   }
 }
