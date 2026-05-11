@@ -249,6 +249,25 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 | `DATE_FORMAT` | 导出 CSV 或 JSON 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。支持 CSV 和 JSON 格式。 | 可选 |
 | `TIME_FORMAT` | 导出 CSV 或 JSON 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。支持 CSV 和 JSON 格式。 | 可选 |
 
+### PostgreSQL `COPY ... TO STDOUT`
+
+当你通过 PostgreSQL 协议连接时，可以使用 `COPY (<QUERY>) TO STDOUT` 将查询结果流式传输到客户端。这在你希望由 PostgreSQL 客户端（例如 `psql`）处理输出，而不是在 GreptimeDB 服务端写文件时很有用。选项部分同时支持 PostgreSQL 兼容的 `WITH (...)` 和直接使用 `(...)` 两种写法。
+
+```sql
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO STDOUT;
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO STDOUT WITH (FORMAT csv);
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO STDOUT (FORMAT binary);
+```
+
+- `FORMAT` 支持 PostgreSQL 文本格式（省略时默认使用）、`csv` 和 `binary`。
+- `COPY ... TO STDOUT` 仅在 PostgreSQL 协议下支持导出查询结果，也就是 `COPY (<QUERY>)`。
+
+例如，在 `psql` 中可以使用 `\copy` 将流式结果保存到客户端本地文件：
+
+```sql
+\copy (SELECT * FROM tbl WHERE host = 'host1') TO '/tmp/file.csv' WITH (FORMAT csv)
+```
+
 例如，以下语句将查询结果导出到 CSV 文件中：
 
 ```sql

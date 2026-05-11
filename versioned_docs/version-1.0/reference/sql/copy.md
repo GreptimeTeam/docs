@@ -256,6 +256,25 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 | `DATE_FORMAT` | Custom format for date columns when exporting to CSV or JSON format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Supported for CSV and JSON formats. | Optional |
 | `TIME_FORMAT` | Custom format for time columns when exporting to CSV or JSON format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Supported for CSV and JSON formats. | Optional |
 
+### PostgreSQL `COPY ... TO STDOUT`
+
+When you connect through the PostgreSQL protocol, you can stream query results to the client with `COPY (<QUERY>) TO STDOUT`. This is useful when you want the output to be handled by the PostgreSQL client, such as `psql`, instead of writing a file on the GreptimeDB server. PostgreSQL-compatible option syntax is supported in both forms: `WITH (...)` and bare `(...)`.
+
+```sql
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO STDOUT;
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO STDOUT WITH (FORMAT csv);
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO STDOUT (FORMAT binary);
+```
+
+- `FORMAT` supports PostgreSQL text output (default when omitted), `csv`, and `binary`.
+- `COPY ... TO STDOUT` is only supported for query results, that is, `COPY (<QUERY>)`, on the PostgreSQL protocol.
+
+For example, in `psql` you can use `\copy` to save the streamed result to a local file on the client machine:
+
+```sql
+\copy (SELECT * FROM tbl WHERE host = 'host1') TO '/tmp/file.csv' WITH (FORMAT csv)
+```
+
 For example, the following statement exports query results to a CSV file:
 
 ```sql
