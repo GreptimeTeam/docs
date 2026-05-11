@@ -409,7 +409,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Tutorials',
-      items:[
+      items: [
         'tutorials/k8s-metrics-monitor'
       ]
     },
@@ -504,6 +504,7 @@ const sidebars: SidebarsConfig = {
           ],
         },
         'enterprise/trigger',
+        'enterprise/user',
         {
           type: 'category',
           label: 'Releases',

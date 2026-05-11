@@ -504,6 +504,7 @@
           ]
         },
         "enterprise/trigger",
+        "enterprise/user",
         {
           "type": "category",
           "label": "Releases",
