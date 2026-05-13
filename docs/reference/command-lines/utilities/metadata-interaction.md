@@ -1,6 +1,6 @@
 ---
 keywords: [GreptimeDB CLI, metadata interaction, key-value operations, table metadata, store backends]
-description: Guide for interacting with GreptimeDB metadata using the CLI, including key-value, table metadata retrieval, and deletion.
+description: Guide for interacting with GreptimeDB metadata using the CLI, including key-value, table metadata retrieval, insertion, and deletion.
 ---
 
 # Metadata Interaction
@@ -52,6 +52,63 @@ greptime cli meta get table [OPTIONS]
 | `--catalog-name <CATALOG_NAME>` | The catalog name of the table    | greptime |
 | `--pretty`                      | Pretty print the output          | -        |
 
+
+## Put key-value pair
+
+### Command syntax
+
+```bash
+greptime cli meta put key [OPTIONS] [KEY]
+```
+
+### Options
+
+| Option          | Description                              | Default |
+| --------------- | ---------------------------------------- | ------- |
+| `--value-stdin` | Read the value from standard input       | -       |
+| `--no-validate` | Skip metadata validation before writing  | false   |
+
+:::note
+`--value-stdin` is required.
+:::
+
+## Put table metadata
+
+### Put table info
+
+#### Command syntax
+
+```bash
+greptime cli meta put table info [OPTIONS]
+```
+
+#### Options
+
+| Option                          | Description                                                            | Default  |
+| ------------------------------- | ---------------------------------------------------------------------- | -------- |
+| `--table-id <TABLE_ID>`         | Select table by table id                                               | -        |
+| `--table-name <TABLE_NAME>`     | Select table by table name                                             | -        |
+| `--schema-name <SCHEMA_NAME>`   | The schema name of the table                                           | public   |
+| `--catalog-name <CATALOG_NAME>` | The catalog name of the table                                          | greptime |
+| `--value-stdin`                 | Read the JSON-encoded `TableInfoValue` from standard input (required)  | -        |
+
+### Put table route
+
+#### Command syntax
+
+```bash
+greptime cli meta put table route [OPTIONS]
+```
+
+#### Options
+
+| Option                          | Description                                                             | Default  |
+| ------------------------------- | ----------------------------------------------------------------------- | -------- |
+| `--table-id <TABLE_ID>`         | Select table by table id                                                | -        |
+| `--table-name <TABLE_NAME>`     | Select table by table name                                              | -        |
+| `--schema-name <SCHEMA_NAME>`   | The schema name of the table                                            | public   |
+| `--catalog-name <CATALOG_NAME>` | The catalog name of the table                                           | greptime |
+| `--value-stdin`                 | Read the JSON-encoded `TableRouteValue` from standard input (required)  | -        |
 
 ## Delete key-value pair
 
@@ -214,6 +271,36 @@ greptime cli meta get table --table-name=metric_table_2 \
 ```
 
 Output: same as the output of the command above.
+
+### Put table info
+
+```bash
+cat table_info.json | greptime cli meta put table info \
+    --table-id=1059 \
+    --store-addrs=$ENDPOINT \
+    --backend=postgres-store \
+    --value-stdin
+```
+
+Output:
+```bash
+Table(1059) info updated
+```
+
+### Put table route
+
+```bash
+cat table_route.json | greptime cli meta put table route \
+    --table-id=1059 \
+    --store-addrs=$ENDPOINT \
+    --backend=postgres-store \
+    --value-stdin
+```
+
+Output:
+```bash
+Table(1059) route updated
+```
 
 ## Delete non-existent key-value pair
 

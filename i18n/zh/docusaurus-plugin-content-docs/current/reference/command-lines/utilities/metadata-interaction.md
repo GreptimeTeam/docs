@@ -1,6 +1,6 @@
 ---
 keywords: [GreptimeDB CLI, 元数据交互, 键值操作, 表元数据, 存储后端]
-description: 使用 CLI 与 GreptimeDB 元数据交互的指南，包括键值操作、表元数据检索和删除。
+description: 使用 CLI 与 GreptimeDB 元数据交互的指南，包括键值操作、表元数据检索、写入和删除。
 ---
 
 # 元数据交互
@@ -53,6 +53,63 @@ greptime cli meta get table [OPTIONS]
 | `--catalog-name <CATALOG_NAME>` | 所属 catalog 的名称    | greptime |
 | `--pretty`                      | 美化输出               | -        |
 
+
+## 写入键值对
+
+### 命令语法
+
+```bash
+greptime cli meta put key [OPTIONS] [KEY]
+```
+
+### 选项
+
+| 选项            | 描述                                 | 默认值 |
+| --------------- | ------------------------------------ | ------ |
+| `--value-stdin` | 从标准输入读取要写入的值             | -      |
+| `--no-validate` | 写入前跳过元数据校验                 | false  |
+
+:::note
+`--value-stdin` 为必填项。
+:::
+
+## 写入表元数据
+
+### 写入表信息
+
+#### 命令语法
+
+```bash
+greptime cli meta put table info [OPTIONS]
+```
+
+#### 选项
+
+| 选项                            | 描述                                                  | 默认值   |
+| ------------------------------- | ----------------------------------------------------- | -------- |
+| `--table-id <TABLE_ID>`         | 通过表 ID 选择表                                      | -        |
+| `--table-name <TABLE_NAME>`     | 通过表名选择表                                        | -        |
+| `--schema-name <SCHEMA_NAME>`   | 所属数据库的名称                                      | public   |
+| `--catalog-name <CATALOG_NAME>` | 所属 catalog 的名称                                   | greptime |
+| `--value-stdin`                 | 从标准输入读取 JSON 编码的 `TableInfoValue`（必填）   | -        |
+
+### 写入表路由
+
+#### 命令语法
+
+```bash
+greptime cli meta put table route [OPTIONS]
+```
+
+#### 选项
+
+| 选项                            | 描述                                                   | 默认值   |
+| ------------------------------- | ------------------------------------------------------ | -------- |
+| `--table-id <TABLE_ID>`         | 通过表 ID 选择表                                       | -        |
+| `--table-name <TABLE_NAME>`     | 通过表名选择表                                         | -        |
+| `--schema-name <SCHEMA_NAME>`   | 所属数据库的名称                                       | public   |
+| `--catalog-name <CATALOG_NAME>` | 所属 catalog 的名称                                    | greptime |
+| `--value-stdin`                 | 从标准输入读取 JSON 编码的 `TableRouteValue`（必填）   | -        |
 
 ## 删除键值对
 
@@ -214,6 +271,36 @@ greptime cli meta get table --table-name=metric_table_2 \
 ```
 
 输出: 与上述命令的输出相同。
+
+### 写入表信息
+
+```bash
+cat table_info.json | greptime cli meta put table info \
+    --table-id=1059 \
+    --store-addrs=$ENDPOINT \
+    --backend=postgres-store \
+    --value-stdin
+```
+
+输出:
+```bash
+Table(1059) info updated
+```
+
+### 写入表路由
+
+```bash
+cat table_route.json | greptime cli meta put table route \
+    --table-id=1059 \
+    --store-addrs=$ENDPOINT \
+    --backend=postgres-store \
+    --value-stdin
+```
+
+输出:
+```bash
+Table(1059) route updated
+```
 
 ## 删除不存在的键值对
 
