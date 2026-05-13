@@ -478,11 +478,12 @@ greptimedb-enterprise-dashboard   ClusterIP   10.96.80.175   <none>   19095/TCP 
 ![Enterprise Dashboard Login](/enterprise-dashboard-login.png)
 
 使用数据库部署中的 superuser 账号密码进行登录，可见:
+
+![Enterprise Dashboard Page](/enterprise-dashboard-login.png)
+
 1. 查询：使用 SQL 查询数据
 2. Logs 查询：使用 UI 查询 log 表
 3. 集群概览：当前集群统计信息
 4. 指标监控：数据库集群的自身监控指标
 5. 实例日志：数据库自身的日志
 6. 用户管理：增删改用户账号
-
-![Enterprise Dashboard Page](/enterprise-dashboard-login.png)

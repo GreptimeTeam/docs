@@ -479,11 +479,11 @@ Access port 19095 of the dashboard service to log in.
 
 Log in using the superuser account and password from the database deployment. You will see:
 
+![Enterprise Dashboard Page](/enterprise-dashboard-login.png)
+
 1. Query: Use SQL to query data
 2. Logs Query: Use the UI to query log tables
 3. Cluster Overview: Current cluster statistics
 4. Metrics Monitoring: Database cluster self-monitoring metrics
 5. Instance Logs: Database instance logs
 6. User Management: Add, delete, and modify user accounts
-
-![Enterprise Dashboard Page](/enterprise-dashboard-login.png)
