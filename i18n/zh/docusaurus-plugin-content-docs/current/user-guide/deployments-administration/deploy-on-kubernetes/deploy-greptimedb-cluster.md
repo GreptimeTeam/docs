@@ -234,41 +234,10 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 
 ```yaml
 image:
-  registry: docker.io
-  # 镜像仓库：
-  # OSS GreptimeDB 使用 `greptime/greptimedb`，
+  # 镜像仓库地址:
+  # OSS GreptimeDB 使用 `greptime-registry.cn-hangzhou.cr.aliyuncs.com`,
   # Enterprise GreptimeDB 请咨询工作人员
-  repository: <repository>
-  # 镜像标签：
-  # OSS GreptimeDB 使用数据库版本，例如 `VAR::greptimedbVersion`
-  # Enterprise GreptimeDB 请咨询工作人员
-  tag: <tag>
-  pullSecrets: []
-
-initializer:
-  registry: docker.io
-  repository: greptime/greptimedb-initializer
-  tag: "VAR::greptimedbOperatorVersion"
-
-frontend:
-  replicas: 1
-
-meta:
-  replicas: 1
-  backendStorage:
-    etcd:
-      endpoints: ["etcd.etcd-cluster.svc.cluster.local:2379"]
-
-datanode:
-  replicas: 1
-```
-
-:::note 备注
-中国大陆用户如有网络访问问题，可直接使用阿里云 OCI 镜像仓库：
-
-```yaml
-image:
-  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  registry: <registry>
   # 镜像仓库：
   # OSS GreptimeDB 使用 `greptime/greptimedb`，
   # Enterprise GreptimeDB 请咨询工作人员
@@ -295,8 +264,10 @@ meta:
 
 datanode:
   replicas: 1
+
+flownode:
+  replicas: 1
 ```
-:::
 
 上述配置不适用于严肃的生产环境，请根据自己的需求调整配置。
 可参考[配置文档](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)获取完整的 `values.yaml` 的配置项。

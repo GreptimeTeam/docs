@@ -26,7 +26,7 @@ helm upgrade --install greptimedb-standalone greptime/greptimedb-standalone -n d
 ```
 
 <details>
-  <summary>Expected Output</summary>
+  <summary>期望输出</summary>
 ```bash
 Release "greptimedb-standalone" does not exist. Installing it now.
 NAME: greptimedb-standalone
@@ -54,7 +54,7 @@ kubectl get pod -n default
 ```
 
 <details>
-  <summary>Expected Output</summary>
+  <summary>期望输出</summary>
 ```bash
 NAME                      READY   STATUS    RESTARTS   AGE
 greptimedb-standalone-0   1/1     Running   0          40s
@@ -86,7 +86,7 @@ helm upgrade --install greptimedb-standalone greptime/greptimedb-standalone \
 ```
 
 <details>
-  <summary>Expected Output</summary>
+  <summary>期望输出</summary>
 ```bash
 Release "greptimedb-standalone" has been upgraded. Happy Helming!
 NAME: greptimedb-standalone
@@ -114,7 +114,7 @@ kubectl get pod -n default
 ```
 
 <details>
-  <summary>Expected Output</summary>
+  <summary>期望输出</summary>
 ```bash
 NAME                      READY   STATUS    RESTARTS   AGE
 greptimedb-standalone-0   1/1     Running   0          3s
@@ -136,7 +136,7 @@ mysql -h 127.0.0.1 -P 4002
 ```
 
 <details>
-  <summary>Expected Output</summary>
+  <summary>期望输出</summary>
 ```bash
 Welcome to the MariaDB monitor.  Commands end with ; or \g.
 Your MySQL connection id is 8
@@ -161,7 +161,7 @@ psql -h 127.0.0.1 -p 4003 -d public
 ```
 
 <details>
-  <summary>Expected Output</summary>
+  <summary>期望输出</summary>
 ```bash
 psql (16.2, server 16.3-GreptimeDB-1.0.1)
 Type "help" for help.
@@ -183,7 +183,7 @@ curl -X POST \
 ```
 
 <details>
-  <summary>Expected Output</summary>
+  <summary>期望输出</summary>
 ```json
 {
   "output": [
