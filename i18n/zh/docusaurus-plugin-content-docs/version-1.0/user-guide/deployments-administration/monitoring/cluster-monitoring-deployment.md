@@ -82,7 +82,7 @@ kubectl -n default get pods
 ```
 
 <details>
-  <summary>Expected Output</summary>
+  <summary>期望输出</summary>
 ```bash
 NAME                                 READY   STATUS    RESTARTS   AGE
 mycluster-datanode-0                 2/2     Running   0          77s

@@ -15,7 +15,7 @@ description: 在 Kubernetes 上使用 Helm Chart 部署 Kafka 集群的指南，
 
 ## 配置管理
 
-在安装之前，你需要创建一个文件来配置 Kafka 集群。请根据你的 Kubernetes 环境调整，以下是 kafka-values.yaml 的参考配置：
+在安装之前，你需要创建一个文件来配置 Kafka 集群。请根据你的 Kubernetes 环境调整，以下是 `kafka-values.yaml` 的参考配置：
 
 ```yaml
 image:

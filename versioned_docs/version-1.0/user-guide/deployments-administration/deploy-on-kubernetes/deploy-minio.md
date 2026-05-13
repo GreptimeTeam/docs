@@ -211,7 +211,7 @@ objectStorage:
 - Install Prometheus Operator (e.g: [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack))。
 - Install podmonitor CRD。
 
-To monitor the MinIO cluster, you need to have a monitoring system (such as Prometheus and Grafana) deployed in advance. Then add the following content to minio-values.yaml and re-run the command to update the MinIO configuration:
+To monitor the MinIO cluster, you need to have a monitoring system (such as Prometheus and Grafana) deployed in advance. Then add the following content to `minio-values.yaml` and re-run the command to update the MinIO configuration:
 
 ```yaml
 metrics:
