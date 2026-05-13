@@ -35,19 +35,19 @@ GreptimeDB 企业版部署包括以下组件：
 
 其中打`*`的为可选安装:
 
-| Pod 组件名称                        | 副本数量 | CPU (单位: Core) | 内存 (单位: GB) | 磁盘 (单位: Gi) |
-|---------------------------------|------|----------------|-------------|-------------|
-| ETCD`*`                         | 3    | 2              | 4           | 10          |
-| GreptimeDB Operator             | 1    | 1              | 1           |             |
-| Meta                            |      |                |             |             |
-| Datanode                        |      |                |             |             |
-| Frontend                        |      |                |             |             |
-| Flownode`*`                     |      |                |             |             |
-| Vector Sidecar                  |      |                |             |             |
-| GreptimeDB Standalone           | 1    | 4              | 8           |             |
-| GreptimeDB Enterprise Dashboard | 1    |                |             |             |
-| Kafka`*`                        | 3    |                |             |             |
-| MinIO`*`                        | 4    |                |             |             |
+| Pod 组件名称                        | 副本数量 | CPU (Core) | 内存 (GB) | 磁盘 (Gi) |
+|---------------------------------|------|------------|---------|---------|
+| ETCD`*`                         | 3    | 2          | 4       | 10      |
+| GreptimeDB Operator             | 1    | 1          | 1       |         |
+| Meta                            |      |            |         |         |
+| Datanode                        |      |            |         |         |
+| Frontend                        |      |            |         |         |
+| Flownode`*`                     |      |            |         |         |
+| Vector Sidecar                  |      |            |         |         |
+| GreptimeDB Standalone           | 1    | 4          | 8       |         |
+| GreptimeDB Enterprise Dashboard | 1    |            |         |         |
+| Kafka`*`                        | 3    |            |         |         |
+| MinIO`*`                        | 4    |            |         |         |
 
 ## 部署 GreptimeDB Operator
 
@@ -63,7 +63,7 @@ GreptimeDB 企业版部署包括以下组件：
 
 ## 部署 MinIO
 
-参考 [部署 MinIO 集群](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-kafka.md)获取详细的安装步骤。
+参考 [部署 MinIO 集群](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-minio.md)获取详细的安装步骤。
 
 ## 安装及启动 GreptimeDB
 
@@ -322,9 +322,9 @@ auth:
 #   enabled: true
 #   kafka:
 #     brokerEndpoints:
-#       - "kafka-broker-0.kafka-broker-headless.tsdb.svc.cluster.local:9092"
-#       - "kafka-broker-1.kafka-broker-headless.tsdb.svc.cluster.local:9092"
-#       - "kafka-broker-2.kafka-broker-headless.tsdb.svc.cluster.local:9092"
+#       - "kafka-broker-0.kafka-broker-headless.kafka.svc.cluster.local:9092"
+#       - "kafka-broker-1.kafka-broker-headless.kafka.svc.cluster.local:9092"
+#       - "kafka-broker-2.kafka-broker-headless.kafka.svc.cluster.local:9092"
 ```
 
 ### 启动 GreptimeDB

@@ -209,11 +209,11 @@ metrics:
 
 ## Grafana dashboard
 
-Use [Kubernetes Kafka](https://grafana.com/grafana/dashboards/12483-kubernetes-kafka/) (ID: 12438) to monitor Kafka metrics.
+Use [Kubernetes Kafka](https://grafana.com/grafana/dashboards/12483-kubernetes-kafka/) (ID: 12483) to monitor Kafka metrics.
 
 1. Log in to your Grafana.
 2. Navigate to Dashboards -> New -> Import.
-3. Enter Dashboard ID: 12438, select a data source and load the dashboard.
+3. Enter Dashboard ID: 12483, select a data source and load the dashboard.
 
 ![Kubernetes Kafka](/kubernetes-kafka-monitoring-dashboard.png)
 

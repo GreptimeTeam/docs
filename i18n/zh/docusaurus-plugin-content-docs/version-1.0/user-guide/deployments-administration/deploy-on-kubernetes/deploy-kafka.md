@@ -209,11 +209,11 @@ metrics:
 
 ## Grafana dashboard
 
-使用 [Kubernetes Kafka](https://grafana.com/grafana/dashboards/12483-kubernetes-kafka/) (ID: 12438) 来监控 kafka 的指标。
+使用 [Kubernetes Kafka](https://grafana.com/grafana/dashboards/12483-kubernetes-kafka/) (ID: 12483) 来监控 kafka 的指标。
 
 1. 登录你的 Grafana。
 2. 导航至 Dashboards -> New -> Import。
-3. 输入 Dashboard ID: 12438, 选择数据源并加载图表。
+3. 输入 Dashboard ID: 12483, 选择数据源并加载图表。
 
 ![Kubernetes Kafka](/kubernetes-kafka-monitoring-dashboard.png)
 

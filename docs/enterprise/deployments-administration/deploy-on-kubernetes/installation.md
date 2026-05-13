@@ -35,38 +35,35 @@ The GreptimeDB Enterprise Edition deployment includes the following components:
 
 Components marked with * are optional:
 
-| Pod Component Name               | Replicas | CPU (Core) | 内存 (GB) | 磁盘 (Gi) |
-|----------------------------------|----------|------------|---------|---------|
-| ETCD`*`                          | 3        | 2          | 4       | 10      |
-| GreptimeDB Operator              | 1        | 1          | 1       |         |
-| Meta                             |          |            |         |         |
-| Datanode                         |          |            |         |         |
-| Frontend                         |          |            |         |         |
-| Flownode`*`                      |          |            |         |         |
-| Vector Sidecar                   |          |            |         |         |
-| GreptimeDB Standalone            | 1        | 4          | 8       |         |
-| GreptimeDB Enterprise Dashboard  | 1        |            |         |         |
-| Kafka`*`                         | 3        |            |         |         |
-| MinIO`*`                         | 4        |            |         |         |
+| Pod Component Name               | Replicas | CPU (Core) | Memory (GB) | Disk (Gi) |
+|----------------------------------|----------|------------|-------------|-----------|
+| ETCD`*`                          | 3        | 2          | 4           | 10        |
+| GreptimeDB Operator              | 1        | 1          | 1           |           |
+| Meta                             |          |            |             |           |
+| Datanode                         |          |            |             |           |
+| Frontend                         |          |            |             |           |
+| Flownode`*`                      |          |            |             |           |
+| Vector Sidecar                   |          |            |             |           |
+| GreptimeDB Standalone            | 1        | 4          | 8           |           |
+| GreptimeDB Enterprise Dashboard  | 1        |            |             |           |
+| Kafka`*`                         | 3        |            |             |           |
+| MinIO`*`                         | 4        |            |             |           |
 
 ## Deploy GreptimeDB Operator
 
 Refer to [GreptimeDB Operator Management Documentation](/user-guide/deployments-administration/deploy-on-kubernetes/greptimedb-operator-management.md) for detailed installation steps.
 
-
 ## Deploy ETCD
 
 Refer to [Manage ETCD](/user-guide/deployments-administration/manage-metadata/manage-etcd.md) for detailed installation steps.
-
 
 ## Deploy Kafka
 
 Refer to [Deploy Kafka Cluster](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-kafka.md) for detailed installation steps.
 
-
 ## Deploy MinIO
 
-Refer to [Deploy MinIO Cluster](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-kafka.md) for detailed installation steps.
+Refer to [Deploy MinIO Cluster](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-minio.md) for detailed installation steps.
 
 ## Install and Start GreptimeDB
 
@@ -325,9 +322,9 @@ auth:
 #   enabled: true
 #   kafka:
 #     brokerEndpoints:
-#       - "kafka-broker-0.kafka-broker-headless.tsdb.svc.cluster.local:9092"
-#       - "kafka-broker-1.kafka-broker-headless.tsdb.svc.cluster.local:9092"
-#       - "kafka-broker-2.kafka-broker-headless.tsdb.svc.cluster.local:9092"
+#       - "kafka-broker-0.kafka-broker-headless.kafka.svc.cluster.local:9092"
+#       - "kafka-broker-1.kafka-broker-headless.kafka.svc.cluster.local:9092"
+#       - "kafka-broker-2.kafka-broker-headless.kafka.svc.cluster.local:9092"
 ```
 
 ### Start GreptimeDB
