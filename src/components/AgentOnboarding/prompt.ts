@@ -11,6 +11,32 @@ export const ONBOARDING_URL = {
   zh: 'https://docs.greptime.cn/SKILL.md',
 } as const;
 
+interface OnboardingLabels {
+  label: string;
+  copy: string;
+  copied: string;
+  copyAriaLabel: string;
+}
+
+const LABELS: Record<'en' | 'zh', OnboardingLabels> = {
+  en: {
+    label: 'AGENT ONBOARDING',
+    copy: 'Copy',
+    copied: 'Copied',
+    copyAriaLabel: 'Copy prompt to clipboard',
+  },
+  zh: {
+    label: 'AGENT 接入',
+    copy: '复制',
+    copied: '已复制',
+    copyAriaLabel: '复制提示词到剪贴板',
+  },
+};
+
+export function onboardingLabels(locale: string): OnboardingLabels {
+  return locale === 'zh' ? LABELS.zh : LABELS.en;
+}
+
 export function onboardingPrompt(locale: string): { url: string; text: string } {
   const url = locale === 'zh' ? ONBOARDING_URL.zh : ONBOARDING_URL.en;
   const text = locale === 'zh'

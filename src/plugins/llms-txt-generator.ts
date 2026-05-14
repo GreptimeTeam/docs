@@ -105,8 +105,8 @@ function walkDir(dir: string, ext: string): string[] {
 // Match the tag precisely (self-closing OR paired) without consuming
 // surrounding whitespace, so blank lines around the placeholder stay intact
 // after replacement.
-const DOC_CARD_LIST_RE = /<DocCardList\b[^>]*(?:\/>|>[\s\S]*?<\/DocCardList>)/g;
-const AGENT_ONBOARDING_RE = /<AgentOnboarding\b[^>]*(?:\/>|>[\s\S]*?<\/AgentOnboarding>)/g;
+export const DOC_CARD_LIST_RE = /<DocCardList\b[^>]*(?:\/>|>[\s\S]*?<\/DocCardList>)/g;
+export const AGENT_ONBOARDING_RE = /<AgentOnboarding\b[^>]*(?:\/>|>[\s\S]*?<\/AgentOnboarding>)/g;
 const FRONTMATTER_RE = /^---\n([\s\S]*?)\n---/;
 const H1_RE = /^#\s+(.+)$/m;
 

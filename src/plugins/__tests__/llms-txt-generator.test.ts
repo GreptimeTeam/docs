@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import * as path from 'path';
-import { deriveMdUrlPath } from '../llms-txt-generator';
+import {
+  AGENT_ONBOARDING_RE,
+  DOC_CARD_LIST_RE,
+  deriveMdUrlPath,
+} from '../llms-txt-generator';
 
 describe('deriveMdUrlPath', () => {
   const outDir = '/tmp/build';
@@ -34,5 +38,35 @@ describe('deriveMdUrlPath', () => {
       outDir,
     );
     expect(result.urlPath).toBe('/user-guide/deployments-administration/wal/remote-wal/configuration.md');
+  });
+});
+
+describe('MDX tag regexes', () => {
+  // Re-create per test to dodge global-flag lastIndex stickiness.
+  const docCardListRe = () => new RegExp(DOC_CARD_LIST_RE.source, 'g');
+  const agentOnboardingRe = () => new RegExp(AGENT_ONBOARDING_RE.source, 'g');
+
+  it.each([
+    ['self-closing', '<DocCardList />'],
+    ['self-closing no space', '<DocCardList/>'],
+    ['with props', '<DocCardList items={links} className="x" />'],
+    ['paired', '<DocCardList>\n  inner\n</DocCardList>'],
+  ])('DOC_CARD_LIST_RE matches %s form', (_label, input) => {
+    expect(docCardListRe().test(input)).toBe(true);
+  });
+
+  it.each([
+    ['self-closing', '<AgentOnboarding />'],
+    ['with props', '<AgentOnboarding label="Hi" url="https://example.com/x.md" />'],
+    ['paired', '<AgentOnboarding>kid</AgentOnboarding>'],
+  ])('AGENT_ONBOARDING_RE matches %s form', (_label, input) => {
+    expect(agentOnboardingRe().test(input)).toBe(true);
+  });
+
+  it('regexes leave surrounding whitespace untouched on replace', () => {
+    const before = 'text\n\n<DocCardList />\n\nmore text';
+    expect(before.replace(docCardListRe(), 'LIST')).toBe('text\n\nLIST\n\nmore text');
+    const before2 = 'a\n\n<AgentOnboarding />\n\nb';
+    expect(before2.replace(agentOnboardingRe(), 'X')).toBe('a\n\nX\n\nb');
   });
 });

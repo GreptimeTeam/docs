@@ -13,7 +13,7 @@
 // Runs as a prestart / prebuild npm hook. Never edit anything under
 // static/SKILL.md or static/skills/ by hand.
 
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -21,6 +21,13 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const skillsDir = resolve(repoRoot, 'skills');
 const staticDir = resolve(repoRoot, 'static');
 const ROOT_SKILL = 'greptimedb-quickstart';
+
+// Wipe previous outputs so a renamed or deleted skill does not leave a stale
+// SKILL.md behind under static/skills/.
+const staticSkillsDir = resolve(staticDir, 'skills');
+const staticRootSkill = resolve(staticDir, 'SKILL.md');
+if (existsSync(staticSkillsDir)) rmSync(staticSkillsDir, { recursive: true, force: true });
+if (existsSync(staticRootSkill)) rmSync(staticRootSkill, { force: true });
 
 // Inject the breadcrumb as a YAML comment inside the frontmatter so strict
 // frontmatter parsers (Anthropic Skill loaders, etc.) still see `---` as the

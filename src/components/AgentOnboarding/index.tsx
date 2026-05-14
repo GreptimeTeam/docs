@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import copy from 'copy-text-to-clipboard';
-import { onboardingPrompt } from './prompt';
+import { onboardingLabels, onboardingPrompt } from './prompt';
 import styles from './styles.module.css';
 
 interface Props {
@@ -10,13 +10,12 @@ interface Props {
   prompt?: string;
 }
 
-const DEFAULT_LABEL = 'AGENT ONBOARDING';
-
 export default function AgentOnboarding({ label, url, prompt }: Props): JSX.Element {
   const { i18n } = useDocusaurusContext();
   const fallback = onboardingPrompt(i18n.currentLocale);
+  const labels = onboardingLabels(i18n.currentLocale);
   const resolvedUrl = url ?? fallback.url;
-  const resolvedLabel = label ?? DEFAULT_LABEL;
+  const resolvedLabel = label ?? labels.label;
   const resolvedPrompt = prompt ?? fallback.text;
 
   const [copied, setCopied] = useState(false);
@@ -52,9 +51,9 @@ export default function AgentOnboarding({ label, url, prompt }: Props): JSX.Elem
           type="button"
           className={styles.copyButton}
           onClick={handleCopy}
-          aria-label="Copy prompt to clipboard"
+          aria-label={labels.copyAriaLabel}
         >
-          {copied ? 'Copied' : 'Copy'}
+          {copied ? labels.copied : labels.copy}
         </button>
       </div>
     </aside>
