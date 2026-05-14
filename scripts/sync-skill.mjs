@@ -29,6 +29,32 @@ const staticRootSkill = resolve(staticDir, 'SKILL.md');
 if (existsSync(staticSkillsDir)) rmSync(staticSkillsDir, { recursive: true, force: true });
 if (existsSync(staticRootSkill)) rmSync(staticRootSkill, { force: true });
 
+// Load version variables from variables/variables-<latestStable>.ts and resolve
+// VAR::name placeholders in each skill, mirroring what llms-txt-generator.ts
+// does for the .md endpoints. Without this, version-pinned commands in
+// SKILL.md (Docker tag, install.sh argument) would ship the literal
+// "VAR::greptimedbVersion" string to agents.
+const latestVersion = JSON.parse(readFileSync(resolve(repoRoot, 'versions.json'), 'utf8'))[0];
+const variables = loadVariables(latestVersion);
+
+function loadVariables(version) {
+  const file = resolve(repoRoot, 'variables', `variables-${version}.ts`);
+  if (!existsSync(file)) {
+    console.warn(`[sync-skill] variables-${version}.ts not found; VAR:: placeholders will not be resolved`);
+    return {};
+  }
+  const text = readFileSync(file, 'utf8');
+  const out = {};
+  for (const m of text.matchAll(/(\w+):\s*['"]([^'"]+)['"]/g)) {
+    out[m[1]] = m[2];
+  }
+  return out;
+}
+
+function resolveVariables(content) {
+  return content.replace(/VAR::([A-Z_]+)/gi, (match, name) => variables[name] ?? match);
+}
+
 // Inject the breadcrumb as a YAML comment inside the frontmatter so strict
 // frontmatter parsers (Anthropic Skill loaders, etc.) still see `---` as the
 // first byte of the file. Falls back to an HTML comment prefix when the
@@ -44,7 +70,8 @@ function withBanner(body, srcRel) {
 
 function writeWithBanner(srcAbs, dstAbs, srcRel) {
   mkdirSync(dirname(dstAbs), { recursive: true });
-  writeFileSync(dstAbs, withBanner(readFileSync(srcAbs, 'utf8'), srcRel), 'utf8');
+  const body = resolveVariables(readFileSync(srcAbs, 'utf8'));
+  writeFileSync(dstAbs, withBanner(body, srcRel), 'utf8');
   console.log(`[sync-skill] ${srcRel} -> ${dstAbs.slice(repoRoot.length + 1)}`);
 }
 

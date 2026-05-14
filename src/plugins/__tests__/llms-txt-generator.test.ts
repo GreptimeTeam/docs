@@ -42,7 +42,8 @@ describe('deriveMdUrlPath', () => {
 });
 
 describe('MDX tag regexes', () => {
-  // Re-create per test to dodge global-flag lastIndex stickiness.
+  // The exported regexes carry the /g flag and therefore have a stateful
+  // `lastIndex`. Recreate per test so `.test()` calls do not interfere.
   const docCardListRe = () => new RegExp(DOC_CARD_LIST_RE.source, 'g');
   const agentOnboardingRe = () => new RegExp(AGENT_ONBOARDING_RE.source, 'g');
 
@@ -61,6 +62,11 @@ describe('MDX tag regexes', () => {
     ['paired', '<AgentOnboarding>kid</AgentOnboarding>'],
   ])('AGENT_ONBOARDING_RE matches %s form', (_label, input) => {
     expect(agentOnboardingRe().test(input)).toBe(true);
+  });
+
+  it('regexes do not match similarly-prefixed tags', () => {
+    expect(docCardListRe().test('<DocCardListItem />')).toBe(false);
+    expect(agentOnboardingRe().test('<AgentOnboardingExtra />')).toBe(false);
   });
 
   it('regexes leave surrounding whitespace untouched on replace', () => {

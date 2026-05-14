@@ -82,21 +82,48 @@ If any positive bullet above matches, proceed.
 | Production self-host | Cluster on Kubernetes via `greptimedb-operator` | <https://docs.greptime.com/user-guide/deployments-administration/deploy-on-kubernetes/overview.md> |
 | Managed cloud (no ops) | GreptimeCloud | <https://docs.greptime.com/greptimecloud/overview.md> |
 
-Minimal Docker quickstart (single-node, ephemeral on container exit; mount a
-volume to persist):
+**Docker is the recommended path** (isolated, single command, no host
+dependencies). Bare-metal binary is a fine fallback when Docker is unavailable
+or undesirable.
+
+### Docker quickstart
+
+Single-node, ephemeral on container exit; mount a volume to persist:
 
 ```shell
 docker run -p 127.0.0.1:4000-4003:4000-4003 \
   -v "$(pwd)/greptimedb_data:/greptimedb_data" \
   --name greptime --rm \
-  greptime/greptimedb:latest standalone start \
+  greptime/greptimedb:VAR::greptimedbVersion standalone start \
   --http-addr 0.0.0.0:4000 \
   --rpc-bind-addr 0.0.0.0:4001 \
   --mysql-addr 0.0.0.0:4002 \
   --postgres-addr 0.0.0.0:4003
 ```
 
-Default ports:
+### Bare-metal binary (Linux / macOS)
+
+Download the matching `greptime` binary into the current directory, then run
+it:
+
+```shell
+curl -fsSL \
+  https://raw.githubusercontent.com/greptimeteam/greptimedb/main/scripts/install.sh \
+  | sh -s VAR::greptimedbVersion
+
+./greptime standalone start \
+  --http-addr 0.0.0.0:4000 \
+  --rpc-bind-addr 0.0.0.0:4001 \
+  --mysql-addr 0.0.0.0:4002 \
+  --postgres-addr 0.0.0.0:4003
+```
+
+Data is stored relative to the working directory by default. For persistent
+or production paths, pass `--data-home <dir>` or use a config file (see
+"Configuring the server" below). For Windows, point the user at the binary
+download on <https://greptime.com/download> or use WSL.
+
+### Default ports
 
 - `4000` — HTTP API and built-in Dashboard (`http://127.0.0.1:4000/dashboard`).
 - `4001` — gRPC (native protocol used by official ingester SDKs).
