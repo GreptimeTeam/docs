@@ -251,6 +251,19 @@ expression form:
   ```text
   Created admin user with auto-generated password <UUID>
   ```
+- **Resetting the Admin Password**: You can reset the `admin` password using the
+  CLI without manually editing the KV store. The command reads backend storage
+  settings from a Metasrv config file and supports the standard
+  `GREPTIMEDB_METASRV__...` environment variable overrides.
+  ```shell
+  ./greptime cli user admin-password \
+    --new-password <new-password> \
+    --config-file /path/to/metasrv.toml
+  ```
+  This command must be invoked from a Metasrv instance. The `--config-file`
+  should point to the same Metasrv config file used by your Metasrv (or
+  standalone) deployment, so the CLI can locate the correct backend storage
+  (etcd, MySQL, or PostgreSQL).
 - **Persistence**: User information is persisted in the Metasrv's KV store,
   making it available across all frontend nodes in a cluster.
 - **Admin Protection**: The built-in `admin` user cannot be deleted via the API.
