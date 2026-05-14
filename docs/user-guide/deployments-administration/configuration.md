@@ -553,20 +553,21 @@ The `meta_client` configures the Metasrv client, including:
 
 ### Heartbeat configuration
 
-Heartbeat configuration is available in `frontend`, `datanode`, and `standalone`.
+In distributed mode, heartbeat intervals are controlled by Metasrv using the `heartbeat_interval` option.
+Node-local `[heartbeat]` sections in `frontend`, `datanode`, and `flownode` example configs are not parsed.
 
 ```toml
-[heartbeat]
-interval = "3s"
-retry_interval = "3s"
+# Metasrv-only option
+heartbeat_interval = "3s"
+
+# Top-level option for reporting selected env vars in heartbeat extensions
+heartbeat_env_vars = ["AZ", "REGION"]
 ```
 
-| Key                        | Type         | Default | Description                                                                                                                                                                                                                                                                                                                           |
-| -------------------------- | ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `heartbeat`                | --           | --      | --                                                                                                                                                                                                                                                                                                                                    |
-| `heartbeat.interval`       | String       | `3s`    | Interval for sending heartbeat messages to the Metasrv.                                                                                                                                                                                                                                                                               |
-| `heartbeat.retry_interval` | String       | `3s`    | Interval for retrying to establish the heartbeat connection to the Metasrv. Note that this option is ignored in Datanode heartbeat implementation because the Datanode must renew its lease through heartbeat within the keep-alive mechanism's lease period. It has a special retry strategy and doesn't allow custom configuration. |
-| `heartbeat_env_vars`       | Array  | `[]`    | A top-level option (not under `[heartbeat]`). Lists the environment variable keys to read at startup and report to Metasrv through heartbeat messages. The values are sent as heartbeat extensions and stored in Metasrv's node information. For example, `heartbeat_env_vars = ["AZ", "REGION"]` collects the `AZ` and `REGION` environment variables. **Do not include sensitive variables** (e.g., secrets or credentials), as their values will be transmitted to and stored in Metasrv. |
+| Key                     | Type   | Default | Description                                                                                                                                                                                                                                                                                                                                                                                    |
+| ----------------------- | ------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `heartbeat_interval`    | String | `3s`    | Metasrv base heartbeat interval. The frontend heartbeat interval is 6 times this value, and the datanode/flownode heartbeat interval is 1 times this value. Heartbeat intervals are negotiated from Metasrv during handshake; local node configs do not override this.                                                                                                                     |
+| `heartbeat_env_vars`    | Array  | `[]`    | A top-level option (not under `[heartbeat]`). Lists the environment variable keys to read at startup and report to Metasrv through heartbeat messages. The values are sent as heartbeat extensions and stored in Metasrv's node information. For example, `heartbeat_env_vars = ["AZ", "REGION"]` collects the `AZ` and `REGION` environment variables. **Do not include sensitive variables** (e.g., secrets or credentials), as their values will be transmitted to and stored in Metasrv. |
 
 ### Default time zone configuration
 
