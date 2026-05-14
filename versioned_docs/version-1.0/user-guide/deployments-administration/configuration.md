@@ -543,19 +543,16 @@ The `meta_client` configures the Metasrv client, including:
 
 ### Heartbeat configuration
 
-Heartbeat configuration is available in `frontend` and `datanode`.
+In distributed mode, heartbeat intervals are controlled by Metasrv using the `heartbeat_interval` option.
+Node-local `[heartbeat]` sections in `frontend`, `datanode`, and `flownode` example configs are not parsed.
 
 ```toml
-[heartbeat]
-interval = "3s"
-retry_interval = "3s"
+heartbeat_interval = "3s"
 ```
 
-| Key                        | Type   | Default | Description                                                                                                                                                                                                                                                                                                                           |
-| -------------------------- | ------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `heartbeat`                | --     | --      | --                                                                                                                                                                                                                                                                                                                                    |
-| `heartbeat.interval`       | String | `3s`    | Interval for sending heartbeat messages to the Metasrv.                                                                                                                                                                                                                                                                               |
-| `heartbeat.retry_interval` | String | `3s`    | Interval for retrying to establish the heartbeat connection to the Metasrv. Note that this option is ignored in Datanode heartbeat implementation because the Datanode must renew its lease through heartbeat within the keep-alive mechanism's lease period. It has a special retry strategy and doesn't allow custom configuration. |
+| Key                  | Type   | Default | Description                                                                                                                                                                                                                 |
+| -------------------- | ------ | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `heartbeat_interval` | String | `3s`    | Metasrv base heartbeat interval. The frontend heartbeat interval is 6 times this value, and the datanode/flownode heartbeat interval is equal to this value. Heartbeat intervals are negotiated from Metasrv during handshake. |
 
 ### Default time zone configuration
 
