@@ -4,8 +4,11 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
+    "sync-skill": "node scripts/sync-skill.mjs",
+    "prestart": "pnpm sync-skill",
     "start": "docusaurus start",
     "start:zh": "DOC_LANG=zh pnpm start",
+    "prebuild": "pnpm sync-skill",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
