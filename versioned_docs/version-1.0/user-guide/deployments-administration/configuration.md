@@ -552,7 +552,7 @@ heartbeat_interval = "3s"
 
 | Key                  | Type   | Default | Description                                                                                                                                                                                                                 |
 | -------------------- | ------ | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `heartbeat_interval` | String | `3s`    | Metasrv base heartbeat interval. The frontend heartbeat interval is 6 times this value, and the datanode/flownode heartbeat interval is 1 times this value. Heartbeat intervals are negotiated from Metasrv during handshake. |
+| `heartbeat_interval` | String | `3s`    | Metasrv base heartbeat interval. The frontend heartbeat interval is 6 times this value, and the datanode/flownode heartbeat interval is equal to this value. Heartbeat intervals are negotiated from Metasrv during handshake. |
 
 ### Default time zone configuration
 
