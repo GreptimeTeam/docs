@@ -256,7 +256,7 @@ expression form:
   settings from a Metasrv config file and supports the standard
   `GREPTIMEDB_METASRV__...` environment variable overrides.
   ```shell
-  ./greptime cli user admin-password \
+  ./greptime-ee cli user admin-password \
     --new-password <new-password> \
     --config-file /path/to/metasrv.toml
   ```
