@@ -13,7 +13,7 @@ This is the GreptimeDB documentation for AI agents.
 
 The `greptimedb-quickstart` skill is also hosted at <https://docs.greptime.com/SKILL.md> (and <https://docs.greptime.cn/SKILL.md>), so any AI coding agent can load it with a single instruction:
 
-> Read https://docs.greptime.com/SKILL.md and follow the instructions to install and configure GreptimeDB for your AI agent.
+> Read https://docs.greptime.com/SKILL.md and follow the instructions to use GreptimeDB with your AI agent — deploy, configure, ingest, and query.
 
 ## How to install
 

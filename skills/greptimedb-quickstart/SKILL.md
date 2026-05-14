@@ -1,6 +1,6 @@
 ---
 name: greptimedb-quickstart
-description: Entry-point guide for agents to start using GreptimeDB — when it fits, how to install (Docker / binary / Kubernetes / GreptimeCloud), which write protocol to choose by data type (metrics / logs / traces / events), how to query via SQL or PromQL, and how to discover deeper docs via llms.txt. Use this when the user wants to evaluate, install, ingest into, or query GreptimeDB, or when a project needs a time-series / observability backend. Triggers on phrases like "use GreptimeDB", "install GreptimeDB", "store metrics", "store logs", "store traces", "OTLP backend", "replace Prometheus", "replace Loki", "replace Elasticsearch", "时序数据库", "可观测性存储", "GreptimeDB 怎么用", "ingest observability data".
+description: Entry-point guide for agents to use GreptimeDB end-to-end — when it fits, how to deploy (Docker / binary / Kubernetes / GreptimeCloud), how to configure the server (storage backend, TTL, auth, listen addresses), which write protocol to choose by data type (metrics / logs / traces / events), how to query via SQL or PromQL, and how to discover deeper docs via llms.txt. Use this when the user wants to evaluate, deploy, configure, ingest into, or query GreptimeDB, or when a project needs a time-series / observability backend. Triggers on phrases like "use GreptimeDB", "deploy GreptimeDB", "install GreptimeDB", "configure GreptimeDB", "store metrics", "store logs", "store traces", "OTLP backend", "replace Prometheus", "replace Loki", "replace Elasticsearch", "时序数据库", "可观测性存储", "GreptimeDB 怎么用", "GreptimeDB 配置", "ingest observability data".
 ---
 
 # GreptimeDB Quickstart Guide
@@ -105,6 +105,25 @@ Default ports:
 
 For production deployment, fetch the Kubernetes operator guide and follow it
 end-to-end; do not improvise raw `StatefulSet` YAML.
+
+### Configuring the server
+
+Tunable knobs (object-store backend, storage paths, TTL defaults, memory limits,
+WAL, logging, tracing) live in the TOML config file. Pass it with
+`--config-file`, or override individual options via CLI flags / environment
+variables (`GREPTIMEDB_*`). The full option reference is at
+<https://docs.greptime.com/user-guide/deployments-administration/configuration.md>;
+the CLI flag list is at
+<https://docs.greptime.com/reference/command-lines/overview.md>.
+
+Common things an agent should reach for the config doc to set up:
+
+- **Object storage backend** (S3 / GCS / Azure Blob / OSS) — under
+  `[storage]`.
+- **TTL defaults / retention** at the table or database level.
+- **HTTP / gRPC / MySQL / Postgres listen addresses** beyond the defaults.
+- **Enabling authentication** (see auth doc linked in Phase 4).
+- **Tracing and logging** to OTLP / files.
 
 ## Phase 3. Pick a write path
 
@@ -232,6 +251,9 @@ Direct `.md` entry points:
 - Ingest data overview: <https://docs.greptime.com/user-guide/ingest-data/overview.md>
 - Query data overview: <https://docs.greptime.com/user-guide/query-data/overview.md>
 - Kubernetes deployment overview: <https://docs.greptime.com/user-guide/deployments-administration/deploy-on-kubernetes/overview.md>
+- Server configuration reference: <https://docs.greptime.com/user-guide/deployments-administration/configuration.md>
+- CLI command reference: <https://docs.greptime.com/reference/command-lines/overview.md>
+- Deployments & administration overview: <https://docs.greptime.com/user-guide/deployments-administration/overview.md>
 
 Sister skills (fetch the URL to load the skill content):
 

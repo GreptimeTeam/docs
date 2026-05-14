@@ -22,13 +22,22 @@ const skillsDir = resolve(repoRoot, 'skills');
 const staticDir = resolve(repoRoot, 'static');
 const ROOT_SKILL = 'greptimedb-quickstart';
 
-function bannerFor(srcRel) {
-  return `<!-- Generated from ${srcRel}. Do not edit by hand. -->\n`;
+// Inject the breadcrumb as a YAML comment inside the frontmatter so strict
+// frontmatter parsers (Anthropic Skill loaders, etc.) still see `---` as the
+// first byte of the file. Falls back to an HTML comment prefix when the
+// source has no frontmatter.
+function withBanner(body, srcRel) {
+  const yamlComment = `# Generated from ${srcRel}. Do not edit by hand.\n`;
+  const match = body.match(/^---\r?\n/);
+  if (match) {
+    return body.slice(0, match[0].length) + yamlComment + body.slice(match[0].length);
+  }
+  return `<!-- Generated from ${srcRel}. Do not edit by hand. -->\n` + body;
 }
 
 function writeWithBanner(srcAbs, dstAbs, srcRel) {
   mkdirSync(dirname(dstAbs), { recursive: true });
-  writeFileSync(dstAbs, bannerFor(srcRel) + readFileSync(srcAbs, 'utf8'), 'utf8');
+  writeFileSync(dstAbs, withBanner(readFileSync(srcAbs, 'utf8'), srcRel), 'utf8');
   console.log(`[sync-skill] ${srcRel} -> ${dstAbs.slice(repoRoot.length + 1)}`);
 }
 
