@@ -482,7 +482,11 @@ const sidebars: SidebarsConfig = {
         {
           type: 'category',
           label: 'Autopilot',
-          items: ['enterprise/autopilot/region-balancer'],
+          items: [
+            'enterprise/autopilot/overview',
+            'enterprise/autopilot/region-balancer',
+            'enterprise/autopilot/auto-repartition',
+          ],
         },
         {
           type: 'category',
