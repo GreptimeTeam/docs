@@ -537,7 +537,6 @@ tcp_nodelay = true
 ### 心跳配置
 
 在分布式模式下，心跳间隔由 Metasrv 的 `heartbeat_interval` 选项统一控制。
-`frontend`、`datanode` 和 `flownode` 示例配置中的节点本地 `[heartbeat]` 段不会被解析。
 
 ```toml
 heartbeat_interval = "3s"

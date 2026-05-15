@@ -554,7 +554,6 @@ The `meta_client` configures the Metasrv client, including:
 ### Heartbeat configuration
 
 In distributed mode, heartbeat intervals are controlled by Metasrv using the `heartbeat_interval` option.
-Node-local `[heartbeat]` sections in `frontend`, `datanode`, and `flownode` example configs are not parsed.
 
 ```toml
 # Metasrv-only option
@@ -567,7 +566,7 @@ heartbeat_env_vars = ["AZ", "REGION"]
 | Key                     | Type   | Default | Description                                                                                                                                                                                                                                                                                                                                                                                    |
 | ----------------------- | ------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `heartbeat_interval`    | String | `3s`    | Metasrv base heartbeat interval. The frontend heartbeat interval is 6 times this value, and the datanode/flownode heartbeat interval is equal to this value. Heartbeat intervals are negotiated from Metasrv during handshake; local node configs do not override this.                                                                                                                    |
-| `heartbeat_env_vars`    | Array  | `[]`    | A top-level option (not under `[heartbeat]`). Lists the environment variable keys to read at startup and report to Metasrv through heartbeat messages. The values are sent as heartbeat extensions and stored in Metasrv's node information. For example, `heartbeat_env_vars = ["AZ", "REGION"]` collects the `AZ` and `REGION` environment variables. **Do not include sensitive variables** (e.g., secrets or credentials), as their values will be transmitted to and stored in Metasrv. |
+| `heartbeat_env_vars`    | Array  | `[]`    | A top-level option. Lists the environment variable keys to read at startup and report to Metasrv through heartbeat messages. The values are sent as heartbeat extensions and stored in Metasrv's node information. For example, `heartbeat_env_vars = ["AZ", "REGION"]` collects the `AZ` and `REGION` environment variables. **Do not include sensitive variables** (e.g., secrets or credentials), as their values will be transmitted to and stored in Metasrv. |
 
 ### Default time zone configuration
 
