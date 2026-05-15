@@ -554,7 +554,6 @@ The `meta_client` configures the Metasrv client, including:
 ### Heartbeat configuration
 
 In distributed mode, heartbeat intervals are controlled by Metasrv using the `heartbeat_interval` option.
-Node-local `[heartbeat]` sections in `frontend`, `datanode`, and `flownode` example configs are not parsed.
 
 ```toml
 # Metasrv-only option
