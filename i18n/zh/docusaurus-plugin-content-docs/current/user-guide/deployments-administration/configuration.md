@@ -548,7 +548,6 @@ tcp_nodelay = true
 ### 心跳配置
 
 在分布式模式下，心跳间隔由 Metasrv 的 `heartbeat_interval` 选项统一控制。
-`frontend`、`datanode` 和 `flownode` 示例配置中的节点本地 `[heartbeat]` 段不会被解析。
 
 ```toml
 heartbeat_interval = "3s"
@@ -560,7 +559,7 @@ heartbeat_env_vars = ["AZ", "REGION"]
 | 键                      | 类型   | 默认值 | 描述 |
 |------------------------|--------|--------|------|
 | `heartbeat_interval`   | 字符串 | `3s`   | Metasrv 的基础心跳间隔。Frontend 的心跳间隔为该值的 6 倍，Datanode/Flownode 的心跳间隔与该值相同。心跳间隔会在握手阶段由 Metasrv 协商下发，节点本地配置不会覆盖该值。 |
-| `heartbeat_env_vars`       | 数组   | `[]` | 顶层配置项（不在 `[heartbeat]` 下）。启动时读取并通过心跳消息上报给 Metasrv 的环境变量键名列表。所列环境变量的值将作为心跳扩展信息发送，并存储在 Metasrv 的节点信息中。例如，`heartbeat_env_vars = ["AZ", "REGION"]` 将收集 `AZ` 和 `REGION` 环境变量。**请勿包含敏感变量**（如密钥或凭据），因为其值会被传输并存储在 Metasrv 中。 |
+| `heartbeat_env_vars`       | 数组   | `[]` | 顶层配置项。启动时读取并通过心跳消息上报给 Metasrv 的环境变量键名列表。所列环境变量的值将作为心跳扩展信息发送，并存储在 Metasrv 的节点信息中。例如，`heartbeat_env_vars = ["AZ", "REGION"]` 将收集 `AZ` 和 `REGION` 环境变量。**请勿包含敏感变量**（如密钥或凭据），因为其值会被传输并存储在 Metasrv 中。 |
 
 ### 默认时区配置
 
