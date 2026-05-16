@@ -15,7 +15,10 @@ Here's a complete example of `values.yaml` for deploying a minimal GreptimeDB cl
 
 ```yaml
 image:
-  registry: docker.io
+  # Image registry:
+  # Use `docker.io` for OSS GreptimeDB,
+  # consult staff for Enterprise GreptimeDB
+  registry: <registry>
   # Image repository:
   # Use `greptime/greptimedb` for OSS GreptimeDB
   # Consult staff for GreptimeDB Enterprise
@@ -50,6 +53,9 @@ meta:
       endpoints: ["etcd.etcd-cluster.svc.cluster.local:2379"]
 
 datanode:
+  replicas: 1
+
+flownode:
   replicas: 1
 ```
 
