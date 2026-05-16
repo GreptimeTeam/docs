@@ -4,7 +4,11 @@ keywords: [getting started, overview, installation, quick start]
 description: Get started with GreptimeDB quickly.
 ---
 
+import AgentOnboarding from '@site/src/components/AgentOnboarding';
+
 # Getting Started
+
+<AgentOnboarding />
 
 Get started with GreptimeDB quickly by following these steps:
 
