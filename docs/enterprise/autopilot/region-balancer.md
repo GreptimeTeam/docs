@@ -14,8 +14,11 @@ Region Balancer runs in Metasrv and depends on the shared Autopilot runtime and 
 Region Balancer is useful in the following scenarios:
 
 - Some Datanodes have a write load that remains higher than others.
-- You add or remove Datanodes and want Region distribution to be rebalanced automatically.
 - You want to reduce the operational cost of manually identifying hot nodes and running Region Migration.
+
+## Limitations
+
+Region Balancer requires the number of schedulable Regions to be greater than the number of active Datanodes. If the number of Regions is not greater than the number of active Datanodes, moving Regions cannot make the load evenly distributed across Datanodes.
 
 ## Configuration
 

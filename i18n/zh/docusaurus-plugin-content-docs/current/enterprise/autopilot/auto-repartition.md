@@ -1,13 +1,13 @@
 ---
-keywords: [Auto Repartition, Autopilot, Repartition, Region, 重分区, 热点 Region, 对象存储, GC]
-description: 介绍 GreptimeDB Enterprise 的 Auto Repartition 功能，以及如何配置 Auto Repartition 自动拆分热点 Region。
+keywords: [Auto Repartition, Autopilot, Repartition, Region, 重分区, 大 Region, 对象存储, GC]
+description: 介绍 GreptimeDB Enterprise 的 Auto Repartition 功能，以及如何配置 Auto Repartition 自动拆分大 Region。
 ---
 
 # Auto Repartition
 
-Auto Repartition 是 Autopilot 的一个调度策略，用于自动拆分热点 Region。当某个表中部分 Region 的写入负载长期显著高于目标负载时，Auto Repartition 会基于采样结果生成新的分区边界，并提交 Repartition 操作。
+Auto Repartition 是 Autopilot 的一个调度策略，用于自动将大 Region 拆分为多个小 Region。当某个表中存在可能成为性能瓶颈的大 Region 时，Auto Repartition 会基于采样结果生成新的分区边界，并提交 Repartition 操作。
 
-Auto Repartition 可以帮助热点表提升写入并行度，减少手动发现热点 Region 和手动执行重分区的运维成本。关于手动重分区的说明，请参考[重分区](/user-guide/deployments-administration/manage-data/repartition.md)。
+拆分后的 Region 可以被调度到不同 Datanode 上，从而打散潜在的负载瓶颈。Auto Repartition 可以减少手动发现大 Region 和手动执行重分区的运维成本。关于手动重分区的说明，请参考[重分区](/user-guide/deployments-administration/manage-data/repartition.md)。
 
 ## 前置条件
 
@@ -26,10 +26,16 @@ Auto Repartition 依赖 GreptimeDB 的重分区能力，仅支持分布式集群
 
 Auto Repartition 适合以下场景：
 
-- 某些 Region 长期成为写入热点；
+- 某些大 Region 可能成为性能瓶颈；
 - 表的原有分区规则已经不能匹配当前数据分布；
-- 希望自动提升热点表的写入并行度；
-- 希望减少手动分析热点 Region 和手动执行 Repartition 的运维成本。
+- 希望将大 Region 拆分为多个小 Region，并通过后续调度打散潜在的负载瓶颈；
+- 希望减少手动分析大 Region 和手动执行 Repartition 的运维成本。
+
+## 限制
+
+Auto Repartition 仅对多分区表有效，只能拆分已经带有分区规则的表。如果表没有分区规则，Auto Repartition 不会为它自动生成新的分区规则。
+
+关于表分区和重分区的说明，请参考[表分片](/user-guide/deployments-administration/manage-data/table-sharding.md)和[重分区](/user-guide/deployments-administration/manage-data/repartition.md)。
 
 ## 配置
 
@@ -59,7 +65,7 @@ max_actions_per_table_per_tick = 2
 
 - `plugins.autopilot` 控制 Autopilot 的调度周期；
 - `plugins.cluster_stat` 控制 Datanode 和 Region 写入统计信息的采样与平滑；
-- `plugins.auto_repartition` 控制热点 Region 拆分的触发条件、拆分规模和提交数量。
+- `plugins.auto_repartition` 控制大 Region 拆分的触发条件、拆分规模和提交数量。
 
 共享配置项的详细说明请参考 [Autopilot 配置](./overview.md#配置)。
 

@@ -1,13 +1,13 @@
 ---
-keywords: [Auto Repartition, Autopilot, Repartition, Region, hot Region, object storage, GC]
-description: Introduces GreptimeDB Enterprise Auto Repartition and how to configure it to automatically split hot Regions.
+keywords: [Auto Repartition, Autopilot, Repartition, Region, large Region, object storage, GC]
+description: Introduces GreptimeDB Enterprise Auto Repartition and how to configure it to automatically split large Regions.
 ---
 
 # Auto Repartition
 
-Auto Repartition is an Autopilot strategy that automatically splits hot Regions. When some Regions in a table have a write load that remains significantly higher than the target load, Auto Repartition samples data, generates new partition boundaries, and submits a Repartition action.
+Auto Repartition is an Autopilot strategy that automatically splits large Regions into smaller Regions. When a table has a large Region that may become a performance bottleneck, Auto Repartition samples data, generates new partition boundaries, and submits a Repartition action.
 
-Auto Repartition helps improve write parallelism for hot tables and reduces the operational cost of manually identifying hot Regions and running Repartition. For manual Repartition, see [Repartition](/user-guide/deployments-administration/manage-data/repartition.md).
+The split Regions can then be scheduled across multiple Datanodes to distribute potential bottlenecks. Auto Repartition reduces the operational cost of manually identifying large Regions and running Repartition. For manual Repartition, see [Repartition](/user-guide/deployments-administration/manage-data/repartition.md).
 
 ## Prerequisites
 
@@ -26,10 +26,16 @@ Object storage stores Region files. GC reclaims old files after their references
 
 Auto Repartition is useful in the following scenarios:
 
-- Some Regions remain hot for a long time.
+- Some large Regions may become performance bottlenecks.
 - The original partition rule no longer matches the current data distribution.
-- You want to automatically improve write parallelism for hot tables.
-- You want to reduce the operational cost of manually identifying hot Regions and running Repartition.
+- You want to split large Regions into smaller Regions and distribute potential bottlenecks through later scheduling.
+- You want to reduce the operational cost of manually identifying large Regions and running Repartition.
+
+## Limitations
+
+Auto Repartition only works for partitioned tables. It can only split tables that already have partition rules. If a table does not have partition rules, Auto Repartition does not generate new partition rules for it automatically.
+
+For more information about table partitioning and Repartition, see [Table Sharding](/user-guide/deployments-administration/manage-data/table-sharding.md) and [Repartition](/user-guide/deployments-administration/manage-data/repartition.md).
 
 ## Configuration
 
@@ -59,7 +65,7 @@ In this example:
 
 - `plugins.autopilot` controls the Autopilot scheduling interval.
 - `plugins.cluster_stat` controls sampling and smoothing for Datanode and Region write statistics.
-- `plugins.auto_repartition` controls hot Region split trigger conditions, split size, and submission limits.
+- `plugins.auto_repartition` controls large Region split trigger conditions, split size, and submission limits.
 
 For details about shared configuration, see [Autopilot configuration](./overview.md#configuration).
 
