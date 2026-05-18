@@ -4,7 +4,7 @@ description: GC keeps SST/index files until all references are released, protect
 ---
 # Garbage Collection (GC)
 
-GreptimeDB GC delays physical deletion of SST/index files until all references (running queries, [repartition](./table-sharding.md#Repartition) cross-region file refs) are released. The configuration contains two parts:
+GreptimeDB GC delays physical deletion of SST/index files until all references (running queries, [repartition](./repartition.md) cross-region file refs) are released. The configuration contains two parts:
 
 - Metasrv Configuration
 - Datanode Configuration
@@ -52,7 +52,7 @@ unknown_file_lingering_time = "1h" # Keep files without expel time; rare safegua
 | Configuration Option | Description |
 | --- | --- |
 | `enable` | Enable the datanode GC worker. Must match meta GC `enable`. |
-| `lingering_time` | How long to keep manifest-removed files before deletion to protect long follower-region queries/cross-region references; set longer than `gc_cooldown_period`. Use `"None"` to delete immediately. |
+| `lingering_time` | How long to keep manifest-removed files before deletion to protect long follower-region queries/cross-region references; set longer than `gc_cooldown_period`. Use `"0s"` to delete immediately. |
 | `unknown_file_lingering_time` | Safety hold for files without expel time (not tracked in manifest). Should be generous; these cases are rare. |
 
 :::warning
