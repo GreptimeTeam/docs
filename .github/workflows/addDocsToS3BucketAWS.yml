@@ -44,6 +44,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
       - run: pnpm install
+      - run: pnpm sync-skill
       - run: pnpm build
         env:
           BIEL_PROJECT_ID: ${{ secrets.BIEL_PROJECT_ID }}
