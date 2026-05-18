@@ -37,13 +37,15 @@ SHOW DATABASES;
 ```
 
 ```sql
-+---------+
-| Schemas |
-+---------+
-| test    |
-| public  |
-+---------+
-2 rows in set (0.00 sec)
++--------------------+
+| Database           |
++--------------------+
+| greptime_private   |
+| information_schema |
+| public             |
+| test               |
++--------------------+
+4 rows in set (0.00 sec)
 ```
 
 Using `like` syntax:
@@ -53,11 +55,11 @@ SHOW DATABASES LIKE 'p%';
 ```
 
 ```sql
-+---------+
-| Schemas |
-+---------+
-| public  |
-+---------+
++----------+
+| Database |
++----------+
+| public   |
++----------+
 1 row in set (0.00 sec)
 ```
 
@@ -65,12 +67,6 @@ Then change the database:
 
 ```sql
 USE test;
-```
-
-Change back to `public` database:
-
-```sql
-USE public;
 ```
 
 ## Create a table
@@ -222,12 +218,12 @@ SHOW INDEXES FROM monitor;
 
 
 ```sql
-+---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
-| Table   | Non_unique | Key_name   | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type                 | Comment | Index_comment | Visible | Expression |
-+---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
-| monitor |          1 | PRIMARY    |            1 | host        | A         |        NULL |     NULL |   NULL | YES  | greptime-inverted-index-v1 |         |               | YES     |       NULL |
-| monitor |          1 | TIME INDEX |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   | greptime-inverted-index-v1 |         |               | YES     |       NULL |
-+---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
+| Table   | Non_unique | Key_name   | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type              | Comment | Index_comment | Visible | Expression |
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
+| monitor |          1 | PRIMARY    |            1 | host        | A         |        NULL |     NULL |   NULL | YES  | greptime-primary-key-v1 |         |               | YES     |       NULL |
+| monitor |          1 | TIME INDEX |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   |                         |         |               | YES     |       NULL |
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
 ```
 
 For more info about `SHOW` statement, please read the [SHOW reference](/reference/sql/show.md#show).
@@ -241,16 +237,14 @@ SHOW TABLES;
 ```
 
 ```sql
-+------------+
-| Tables     |
-+------------+
-| monitor    |
-| scripts    |
-+------------+
-3 rows in set (0.00 sec)
++----------------+
+| Tables_in_test |
++----------------+
+| monitor        |
++----------------+
+1 row in set (0.00 sec)
 ```
 
-Notice: `scripts` table is a built-in table that holds User-Defined Functions (UDFs).
 Currently only table name filtering is supported. You can filter existing tables by their names.
 
 ```sql
@@ -258,26 +252,26 @@ SHOW TABLES LIKE monitor;
 ```
 
 ```sql
-+---------+
-| Tables  |
-+---------+
-| monitor |
-+---------+
++----------------+
+| Tables_in_test |
++----------------+
+| monitor        |
++----------------+
 1 row in set (0.00 sec)
 ```
 
-List tables in other databases:
+List tables in a specific database:
 
 ```sql
 SHOW TABLES FROM test;
 ```
 
 ```sql
-+---------+
-| Tables  |
-+---------+
-| monitor |
-+---------+
++----------------+
+| Tables_in_test |
++----------------+
+| monitor        |
++----------------+
 1 row in set (0.01 sec)
 ```
 
@@ -309,7 +303,7 @@ The `ALTER TABLE` statement also supports adding, removing, and renaming columns
 `DROP TABLE` cannot be undone. Use it with care!
 :::
 
-`DROP TABLE [db.]table` is used to drop the table in `db` or the current database in-use.Drop the table `test` in the current database:
+`DROP TABLE [db.]table` is used to drop the table in `db` or the current database in-use.Drop the table `monitor` in the current database:
 
 ```sql
 DROP TABLE monitor;
@@ -326,9 +320,10 @@ Query OK, 1 row affected (0.01 sec)
 :::
 
 You can use `DROP DATABASE` to drop a database.
-For example, to drop the `test` database:
+For example, change back to `public` database and drop the `test` database:
 
 ```sql
+USE public;
 DROP DATABASE test;
 ```
 
@@ -349,7 +344,7 @@ http://localhost:4000/v1/sql?db=public
 ```
 
 ```json
-{ "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 10 }
+{ "output": [{ "affectedrows": 0 }], "execution_time_ms": 10 }
 ```
 
 For more information about SQL HTTP request, please refer to [API document](/user-guide/protocols/http.md#post-sql-statements).
