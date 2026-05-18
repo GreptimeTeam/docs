@@ -36,13 +36,15 @@ SHOW DATABASES;
 ```
 
 ```sql
-+---------+
-| Schemas |
-+---------+
-| test    |
-| public  |
-+---------+
-2 rows in set (0.00 sec)
++--------------------+
+| Database           |
++--------------------+
+| greptime_private   |
+| information_schema |
+| public             |
+| test               |
++--------------------+
+4 rows in set (0.00 sec)
 ```
 
 使用 `like` 语法：
@@ -52,11 +54,11 @@ SHOW DATABASES LIKE 'p%';
 ```
 
 ```sql
-+---------+
-| Schemas |
-+---------+
-| public  |
-+---------+
++----------+
+| Database |
++----------+
+| public   |
++----------+
 1 row in set (0.00 sec)
 ```
 
@@ -64,12 +66,6 @@ SHOW DATABASES LIKE 'p%';
 
 ```sql
 USE test;
-```
-
-更改回 `public` 数据库：
-
-```sql
-USE public;
 ```
 
 ## 创建表
@@ -218,12 +214,12 @@ SHOW INDEXES FROM monitor;
 ```
 
 ```sql
-+---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
-| Table   | Non_unique | Key_name   | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type                 | Comment | Index_comment | Visible | Expression |
-+---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
-| monitor |          1 | PRIMARY    |            1 | host        | A         |        NULL |     NULL |   NULL | YES  | greptime-inverted-index-v1 |         |               | YES     |       NULL |
-| monitor |          1 | TIME INDEX |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   | greptime-inverted-index-v1 |         |               | YES     |       NULL |
-+---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
+| Table   | Non_unique | Key_name   | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type              | Comment | Index_comment | Visible | Expression |
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
+| monitor |          1 | PRIMARY    |            1 | host        | A         |        NULL |     NULL |   NULL | YES  | greptime-primary-key-v1 |         |               | YES     |       NULL |
+| monitor |          1 | TIME INDEX |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   |                         |         |               | YES     |       NULL |
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
 ```
 
 有关 `SHOW` 语句的更多信息，请阅读 [SHOW 参考](/reference/sql/show.md#show)。
@@ -237,16 +233,13 @@ SHOW TABLES;
 ```
 
 ```sql
-+------------+
-| Tables     |
-+------------+
-| monitor    |
-| scripts    |
-+------------+
-3 rows in set (0.00 sec)
++----------------+
+| Tables_in_test |
++----------------+
+| monitor        |
++----------------+
+1 row in set (0.00 sec)
 ```
-
-注意：`scripts` 表是一个内置的表，用于存放用户定义的函数（UDF）。
 
 其目前只支持表名的过滤，可以通过表名字对其进行过滤。
 
@@ -255,26 +248,26 @@ SHOW TABLES LIKE monitor;
 ```
 
 ```sql
-+---------+
-| Tables  |
-+---------+
-| monitor |
-+---------+
++----------------+
+| Tables_in_test |
++----------------+
+| monitor        |
++----------------+
 1 row in set (0.00 sec)
 ```
 
-列出其他数据库中的表：
+列出指定数据库中的表：
 
 ```sql
 SHOW TABLES FROM test;
 ```
 
 ```sql
-+---------+
-| Tables  |
-+---------+
-| monitor |
-+---------+
++----------------+
+| Tables_in_test |
++----------------+
+| monitor        |
++----------------+
 1 row in set (0.01 sec)
 ```
 
@@ -308,7 +301,7 @@ Query OK, 0 rows affected (0.03 sec)
 
 `DROP TABLE [db.]table` 用于删除 `db` 或当前正在使用的数据库中的表。
 
-删除当前数据库中的表 `test`：
+删除当前数据库中的表 `monitor`：
 
 ```sql
 DROP TABLE monitor;
@@ -325,9 +318,10 @@ Query OK, 1 row affected (0.01 sec)
 :::
 
 可以使用 `DROP DATABASE` 删除数据库。
-例如，删除 `test` 数据库：
+例如，切换回 `public` 数据库并删除 `test` 数据库：
 
 ```sql
+USE public;
 DROP DATABASE test;
 ```
 
@@ -346,7 +340,7 @@ http://localhost:4000/v1/sql?db=public
 ```
 
 ```json
-{ "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 10 }
+{ "output": [{ "affectedrows": 0 }], "execution_time_ms": 10 }
 ```
 
 关于 SQL HTTP 请求的更多信息，请参考 [API 文档](/user-guide/protocols/http.md#post-sql-语句)。
