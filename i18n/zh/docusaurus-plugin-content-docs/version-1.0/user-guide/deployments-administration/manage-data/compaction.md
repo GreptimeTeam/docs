@@ -66,9 +66,10 @@ TWCS 将要压缩的文件分配到不同的时间窗口。对于每个窗口，
 
 对于窗口分配，SST 文件可能跨越多个时间窗口。为了确保不受陈旧数据影响，TWCS 根据 SST 的最大时间戳来进行分配。在时间序列工作负载中，无序写入很少发生，即使发生了，最近数据的查询性能也比陈旧数据更为重要。
 
-TWCS 提供了 5 个参数供调整：
+常用的 TWCS 表级参数包括：
 - `trigger_file_num`: 单一时间窗口中触发 compaction 的文件数量（默认为 4）
-- `max_output_file_size`: compaction 产生文件的最大大小（默认无限制）
+- `time_window`: TWCS compaction 的时间窗口大小
+- `max_output_file_size`: compaction 产生文件的最大大小（默认 512MB）
 
 以下图表显示了当 `trigger_file_num`为 3 时，窗口中的文件如何被压缩：
 - 在 A 中，有两个 SST 文件 `[0, 3]` 和 `[5, 6, 9]`，但只有一个有序组，因为这两个文件的时间范围不重叠。
@@ -104,6 +105,7 @@ CREATE TABLE monitor (
 WITH (
     'compaction.type'='twcs', 
     'compaction.twcs.trigger_file_num'='8', 
+    'compaction.twcs.time_window'='1h',
     'compaction.twcs.max_output_file_size'='500MB'
     );
 ```
@@ -128,7 +130,7 @@ ADMIN COMPACT_TABLE(
 );
 ```
 
-`<strategy_name>` 参数可以是 `twcs` 或 `swcs`（大小写不敏感），分别指定时间窗口压缩策略和严格窗口压缩策略。
+`<strategy_name>` 参数可以是 `regular`（或 `twcs`）来指定常规 TWCS compaction，也可以是 `swcs`（或 `strict_window`）来指定严格窗口压缩策略。该值大小写不敏感。
 对于 `swcs` 策略， `<strategy_parameters>` 可以指定：
 - 用于拆分 SST 文件的窗口大小（以秒为单位）
 - `parallelism` 参数用于控制压缩的并行度（默认为 1）
@@ -142,11 +144,11 @@ ADMIN COMPACT_TABLE(
     "3600"
 );
 
-+--------------------------------------------------------------------+
-| ADMIN compact_table(Utf8("monitor"),Utf8("swcs"),Utf8("3600")) |
-+--------------------------------------------------------------------+
-|                                                                  0 |
-+--------------------------------------------------------------------+
++------------------------------------------------+
+| ADMIN COMPACT_TABLE("monitor", "swcs", "3600") |
++------------------------------------------------+
+|                                              0 |
++------------------------------------------------+
 1 row in set (0.01 sec)
 ```
 
