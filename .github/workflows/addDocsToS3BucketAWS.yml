@@ -12,6 +12,8 @@ on:
       - "src/**"
       - "static/**"
       - "versioned_sidebars/**"
+      - "skills/**"
+      - "scripts/sync-skill.mjs"
       - "sidebars.ts"
       - "docusaurus.config.ts"
       - "package.json"

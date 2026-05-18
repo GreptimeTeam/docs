@@ -4,7 +4,11 @@ keywords: [快速开始, 安装]
 description: 快速开始使用 GreptimeDB
 ---
 
+import AgentOnboarding from '@site/src/components/AgentOnboarding';
+
 # 立即开始
+
+<AgentOnboarding />
 
 立即开始使用 GreptimeDB！
 
