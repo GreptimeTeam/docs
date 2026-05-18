@@ -122,7 +122,7 @@ If you have not ingested any OTLP metrics before, it will automatically use the 
 Otherwise, it will remain the old data format with the existing table, but use the new data format for any newly created tables.
 
 GreptimeDB pre-processes the incoming data before persisting them, including:
-1. Converting the metric names(table names) and the label names to the Prometheus style(e.g: replace `.` with `_`). See [here](https://opentelemetry.io/docs/specs/otel/compatibility/prometheus_and_openmetrics/#metric-metadata-1) for details.
+1. Converting the metric names(table names) and the label names to the Prometheus style(e.g: replace `.` with `_`). By default, GreptimeDB also adds Prometheus-style suffixes based on the metric unit and type. See [here](https://opentelemetry.io/docs/specs/otel/compatibility/prometheus_and_openmetrics/#metric-metadata-1) for details.
 
    Here are some examples of the conversion:
 
@@ -149,6 +149,19 @@ You can set the HTTP headers to configure the pre-processing behaviors. Here are
 2. `x-greptime-otlp-metric-promote-resource-attrs`: If not persisting all resource attributes, the attribute name list to be kept. Use `;` to join the name list.
 3. `x-greptime-otlp-metric-ignore-resource-attrs`: If persisting all resource attributes, the attribute name list to be ignored. Use `;` to join the name list.
 4. `x-greptime-otlp-metric-promote-scope-attrs`: Whether to persist the scope attributes. Default to `false`.
+5. `x-greptime-otlp-metric-translation-strategy`: How to translate OTLP metric names(table names) and label names(tag columns) before persisting them. Default to `UnderscoreEscapingWithSuffixes`.
+
+The `x-greptime-otlp-metric-translation-strategy` header accepts the following values:
+
+| Value | Metric name behavior | Label name behavior |
+| :--- | :--- | :--- |
+| `UnderscoreEscapingWithSuffixes` | Convert unsupported characters to `_`, and add Prometheus-style unit/type suffixes. For example, a monotonic sum metric `disk.io` with unit `By` becomes `disk_io_bytes_total`. | Convert unsupported characters to `_`. For example, `service.name` becomes `service_name`. |
+| `UnderscoreEscapingWithoutSuffixes` | Convert unsupported characters to `_`, but do not add unit/type suffixes. For example, `disk.io` becomes `disk_io`. | Convert unsupported characters to `_`. For example, `service.name` becomes `service_name`. |
+| `NoUTF8EscapingWithSuffixes` | Keep the original metric name characters, and add Prometheus-style unit/type suffixes. For example, a monotonic sum metric `disk.io` with unit `By` becomes `disk.io_bytes_total`. | Keep the original label name characters. For example, `service.name` remains `service.name`. |
+| `NoTranslation` | Keep the original metric name without adding suffixes. For example, `disk.io` remains `disk.io`. | Keep the original label name characters. For example, `service.name` remains `service.name`. |
+
+The header value is case-sensitive. Invalid values are rejected with a `400 Bad Request` response.
+See [OTel specs](https://opentelemetry.io/docs/specs/otel/metrics/sdk_exporters/prometheus/#translation-strategy) and [Prometheus docs](https://prometheus.io/docs/guides/opentelemetry/#utf-8) for more details.
 
 ### Data Model
 
