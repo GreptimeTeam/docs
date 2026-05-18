@@ -41,10 +41,8 @@ GreptimeDB 中的一个 region 具有相对固定的吞吐量，
 
 ## 分区
 
-在 GreptimeDB 中，
-表可以通过多种方式进行水平分区，
-并且它使用与 MySQL 相同的分区类型（及相应的语法）。
-目前，GreptimeDB 支持 RANGE COLUMNS 分区。
+在 GreptimeDB 中，表可以按列值范围进行水平分区。
+目前，GreptimeDB 支持使用 `PARTITION ON COLUMNS` 语法进行范围分区。
 
 每个分区仅包含表中的一部分数据，
 并按某些列的值范围进行分组。
@@ -61,10 +59,10 @@ PARTITION ON COLUMNS (<COLUMN LIST>) (
 
 1. `PARTITION ON COLUMNS` 后跟一个用逗号分隔的列名列表，指定了将用于分区的列。这里指定的列必须是 Tag 类型（由 PRIMARY KEY 指定）。请注意，所有分区的范围必须**不能**重叠。
 
-2. `RULE LIST` 是多个分区规则的列表。每个规则是分区名称和分区条件的组合。这里的表达式可以使用 `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, 列名和字面量。
+2. `RULE LIST` 是多个分区规则的列表。每个规则是一个分区条件，GreptimeDB 会为这些规则生成 `p0`、`p1` 等分区名称。这里的表达式可以使用 `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, 列名和字面量。
 
 :::tip 提示
-目前在“PARTITION BY RANGE”语法中不支持表达式。
+`PARTITION ON COLUMNS` 括号里只能写列名（如 `device_id`、`area`），不支持表达式。GreptimeDB 不支持 MySQL 的 `PARTITION BY RANGE` 语法。
 :::
 
 ### 示例
@@ -181,15 +179,16 @@ FROM sensor_readings;
 
 ```sql
 SELECT * FROM sensor_readings 
-WHERE area = 'North' AND device_id < 50;
+WHERE area = 'North' AND device_id < 50
+ORDER BY device_id;
 ```
 
 ```sql
 +-----------+-------+---------------+---------------------+
 | device_id | area  | reading_value | ts                  |
 +-----------+-------+---------------+---------------------+
-|        10 | North |          21.8 | 2023-09-19 09:45:00 |
 |         1 | North |          22.5 | 2023-09-19 08:30:00 |
+|        10 | North |          21.8 | 2023-09-19 09:45:00 |
 +-----------+-------+---------------+---------------------+
 2 rows in set (0.03 sec)
 ```
