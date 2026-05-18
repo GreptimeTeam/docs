@@ -1,0 +1,31 @@
+i18n/zh/docusaurus-plugin-content-docs/current/enterprise/autopilot/overview.md
+  s_5cab1e33a39b13::t_f163539dcb5ba2 13,21,31,34-39,98
+  s_5cab1e33a39b13::t_a438628ee2a9e3 32
+i18n/zh/docusaurus-plugin-content-docs/current/enterprise/autopilot/region-balancer.md
+  s_5cab1e33a39b13::t_f163539dcb5ba2 19-21
+i18n/zh/docusaurus-plugin-content-docs/current/enterprise/autopilot/auto-repartition.md
+  s_5cab1e33a39b13::t_f163539dcb5ba2 2-3,8,10,29,31-38,68
+docs/enterprise/autopilot/overview.md
+  s_5cab1e33a39b13::t_f163539dcb5ba2 13,21,31,34-39,98
+  s_5cab1e33a39b13::t_a438628ee2a9e3 32
+docs/enterprise/autopilot/region-balancer.md
+  s_5cab1e33a39b13::t_f163539dcb5ba2 19-21
+docs/enterprise/autopilot/auto-repartition.md
+  s_5cab1e33a39b13::t_f163539dcb5ba2 2-3,8,10,29,31-38,68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "b553bd3fec9225144f991f9a1c2c5adab06ce457",
+  "prompts": {},
+  "sessions": {
+    "s_5cab1e33a39b13": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1d5659b13ffeNN2aP6UOSCdY1j",
+        "model": "gpt-5.5"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
