@@ -87,7 +87,7 @@ The expected output is:
 
 ### Check Maintenance Mode Status
 
-Check maintenance mode status by sending a GET request to the `/admin/maintenance` endpoint.
+Check maintenance mode status by sending a GET request to the `/admin/maintenance/status` endpoint.
 
 ```bash
 curl -X GET http://localhost:4000/admin/maintenance/status
@@ -105,7 +105,7 @@ The expected output is:
 1. **Maintenance mode cannot be enabled**
    - Verify Metasrv is running and accessible
    - Check if you have the correct permissions
-   - Ensure the RPC port is correct
+   - Ensure the HTTP port is correct
 
 ### Best Practices
 
