@@ -173,6 +173,36 @@ GreptimeDB **auto-creates tables** for protocol-based ingestion paths
 to write `CREATE TABLE` first unless they want to control column types or
 indexes up front.
 
+> **Heads up on column names.** Auto-created tables use Greptime's naming, not
+> the client's. The time index column is `greptime_timestamp` for InfluxDB
+> line, Loki, Prometheus remote write, and Elasticsearch ingest — *not* `ts`,
+> `time`, or `timestamp`. Confirm with `DESC TABLE <name>` before composing
+> the first query.
+
+### Inspect the auto-created schema before querying
+
+After the first successful write, run `DESC TABLE <name>` (or `describe_table`
+via MCP) before composing SQL / PromQL. Common conventions to expect:
+
+- **Time index column**: `greptime_timestamp` for Prometheus remote write,
+  InfluxDB line, Loki, Elasticsearch ingest, and **OTLP metrics** (which
+  follow the Prom data model). **OTLP logs and traces** use a column named
+  `timestamp` instead. The OTLP payload field `time_unix_nano` is the
+  *source*, never the column name.
+- **Tags / labels** become primary-key string columns with semantic type
+  `TAG`; **fields / values** become value columns (`Float64`, `String`, etc.)
+  with semantic type `FIELD`.
+- **Loki `structured_metadata`** lands in a single `Json` column — query with
+  `json_get_*` functions.
+- **Elasticsearch nested fields** are flattened into dotted columns
+  (e.g. `meta.city`, `meta.tags`) of `String` type, not a JSON column.
+- **Default table name** is determined by the protocol: InfluxDB line uses
+  the measurement name, Elasticsearch uses `_index`, Loki defaults to
+  `loki_logs` (one table for all streams).
+
+Skipping this step is the most common cause of "column not found" failures in
+agent-driven workflows — one `DESC TABLE` saves one wasted query round-trip.
+
 When the user needs to parse text logs (regex, dissect, JSON extraction, field
 math, multi-table routing), **hand off to the [`greptimedb-pipeline`](https://docs.greptime.com/skills/greptimedb-pipeline/SKILL.md) skill** —
 do not try to reimplement it inline here.
@@ -201,8 +231,19 @@ Falling back to raw clients should only happen when MCP is not configured.
 pip install greptimedb-mcp-server
 ```
 
-Then register it in the agent's MCP config (Claude Desktop, Cursor, Claude
-Code, etc.):
+Then merge the following entry into the host agent's `mcpServers` block. The
+config file location depends on the host:
+
+- **Claude Code** — `~/.claude.json` (top-level `mcpServers` is user-wide;
+  per-project entries live under `projects.<path>.mcpServers`). Or run
+  `claude mcp add -s user greptimedb -- greptimedb-mcp-server --host localhost --database public`
+  to install user-wide (drop `-s user` for project-only).
+- **Claude Desktop** — `~/Library/Application Support/Claude/claude_desktop_config.json`
+  on macOS; `%APPDATA%\Claude\claude_desktop_config.json` on Windows.
+- **Cursor** — `~/.cursor/mcp.json` (global) or `<project>/.cursor/mcp.json`
+  (per-project).
+- **Other hosts** — if the user already has a working MCP host, merge the
+  entry below into their existing `mcpServers` map; do not overwrite the file.
 
 ```json
 {
@@ -226,10 +267,42 @@ or data-masking options, see the project README at
 |------|-------------|------------|
 | SQL (MySQL protocol) | General-purpose queries from MySQL clients / drivers | `mysql -h 127.0.0.1 -P 4002` |
 | SQL (PostgreSQL protocol) | General-purpose queries from PostgreSQL clients / drivers | `psql -h 127.0.0.1 -p 4003 -d public` |
-| SQL (HTTP) | Stateless calls from any language | `POST http://127.0.0.1:4000/v1/sql` |
+| SQL (HTTP) | Stateless calls from any language | `POST http://127.0.0.1:4000/v1/sql?db=<database>` |
 | PromQL | Existing Prometheus dashboards or alerts | `GET http://127.0.0.1:4000/v1/prometheus/api/v1/query` |
 | Range queries (`RANGE` / `ALIGN`) | Time-windowed aggregations in SQL | SQL on any of the above |
 | Log search | Term / phrase matching on log tables | SQL via `matches_term(column, 'value')` or the `@@` shorthand — see <https://docs.greptime.com/user-guide/logs/fulltext-search.md> |
+
+**HTTP SQL — minimal request shape.** Body is `application/x-www-form-urlencoded`,
+the SQL goes in a `sql=` field, and the database is a query-string parameter
+(not a header, not a JSON body):
+
+```shell
+curl -X POST \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  --data-urlencode 'sql=SELECT * FROM monitor LIMIT 10' \
+  'http://127.0.0.1:4000/v1/sql?db=public'
+```
+
+For auth-enabled deployments, add `-H 'Authorization: Basic <base64(user:pass)>'`.
+Optional knobs: `format=table|csvWithNames|...` in the query string,
+`X-Greptime-Timeout: 120s` header for long queries. Full reference at
+<https://docs.greptime.com/user-guide/protocols/http.md>.
+
+**PromQL — selecting a specific field on multi-field tables.** GreptimeDB
+tables can have multiple `FIELD` columns; vanilla PromQL has no syntax for
+this, so Greptime adds a `__field__` matcher. Without it, the query runs
+across *every* field column, which is rarely what you want:
+
+```promql
+# Pick one field
+cpu{host="web-01", __field__="usage_user"}
+
+# Subset via regex
+cpu{__field__=~"usage_(user|system)"}
+```
+
+Greptime extension only — Prometheus users will not recognize it. See
+<https://docs.greptime.com/user-guide/query-data/promql.md>.
 
 Authentication is **off by default** in standalone mode; production deployments
 should enable it. See
