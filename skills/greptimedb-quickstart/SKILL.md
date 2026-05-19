@@ -187,18 +187,23 @@ via MCP) before composing SQL / PromQL. Common conventions to expect:
 - **Time index column**: `greptime_timestamp` for Prometheus remote write,
   InfluxDB line, Loki, Elasticsearch ingest, and **OTLP metrics** (which
   follow the Prom data model). **OTLP logs and traces** use a column named
-  `timestamp` instead. The OTLP payload field `time_unix_nano` is the
-  *source*, never the column name.
+  `timestamp` instead — for logs sourced from the payload's
+  `time_unix_nano`; for spans sourced from `start_time_unix_nano` (spans
+  also get a `timestamp_end` column from `end_time_unix_nano`).
 - **Tags / labels** become primary-key string columns with semantic type
   `TAG`; **fields / values** become value columns (`Float64`, `String`, etc.)
   with semantic type `FIELD`.
 - **Loki `structured_metadata`** lands in a single `Json` column — query with
   `json_get_*` functions.
 - **Elasticsearch nested fields** are flattened into dotted columns
-  (e.g. `meta.city`, `meta.tags`) of `String` type, not a JSON column.
+  (e.g. `meta.count`, `meta.city`). Scalar JSON types are preserved
+  (`Int64` / `Float64` / `Boolean` / `String`); arrays are stringified into
+  a `String` column. Not a JSON column — `DESC TABLE` first to pick the
+  right cast.
 - **Default table name** is determined by the protocol: InfluxDB line uses
-  the measurement name, Elasticsearch uses `_index`, Loki defaults to
-  `loki_logs` (one table for all streams).
+  the measurement name; Loki defaults to `loki_logs` (one table for all
+  streams); Elasticsearch takes the bulk action's `_index`, falling back to
+  the URL path index when using `/v1/elasticsearch/<index>/_bulk`.
 
 Skipping this step is the most common cause of "column not found" failures in
 agent-driven workflows — one `DESC TABLE` saves one wasted query round-trip.
@@ -320,7 +325,7 @@ should enable it. See
 
 ## Phase 5. Use llms.txt for deeper detail
 
-`docs.greptime.com` publishes machine-friendly markdown alongside its HTML.
+The docs site publishes machine-friendly markdown alongside its HTML.
 Prefer these endpoints over the HTML pages when fetching content:
 
 - **<https://docs.greptime.com/llms.txt>** — sectioned index of every doc page
@@ -335,8 +340,9 @@ Prefer these endpoints over the HTML pages when fetching content:
   `<link rel="alternate" type="text/markdown" href="<path>.md">` in `<head>`,
   so any link can be rewritten to `.md` for clean markdown content.
 
-For users in China, the same paths are mirrored at
-`https://docs.greptime.cn/`.
+The docs are mirrored across two hosts: `docs.greptime.com` (global) and
+`docs.greptime.cn` (mainland China). Paths are identical; use whichever host
+you fetched this skill from.
 
 When fetching a doc URL, default to the `.md` form. The HTML form is for
 humans; the `.md` form is for agents.
