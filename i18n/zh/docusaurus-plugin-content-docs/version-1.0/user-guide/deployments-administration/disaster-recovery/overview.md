@@ -81,8 +81,6 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 在影响独立数据库的灾难事件发生时，你可以使用远程 WAL 和对象存储来恢复它。
 此方案能实现 RPO=0 和分钟级 RTO。
 
-有关此解决方案的更多信息，请参阅[独立模式的 DR 解决方案](./dr-solution-for-standalone.md)。
-
 ### 基于双活互备的 DR 解决方案
 
 ![Active-active failover](/active-active-failover.png)
@@ -123,7 +121,7 @@ BR 进程持续定期将数据从 Cluster 1 备份到 Region 2。
 
 基于 BR 的 DR 解决方案提供的 RPO 取决于备份频率，RTO 随要恢复的数据大小而变化。
 
-阅读[备份与恢复数据](./back-up-&-restore-data.md)获取详细信息，我们计划为此解决方案提供一种内部 BR 工具。
+阅读[备份与恢复数据](./back-up-&-restore-data.md)获取详细信息。
 
 ### 解决方案比较
 
@@ -141,7 +139,6 @@ BR 进程持续定期将数据从 Cluster 1 备份到 Region 2。
 ## 参考资料
 
 * [备份与恢复数据](./back-up-&-restore-data.md)
-* [GreptimeDB Standalone 的 DR 解决方案](./dr-solution-for-standalone.md)
 * [基于双活 - 备份的 DR 解决方案](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)
 * [基于单集群跨区域部署的 DR 解决方案](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)
 * [S3 对象副本概述](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html)

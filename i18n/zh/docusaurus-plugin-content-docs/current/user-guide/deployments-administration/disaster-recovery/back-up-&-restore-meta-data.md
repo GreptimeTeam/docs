@@ -24,8 +24,8 @@ greptime cli meta snapshot save \
     --s3 \
     --s3-bucket your-bucket-name \
     --s3-region ap-southeast-1 \
-    --s3-access-key <your-s3-access-key> \
-    --s3-secret-key <your-s3-secret-key>
+    --s3-access-key-id <your-s3-access-key-id> \
+    --s3-secret-access-key <your-s3-secret-access-key>
 ```
 
 **输出**: 在指定的 S3 桶中创建 `metadata_snapshot.metadata.fb` 文件。
@@ -99,8 +99,8 @@ greptime cli meta snapshot restore \
     --s3 \
     --s3-bucket your-bucket-name \
     --s3-region ap-southeast-1 \
-    --s3-access-key <your-s3-access-key> \
-    --s3-secret-key <your-s3-secret-key>
+    --s3-access-key-id <your-s3-access-key-id> \
+    --s3-secret-access-key <your-s3-secret-access-key>
 ```
 
 ### 从本地文件导入

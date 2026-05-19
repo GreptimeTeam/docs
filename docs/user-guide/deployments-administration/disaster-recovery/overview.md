@@ -70,8 +70,6 @@ But if running the Standalone with remote WAL and object storage, there is a bet
 
 Write the WAL to the Kafka cluster and store the data in object storage, so the database itself is stateless. In the event of a disaster affecting the standalone database, you can restore it using the remote WAL and object storage. This solution can achieve **RPO=0** and **RTO in minutes**.
 
-For more information about this solution, see [DR solution for Standalone](./dr-solution-for-standalone.md).
-
 ### DR solution based on Active-Active Failover
 
 ![Active-active failover](/active-active-failover.png)
@@ -106,7 +104,7 @@ In this architecture, GreptimeDB Cluster 1 is deployed in region 1. The BR proce
 
 The DR solution based on BR provides an RPO depending on the backup frequency and an RTO that varies with the size of the data to be restored.
 
-Read [Backup & restore data](./back-up-&-restore-data.md) for details, and we plan to provide a BR tool in-house for this solution.
+Read [Backup & restore data](./back-up-&-restore-data.md) for details.
 
 ### Solution Comparison
 
@@ -124,7 +122,6 @@ By comparing these DR solutions, you can decide on the final option based on the
 ## References
 
 * [Backup & restore data](./back-up-&-restore-data.md)
-* [DR solution for GreptimeDB Standalone](./dr-solution-for-standalone.md)
 * [DR solution based on Active-Active Failover ](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)
 * [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)
 * [S3 Replicating objects overview](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html)
