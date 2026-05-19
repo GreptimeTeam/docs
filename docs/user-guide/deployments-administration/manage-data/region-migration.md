@@ -55,6 +55,7 @@ ADMIN migrate_region(4398046511104, 1, 2, 60);
 The parameters of `migrate_region`：
 
 ```sql
+ADMIN migrate_region(region_id, from_peer_id, to_peer_id);
 ADMIN migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
 ```
 
@@ -63,7 +64,7 @@ ADMIN migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
 | `region_id`      | The region id.                                                                                                                                                                            | **Required** |     |
 | `from_peer_id`   | The peer id of the migration source(Datanode).                                                                                                                                            | **Required** |     |
 | `to_peer_id`     | The peer id of the migration destination(Datanode).                                                                                                                                       | **Required** |     |
-| `replay_timeout` | The timeout(secs) of replay data. If the new Region fails to replay the data within the specified timeout,  the migration will fail, however the data in the old Region will not be lost. | Optional     |     |
+| `replay_timeout` | The timeout (in seconds) for replaying data. Defaults to 300 seconds if omitted. If the new Region fails to replay the data within the specified timeout, the migration will fail, however the data in the old Region will not be lost. | Optional     |     |
 
 ## Query the migration state
 
@@ -80,4 +81,3 @@ If it's done, outputs the state in JSON:
 ```
 
 Of course, you can confirm the region distribution by querying from `region_peers` and `partitions` in `information_schema`.
-
