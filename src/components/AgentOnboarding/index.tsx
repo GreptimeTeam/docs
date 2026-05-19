@@ -4,6 +4,12 @@ import copy from 'copy-text-to-clipboard';
 import { onboardingLabels, onboardingPrompt } from './prompt';
 import styles from './styles.module.css';
 
+declare global {
+  interface Window {
+    gtag?: (command: string, eventName: string, params?: Record<string, unknown>) => void;
+  }
+}
+
 interface Props {
   label?: string;
   url?: string;
@@ -24,6 +30,11 @@ export default function AgentOnboarding({ label, url, prompt }: Props): JSX.Elem
     if (copy(resolvedPrompt)) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
+      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+        window.gtag('event', 'agent_onboarding_copy', {
+          locale: i18n.currentLocale,
+        });
+      }
     }
   };
 
