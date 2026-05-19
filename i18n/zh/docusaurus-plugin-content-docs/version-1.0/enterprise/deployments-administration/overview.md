@@ -1,5 +1,5 @@
 ---
-keywords: [鉴权认证, 部署, 监控, Kubernetes 部署, GreptimeDB 部署, GreptimeDB 监控]
+keywords: [鉴权认证, 部署, 监控, Kubernetes 部署, GreptimeDB 企业版部署, GreptimeDB 监控]
 description: GreptimeDB 企业版的部署指南，包括鉴权认证、Kubernetes 部署和监控等内容。
 ---
 

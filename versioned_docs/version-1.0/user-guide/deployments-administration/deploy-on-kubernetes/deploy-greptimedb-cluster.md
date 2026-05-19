@@ -202,7 +202,10 @@ For example, a minimal GreptimeDB cluster configuration is as follows:
 
 ```yaml
 image:
-  registry: docker.io
+  # Image registry:
+  # Use `docker.io` for OSS GreptimeDB,
+  # consult staff for Enterprise GreptimeDB
+  registry: <registry>
   # Image repository:
   # Use `greptime/greptimedb` for OSS GreptimeDB,
   # consult staff for Enterprise GreptimeDB
@@ -228,6 +231,9 @@ meta:
       endpoints: ["etcd.etcd-cluster.svc.cluster.local:2379"]
 
 datanode:
+  replicas: 1
+
+flownode:
   replicas: 1
 ```
 
