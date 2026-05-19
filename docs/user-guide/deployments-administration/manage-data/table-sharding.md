@@ -41,8 +41,8 @@ For more information on the relationship between partitions and regions, refer t
 
 ## Partition
 
-In GreptimeDB, a table can be horizontally partitioned in multiple ways and it uses the same
-partitioning types (and corresponding syntax) as in MySQL. Currently, GreptimeDB supports "RANGE COLUMNS partitioning".
+In GreptimeDB, a table can be horizontally partitioned by column value ranges.
+Currently, GreptimeDB supports range partitioning with the `PARTITION ON COLUMNS` syntax.
 
 Each partition includes only a portion of the data from the table, and is
 grouped by some column(s) value range. For example, we can partition a table in GreptimeDB like
@@ -59,10 +59,10 @@ The syntax mainly consists of two parts:
 
 1. `PARTITION ON COLUMNS` followed by a comma-separated list of column names. This specifies which columns will be used for partitioning. The columns specified here must be of the Tag type (as specified by the PRIMARY KEY). Note that the ranges of all partitions must **not** overlap.
 
-2. `RULE LIST` is a list of multiple partition rules. Each rule is a combination of a partition name and a partition condition. The expressions here can use `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, column names, and literals.
+2. `RULE LIST` is a list of multiple partition rules. Each rule is a partition condition, and GreptimeDB generates partition names such as `p0`, `p1`, and so on for these rules. The expressions here can use `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, column names, and literals.
 
 :::tip Note
-Currently expressions are not supported in "PARTITION BY RANGE" syntax.
+The parentheses in `PARTITION ON COLUMNS (...)` only accept column names (e.g., `device_id`, `area`), not expressions like `device_id + 1`. GreptimeDB does not support MySQL's `PARTITION BY RANGE` syntax.
 :::
 
 ### Example
@@ -179,15 +179,16 @@ FROM sensor_readings;
 
 ```sql
 SELECT * FROM sensor_readings 
-WHERE area = 'North' AND device_id < 50;
+WHERE area = 'North' AND device_id < 50
+ORDER BY device_id;
 ```
 
 ```sql
 +-----------+-------+---------------+---------------------+
 | device_id | area  | reading_value | ts                  |
 +-----------+-------+---------------+---------------------+
-|        10 | North |          21.8 | 2023-09-19 09:45:00 |
 |         1 | North |          22.5 | 2023-09-19 08:30:00 |
+|        10 | North |          21.8 | 2023-09-19 09:45:00 |
 +-----------+-------+---------------+---------------------+
 2 rows in set (0.03 sec)
 ```
