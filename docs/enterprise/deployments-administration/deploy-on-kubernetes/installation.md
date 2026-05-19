@@ -479,7 +479,7 @@ Access port 19095 of the dashboard service to log in.
 
 Log in using the superuser account and password from the database deployment. You will see:
 
-![Enterprise Dashboard Page](/enterprise-dashboard-login.png)
+![Enterprise Dashboard Page](/enterprise-dashboard-page.png)
 
 1. Query: Use SQL to query data
 2. Logs Query: Use the UI to query log tables
