@@ -101,7 +101,7 @@ curl -X GET http://localhost:4000/admin/maintenance/status
 1. **无法启用维护模式**
    - 验证 Metasrv 是否正在运行且可访问
    - 检查你是否具有正确的权限
-   - 确保 RPC 端口正确
+   - 确保 HTTP 端口正确
 
 ### 最佳实践
 

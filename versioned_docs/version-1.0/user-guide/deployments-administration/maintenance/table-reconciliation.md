@@ -38,23 +38,23 @@ After a cluster is restored from specific metadata, write and query operations m
 After a cluster is restored from specific metadata, starting the Datanode may result in an `Empty region directory` error. This usually occurs because the original cluster deleted tables (executed `DROP TABLE`) after the metadata backup, causing the deleted table metadata to not be included in the backup, resulting in this error when starting the Datanode. For this situation, you need to enable [Recovery Mode](/user-guide/deployments-administration/maintenance/recovery-mode.md) after starting Metasrv when starting the cluster to ensure the Datanode can start normally.
 
 - **Mito Engine tables**: Table metadata cannot be repaired, you need to manually execute the `DROP TABLE` command to delete the non-existent table.
-- **Metric Engine tables**: Table metadata can be repaired, you need to manually execute the `ADMIN reconcile_table(table_name)` command to repair the table metadata.
+- **Metric Engine tables**: Table metadata can be repaired, you need to manually execute the `ADMIN reconcile_table('table_name')` command to repair the table metadata.
 
 ### `No field named` Error
 
-After a cluster is restored from specific metadata, write and query operations may encounter `No field named` errors. This usually occurs because the original cluster deleted columns (executed `DROP COLUMN`) after the metadata backup, causing the deleted column metadata to not be included in the backup, resulting in this error when querying these deleted columns. For this situation, you need to manually execute the `ADMIN reconcile_table(table_name)` command to repair the table metadata.
+After a cluster is restored from specific metadata, write and query operations may encounter `No field named` errors. This usually occurs because the original cluster deleted columns (executed `DROP COLUMN`) after the metadata backup, causing the deleted column metadata to not be included in the backup, resulting in this error when querying these deleted columns. For this situation, you need to manually execute the `ADMIN reconcile_table('table_name')` command to repair the table metadata.
 
 ### `schema has a different type` Error
 
-After a cluster is restored from specific metadata, write and query operations may encounter `schema has a different type` errors. This usually occurs because the original cluster modified column types (executed `MODIFY COLUMN [column_name] [type]`) after the metadata backup, causing the modified column type metadata to not be included in the backup, resulting in this error when querying these modified columns. For this situation, you need to manually execute the `ADMIN reconcile_table(table_name)` command to repair the table metadata.
+After a cluster is restored from specific metadata, write and query operations may encounter `schema has a different type` errors. This usually occurs because the original cluster modified column types (executed `MODIFY COLUMN [column_name] [type]`) after the metadata backup, causing the modified column type metadata to not be included in the backup, resulting in this error when querying these modified columns. For this situation, you need to manually execute the `ADMIN reconcile_table('table_name')` command to repair the table metadata.
 
 ### Missing Specific Columns
 
-After a cluster is restored from specific metadata, write and query operations may run normally but not include some columns. This occurs because the original cluster added columns (executed `ADD COLUMN`) after the metadata backup, causing the new column metadata to not be included in the backup, making these columns unavailable during queries. For this situation, you need to manually execute the `ADMIN reconcile_table(table_name)` command to repair the table metadata.
+After a cluster is restored from specific metadata, write and query operations may run normally but not include some columns. This occurs because the original cluster added columns (executed `ADD COLUMN`) after the metadata backup, causing the new column metadata to not be included in the backup, making these columns unavailable during queries. For this situation, you need to manually execute the `ADMIN reconcile_table('table_name')` command to repair the table metadata.
 
 ### Missing Column Indexes
 
-After a cluster is restored from specific metadata, write and query operations may run normally, but `SHOW CREATE TABLE`/`SHOW INDEX FROM [table_name]` shows that certain columns don't include expected indexes. This occurs because the original cluster modified indexes (executed `MODIFY INDEX [column_name] SET [index_type] INDEX`) after the metadata backup, causing the index change metadata to not be included in the backup. For this situation, you need to manually execute the `ADMIN reconcile_table(table_name)` command to repair the table metadata.
+After a cluster is restored from specific metadata, write and query operations may run normally, but `SHOW CREATE TABLE`/`SHOW INDEX FROM [table_name]` shows that certain columns don't include expected indexes. This occurs because the original cluster modified indexes (executed `MODIFY INDEX [column_name] SET [index_type] INDEX`) after the metadata backup, causing the index change metadata to not be included in the backup. For this situation, you need to manually execute the `ADMIN reconcile_table('table_name')` command to repair the table metadata.
 
 ## Repair operations
 
@@ -73,7 +73,7 @@ ADMIN reconcile_catalog()
 Repair the metadata inconsistency of all tables in a specific database:
 
 ```sql
-ADMIN reconcile_database(database_name)
+ADMIN reconcile_database('database_name')
 ```
 
 ### Repair a Specific Table
@@ -81,7 +81,7 @@ ADMIN reconcile_database(database_name)
 Repair the metadata inconsistency of a single table:
 
 ```sql
-ADMIN reconcile_table(table_name)
+ADMIN reconcile_table('table_name')
 ```
 
 ### View Repair Progress
@@ -89,7 +89,7 @@ ADMIN reconcile_table(table_name)
 After the Admin function is executed, it will return a `ProcedureID`, you can use the following command to view the progress of the repair task:
 
 ```sql
-ADMIN procedure_state(procedure_id)
+ADMIN procedure_state('procedure_id')
 ```
 
 When `procedure_state` returns Done, it indicates that the repair task has completed.
