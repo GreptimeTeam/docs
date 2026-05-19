@@ -55,6 +55,17 @@ function resolveVariables(content) {
   return content.replace(/VAR::([A-Z_]+)/gi, (match, name) => variables[name] ?? match);
 }
 
+// Rewrite docs host per locale so the zh build (deployed to docs.greptime.cn)
+// ships .cn links instead of .com. Reads DOC_LANG, matching docusaurus.config.ts.
+const docsHost = process.env.DOC_LANG === 'zh'
+  ? 'https://docs.greptime.cn'
+  : 'https://docs.greptime.com';
+
+function rewriteDocsHost(content) {
+  if (docsHost === 'https://docs.greptime.com') return content;
+  return content.replaceAll('https://docs.greptime.com', docsHost);
+}
+
 // Inject the breadcrumb as a YAML comment inside the frontmatter so strict
 // frontmatter parsers (Anthropic Skill loaders, etc.) still see `---` as the
 // first byte of the file. Falls back to an HTML comment prefix when the
@@ -70,7 +81,7 @@ function withBanner(body, srcRel) {
 
 function writeWithBanner(srcAbs, dstAbs, srcRel) {
   mkdirSync(dirname(dstAbs), { recursive: true });
-  const body = resolveVariables(readFileSync(srcAbs, 'utf8'));
+  const body = rewriteDocsHost(resolveVariables(readFileSync(srcAbs, 'utf8')));
   writeFileSync(dstAbs, withBanner(body, srcRel), 'utf8');
   console.log(`[sync-skill] ${srcRel} -> ${dstAbs.slice(repoRoot.length + 1)}`);
 }

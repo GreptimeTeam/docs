@@ -45,6 +45,8 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install
       - run: pnpm sync-skill
+        env:
+          DOC_LANG: zh
       - run: pnpm build
         env:
           BIEL_PROJECT_ID: ${{ secrets.BIEL_PROJECT_ID }}

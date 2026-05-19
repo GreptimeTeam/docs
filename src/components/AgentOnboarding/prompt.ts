@@ -20,13 +20,13 @@ interface OnboardingLabels {
 
 const LABELS: Record<'en' | 'zh', OnboardingLabels> = {
   en: {
-    label: 'AGENT ONBOARDING',
+    label: 'AGENT QUICKSTART',
     copy: 'Copy',
     copied: 'Copied',
     copyAriaLabel: 'Copy prompt to clipboard',
   },
   zh: {
-    label: 'AGENT 接入',
+    label: 'AI Agent 提示词',
     copy: '复制',
     copied: '已复制',
     copyAriaLabel: '复制提示词到剪贴板',

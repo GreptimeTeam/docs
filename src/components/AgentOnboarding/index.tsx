@@ -26,16 +26,22 @@ export default function AgentOnboarding({ label, url, prompt }: Props): JSX.Elem
 
   const [copied, setCopied] = useState(false);
 
+  const trackEvent = (eventName: string) => {
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', eventName, { locale: i18n.currentLocale });
+    }
+  };
+
   const handleCopy = () => {
     if (copy(resolvedPrompt)) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', 'agent_onboarding_copy', {
-          locale: i18n.currentLocale,
-        });
-      }
+      trackEvent('agent_onboarding_copy');
     }
+  };
+
+  const handleLinkClick = () => {
+    trackEvent('agent_onboarding_link_click');
   };
 
   const promptParts = resolvedPrompt.split(resolvedUrl);
@@ -49,7 +55,13 @@ export default function AgentOnboarding({ label, url, prompt }: Props): JSX.Elem
           {promptContainsUrl ? (
             <>
               {promptParts[0]}
-              <a href={resolvedUrl} className={styles.link} target="_blank" rel="noopener noreferrer">
+              <a
+                href={resolvedUrl}
+                className={styles.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleLinkClick}
+              >
                 {resolvedUrl}
               </a>
               {promptParts.slice(1).join(resolvedUrl)}
