@@ -153,12 +153,12 @@ You can set the HTTP headers to configure the pre-processing behaviors. Here are
 
 The `x-greptime-otlp-metric-translation-strategy` header accepts the following values:
 
-| Value | Metric name behavior | Label name behavior |
-| :--- | :--- | :--- |
-| `UnderscoreEscapingWithSuffixes` | Convert unsupported characters to `_`, and add Prometheus-style unit/type suffixes. For example, a monotonic sum metric `disk.io` with unit `By` becomes `disk_io_bytes_total`. | Convert unsupported characters to `_`. For example, `service.name` becomes `service_name`. |
-| `UnderscoreEscapingWithoutSuffixes` | Convert unsupported characters to `_`, but do not add unit/type suffixes. For example, `disk.io` becomes `disk_io`. | Convert unsupported characters to `_`. For example, `service.name` becomes `service_name`. |
-| `NoUTF8EscapingWithSuffixes` | Keep the original metric name characters, and add Prometheus-style unit/type suffixes. For example, a monotonic sum metric `disk.io` with unit `By` becomes `disk.io_bytes_total`. | Keep the original label name characters. For example, `service.name` remains `service.name`. |
-| `NoTranslation` | Keep the original metric name without adding suffixes. For example, `disk.io` remains `disk.io`. | Keep the original label name characters. For example, `service.name` remains `service.name`. |
+| Value | Metric name behavior | Label name behavior | Original names | Translated names |
+| :--- | :--- | :--- | :--- | :--- |
+| `UnderscoreEscapingWithSuffixes` | Convert unsupported characters to `_`, and add Prometheus-style unit/type suffixes. | Convert unsupported characters to `_`. | Metric: `http.server.request-duration_total` (monotonic sum, unit `ms`)<br />Label: `_http.status-code` | Metric: `http_server_request_duration_milliseconds_total`<br />Label: `key_http_status_code` |
+| `UnderscoreEscapingWithoutSuffixes` | Convert unsupported characters to `_`, but do not add unit/type suffixes. | Convert unsupported characters to `_`. | Metric: `http.server.request-duration_total` (monotonic sum, unit `ms`)<br />Label: `_http.status-code` | Metric: `http_server_request_duration_total`<br />Label: `key_http_status_code` |
+| `NoUTF8EscapingWithSuffixes` | Keep the original metric name characters, and add Prometheus-style unit/type suffixes. | Keep the original label name characters. | Metric: `http.server.request-duration_total` (monotonic sum, unit `ms`)<br />Label: `_http.status-code` | Metric: `http.server.request-duration_milliseconds_total`<br />Label: `_http.status-code` |
+| `NoTranslation` | Keep the original metric name without adding suffixes. | Keep the original label name characters. | Metric: `http.server.request-duration_total` (monotonic sum, unit `ms`)<br />Label: `_http.status-code` | Metric: `http.server.request-duration_total`<br />Label: `_http.status-code` |
 
 The header value is case-sensitive. Invalid values are rejected with a `400 Bad Request` response.
 See [OTel specs](https://opentelemetry.io/docs/specs/otel/metrics/sdk_exporters/prometheus/#translation-strategy) and [Prometheus docs](https://prometheus.io/docs/guides/opentelemetry/#utf-8) for more details.
