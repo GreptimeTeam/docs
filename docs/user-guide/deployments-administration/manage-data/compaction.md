@@ -7,7 +7,7 @@ description: Explanation of the compaction process in GreptimeDB, including conc
 
 For databases based on the LSM Tree, compaction is extremely critical. It merges overlapping fragmented SST files into a single ordered file, discards deleted data while significantly improves query performance.
 
-Until v0.9.1, GreptimeDB provides compaction strategies to control how SST files are compacted: Time Windowed Compaction Strategy (TWCS) and Strict Window Compaction Strategy (SWCS).
+Since v0.9.1, GreptimeDB provides compaction strategies to control how SST files are compacted: Time Windowed Compaction Strategy (TWCS) and Strict Window Compaction Strategy (SWCS).
 
 
 ## Concepts
@@ -68,9 +68,10 @@ It assigns files to be compacted into different time windows. For each window, T
 For window assignment, SST files may span multiple time windows. TWCS assigns SSTs based on their maximum timestamps to ensure they are not affected by stale data. In time-series workloads, out-of-order writes are infrequent, and even when they occur, recent data's query performance is more critical than that of stale data.
 
 
-TWCS provides 2 parameters:
+Common TWCS table options include:
 - `trigger_file_num`: number of files in a specific time window to trigger a compaction (default 4).
-- `max_output_file_size`: max allowed compaction output file size (no limit by default).
+- `time_window`: time window size for TWCS compaction.
+- `max_output_file_size`: max allowed compaction output file size (default 512MB).
 
 
 Following diagrams show how files in a window get compacted when `trigger_file_num = 3`:
@@ -107,6 +108,7 @@ CREATE TABLE monitor (
 WITH (
     'compaction.type'='twcs', 
     'compaction.twcs.trigger_file_num'='8', 
+    'compaction.twcs.time_window'='1h',
     'compaction.twcs.max_output_file_size'='500MB'
     );
 ```
@@ -131,7 +133,7 @@ ADMIN COMPACT_TABLE(
 );
 ```
 
-The `<strategy_name>` parameter can be either `twcs` or `swcs` (case insensitive) which refer to Time Windowed Compaction Strategy and Strict Window Compaction Strategy respectively.
+The `<strategy_name>` parameter can be `regular` (or `twcs`) for regular TWCS compaction, or `swcs` (or `strict_window`) for Strict Window Compaction Strategy. The value is case-insensitive.
 For the `swcs` strategy, the `<strategy_parameters>` can specify:
 - The window size (in seconds) for splitting SST files
 - The `parallelism` parameter to control the level of parallelism for compaction (defaults to 1)
@@ -145,11 +147,11 @@ ADMIN COMPACT_TABLE(
     "3600"
 );
 
-+--------------------------------------------------------------------+
-| ADMIN compact_table(Utf8("monitor"),Utf8("swcs"),Utf8("3600")) |
-+--------------------------------------------------------------------+
-|                                                                  0 |
-+--------------------------------------------------------------------+
++------------------------------------------------+
+| ADMIN COMPACT_TABLE("monitor", "swcs", "3600") |
++------------------------------------------------+
+|                                              0 |
++------------------------------------------------+
 1 row in set (0.01 sec)
 ```
 
