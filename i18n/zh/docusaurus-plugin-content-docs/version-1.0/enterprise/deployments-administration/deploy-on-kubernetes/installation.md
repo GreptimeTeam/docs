@@ -53,15 +53,15 @@ GreptimeDB 企业版部署包括以下组件：
 
 参考 [GreptimeDB Operator 的管理文档](/user-guide/deployments-administration/deploy-on-kubernetes/greptimedb-operator-management.md)获取详细的安装步骤。
 
-## 部署 ETCD
+## 部署 ETCD (可选)
 
 参考 [管理 ETCD](/user-guide/deployments-administration/manage-metadata/manage-etcd.md)获取详细的安装步骤。
 
-## 部署 Kafka
+## 部署 Kafka (可选)
 
 参考 [部署 Kafka 集群](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-kafka.md)获取详细的安装步骤。
 
-## 部署 MinIO
+## 部署 MinIO (可选)
 
 参考 [部署 MinIO 集群](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-minio.md)获取详细的安装步骤。
 

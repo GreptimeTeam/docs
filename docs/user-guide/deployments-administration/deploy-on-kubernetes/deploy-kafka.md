@@ -19,7 +19,7 @@ Before installation, you need to create a configuration file for the Kafka clust
 
 ```yaml
 image:
-  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  registry: docker.io
   repository: greptime/kafka
   tag: 3.9.0-debian-12-r1
 
@@ -94,7 +94,7 @@ Install the Kafka cluster in the kafka namespace:
 ```bash
 helm upgrade --install kafka \
   --create-namespace \
-  oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/kafka \
+  oci://registry-1.docker.io/bitnamicharts/kafka \
   --version 31.0.0 \
   -n kafka --values kafka-values.yaml
 ```

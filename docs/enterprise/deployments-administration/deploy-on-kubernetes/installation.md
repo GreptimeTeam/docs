@@ -53,15 +53,15 @@ Components marked with * are optional:
 
 Refer to [GreptimeDB Operator Management Documentation](/user-guide/deployments-administration/deploy-on-kubernetes/greptimedb-operator-management.md) for detailed installation steps.
 
-## Deploy ETCD
+## Deploy ETCD (Option)
 
 Refer to [Manage ETCD](/user-guide/deployments-administration/manage-metadata/manage-etcd.md) for detailed installation steps.
 
-## Deploy Kafka
+## Deploy Kafka (Option)
 
 Refer to [Deploy Kafka Cluster](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-kafka.md) for detailed installation steps.
 
-## Deploy MinIO
+## Deploy MinIO (Option)
 
 Refer to [Deploy MinIO Cluster](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-minio.md) for detailed installation steps.
 
@@ -121,7 +121,7 @@ image:
 additionalLabels: {}
 
 initializer:
-  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  registry: docker.io
   repository: greptime/greptimedb-initializer
   tag: "VAR::greptimedbOperatorVersion"
 
@@ -280,7 +280,7 @@ monitoring:
         storageSize: 100Gi
   # sidecar vector configuration
   vector:
-    registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+    registry: docker.io
     repository: timberio/vector
     tag: 0.46.1-debian   
     # sidecar vector resource configuration
@@ -334,7 +334,7 @@ Install the GreptimeDB cluster in the `greptimedb` namespace:
 ```bash
 helm upgrade --install greptimedb \
   --create-namespace \
-  oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/greptimedb-cluster \
+  greptime/greptimedb-cluster \
   -n greptimedb --values greptimedb-cluster-values.yaml
 ```
 

@@ -23,7 +23,7 @@ global:
     allowInsecureImages: true
 
 image:
-  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  registry: docker.io
   repository: greptime/minio
   tag: 2025.4.22-debian-12-r1
 
@@ -59,7 +59,7 @@ Install the MinIO cluster in the minio namespace:
 
 ```bash
 helm upgrade \
-  --install minio oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/minio \
+  --install minio oci://registry-1.docker.io/bitnamicharts/minio \
   --create-namespace \
   --version 16.0.10 \
   -n minio --values minio-values.yaml
