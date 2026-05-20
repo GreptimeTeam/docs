@@ -59,7 +59,15 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u
 ```
 
 When `append_mode=true` is explicitly provided, GreptimeDB creates the table with `append_mode = 'true'` and `merge_mode = 'last_row'`.
-If the hint is absent or set to `false`, auto-created InfluxDB line protocol tables keep the default `merge_mode = 'last_non_null'`.
+Otherwise, auto-created InfluxDB line protocol tables use the merge mode from the `merge_mode` HTTP hint. If no hint is provided, GreptimeDB uses the configured [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md) value, which defaults to `last_non_null`.
+To change the cluster-wide default for InfluxDB line protocol auto-created tables, set this option in the standalone or frontend configuration file:
+
+```toml
+[influxdb]
+default_merge_mode = "last_row"
+```
+
+Available values are `last_non_null` and `last_row`.
 
 You can also omit the timestamp when sending requests. GreptimeDB will use the current system time (in UTC) of the host machine as the timestamp. For example:
 
@@ -161,8 +169,8 @@ While you may already be familiar with [InfluxDB key concepts](https://docs.infl
 Here are the similarities and differences between the data models of GreptimeDB and InfluxDB:
 
 - Both solutions are [schemaless](/user-guide/ingest-data/overview.md#automatic-schema-generation), eliminating the need to define a schema before writing data.
-- The GreptimeDB table is automatically created with the [`merge_mode` option](/reference/sql/create.md#create-a-table-with-merge-mode) set to `last_non_null` by default.
-  That means the table merges rows with the same tags and timestamp by keeping the latest value of each field, which is the same behavior as InfluxDB.
+- The GreptimeDB table is automatically created with the [`merge_mode` option](/reference/sql/create.md#create-a-table-with-merge-mode) set from the `merge_mode` HTTP hint or from [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md) when the hint is absent. The configuration defaults to `last_non_null`.
+  With `last_non_null`, the table merges rows with the same tags and timestamp by keeping the latest value of each field, which is the same behavior as InfluxDB.
   If the request explicitly sets the HTTP `append_mode` hint to `true`, the table is created with `append_mode = 'true'` and `merge_mode = 'last_row'`.
 - In InfluxDB, a point represents a single data record with a measurement, tag set, field set, and a timestamp.
 In GreptimeDB, it is represented as a row of data in the time-series table,

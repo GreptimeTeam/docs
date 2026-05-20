@@ -318,8 +318,8 @@ allowing updates to provide only the values that need to change.
 
 ![merge-mode-last-non-null](/merge-mode-last-non-null.png)
 
-The `last_non_null` merge mode is the default for tables created automatically via the InfluxDB line protocol,
-aligning with InfluxDB's update behavior.
+For tables created automatically via the InfluxDB line protocol, the default merge mode comes from the [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md) configuration, which defaults to `last_non_null` to align with InfluxDB's update behavior.
+An explicit HTTP `merge_mode` hint in the write request takes precedence over the configured default.
 
 If an InfluxDB line protocol write explicitly sets the HTTP `append_mode` hint to `true`,
 the auto-created table uses `append_mode = 'true'` and `merge_mode = 'last_row'` instead.

@@ -185,6 +185,9 @@ enable = true
 
 [influxdb]
 enable = true
+# Default merge mode for tables automatically created by InfluxDB protocol.
+# Available values: "last_non_null", "last_row".
+default_merge_mode = "last_non_null"
 
 [prom_store]
 enable = true
@@ -216,6 +219,7 @@ The following table describes the options in detail:
 |            | runtime_size         | Integer | The number of server worker threads, 2 by default                                                                                                                                                                                                                                                                                                                                          |
 | influxdb   |                      |         | InfluxDB Protocol options                                                                                                                                                                                                                                                                                                                                                                  |
 |            | enable               | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                                                                                                                                                                                                                                                                                                                           |
+|            | default_merge_mode   | String  | Default merge mode for tables automatically created by InfluxDB protocol. Available values: `last_non_null`, `last_row`. Default: `last_non_null`                                                                                                                                                                                                                                           |
 | opentsdb   |                      |         | OpenTSDB Protocol options                                                                                                                                                                                                                                                                                                                                                                  |
 |            | enable               | Boolean | Whether to enable OpenTSDB protocol in HTTP API, true by default                                                                                                                                                                                                                                                                                                                           |
 | prom_store |                              |         | Prometheus remote storage options                                                                                                                                                                                                                                                                                                                                                          |
