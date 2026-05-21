@@ -1,6 +1,6 @@
 ---
 keywords: [SST manifest, SST files, region files, file metadata, table data files]
-description: Provides access to SST (Sorted String Table) file information from the manifest, including file paths, sizes, time ranges, row counts, and primary key ranges.
+description: Provides access to SST (Sorted String Table) file information from the manifest, including file paths, sizes, time ranges, row counts, and encoded primary key ranges.
 ---
 
 # SSTS_MANIFEST

@@ -1,6 +1,6 @@
 ---
 keywords: [SST manifest, SST 文件, region 文件, 文件元数据, 表数据文件]
-description: 提供从 manifest 中获取的 SST（排序字符串表）文件信息，包括文件路径、大小、时间范围、行数和主键范围。
+description: 提供从 manifest 中获取的 SST（排序字符串表）文件信息，包括文件路径、大小、时间范围、行数和编码后的主键范围。
 ---
 
 # SSTS_MANIFEST
