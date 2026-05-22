@@ -128,7 +128,7 @@ initializer:
 # -- Meta configuration
 meta:
   # -- Meta replicas
-  replicas: 3
+  replicas: 2
   
   backendStorage:
     # Optional

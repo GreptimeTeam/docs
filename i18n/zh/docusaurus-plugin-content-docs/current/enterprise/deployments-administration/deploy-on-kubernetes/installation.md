@@ -128,7 +128,7 @@ initializer:
 # -- Meta 配置
 meta:
   # -- Meta 副本数
-  replicas: 3
+  replicas: 2
   
   backendStorage:
     # 可选
