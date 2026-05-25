@@ -218,7 +218,7 @@ Default rules:
 
 - Exact spike known: export `T-30min` to `T+30min`.
 - Ramp-up: export from first anomaly minus 30min to recovery plus 30min.
-- Related WARNs precede ERRORs: start from first related WARN.
+- Related WARNs precede ERROR: start from first related WARN.
 - Meta, heartbeat, region migration, or repartition appears involved: widen to `T-2h` to `T+2h`.
 - Storage/network timeouts appear intermittent: include at least one full retry cycle before and after.
 - Unsure: export a wider window, but ask for confirmation if large.
