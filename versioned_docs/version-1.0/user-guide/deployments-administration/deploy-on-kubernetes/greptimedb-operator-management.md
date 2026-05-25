@@ -89,7 +89,7 @@ helm search repo greptime/greptimedb-operator --versions
 You can upgrade to the latest released version of the GreptimeDB Operator by running the following command:
 
 ```bash
-helm -n greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator
+helm -n greptimedb-admin upgrade --install greptimedb-operator greptime/greptimedb-operator
 ```
 
 <details>
@@ -118,7 +118,7 @@ The greptimedb-operator is starting, use `kubectl get deployment greptimedb-oper
 If you want to upgrade to a specific version, you can use the following command:
 
 ```bash
-helm -n greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator --version <version>
+helm -n greptimedb-admin upgrade --install greptimedb-operator greptime/greptimedb-operator --version <version>
 ```
 
 After the upgrade is complete, you can use the following command to verify the installation:
