@@ -128,13 +128,14 @@ initializer:
 # -- Meta 配置
 meta:
   # -- Meta 副本数
-  replicas: 3
+  replicas: 2
   
   backendStorage:
     # 可选
     # KV 存储配置，本配置连接到 ETCD
     etcd:
       endpoints: ["etcd.etcd-cluster.svc.cluster.local:2379"]
+      
     # 以下是一个使用 PostgreSQL 作为 KV 存储的示例
     # postgresql:
     #   host: "postgres.default.svc.cluster.local"
@@ -144,6 +145,18 @@ meta:
     #   electionLockID: 1
     #   credentials:
     #     secretName: "meta-postgresql-credentials"
+    #     username: "root"
+    #     password: "root"
+
+    # 以下是一个使用 MySQL 作为 KV 存储的示例
+    # mysql:
+    #   host: "mysql.default.svc.cluster.local"
+    #   port: 3306
+    #   database: "metasrv"
+    #   table: "greptime_metakv"
+    #   electionLockID: 1
+    #   credentials:
+    #     secretName: "meta-mysql-credentials"
     #     username: "root"
     #     password: "root"
 

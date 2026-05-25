@@ -128,13 +128,14 @@ initializer:
 # -- Meta configuration
 meta:
   # -- Meta replicas
-  replicas: 3
+  replicas: 2
   
   backendStorage:
     # Optional
     # KV storage configuration, this configuration connects to ETCD
     etcd:
       endpoints: ["etcd.etcd-cluster.svc.cluster.local:2379"]
+      
     # Below is an example using PostgreSQL as the KV store:
     # postgresql:
     #   host: "postgres.default.svc.cluster.local"
@@ -144,6 +145,18 @@ meta:
     #   electionLockID: 1
     #   credentials:
     #     secretName: "meta-postgresql-credentials"
+    #     username: "root"
+    #     password: "root"
+
+    # Below is an example using MySQL as the KV store:
+    # mysql:
+    #   host: "mysql.default.svc.cluster.local"
+    #   port: 3306
+    #   database: "metasrv"
+    #   table: "greptime_metakv"
+    #   electionLockID: 1
+    #   credentials:
+    #     secretName: "meta-mysql-credentials"
     #     username: "root"
     #     password: "root"
 
