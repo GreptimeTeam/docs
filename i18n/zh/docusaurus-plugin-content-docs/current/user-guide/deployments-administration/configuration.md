@@ -178,6 +178,9 @@ enable = true
 
 [influxdb]
 enable = true
+# InfluxDB 协议自动创建表时使用的默认 merge 模式。
+# 可选值："last_non_null"、"last_row"。
+default_merge_mode = "last_non_null"
 
 [prom_store]
 enable = true
@@ -209,6 +212,7 @@ max_inflight_requests = 3000
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                 |
 | influxdb   |                    |        | InfluxDB 协议选项                                            |
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true            |
+|            | default_merge_mode | 字符串 | InfluxDB 协议自动创建表时使用的默认 merge 模式。可选值：`last_non_null`、`last_row`。默认值：`last_non_null` |
 | opentsdb   |                    |        | OpenTSDB 协议选项                                            |
 |            | enable             | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                          |
 | prom_store |                              |        | Prometheus 远程存储选项                                                                                                                                                                                         |

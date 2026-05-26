@@ -59,7 +59,15 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u
 ```
 
 当显式提供 `append_mode=true` 时，GreptimeDB 会使用 `append_mode = 'true'` 和 `merge_mode = 'last_row'` 创建表。
-如果未提供该 hint 或将其设为 `false`，通过 InfluxDB 行协议自动创建的表会继续使用默认的 `merge_mode = 'last_non_null'`。
+否则，通过 InfluxDB 行协议自动创建的表会使用 HTTP `merge_mode` hint 指定的 merge 模式。如果未提供该 hint，GreptimeDB 会使用配置项 [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md) 的值，该配置默认值为 `last_non_null`。
+如需修改通过 InfluxDB 行协议自动创建表时使用的集群级默认值，请在 standalone 或 frontend 配置文件中设置该选项：
+
+```toml
+[influxdb]
+default_merge_mode = "last_row"
+```
+
+可选值为 `last_non_null` 和 `last_row`。
 
 你还可以在发送请求时省略 timestamp，GreptimeDB 将使用主机机器的当前系统时间（UTC 时间）作为 timestamp。例如：
 
@@ -162,8 +170,8 @@ GreptimeDB 的[数据模型](/user-guide/concepts/data-model.md) 是值得了解
 下方解释了 GreptimeDB 和 InfluxDB 数据模型的相似和不同之处：
 
 - 两者都是 [schemaless 写入](/user-guide/ingest-data/overview.md#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
-- GreptimeDB 的表在自动创建时默认会设置表选项 [`merge_mode`](/reference/sql/create.md#创建带有-merge-模式的表)为 `last_non_null`。
-  这意味着表会通过保留每个字段的最新值来合并具有相同主键和时间戳的行，该行为与 InfluxDB 相同。
+- GreptimeDB 自动创建表时，会根据 HTTP `merge_mode` hint 或（未提供该 hint 时）[`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md) 配置设置 [`merge_mode` 选项](/reference/sql/create.md#创建带有-merge-模式的表)。该配置默认值为 `last_non_null`。
+  使用 `last_non_null` 时，表会通过保留每个字段的最新值来合并具有相同主键和时间戳的行，该行为与 InfluxDB 相同。
   如果请求显式将 HTTP `append_mode` hint 设置为 `true`，则会使用 `append_mode = 'true'` 和 `merge_mode = 'last_row'` 创建表。
 - 在 InfluxDB 中，一个点代表一条数据记录，包含一个 measurement、tag 集、field 集和时间戳。
   在 GreptimeDB 中，它被表示为时间序列表中的一行数据。

@@ -311,7 +311,8 @@ GreptimeDB 使用基于 LSM-Tree 的存储引擎，
 
 ![merge-mode-last-non-null](/merge-mode-last-non-null.png)
 
-为了与 InfluxDB 的更新行为一致，通过 InfluxDB line protocol 自动创建的表默认启用 `last_non_null` 合并模式。
+对于通过 InfluxDB line protocol 自动创建的表，默认 merge 模式来自 [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md) 配置；该配置默认值为 `last_non_null`，以便与 InfluxDB 的更新行为保持一致。
+写入请求中显式设置的 HTTP `merge_mode` hint 优先于配置中的默认值。
 
 如果 InfluxDB 行协议写入显式将 HTTP `append_mode` hint 设置为 `true`，
 自动创建的表会改为使用 `append_mode = 'true'` 和 `merge_mode = 'last_row'`。
