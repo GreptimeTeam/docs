@@ -6,7 +6,12 @@ description: Overview, principles, and how-tos of read replica feature in Grepti
 
 # Overview
 
-Read Replica is a key feature in GreptimeDB's Enterprise Cluster Edition, designed to enhance the overall read-write performance and scalability of the database system.
+Read Replicas are a key feature in GreptimeDB's Enterprise Cluster Edition, designed to enhance the overall read-write performance and scalability of the database system.
+
+:::warning Warning
+Read Replicas (Follower Regions) require [object storage](/user-guide/deployments-administration/configuration.md#storage-options) (e.g., AWS S3).
+Because Follower Regions may be scheduled onto different Datanodes, they must share access to Region data through object storage. Clusters using only local storage are not supported.
+:::
 
 In the Read Replica mechanism, clients write data to the **Leader Region (write replica)**, which then synchronizes the data to **Follower Regions (read replicas)**. Follower Regions serve as read-only replicas of the Leader Region. By [configuring Datanode groups](/enterprise/deployments-administration/deploy-on-kubernetes/configure-datanode-groups.md), Leader Regions and Follower Regions can be deployed on different Datanode nodes, read and write requests are effectively isolated, preventing resource contention and delivering a smoother experience:
 
@@ -47,5 +52,4 @@ Follower Region fetch memtable data from Leader Region via an internal gRPC inte
 
 * [Manage Read Replicas](/enterprise/read-replicas/manage-read-replicas.md)
 * [Query Read Replicas](/enterprise/read-replicas/query-read-replicas.md)
-
 
