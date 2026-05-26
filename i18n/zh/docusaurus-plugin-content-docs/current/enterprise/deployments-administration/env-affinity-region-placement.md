@@ -43,7 +43,7 @@ AZ=az-a
 不要在 `heartbeat_env_vars` 中包含敏感变量。被选择的变量值会通过 heartbeat 消息发送到 Metasrv，并存储在 Metasrv 的节点信息中。
 :::
 
-关于 heartbeat 配置，请参阅 [Heartbeat 配置](/user-guide/deployments-administration/configuration.md#heartbeat-配置)。
+关于 heartbeat 配置，请参阅 [Heartbeat 配置](/user-guide/deployments-administration/configuration.md#心跳配置)。
 
 ## 配置 Metasrv
 
@@ -148,7 +148,7 @@ meta:
     fallback_selector = "error"
 ```
 
-应用配置后，可以分别通过不同环境中的 frontend 创建表，并使用 `SHOW REGION` 检查新 Region 的放置位置。更多信息请参阅 [SHOW REGION](/reference/sql/show.md#show-region)。
+应用配置后，可以分别通过不同环境中的 frontend 创建表，并使用 `SHOW REGION` 检查新 Region 的放置位置。更多信息请参阅 [SHOW 语句的扩展](/reference/sql/show.md#show-语句的扩展)。
 
 ## 最佳实践
 

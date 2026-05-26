@@ -150,7 +150,7 @@ meta:
     fallback_selector = "error"
 ```
 
-After applying the configuration, create a table through a frontend in each environment and use `SHOW REGION` to verify where the new regions are placed. For more information, see [SHOW REGION](/reference/sql/show.md#show-region).
+After applying the configuration, create a table through a frontend in each environment and use `SHOW REGION` to verify where the new regions are placed. For more information, see [SHOW statement extensions](/reference/sql/show.md#extensions-to-show-statements).
 
 ## Best practices
 
