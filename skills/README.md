@@ -10,6 +10,7 @@ This is the GreptimeDB documentation for AI agents.
 - `greptimedb-pipeline`: For creating greptimedb pipeline definition
 - `greptimedb-flow`: For creating greptimedb flow, continuous aggregation tasks
 - `greptimedb-trigger`: For creating greptimedb trigger
+- `self-monitoring-export`: For GreptimeDB Cluster incidents — infer the required log export time range from the user's abnormal-behavior description, then export complete cluster self-monitoring logs and relevant monitoring metrics for engineering investigation
 
 The `greptimedb-quickstart` skill is also hosted at <https://docs.greptime.com/SKILL.md> (and <https://docs.greptime.cn/SKILL.md>), so any AI coding agent can load it with a single instruction:
 
@@ -34,3 +35,9 @@ Using `skills` cli tool to install the skill to your coding agents.
 ### `greptimedb-trigger`
 
 `npx skills add https://github.com/GreptimeTeam/docs/tree/main/skills/greptimedb-trigger`
+
+### `self-monitoring-export`
+
+[![asciicast](https://asciinema.org/a/N59fXqonAiRYMk4L.svg)](https://asciinema.org/a/N59fXqonAiRYMk4L)
+
+`npx skills add https://github.com/GreptimeTeam/docs/tree/main/skills/self-monitoring-export`
