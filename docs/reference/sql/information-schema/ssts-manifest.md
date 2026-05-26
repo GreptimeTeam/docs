@@ -1,11 +1,11 @@
 ---
 keywords: [SST manifest, SST files, region files, file metadata, table data files]
-description: Provides access to SST (Sorted String Table) file information from the manifest, including file paths, sizes, time ranges, and row counts.
+description: Provides access to SST (Sorted String Table) file information from the manifest, including file paths, sizes, time ranges, row counts, and encoded primary key ranges.
 ---
 
 # SSTS_MANIFEST
 
-The `SSTS_MANIFEST` table provides access to SST (Sorted String Table) file information collected from the manifest. This table surfaces detailed information about each SST file, including file paths, sizes, levels, time ranges, and row counts.
+The `SSTS_MANIFEST` table provides access to SST (Sorted String Table) file information collected from the manifest. This table surfaces detailed information about each SST file, including file paths, sizes, levels, time ranges, row counts, and encoded primary key ranges.
 ```sql
 USE INFORMATION_SCHEMA;
 DESC SSTS_MANIFEST;
@@ -37,6 +37,8 @@ The output is as follows:
 | origin_region_id | UInt64              |     | NO   |         | FIELD         |
 | node_id          | UInt64              |     | YES  |         | FIELD         |
 | visible          | Boolean             |     | NO   |         | FIELD         |
+| primary_key_min  | Binary              |     | YES  |         | FIELD         |
+| primary_key_max  | Binary              |     | YES  |         | FIELD         |
 +------------------+---------------------+-----+------+---------+---------------+
 ```
 
@@ -62,6 +64,8 @@ Fields in the `SSTS_MANIFEST` table are described as follows:
 - `origin_region_id`: The ID of the region that created the file.
 - `node_id`: The ID of the datanode where the file is located.
 - `visible`: Whether this file is visible in the current version.
+- `primary_key_min`: The minimum encoded primary key in the SST file.
+- `primary_key_max`: The maximum encoded primary key in the SST file.
 
 ## Examples
 
@@ -124,9 +128,11 @@ mysql> SELECT * FROM INFORMATION_SCHEMA.SSTS_MANIFEST LIMIT 1\G;
   num_row_groups: 1
           min_ts: 2025-01-01 00:00:00.000000000
           max_ts: 2025-01-01 00:01:00.000000000
-        sequence: 1
+         sequence: 1
 origin_region_id: 4398046511104
          node_id: 0
          visible: true
+ primary_key_min: 01800001f4
+ primary_key_max: 01800001f4
 1 row in set (0.02 sec)
 ```

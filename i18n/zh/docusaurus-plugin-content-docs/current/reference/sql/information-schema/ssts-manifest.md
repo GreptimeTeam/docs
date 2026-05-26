@@ -1,11 +1,11 @@
 ---
 keywords: [SST manifest, SST 文件, region 文件, 文件元数据, 表数据文件]
-description: 提供从 manifest 中获取的 SST（排序字符串表）文件信息，包括文件路径、大小、时间范围和行数。
+description: 提供从 manifest 中获取的 SST（排序字符串表）文件信息，包括文件路径、大小、时间范围、行数和编码后的主键范围。
 ---
 
 # SSTS_MANIFEST
 
-`SSTS_MANIFEST` 表提供从清单中收集的 SST（排序字符串表）文件信息。此表显示每个 SST 文件的详细信息，包括文件路径、大小、级别、时间范围和行数。
+`SSTS_MANIFEST` 表提供从清单中收集的 SST（排序字符串表）文件信息。此表显示每个 SST 文件的详细信息，包括文件路径、大小、级别、时间范围、行数和编码后的主键范围。
 ```sql
 USE INFORMATION_SCHEMA;
 DESC SSTS_MANIFEST;
@@ -37,6 +37,8 @@ DESC SSTS_MANIFEST;
 | origin_region_id | UInt64              |     | NO   |         | FIELD         |
 | node_id          | UInt64              |     | YES  |         | FIELD         |
 | visible          | Boolean             |     | NO   |         | FIELD         |
+| primary_key_min  | Binary              |     | YES  |         | FIELD         |
+| primary_key_max  | Binary              |     | YES  |         | FIELD         |
 +------------------+---------------------+-----+------+---------+---------------+
 ```
 
@@ -62,6 +64,8 @@ DESC SSTS_MANIFEST;
 - `origin_region_id`：创建该文件的 Region ID。
 - `node_id`：文件所在的数据节点 ID。
 - `visible`：该文件在当前版本中是否可见。
+- `primary_key_min`：SST 文件中最小的编码主键。
+- `primary_key_max`：SST 文件中最大的编码主键。
 
 ## 示例
 
@@ -124,9 +128,11 @@ mysql> SELECT * FROM INFORMATION_SCHEMA.SSTS_MANIFEST LIMIT 1\G;
   num_row_groups: 1
           min_ts: 2025-01-01 00:00:00.000000000
           max_ts: 2025-01-01 00:01:00.000000000
-        sequence: 1
+         sequence: 1
 origin_region_id: 4398046511104
          node_id: 0
          visible: true
+ primary_key_min: 01800001f4
+ primary_key_max: 01800001f4
 1 row in set (0.02 sec)
 ```
