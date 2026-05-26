@@ -5,7 +5,7 @@ description: Configure the Enterprise env affinity selector to place newly creat
 
 # Configure Env Affinity Region Placement
 
-The env affinity selector is an Enterprise-only Metasrv plugin that places newly created table regions on datanodes in the same environment as the frontend that receives the DDL request. It is useful when frontends and datanodes are deployed across availability zones, regions, or other failure domains, and you want table creation to keep region placement close to the request origin.
+The env affinity selector is an Enterprise-only Metasrv plugin that places newly created table regions on datanodes in the same environment as the frontend that receives the DDL request. Its main purpose is to prevent unexpected cross-AZ or cross-region traffic, which can introduce extra latency and unexpected network transfer costs. It is useful when frontends and datanodes are deployed across availability zones, regions, or other failure domains, and you want table creation to keep region placement close to the request origin.
 
 :::tip NOTE
 This feature is for the Enterprise Edition only. Please do not use the open-source image to enable this feature. Please [contact us](https://greptime.com/contactus) if you want to use it.
