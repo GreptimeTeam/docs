@@ -9,7 +9,7 @@ description: GreptimeDB 企业版读副本功能的概述与原理。
 *读副本 (Read Replica)* 是 GreptimeDB 企业集群版中的一项重要功能，旨在提升系统的整体读写性能与可扩展性。
 
 :::warning 注意
-读副本（Region Follower）依赖[对象存储](/user-guide/deployments-administration/configuration.md#storage-options)（例如 AWS S3）。
+读副本（Follower Region）依赖[对象存储](/user-guide/deployments-administration/configuration.md#storage-options)（例如 AWS S3）。
 由于 Follower Region 可能被调度到不同的 Datanode，它们必须通过对象存储共享 Region 数据；仅使用本地存储的集群不受支持。
 :::
 
@@ -52,4 +52,3 @@ Follower Region 通过内部 gRPC 接口从 Leader Region 获取 memtable 数据
 
 * [管理读副本](/enterprise/read-replicas/manage-read-replicas.md)
 * [从读副本查询](/enterprise/read-replicas/query-read-replicas.md)
-
