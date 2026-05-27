@@ -287,7 +287,8 @@
                 "user-guide/deployments-administration/deploy-on-kubernetes/configure-frontend-groups",
                 "user-guide/deployments-administration/deploy-on-kubernetes/configure-remote-wal",
                 "user-guide/deployments-administration/deploy-on-kubernetes/deploy-kafka",
-                "user-guide/deployments-administration/deploy-on-kubernetes/deploy-minio"
+                "user-guide/deployments-administration/deploy-on-kubernetes/deploy-minio",
+                "user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-infra-test"
               ]
             },
             {

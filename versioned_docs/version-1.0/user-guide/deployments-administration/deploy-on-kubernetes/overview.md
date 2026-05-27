@@ -38,6 +38,7 @@ including installation and upgrades.
 
 After familiarizing yourself with [the architecture and components of GreptimeDB](/user-guide/concepts/architecture.md), you can explore advanced deployment scenarios:
 
+- [Deploy GreptimeDB Infrastructure test](deploy-greptimedb-infra-test.md): Prerequisite infrastructure testing for installing GreptimeDB.
 - [Deploy MinIO cluster](deploy-minio.md)：Learn how to deploy, configure, and monitor a MinIO cluster.
 - [Deploy Kafka cluster](deploy-kafka.md)：Learn how to deploy, configure, and monitor a Kafka cluster.
 - [Deploy GreptimeDB Cluster with Remote WAL](configure-remote-wal.md): Configure Kafka as a remote write-ahead log (WAL) for your GreptimeDB cluster to persistently record every data modification and ensure no loss of memory-cached data.
