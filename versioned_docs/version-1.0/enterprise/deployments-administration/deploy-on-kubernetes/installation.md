@@ -65,6 +65,10 @@ Refer to [Deploy Kafka Cluster](/user-guide/deployments-administration/deploy-on
 
 Refer to [Deploy MinIO Cluster](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-minio.md) for detailed installation steps.
 
+## Install GreptimeDB Infrastructure Test
+
+Refer to [Deploy GreptimeDB Infrastructure test](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-infra-test.md) for detailed installation steps. Tell the test results to Greptimeteam.
+
 ## Install and Start GreptimeDB
 
 ### Obtain GreptimeDB Enterprise Edition Image
@@ -100,7 +104,11 @@ When Greptime staff first deliver the GreptimeDB Enterprise Edition to you, they
 
 ### Configuration Management
 
-Before installation, you need to create a file to configure the GreptimeDB cluster. Adjust it according to your Kubernetes environment. For more configurations, please refer to the [documentation](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md). Below is a reference configuration for `greptimedb-cluster-values.yaml`:
+The following are tools and documentation that can help with configuration:
+- tool: https://greptimedb-enterprise-wizard.mrsatangel.workers.dev/
+- documentation: [common-helm-chart-configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)
+
+Before installation, you need to create a file to configure the GreptimeDB cluster. Adjust it according to your Kubernetes environment. Below is a reference configuration for `greptimedb-cluster-values.yaml`:
 
 ```yaml
 customImageRegistry:
@@ -451,7 +459,7 @@ tolerations: []
 affinity: {}
 ```
 
-### Start Enterprise Dashboard
+### Install
 
 ```bash
 helm upgrade --install greptimedb-enterprise-dashboard \
@@ -484,19 +492,10 @@ greptimedb-enterprise-dashboard   ClusterIP   10.96.80.175   <none>   19095/TCP 
 ```
 </details>
 
-### Log in to Enterprise Dashboard
+### Login
 
 Access port 19095 of the dashboard service to log in.
 
 ![Enterprise Dashboard Login](/enterprise-dashboard-login.png)
 
-Log in using the superuser account and password from the database deployment. You will see:
-
-![Enterprise Dashboard Page](/enterprise-dashboard-page.png)
-
-1. Query: Use SQL to query data
-2. Logs Query: Use the UI to query log tables
-3. Cluster Overview: Current cluster statistics
-4. Metrics Monitoring: Database cluster self-monitoring metrics
-5. Instance Logs: Database instance logs
-6. User Management: Add, delete, and modify user accounts
+Log in using the `auth.users[0].username` and `auth.users[0].password` from the database deployment configuration. For more console operation reference [documentation](/enterprise/console-ui.md).

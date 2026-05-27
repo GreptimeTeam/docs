@@ -36,6 +36,7 @@ GreptimeDB 专为云原生环境而构建，从第一天起就可以在 Kubernet
 
 在熟悉了 [GreptimeDB 的架构和组件](/user-guide/concepts/architecture.md)之后，你可以进一步探索高级部署场景：
 
+- [部署 GreptimeDB 基础设施测试](deploy-greptimedb-infra-test.md)： 安装 GreptimeDB 的前置基础设施测试检查。
 - [部署 MinIO 集群](deploy-minio.md)：学习如何部署，配置和监控 MinIO 集群。
 - [部署 Kafka 集群](deploy-kafka.md)：学习如何部署，配置和监控 Kafka 集群。
 - [部署带有 Remote WAL 的 GreptimeDB 集群](configure-remote-wal.md)：将 Kafka 配置为 GreptimeDB 集群的远程预写日志 (WAL)，以持久记录每个数据修改并确保不丢失内存缓存的数据。
