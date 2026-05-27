@@ -3,7 +3,7 @@ keywords: [enterprise, metasrv, datanode, region placement, env affinity selecto
 description: 配置企业版 env affinity selector，将新建表的 Region 放置到与接收 DDL 请求的 frontend 处于相同环境的 datanode 上。
 ---
 
-# 配置 Env Affinity Region Placement
+# 配置基于环境亲和性的 Region Placement
 
 Env affinity selector 是企业版专属的 Metasrv 插件，用于将新建表的 Region 放置到与接收 DDL 请求的 frontend 处于相同环境的 datanode 上。该功能的主要目的是避免意外的跨可用区或跨地域流量，从而减少额外延迟和非预期的网络传输成本。当 frontend 和 datanode 跨可用区、地域或其他故障域部署，并且你希望建表时的 Region 放置尽量靠近请求入口时，可以使用该功能。
 

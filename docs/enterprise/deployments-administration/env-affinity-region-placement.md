@@ -3,7 +3,7 @@ keywords: [enterprise, metasrv, datanode, region placement, env affinity selecto
 description: Configure the Enterprise env affinity selector to place newly created table regions on datanodes in the same environment as the frontend that receives the DDL request.
 ---
 
-# Configure Env Affinity Region Placement
+# Configure Environment Affinity for Region Placement
 
 The env affinity selector is an Enterprise-only Metasrv plugin that places newly created table regions on datanodes in the same environment as the frontend that receives the DDL request. Its main purpose is to prevent unexpected cross-AZ or cross-region traffic, which can introduce extra latency and unexpected network transfer costs. It is useful when frontends and datanodes are deployed across availability zones, regions, or other failure domains, and you want table creation to keep region placement close to the request origin.
 
