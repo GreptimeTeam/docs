@@ -42,7 +42,7 @@ To use object storage for storing exported metadata, enable one of the following
 
 | Option                       | Required | Default | Description                                                      |
 | ---------------------------- | -------- | ------- | ---------------------------------------------------------------- |
-| --enable-s3                  | No       | false   | Whether to use S3 as storage medium for exported data            |
+| --s3                         | No       | false   | Whether to use S3 as storage medium for exported data            |
 | --s3-bucket                  | No       | -       | S3 bucket name                                                   |
 | --s3-root                    | No       | -       | Root path in S3 bucket                                           |
 | --s3-access-key-id           | No       | -       | S3 access key ID                                                 |
@@ -123,7 +123,7 @@ To use object storage for importing metadata, enable one of the following provid
 
 | Option                       | Required | Default | Description                                                      |
 | ---------------------------- | -------- | ------- | ---------------------------------------------------------------- |
-| --enable-s3                  | No       | false   | Whether to use S3 as storage medium for exported data            |
+| --s3                         | No       | false   | Whether to use S3 as storage medium for exported data            |
 | --s3-bucket                  | No       | -       | S3 bucket name                                                   |
 | --s3-root                    | No       | -       | Root path in S3 bucket                                           |
 | --s3-access-key-id           | No       | -       | S3 access key ID                                                 |
@@ -195,7 +195,7 @@ To inspect snapshots stored in object storage, enable one of the following provi
 
 | Option                       | Required | Default | Description                                                      |
 | ---------------------------- | -------- | ------- | ---------------------------------------------------------------- |
-| --enable-s3                  | No       | false   | Whether to use S3 as storage medium for the snapshot             |
+| --s3                         | No       | false   | Whether to use S3 as storage medium for the snapshot             |
 | --s3-bucket                  | No       | -       | S3 bucket name                                                   |
 | --s3-root                    | No       | -       | Root path in S3 bucket                                           |
 | --s3-access-key-id           | No       | -       | S3 access key ID                                                 |
