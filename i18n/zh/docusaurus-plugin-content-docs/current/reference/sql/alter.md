@@ -93,10 +93,12 @@ ALTER TABLE [db.]table
     | MODIFY COLUMN name DROP DEFAULT
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
+    | PARTITION ON COLUMNS (<column_list>) (<expr_list>)
     | SPLIT PARTITION (<expr>) INTO (<expr_list>)
     | MERGE PARTITION (<expr_list>)
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
+    | UNSET <option_name>[, ...]
     ]
 ```
 
@@ -212,9 +214,20 @@ ALTER TABLE monitor SET 'sst_format'='primary_key';
 ALTER TABLE monitor UNSET 'ttl';
 ```
 
-### 分区拆分与合并
+### 分区、拆分与合并
 
-使用 `SPLIT PARTITION` 将一个分区拆分为多个分区：
+使用 `PARTITION ON COLUMNS` 可以将未分区的表重分区为多个分区：
+
+```sql
+ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id, area) (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South',
+  device_id >= 100 AND area <= 'East',
+  device_id >= 100 AND area > 'East'
+);
+```
+
+使用 `SPLIT PARTITION` 将一个已有分区拆分为多个分区：
 
 ```sql
 ALTER TABLE sensor_readings SPLIT PARTITION (
@@ -234,7 +247,7 @@ ALTER TABLE sensor_readings MERGE PARTITION (
 );
 ```
 
-你可以在语句末尾附加 DDL 选项以控制执行行为：
+你可以在任意重分区语句末尾附加 DDL 选项以控制执行行为：
 
 ```sql
 ALTER TABLE sensor_readings SPLIT PARTITION (
