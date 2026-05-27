@@ -447,6 +447,7 @@ const sidebars: SidebarsConfig = {
                 'enterprise/deployments-administration/deploy-on-kubernetes/configure-datanode-groups',
               ]
             },
+            'enterprise/deployments-administration/env-affinity-region-placement',
             'enterprise/deployments-administration/authentication',
             {
               type: 'category',
