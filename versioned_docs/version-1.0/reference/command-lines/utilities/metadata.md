@@ -42,7 +42,7 @@ To use object storage for storing exported metadata, enable one of the following
 
 | Option                       | Required | Default | Description                                                      |
 | ---------------------------- | -------- | ------- | ---------------------------------------------------------------- |
-| --enable-s3                  | No       | false   | Whether to use S3 as storage medium for exported data            |
+| --s3                         | No       | false   | Whether to use S3 as storage medium for exported data            |
 | --s3-bucket                  | No       | -       | S3 bucket name                                                   |
 | --s3-root                    | No       | -       | Root path in S3 bucket                                           |
 | --s3-access-key-id           | No       | -       | S3 access key ID                                                 |
@@ -55,7 +55,7 @@ To use object storage for storing exported metadata, enable one of the following
 
 | Option                  | Required | Default | Description                            |
 | ----------------------- | -------- | ------- | -------------------------------------- |
-| --enable-oss            | No       | false   | Whether to use OSS for exported data   |
+| --oss                   | No       | false   | Whether to use OSS for exported data   |
 | --oss-bucket            | No       | -       | OSS bucket name                        |
 | --oss-root              | No       | -       | Root path in OSS bucket                |
 | --oss-access-key-id     | No       | -       | OSS access key ID                      |
@@ -66,7 +66,7 @@ To use object storage for storing exported metadata, enable one of the following
 
 | Option                | Required | Default | Description                           |
 | --------------------- | -------- | ------- | ------------------------------------- |
-| --enable-gcs          | No       | false   | Whether to use GCS for exported data  |
+| --gcs                 | No       | false   | Whether to use GCS for exported data  |
 | --gcs-bucket          | No       | -       | GCS bucket name                       |
 | --gcs-root            | No       | -       | Root path in GCS bucket               |
 | --gcs-scope           | No       | -       | GCS service scope                     |
@@ -77,7 +77,7 @@ To use object storage for storing exported metadata, enable one of the following
 
 | Option                | Required | Default | Description                                 |
 | --------------------- | -------- | ------- | ------------------------------------------- |
-| --enable-azblob       | No       | false   | Whether to use Azure Blob for exported data |
+| --azblob              | No       | false   | Whether to use Azure Blob for exported data |
 | --azblob-container    | No       | -       | Azure Blob container name                   |
 | --azblob-root         | No       | -       | Root path in container                      |
 | --azblob-account-name | No       | -       | Azure Blob account name                     |
@@ -123,7 +123,7 @@ To use object storage for importing metadata, enable one of the following provid
 
 | Option                       | Required | Default | Description                                                      |
 | ---------------------------- | -------- | ------- | ---------------------------------------------------------------- |
-| --enable-s3                  | No       | false   | Whether to use S3 as storage medium for exported data            |
+| --s3                         | No       | false   | Whether to use S3 as storage medium for exported data            |
 | --s3-bucket                  | No       | -       | S3 bucket name                                                   |
 | --s3-root                    | No       | -       | Root path in S3 bucket                                           |
 | --s3-access-key-id           | No       | -       | S3 access key ID                                                 |
@@ -136,7 +136,7 @@ To use object storage for importing metadata, enable one of the following provid
 
 | Option                  | Required | Default | Description                            |
 | ----------------------- | -------- | ------- | -------------------------------------- |
-| --enable-oss            | No       | false   | Whether to use OSS for exported data   |
+| --oss                   | No       | false   | Whether to use OSS for exported data   |
 | --oss-bucket            | No       | -       | OSS bucket name                        |
 | --oss-root              | No       | -       | Root path in OSS bucket                |
 | --oss-access-key-id     | No       | -       | OSS access key ID                      |
@@ -147,7 +147,7 @@ To use object storage for importing metadata, enable one of the following provid
 
 | Option                | Required | Default | Description                           |
 | --------------------- | -------- | ------- | ------------------------------------- |
-| --enable-gcs          | No       | false   | Whether to use GCS for exported data  |
+| --gcs                 | No       | false   | Whether to use GCS for exported data  |
 | --gcs-bucket          | No       | -       | GCS bucket name                       |
 | --gcs-root            | No       | -       | Root path in GCS bucket               |
 | --gcs-scope           | No       | -       | GCS service scope                     |
@@ -158,7 +158,7 @@ To use object storage for importing metadata, enable one of the following provid
 
 | Option                | Required | Default | Description                                 |
 | --------------------- | -------- | ------- | ------------------------------------------- |
-| --enable-azblob       | No       | false   | Whether to use Azure Blob for exported data |
+| --azblob              | No       | false   | Whether to use Azure Blob for exported data |
 | --azblob-container    | No       | -       | Azure Blob container name                   |
 | --azblob-root         | No       | -       | Root path in container                      |
 | --azblob-account-name | No       | -       | Azure Blob account name                     |
@@ -195,7 +195,7 @@ To inspect snapshots stored in object storage, enable one of the following provi
 
 | Option                       | Required | Default | Description                                                      |
 | ---------------------------- | -------- | ------- | ---------------------------------------------------------------- |
-| --enable-s3                  | No       | false   | Whether to use S3 as storage medium for the snapshot             |
+| --s3                         | No       | false   | Whether to use S3 as storage medium for the snapshot             |
 | --s3-bucket                  | No       | -       | S3 bucket name                                                   |
 | --s3-root                    | No       | -       | Root path in S3 bucket                                           |
 | --s3-access-key-id           | No       | -       | S3 access key ID                                                 |
@@ -208,7 +208,7 @@ To inspect snapshots stored in object storage, enable one of the following provi
 
 | Option                  | Required | Default | Description                            |
 | ----------------------- | -------- | ------- | -------------------------------------- |
-| --enable-oss            | No       | false   | Whether to use OSS for the snapshot    |
+| --oss                   | No       | false   | Whether to use OSS for the snapshot    |
 | --oss-bucket            | No       | -       | OSS bucket name                        |
 | --oss-root              | No       | -       | Root path in OSS bucket                |
 | --oss-access-key-id     | No       | -       | OSS access key ID                      |
@@ -219,7 +219,7 @@ To inspect snapshots stored in object storage, enable one of the following provi
 
 | Option                | Required | Default | Description                           |
 | --------------------- | -------- | ------- | ------------------------------------- |
-| --enable-gcs          | No       | false   | Whether to use GCS for the snapshot   |
+| --gcs                 | No       | false   | Whether to use GCS for the snapshot   |
 | --gcs-bucket          | No       | -       | GCS bucket name                       |
 | --gcs-root            | No       | -       | Root path in GCS bucket               |
 | --gcs-scope           | No       | -       | GCS service scope                     |
@@ -230,7 +230,7 @@ To inspect snapshots stored in object storage, enable one of the following provi
 
 | Option                | Required | Default | Description                                 |
 | --------------------- | -------- | ------- | ------------------------------------------- |
-| --enable-azblob       | No       | false   | Whether to use Azure Blob for the snapshot  |
+| --azblob              | No       | false   | Whether to use Azure Blob for the snapshot  |
 | --azblob-container    | No       | -       | Azure Blob container name                   |
 | --azblob-root         | No       | -       | Root path in container                      |
 | --azblob-account-name | No       | -       | Azure Blob account name                     |

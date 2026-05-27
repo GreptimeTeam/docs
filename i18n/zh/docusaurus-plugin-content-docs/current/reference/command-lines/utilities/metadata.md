@@ -42,7 +42,7 @@ greptime cli meta snapshot save [OPTIONS]
 
 | 选项                           | 是否必需 | 默认值 | 描述                                        |
 | ------------------------------ | -------- | ------ | ------------------------------------------- |
-| --enable-s3                    | 否       | false  | 是否使用 S3 作为导出数据的存储介质          |
+| --s3                           | 否       | false  | 是否使用 S3 作为导出数据的存储介质          |
 | --s3-bucket                    | 否       | -      | S3 桶名                                     |
 | --s3-root                      | 否       | -      | S3 桶中的根路径                             |
 | --s3-access-key-id             | 否       | -      | S3 访问密钥 ID                              |
@@ -55,7 +55,7 @@ greptime cli meta snapshot save [OPTIONS]
 
 | 选项                    | 是否必需 | 默认值 | 描述                               |
 | ----------------------- | -------- | ------ | ---------------------------------- |
-| --enable-oss            | 否       | false  | 是否使用 OSS 作为导出数据的存储介质 |
+| --oss                   | 否       | false  | 是否使用 OSS 作为导出数据的存储介质 |
 | --oss-bucket            | 否       | -      | OSS 桶名                           |
 | --oss-root              | 否       | -      | OSS 桶中的根路径                   |
 | --oss-access-key-id     | 否       | -      | OSS 访问密钥 ID                    |
@@ -66,7 +66,7 @@ greptime cli meta snapshot save [OPTIONS]
 
 | 选项                  | 是否必需 | 默认值 | 描述                               |
 | --------------------- | -------- | ------ | ---------------------------------- |
-| --enable-gcs          | 否       | false  | 是否使用 GCS 作为导出数据的存储介质 |
+| --gcs                 | 否       | false  | 是否使用 GCS 作为导出数据的存储介质 |
 | --gcs-bucket          | 否       | -      | GCS 桶名                           |
 | --gcs-root            | 否       | -      | GCS 桶中的根路径                   |
 | --gcs-scope           | 否       | -      | GCS 服务范围                       |
@@ -77,7 +77,7 @@ greptime cli meta snapshot save [OPTIONS]
 
 | 选项                  | 是否必需 | 默认值 | 描述                                     |
 | --------------------- | -------- | ------ | ---------------------------------------- |
-| --enable-azblob       | 否       | false  | 是否使用 Azure Blob 作为导出数据的存储介质 |
+| --azblob              | 否       | false  | 是否使用 Azure Blob 作为导出数据的存储介质 |
 | --azblob-container    | 否       | -      | Azure Blob 容器名称                      |
 | --azblob-root         | 否       | -      | 容器中的根路径                           |
 | --azblob-account-name | 否       | -      | Azure Blob 账户名称                      |
@@ -121,7 +121,7 @@ greptime cli meta snapshot restore [OPTIONS]
 
 | 选项                           | 是否必需 | 默认值 | 描述                                        |
 | ------------------------------ | -------- | ------ | ------------------------------------------- |
-| --enable-s3                    | 否       | false  | 是否使用 S3 作为导出数据的存储介质          |
+| --s3                           | 否       | false  | 是否使用 S3 作为导出数据的存储介质          |
 | --s3-bucket                    | 否       | -      | S3 桶名                                     |
 | --s3-root                      | 否       | -      | S3 桶中的根路径                             |
 | --s3-access-key-id             | 否       | -      | S3 访问密钥 ID                              |
@@ -134,7 +134,7 @@ greptime cli meta snapshot restore [OPTIONS]
 
 | 选项                    | 是否必需 | 默认值 | 描述                               |
 | ----------------------- | -------- | ------ | ---------------------------------- |
-| --enable-oss            | 否       | false  | 是否使用 OSS 作为导出数据的存储介质 |
+| --oss                   | 否       | false  | 是否使用 OSS 作为导出数据的存储介质 |
 | --oss-bucket            | 否       | -      | OSS 桶名                           |
 | --oss-root              | 否       | -      | OSS 桶中的根路径                   |
 | --oss-access-key-id     | 否       | -      | OSS 访问密钥 ID                    |
@@ -145,7 +145,7 @@ greptime cli meta snapshot restore [OPTIONS]
 
 | 选项                  | 是否必需 | 默认值 | 描述                               |
 | --------------------- | -------- | ------ | ---------------------------------- |
-| --enable-gcs          | 否       | false  | 是否使用 GCS 作为导出数据的存储介质 |
+| --gcs                 | 否       | false  | 是否使用 GCS 作为导出数据的存储介质 |
 | --gcs-bucket          | 否       | -      | GCS 桶名                           |
 | --gcs-root            | 否       | -      | GCS 桶中的根路径                   |
 | --gcs-scope           | 否       | -      | GCS 服务范围                       |
@@ -156,7 +156,7 @@ greptime cli meta snapshot restore [OPTIONS]
 
 | 选项                  | 是否必需 | 默认值 | 描述                                     |
 | --------------------- | -------- | ------ | ---------------------------------------- |
-| --enable-azblob       | 否       | false  | 是否使用 Azure Blob 作为导出数据的存储介质 |
+| --azblob              | 否       | false  | 是否使用 Azure Blob 作为导出数据的存储介质 |
 | --azblob-container    | 否       | -      | Azure Blob 容器名称                      |
 | --azblob-root         | 否       | -      | 容器中的根路径                           |
 | --azblob-account-name | 否       | -      | Azure Blob 账户名称                      |
@@ -193,7 +193,7 @@ greptime cli meta snapshot info [OPTIONS]
 
 | 选项                           | 是否必需 | 默认值 | 描述                                    |
 | ------------------------------ | -------- | ------ | --------------------------------------- |
-| --enable-s3                    | 否       | false  | 是否使用 S3 作为快照的存储介质          |
+| --s3                           | 否       | false  | 是否使用 S3 作为快照的存储介质          |
 | --s3-bucket                    | 否       | -      | S3 桶名                                 |
 | --s3-root                      | 否       | -      | S3 桶中的根路径                         |
 | --s3-access-key-id             | 否       | -      | S3 访问密钥 ID                          |
@@ -206,7 +206,7 @@ greptime cli meta snapshot info [OPTIONS]
 
 | 选项                    | 是否必需 | 默认值 | 描述                           |
 | ----------------------- | -------- | ------ | ------------------------------ |
-| --enable-oss            | 否       | false  | 是否使用 OSS 作为快照的存储介质 |
+| --oss                   | 否       | false  | 是否使用 OSS 作为快照的存储介质 |
 | --oss-bucket            | 否       | -      | OSS 桶名                       |
 | --oss-root              | 否       | -      | OSS 桶中的根路径               |
 | --oss-access-key-id     | 否       | -      | OSS 访问密钥 ID                |
@@ -217,7 +217,7 @@ greptime cli meta snapshot info [OPTIONS]
 
 | 选项                  | 是否必需 | 默认值 | 描述                           |
 | --------------------- | -------- | ------ | ------------------------------ |
-| --enable-gcs          | 否       | false  | 是否使用 GCS 作为快照的存储介质 |
+| --gcs                 | 否       | false  | 是否使用 GCS 作为快照的存储介质 |
 | --gcs-bucket          | 否       | -      | GCS 桶名                       |
 | --gcs-root            | 否       | -      | GCS 桶中的根路径               |
 | --gcs-scope           | 否       | -      | GCS 服务范围                   |
@@ -228,7 +228,7 @@ greptime cli meta snapshot info [OPTIONS]
 
 | 选项                  | 是否必需 | 默认值 | 描述                                 |
 | --------------------- | -------- | ------ | ------------------------------------ |
-| --enable-azblob       | 否       | false  | 是否使用 Azure Blob 作为快照的存储介质 |
+| --azblob              | 否       | false  | 是否使用 Azure Blob 作为快照的存储介质 |
 | --azblob-container    | 否       | -      | Azure Blob 容器名称                  |
 | --azblob-root         | 否       | -      | 容器中的根路径                       |
 | --azblob-account-name | 否       | -      | Azure Blob 账户名称                  |

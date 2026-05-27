@@ -24,8 +24,8 @@ greptime cli meta snapshot save \
     --s3 \
     --s3-bucket your-bucket-name \
     --s3-region ap-southeast-1 \
-    --s3-access-key <your-s3-access-key> \
-    --s3-secret-key <your-s3-secret-key>
+    --s3-access-key-id <your-s3-access-key-id> \
+    --s3-secret-access-key <your-s3-secret-access-key>
 ```
 
 **Output**: Creates `metadata_snapshot.metadata.fb` file in the specified S3 bucket.
@@ -100,8 +100,8 @@ greptime cli meta snapshot restore \
     --s3 \
     --s3-bucket your-bucket-name \
     --s3-region ap-southeast-1 \
-    --s3-access-key <your-s3-access-key> \
-    --s3-secret-key <your-s3-secret-key>
+    --s3-access-key-id <your-s3-access-key-id> \
+    --s3-secret-access-key <your-s3-secret-access-key>
 ```
 
 ### Import from Local File
