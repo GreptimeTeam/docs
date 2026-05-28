@@ -24,6 +24,7 @@ Learn more in [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) and [Obse
 Before getting started, please read the following documents that include instructions for setting up, fundamental concepts, architectural designs, and tutorials:
 
 - [Getting Started][1]: Provides an introduction to GreptimeDB for those who are new to it, including installation and database operations.
+- [For AI Agents][8]: Use GreptimeDB with AI agents via the MCP Server, Skills, and machine-readable docs.
 - [User Guide][2]: For application developers to use GreptimeDB or build custom integration.
 - [Contributor Guide][3]: For contributors interested in learning more about the technical details and enhancing GreptimeDB.
 - [Roadmap][7]: The latest GreptimeDB roadmap.
@@ -31,6 +32,7 @@ Before getting started, please read the following documents that include instruc
 - [FAQ][5]: Provides answers to the most frequently asked questions.
 
 [1]: ./getting-started/overview.md
+[8]: ./faq-and-others/vibecoding.md
 [2]: ./user-guide/overview.md
 [3]: ./contributor-guide/overview.md
 [4]: /release-notes
