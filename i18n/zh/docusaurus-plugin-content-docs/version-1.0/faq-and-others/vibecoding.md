@@ -3,23 +3,21 @@ keywords: [Coding Agent, Vibe Coding, MCP, Skills, llms.txt, AI Agent]
 description: 配合 AI coding agent 使用 GreptimeDB 的资源——MCP Server、Skills、机器可读文档，以及一行接入的 SKILL.md
 ---
 
+import AgentOnboarding from '@site/src/components/AgentOnboarding';
+
 # For AI Agents
 
 GreptimeDB 为 AI coding agent 而构建。Agent 可以通过标准协议（OTLP、Prometheus、
 MySQL/PostgreSQL、SQL/PromQL）自主完成 GreptimeDB 的部署、配置、写入和查询，下面这些
-资源帮助它把这些事做对、做稳。背景可参考博客
-[What GreptimeDB is doing for AI agents](https://greptime.cn/blogs/2026-04-08-greptimedb-agent-friendly-infrastructure)。
+资源帮助它把这些事做对、做稳。
 
 ## 最快上手：一句话指令
 
-入口级的 quickstart 指南以可直接抓取的 markdown 文件形式托管。给你的 agent 一句话指令，
-它就能接手：
+入口级的 quickstart 指南以可直接抓取的 markdown 文件形式托管。把下面的提示词交给你的
+agent，它就能接手——在运行时抓取这份指南，判断 GreptimeDB 是否适用，选择合适的安装与写入
+路径，并通过 `llms.txt` 浏览文档。无需安装任何东西。
 
-> Read https://docs.greptime.cn/SKILL.md and follow the instructions to use
-> GreptimeDB with your AI agent — deploy, configure, ingest, and query.
-
-Agent 会在运行时抓取这份指南，判断 GreptimeDB 是否适用，选择合适的安装与写入路径，并通过
-`llms.txt` 浏览文档。无需安装任何东西。
+<AgentOnboarding />
 
 ## GreptimeDB MCP Server
 
@@ -78,3 +76,7 @@ npx skills add https://github.com/GreptimeTeam/docs/tree/main/skills/greptimedb-
 
 临时提问可以用 [docs.greptime.cn](https://docs.greptime.cn/) 上的 **Ask AI** 助手，它基于
 官方文档用平实语言作答。
+
+## 参考资料
+
+- [What GreptimeDB is doing for AI agents](https://greptime.cn/blogs/2026-04-08-greptimedb-agent-friendly-infrastructure)

@@ -3,25 +3,23 @@ keywords: [Coding Agent, Vibe Coding, MCP, Skills, llms.txt, AI Agent]
 description: Resources for using GreptimeDB with AI coding agents — MCP Server, Skills, machine-readable docs, and the one-line SKILL.md entry point
 ---
 
+import AgentOnboarding from '@site/src/components/AgentOnboarding';
+
 # For AI Agents
 
 GreptimeDB is built to work with AI coding agents. An agent can deploy,
 configure, ingest, and query GreptimeDB on its own through standard protocols
 (OTLP, Prometheus, MySQL/PostgreSQL, SQL/PromQL), and the resources below help it
-do that reliably. For the background, see
-[What GreptimeDB is doing for AI agents](https://greptime.com/blogs/2026-04-08-greptimedb-agent-friendly-infrastructure).
+do that reliably.
 
 ## Quickest start: one instruction
 
 The entry-point quickstart guide is hosted as a fetchable markdown file. Give
-your agent a single instruction and it can take it from there:
+your agent the prompt below and it takes it from there — fetching the guide at
+runtime, deciding whether GreptimeDB fits, picking the right install and write
+path, and navigating the docs via `llms.txt`. No installation required.
 
-> Read https://docs.greptime.com/SKILL.md and follow the instructions to use
-> GreptimeDB with your AI agent — deploy, configure, ingest, and query.
-
-The agent fetches the guide at runtime, decides whether GreptimeDB fits, picks
-the right install and write path, and navigates the docs via `llms.txt`. No
-installation required.
+<AgentOnboarding />
 
 ## GreptimeDB MCP Server
 
@@ -92,3 +90,7 @@ The whole documentation site is built to be consumed by agents, following the
 For ad-hoc questions, the **Ask AI** assistant on
 [docs.greptime.com](https://docs.greptime.com/) answers in plain language,
 grounded in the official documentation.
+
+## References
+
+- [What GreptimeDB is doing for AI agents](https://greptime.com/blogs/2026-04-08-greptimedb-agent-friendly-infrastructure)
