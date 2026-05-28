@@ -98,7 +98,7 @@ ALTER TABLE [db.]table
     | MERGE PARTITION (<expr_list>)
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
-    | UNSET <option_name>[, ...]
+    | UNSET <option_name> [, ...]
     ]
 ```
 

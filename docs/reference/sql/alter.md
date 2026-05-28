@@ -216,7 +216,7 @@ ALTER TABLE monitor SET 'sst_format'='primary_key';
 ALTER TABLE monitor UNSET 'ttl';
 ```
 
-### Partition, split, or merge partitions
+### Partition, split, or merge partitions {#split-or-merge-partitions}
 
 Use `PARTITION ON COLUMNS` to repartition an unpartitioned table into multiple partitions:
 
