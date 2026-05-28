@@ -14,3 +14,4 @@ import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
 - [安装](./installation/overview.md)：安装 GreptimeDB 单机模式或分布式集群。
 - [快速开始](./quick-start.md)：使用你熟悉的协议或语言快速上手 GreptimeDB。
+- [For AI Agents](../faq-and-others/vibecoding.md)：通过 MCP Server、Skills 和机器可读文档，让 AI agent 使用 GreptimeDB。

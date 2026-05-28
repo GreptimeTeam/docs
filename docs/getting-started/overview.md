@@ -14,3 +14,4 @@ Get started with GreptimeDB quickly by following these steps:
 
 - [Installation](./installation/overview.md): Learn how to install GreptimeDB as a standalone or cluster.
 - [Quick Start](./quick-start.md): Get started with GreptimeDB using your preferred protocols or languages.
+- [For AI Agents](../faq-and-others/vibecoding.md): Use GreptimeDB with AI agents via the MCP Server, Skills, and machine-readable docs.
