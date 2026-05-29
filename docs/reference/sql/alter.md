@@ -94,6 +94,7 @@ ALTER TABLE [db.]table
     | MODIFY COLUMN name DROP DEFAULT
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
+    | PARTITION ON COLUMNS (<column_list>) (<expr_list>)
     | SPLIT PARTITION (<expr>) INTO (<expr_list>)
     | MERGE PARTITION (<expr_list>)
     | RENAME name
@@ -215,9 +216,20 @@ ALTER TABLE monitor SET 'sst_format'='primary_key';
 ALTER TABLE monitor UNSET 'ttl';
 ```
 
-### Split or merge partitions
+### Repartition, split, or merge partitions {#split-or-merge-partitions}
 
-Use `SPLIT PARTITION` to split a partition into multiple partitions:
+Use `PARTITION ON COLUMNS` to repartition an unpartitioned table into multiple partitions:
+
+```sql
+ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id, area) (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South',
+  device_id >= 100 AND area <= 'East',
+  device_id >= 100 AND area > 'East'
+);
+```
+
+Use `SPLIT PARTITION` to split an existing partition into multiple partitions:
 
 ```sql
 ALTER TABLE sensor_readings SPLIT PARTITION (
@@ -237,7 +249,7 @@ ALTER TABLE sensor_readings MERGE PARTITION (
 );
 ```
 
-You can provide DDL options after the statement to control execution behavior:
+You can provide DDL options after any repartition statement to control execution behavior:
 
 ```sql
 ALTER TABLE sensor_readings SPLIT PARTITION (
