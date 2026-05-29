@@ -6,7 +6,7 @@ description: Explains GreptimeDB repartitioning, including prerequisites, hot pa
 # Repartition
 
 Repartition lets you adjust partition rules after a table has been created.
-GreptimeDB does this through `ALTER TABLE` partition, split, and merge operations; see [ALTER TABLE](/reference/sql/alter.md) for the syntax.
+GreptimeDB does this through `ALTER TABLE` partition, split, and merge operations; see [ALTER TABLE](/reference/sql/alter.md#split-or-merge-partitions) for the syntax.
 
 Repartition is only supported in distributed clusters.
 

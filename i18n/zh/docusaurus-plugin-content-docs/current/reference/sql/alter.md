@@ -214,7 +214,7 @@ ALTER TABLE monitor SET 'sst_format'='primary_key';
 ALTER TABLE monitor UNSET 'ttl';
 ```
 
-### 分区、拆分与合并
+### 重分区、拆分与合并 {#split-or-merge-partitions}
 
 使用 `PARTITION ON COLUMNS` 可以将未分区的表重分区为多个分区：
 
