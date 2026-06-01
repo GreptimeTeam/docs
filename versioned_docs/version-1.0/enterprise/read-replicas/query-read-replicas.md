@@ -7,6 +7,10 @@ description: Overview, key concepts, and step-by-step instructions for managing 
 
 GreptimeDB allows you to read from **Region Replicas (follower regions)** to reduce load on Write Replicas (Leader regions) and improve query scalability. You can control the read preference through both **SQL** and **HTTP** protocols.
 
+:::warning Warning
+Before allowing queries to read from followers, ensure that the GC mechanism is enabled. Reading from followers is only supported when GC is enabled.
+:::
+
 ## Read Preference Options
 
 The `READ_PREFERENCE` setting accepts the following values:
