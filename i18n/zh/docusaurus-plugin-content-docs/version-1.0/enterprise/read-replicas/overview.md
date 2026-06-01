@@ -11,6 +11,8 @@ description: GreptimeDB 企业版读副本功能的概述与原理。
 :::warning 注意
 读副本（Follower Region）依赖[对象存储](/user-guide/deployments-administration/configuration.md#storage-options)（例如 AWS S3）。
 由于 Follower Region 可能被调度到不同的 Datanode，它们必须通过对象存储共享 Region 数据；不支持仅使用本地存储的集群。
+
+在允许查询从 Follower Region 读取之前，请确保在 Metasrv 和所有 Datanode 上启用 [GC](/user-guide/deployments-administration/manage-data/gc.md)。只有在启用 GC 时，才支持从 Follower Region 读取。
 :::
 
 在读副本机制中，客户端将数据写入写副本 (Leader Region)，随后由 Leader Region 将数据同步到 Follower Region。Follower Region 作为 Leader Region 的只读副本。通过[配置 Datanode 组](/enterprise/deployments-administration/deploy-on-kubernetes/configure-datanode-groups.md)，可以将 Leader Region 与 Follower Region 分别部署在不同的 Datanode 节点上，读写请求能够有效隔离，避免资源争用，从而获得更平滑的读写体验：
