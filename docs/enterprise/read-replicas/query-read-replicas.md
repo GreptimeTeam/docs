@@ -22,10 +22,13 @@ The `READ_PREFERENCE` setting accepts the following values:
   Always read from write replicas.
 
 * **`follower`**
-  Read only from read replicas The query will fail if no read replicas exist.
+  Read only from read replicas. The query will fail if no read replicas exist.
 
 * **`follower_preferred`**
-  Prefer read replicas but fall back to write replicas if read replicas are unavailable.
+  Prefer read replicas. If read replicas are available, the query reads from a randomly selected read replica. If no read replica exists, the query falls back to a write replica.
+
+* **`random`**
+  Read from a randomly selected write replica or read replica.
 
 ## SQL Protocol
 
