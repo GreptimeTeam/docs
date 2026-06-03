@@ -131,8 +131,30 @@ write_bytes_exhausted_policy = "wait"
 
 | Option                          | Type   | Default | Description                                                                                                                                                                                                                                           |
 | ------------------------------- | ------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `max_in_flight_write_bytes`     | String | `"0"`   | Maximum total memory for all concurrent write request bodies and messages (HTTP, gRPC, Flight). Set to `"0"` to disable the limit (unlimited). Supports units: `B`, `KB`, `MB`, `GB`, etc. Example: `"1GB"` limits total concurrent writes to 1GB. |
-| `write_bytes_exhausted_policy`  | String | `"wait"`| Policy when write bytes quota is exhausted. Options: `"wait"` (default, waits up to 10 seconds), `"wait(<duration>)"` (custom timeout, e.g., `"wait(30s)"`), `"fail"` (immediately reject the request).                                             |
+| `max_in_flight_write_bytes`     | String | `"0"`    | Maximum total memory for all concurrent write request bodies and messages (HTTP, gRPC, Flight). Set to `"0"` to disable the limit (unlimited). Supports units: `B`, `KB`, `MB`, `GB`, etc. Example: `"1GB"` limits total concurrent writes to 1GB. |
+| `write_bytes_exhausted_policy`  | String | `"wait"` | Policy when write bytes quota is exhausted. Options: `"wait"` (default, waits up to 10 seconds), `"wait(<duration>)"` (custom timeout, e.g., `"wait(30s)"`), `"fail"` (immediately reject the request).                                             |
+
+### Datanode query concurrency limit
+
+These options limit how many read queries can run at the same time on a datanode.
+A query counts toward the limit until it finishes or the client closes the result stream.
+If the limit is reached, a new query waits up to `concurrent_query_limiter_timeout` for an available slot before it fails.
+
+These options are valid in the `datanode` subcommand.
+
+```toml
+# Maximum number of read queries that can run at the same time on the datanode.
+# Set to 0 to disable the limit (unlimited by default).
+max_concurrent_queries = 0
+
+# Maximum time a query waits for an available slot when max_concurrent_queries is reached.
+concurrent_query_limiter_timeout = "100ms"
+```
+
+| Option                             | Type    | Default   | Description                                                                                                                                              |
+| ---------------------------------- | ------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `max_concurrent_queries`           | Integer | `0`       | Maximum number of read queries that can run at the same time on the datanode. Set to `0` to disable the limit.                              |
+| `concurrent_query_limiter_timeout` | String  | `"100ms"` | Maximum time a query waits for an available slot after `max_concurrent_queries` is reached. The query fails if no slot is available in time. |
 
 ### Protocol options
 
