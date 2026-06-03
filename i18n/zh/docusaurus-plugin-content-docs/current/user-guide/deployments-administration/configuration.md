@@ -130,6 +130,28 @@ write_bytes_exhausted_policy = "wait"
 | `max_in_flight_write_bytes`     | 字符串 | `"0"`     | 所有并发写入请求体和消息（HTTP、gRPC、Flight）的最大总内存。设置为 `"0"` 表示禁用限制（无限制）。支持的单位：`B`、`KB`、`MB`、`GB` 等。示例：`"1GB"` 将并发写入总量限制为 1GB。                              |
 | `write_bytes_exhausted_policy`  | 字符串 | `"wait"`  | 写入字节配额耗尽时的策略。可选值：`"wait"`（默认，等待最多 10 秒）、`"wait(<duration>)"`（自定义超时时间，例如 `"wait(30s)"`）、`"fail"`（立即拒绝请求）。                                                      |
 
+### Datanode 查询并发限制
+
+这些选项用于限制单个 datanode 上可同时运行的读取查询数量。
+查询会一直计入并发限制，直到查询完成或客户端关闭结果流。
+如果达到并发限制，新查询最多等待 `concurrent_query_limiter_timeout` 配置的时间；如果仍然没有可用名额，查询将失败。
+
+这些选项适用于 `datanode` 子命令。
+
+```toml
+# Datanode 上允许同时运行的最大读取查询数量。
+# 设置为 0 表示禁用限制（默认为无限制）。
+max_concurrent_queries = 0
+
+# 当达到 max_concurrent_queries 时，查询等待可用名额的最长时间。
+concurrent_query_limiter_timeout = "100ms"
+```
+
+| 配置项                             | 类型   | 默认值    | 描述                                                                                                            |
+| ---------------------------------- | ------ | --------- | --------------------------------------------------------------------------------------------------------------- |
+| `max_concurrent_queries`           | 整数   | `0`       | Datanode 上允许同时运行的最大读取查询数量。设置为 `0` 表示禁用限制。                                  |
+| `concurrent_query_limiter_timeout` | 字符串 | `"100ms"` | 当达到 `max_concurrent_queries` 后，查询等待可用名额的最长时间。如果超时后仍然没有可用名额，查询将失败。 |
+
 ### 协议选项
 
 协议选项适用于 `frontend` 和 `standalone` 子命令，它指定了协议服务器地址和其他协议相关的选项。
