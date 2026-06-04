@@ -273,6 +273,10 @@ flownode:
 monitoring:
   # -- Enable self-monitoring
   enabled: true
+
+  # -- The default retention time for monitoring data
+  ttl: 30d
+  
   standalone:
     base:
       imagePullSecrets: 
