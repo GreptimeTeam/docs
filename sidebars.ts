@@ -653,6 +653,7 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/schemata',
                 'reference/sql/information-schema/tables',
                 'reference/sql/information-schema/table-constraints',
+                'reference/sql/information-schema/table-semantics',
                 'reference/sql/information-schema/views',
                 'reference/sql/information-schema/flows',
                 'reference/sql/information-schema/region-peers',
