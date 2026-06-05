@@ -47,6 +47,9 @@ In GreptimeDB, tag columns are optional. The main purposes of tag columns includ
    When the table is not append-only, GreptimeDB can deduplicate rows by timestamp under the same time-series (primary key).
 3. Smoothing migration from other TSDBs that use tags or labels.
 
+This ordering is the physical layout of rows inside the Parquet SST files on disk.
+To understand how data is organized in SST files and why this ordering, tag cardinality, and indexes affect performance, see the [storage engine](/contributor-guide/datanode/storage-engine.md#data-layout-in-sst-files) documentation.
+
 
 ## Primary key
 

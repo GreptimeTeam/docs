@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="500" viewBox="0 0 1160 500" role="img" aria-labelledby="title desc">
+  <title id="title">SST layout</title>
+  <desc id="desc">A region contains time windows, SST files, row groups, and storage columns.</desc>
+  <defs>
+    <style>
+      .frame { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 12; }
+      .window { fill: #f8fbff; stroke: #2f5f8f; stroke-width: 2; rx: 10; }
+      .sst { fill: #f7fbf7; stroke: #2f7d4f; stroke-width: 2; rx: 10; }
+      .rg { fill: #fff9ef; stroke: #b87919; stroke-width: 2; rx: 8; }
+      .colpk { fill: #e0f2fe; stroke: #0284c7; }
+      .colfield { fill: #dcfce7; stroke: #16a34a; }
+      .coltime { fill: #fef3c7; stroke: #d97706; }
+      .colmeta { fill: #ede9fe; stroke: #7c3aed; }
+      .title { font: 700 18px sans-serif; fill: #1f2937; }
+      .text { font: 14px sans-serif; fill: #374151; }
+      .small { font: 12px sans-serif; fill: #4b5563; }
+      .label { font: 700 13px sans-serif; fill: #1f2937; }
+    </style>
+  </defs>
+
+  <rect x="30" y="36" width="1100" height="420" class="frame"/>
+  <text x="60" y="72" class="title">Region</text>
+  <text x="60" y="98" class="small">Versioned metadata, memtables, SST files, and manifest history</text>
+
+  <rect x="60" y="130" width="300" height="270" class="window"/>
+  <text x="210" y="185" text-anchor="middle" class="title">Time window</text>
+  <rect x="95" y="230" width="230" height="72" class="sst"/>
+  <text x="210" y="260" text-anchor="middle" class="title">SST</text>
+  <text x="210" y="282" text-anchor="middle" class="small">time range + primary-key range</text>
+
+  <rect x="430" y="92" width="660" height="330" class="sst"/>
+  <text x="760" y="126" text-anchor="middle" class="title">Parquet SST</text>
+  <text x="760" y="150" text-anchor="middle" class="small">split into row groups, each with Parquet column statistics</text>
+
+  <rect x="465" y="185" width="590" height="86" class="rg"/>
+  <text x="490" y="232" class="label">Row group 0</text>
+
+  <rect x="465" y="304" width="590" height="86" class="rg"/>
+  <text x="490" y="351" class="label">Row group 1</text>
+
+  <rect x="615" y="204" width="90" height="42" class="colpk"/>
+  <text x="660" y="230" text-anchor="middle" class="small">host</text>
+  <rect x="708" y="204" width="90" height="42" class="colpk"/>
+  <text x="753" y="230" text-anchor="middle" class="small">region</text>
+  <rect x="801" y="204" width="90" height="42" class="colfield"/>
+  <text x="846" y="230" text-anchor="middle" class="small">cpu</text>
+  <rect x="894" y="204" width="90" height="42" class="coltime"/>
+  <text x="939" y="230" text-anchor="middle" class="small">ts</text>
+  <rect x="987" y="204" width="42" height="42" class="colmeta"/>
+  <text x="1008" y="230" text-anchor="middle" class="small">...</text>
+
+  <rect x="615" y="323" width="90" height="42" class="colpk"/>
+  <text x="660" y="349" text-anchor="middle" class="small">host</text>
+  <rect x="708" y="323" width="90" height="42" class="colpk"/>
+  <text x="753" y="349" text-anchor="middle" class="small">region</text>
+  <rect x="801" y="323" width="90" height="42" class="colfield"/>
+  <text x="846" y="349" text-anchor="middle" class="small">cpu</text>
+  <rect x="894" y="323" width="90" height="42" class="coltime"/>
+  <text x="939" y="349" text-anchor="middle" class="small">ts</text>
+  <rect x="987" y="323" width="42" height="42" class="colmeta"/>
+  <text x="1008" y="349" text-anchor="middle" class="small">...</text>
+</svg>

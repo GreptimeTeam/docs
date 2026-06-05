@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="390" viewBox="0 0 1160 390" role="img" aria-labelledby="title desc">
+  <title id="title">Scan pruning pipeline</title>
+  <desc id="desc">A query is pruned by file time range, row group statistics, indexes, precise filters, and merge dedup.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      .step { fill: #f8fbff; stroke: #2f5f8f; stroke-width: 2; rx: 10; }
+      .drop { fill: #fef2f2; stroke: #dc2626; stroke-width: 2; rx: 10; }
+      .read { fill: #f7fbf7; stroke: #2f7d4f; stroke-width: 2; rx: 10; }
+      .title { font: 700 17px sans-serif; fill: #1f2937; }
+      .text { font: 13px sans-serif; fill: #374151; }
+      .small { font: 12px sans-serif; fill: #4b5563; }
+      .arrow { stroke: #334155; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <text x="580" y="42" text-anchor="middle" class="title">Scan pruning narrows data before precise filtering</text>
+
+  <rect x="25" y="86" width="150" height="96" class="step"/>
+  <text x="100" y="122" text-anchor="middle" class="title">Query</text>
+  <text x="100" y="148" text-anchor="middle" class="small">filters + projection</text>
+
+  <rect x="225" y="86" width="165" height="96" class="step"/>
+  <text x="307" y="116" text-anchor="middle" class="title">File pruning</text>
+  <text x="307" y="142" text-anchor="middle" class="small">SST time ranges</text>
+  <text x="307" y="162" text-anchor="middle" class="small">memtable ranges</text>
+
+  <rect x="440" y="86" width="185" height="96" class="step"/>
+  <text x="532" y="116" text-anchor="middle" class="title">Min/max pruning</text>
+  <text x="532" y="142" text-anchor="middle" class="small">Parquet row-group</text>
+  <text x="532" y="162" text-anchor="middle" class="small">column statistics</text>
+
+  <rect x="675" y="86" width="165" height="96" class="step"/>
+  <text x="757" y="116" text-anchor="middle" class="title">Index pruning</text>
+  <text x="757" y="142" text-anchor="middle" class="small">Puffin indexes</text>
+  <text x="757" y="162" text-anchor="middle" class="small">row selections</text>
+
+  <rect x="890" y="86" width="135" height="96" class="read"/>
+  <text x="957" y="122" text-anchor="middle" class="title">Read data</text>
+  <text x="957" y="148" text-anchor="middle" class="small">remaining data</text>
+
+  <rect x="1060" y="86" width="80" height="96" class="read"/>
+  <text x="1100" y="117" text-anchor="middle" class="title">Result</text>
+  <text x="1100" y="143" text-anchor="middle" class="small">filter</text>
+  <text x="1100" y="163" text-anchor="middle" class="small">dedup</text>
+
+  <line x1="175" y1="134" x2="225" y2="134" class="arrow"/>
+  <line x1="390" y1="134" x2="440" y2="134" class="arrow"/>
+  <line x1="625" y1="134" x2="675" y2="134" class="arrow"/>
+  <line x1="840" y1="134" x2="890" y2="134" class="arrow"/>
+  <line x1="1025" y1="134" x2="1060" y2="134" class="arrow"/>
+
+  <rect x="225" y="245" width="165" height="76" class="drop"/>
+  <text x="307" y="289" text-anchor="middle" class="title">Skip SSTs</text>
+
+  <rect x="440" y="245" width="185" height="76" class="drop"/>
+  <text x="532" y="289" text-anchor="middle" class="title">Skip row groups</text>
+
+  <rect x="675" y="245" width="165" height="76" class="drop"/>
+  <text x="757" y="289" text-anchor="middle" class="title">Skip rows</text>
+
+  <path d="M 307 182 L 307 245" class="arrow"/>
+  <path d="M 532 182 L 532 245" class="arrow"/>
+  <path d="M 757 182 L 757 245" class="arrow"/>
+</svg>
