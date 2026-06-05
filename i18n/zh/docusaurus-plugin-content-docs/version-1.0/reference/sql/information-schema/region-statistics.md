@@ -43,8 +43,8 @@ DESC REGION_STATISTICS;
 - `disk_size`: Region 中数据文件的总大小，包括数据、索引及元信息等。
 - `memtable_size`: Region 中内存 memtables 的总大小。
 - `manifest_size`: Region 中元信息 manifest 文件的总大小。
-- `sst_num`: Region 自有 SST 文件的总数量，不包含引用其他 Region 的 SST 文件。
 - `sst_size`: Region 自有 SST 文件的总大小，不包含引用其他 Region 的 SST 文件。
+- `sst_num`: Region 自有 SST 文件的总数量，不包含引用其他 Region 的 SST 文件。
 - `index_size`: Region 自有索引文件的总大小，不包含引用其他 Region 的 SST 索引文件。
 - `engine`: Region 的引擎类型，可以是 `mito` 或 `metric`。
 - `region_role`: Region 的角色，可以是 `Leader` 或 `Follower`。

@@ -43,8 +43,8 @@ Fields in the `REGION_STATISTICS` table are described as follows:
 - `disk_size`:  The total size of data files in the region, including data, index and metadata etc.
 - `memtable_size`: The region's total size of memtables.
 - `manifest_size`: The region's total size of manifest files.
-- `sst_num`: The region's total number of SST files owned by this region. SST files referenced from other regions are not counted.
 - `sst_size`: The region's total size of SST files owned by this region. SST files referenced from other regions are not counted.
+- `sst_num`: The region's total number of SST files owned by this region. SST files referenced from other regions are not counted.
 - `index_size`: The region's total size of index files owned by this region. SST index files referenced from other regions are not counted.
 - `engine`: The engine type of the region, `mito` or `metric`.
 - `region_role`: The region's role, `Leader` or `Follower`.
