@@ -19,7 +19,7 @@ The semantic options describe what observability concept a table stands for, so 
 ```sql
 CREATE TABLE my_metrics (
   ts TIMESTAMP TIME INDEX,
-  val DOUBLE,
+  val DOUBLE
 ) WITH (
   'greptime.semantic.signal_type' = 'metric',
   'greptime.semantic.source' = 'opentelemetry',
@@ -31,7 +31,7 @@ CREATE TABLE my_metrics (
 
 ```sql
 USE INFORMATION_SCHEMA;
-DESC TABLE TABLE_SEMANTICS;
+DESC TABLE_SEMANTICS;
 ```
 
 The output is as follows:
@@ -79,7 +79,7 @@ The following keys can appear inside `semantic_options`. They are signal-specifi
 - `metric.type`: The instrument kind. One of `counter`, `gauge`, `histogram`, `summary`, `updown_counter`, `gauge_histogram`, `info`, `stateset`, `mixed`, or `unknown`. `mixed` means one table holds more than one instrument kind.
 - `metric.unit`: The unit in [UCUM](https://ucum.org/) notation, for example `s`, `By`, or `{request}`. The row encoders discard the unit, so it is unrecoverable from the data once ingested.
 - `metric.temporality`: The aggregation temporality (OTLP only). One of `cumulative`, `delta`, `mixed`, or `unknown`. It is invisible in the metric name, so it is unrecoverable from the table alone.
-- `metric.original_name`: The pre-translation OpenTelemetry metric name, recorded when the table name was Prometheus-ised. It is the key a consumer uses to look the metric up in the OpenTelemetry semantic conventions.
+- `metric.original_name`: The pre-translation OpenTelemetry metric name, recorded when the table name was converted to Prometheus style. It is the key a consumer uses to look the metric up in the OpenTelemetry semantic conventions.
 - `trace.conventions`: The semantic-conventions version the rows conform to, typically an OpenTelemetry schema URL such as `https://opentelemetry.io/schemas/1.27.0`, or `unknown` / `mixed`.
 
 `unknown` and `mixed` are shared sentinels: `unknown` means the value could not be determined when the option was stamped, and `mixed` means a single-valued key saw conflicting values over the table's lifetime.

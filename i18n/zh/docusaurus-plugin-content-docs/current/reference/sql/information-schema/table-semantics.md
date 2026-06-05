@@ -19,7 +19,7 @@ description: TABLE_SEMANTICS 表在 INFORMATION_SCHEMA 中提供 GreptimeDB 表�
 ```sql
 CREATE TABLE my_metrics (
   ts TIMESTAMP TIME INDEX,
-  val DOUBLE,
+  val DOUBLE
 ) WITH (
   'greptime.semantic.signal_type' = 'metric',
   'greptime.semantic.source' = 'opentelemetry',
@@ -31,7 +31,7 @@ CREATE TABLE my_metrics (
 
 ```sql
 USE INFORMATION_SCHEMA;
-DESC TABLE TABLE_SEMANTICS;
+DESC TABLE_SEMANTICS;
 ```
 
 输出如下：
