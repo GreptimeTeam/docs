@@ -125,9 +125,12 @@ COPY tbl FROM '/path/to/file.csv.gz' WITH (
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet, ORC  | **Required** |
 | `PATTERN` | Use regex to match files. e.g., `*_today.parquet` | Optional |
 | `compression_type` | Compression algorithm for the imported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
+| `headers` | Whether the CSV file has a header row. Supported values: `true`, `false`. Default is `true`. | Optional |
 
 :::tip NOTE
-The CSV file must have a header row to be imported correctly. The header row should contain the column names of the table.
+By default, CSV files are parsed with headers and column names are matched by name.
+
+To import headerless CSV files, set `headers = 'false'`. In this mode, columns are mapped by position following the target table schema order. You can use `SHOW CREATE TABLE <table_name>` to inspect the table column order.
 :::
 
 #### `CONNECTION` Option

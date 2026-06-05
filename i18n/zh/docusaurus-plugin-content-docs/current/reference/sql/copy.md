@@ -118,9 +118,12 @@ COPY tbl FROM '/path/to/file.csv.gz' WITH (
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet, ORC  | **是** |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
 | `compression_type` | 导入文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
+| `headers` | CSV 文件是否包含表头。支持的值：`true`、`false`。默认值为 `true`。 | 可选 |
 
 :::tip NOTE
-CSV 文件必须带有 header，包含表的列名。
+默认情况下，CSV 会按包含表头进行解析，并按列名匹配表字段。
+
+如果要导入不包含表头的 CSV 文件，请设置 `headers = 'false'`。此时会按目标表的字段顺序进行位置映射。你可以使用 `SHOW CREATE TABLE <table_name>` 查看表字段顺序。
 :::
 
 #### Connection 选项
