@@ -593,6 +593,14 @@ meta:
   enableRegionFailover: true
 ```
 
+### Enable IPv6
+
+The `enableIPv6` field controls IPv6 support. Set it to true to enable IPv6 address allocation and communication. Defaults to false. Ensure that the underlying network infrastructure supports IPv6 before enabling this option.
+
+```yaml
+enableIPv6: true
+```
+
 ### Enable GC
 
 Repartitioning depends on shared object storage and GC. You can enable GC on both metasrv and datanode with the following example:
