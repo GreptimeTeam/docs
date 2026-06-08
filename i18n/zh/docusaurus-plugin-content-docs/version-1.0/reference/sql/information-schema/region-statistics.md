@@ -38,14 +38,14 @@ DESC REGION_STATISTICS;
 - `region_id`: Region 的 ID。
 - `table_id`: 表的 ID。
 - `region_number`: Region 在表中的编号。
-- `region_rows`: Region 中的记录行数。它包括该 Region 自有 SST 文件中的行数以及 memtable 中的行数，不包含引用其他 Region SST 文件中的行数。
+- `region_rows`: Region 中的记录行数。
 - `written_bytes_since_open`: Region 自打开以来写入的字节数。
 - `disk_size`: Region 中数据文件的总大小，包括数据、索引及元信息等。
 - `memtable_size`: Region 中内存 memtables 的总大小。
 - `manifest_size`: Region 中元信息 manifest 文件的总大小。
-- `sst_size`: Region 自有 SST 文件的总大小，不包含引用其他 Region 的 SST 文件。
-- `sst_num`: Region 自有 SST 文件的总数量，不包含引用其他 Region 的 SST 文件。
-- `index_size`: Region 自有索引文件的总大小，不包含引用其他 Region 的 SST 索引文件。
+- `sst_num`: Region 中 SST 文件的总数量。
+- `sst_size`: Region 中 SST 文件的总大小。
+- `index_size`: Region 中索引文件的总大小。
 - `engine`: Region 的引擎类型，可以是 `mito` 或 `metric`。
 - `region_role`: Region 的角色，可以是 `Leader` 或 `Follower`。
 
