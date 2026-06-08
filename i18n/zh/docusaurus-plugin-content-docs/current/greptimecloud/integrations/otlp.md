@@ -49,7 +49,7 @@ exporters:
       authenticator: basicauth/client
     headers:
       x-greptime-db-name: '<dbname>'
-      # x-greptime-log-table-name: "<pipeline_name>"
+      # x-greptime-log-table-name: "<table_name>"
 
   otlphttp/metrics:
     endpoint: 'https://<host>/v1/otlp'
@@ -99,4 +99,3 @@ otelcol.auth.basic "credentials" {
 ## 了解更多
 
 请参考 GreptimeDB 用户指南中的 [OpenTelemetry Protocol 文档](https://docs.greptime.com/user-guide/ingest-data/for-observability/opentelemetry/) 以获取更多关于使用 GreptimeDB 和 OpenTelemetry 的信息。
-

@@ -71,7 +71,7 @@ Or a JSON log:
 ```
 
 GreptimeDB transforms these logs into structured data with multiple columns and automatically creates the necessary tables.
-A pipeline processes the logs into structured data before ingestion into GreptimeDB. Different log formats require different [Pipelines](/user-guide/logs/quick-start.md#write-logs-by-pipeline) for parsing. See the following sections for details.
+A pipeline processes the logs into structured data before ingestion into GreptimeDB. Different log formats require different [Pipelines](/user-guide/logs/use-custom-pipelines.md) for parsing. See the following sections for details.
 
 ### Logs with JSON format
 
@@ -169,4 +169,3 @@ pipeline_name = "your_custom_pipeline"
 ## Demo
 
 For a runnable demo of data transformation and ingestion, please refer to the [Kafka Ingestion Demo](https://github.com/GreptimeTeam/demo-scene/tree/main/kafka-ingestion).
-

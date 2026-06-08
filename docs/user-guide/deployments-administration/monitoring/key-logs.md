@@ -153,8 +153,8 @@ Closing staled region:
 #### Region Failover
 
 ```bash
-// Warning level, detects some regions failed Phi health check, need to execute failover operation. Region IDs will be printed after the colon
-Detects region failures:
+// Warning level, detects some regions failed Phi health check, need to execute failover operation. The datanode ID and region IDs will be printed after the colon
+Detects region failures on datanode:
 
 // A region migration failed
 Failed to wait region migration procedure
@@ -202,4 +202,3 @@ When compaction starts and ends, datanode will log the following information:
 ```bash
 2025-05-16T06:01:08.805366Z  INFO mito2::request: Successfully compacted region: 4612794875904(1074, 0)
 ```
-

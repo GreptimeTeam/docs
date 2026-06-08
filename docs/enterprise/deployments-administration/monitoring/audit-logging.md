@@ -51,31 +51,31 @@ GreptimeDB config file:
 [plugins.audit_log]
 # Whether to enable audit logging, defaults to true.
 enable = true
-# The directory to store the audit log files. Defaults to "./greptimedb_data/logs".
-dir = "./greptimedb_data/logs/"
+# The directory to store the audit log files. Defaults to "/tmp/greptimedb/logs".
+dir = "/tmp/greptimedb/logs"
 # The allowed auditing sources. This option works as a filter:
 # if a statement is not coming from one of these configured sources, it won't be recorded in the audit logs.
 # Multiple sources are separated by comma(",").
-# All sources are: "Http", "Mysql" and "Postgres".
+# All sources are: "unknown", "http", "grpc", "mysql" and "postgres".
 # A special "all" (which is the default value) means all the sources.
 sources = "all"
 # The allowed auditing classes. This option works as a filter:
 # if a statement's class do not match one of these configured values, it won't be recorded in the audit logs.
 # Multiple classes are separated by comma(",").
-# All classes are: "Read", "Write", "Admin", "DDL" and "Misc".
+# All classes are: "read", "write", "admin", "ddl" and "misc".
 # A special "all" means all the classes.
-# Defaults to "DDL" and "Admin".
+# Defaults to "ddl" and "admin".
 classes = "ddl,admin"
 # The allowed auditing commands. This option works as a filter:
 # if a statement's command do not match one of these configured values, they won't be recorded in the audit logs.
 # Multiple commands are separated by comma(",").
-# All commands are: "Promql", "Select", "Copy", "Insert", "Delete", "Create", "Alter", "Truncate", "Drop", "Admin" and "Misc".
+# All commands are: "promql", "select", "copy", "insert", "delete", "create", "alter", "truncate", "drop", "admin" and "misc".
 # A special "all" (which is the default value) means all the commands.
 commands = "all"
 # The allowed auditing object types. This option works as a filter:
 # if a statement's target object do not match one of these configured values, they won't be recorded in the audit logs.
 # Multiple object types are separated by comma(",").
-# All object types are: "Database", "Table", "View", "Flow", "Index", and "Misc".
+# All object types are: "database", "table", "view", "flow", "index", "misc", and "trigger".
 # A special "all" (which is the default value) means all the object types.
 object_types = "all"
 # The max retained audit log files. Defaults to 30.

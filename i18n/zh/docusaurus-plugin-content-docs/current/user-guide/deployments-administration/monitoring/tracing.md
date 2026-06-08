@@ -107,11 +107,11 @@ GreptimeDB 根据接入的协议，还有该协议对应的操作，对所有 tr
 | grpc         | inserts / query.sql / query.logical_plan / query.prom_range / query.empty / ddl.create_database / ddl.create_table / ddl.alter / ddl.drop_table / ddl.truncate_table / ddl.empty / deletes / row_inserts / row_deletes |
 | mysql        |                                                                                                                                                                                                                       |
 | postgres     |                                                                                                                                                                                                                       |
-| otlp         | metrics / traces                                                                                                                                                                                                      |
+| otlp         | metrics / traces / logs                                                                                                                                                                                               |
 | opentsdb     |                                                                                                                                                                                                                       |
 | influxdb     | write_v1 / write_v2                                                                                                                                                                                                   |
 | prometheus   | remote_read / remote_write / format_query / instant_query / range_query / labels_query / series_query / label_values_query                                                                                                          |
-| http         | sql / promql       
+| http         | sql / promql                                                                                                                                                                                                          |
 
 您可以通过 `tracing_sample_ratio` 来配置不同 tracing 的采样率。
 

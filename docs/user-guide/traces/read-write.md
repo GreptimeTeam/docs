@@ -86,7 +86,7 @@ OpenTelemetry Collector. For example, you can use the environment variable
 `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` to configure the endpoint of the exporter:
 
 ```shell
-export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="http://localhost:4318/v1/otlp/v1/traces"
+export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="http://localhost:4318/v1/traces"
 ```
 
 For convenience, you can use the tool
@@ -120,8 +120,8 @@ The GreptimeDB OTEL endpoint supports Basic authentication. For details, please 
 
 The HTTP header `x-greptime-pipeline-name` is required for ingesting trace
 data. Here we reuse the Pipeline concept of GreptimeDB for data
-transformation. However, note that we only support built-in `greptime_trace_v1`
-as the pipeline for tracing. No custom pipeline is allowed for the moment.
+transformation. Use the built-in `greptime_trace_v1` pipeline for trace data.
+No custom pipeline is allowed for the moment.
 
 ### Append-only Mode
 

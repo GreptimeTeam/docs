@@ -32,7 +32,7 @@ POST /v1/logs
 ## 使用限制
 
 - 最大结果数量：1000 条记录
-- 仅支持包含时间戳和字符串列的表格
+- 需要时间索引列。字符串搜索过滤器适用于字符串/文本表达式，类型化比较过滤器可用于兼容的数字、布尔值和字符串表达式。
 
 ## 使用示例
 
@@ -58,16 +58,18 @@ curl -X "POST" "http://localhost:4000/v1/logs" \
         "columns": [
             "message"
         ],
-        "filters": [
-            {
-                "column_name": "message",
+        "filters": {
+            "Single": {
+                "expr": {
+                    "NamedIdent": "message"
+                },
                 "filters": [
                     {
-                       "Contains": "production"
+                        "Contains": "production"
                     }
                 ]
             }
-        ],
+        },
         "context": "None",
         "exprs": []
     }

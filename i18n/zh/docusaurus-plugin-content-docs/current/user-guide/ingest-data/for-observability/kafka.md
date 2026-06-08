@@ -70,7 +70,7 @@ tls = {}
 
 GreptimeDB 将这些日志转换为具有多个列的结构化数据，并自动创建必要的表。
 Pipeline 在写入到 GreptimeDB 之前将日志处理为结构化数据。
-不同的日志格式需要不同的 [Pipeline](/user-guide/logs/quick-start.md#write-logs-by-pipeline) 来解析，详情请继续阅读下面的内容。
+不同的日志格式需要不同的 [Pipeline](/user-guide/logs/use-custom-pipelines.md) 来解析，详情请继续阅读下面的内容。
 
 ### JSON 格式的日志
 
@@ -167,4 +167,3 @@ pipeline_name = "your_custom_pipeline"
 ## Demo
 
 有关数据转换和写入的可运行演示，请参阅 [Kafka Ingestion Demo](https://github.com/GreptimeTeam/demo-scene/tree/main/kafka-ingestion)。
-

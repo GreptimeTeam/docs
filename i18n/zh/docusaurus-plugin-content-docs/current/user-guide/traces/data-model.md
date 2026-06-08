@@ -19,15 +19,13 @@ description: 介绍 Trace 数据如何存入 GreptimeDB.
 ## 数据模型版本机制
 
 GreptimeDB 本身的数据类型和相关功能在持续演化。为了实现向后兼容，我们使用
-Pipeline 的名称来作为数据模型的版本。目前可用的 Pipeline 包括：
+Pipeline 的名称来作为数据模型的版本。目前可用的内置 Pipeline 为：
 
-- `greptime_trace_v1`
+- `greptime_trace_v1`: trace 表推荐使用的数据模型。
 
-在使用 OTLP/HTTP 协议写入数据时，HTTP 头是必须设置的 `x-greptime-pipeline-name:
-greptime_trace_v1`.
+在使用 OTLP/HTTP 协议写入数据时，需要通过 `x-greptime-pipeline-name` HTTP 头指定数据模型。新的 trace 表请使用 `x-greptime-pipeline-name: greptime_trace_v1`。
 
-在未来我们可能引入新的 Pipeline 名称，即数据模型版本。但已有的版本会持续保持维护。
-新的 Pipeline 可能与老版本不兼容，倒是需要创建新的数据表来使用。
+在未来我们可能引入新的 Pipeline 名称，即数据模型版本。新的 Pipeline 可能与老版本不兼容，因此建议创建新的数据表来使用。
 
 ## 数据模型
 
@@ -45,6 +43,8 @@ greptime_trace_v1`.
 - 其他复合类型字段 `span_links` 和 `span_events` 将被存储为 `JSON` 类型。
 
 在插入第一条数据时，表将被创建。并且当数据中涉及新的字段时，表的结构会自动变更增加列。
+
+对于 `greptime_trace_v1`，GreptimeDB 还会在 schema 演进过程中协调 attribute 列的类型。当 trace 表已经存在时，已有表结构对兼容的新写入值具有优先级。兼容的标量值可以转换为已有列类型；当已有 `Int64` attribute 列后续收到整数和浮点数混合写入时，该列可能会被扩展为 `Float64`。如果某个 span 仍无法写入，GreptimeDB 可能只拒绝该 span，同时接受请求中的其他 span。
 
 以下是一个使用 OpenTelemetry Django 埋点生成的表结构：
 
@@ -170,16 +170,20 @@ Trace 表包含了默认的 [分区规
    入数据之前创建这个表。
 2. 通过设置 OTLP 写入请求的 `x-greptime-hints` [HTTP
    头](/user-guide/protocols/http#hints)，加入 `trace_table_partitions=n`，其中
-   `n` 是要设置的分区数。将 `n` 设置为 `1` 可以取消分区。
+   `n` 是要设置的分区数。将 `n` 设置为 `0` 或 `1` 可以取消分区。
 
 ### 索引
 
-我们默认使用对 `service_name` 和 `trace_id` 两个常用字段使用[跳数索
+我们默认对 `service_name`、`trace_id` 和 `parent_span_id` 三个常用字段使用[跳数索
 引](/user-guide/manage-data/data-index.md#skipping-index)，满足常见的查询场景。
 
 实际使用中，用户可能希望对一些特定的属性列增加索引，这可以通过[alter
 table](/reference/sql/alter.md#create-an-index-for-a-column)语句来实现。不同于分
 区规则，索引可以增量添加而不用重新建表。
+
+### Partial Success
+
+当一次 trace 请求包含多个 span 时，GreptimeDB 可能会接受可写入的 span，并只拒绝因确定性校验失败而无法写入的 span，例如 schema 或值不兼容。在这种情况下，OTLP 响应中会包含 `partial_success`，其中带有 `rejected_spans` 和 `error_message`。如果所有 span 都被拒绝，GreptimeDB 返回 `400 Bad Request`。
 
 ### Append-only 模式
 

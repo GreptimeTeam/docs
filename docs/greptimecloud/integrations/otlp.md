@@ -51,7 +51,7 @@ exporters:
       authenticator: basicauth/client
     headers:
       x-greptime-db-name: '<dbname>'
-      # x-greptime-log-table-name: "<pipeline_name>"
+      # x-greptime-log-table-name: "<table_name>"
 
   otlphttp/metrics:
     endpoint: 'https://<host>/v1/otlp'
@@ -101,4 +101,3 @@ otelcol.auth.basic "credentials" {
 
 For more information on using GreptimeDB with OpenTelemetry,
 please refer to the [OpenTelemetry Protocol documentation](https://docs.greptime.com/user-guide/ingest-data/for-observability/opentelemetry/) in the GreptimeDB user guide.
-
