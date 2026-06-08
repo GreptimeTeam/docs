@@ -651,6 +651,7 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/partitions',
                 'reference/sql/information-schema/procedure-info',
                 'reference/sql/information-schema/schemata',
+                'reference/sql/information-schema/statistics',
                 'reference/sql/information-schema/tables',
                 'reference/sql/information-schema/table-constraints',
                 'reference/sql/information-schema/table-semantics',

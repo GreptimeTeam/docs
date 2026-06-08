@@ -31,7 +31,7 @@ DESC INFORMATION_SCHEMA.table_constraints;
 * `CONSTRAINT_SCHEMA`: 约束所属数据库的名称。
 * `CONSTRAINT_NAME`: 约束的名称，可以是 `TIME INDEX` 或 `PRIMARY`。
 * `TABLE_NAME`: 表的名称。
-* `CONSTRAINT_TYPE`: 约束的类型。值可以是 `TIME INDEX` 或 `PRIMARY KEY`。`TIME INDEX` 和 `PRIMARY KEY` 信息类似于 `SHOW INDEX` 语句的执行结果。
+* `CONSTRAINT_TYPE`: 约束的类型。值可以是 `TIME INDEX` 或 `PRIMARY KEY`。这些键约束也会出现在 [`STATISTICS`](./statistics.md) 中，而 `SHOW INDEX` 也是基于该表返回结果。
 * `enforced`: 不支持 `CHECK` 约束，此值始终为 `YES`。
 
 ```sql
