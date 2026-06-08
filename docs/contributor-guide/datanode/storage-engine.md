@@ -103,7 +103,7 @@ Each Parquet SST is split into row groups, the unit that Parquet can read or ski
 
 Mito supports two SST formats, `flat` (the default) and `primary_key`, which encode the primary key differently and are tuned for different primary-key cardinalities. See [SST format](/reference/sql/create.md#create-a-table-with-sst-format) and the [table design guide](/user-guide/deployments-administration/performance-tuning/design-table.md#choosing-the-sst-format) for how to choose between them.
 
-<img src="/sst-layout.svg" alt="SST layout" style="width: 80%; margin: 0 auto"/>
+<img src="/sst-layout.svg" alt="SST layout" style={{width: '80%', margin: '0 auto'}}/>
 
 ## Scan Pruning
 
@@ -113,4 +113,4 @@ Mito avoids reading data that cannot match a query by combining several pruning 
 2. **Row-group statistics.** If a row group's min-max statistics prove that no row can match a predicate, the whole row group is skipped.
 3. **Indexes.** Inverted, skipping, and full-text indexes provide more selective pruning for predicates that statistics cannot resolve. See [Data Persistence and Indexing](data-persistence-indexing.md).
 
-<img src="/scan-pruning.svg" alt="Scan pruning pipeline" style="width: 80%; margin: 0 auto"/>
+<img src="/scan-pruning.svg" alt="Scan pruning pipeline" style={{width: '80%', margin: '0 auto'}}/>
