@@ -273,6 +273,10 @@ flownode:
 monitoring:
   # -- 打开自监控
   enabled: true
+
+  # -- 监控数据的默认保留时间
+  ttl: 30d
+  
   standalone:
     base:
       imagePullSecrets: 

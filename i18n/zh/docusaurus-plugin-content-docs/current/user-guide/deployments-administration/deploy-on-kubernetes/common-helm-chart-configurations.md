@@ -593,6 +593,14 @@ meta:
   enableRegionFailover: true
 ```
 
+### 启用 IPv6
+
+通过 `enableIPv6` 字段可开启 IPv6 网络协议支持。设置为 true 时，系统将启用 IPv6 地址分配与通信功能，默认为 false（不启用）。启用前请确保底层基础环境已配置支持 IPv6 网络。
+
+```yaml
+enableIPv6: true
+```
+
 ### 启用 GC
 
 重分区依赖共享对象存储和 GC。你可以通过下面的示例同时开启 metasrv 和 datanode 的 GC：
