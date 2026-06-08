@@ -11,13 +11,11 @@ it is crucial to understand the data types, scale, and common queries relevant t
 then model the data accordingly.
 This document provides a comprehensive guide on GreptimeDB's data model and table schema design for various scenarios.
 
-## Understanding GreptimeDB's Data Model
+## How GreptimeDB Stores and Reads Data
 
 Before proceeding, please review the GreptimeDB [Data Model Documentation](/user-guide/concepts/data-model.md).
 
-## How GreptimeDB reads data
-
-Understanding how GreptimeDB executes a query makes the rest of this guide easier to follow.
+Understanding how GreptimeDB stores data and executes a query makes the rest of this guide easier to follow.
 Later sections refer back to the ideas introduced here.
 
 ### Data is sorted by primary key and time
@@ -167,7 +165,7 @@ The `http_logs` table is an example for storing HTTP server logs.
 - The table sorts logs by time so it is efficient to search logs by time.
 
 
-### Primary key design and SST format
+### Primary key design
 
 You can use primary key when there are suitable columns and one of the following conditions is met:
 
@@ -200,39 +198,20 @@ CREATE TABLE http_logs_v2 (
 
 A long primary key will negatively affect the insert performance and enlarge the memory footprint. It's recommended to define a primary key with no more than 5 columns.
 
+Avoid putting high cardinality columns such as `trace_id`, `span_id`, or `user_id` into the primary key just to filter on them. For those columns, a [skipping index](#skipping-index) usually delivers better query performance with much lower overhead. Only add a high cardinality column to the primary key when you genuinely need to order or deduplicate by it, and keep in mind that deduplication on high cardinality primary keys is expensive — if you can tolerate duplication, use an append-only table for the best performance.
 
-#### Choosing the SST format
 
-GreptimeDB supports two [SST formats](/reference/sql/create.md#create-a-table-with-sst-format): `flat` (the default) and `primary_key`. They are tuned for different primary key cardinalities.
+#### SST format
 
-The default `flat` format works well across a wide range of primary key cardinalities, including high cardinality columns such as `trace_id`, `span_id`, or `user_id`. With `flat`, you can put high cardinality columns into the primary key when ordering by them benefits queries, or when you need to deduplicate by them. Note that deduplication on high cardinality primary keys is always expensive — if you can tolerate duplication, use an append-only table for the best performance.
+GreptimeDB stores data in SST files using the `flat` format by default. It works well across all primary key cardinalities — including high cardinality ones such as `trace_id` or `uuid` — so you are **not expected to set the `sst_format` option manually**.
 
-```sql
-CREATE TABLE http_logs_v3 (
-  access_time TIMESTAMP TIME INDEX,
-  application STRING,
-  remote_addr STRING,
-  http_status STRING,
-  http_method STRING,
-  http_refer STRING,
-  user_agent STRING,
-  request_id STRING,
-  request STRING,
-  PRIMARY KEY(application, request_id),
-) with ('append_mode'='true');
-```
-
-The `primary_key` format may deliver better performance when the primary key cardinality is low (typically no more than 100 thousand unique values). In general, prefer the default `flat` format unless you have measured that `primary_key` is a better fit.
-
-You can switch the format on an existing table with `ALTER TABLE`. Older versions of GreptimeDB used `primary_key` as the default, so if you upgraded from an older version or are not sure which format a table currently uses, you can switch it to `flat`:
+The only reason to set `sst_format` is when upgrading from an old version of GreptimeDB. Older versions used a legacy `primary_key` format as the default. If you upgraded from such a version, or are not sure which format a table currently uses, switch it to `flat`:
 
 ```sql
--- Switch to flat (the default).
-ALTER TABLE http_logs_v3 SET 'sst_format' = 'flat';
-
--- Opt into primary_key for low cardinality primary keys.
-ALTER TABLE http_logs_v3 SET 'sst_format' = 'primary_key';
+ALTER TABLE http_logs_v2 SET 'sst_format' = 'flat';
 ```
+
+See [SST formats](/reference/sql/create.md#create-a-table-with-sst-format) for more details.
 
 Recommendations for tags:
 
@@ -241,13 +220,13 @@ Recommendations for tags:
   For example, `namespace`, `cluster`, or an AWS `region`.
 - No need to set all low cardinality columns as tags since this may impact the performance of ingestion and querying.
 - Typically use short strings and integers for tags, avoiding `FLOAT`, `DOUBLE`, `TIMESTAMP`.
-- High cardinality columns such as `trace_id`, `span_id`, and `user_id` can also be used as tags under the default `flat` format.
-- Order primary key columns from the most frequently filtered and most selective leading column. The leading column benefits the most from ordering and row-group pruning (see [How GreptimeDB reads data](#how-greptimedb-reads-data)).
+- For high cardinality columns such as `trace_id`, `span_id`, and `user_id`, prefer a [skipping index](#skipping-index) over adding them to the primary key. It usually gives better query performance with lower overhead. Only add such a column to the primary key if you must order or deduplicate by it.
+- Order primary key columns from the most frequently filtered and most selective leading column. The leading column benefits the most from ordering and row-group pruning (see [How GreptimeDB Stores and Reads Data](#how-greptimedb-stores-and-reads-data)).
 
 
 ### How primary key ordering and indexes work together
 
-The primary key does more than identify a series — it defines how rows are physically ordered (see [How GreptimeDB reads data](#how-greptimedb-reads-data)). This affects queries in two ways:
+The primary key does more than identify a series — it defines how rows are physically ordered (see [How GreptimeDB Stores and Reads Data](#how-greptimedb-stores-and-reads-data)). This affects queries in two ways:
 
 - **Ordering and locality**: rows that share the leading primary-key columns are stored together, so filtering or grouping by those columns scans a small contiguous range. Combined with the time index, a query that filters by series and time range is cheap because both dimensions prune data. This is why you should put the columns you filter on most often (and that are most selective) first in the primary key.
 - **Coarse pruning for free**: the leading primary-key column's min/max statistics let GreptimeDB skip whole row groups, without any extra index.
@@ -306,6 +285,7 @@ Inverted index supports the following operators:
 
 For high cardinality columns like `trace_id`, `request_id`, using a [skipping index](/user-guide/manage-data/data-index.md#skipping-index) is more appropriate.
 This method has lower storage overhead and resource usage, particularly in terms of memory and disk consumption.
+For such columns, a skipping index is usually a better choice than adding the column to the primary key.
 
 Example:
 
