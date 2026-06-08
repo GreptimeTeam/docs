@@ -1,5 +1,5 @@
 ---
-keywords: [table schema, data model, cardinality, tag columns, field columns, time index, primary key, inverted index, full-text index, skipping index, append-only tables, data updating, wide table, distributed tables, partitioning]
+keywords: [table schema, data model, cardinality, tag columns, field columns, time index, primary key, primary key ordering, scan, query pruning, inverted index, full-text index, skipping index, append-only tables, data updating, merge mode, wide table, distributed tables, partitioning, partition columns, metric engine]
 description: Learn how to design your table schema in GreptimeDB for optimal performance and query efficiency
 ---
 
@@ -14,6 +14,93 @@ This document provides a comprehensive guide on GreptimeDB's data model and tabl
 ## Understanding GreptimeDB's Data Model
 
 Before proceeding, please review the GreptimeDB [Data Model Documentation](/user-guide/concepts/data-model.md).
+
+## How GreptimeDB reads data
+
+Understanding how GreptimeDB executes a query makes the rest of this guide easier to follow.
+Later sections refer back to the ideas introduced here.
+
+### Data is sorted by primary key and time
+
+GreptimeDB stores rows sorted by `(primary key, timestamp)`.
+Rows that share the same primary key form a single time series and are stored next to each other, ordered by time.
+
+For example, consider a table that stores host metrics:
+
+```sql
+CREATE TABLE host_metrics (
+  host STRING,
+  region STRING,
+  ts TIMESTAMP TIME INDEX,
+  cpu DOUBLE,
+  memory DOUBLE,
+  PRIMARY KEY (host, region)
+);
+```
+
+Conceptually, rows are grouped by primary key and ordered by time:
+
+| host | region | ts | cpu | memory |
+| --- | --- | --- | --- | --- |
+| host-a | us-east | 10:00 | 0.42 | 7.1 |
+| host-a | us-east | 10:01 | 0.47 | 7.4 |
+| host-a | us-west | 10:00 | 0.31 | 6.8 |
+| host-b | us-east | 10:00 | 0.80 | 8.6 |
+
+### A scan prunes data in stages
+
+GreptimeDB stores data in immutable files (SST files).
+Each file is split into row groups, and each row group keeps statistics such as the minimum and maximum value of every column.
+When you run a query, GreptimeDB avoids reading data that cannot match, in increasingly precise stages:
+
+1. **Time range**: skip whole files (and in-memory buffers) whose time range does not overlap the query's time range. This is usually the cheapest and most effective step for time-series data.
+2. **Row-group min/max statistics**: within a file, skip row groups whose statistics prove that no row can match a filter.
+3. **Index**: if a filtered column has an index, use it to further narrow down to specific row groups or rows.
+4. **Read and filter**: read the remaining data and apply the exact filters.
+
+Take this query as an example:
+
+```sql
+SELECT ts, cpu
+FROM host_metrics
+WHERE host = 'host-a'
+  AND region = 'us-east'
+  AND ts >= '2024-01-01 10:00:00'
+  AND ts < '2024-01-01 11:00:00'
+  AND cpu > 0.7;
+```
+
+**Time range** removes any file whose data falls outside the one-hour window.
+
+**Primary-key ordering** keeps all `host-a` / `us-east` rows together, so the scan reads a small contiguous slice of each remaining file instead of the whole file.
+
+**Row-group statistics on the first primary-key column** are especially effective. Because rows are sorted by primary key, the leading primary-key column (`host`) has a tight, non-overlapping range in each row group:
+
+| Row group | host (min..max) |
+| --- | --- |
+| 0 | host-a .. host-b |
+| 1 | host-c .. host-f |
+
+The filter `host = 'host-a'` can only match row group 0, so row group 1 is skipped without being read.
+Choosing and ordering the primary key well turns the leading primary-key column into an effective coarse pruning key — no extra index required.
+Statistics on field columns help too: a row group whose `cpu` maximum is `0.6` is skipped for `cpu > 0.7`.
+
+**Indexes** handle selective filters that ordering and statistics cannot.
+For example, an index on a column lets the scan jump to the matching row groups or rows before decoding the data columns. See [Index](#index).
+
+### Deduplication happens during the scan
+
+GreptimeDB uses an LSM-tree storage engine: it never overwrites data in place, so multiple versions of the same row can exist across files.
+For tables that are not append-only, the scan **merges and deduplicates** rows that share the same `(primary key, timestamp)` on the fly, keeping only the newest version (see [Data updating and merging](#data-updating-and-merging)).
+
+Append-only tables skip this work.
+They don't need to deduplicate, and when a query doesn't require ordered output they can be scanned in any order, which is faster.
+
+### Takeaways
+
+- Filtering by **time range** and by the **leading primary-key columns** is the cheapest way to make queries fast.
+- **Indexes** help selective filters on columns that ordering doesn't cover.
+- **Deduplication** (on non-append-only tables) adds extra work at query time.
 
 ## Basic Concepts
 
@@ -155,6 +242,22 @@ Recommendations for tags:
 - No need to set all low cardinality columns as tags since this may impact the performance of ingestion and querying.
 - Typically use short strings and integers for tags, avoiding `FLOAT`, `DOUBLE`, `TIMESTAMP`.
 - High cardinality columns such as `trace_id`, `span_id`, and `user_id` can also be used as tags under the default `flat` format.
+- Order primary key columns from the most frequently filtered and most selective leading column. The leading column benefits the most from ordering and row-group pruning (see [How GreptimeDB reads data](#how-greptimedb-reads-data)).
+
+
+### How primary key ordering and indexes work together
+
+The primary key does more than identify a series — it defines how rows are physically ordered (see [How GreptimeDB reads data](#how-greptimedb-reads-data)). This affects queries in two ways:
+
+- **Ordering and locality**: rows that share the leading primary-key columns are stored together, so filtering or grouping by those columns scans a small contiguous range. Combined with the time index, a query that filters by series and time range is cheap because both dimensions prune data. This is why you should put the columns you filter on most often (and that are most selective) first in the primary key.
+- **Coarse pruning for free**: the leading primary-key column's min/max statistics let GreptimeDB skip whole row groups, without any extra index.
+
+A primary key and an index are complementary, not alternatives:
+
+- The **primary key** gives every table one physical ordering. It helps range scans and locality, and is required for deduplication and deletion.
+- An **index** is auxiliary and can be added to any column. It targets selective filters (for example a point lookup on a high cardinality column) that ordering alone can't accelerate.
+
+A single query can use both at once. For example, with a primary key on `application` and a skipping index on `request_id` (see the [skipping index](#skipping-index) example below), GreptimeDB uses the time range and the `application` ordering to read a small slice of data, then uses the index on `request_id` to pinpoint the matching rows.
 
 
 ## Index
@@ -331,6 +434,15 @@ The `last_row` merge mode doesn't have to check each individual field value so i
 For Append-Only tables, only `last_row` is compatible with `append_mode`;
 other merge modes are rejected because Append-Only tables do not perform field-wise merges.
 
+:::warning Deduplication and partitioning
+Deduplication and merging happen **within a single partition**.
+If you partition a deduplicating table (any table that is not append-only) by a column that is **not** part of the primary key, rows with the same primary key can be spread across different partitions and won't be deduplicated against each other.
+
+To keep deduplication correct, only use primary key columns as partition columns, so that rows with the same primary key always go to the same partition.
+GreptimeDB does not enforce this — it is your responsibility.
+See [Distributed Tables](#distributed-tables).
+:::
+
 ### When to use append-only tables
 
 If you don't need the following features, you can use append-only tables:
@@ -350,7 +462,27 @@ We recommend placing metrics collected simultaneously into a single table to imp
 
 ![wide_table](/wide_table.png)
 
-Although Prometheus uses single-value model for metrics, GreptimeDB's Prometheus Remote Storage protocol supports sharing a wide table for metrics at the underlying layer through the [Metric Engine](/contributor-guide/datanode/metric-engine.md).
+### Multiple tables vs. multiple partitions
+
+Splitting data into multiple tables and partitioning a single table solve different problems and can be combined:
+
+- Use **multiple tables** when data is logically distinct: different schemas, different sets of columns, or different retention (TTL) requirements. Separate tables keep each schema clean and let you manage retention independently.
+- Use **multiple partitions** (a distributed table) when a single table grows too large for one node to serve. Partitioning splits one table's rows across nodes for horizontal scaling. See [Distributed Tables](#distributed-tables).
+
+In short: split into separate tables for logical separation, and into partitions for scale.
+
+### Prometheus metrics and the metric engine
+
+For Prometheus-style metrics, use the [Metric Engine](/contributor-guide/datanode/metric-engine.md).
+GreptimeDB uses it **by default** when you ingest data through Prometheus remote write.
+
+Although Prometheus uses a single-value model for metrics, the metric engine stores a large number of small metric tables on a shared physical wide table at the underlying layer.
+This improves read/write throughput and compression efficiency while keeping each metric as its own logical table.
+
+By default, the metric engine uses a single physical table with **only one partition**.
+This is enough for most workloads, but in a cluster it means a single datanode handles all the ingestion.
+To scale beyond one node, create your own partitioned physical table on a suitable label (for example `namespace`).
+See [GreptimeDB cluster with metric engine](/user-guide/ingest-data/for-observability/prometheus.md#greptimedb-cluster-with-metric-engine) for an example.
 
 ## Distributed Tables
 
@@ -394,11 +526,14 @@ to ensure query performance and stability. Adjust this ratio as necessary.
 You can reserve more CPU cores if there are more queries.
 
 
-### Partitioning Methods
+### How to choose partition columns
 
 GreptimeDB employs expressions to define partitioning rules.
-For optimal performance,
-select partition keys that are evenly distributed, stable, and align with query conditions.
+For optimal performance, select partition columns that are:
+
+- **Evenly distributed**: each partition should receive a similar share of data, so no single partition becomes a hotspot. The column should have enough distinct values to divide the data.
+- **Stable**: the value should not change for a given entity over time.
+- **Aligned with query conditions**: the column should appear in the filters of your common queries, so a query can be routed to a small number of partitions instead of all of them.
 
 Examples include:
 
@@ -406,9 +541,15 @@ Examples include:
 - Partitioning by data center name.
 - Partitioning by business name.
 
-The partition key should closely match the query conditions.
 For instance, if most queries target data from a specific data center,
-using the data center name as a partition key is appropriate.
+using the data center name as a partition column is appropriate.
 If the data distribution is not well understood, perform aggregate queries on existing data to gather relevant information.
+
+:::warning Partition columns and deduplication
+If your table is **not append-only** (deduplication is enabled), the partition columns **must be a subset of the primary key columns**.
+Deduplication and merging only happen within a partition, so rows with the same primary key must always be routed to the same partition. Partitioning on a non-primary-key column would scatter rows with the same primary key across partitions and break deduplication.
+Append-only tables don't deduplicate, so they can be partitioned by any column.
+See [Data updating and merging](#data-updating-and-merging).
+:::
 
 For more details, refer to the [table partition guide](/user-guide/deployments-administration/manage-data/table-sharding.md#partition).
