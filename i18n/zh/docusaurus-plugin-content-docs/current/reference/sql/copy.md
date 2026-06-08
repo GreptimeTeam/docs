@@ -113,7 +113,7 @@ COPY tbl FROM '/path/to/file.csv.gz' WITH (
 );
 ```
 
-导入 CSV 数据时，可以设置 `SKIP_BAD_RECORDS = true` 跳过解析或类型转换错误的行并继续导入：
+导入 CSV 数据时，可以设置 `SKIP_BAD_RECORDS = 'true'` 跳过解析或类型转换错误的行并继续导入：
 
 ```sql
 COPY tbl FROM '/path/to/file.csv' WITH (

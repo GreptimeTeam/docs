@@ -120,7 +120,7 @@ COPY tbl FROM '/path/to/file.csv.gz' WITH (
 );
 ```
 
-When importing CSV data, you can set `SKIP_BAD_RECORDS = true` to skip rows with parsing or casting errors and continue importing:
+When importing CSV data, you can set `SKIP_BAD_RECORDS = 'true'` to skip rows with parsing or casting errors and continue importing:
 
 ```sql
 COPY tbl FROM '/path/to/file.csv' WITH (
