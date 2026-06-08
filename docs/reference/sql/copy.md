@@ -125,7 +125,7 @@ When importing CSV data, you can set `SKIP_BAD_RECORDS = true` to skip rows with
 ```sql
 COPY tbl FROM '/path/to/file.csv' WITH (
   FORMAT = 'csv',
-  SKIP_BAD_RECORDS = true
+  SKIP_BAD_RECORDS = 'true'
 );
 ```
 
