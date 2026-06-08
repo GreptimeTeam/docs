@@ -11,9 +11,37 @@ it is crucial to understand the data types, scale, and common queries relevant t
 then model the data accordingly.
 This document provides a comprehensive guide on GreptimeDB's data model and table schema design for various scenarios.
 
-## How GreptimeDB Stores and Reads Data
+## Basic Concepts
 
 Before proceeding, please review the GreptimeDB [Data Model Documentation](/user-guide/concepts/data-model.md).
+
+### Cardinality
+
+**Cardinality**: Refers to the number of unique values in a dataset. It can be classified as "high cardinality" or "low cardinality":
+
+- **Low Cardinality**: Low cardinality columns usually have constant values.
+  The total number of unique values usually no more than 10 thousand.
+  For example, `namespace`, `cluster`, `http_method` are usually low cardinality.
+- **High Cardinality**: High cardinality columns contain a large number of unique values.
+  For example, `trace_id`, `span_id`, `user_id`, `uri`, `ip`, `uuid`, `request_id`, table auto increment id, timestamps are usually high cardinality.
+
+### Column Types
+
+In GreptimeDB, columns are categorized into three semantic types: `Tag`, `Field`, and `Timestamp`.
+The timestamp usually represents the time of data sampling or the occurrence time of logs/events.
+GreptimeDB uses the `TIME INDEX` constraint to identify the `Timestamp` column.
+So the `Timestamp` column is also called the `TIME INDEX` column.
+If you have multiple columns with timestamp data type, you can only define one as `TIME INDEX` and others as `Field` columns.
+
+In GreptimeDB, tag columns are optional.
+GreptimeDB reuses the `PRIMARY KEY` constraint to define tag columns; together they identify a time series and define how rows are ordered in storage (see [How GreptimeDB Stores and Reads Data](#how-greptimedb-stores-and-reads-data)).
+The main purposes of tag columns are:
+
+1. Defining the storage ordering of data, which improves the locality of data with the same tags. If there are no tag columns, GreptimeDB sorts rows by timestamp.
+2. Identifying a unique time series, so GreptimeDB can deduplicate rows under the same time series (primary key) when the table is not append-only.
+3. Smoothing migration from other TSDBs that use tags or labels.
+
+## How GreptimeDB Stores and Reads Data
 
 Understanding how GreptimeDB stores data and executes a query makes the rest of this guide easier to follow.
 Later sections refer back to the ideas introduced here.
@@ -100,42 +128,6 @@ They don't need to deduplicate, and when a query doesn't require ordered output 
 - **Indexes** help selective filters on columns that ordering doesn't cover.
 - **Deduplication** (on non-append-only tables) adds extra work at query time.
 
-## Basic Concepts
-
-### Cardinality
-
-**Cardinality**: Refers to the number of unique values in a dataset. It can be classified as "high cardinality" or "low cardinality":
-
-- **Low Cardinality**: Low cardinality columns usually have constant values.
-  The total number of unique values usually no more than 10 thousand.
-  For example, `namespace`, `cluster`, `http_method` are usually low cardinality.
-- **High Cardinality**: High cardinality columns contain a large number of unique values.
-  For example, `trace_id`, `span_id`, `user_id`, `uri`, `ip`, `uuid`, `request_id`, table auto increment id, timestamps are usually high cardinality.
-
-### Column Types
-
-In GreptimeDB, columns are categorized into three semantic types: `Tag`, `Field`, and `Timestamp`.
-The timestamp usually represents the time of data sampling or the occurrence time of logs/events.
-GreptimeDB uses the `TIME INDEX` constraint to identify the `Timestamp` column.
-So the `Timestamp` column is also called the `TIME INDEX` column.
-If you have multiple columns with timestamp data type, you can only define one as `TIME INDEX` and others as `Field` columns.
-
-In GreptimeDB, tag columns are optional. The main purposes of tag columns include:
-
-1. Defining the ordering of data in storage.
-   GreptimeDB reuses the `PRIMARY KEY` constraint to define tag columns and the ordering of tags.
-   Unlike traditional databases, GreptimeDB defines time-series by the primary key.
-   Tables in GreptimeDB sort rows in the order of `(primary key, timestamp)`.
-   This improves the locality of data with the same tags.
-   If there are no tag columns, GreptimeDB sorts rows by timestamp.
-2. Identifying a unique time-series.
-   When the table is not append-only, GreptimeDB can deduplicate rows by timestamp under the same time-series (primary key).
-3. Smoothing migration from other TSDBs that use tags or labels.
-
-This ordering is the physical layout of rows inside the Parquet SST files on disk.
-To understand how data is organized in SST files and why this ordering, tag cardinality, and indexes affect performance, see the [storage engine](/contributor-guide/datanode/storage-engine.md#data-layout-in-sst-files) documentation.
-
-
 ## Primary key
 
 ### Primary key is optional
@@ -200,19 +192,6 @@ A long primary key will negatively affect the insert performance and enlarge the
 
 Avoid putting high cardinality columns such as `trace_id`, `span_id`, or `user_id` into the primary key just to filter on them. For those columns, a [skipping index](#skipping-index) usually delivers better query performance with much lower overhead. Only add a high cardinality column to the primary key when you genuinely need to order or deduplicate by it, and keep in mind that deduplication on high cardinality primary keys is expensive — if you can tolerate duplication, use an append-only table for the best performance.
 
-
-#### SST format
-
-GreptimeDB stores data in SST files using the `flat` format by default. It works well across all primary key cardinalities — including high cardinality ones such as `trace_id` or `uuid` — so you are **not expected to set the `sst_format` option manually**.
-
-The only reason to set `sst_format` is when upgrading from an old version of GreptimeDB. Older versions used a legacy `primary_key` format as the default. If you upgraded from such a version, or are not sure which format a table currently uses, switch it to `flat`:
-
-```sql
-ALTER TABLE http_logs_v2 SET 'sst_format' = 'flat';
-```
-
-See [SST formats](/reference/sql/create.md#create-a-table-with-sst-format) for more details.
-
 Recommendations for tags:
 
 - Low cardinality columns that occur in `WHERE`/`GROUP BY`/`ORDER BY` frequently.
@@ -224,24 +203,101 @@ Recommendations for tags:
 - Order primary key columns from the most frequently filtered and most selective leading column. The leading column benefits the most from ordering and row-group pruning (see [How GreptimeDB Stores and Reads Data](#how-greptimedb-stores-and-reads-data)).
 
 
-### How primary key ordering and indexes work together
+### SST format
 
-The primary key does more than identify a series — it defines how rows are physically ordered (see [How GreptimeDB Stores and Reads Data](#how-greptimedb-stores-and-reads-data)). This affects queries in two ways:
+GreptimeDB stores data in SST files using the `flat` format by default. It works well across all primary key cardinalities — including high cardinality ones such as `trace_id` or `uuid` — so you are **not expected to set the `sst_format` option manually**.
 
-- **Ordering and locality**: rows that share the leading primary-key columns are stored together, so filtering or grouping by those columns scans a small contiguous range. Combined with the time index, a query that filters by series and time range is cheap because both dimensions prune data. This is why you should put the columns you filter on most often (and that are most selective) first in the primary key.
-- **Coarse pruning for free**: the leading primary-key column's min/max statistics let GreptimeDB skip whole row groups, without any extra index.
+The only reason to set `sst_format` is when upgrading from an old version of GreptimeDB. Older versions used a legacy `primary_key` format as the default. If you upgraded from such a version, or are not sure which format a table currently uses, switch it to `flat`:
 
-A primary key and an index are complementary, not alternatives:
+```sql
+ALTER TABLE http_logs_v2 SET 'sst_format' = 'flat';
+```
 
-- The **primary key** gives every table one physical ordering. It helps range scans and locality, and is required for deduplication and deletion.
-- An **index** is auxiliary and can be added to any column. It targets selective filters (for example a point lookup on a high cardinality column) that ordering alone can't accelerate.
+See [SST formats](/reference/sql/create.md#create-a-table-with-sst-format) for more details.
 
-A single query can use both at once. For example, with a primary key on `application` and a skipping index on `request_id` (see the [skipping index](#skipping-index) example below), GreptimeDB uses the time range and the `application` ordering to read a small slice of data, then uses the index on `request_id` to pinpoint the matching rows.
+
+## Deduplication and Append-Only
+
+If deduplication is necessary, you can use the default table options, which sets the `append_mode` to `false` and enables deduplication.
+
+```sql
+CREATE TABLE IF NOT EXISTS system_metrics (
+  host STRING,
+  cpu_util DOUBLE,
+  memory_util DOUBLE,
+  disk_util DOUBLE,
+  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(host),
+  TIME INDEX(ts)
+);
+```
+
+GreptimeDB deduplicates rows by the same primary key and timestamp if the table isn't append-only.
+For example, the `system_metrics` table removes duplicate rows by `host` and `ts`.
+
+### Data updating and merging
+
+GreptimeDB supports two different strategies for deduplication: `last_row` and `last_non_null`.
+You can specify the strategy by the `merge_mode` table option.
+
+GreptimeDB uses an LSM Tree-based storage engine,
+which does not overwrite old data in place but allows multiple versions of data to coexist.
+These versions are merged during the query process.
+The default merge behavior is `last_row`, meaning the most recently inserted row takes precedence.
+
+![merge-mode-last-row](/merge-mode-last-row.png)
+
+In `last_row` merge mode,
+the latest row is returned for queries with the same primary key and time value,
+requiring all Field values to be provided during updates.
+
+For scenarios where only specific Field values need updating while others remain unchanged,
+the `merge_mode` option can be set to `last_non_null`.
+This mode retains the latest non-null value for each field during queries,
+allowing updates to provide only the values that need to change.
+
+![merge-mode-last-non-null](/merge-mode-last-non-null.png)
+
+For tables created automatically via the InfluxDB line protocol, the default merge mode comes from the [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md) configuration, which defaults to `last_non_null` to align with InfluxDB's update behavior.
+An explicit HTTP `merge_mode` hint in the write request takes precedence over the configured default.
+
+If an InfluxDB line protocol write explicitly sets the HTTP `append_mode` hint to `true`,
+the auto-created table uses `append_mode = 'true'` and `merge_mode = 'last_row'` instead.
+
+The `last_row` merge mode doesn't have to check each individual field value so it is usually faster than the `last_non_null` mode.
+For Append-Only tables, only `last_row` is compatible with `append_mode`;
+other merge modes are rejected because Append-Only tables do not perform field-wise merges.
+
+:::warning Deduplication and partitioning
+Deduplication and merging happen **within a single partition**.
+If you partition a deduplicating table (any table that is not append-only) by a column that is **not** part of the primary key, rows with the same primary key can be spread across different partitions and won't be deduplicated against each other.
+
+To keep deduplication correct, only use primary key columns as partition columns, so that rows with the same primary key always go to the same partition.
+GreptimeDB does not enforce this — it is your responsibility.
+See [Distributed Tables](#distributed-tables).
+:::
+
+### When to use append-only tables
+
+If you don't need the following features, you can use append-only tables:
+
+- Deduplication
+- Deletion
+
+GreptimeDB implements `DELETE` via deduplicating rows so append-only tables don't support deletion now.
+Deduplication requires more computation and restricts the parallelism of ingestion and querying.
+Using append-only tables usually has better query performance.
 
 
 ## Index
 
-Besides primary key, you can also use index to accelerate specific queries on demand.
+Besides the primary key, you can add indexes to accelerate specific queries on demand.
+A primary key and an index are complementary, not alternatives:
+
+- The **primary key** gives every table one physical ordering. It helps range scans and locality, and is required for deduplication and deletion.
+- An **index** is auxiliary and can be added to any column, whether a tag or a field. It targets selective filters (for example a point lookup on a high cardinality column) that ordering alone can't accelerate.
+
+A single query can use both at once. For example, with a primary key on `application` and a [skipping index](#skipping-index) on `request_id`, GreptimeDB uses the time range and the `application` ordering to read a small slice of data, then uses the index on `request_id` to pinpoint the matching rows.
 
 ### Inverted Index
 
@@ -362,94 +418,12 @@ The following table lists the suitable scenarios of all index types.
 | Creation Method | - Specified using `INVERTED INDEX` |- Specified using `FULLTEXT INDEX` in column options | - Specified using `SKIPPING INDEX` in column options |
 
 
-## Deduplication
-
-If deduplication is necessary, you can use the default table options, which sets the `append_mode` to `false` and enables deduplication.
-
-```sql
-CREATE TABLE IF NOT EXISTS system_metrics (
-  host STRING,
-  cpu_util DOUBLE,
-  memory_util DOUBLE,
-  disk_util DOUBLE,
-  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY(host),
-  TIME INDEX(ts)
-);
-```
-
-GreptimeDB deduplicates rows by the same primary key and timestamp if the table isn't append-only.
-For example, the `system_metrics` table removes duplicate rows by `host` and `ts`.
-
-### Data updating and merging
-
-GreptimeDB supports two different strategies for deduplication: `last_row` and `last_non_null`.
-You can specify the strategy by the `merge_mode` table option.
-
-GreptimeDB uses an LSM Tree-based storage engine,
-which does not overwrite old data in place but allows multiple versions of data to coexist.
-These versions are merged during the query process.
-The default merge behavior is `last_row`, meaning the most recently inserted row takes precedence.
-
-![merge-mode-last-row](/merge-mode-last-row.png)
-
-In `last_row` merge mode,
-the latest row is returned for queries with the same primary key and time value,
-requiring all Field values to be provided during updates.
-
-For scenarios where only specific Field values need updating while others remain unchanged,
-the `merge_mode` option can be set to `last_non_null`.
-This mode retains the latest non-null value for each field during queries,
-allowing updates to provide only the values that need to change.
-
-![merge-mode-last-non-null](/merge-mode-last-non-null.png)
-
-For tables created automatically via the InfluxDB line protocol, the default merge mode comes from the [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md) configuration, which defaults to `last_non_null` to align with InfluxDB's update behavior.
-An explicit HTTP `merge_mode` hint in the write request takes precedence over the configured default.
-
-If an InfluxDB line protocol write explicitly sets the HTTP `append_mode` hint to `true`,
-the auto-created table uses `append_mode = 'true'` and `merge_mode = 'last_row'` instead.
-
-The `last_row` merge mode doesn't have to check each individual field value so it is usually faster than the `last_non_null` mode.
-For Append-Only tables, only `last_row` is compatible with `append_mode`;
-other merge modes are rejected because Append-Only tables do not perform field-wise merges.
-
-:::warning Deduplication and partitioning
-Deduplication and merging happen **within a single partition**.
-If you partition a deduplicating table (any table that is not append-only) by a column that is **not** part of the primary key, rows with the same primary key can be spread across different partitions and won't be deduplicated against each other.
-
-To keep deduplication correct, only use primary key columns as partition columns, so that rows with the same primary key always go to the same partition.
-GreptimeDB does not enforce this — it is your responsibility.
-See [Distributed Tables](#distributed-tables).
-:::
-
-### When to use append-only tables
-
-If you don't need the following features, you can use append-only tables:
-
-- Deduplication
-- Deletion
-
-GreptimeDB implements `DELETE` via deduplicating rows so append-only tables don't support deletion now.
-Deduplication requires more computation and restricts the parallelism of ingestion and querying.
-Using append-only tables usually has better query performance.
-
-
 ## Wide Table vs. Multiple Tables
 
 In monitoring or IoT scenarios, multiple metrics are often collected simultaneously.
 We recommend placing metrics collected simultaneously into a single table to improve read/write throughput and data compression efficiency.
 
 ![wide_table](/wide_table.png)
-
-### Multiple tables vs. multiple partitions
-
-Splitting data into multiple tables and partitioning a single table solve different problems and can be combined:
-
-- Use **multiple tables** when data is logically distinct: different schemas, different sets of columns, or different retention (TTL) requirements. Separate tables keep each schema clean and let you manage retention independently.
-- Use **multiple partitions** (a distributed table) when a single table grows too large for one node to serve. Partitioning splits one table's rows across nodes for horizontal scaling. See [Distributed Tables](#distributed-tables).
-
-In short: split into separate tables for logical separation, and into partitions for scale.
 
 ### Prometheus metrics and the metric engine
 
@@ -463,6 +437,15 @@ By default, the metric engine uses a single physical table with **only one parti
 This is enough for most workloads, but in a cluster it means a single datanode handles all the ingestion.
 To scale beyond one node, create your own partitioned physical table on a suitable label (for example `namespace`).
 See [GreptimeDB cluster with metric engine](/user-guide/ingest-data/for-observability/prometheus.md#greptimedb-cluster-with-metric-engine) for an example.
+
+### Multiple tables vs. multiple partitions
+
+Splitting data into multiple tables and partitioning a single table solve different problems and can be combined:
+
+- Use **multiple tables** when data is logically distinct: different schemas, different sets of columns, or different retention (TTL) requirements. Separate tables keep each schema clean and let you manage retention independently.
+- Use **multiple partitions** (a distributed table) when a single table grows too large for one node to serve. Partitioning splits one table's rows across nodes for horizontal scaling. See [Distributed Tables](#distributed-tables).
+
+In short: split into separate tables for logical separation, and into partitions for scale.
 
 ## Distributed Tables
 
