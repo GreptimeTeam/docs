@@ -113,12 +113,22 @@ COPY tbl FROM '/path/to/file.csv.gz' WITH (
 );
 ```
 
+导入 CSV 数据时，可以设置 `SKIP_BAD_RECORDS = 'true'` 跳过解析或类型转换错误的行并继续导入：
+
+```sql
+COPY tbl FROM '/path/to/file.csv' WITH (
+  FORMAT = 'csv',
+  SKIP_BAD_RECORDS = 'true'
+);
+```
+
 | 选项  | 描述  | 是否必需 |
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet, ORC  | **是** |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
 | `COMPRESSION_TYPE` | 导入文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
 | `HEADERS` | CSV 文件是否包含表头。支持的值：`true`、`false`。默认值为 `true`。 | 可选 |
+| `SKIP_BAD_RECORDS` | 导入 CSV 时是否跳过解析或类型转换错误的行。支持的值：`true`、`false`。默认值为 `false`。仅支持 CSV 格式。 | 可选 |
 
 :::tip NOTE
 默认情况下，CSV 会按包含表头的方式解析，并按列名匹配表字段。

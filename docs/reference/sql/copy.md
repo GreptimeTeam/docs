@@ -120,12 +120,22 @@ COPY tbl FROM '/path/to/file.csv.gz' WITH (
 );
 ```
 
+When importing CSV data, you can set `SKIP_BAD_RECORDS = 'true'` to skip rows with parsing or casting errors and continue importing:
+
+```sql
+COPY tbl FROM '/path/to/file.csv' WITH (
+  FORMAT = 'csv',
+  SKIP_BAD_RECORDS = 'true'
+);
+```
+
 | Option  | Description  | Required |
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet, ORC  | **Required** |
 | `PATTERN` | Use regex to match files. e.g., `*_today.parquet` | Optional |
 | `COMPRESSION_TYPE` | Compression algorithm for the imported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
 | `HEADERS` | Whether the CSV file has a header row. Supported values: `true`, `false`. Default is `true`. | Optional |
+| `SKIP_BAD_RECORDS` | Whether to skip rows with parsing or casting errors during CSV import. Supported values: `true`, `false`. Default is `false`. Only supported for CSV format. | Optional |
 
 :::tip NOTE
 By default, CSV files are parsed with headers and columns are matched by name.
