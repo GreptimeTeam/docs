@@ -44,7 +44,7 @@ COPY tbl TO '/path/to/file.json' WITH (
 ```sql
 COPY tbl TO '/path/to/file.csv.gz' WITH (
   FORMAT = 'csv',
-  compression_type = 'gzip'
+  COMPRESSION_TYPE = 'gzip'
 );
 ```
 
@@ -60,7 +60,7 @@ COPY tbl TO '/path/to/file.csv.gz' WITH (
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 | `START_TIME`/`END_TIME`| 需要导出数据的时间范围，时间范围为左闭右开 | 可选 |
-| `compression_type` | 导出文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
+| `COMPRESSION_TYPE` | 导出文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
 | `TIMESTAMP_FORMAT` | 导出 CSV 或 JSON 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d %H:%M:%S'`）。支持 CSV 和 JSON 格式。 | 可选 |
 | `DATE_FORMAT` | 导出 CSV 或 JSON 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d'`）。支持 CSV 和 JSON 格式。 | 可选 |
 | `TIME_FORMAT` | 导出 CSV 或 JSON 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%H:%M:%S'`）。支持 CSV 和 JSON 格式。 | 可选 |
@@ -109,7 +109,7 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 ```sql
 COPY tbl FROM '/path/to/file.csv.gz' WITH (
   FORMAT = 'csv',
-  compression_type = 'gzip'
+  COMPRESSION_TYPE = 'gzip'
 );
 ```
 
@@ -117,10 +117,13 @@ COPY tbl FROM '/path/to/file.csv.gz' WITH (
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet, ORC  | **是** |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
-| `compression_type` | 导入文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
+| `COMPRESSION_TYPE` | 导入文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
+| `HEADERS` | CSV 文件是否包含表头。支持的值：`true`、`false`。默认值为 `true`。 | 可选 |
 
 :::tip NOTE
-CSV 文件必须带有 header，包含表的列名。
+默认情况下，CSV 会按包含表头的方式解析，并按列名匹配表字段。
+
+如果要导入不包含表头的 CSV 文件，请设置 `HEADERS = 'false'`。此时会按目标表的字段顺序进行位置映射。你可以使用 `SHOW CREATE TABLE <table_name>` 查看表字段顺序。
 :::
 
 #### Connection 选项
@@ -244,7 +247,7 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 | `QUERY` | 要执行的 SQL SELECT 语句 | **是** |
 | `PATH` | 输出文件的路径 | **是** |
 | `FORMAT` | 输出文件格式：'CSV'、'JSON' 或 'PARQUET' | **是** |
-| `compression_type` | 导出文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
+| `COMPRESSION_TYPE` | 导出文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
 | `TIMESTAMP_FORMAT` | 导出 CSV 或 JSON 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。支持 CSV 和 JSON 格式。 | 可选 |
 | `DATE_FORMAT` | 导出 CSV 或 JSON 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。支持 CSV 和 JSON 格式。 | 可选 |
 | `TIME_FORMAT` | 导出 CSV 或 JSON 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。支持 CSV 和 JSON 格式。 | 可选 |
@@ -279,7 +282,7 @@ COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (FORMA
 ```sql
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (
   FORMAT = 'json',
-  compression_type = 'gzip'
+  COMPRESSION_TYPE = 'gzip'
 );
 ```
 
