@@ -214,12 +214,14 @@ You can also refer to the sample code in the [Alloy documentation](alloy.md#logs
 
 When `X-Greptime-Pipeline-Name` is provided, GreptimeDB converts each OTLP log record to one pipeline event. The event uses the following fields:
 
-- `Timestamp`: The OTLP `time_unix_nano`.
-- `ObservedTimestamp`: The OTLP `observed_time_unix_nano`.
-- `TraceId` and `SpanId`: Hex-encoded IDs.
-- `TraceFlags`, `SeverityText`, `SeverityNumber`, and `Body`: The corresponding OTLP log fields. `Body` is converted to a string.
-- `ResourceSchemaUrl`, `ScopeSchemaUrl`, `ScopeName`, and `ScopeVersion`: The corresponding resource and scope fields.
-- `ResourceAttributes`, `ScopeAttributes`, and `LogAttributes`: Objects containing the corresponding OTLP attributes.
+| Field | Description |
+| --- | --- |
+| `Timestamp` | The OTLP `time_unix_nano`. |
+| `ObservedTimestamp` | The OTLP `observed_time_unix_nano`. |
+| `TraceId`, `SpanId` | Hex-encoded IDs. |
+| `TraceFlags`, `SeverityText`, `SeverityNumber`, `Body` | The corresponding OTLP log fields. `Body` is converted to a string. |
+| `ResourceSchemaUrl`, `ScopeSchemaUrl`, `ScopeName`, `ScopeVersion` | The corresponding resource and scope fields. |
+| `ResourceAttributes`, `ScopeAttributes`, `LogAttributes` | Objects containing the corresponding OTLP attributes. |
 
 ### Data Model
 
@@ -251,7 +253,12 @@ Default table schema:
 
 - You can use `X-Greptime-Log-Table-Name` to specify the table name for storing the logs. If not provided, the default table name is `opentelemetry_logs`.
 - All attributes, including resource attributes, scope attributes, and log attributes, will be stored as a JSON column in the GreptimeDB table.
-- The `body` column is created with a fulltext index by default.
+- The `body` column is created with a fulltext index by default. The index is
+  enabled with the default fulltext settings: `analyzer=English`,
+  `case_sensitive=false`, and `backend=bloom`. For the Bloom backend, the
+  default `granularity` is `10240` and the default `false_positive_rate` is
+  `0.01`. For details, see the [fulltext index
+  documentation](/user-guide/manage-data/data-index.md#fulltext-index).
 - The timestamp of the log will be used as the timestamp index in GreptimeDB, with the column name `timestamp`. It is preferred to use `time_unix_nano` as the timestamp column. If `time_unix_nano` is not provided, `observed_time_unix_nano` will be used instead.
 
 ### Append Only

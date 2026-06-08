@@ -216,12 +216,14 @@ GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/
 
 当设置了 `X-Greptime-Pipeline-Name` 时，GreptimeDB 会把每条 OTLP 日志记录转换成一个 pipeline event。event 包含以下字段：
 
-- `Timestamp`: OTLP 的 `time_unix_nano`。
-- `ObservedTimestamp`: OTLP 的 `observed_time_unix_nano`。
-- `TraceId` 和 `SpanId`: 十六进制编码后的 ID。
-- `TraceFlags`、`SeverityText`、`SeverityNumber` 和 `Body`: 对应的 OTLP 日志字段。`Body` 会被转换成字符串。
-- `ResourceSchemaUrl`、`ScopeSchemaUrl`、`ScopeName` 和 `ScopeVersion`: 对应的 resource 和 scope 字段。
-- `ResourceAttributes`、`ScopeAttributes` 和 `LogAttributes`: 包含对应 OTLP attributes 的对象。
+| 字段 | 说明 |
+| --- | --- |
+| `Timestamp` | OTLP 的 `time_unix_nano`。 |
+| `ObservedTimestamp` | OTLP 的 `observed_time_unix_nano`。 |
+| `TraceId`、`SpanId` | 十六进制编码后的 ID。 |
+| `TraceFlags`、`SeverityText`、`SeverityNumber`、`Body` | 对应的 OTLP 日志字段。`Body` 会被转换成字符串。 |
+| `ResourceSchemaUrl`、`ScopeSchemaUrl`、`ScopeName`、`ScopeVersion` | 对应的 resource 和 scope 字段。 |
+| `ResourceAttributes`、`ScopeAttributes`、`LogAttributes` | 包含对应 OTLP attributes 的对象。 |
 
 ### 数据模型
 
@@ -253,7 +255,10 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
 - 您可以使用 `X-Greptime-Log-Table-Name` 指定存储日志的表名。如果未提供，默认表名为 `opentelemetry_logs`。
 - 所有属性，包括资源属性、范围属性和日志属性，将作为 JSON 列存储在 GreptimeDB 表中。
-- `body` 列默认会创建 fulltext 索引。
+- `body` 列默认会创建 fulltext 索引。该索引使用默认的全文索引配置：
+  `analyzer=English`、`case_sensitive=false` 和 `backend=bloom`。对于 Bloom
+  后端，默认的 `granularity` 为 `10240`，默认的 `false_positive_rate` 为
+  `0.01`。更多信息请参考[全文索引文档](/user-guide/manage-data/data-index.md#全文索引)。
 - 日志的时间戳将用作 GreptimeDB 中的时间戳索引，列名为 `timestamp`。建议使用 `time_unix_nano` 作为时间戳列。如果未提供 `time_unix_nano`，将使用 `observed_time_unix_nano`。
 
 ### Append-only 模式
