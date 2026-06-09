@@ -19,7 +19,7 @@ Sqlness has two types of file
 - `.result`: expected test output, SQL and its results
 
 The `.result` file is the expected execution output. If you see `.result` files changed,
-it means the test gets a different result and indicates it fails. You should
+it means the test gets a different result and indicates it may fail. You should
 check the change logs to solve the problem.
 
 You only need to write test SQL in the `.sql` file, and run the test.
