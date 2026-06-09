@@ -168,7 +168,13 @@ meta:
     #     username: "root"
     #     password: "root"
 
+  rbac:
+    create: true
+
   podTemplate:
+    serviceAccount:
+      create: true
+    
     main:
       # Meta resource configuration
       resources:
@@ -201,6 +207,12 @@ datanode:
     write_cache_ttl = "7d"
 
   podTemplate:
+#    serviceAccount:
+#      # Specifies whether a service account should be created
+#      create: false
+#      # Annotations to add to the service account
+#      annotations: {}
+      
     main:
       # -- Datanode resource
       resources:
@@ -279,6 +291,7 @@ monitoring:
   
   standalone:
     base:
+#      serviceAccountName: "greptimedb-datanode"
       imagePullSecrets: 
         - name: "greptimedb-custom-image-pull-secret"
       main:
@@ -292,8 +305,10 @@ monitoring:
             memory: 8Gi
     # Self-monitoring standalone storage location, can be optionally configured for object storage
     # objectStorage:
+    #   cache:
+    #     cacheCapacity: "50GiB"
     #   s3:
-    #     secretName: "greptimedb-object-storage-secret"
+    #     secretName: "storage-credentials"
     #     bucket: "greptimedb-bucket"
     #     region: "ap-southeast-1"
     #     root: "greptimedb-monitor-data"  
@@ -320,7 +335,6 @@ monitoring:
 # Object storage related configuration, enable as needed
 # Using MinIO
 # objectStorage:
-#   existingSecretName: "greptimedb-object-storage-secret"
 #   cache:
 #     cacheCapacity: "50GiB"
 #   s3:

@@ -168,7 +168,13 @@ meta:
     #     username: "root"
     #     password: "root"
 
+  rbac:
+    create: true
+
   podTemplate:
+    serviceAccount:
+      create: true
+      
     main:
       # Meta 资源配置
       resources:
@@ -201,6 +207,12 @@ datanode:
     write_cache_ttl = "7d"
 
   podTemplate:
+#    serviceAccount:
+#      # 是否创建 service account
+#      create: false
+#      # 添加 service account 注释
+#      annotations: {}
+    
     main:
       # -- Datanode 资源设置
       resources:
@@ -279,6 +291,7 @@ monitoring:
   
   standalone:
     base:
+#      serviceAccountName: "greptimedb-datanode"
       imagePullSecrets: 
         - name: "greptimedb-custom-image-pull-secret"
       main:
@@ -292,6 +305,8 @@ monitoring:
             memory: 8Gi
     # 自监控 standalone 存储位置，可按需打开存放至对象存储
     # objectStorage:
+    #   cache:
+    #     cacheCapacity: "50GiB"
     #   s3:
     #     secretName: "greptimedb-object-storage-secret"
     #     bucket: "greptimedb-bucket"
@@ -320,7 +335,6 @@ monitoring:
 # 对象存储相关配置，按需打开
 # 使用 MinIO
 # objectStorage:
-#   existingSecretName: "greptimedb-object-storage-secret"
 #   cache:
 #     cacheCapacity: "50GiB"
 #   s3:
