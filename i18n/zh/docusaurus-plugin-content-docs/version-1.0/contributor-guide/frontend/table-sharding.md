@@ -15,8 +15,9 @@ description: 介绍 GreptimeDB 中表数据的分片方法，包括分区和 Reg
 
 在创建分区后，表中的数据被逻辑上分割。你可能会问："在 GreptimeDB 中，被逻辑上分区的数据是如何存储的？" 答案是保存在 `Region` 当中。
 
-每个 `Region` 对应一个分区，并保存分区的数据。所有的 `Region` 分布在各个 `Datanode` 之中。我们的 `Metasrv` 会根据 `Datanode`
-的状态在它们之间自动移动 `Region`。此外，`Metasrv` 还可以根据数据量或访问模式拆分或合并 `Region`。
+每个 `Region` 对应一个分区，并保存分区的数据。所有的 `Region` 分布在各个 `Datanode` 之中。
+`Metasrv` 管理 `Region` 到 `Datanode` 的路由信息。如果建表后需要调整分区布局，
+GreptimeDB 支持通过显式的 [repartition](/user-guide/deployments-administration/manage-data/repartition.md) 操作拆分或合并分区。
 
 分区和 Region 的关系参见下图：
 

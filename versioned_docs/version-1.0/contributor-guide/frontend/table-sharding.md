@@ -17,9 +17,9 @@ The data within a table is logically split after creating partitions. You may as
 how are the data, after being logically partitioned, stored in the GreptimeDB? The answer is in "`Region`"s.
 
 Each region is corresponding to a partition, and stores the data in the partition. The regions are distributed among
-`Datanode`s. Our
-`metasrv` will move regions among Datanodes automatically, according to the states of Datanodes.
-Also, `metasrv` can split or merge regions according to their data volume or access pattern.
+`Datanode`s. `Metasrv` manages the route information that maps regions to Datanodes.
+If the partition layout needs to change after table creation, GreptimeDB supports explicit
+[repartitioning](/user-guide/deployments-administration/manage-data/repartition.md) through split and merge operations.
 
 The relationship between partition and region can be viewed as the following diagram:
 
