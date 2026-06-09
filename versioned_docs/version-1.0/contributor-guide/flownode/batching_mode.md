@@ -51,7 +51,7 @@ A `BatchingTask` represents a single, independent data flow. Each task is associ
 
 ### `TimeWindowExpr`
 
-The `TimeWindowExpr` is a helper utility for dealing with time window functions like `TUMBLE`.
+The `TimeWindowExpr` is a helper utility for dealing with time window expressions like `date_bin`.
 
 -   **Evaluation**: It can take a timestamp and evaluate the time window expression to determine the start and end of the window that the timestamp falls into.
 -   **Window Size**: It can also determine the size (duration) of the time window from the expression.
