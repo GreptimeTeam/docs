@@ -48,26 +48,26 @@ GreptimeDB 中审计日志的概述以及如何配置它。
 [plugins.audit_log]
 # 是否启用审计日志，默认为 true。
 enable = true
-# 存储审计日志文件的目录。默认为 "./greptimedb_data/logs/"。
-dir = "./greptimedb_data/logs/"
+# 存储审计日志文件的目录。默认为 "/tmp/greptimedb/logs"。
+dir = "/tmp/greptimedb/logs"
 # 允许审计的语句的来源。此选项作为过滤器：如果语句不来自这些配置的来源之一，则不会记录在审计日志中。
 # 多个来源用逗号（","）分隔。
-# 所有可配置的来源是 "Http"、"Mysql" 和 "Postgres"。
+# 所有可配置的来源是 "unknown"、"http"、"grpc"、"mysql" 和 "postgres"。
 # 一个特殊的 "all"（默认值）表示所有来源。
 sources = "all"
 # 允许审计的语句的类别。此选项作为过滤器：如果语句的类别不匹配这些配置的值之一，则不会记录在审计日志中。
 # 多个类别用逗号（","）分隔。
-# 所有可配置的类别是 "Read"、"Write"、"Admin"、"DDL" 和 "Misc"。
-# 一个特殊的 "all" 表示所有类别。默认值为 "DDL" 和 "Admin"。
+# 所有可配置的类别是 "read"、"write"、"admin"、"ddl" 和 "misc"。
+# 一个特殊的 "all" 表示所有类别。默认值为 "ddl" 和 "admin"。
 classes = "ddl,admin"
 # 允许审计的语句的命令。此选项作为过滤器：如果语句的命令不匹配这些配置的值之一，则不会记录在审计日志中。
 # 多个命令用逗号（","）分隔。
-# 所有可配置的命令是 "Promql"、"Select"、"Copy"、"Insert"、"Delete"、"Create"、"Alter"、"Truncate"、"Drop"、"Admin" 和 "Misc"。
+# 所有可配置的命令是 "promql"、"select"、"copy"、"insert"、"delete"、"create"、"alter"、"truncate"、"drop"、"admin" 和 "misc"。
 # 一个特殊的 "all"（默认值）表示所有命令。
 commands = "all"
 # 允许审计的对象类型。此选项作为过滤器：如果语句的目标对象不匹配这些配置的值之一，则不会记录在审计日志中。
 # 多个对象类型用逗号（","）分隔。
-# 所有可配置的对象类型是 "Database"、"Table"、"View"、"Flow"、"Index" 和 "Misc"。
+# 所有可配置的对象类型是 "database"、"table"、"view"、"flow"、"index"、"misc" 和 "trigger"。
 # 一个特殊的 "all"（默认值）表示所有对象类型。
 object_types = "all"
 # 保留的审计日志文件的最大数量。默认为 30。

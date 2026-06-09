@@ -107,11 +107,11 @@ All tracing within GreptimeDB is classified according to the protocol it is conn
 | grpc         | inserts / query.sql / query.logical_plan / query.prom_range / query.empty / ddl.create_database / ddl.create_table / ddl.alter / ddl.drop_table / ddl.truncate_table / ddl.empty / deletes / row_inserts / row_deletes |
 | mysql        |                                                                                                                                                                                                                       |
 | postgres     |                                                                                                                                                                                                                       |
-| otlp         | metrics / traces                                                                                                                                                                                                      |
+| otlp         | metrics / traces / logs                                                                                                                                                                                               |
 | opentsdb     |                                                                                                                                                                                                                       |
 | influxdb     | write_v1 / write_v2                                                                                                                                                                                                   |
 | prometheus   | remote_read / remote_write / format_query / instant_query / range_query / labels_query / series_query / label_values_query                                                                                                          |
-| http         | sql / promql       
+| http         | sql / promql                                                                                                                                                                                                          |
 
 You can configure different tracing sampling rates through `tracing_sample_ratio`.
 

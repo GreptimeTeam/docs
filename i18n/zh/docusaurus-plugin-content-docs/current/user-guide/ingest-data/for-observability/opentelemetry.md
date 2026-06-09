@@ -192,9 +192,12 @@ GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/
   - `X-Greptime-DB-Name`: `<dbname>`
   - `Authorization`: `Basic` 认证，这是一个 Base64 编码的 `<username>:<password>` 字符串。更多信息，请参考 [鉴权](/user-guide/deployments-administration/authentication/static.md) 和 [HTTP API](/user-guide/protocols/http.md#鉴权)。
   - `X-Greptime-Log-Table-Name`: `<table_name>`（可选）- 存储日志的表名。如果未提供，默认表名为 `opentelemetry_logs`。
-  - `X-Greptime-Log-Extract-Keys`: `<extract_keys>`（可选）- 从属性中提取对应 key 的值到表的顶级字段。key 应以逗号（`,`）分隔。例如，`key1,key2,key3` 将从属性中提取 `key1`、`key2` 和 `key3`，并将它们提升到日志的顶层，设置为标签。如果提取的字段类型是数组、浮点数或对象，将返回错误。如果提供了 pipeline name，此设置将被忽略。
-  - `X-Greptime-Log-Pipeline-Name`: `<pipeline_name>`（可选）- 处理日志的 pipeline 名称。如果未提供，将使用 `X-Greptime-Log-Extract-Keys` 来处理日志。
-  - `X-Greptime-Log-Pipeline-Version`: `<pipeline_version>`（可选）- 处理日志的 pipeline 的版本。如果未提供，将使用 pipeline 的最新版本。
+  - `X-Greptime-Log-Extract-Keys`: `<extract_keys>`（可选）- 从属性中提取对应 key 的值到表的顶级字段。key 应以逗号（`,`）分隔。例如，`key1,key2,key3` 将从属性中提取 `key1`、`key2` 和 `key3`，并将它们提升到日志的顶层，设置为标签。key 匹配不区分大小写。如果同一个 key 同时存在于 log attributes、scope attributes 和 resource attributes 中，优先使用 log attributes 的值，其次是 scope attributes，最后是 resource attributes。可提取的值类型包括字符串、有符号整数、无符号整数和布尔值。如果提取的字段类型是数组、浮点数或对象，将返回错误。如果提供了 pipeline name，此设置将被忽略。
+  - `X-Greptime-Pipeline-Name`: `<pipeline_name>`（可选）- 处理日志的 pipeline 名称。如果未提供，GreptimeDB 使用内置的 OTLP 日志映射，并在提供 `X-Greptime-Log-Extract-Keys` 时应用该配置。
+  - `X-Greptime-Pipeline-Version`: `<pipeline_version>`（可选）- 处理日志的 pipeline 版本。如果未提供，将使用 pipeline 的最新版本。
+  - `X-Greptime-Pipeline-Params`: `<pipeline_params>`（可选）- 使用自定义 pipeline 处理日志时传入的 pipeline 参数。
+
+`X-Greptime-Log-Pipeline-Name` 和 `X-Greptime-Log-Pipeline-Version` 也可以作为通用 pipeline header 的旧别名使用。新的配置建议使用 `X-Greptime-Pipeline-Name` 和 `X-Greptime-Pipeline-Version`。
 
 请求使用二进制 protobuf 编码负载，因此您需要使用支持 `HTTP/protobuf` 的包。
 
@@ -208,6 +211,19 @@ GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/
 
 请参考 [OpenTelemetry Collector 文档](otel-collector.md)中的示例代码，里面包含了如何将 OpenTelemetry 日志发送到 GreptimeDB。
 也可参考 [Alloy 文档](alloy.md#日志)中的示例代码，了解如何将 OpenTelemetry 日志发送到 GreptimeDB。
+
+### 自定义 Pipeline 输入
+
+当设置了 `X-Greptime-Pipeline-Name` 时，GreptimeDB 会把每条 OTLP 日志记录转换成一个 pipeline event。event 包含以下字段：
+
+| 字段 | 说明 |
+| --- | --- |
+| `Timestamp` | OTLP 的 `time_unix_nano`。 |
+| `ObservedTimestamp` | OTLP 的 `observed_time_unix_nano`。 |
+| `TraceId`、`SpanId` | 十六进制编码后的 ID。 |
+| `TraceFlags`、`SeverityText`、`SeverityNumber`、`Body` | 对应的 OTLP 日志字段。`Body` 会被转换成字符串。 |
+| `ResourceSchemaUrl`、`ScopeSchemaUrl`、`ScopeName`、`ScopeVersion` | 对应的 resource 和 scope 字段。 |
+| `ResourceAttributes`、`ScopeAttributes`、`LogAttributes` | 包含对应 OTLP attributes 的对象。 |
 
 ### 数据模型
 
@@ -239,6 +255,10 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
 - 您可以使用 `X-Greptime-Log-Table-Name` 指定存储日志的表名。如果未提供，默认表名为 `opentelemetry_logs`。
 - 所有属性，包括资源属性、范围属性和日志属性，将作为 JSON 列存储在 GreptimeDB 表中。
+- `body` 列默认会创建 fulltext 索引。该索引使用默认的全文索引配置：
+  `analyzer=English`、`case_sensitive=false` 和 `backend=bloom`。对于 Bloom
+  后端，默认的 `granularity` 为 `10240`，默认的 `false_positive_rate` 为
+  `0.01`。更多信息请参考[全文索引文档](/user-guide/manage-data/data-index.md#全文索引)。
 - 日志的时间戳将用作 GreptimeDB 中的时间戳索引，列名为 `timestamp`。建议使用 `time_unix_nano` 作为时间戳列。如果未提供 `time_unix_nano`，将使用 `observed_time_unix_nano`。
 
 ### Append-only 模式
@@ -301,7 +321,7 @@ GreptimeDB 将 OTLP traces 数据模型映射到表结构。默认情况下，Tr
 - 每一行代表一个单一的 span。
 - `service_name` 用作 **Tag**（**主键**的一部分）。
 - `timestamp` 用作 **时间索引**（Time Index）。
-- Resource Attributes 和 Span Attributes 将被自动展平为单独的列。
+- Resource Attributes、Scope Attributes 和 Span Attributes 将被自动展平为单独的列。
   - 注意：`resource_attributes.service.name` 被排除在打平之外，因为它已经存储在 `service_name` 列中。
 - `span_events` 和 `span_links` 默认存储为 `JSON` 数据类型。
 
@@ -310,6 +330,12 @@ GreptimeDB 将 OTLP traces 数据模型映射到表结构。默认情况下，Tr
 注意:
 1. `greptime_trace_v1` 处理方式默认通过 `trace_id` 字段将数据切分成不同的分区以提升性能。**请确保 `trace_id` 的第一个字符是分布均匀的**。
 2. 在非测试的场合下，可以通过设置 `ttl` 以避免持久化数据量过大。通过设置 `x-greptime-hints: ttl=7d` HTTP 请求头，在创建 trace 表时会添加一个 7 天的 `ttl` 表选项。见[此文档](/reference/sql/create.md#表选项)了解更多关于表选项 `ttl` 的信息。
+
+### Schema 演进与 Partial Success
+
+`greptime_trace_v1` 模型会自动添加新的打平 attribute 列。当 trace 表已经存在时，GreptimeDB 会根据已有表结构协调新写入 attribute 的值类型。兼容的标量值可以转换为已有列类型；当已有 `Int64` attribute 列后续收到整数和浮点数混合写入时，该列可能会被扩展为 `Float64`。
+
+如果一次 trace 请求中有部分 span 因 schema 或值不兼容而无法写入，GreptimeDB 仍可能接受其他 span，并返回包含 `rejected_spans` 和 `error_message` 的 OTLP `partial_success` 响应。如果所有 span 都被拒绝，接口会返回 `400 Bad Request`。
 
 ### 辅助表
 

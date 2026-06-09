@@ -32,7 +32,7 @@ This endpoint has the same response format as the SQL query endpoint. Please ref
 ## Limitations
 
 - Maximum result limit: 1000 entries
-- Only supports tables with timestamp and string columns
+- Requires a time index column. String search filters apply to string/text expressions, while typed comparison filters can be applied to compatible numeric, boolean, and string expressions.
 
 ## Example
 
@@ -58,16 +58,18 @@ curl -X "POST" "http://localhost:4000/v1/logs" \
         "columns": [
             "message"
         ],
-        "filters": [
-            {
-                "column_name": "message",
+        "filters": {
+            "Single": {
+                "expr": {
+                    "NamedIdent": "message"
+                },
                 "filters": [
                     {
-                       "Contains": "production"
+                        "Contains": "production"
                     }
                 ]
             }
-        ],
+        },
         "context": "None",
         "exprs": []
     }

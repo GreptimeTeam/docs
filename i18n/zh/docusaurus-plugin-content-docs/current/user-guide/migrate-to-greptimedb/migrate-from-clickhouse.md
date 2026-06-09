@@ -169,7 +169,7 @@ CREATE TABLE traces (
 
 -   `service` 与 `operation` 作为主键，便于链路调度和按服务聚合。
 -   `trace_id`、`span_id`、`parent_span_id` 用跳数索引，不作为主键。
--   高基数字段仅作普通字段，便于写入效率；`tags` 推荐用字符串或 json，复杂属性可结合 [ETL Pipeline](/user-guide/logs/quick-start.md#使用-pipeline-写入日志) 展开。
+-   高基数字段仅作普通字段，便于写入效率；`tags` 推荐用字符串或 json，复杂属性可结合 [ETL Pipeline](/user-guide/logs/use-custom-pipelines.md) 展开。
 -   若业务量极大可考虑多表分区（如多服务场景区分）。
 
 

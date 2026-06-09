@@ -41,6 +41,7 @@ exporters:
       # x-greptime-db-name: '<your_db_name>'
       # x-greptime-log-table-name: '<table_name>'
       # x-greptime-pipeline-name: '<pipeline_name>'
+      # x-greptime-pipeline-params: '<key=value,...>'
     tls:
       insecure: true
 
@@ -71,6 +72,7 @@ service:
 
 在 otlphttp 协议的基础上，我们增加了一些 header 用来指定一些参数，比如 `x-greptime-pipeline-name` 和 `x-greptime-log-table-name`:
 * `x-greptime-pipeline-name` 用来指定要使用的 pipeline 名称
+* `x-greptime-pipeline-params` 用来向 pipeline 传入参数
 * `x-greptime-log-table-name` 用来指定数据将要写入 GreptimeDB 的表名。
 
 如果你在 GreptimeDB 设置了[鉴权](/user-guide/deployments-administration/authentication/overview.md)。则需要使用 `basicauth/client` 扩展来处理基本的身份验证。
