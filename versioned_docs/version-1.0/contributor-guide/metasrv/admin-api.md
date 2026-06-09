@@ -1,6 +1,6 @@
 ---
 keywords: [admin api, health check, leader query, heartbeat, maintenance mode, RESTful API]
-description: Details the Admin API for Metasrv, including endpoints for health checks, leader queries, heartbeat data, and maintenance mode.
+description: Details the Admin API for Metasrv, including endpoints for health checks, leader queries, heartbeat data, maintenance mode, and Procedure Manager controls.
 ---
 
 # Admin API
@@ -9,15 +9,16 @@ description: Details the Admin API for Metasrv, including endpoints for health c
 Note that all Admin API endpoints in this document listen on Metasrv's `HTTP_PORT`, which defaults to `4000`.
 :::
 
-The Admin API provides a simple way to view cluster information, including metasrv health detection, metasrv leader query, database metadata query, and datanode heartbeat detection.
+The Admin API provides a simple way to view and manage cluster information, including metasrv health detection, metasrv leader query, datanode heartbeat detection, maintenance mode, and Procedure Manager controls.
 
 The Admin API is an HTTP service that provides a set of RESTful APIs that can be called through HTTP requests. The Admin API is simple, user-friendly and safe.
-Available APIs:
+This page covers the following APIs:
 
 - /health
 - /leader
 - /heartbeat
 - /maintenance
+- /procedure-manager
 
 All these APIs are under the parent resource `/admin`.
 
@@ -99,157 +100,23 @@ curl -X GET 'http://localhost:4000/admin/heartbeat?addr=127.0.0.1:4100'
 
 ```json
 [
- [{
-  "timestamp_millis": 1677049348651,
-  "cluster_id": 0,
-  "id": 1,
-  "addr": "127.0.0.1:4100",
-  "is_leader": false,
-  "rcus": 0,
-  "wcus": 0,
-  "table_num": 0,
-  "region_num": 2,
-  "cpu_usage": 0.0,
-  "load": 0.0,
-  "read_io_rate": 0.0,
-  "write_io_rate": 0.0,
-  "region_stats": []
- }, {
-  "timestamp_millis": 1677049344048,
-  "cluster_id": 0,
-  "id": 1,
-  "addr": "0.0.0.0:4100",
-  "is_leader": false,
-  "rcus": 0,
-  "wcus": 0,
-  "table_num": 0,
-  "region_num": 2,
-  "cpu_usage": 0.0,
-  "load": 0.0,
-  "read_io_rate": 0.0,
-  "write_io_rate": 0.0,
-  "region_stats": []
- }, {
-  "timestamp_millis": 1677049343624,
-  "cluster_id": 0,
-  "id": 1,
-  "addr": "127.0.0.1:4100",
-  "is_leader": false,
-  "rcus": 0,
-  "wcus": 0,
-  "table_num": 0,
-  "region_num": 2,
-  "cpu_usage": 0.0,
-  "load": 0.0,
-  "read_io_rate": 0.0,
-  "write_io_rate": 0.0,
-  "region_stats": []
- }, {
-  "timestamp_millis": 1677049339036,
-  "cluster_id": 0,
-  "id": 1,
-  "addr": "0.0.0.0:4100",
-  "is_leader": false,
-  "rcus": 0,
-  "wcus": 0,
-  "table_num": 0,
-  "region_num": 2,
-  "cpu_usage": 0.0,
-  "load": 0.0,
-  "read_io_rate": 0.0,
-  "write_io_rate": 0.0,
-  "region_stats": []
- }, {
-  "timestamp_millis": 1677049338609,
-  "cluster_id": 0,
-  "id": 1,
-  "addr": "127.0.0.1:4100",
-  "is_leader": false,
-  "rcus": 0,
-  "wcus": 0,
-  "table_num": 0,
-  "region_num": 2,
-  "cpu_usage": 0.0,
-  "load": 0.0,
-  "read_io_rate": 0.0,
-  "write_io_rate": 0.0,
-  "region_stats": []
- }, {
-  "timestamp_millis": 1677049334019,
-  "cluster_id": 0,
-  "id": 1,
-  "addr": "0.0.0.0:4100",
-  "is_leader": false,
-  "rcus": 0,
-  "wcus": 0,
-  "table_num": 0,
-  "region_num": 2,
-  "cpu_usage": 0.0,
-  "load": 0.0,
-  "read_io_rate": 0.0,
-  "write_io_rate": 0.0,
-  "region_stats": []
- }, {
-  "timestamp_millis": 1677049333592,
-  "cluster_id": 0,
-  "id": 1,
-  "addr": "127.0.0.1:4100",
-  "is_leader": false,
-  "rcus": 0,
-  "wcus": 0,
-  "table_num": 0,
-  "region_num": 2,
-  "cpu_usage": 0.0,
-  "load": 0.0,
-  "read_io_rate": 0.0,
-  "write_io_rate": 0.0,
-  "region_stats": []
- }, {
-  "timestamp_millis": 1677049329002,
-  "cluster_id": 0,
-  "id": 1,
-  "addr": "0.0.0.0:4100",
-  "is_leader": false,
-  "rcus": 0,
-  "wcus": 0,
-  "table_num": 0,
-  "region_num": 2,
-  "cpu_usage": 0.0,
-  "load": 0.0,
-  "read_io_rate": 0.0,
-  "write_io_rate": 0.0,
-  "region_stats": []
- }, {
-  "timestamp_millis": 1677049328573,
-  "cluster_id": 0,
-  "id": 1,
-  "addr": "127.0.0.1:4100",
-  "is_leader": false,
-  "rcus": 0,
-  "wcus": 0,
-  "table_num": 0,
-  "region_num": 2,
-  "cpu_usage": 0.0,
-  "load": 0.0,
-  "read_io_rate": 0.0,
-  "write_io_rate": 0.0,
-  "region_stats": []
- }, {
-  "timestamp_millis": 1677049323986,
-  "cluster_id": 0,
-  "id": 1,
-  "addr": "0.0.0.0:4100",
-  "is_leader": false,
-  "rcus": 0,
-  "wcus": 0,
-  "table_num": 0,
-  "region_num": 2,
-  "cpu_usage": 0.0,
-  "load": 0.0,
-  "read_io_rate": 0.0,
-  "write_io_rate": 0.0,
-  "region_stats": []
- }]
+  [
+    {
+      "timestamp_millis": 1677049348651,
+      "id": 1,
+      "addr": "127.0.0.1:4100",
+      "rcus": 0,
+      "wcus": 0,
+      "region_num": 2,
+      "region_stats": [],
+      "topic_stats": [],
+      "node_epoch": 0,
+      "datanode_workloads": {
+        "types": []
+      },
+      "gc_stat": null
+    }
+  ]
 ]
 ```
 
@@ -257,6 +124,34 @@ curl -X GET 'http://localhost:4000/admin/heartbeat?addr=127.0.0.1:4100'
 
 Cluster Maintenance Mode is a safety feature in GreptimeDB that temporarily disables automatic cluster management operations. This mode is particularly useful during cluster upgrades, planned downtime, and any operation that might temporarily affect cluster stability. For more details, please refer to [Cluster Maintenance Mode](/user-guide/deployments-administration/maintenance/maintenance-mode.md).
 
+The `/maintenance` endpoint supports the following HTTP requests:
+
+- `GET /admin/maintenance` or `GET /admin/maintenance/status`: query the maintenance mode status.
+- `POST /admin/maintenance/enable`: enable maintenance mode.
+- `POST /admin/maintenance/disable`: disable maintenance mode.
+
+The response body uses the following format:
+
+```json
+{
+  "enabled": true
+}
+```
+
 ## /procedure-manager HTTP endpoint
 
 This endpoint is used to manage the Procedure Manager status. For more details, please refer to [Prevent Metadata Changes](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md).
+
+The `/procedure-manager` endpoint supports the following HTTP requests:
+
+- `GET /admin/procedure-manager/status`: query the Procedure Manager status.
+- `POST /admin/procedure-manager/pause`: pause the Procedure Manager.
+- `POST /admin/procedure-manager/resume`: resume the Procedure Manager.
+
+The response body uses the following format:
+
+```json
+{
+  "status": "running"
+}
+```
