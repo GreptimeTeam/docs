@@ -9,6 +9,10 @@ Each `flow` is a continuous aggregation query in GreptimeDB.
 It continuously updates the aggregated data based on the incoming data.
 This document describes how to create, and delete a flow.
 
+:::note
+Flow uses batching mode for aggregation and TQL workloads. The original streaming mode is deprecated and is not recommended for new workloads.
+:::
+
 ## Create a Source Table
 
 Before creating a flow, you need to create a source table to store the raw data. Like this:
@@ -22,7 +26,9 @@ CREATE TABLE temp_sensor_data (
   PRIMARY KEY(sensor_id, loc)
 );
 ```
-However, if you don't want to store the raw data, you can use a temporary table as the source table by creating table using `WITH ('ttl' = 'instant')` table option:
+Avoid using `WITH ('ttl' = 'instant')` for new Flow source tables. Source tables with `ttl='instant'` fall back to the deprecated streaming mode. Keep the source data with an appropriate TTL instead, so aggregation and TQL Flow workloads can run in batching mode.
+
+For existing legacy streaming-mode deployments, a source table may use `WITH ('ttl' = 'instant')`:
 
 ```sql
 CREATE TABLE temp_sensor_data (
@@ -34,7 +40,7 @@ CREATE TABLE temp_sensor_data (
 ) WITH ('ttl' = 'instant');
 ```
 
-Setting `'ttl'` to `'instant'` will make the table a temporary table, which means it will automatically discard all inserted data and the table will always be empty, only sending them to flow task for computation.
+Setting `'ttl'` to `'instant'` makes the table discard inserted data immediately and only sends rows to a legacy streaming-mode flow task. This pattern is deprecated for new workloads.
 
 ## Create a Sink Table
 
@@ -152,7 +158,7 @@ It is important to note that the `EXPIRE AFTER` clause does not delete data from
 It only controls how the flow engine processes the data.
 If you want to delete data from the source or sink table, please [set the `TTL` option](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) when creating tables.
 
-Setting a reasonable time interval for `EXPIRE AFTER` is helpful to limit state size and avoid memory overflow. This is somewhere similar to the ["Watermarks"](https://docs.risingwave.com/processing/watermarks) concept in streaming processing.
+Setting a reasonable time interval for `EXPIRE AFTER` is helpful to limit how far back the batching engine needs to recompute results and to avoid excessive resource usage. It serves a similar purpose to bounding lateness in stream processing systems, but new Flow workloads should use batching mode.
 
 For example, if the flow engine processes the aggregation at 10:00:00 and the `'1 hour'::INTERVAL` is set,
 any input data that arrive now with a time index older than 1 hour (before 09:00:00) will expire and be ignore.

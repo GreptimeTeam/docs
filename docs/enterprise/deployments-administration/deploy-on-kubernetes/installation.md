@@ -25,7 +25,7 @@ The GreptimeDB Enterprise Edition deployment includes the following components:
 - Meta：Database cluster metadata management component
 - Datanode：Data node
 - Frontend：Entry point and protocol parsing node
-- Flownode(optional): Stream computing node
+- Flownode(optional): Flow computation node for continuous aggregation workloads
 - Vector Sidecar：Metrics collection agent
 - GreptimeDB Standalone: Cluster self-monitoring storage node
 

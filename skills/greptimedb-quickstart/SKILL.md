@@ -316,7 +316,7 @@ should enable it. See
 ### Hand-off to sister skills
 
 - **Continuous aggregation / materialized view** — downsampling, time-window
-  rollups, streaming aggregation — hand off to
+  rollups, continuous aggregation — hand off to
   [`greptimedb-flow`](https://docs.greptime.com/skills/greptimedb-flow/SKILL.md).
 - **Alerting rules / Alertmanager webhook** — hand off to
   [`greptimedb-trigger`](https://docs.greptime.com/skills/greptimedb-trigger/SKILL.md)

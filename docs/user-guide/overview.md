@@ -55,7 +55,7 @@ GreptimeDB supports PromQL for querying data. Refer to the [PromQL Documentation
 
 ### Flow Computation
 
-For real-time data processing and analysis, GreptimeDB provides [Flow Computation](./flow-computation/overview.md), enabling complex computations on data streams.
+For real-time data processing and analysis, GreptimeDB provides [Flow Computation](./flow-computation/overview.md), enabling continuous aggregations on incoming time-series data.
 
 ## Accelerating Queries with Indexes
 
@@ -70,4 +70,3 @@ Follow the step-by-step instructions in the [Migration Documentation](./migrate-
 ## Administering and Deploying GreptimeDB
 
 When you're ready to deploy GreptimeDB, consult the [Deployment & Administration Documentation](/user-guide/deployments-administration/overview.md) for detailed guidance on deployment and management.
-
