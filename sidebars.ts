@@ -209,6 +209,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/migrate-to-greptimedb/migrate-from-mysql',
             'user-guide/migrate-to-greptimedb/migrate-from-postgresql',
             'user-guide/migrate-to-greptimedb/migrate-from-prometheus',
+            'user-guide/migrate-to-greptimedb/migrate-from-loki',
           ],
         },
         {

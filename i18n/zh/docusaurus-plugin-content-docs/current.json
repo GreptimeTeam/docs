@@ -11,6 +11,10 @@
     "message": "核心函数",
     "description": "The ZH label for Core Functions"
   },
+  "sidebar.docs.doc.Migrate from Loki": {
+    "message": "从 Loki 迁移",
+    "description": "The ZH label for Migrate from Loki"
+  },
   "sidebar.docs.category.Getting Started": {
     "message": "立即开始",
     "description": "The label for category Getting Started in sidebar docs"
