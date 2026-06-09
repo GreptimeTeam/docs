@@ -10,7 +10,7 @@ It continuously updates the aggregated data based on the incoming data.
 This document describes how to create, and delete a flow.
 
 :::note
-Flow uses batching mode for aggregation and TQL workloads. The original streaming mode is deprecated and is not recommended for new workloads.
+Flow uses batching mode for aggregation and TQL workloads. Simple non-aggregation Flow queries currently use the deprecated streaming mode and are not recommended for new workloads.
 :::
 
 ## Create a Source Table
