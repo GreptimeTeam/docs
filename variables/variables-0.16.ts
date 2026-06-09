@@ -6,5 +6,6 @@ export const variables = {
   javaSdkVersion: '0.15.0',
   debugPodVersion: '20250421-94c4b8d',
   etcdChartVersion: "12.0.8",
-  etcdImageVersion: "3.6.1-debian-12-r3"
+  etcdImageVersion: "3.6.1-debian-12-r3",
+  vectorImageVersion: "0.49.0-debian"
 };

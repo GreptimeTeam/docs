@@ -82,7 +82,7 @@ monitoring:
     # Configure Vector image repository 
     repository: timberio/vector
     # Configure Vector image tag
-    tag: nightly-alpine
+    tag: "VAR::vectorImageVersion"
 
     # Configure Vector resources
     resources:
@@ -90,8 +90,8 @@ monitoring:
         cpu: "50m"
         memory: "64Mi"
       limits:
-        cpu: "50m" 
-        memory: "64Mi"
+        cpu: "250m" 
+        memory: "256Mi"
 ```
 
 :::tip NOTE
