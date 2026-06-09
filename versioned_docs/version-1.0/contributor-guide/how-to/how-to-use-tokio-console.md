@@ -13,11 +13,10 @@ First, build GreptimeDB with feature `cmd/tokio-console`. Also the `tokio_unstab
 RUSTFLAGS="--cfg tokio_unstable" cargo build -F cmd/tokio-console
 ```
 
-Then start GreptimeDB with tokio console binding address config: `--tokio-console-addr`. Remember to run with
-the `tokio_unstable` cfg. For example:
+Then start GreptimeDB with the tokio console binding address config: `--tokio-console-addr`. For example:
 
 ```bash
-RUSTFLAGS="--cfg tokio_unstable" greptime --tokio-console-addr="127.0.0.1:6669" standalone start
+greptime --tokio-console-addr="127.0.0.1:6669" standalone start
 ```
 
 Now you can use `tokio-console` to connect to GreptimeDB's tokio console subscriber:
