@@ -11,13 +11,13 @@ description: 介绍如何在本地环境中从源代码编译和运行 GreptimeD
 
 ### 系统和架构
 
-目前，GreptimeDB 支持 Linux（amd64 和 arm64）、macOS（amd64 和 Apple Silicone）和 Windows。
+目前，GreptimeDB 支持 Linux（amd64 和 arm64）、macOS（amd64 和 Apple Silicon）和 Windows。
 
 ### 构建依赖项
 
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-The-Command-Line)（可选）
 - C/C++ 工具链：提供编译和链接的基本工具。在 Ubuntu 上，这可用作 `build-essential`。在其他平台上，也有类似的命令。
-- Rust（[指南][1]）
+- Rust nightly 工具链（[指南][1]）
   - 编译源代码
 - Protobuf（[指南][2]）
   - 编译 proto 文件
@@ -62,7 +62,7 @@ cargo install cargo-nextest --locked
 安装好 nextest 后，你可以使用以下命令运行测试套件：
 
 ```shell
-cargo nextest run
+cargo nextest run --workspace --features pg_kvbackend,mysql_kvbackend
 ```
 
 ## Docker

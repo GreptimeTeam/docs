@@ -11,13 +11,13 @@ This page describes how to run GreptimeDB from source in your local environment.
 
 ### System & Architecture
 
-At the moment, GreptimeDB supports Linux(both amd64 and arm64), macOS (both amd64 and Apple Silicone) and Windows.
+At the moment, GreptimeDB supports Linux (both amd64 and arm64), macOS (both amd64 and Apple Silicon), and Windows.
 
 ### Build Dependencies
 
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-The-Command-Line) (optional)
 - C/C++ Toolchain: provides essential tools for compiling and linking. This is available either as `build-essential` on ubuntu or a similar name on other platforms.
-- Rust ([guide][1])
+- Rust nightly toolchain ([guide][1])
   - Compile the source code
 - Protobuf ([guide][2])
   - Compile the proto file
@@ -62,9 +62,9 @@ Or you can check their [docs](https://nexte.st/docs/installation/pre-built-binar
 After nextest is ready, you can run the test suite with:
 
 ```shell
-cargo nextest run
+cargo nextest run --workspace --features pg_kvbackend,mysql_kvbackend
 ```
 
 ## Docker
 
-We also provide pre-build binary via Docker. It's which is available in dockerhub: [https://hub.docker.com/r/greptime/greptimedb](https://hub.docker.com/r/greptime/greptimedb)
+We also provide prebuilt binaries via Docker, available on Docker Hub: [https://hub.docker.com/r/greptime/greptimedb](https://hub.docker.com/r/greptime/greptimedb)
