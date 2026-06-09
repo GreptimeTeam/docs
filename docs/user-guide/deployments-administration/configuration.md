@@ -857,6 +857,10 @@ node_id = 42
 bind_addr = "127.0.0.1:3001"
 server_addr = "127.0.0.1:3001"
 runtime_size = 8
+
+[runtime]
+query_rt_size = 7
+ingest_rt_size = 8
 ```
 
 | Key               | Type    | Description                                                                                                                                                                                                                                                                     |
@@ -865,6 +869,8 @@ runtime_size = 8
 | grpc.bind_addr    | String  | The address to bind the gRPC server, `"127.0.0.1:3001"` by default.                                                                                                                                                                                                             |
 | grpc.server_addr  | String  | The address advertised to the metasrv, and used for connections from outside the host. If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `grpc.bind_addr`. |
 | grpc.runtime_size | Integer | The number of gRPC server worker threads, 8 by default.                                                                                                                                                                                                                         |
+| runtime.query_rt_size | Integer | The number of threads to execute datanode query operations. Defaults to `max(num_cpus - 1, 1)`. |
+| runtime.ingest_rt_size | Integer | The number of threads to execute datanode ingestion operations. Defaults to the number of CPU cores. |
 
 ### Frontend-only configuration
 

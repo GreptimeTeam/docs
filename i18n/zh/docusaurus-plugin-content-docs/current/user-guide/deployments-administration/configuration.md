@@ -832,6 +832,10 @@ node_id = 42
 bind_addr = "127.0.0.1:3001"
 server_addr = "127.0.0.1:3001"
 runtime_size = 8
+
+[runtime]
+query_rt_size = 7
+ingest_rt_size = 8
 ```
 
 | Key              | Type   | Description                                 |
@@ -839,7 +843,9 @@ runtime_size = 8
 | node_id          | 整数   | 该 `datanode` 的唯一标识符。                |
 | grpc.bind_addr   | 字符串 | gRPC 服务绑定地址，默认为`"127.0.0.1:3001"`。 |
 | grpc.server_addr | 字符串 | 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `grpc.bind_addr` 中指定的相同。 |
-| grpc.rpc_runtime_size | 整数   | gRPC 服务器工作线程数，默认为 8。           |
+| grpc.runtime_size | 整数   | gRPC 服务器工作线程数，默认为 8。           |
+| runtime.query_rt_size | 整数   | 执行 datanode 查询操作的运行时线程数。默认值为 `max(num_cpus - 1, 1)`。 |
+| runtime.ingest_rt_size | 整数   | 执行 datanode 写入操作的运行时线程数。默认值为 CPU 核心数。 |
 
 ### 仅限于 `Frontend` 的配置
 
