@@ -26,9 +26,9 @@ A `Datanode` contains all the components needed for a `region server`. Here we l
   The upstream heartbeat messages contain important information such as the workload of a `Region`. If the
   `Metasrv `has made scheduling(such as `Region` migration) decisions, it will send instructions to the
   `Datanode` via downstream heartbeat messages.
-- The `Datanode` does not include components like the `Physical Planner`, `Optimizer`, etc. (these are placed in
-  the `Frontend`). The user's query requests for one or more `Table`s will be transformed into `Region` query
-  requests in the `Frontend`. The `Datanode` is responsible for handling these `Region` query requests.
+- The `Datanode` does not parse user SQL or perform distributed planning. The user's query requests for one or
+  more `Table`s will be transformed into `Region` query requests in the `Frontend`. The `Datanode` is responsible
+  for executing these `Region` query plans with its local query engine.
 - A `Region Manager` is used to manage all `Region`s on a `Datanode`.
 - GreptimeDB supports a pluggable multi-engine architecture, with existing engines including `File Engine` and
   `Mito Engine`.

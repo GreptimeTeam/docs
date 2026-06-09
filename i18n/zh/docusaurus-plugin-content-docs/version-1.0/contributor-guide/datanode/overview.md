@@ -22,7 +22,7 @@ description: 介绍了 Datanode 的主要职责和组件，包括 gRPC 服务、
 - `Heartbeat Task` 用来向 `Metasrv` 发送心跳，心跳在 GreptimeDB 的分布式架构中发挥着至关重要的作用，
   是分布式协调和调度的基础通信通道，心跳的上行消息中包含了重要信息比如 `Region` 的负载，如果 `Metasrv` 做出了调度
   决定（比如 Region 转移），它会通过心跳的下行消息发送指令到 `Datanode`
-- `Datanode` 不包含物理规划器（Physical planner）、优化器（optimizer）等组件（这些被放置在 `Frontend` 中），用户对
-  一个或多个 `Table` 的查询请求会在 `Frontend` 中被转换为 `Region` 的查询请求，`Datanode` 负责处理这些 `Region` 查询请求
+- `Datanode` 不负责解析用户 SQL 或进行分布式规划，用户对一个或多个 `Table` 的查询请求会在 `Frontend` 中被转换为
+  `Region` 查询请求，`Datanode` 负责用本地 query engine 执行这些 `Region` 查询计划
 - 一个 `Region Manager` 用来管理 `Datanode` 上的所有 `Region`s
 - GreptimeDB 支持可插拔的多引擎架构，目前已有的 engine 包括 `File Engine` 和 `Mito Engine`

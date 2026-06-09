@@ -47,13 +47,6 @@ to locate and extract data within the expected time range at a very low cost. Th
 provides multi-level indices and filters that make it easy to prune data during querying. In the future, we
 will make more use of this feature, and develop our separated index to handle more complex use cases.
 
-## Extensibility
-
-<!-- Extending operations in GreptimeDB is extremely simple. There are two ways to do it: 1. via the [Python Coprocessor][4] interface; 2. implement your operator like
-[this][5]. -->
-
-Extending operations in GreptimeDB is extremely simple. You can implement your operator like [this][5].
-
 ## Distributed Execution
 
 Covered in [Distributed Querying][6].
@@ -61,6 +54,4 @@ Covered in [Distributed Querying][6].
 [1]: https://github.com/apache/arrow-datafusion
 [2]: https://arrow.apache.org/
 [3]: https://parquet.apache.org
-[4]: python-scripts.md
-[5]: https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-write-aggregate-function.md
 [6]: ../frontend/distributed-querying.md
