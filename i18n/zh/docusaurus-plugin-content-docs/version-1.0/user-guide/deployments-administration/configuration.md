@@ -413,7 +413,7 @@ vector_cache_size = "512MB"
 page_cache_size = "512MB"
 write_cache_size = "5GB"
 write_cache_ttl = "8h"
-scan_memory_limit = "50%"
+scan_memory_limit = "unlimited"
 scan_memory_on_exhausted = "fail"
 min_compaction_interval = "0m"
 default_flat_format = true
@@ -476,7 +476,7 @@ fork_dictionary_bytes = "1GiB"
 | `sst_write_buffer_size`                  | 字符串 | `8MB`         | SST 的写缓存大小                                                                                                       |
 | `max_concurrent_scan_files`             | 整数   | `384`         | 最大并发扫描的 SST 文件数量。                                                                                         |
 | `allow_stale_entries`                 | 布尔值 | `false`       | 是否允许 replay 时读取陈旧的 WAL 条目。                                                                              |
-| `scan_memory_limit`                   | 字符串 | `50%`         | 所有查询的表扫描内存限制。支持绝对大小（如 "2GB"）或系统内存百分比（如 "20%"）。设为 0 可禁用限制。               |
+| `scan_memory_limit`                   | 字符串 | `unlimited`   | 所有查询的表扫描内存限制。支持绝对大小（如 "2GB"）或系统内存百分比（如 "20%"）。设为 0 或 "unlimited" 可禁用限制。 |
 | `scan_memory_on_exhausted`           | 字符串 | `fail`        | 扫描内存耗尽时的行为。选项：`fail`（快速失败），`wait` 或 `wait(<duration>)`（等待内存）。                       |
 | `min_compaction_interval`           | 字符串 | `0m`          | 两次 compaction 之间的最小时间间隔。设为 "0m"（默认）允许 compactions 立即运行，无限制。                              |
 | `default_flat_format`                | 布尔值 | `true`        | 是否启用 Flat 格式作为默认 SST 格式。                                                                                |
