@@ -41,7 +41,7 @@ The index files utilize the [Puffin][3] format, which offers significant flexibi
 
 ![Puffin](/puffin.png)
 
-Currently, the inverted index is the first supported index structure, and it is stored within the index file as a Blob.
+GreptimeDB stores several index structures in the Puffin file as Blobs, including the inverted index, the skipping index (backed by a bloom filter), and the full-text index. The inverted index was the first one supported and is described in detail below.
 
 ## Inverted Index
 
