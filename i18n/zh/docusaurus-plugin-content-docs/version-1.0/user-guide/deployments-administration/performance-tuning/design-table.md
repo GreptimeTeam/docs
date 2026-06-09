@@ -45,6 +45,9 @@ GreptimeDB 使用 `TIME INDEX` 约束来标识 `Timestamp` 列。
    当表不是 append-only 模式时，GreptimeDB 根据时间戳在同一时间序列（主键）下去除重复行。
 3. 便于从使用 label 或 tag 的其他时序数据库迁移。
 
+这种顺序就是磁盘上 Parquet SST 文件中的物理行布局。
+要了解数据在 SST 文件中如何组织，以及这种排序、tag 基数和索引为什么会影响性能，详见[存储引擎](/contributor-guide/datanode/storage-engine.md#sst-文件中的数据布局)文档。
+
 
 ## 主键
 

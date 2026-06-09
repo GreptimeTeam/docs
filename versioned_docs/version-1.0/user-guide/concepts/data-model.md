@@ -27,6 +27,7 @@ All data in GreptimeDB is organized into tables with names. Each data item in a 
 A table clusters rows of the same time-series and sorts rows of the same time-series by `Timestamp`.
 The table can also deduplicate rows with the same `Tag` and `Timestamp` values, depending on the requirements of the application.
 GreptimeDB stores and processes data by time-series.
+Physically, GreptimeDB persists data into immutable Parquet SST files, sorting rows by `(primary key, timestamp)` — or by timestamp alone when a table has no primary key (such as the append-only logs table below). To learn how data is laid out and pruned inside SST files, see the [storage engine](/contributor-guide/datanode/storage-engine.md#data-layout-in-sst-files) documentation.
 Choosing the right schema is crucial for efficient data storage and retrieval; please refer to the [schema design guide](/user-guide/deployments-administration/performance-tuning/design-table.md) for more details.
 
 ### Metrics
