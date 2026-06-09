@@ -308,7 +308,7 @@ monitoring:
     #   cache:
     #     cacheCapacity: "50GiB"
     #   s3:
-    #     secretName: "greptimedb-object-storage-secret"
+    #     secretName: "storage-credentials"
     #     bucket: "greptimedb-bucket"
     #     region: "ap-southeast-1"
     #     root: "greptimedb-monitor-data"  
