@@ -5,5 +5,6 @@ export const variables = {
   goSdkVersion: 'v0.6.0',
   javaSdkVersion: '0.11.0',
   etcdChartVersion: "12.0.8",
-  etcdImageVersion: "3.6.1-debian-12-r3"
+  etcdImageVersion: "3.6.1-debian-12-r3",
+  vectorImageVersion: "0.49.0-debian"
 };

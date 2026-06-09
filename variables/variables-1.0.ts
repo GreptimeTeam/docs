@@ -7,5 +7,6 @@ export const variables = {
   debugPodVersion: '20250606-04e3c7d',
   etcdChartVersion: "12.0.8",
   etcdImageVersion: "3.6.1-debian-12-r3",
-  greptimedbOperatorVersion: 'v0.6.0'
+  greptimedbOperatorVersion: 'v0.6.0',
+  vectorImageVersion: "0.49.0-debian"
 };

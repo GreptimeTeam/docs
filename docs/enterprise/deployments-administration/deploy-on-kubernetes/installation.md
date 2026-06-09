@@ -307,12 +307,12 @@ monitoring:
   vector:
     registry: docker.io
     repository: timberio/vector
-    tag: 0.46.1-debian   
+    tag: "VAR::vectorImageVersion"
     # sidecar vector resource configuration
     resources:
       requests:
         cpu: '1'
-        memory: 1Gi
+        memory: "1Gi"
       limits:
         cpu: '1'
         memory: "1Gi" 

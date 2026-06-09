@@ -181,7 +181,7 @@ monitoring:
     # 用于配置 Vector 的镜像仓库
     repository: timberio/vector
     # 用于配置 Vector 的镜像标签
-    tag: nightly-alpine
+    tag: "VAR::vectorImageVersion"
 
     # 用于配置 Vector 的资源配置
     resources:
@@ -189,8 +189,8 @@ monitoring:
         cpu: "50m"
         memory: "64Mi"
       limits:
-        cpu: "50m"
-        memory: "64Mi"
+        cpu: "250m"
+        memory: "256Mi"
 ```
 
 ### 使用 `kubectl` 部署的 YAML 配置
