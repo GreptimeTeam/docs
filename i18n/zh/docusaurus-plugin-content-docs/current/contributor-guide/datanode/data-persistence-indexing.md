@@ -21,7 +21,7 @@ Parquet 具有层次结构，类似于“行组 - 列-数据页”。Parquet 文
 
 ## 数据持久化
 
-GreptimeDB 提供了 `storage.flush.global_write_buffer_size` 的配置项来设置全局的 Memtable 大小阈值。当数据库所有 MemTable 中的数据量之和达到阈值时将自动触发持久化操作，将 MemTable 的数据 flush 到 SST 文件中。
+GreptimeDB 提供了 `region_engine.mito.global_write_buffer_size` 的配置项来设置全局的 Memtable 大小阈值。当数据库所有 MemTable 中的数据量之和达到阈值时将自动触发持久化操作，将 MemTable 的数据 flush 到 SST 文件中。
 
 
 ## SST 文件中的索引数据

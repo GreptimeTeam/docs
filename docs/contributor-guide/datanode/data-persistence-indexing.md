@@ -21,7 +21,7 @@ Second, data of the same column tends to be homogeneous which helps with compres
 
 ## Data Persistence
 
-GreptimeDB provides a configuration item `storage.flush.global_write_buffer_size`, which is flush threshold of the total memory usage for all MemTables.
+GreptimeDB provides a configuration item `region_engine.mito.global_write_buffer_size`, which is flush threshold of the total memory usage for all MemTables.
 
 When the size of data buffered in MemTables reaches that threshold, GreptimeDB will pick MemTables and flush them to SST files.
 
