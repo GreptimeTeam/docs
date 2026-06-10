@@ -82,6 +82,10 @@ loki.source.file "app" {
     {__path__ = "/var/log/app/*.log"},
   ]
   forward_to = [loki.process.app.receiver]
+
+  file_match {
+    enabled = true
+  }
 }
 
 loki.process "app" {
@@ -123,6 +127,7 @@ loki.write "greptimedb" {
 如果你的采集器已经配置了 Loki 输出，迁移初期请先保持 labels 和处理阶段不变。
 只修改 GreptimeDB sink 的 URL、数据库 Header、表名 Header 和认证配置。
 该示例遵循 [Grafana Alloy 指南](/user-guide/ingest-data/for-observability/alloy.md)中的 Loki 组件模式：`loki.source.file` 读取文件，`loki.process` 在 Loki pipeline 中保留 label 处理，`loki.write.endpoint` 则承载 GreptimeDB URL、自定义 Header 以及可选的 Basic 认证配置。
+由于该示例在 `__path__` 中使用了 glob 匹配模式，`file_match` 会启用 Alloy 内置的文件发现能力，将该模式展开为实际匹配的文件。如果你使用的是明确的文件路径，可以省略 `file_match`。
 
 ### 验证直接写入的数据模型
 
@@ -175,46 +180,75 @@ WHERE table_name = 'loki_app_logs';
 | `loki_label_<name>` | Loki stream label 值。 |
 | `loki_metadata_<name>` | Loki structured metadata 值。 |
 
-例如，创建一个用于解析 JSON 日志行的 Pipeline：
+例如，假设 Alloy 读取以下 ZooKeeper 日志文件：
+
+```text
+2015-08-25 11:23:58,959 - WARN  [LearnerHandler-/10.10.34.11:45441:Leader@574] - Commiting zxid 0xf00000000 from /10.10.34.13:2888 not first!
+2015-08-25 11:23:58,960 - WARN  [LearnerHandler-/10.10.34.11:45441:Leader@576] - First is 0x0
+2015-08-25 11:23:58,960 - INFO  [LearnerHandler-/10.10.34.11:45441:Leader@598] - Have quorum of supporters; starting up and setting last processed zxid: 0xf00000000
+2015-08-25 11:26:27,891 - INFO  [/10.10.34.13:3888:QuorumCnxManager$Listener@493] - Received connection request /10.10.34.12:57513
+2015-08-25 11:26:27,897 - INFO  [WorkerReceiver[myid=3]:FastLeaderElection@542] - Notification: 2 (n.leader), 0xd0000001b (n.zxid), 0x1 (n.round), LOOKING (n.state), 2 (n.sid), 0xd (n.peerEPoch), LEADING (my state)
+2015-08-25 11:26:27,898 - INFO  [WorkerReceiver[myid=3]:FastLeaderElection@542] - Notification: 3 (n.leader), 0xd0000001b (n.zxid), 0x3 (n.round), LOOKING (n.state), 2 (n.sid), 0xe (n.peerEPoch), LEADING (my state)
+2015-08-25 11:26:28,138 - INFO  [LearnerHandler-/10.10.34.12:38330:LearnerHandler@263] - Follower sid: 2 : info : org.apache.zookeeper.server.quorum.QuorumPeer$QuorumServer@7761c32f
+2015-08-25 11:26:28,159 - INFO  [LearnerHandler-/10.10.34.12:38330:LearnerHandler@318] - Synchronizing with Follower sid: 2 maxCommittedLog=0x0 minCommittedLog=0x0 peerLastZxid=0xd0000001b
+2015-08-25 11:26:28,159 - INFO  [LearnerHandler-/10.10.34.12:38330:LearnerHandler@395] - Sending SNAP
+2015-08-25 11:26:28,159 - INFO  [LearnerHandler-/10.10.34.12:38330:LearnerHandler@419] - Sending snapshot last zxid of peer is 0xd0000001b  zxid of leader is 0xf00000000sent zxid of db as 0xf00000000
+```
+
+创建一个 Pipeline，提取 ZooKeeper 时间戳、日志级别、线程、源码行号和消息：
 
 ```yaml
-# loki_pipeline.yaml
+# zk_pipeline.yaml
 version: 2
 processors:
-  - vrl:
-      source: |
-        message = parse_json!(.loki_line)
-        . = {
-          "ts": .greptime_timestamp,
-          "service": .loki_label_job,
-          "env": .loki_label_env,
-          "level": message.level,
-          "message": message.message,
-          "trace_id": message.trace_id,
-        }
+  - regex:
+      fields:
+        - loki_line, zk
+      patterns:
+        - '^(?<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) - (?<level>[A-Z]+)\s+\[(?<thread>.*)@(?<source_line>\d+)\] - (?<message>.*)$'
+      ignore_missing: true
+  - date:
+      fields:
+        - zk_timestamp
+      formats:
+        - "%Y-%m-%d %H:%M:%S,%3f"
+      timezone: "UTC"
+  - select:
+      fields:
+        - zk_timestamp
+        - zk_level
+        - zk_thread
+        - zk_source_line
+        - zk_message
+        - loki_label_job
+        - loki_label_env
 transform:
-  - field: ts
-    type: timestamp, ns
+  - field: zk_timestamp
+    type: time
     index: timestamp
   - fields:
-      - service
-      - env
-      - level
+      - zk_level
+      - loki_label_job
+      - loki_label_env
     type: string
     tag: true
-  - field: message
+  - field: zk_thread
+    type: string
+    index: inverted
+  - field: zk_source_line
+    type: int32
+  - field: zk_message
     type: string
     index: fulltext
-  - field: trace_id
-    type: string
-    index: skipping
 ```
+
+示例日志中的时间戳没有包含时区。请将 `timezone` 设置为日志生产端使用的时区。
 
 上传 Pipeline：
 
 ```bash
-curl -X POST "http://localhost:4000/v1/pipelines/loki_json" \
-  -F "file=@loki_pipeline.yaml"
+curl -X POST "http://localhost:4000/v1/pipelines/zk_logs" \
+  -F "file=@zk_pipeline.yaml"
 ```
 
 然后在 GreptimeDB Loki sink 中添加 Pipeline Header：
@@ -225,20 +259,29 @@ loki.write "greptimedb" {
     url = "http://greptimedb:4000/v1/loki/api/v1/push"
     headers = {
       "X-Greptime-DB-Name"        = "public",
-      "X-Greptime-Log-Table-Name" = "loki_app_logs",
-      "X-Greptime-Pipeline-Name"  = "loki_json",
+      "X-Greptime-Log-Table-Name" = "loki_zookeeper_logs",
+      "X-Greptime-Pipeline-Name"  = "zk_logs",
     }
   }
 }
 ```
 
+Alloy 通过该 sink 发送 ZooKeeper 日志文件后，GreptimeDB 会先应用该 Pipeline，再将处理后的行写入 `loki_zookeeper_logs`。
+
 通过 Pipeline 写入后，可以查询结构化列：
 
 ```sql
-SELECT ts, service, env, level, message, trace_id
-FROM loki_app_logs
-WHERE env = 'prod'
-ORDER BY ts DESC
+SELECT
+  zk_timestamp,
+  loki_label_job AS job,
+  loki_label_env AS env,
+  zk_level,
+  zk_thread,
+  zk_source_line,
+  zk_message
+FROM loki_zookeeper_logs
+WHERE zk_level = 'WARN'
+ORDER BY zk_timestamp DESC
 LIMIT 10;
 ```
 

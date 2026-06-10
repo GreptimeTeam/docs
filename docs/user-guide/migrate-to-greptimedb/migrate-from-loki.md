@@ -82,6 +82,10 @@ loki.source.file "app" {
     {__path__ = "/var/log/app/*.log"},
   ]
   forward_to = [loki.process.app.receiver]
+
+  file_match {
+    enabled = true
+  }
 }
 
 loki.process "app" {
@@ -123,6 +127,7 @@ loki.write "greptimedb" {
 If your collector already has a Loki output, keep its labels and processing stages unchanged at first.
 Only change the GreptimeDB sink URL, database header, table header, and authentication settings.
 This example follows the Loki component pattern in the [Grafana Alloy guide](/user-guide/ingest-data/for-observability/alloy.md): `loki.source.file` reads files, `loki.process` keeps label processing in the Loki pipeline, and `loki.write.endpoint` carries the GreptimeDB URL, custom headers, and optional Basic authentication.
+Because the example uses a glob pattern in `__path__`, `file_match` enables Alloy's built-in file discovery so the pattern is expanded to matching files. If you use an exact file path, you can omit `file_match`.
 
 ### Validate the direct ingestion data model
 
@@ -175,46 +180,75 @@ When `X-Greptime-Pipeline-Name` or `X-Greptime-Log-Pipeline-Name` is present, Gr
 | `loki_label_<name>` | Loki stream label value. |
 | `loki_metadata_<name>` | Loki structured metadata value. |
 
-For example, create a pipeline that parses JSON log lines:
+For example, suppose Alloy reads the following ZooKeeper log file:
+
+```text
+2015-08-25 11:23:58,959 - WARN  [LearnerHandler-/10.10.34.11:45441:Leader@574] - Commiting zxid 0xf00000000 from /10.10.34.13:2888 not first!
+2015-08-25 11:23:58,960 - WARN  [LearnerHandler-/10.10.34.11:45441:Leader@576] - First is 0x0
+2015-08-25 11:23:58,960 - INFO  [LearnerHandler-/10.10.34.11:45441:Leader@598] - Have quorum of supporters; starting up and setting last processed zxid: 0xf00000000
+2015-08-25 11:26:27,891 - INFO  [/10.10.34.13:3888:QuorumCnxManager$Listener@493] - Received connection request /10.10.34.12:57513
+2015-08-25 11:26:27,897 - INFO  [WorkerReceiver[myid=3]:FastLeaderElection@542] - Notification: 2 (n.leader), 0xd0000001b (n.zxid), 0x1 (n.round), LOOKING (n.state), 2 (n.sid), 0xd (n.peerEPoch), LEADING (my state)
+2015-08-25 11:26:27,898 - INFO  [WorkerReceiver[myid=3]:FastLeaderElection@542] - Notification: 3 (n.leader), 0xd0000001b (n.zxid), 0x3 (n.round), LOOKING (n.state), 2 (n.sid), 0xe (n.peerEPoch), LEADING (my state)
+2015-08-25 11:26:28,138 - INFO  [LearnerHandler-/10.10.34.12:38330:LearnerHandler@263] - Follower sid: 2 : info : org.apache.zookeeper.server.quorum.QuorumPeer$QuorumServer@7761c32f
+2015-08-25 11:26:28,159 - INFO  [LearnerHandler-/10.10.34.12:38330:LearnerHandler@318] - Synchronizing with Follower sid: 2 maxCommittedLog=0x0 minCommittedLog=0x0 peerLastZxid=0xd0000001b
+2015-08-25 11:26:28,159 - INFO  [LearnerHandler-/10.10.34.12:38330:LearnerHandler@395] - Sending SNAP
+2015-08-25 11:26:28,159 - INFO  [LearnerHandler-/10.10.34.12:38330:LearnerHandler@419] - Sending snapshot last zxid of peer is 0xd0000001b  zxid of leader is 0xf00000000sent zxid of db as 0xf00000000
+```
+
+Create a pipeline that extracts the ZooKeeper timestamp, level, thread, source line, and message:
 
 ```yaml
-# loki_pipeline.yaml
+# zk_pipeline.yaml
 version: 2
 processors:
-  - vrl:
-      source: |
-        message = parse_json!(.loki_line)
-        . = {
-          "ts": .greptime_timestamp,
-          "service": .loki_label_job,
-          "env": .loki_label_env,
-          "level": message.level,
-          "message": message.message,
-          "trace_id": message.trace_id,
-        }
+  - regex:
+      fields:
+        - loki_line, zk
+      patterns:
+        - '^(?<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) - (?<level>[A-Z]+)\s+\[(?<thread>.*)@(?<source_line>\d+)\] - (?<message>.*)$'
+      ignore_missing: true
+  - date:
+      fields:
+        - zk_timestamp
+      formats:
+        - "%Y-%m-%d %H:%M:%S,%3f"
+      timezone: "UTC"
+  - select:
+      fields:
+        - zk_timestamp
+        - zk_level
+        - zk_thread
+        - zk_source_line
+        - zk_message
+        - loki_label_job
+        - loki_label_env
 transform:
-  - field: ts
-    type: timestamp, ns
+  - field: zk_timestamp
+    type: time
     index: timestamp
   - fields:
-      - service
-      - env
-      - level
+      - zk_level
+      - loki_label_job
+      - loki_label_env
     type: string
     tag: true
-  - field: message
+  - field: zk_thread
+    type: string
+    index: inverted
+  - field: zk_source_line
+    type: int32
+  - field: zk_message
     type: string
     index: fulltext
-  - field: trace_id
-    type: string
-    index: skipping
 ```
+
+The sample timestamps do not include a time zone. Set `timezone` to the time zone used by the log producer.
 
 Upload the pipeline:
 
 ```bash
-curl -X POST "http://localhost:4000/v1/pipelines/loki_json" \
-  -F "file=@loki_pipeline.yaml"
+curl -X POST "http://localhost:4000/v1/pipelines/zk_logs" \
+  -F "file=@zk_pipeline.yaml"
 ```
 
 Then add the pipeline header to the GreptimeDB Loki sink:
@@ -225,20 +259,29 @@ loki.write "greptimedb" {
     url = "http://greptimedb:4000/v1/loki/api/v1/push"
     headers = {
       "X-Greptime-DB-Name"        = "public",
-      "X-Greptime-Log-Table-Name" = "loki_app_logs",
-      "X-Greptime-Pipeline-Name"  = "loki_json",
+      "X-Greptime-Log-Table-Name" = "loki_zookeeper_logs",
+      "X-Greptime-Pipeline-Name"  = "zk_logs",
     }
   }
 }
 ```
 
+When Alloy sends the ZooKeeper log file through this sink, GreptimeDB applies the pipeline before inserting rows into `loki_zookeeper_logs`.
+
 After writing through the pipeline, query the structured columns:
 
 ```sql
-SELECT ts, service, env, level, message, trace_id
-FROM loki_app_logs
-WHERE env = 'prod'
-ORDER BY ts DESC
+SELECT
+  zk_timestamp,
+  loki_label_job AS job,
+  loki_label_env AS env,
+  zk_level,
+  zk_thread,
+  zk_source_line,
+  zk_message
+FROM loki_zookeeper_logs
+WHERE zk_level = 'WARN'
+ORDER BY zk_timestamp DESC
 LIMIT 10;
 ```
 
