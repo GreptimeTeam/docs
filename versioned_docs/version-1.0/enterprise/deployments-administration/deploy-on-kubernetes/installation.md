@@ -105,7 +105,7 @@ When Greptime staff first deliver the GreptimeDB Enterprise Edition to you, they
 ### Configuration Management
 
 The following are tools and documentation that can help with configuration:
-- tool: https://greptimedb-enterprise-wizard.mrsatangel.workers.dev/
+- tool: https://enterprise-wizard.greptime.com/
 - documentation: [common-helm-chart-configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)
 
 Before installation, you need to create a file to configure the GreptimeDB cluster. Adjust it according to your Kubernetes environment. Below is a reference configuration for `greptimedb-cluster-values.yaml`:
