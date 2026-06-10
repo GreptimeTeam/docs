@@ -422,15 +422,16 @@ We recommend placing metrics collected simultaneously into a single table to imp
 
 ### Prometheus metrics and the metric engine
 
-For Prometheus-style metrics, use the [Metric Engine](/contributor-guide/datanode/metric-engine.md).
-GreptimeDB uses it **by default** when you ingest data through Prometheus remote write.
+For Prometheus-style metrics, GreptimeDB relies on the [Metric Engine](/contributor-guide/datanode/metric-engine.md).
+If you ingest data through the Prometheus remote write API, GreptimeDB routes it to the metric engine automatically: tables are created for you and no configuration is needed.
 
-Although Prometheus uses a single-value model for metrics, the metric engine stores a large number of small metric tables on a shared physical wide table at the underlying layer.
-This improves read/write throughput and compression efficiency while keeping each metric as its own logical table.
+Under the hood, the metric engine handles Prometheus's single-value model efficiently by storing many small metric tables on a shared physical wide table.
+Each metric stays its own logical table, while the shared storage improves read/write throughput and compression.
 
-By default, the metric engine uses a single physical table with **only one partition**.
-This is enough for most workloads, but in a cluster it means a single datanode handles all the ingestion.
-To scale beyond one node, create your own partitioned physical table on a suitable label (for example `namespace`).
+When you scale out to a cluster, one detail matters: partitioning.
+By default, the metric engine uses a single physical table with **only one partition**, which is enough for most workloads.
+In a cluster, however, that means a single datanode handles all ingestion.
+To spread the load across nodes, create your own partitioned physical table on a suitable label such as `namespace`.
 See [GreptimeDB cluster with metric engine](/user-guide/ingest-data/for-observability/prometheus.md#greptimedb-cluster-with-metric-engine) for an example.
 
 ### Multiple tables vs. multiple partitions
