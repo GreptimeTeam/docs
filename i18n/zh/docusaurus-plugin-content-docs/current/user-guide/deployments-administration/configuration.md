@@ -453,6 +453,7 @@ write_cache_ttl = "8h"
 scan_memory_limit = "unlimited"
 scan_memory_on_exhausted = "fail"
 min_compaction_interval = "0m"
+schedule_compaction_after_edit = true
 default_flat_format = true
 sst_write_buffer_size = "8MB"
 max_concurrent_scan_files = 384
@@ -516,6 +517,7 @@ fork_dictionary_bytes = "1GiB"
 | `scan_memory_limit`                   | 字符串 | `unlimited`   | 所有查询的表扫描内存限制。支持绝对大小（如 "2GB"）或系统内存百分比（如 "20%"）。设为 0 或 "unlimited" 可禁用限制。 |
 | `scan_memory_on_exhausted`           | 字符串 | `fail`        | 扫描内存耗尽时的行为。选项：`fail`（快速失败），`wait` 或 `wait(<duration>)`（等待内存）。                       |
 | `min_compaction_interval`           | 字符串 | `0m`          | 两次 compaction 之间的最小时间间隔。设为 "0m"（默认）允许 compactions 立即运行，无限制。                              |
+| `schedule_compaction_after_edit`    | 布尔值 | `true`        | 是否允许在成功的 region edit 之后调度 compaction。<br/>设为 `true` 是在 region edit 后调度 compaction 的必要但不充分条件，`min_compaction_interval` 等其他约束仍可能阻止 compaction 被调度。<br/>设为 `false` 则保证 region edit 后不会调度 compaction。 |
 | `default_flat_format`                | 布尔值 | `true`        | 是否启用 Flat 格式作为默认 SST 格式。                                                                                |
 | `scan_parallelism`                       | 整数   | `0`           | （已弃用，请使用 `max_concurrent_scan_files`）旧版扫描并发度选项。                                                |
 | `index` | -- | -- | Mito 引擎中索引的选项。 |
