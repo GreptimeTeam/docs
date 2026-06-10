@@ -183,7 +183,7 @@ When `X-Greptime-Pipeline-Name` or `X-Greptime-Log-Pipeline-Name` is present, Gr
 For example, suppose Alloy reads the following ZooKeeper log file:
 
 ```text
-2015-08-25 11:23:58,959 - WARN  [LearnerHandler-/10.10.34.11:45441:Leader@574] - Commiting zxid 0xf00000000 from /10.10.34.13:2888 not first!
+2015-08-25 11:23:58,959 - WARN  [LearnerHandler-/10.10.34.11:45441:Leader@574] - Committing zxid 0xf00000000 from /10.10.34.13:2888 not first!
 2015-08-25 11:23:58,960 - WARN  [LearnerHandler-/10.10.34.11:45441:Leader@576] - First is 0x0
 2015-08-25 11:23:58,960 - INFO  [LearnerHandler-/10.10.34.11:45441:Leader@598] - Have quorum of supporters; starting up and setting last processed zxid: 0xf00000000
 2015-08-25 11:26:27,891 - INFO  [/10.10.34.13:3888:QuorumCnxManager$Listener@493] - Received connection request /10.10.34.12:57513
