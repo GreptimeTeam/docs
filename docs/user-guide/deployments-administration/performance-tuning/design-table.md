@@ -98,6 +98,7 @@ WHERE host = 'host-a'
 
 The filter `host = 'host-a'` can only match row group 0, so row group 1 is skipped without being read.
 Choosing and ordering the primary key well turns the leading primary-key column into an effective coarse pruning key — no extra index required.
+This pruning is coarse, though: GreptimeDB keeps no global index over the primary key, so it cannot jump straight to the rows for a given key. It only skips row groups by their min/max values, which works well for the leading primary-key column but does little for columns deeper in the key or for point lookups on high cardinality columns — that is what indexes are for.
 Statistics on field columns help too: a row group whose `cpu` maximum is `0.6` is skipped for `cpu > 0.7`.
 
 **Indexes** handle selective filters that ordering and statistics cannot.
@@ -182,7 +183,15 @@ CREATE TABLE http_logs_v2 (
 
 A long primary key will negatively affect the insert performance and enlarge the memory footprint. It's recommended to define a primary key with no more than 5 columns.
 
-Avoid putting high cardinality columns such as `trace_id`, `span_id`, or `user_id` into the primary key just to filter on them. For those columns, a [skipping index](#skipping-index) usually delivers better query performance with much lower overhead. Only add a high cardinality column to the primary key when you genuinely need to order or deduplicate by it, and keep in mind that deduplication on high cardinality primary keys is expensive — if you can tolerate duplication, use an append-only table for the best performance.
+You can put high cardinality columns such as `trace_id`, `span_id`, or `user_id` into the primary key, but it is often not the best way to filter on them.
+
+Adding a high cardinality column to the primary key has a cost but limited benefit:
+
+- It makes the primary key longer, which slows inserts and uses more memory.
+- On deduplicating tables, deduplication by a high cardinality key is expensive. If you can tolerate duplication, use an append-only table instead.
+- Unlike a [skipping index](#skipping-index), it doesn't always speed up queries much.
+
+A skipping index targets the same filters with much lower overhead, so it is usually the better default. Add a high cardinality column to the primary key only when you genuinely need to order or deduplicate by it. Because the best layout depends on your data and queries, benchmark on your own dataset to decide.
 
 Recommendations for tags:
 
@@ -191,7 +200,7 @@ Recommendations for tags:
   For example, `namespace`, `cluster`, or an AWS `region`.
 - No need to set all low cardinality columns as tags since this may impact the performance of ingestion and querying.
 - Typically use short strings and integers for tags, avoiding `FLOAT`, `DOUBLE`, `TIMESTAMP`.
-- For high cardinality columns such as `trace_id`, `span_id`, and `user_id`, prefer a [skipping index](#skipping-index) over adding them to the primary key. It usually gives better query performance with lower overhead. Only add such a column to the primary key if you must order or deduplicate by it.
+- For high cardinality columns such as `trace_id`, `span_id`, and `user_id`, prefer a [skipping index](#skipping-index); add them to the primary key only when you need to order or deduplicate by them.
 - Order primary key columns from the most frequently filtered and most selective leading column. The leading column benefits the most from ordering and row-group pruning (see [How GreptimeDB Stores and Reads Data](#how-greptimedb-stores-and-reads-data)).
 
 
@@ -227,6 +236,8 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 GreptimeDB supports two different strategies for deduplication: `last_row` and `last_non_null`.
 You can specify the strategy by the `merge_mode` table option.
 
+`merge_mode` only takes effect on deduplicating tables. Append-only tables don't merge rows, so you normally leave `merge_mode` unset on them.
+
 GreptimeDB uses an LSM Tree-based storage engine,
 which does not overwrite old data in place but allows multiple versions of data to coexist.
 These versions are merged during the query process.
@@ -245,15 +256,9 @@ allowing updates to provide only the values that need to change.
 
 ![merge-mode-last-non-null](/merge-mode-last-non-null.png)
 
-For tables created automatically via the InfluxDB line protocol, the default merge mode comes from the [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md) configuration, which defaults to `last_non_null` to align with InfluxDB's update behavior.
-An explicit HTTP `merge_mode` hint in the write request takes precedence over the configured default.
-
-If an InfluxDB line protocol write explicitly sets the HTTP `append_mode` hint to `true`,
-the auto-created table uses `append_mode = 'true'` and `merge_mode = 'last_row'` instead.
+Tables auto-created via the InfluxDB line protocol default to `last_non_null` to align with InfluxDB's update behavior, configurable via the [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md) option.
 
 The `last_row` merge mode doesn't have to check each individual field value so it is usually faster than the `last_non_null` mode.
-For Append-Only tables, only `last_row` is compatible with `append_mode`;
-other merge modes are rejected because Append-Only tables do not perform field-wise merges.
 
 :::warning Deduplication and partitioning
 Deduplication and merging happen **within a single partition**.
@@ -328,9 +333,8 @@ Inverted index supports the following operators:
 
 ### Skipping Index
 
-For high cardinality columns like `trace_id`, `request_id`, using a [skipping index](/user-guide/manage-data/data-index.md#skipping-index) is more appropriate.
+For high cardinality columns like `trace_id`, `request_id`, a [skipping index](/user-guide/manage-data/data-index.md#skipping-index) is often a good fit.
 This method has lower storage overhead and resource usage, particularly in terms of memory and disk consumption.
-For such columns, a skipping index is usually a better choice than adding the column to the primary key.
 
 Example:
 
