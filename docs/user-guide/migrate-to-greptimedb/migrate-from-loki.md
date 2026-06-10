@@ -9,7 +9,7 @@ This guide explains how to migrate Loki log ingestion to GreptimeDB.
 GreptimeDB supports the Loki push API for log ingestion, so existing Loki-compatible writers can send logs to GreptimeDB with minimal configuration changes.
 
 The Loki-compatible endpoint in GreptimeDB is for ingestion.
-For querying and dashboards, use GreptimeDB SQL, full-text search, and the [Grafana integration](/user-guide/integrations/grafana.md) instead of LogQL.
+For querying and dashboards, use GreptimeDB SQL, [full-text search](/user-guide/logs/fulltext-search.md), the [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md), and the [Grafana integration](/user-guide/integrations/grafana.md) instead of LogQL.
 
 ## Before you start the migration
 
@@ -21,7 +21,7 @@ Review the current Loki deployment and decide how logs should be stored in Grept
 * Decide whether raw log lines are enough or whether you need a GreptimeDB pipeline to parse log lines into structured columns.
 * Plan historical migration. GreptimeDB does not import Loki chunk or index files directly; migrate historical logs by replaying from the original log sources, archives, or exported records through GreptimeDB's log ingestion APIs.
 
-For new collector changes, Grafana Alloy is recommended.
+For new collector changes, [Grafana Alloy](/user-guide/integrations/alloy.md) is recommended.
 If you still run an existing Loki-compatible client, you can retarget it to GreptimeDB by changing the Loki push URL and adding GreptimeDB headers.
 
 ## Migration steps
@@ -38,7 +38,7 @@ Use the following GreptimeDB-specific headers:
 
 | Header | Required | Description |
 | --- | --- | --- |
-| `X-Greptime-DB-Name` | Yes | Target database name, for example `public`. |
+| `X-Greptime-DB-Name` | No | Target database name. The default is `public`. |
 | `X-Greptime-Log-Table-Name` | No | Target log table name. The default is `loki_logs`. |
 | `Authorization` | Depends on deployment | Basic authentication with Base64-encoded `<username>:<password>`. |
 | `X-Greptime-Pipeline-Name` or `X-Greptime-Log-Pipeline-Name` | No | Pipeline name for parsing Loki entries before insertion. |
@@ -122,6 +122,7 @@ loki.write "greptimedb" {
 
 If your collector already has a Loki output, keep its labels and processing stages unchanged at first.
 Only change the GreptimeDB sink URL, database header, table header, and authentication settings.
+This example follows the Loki component pattern in the [Grafana Alloy guide](/user-guide/ingest-data/for-observability/alloy.md): `loki.source.file` reads files, `loki.process` keeps label processing in the Loki pipeline, and `loki.write.endpoint` carries the GreptimeDB URL, custom headers, and optional Basic authentication.
 
 ### Validate the direct ingestion data model
 
@@ -158,9 +159,12 @@ FROM information_schema.table_semantics
 WHERE table_name = 'loki_app_logs';
 ```
 
+You can also open the [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md) at `http://<host>:4000/dashboard` and use Log View to query the ingested logs.
+
 ### Parse Loki log lines with a pipeline
 
 Use a GreptimeDB pipeline when the Loki log line contains JSON, logfmt, Nginx access logs, or another structured format that should become queryable columns.
+If you use an AI coding agent to create the pipeline, you can give it the [`greptimedb-pipeline` Skill](/faq-and-others/vibecoding.md#greptimedb-skills) so it can generate, dry-run, and refine the pipeline configuration.
 
 When `X-Greptime-Pipeline-Name` or `X-Greptime-Log-Pipeline-Name` is present, GreptimeDB sends each Loki entry through the pipeline with these input fields:
 
