@@ -438,8 +438,8 @@ See [GreptimeDB cluster with metric engine](/user-guide/ingest-data/for-observab
 
 Splitting data into multiple tables and partitioning a single table solve different problems and can be combined:
 
-- Use **multiple tables** when data is logically distinct: different schemas, different sets of columns, or different retention (TTL) requirements. Separate tables keep each schema clean and let you manage retention independently.
-- Use **multiple partitions** (a distributed table) when a single table grows too large for one node to serve. Partitioning splits one table's rows across nodes for horizontal scaling. See [Distributed Tables](#distributed-tables).
+- Use **multiple tables** when data is logically distinct: different schemas, different sets of columns, or different retention (TTL) requirements. Separate tables also let each table use its own primary key, indexes, and merge mode, whereas a single wide table has to share one of each across all its columns. They keep each schema clean and let you tune and retain each table independently. The cost is more tables: because each table maintains its own files, splitting data across many small tables produces many small files.
+- Use **multiple partitions** (a distributed table) when a single table grows too large for one node to serve. Partitioning splits one table's rows across nodes for horizontal scaling while keeping the data in a single table, so it spreads load without creating as many small files as many separate tables would. See [Distributed Tables](#distributed-tables).
 
 In short: split into separate tables for logical separation, and into partitions for scale.
 
