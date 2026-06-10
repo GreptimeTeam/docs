@@ -40,7 +40,7 @@ http{s}://<host>:4000/v1/loki/api/v1/push
 | --- | --- | --- |
 | `X-Greptime-DB-Name` | 是 | 目标数据库名，例如 `public`。 |
 | `X-Greptime-Log-Table-Name` | 否 | 目标日志表名，默认值为 `loki_logs`。 |
-| `Authorization` | 取决于部署 | `<username>:<password>` 的 Basic 认证。 |
+| `Authorization` | 取决于部署 | 使用 Base64 编码的 `<username>:<password>` 进行 Basic 认证。 |
 | `X-Greptime-Pipeline-Name` 或 `X-Greptime-Log-Pipeline-Name` | 否 | 在写入前用于解析 Loki 条目的 Pipeline 名称。 |
 
 GreptimeDB 接受与 Loki 相同的 Push 请求体格式：

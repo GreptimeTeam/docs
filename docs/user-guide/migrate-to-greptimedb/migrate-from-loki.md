@@ -40,7 +40,7 @@ Use the following GreptimeDB-specific headers:
 | --- | --- | --- |
 | `X-Greptime-DB-Name` | Yes | Target database name, for example `public`. |
 | `X-Greptime-Log-Table-Name` | No | Target log table name. The default is `loki_logs`. |
-| `Authorization` | Depends on deployment | Basic authentication for `<username>:<password>`. |
+| `Authorization` | Depends on deployment | Basic authentication with Base64-encoded `<username>:<password>`. |
 | `X-Greptime-Pipeline-Name` or `X-Greptime-Log-Pipeline-Name` | No | Pipeline name for parsing Loki entries before insertion. |
 
 GreptimeDB accepts the same Loki push body shapes:
