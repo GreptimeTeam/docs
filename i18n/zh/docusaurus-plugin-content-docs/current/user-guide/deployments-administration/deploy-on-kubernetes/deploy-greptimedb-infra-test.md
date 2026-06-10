@@ -91,6 +91,9 @@ kubectl logs greptimedb-infra-test-n7z74 -n default
 ```bash
 ================== Starting testing... ==================
 
+================== Fetching UUID for kube-system namespace ==================
+Successfully got UUID: 419a9914-5f9c-4d47-af69-3d09789db7a3
+
 ================== Disk tests ==================
 
 ================== Running full I/O test ==================
