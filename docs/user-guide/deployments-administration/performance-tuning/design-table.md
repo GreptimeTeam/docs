@@ -53,33 +53,14 @@ The main purposes of tag columns are:
 
 Understanding how GreptimeDB stores data and executes a query makes the rest of this guide easier to follow.
 Later sections refer back to the ideas introduced here.
+For the engine-level details — the on-disk SST file format and the full pruning pipeline — see [Data Layout in SST Files](/contributor-guide/datanode/storage-engine.md#data-layout-in-sst-files) and [Scan Pruning](/contributor-guide/datanode/storage-engine.md#scan-pruning) in the storage engine documentation.
 
 ### Data is sorted by primary key and time
 
 GreptimeDB stores rows sorted by `(primary key, timestamp)`.
 Rows that share the same primary key form a single time series and are stored next to each other, ordered by time.
-
-For example, consider a table that stores host metrics:
-
-```sql
-CREATE TABLE host_metrics (
-  host STRING,
-  region STRING,
-  ts TIMESTAMP TIME INDEX,
-  cpu DOUBLE,
-  memory DOUBLE,
-  PRIMARY KEY (host, region)
-);
-```
-
-Conceptually, rows are grouped by primary key and ordered by time:
-
-| host | region | ts | cpu | memory |
-| --- | --- | --- | --- | --- |
-| host-a | us-east | 10:00 | 0.42 | 7.1 |
-| host-a | us-east | 10:01 | 0.47 | 7.4 |
-| host-a | us-west | 10:00 | 0.31 | 6.8 |
-| host-b | us-east | 10:00 | 0.80 | 8.6 |
+This locality is what makes scanning a single time series cheap and improves compression.
+For a concrete example of how rows are laid out on disk, see [Data Layout in SST Files](/contributor-guide/datanode/storage-engine.md#data-layout-in-sst-files).
 
 ### A scan prunes data in stages
 
@@ -92,7 +73,7 @@ When you run a query, GreptimeDB avoids reading data that cannot match, in incre
 3. **Index**: if a filtered column has an index, use it to further narrow down to specific row groups or rows.
 4. **Read and filter**: read the remaining data and apply the exact filters.
 
-Take this query as an example:
+Take a query over a `host_metrics` table with `PRIMARY KEY (host, region)` as an example:
 
 ```sql
 SELECT ts, cpu
