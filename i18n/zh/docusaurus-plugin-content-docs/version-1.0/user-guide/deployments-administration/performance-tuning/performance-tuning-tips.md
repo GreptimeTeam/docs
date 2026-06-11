@@ -65,14 +65,11 @@ staging_size = "10GB"
 - 如果使用全文索引，至少将 `staging_size` 设置为磁盘空间的 1/10
 
 
-### 选择合适的 SST 格式
+### SST 格式
 
-GreptimeDB 支持两种 [SST 格式](/reference/sql/create.md#创建指定-sst-格式的表)：`flat` 和 `primary_key`。根据主键的基数选择合适的格式可以显著提升性能。
+GreptimeDB 默认使用 `flat` 格式将数据存储在 SST 文件中。它适用于所有主键基数，包括 `trace_id` 或 `uuid` 等高基数主键，因此通常不需要手动设置 `sst_format` 选项。对于具有高基数主键的表，还可以考虑使用 [append-only](/reference/sql/create.md#创建-append-only-表) 表来进一步提升性能。
 
-- **`flat` 格式（默认）**：针对高基数主键进行了优化。如果主键包含 `trace_id` 或 `uuid` 等列，`flat` 格式可以提供更好的写入和查询性能。对于具有高基数主键的表，还可以考虑使用 [append-only](/reference/sql/create.md#创建-append-only-表) 表来进一步提升性能。
-- **`primary_key` 格式**：当主键基数不高时，可能会提供更好的性能。
-
-更多细节（包括如何修改已有表的格式）请参阅[选择合适的 SST 格式](/user-guide/deployments-administration/performance-tuning/design-table.md#选择合适的-sst-格式)。
+唯一需要设置 `sst_format` 的场景是从默认使用遗留 `primary_key` 格式的旧版本 GreptimeDB 升级。在这种情况下，可以将这些表切换为 `flat`。如何修改已有表的格式，请参考 [SST 格式](/user-guide/deployments-administration/performance-tuning/design-table.md#sst-格式)指南；参考信息请见 [SST 格式](/reference/sql/create.md#创建指定-sst-格式的表)。
 
 
 ### 尽可能使用 append-only 表

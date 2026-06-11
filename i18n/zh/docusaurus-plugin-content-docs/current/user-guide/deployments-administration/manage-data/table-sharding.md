@@ -57,9 +57,13 @@ PARTITION ON COLUMNS (<COLUMN LIST>) (
 
 该语法主要由两部分组成：
 
-1. `PARTITION ON COLUMNS` 后跟一个用逗号分隔的列名列表，指定了将用于分区的列。这里指定的列必须是 Tag 类型（由 PRIMARY KEY 指定）。请注意，所有分区的范围必须**不能**重叠。
+1. `PARTITION ON COLUMNS` 后跟一个用逗号分隔的列名列表，指定了将用于分区的列。目前，表中定义的任意列都可以作为分区列。请注意，所有分区的范围必须**不能**重叠。
 
 2. `RULE LIST` 是多个分区规则的列表。每个规则是一个分区条件，GreptimeDB 会为这些规则生成 `p0`、`p1` 等分区名称。这里的表达式可以使用 `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, 列名和字面量。
+
+:::tip 选择分区列
+建议使用 Tag 列（主键列）进行分区。对于**不是** append-only 的表（启用了去重）尤其重要：分区列应该是主键列的子集。这样具有相同主键的行会始终进入同一个分区，从而保证去重和合并可以正确工作。
+:::
 
 :::tip 提示
 `PARTITION ON COLUMNS` 括号里只能写列名（如 `device_id`、`area`），不支持表达式。GreptimeDB 不支持 MySQL 的 `PARTITION BY RANGE` 语法。
