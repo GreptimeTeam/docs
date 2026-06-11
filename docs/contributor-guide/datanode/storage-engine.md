@@ -101,7 +101,7 @@ Besides the table columns, Mito stores three internal columns in each SST file s
 
 Each Parquet SST is split into row groups, the unit that Parquet can read or skip independently. Every row group carries column statistics such as min value, max value, and null count. Mito also records file-level metadata for each SST, including the time range, row count, row-group count, available indexes, and the primary-key range. These statistics drive the scan pruning described below.
 
-Mito supports two SST formats, `flat` (the default) and `primary_key`, which encode the primary key differently and are tuned for different primary-key cardinalities. See [SST format](/reference/sql/create.md#create-a-table-with-sst-format) and the [table design guide](/user-guide/deployments-administration/performance-tuning/design-table.md#sst-format) for how to choose between them.
+Mito supports two SST formats: `flat` and `primary_key`. `flat` is the default for new tables and works well across primary-key cardinalities, including high-cardinality keys. `primary_key` is the legacy format kept for compatibility with older tables. See [SST format](/reference/sql/create.md#create-a-table-with-sst-format) and the [table design guide](/user-guide/deployments-administration/performance-tuning/design-table.md#sst-format) for more details.
 
 <img src="/sst-layout.svg" alt="SST layout" style={{width: '80%', margin: '0 auto'}}/>
 
