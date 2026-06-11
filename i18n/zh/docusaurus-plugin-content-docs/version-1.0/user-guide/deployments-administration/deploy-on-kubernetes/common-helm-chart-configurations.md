@@ -57,9 +57,10 @@ frontend:
 你可以使用如下字段来配置服务端口，如下所示：
 
 - `httpServicePort`：用于配置 HTTP 服务的端口，默认 4000；
-- `grpcServicePort`：用于配置 SQL 服务的端口，默认 4001；
+- `grpcServicePort`：用于配置 gRPC 服务的端口，默认 4001；
 - `mysqlServicePort`：用于配置 MySQL 服务的端口，默认 4002；
 - `postgresServicePort`：用于配置 PostgreSQL 服务的端口，默认 4003；
+- `frontend.internalPort`：用于配置内部服务的端口，默认 4010，此端口用于 GreptimeDB 组件之间的内部通信。
 
 ### Datanode 存储配置
 
