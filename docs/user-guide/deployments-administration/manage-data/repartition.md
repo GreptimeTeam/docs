@@ -87,7 +87,7 @@ This feature is only available in distributed clusters and requires:
 Otherwise, you can't perform repartitioning.
 :::
 
-GreptimeDB supports repartitioning an unpartitioned table with `PARTITION ON COLUMNS`, and adjusting an existing partitioned table through repeated `SPLIT PARTITION` and `MERGE PARTITION` operations.
+GreptimeDB supports repartitioning an unpartitioned table with `PARTITION ON COLUMNS`, and adjusting an existing partitioned table through `REPARTITION`, `SPLIT PARTITION`, and `MERGE PARTITION` operations.
 The most common follow-up changes are 1-to-2 splits and 2-to-1 merges.
 More complex changes can also be done step by step.
 
@@ -100,7 +100,7 @@ If you deploy GreptimeDB with the GreptimeDB Operator, refer to [Common Helm Cha
 
 ## Example
 
-You can first partition an unpartitioned table, and later keep tuning the layout by merging existing partitions and splitting them with new rules.
+You can first partition an unpartitioned table, and later keep tuning the layout by repartitioning, merging, or splitting existing partitions.
 
 Partition an unpartitioned table:
 
@@ -113,7 +113,7 @@ ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id, area) (
 );
 ```
 
-Adjust an existing partitioned table. The following example changes the `area` partition key from `South` to `North` for devices with `device_id < 100`:
+Adjust an existing partitioned table while keeping the current partition columns:
 
 ```sql
 ALTER TABLE sensor_readings MERGE PARTITION (
@@ -126,6 +126,17 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
 ) INTO (
   device_id < 100 AND area < 'North',
   device_id < 100 AND area >= 'North'
+);
+```
+
+You can also change the target partition columns during repartition. In the following example, `ON COLUMNS (device_id, area)` replaces the table's partition columns for the rewritten layout:
+
+```sql
+ALTER TABLE sensor_readings REPARTITION (
+  device_id < 100
+) ON COLUMNS (device_id, area) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
 );
 ```
 

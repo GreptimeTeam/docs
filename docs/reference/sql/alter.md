@@ -94,8 +94,9 @@ ALTER TABLE [db.]table
     | MODIFY COLUMN name DROP DEFAULT
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
+    | REPARTITION (<expr_list>) [ON COLUMNS (<column_list>)] INTO (<expr_list>)
     | PARTITION ON COLUMNS (<column_list>) (<expr_list>)
-    | SPLIT PARTITION (<expr>) INTO (<expr_list>)
+    | SPLIT PARTITION (<expr>) [ON COLUMNS (<column_list>)] INTO (<expr_list>)
     | MERGE PARTITION (<expr_list>)
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
@@ -229,12 +230,47 @@ ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id, area) (
 );
 ```
 
+Use `REPARTITION` to rewrite one or more existing partitions. By default it keeps using the table's current partition columns:
+
+```sql
+ALTER TABLE sensor_readings REPARTITION (
+  device_id < 100
+) INTO (
+  device_id < 40,
+  device_id >= 40 AND device_id < 100
+);
+```
+
+You can add `ON COLUMNS` to either `REPARTITION` or `SPLIT PARTITION` to replace the table's target partition columns during the operation:
+
+```sql
+ALTER TABLE sensor_readings REPARTITION (
+  device_id < 100
+) ON COLUMNS (device_id, area) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+When `ON COLUMNS` is omitted, the existing partition columns are preserved.
+
 Use `SPLIT PARTITION` to split an existing partition into multiple partitions:
 
 ```sql
 ALTER TABLE sensor_readings SPLIT PARTITION (
   device_id < 100
 ) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+`SPLIT PARTITION ... ON COLUMNS` uses the same optional syntax when you want the split to also change the target partition columns:
+
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) ON COLUMNS (device_id, area) INTO (
   device_id < 100 AND area < 'South',
   device_id < 100 AND area >= 'South'
 );
