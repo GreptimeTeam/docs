@@ -93,7 +93,6 @@ ALTER TABLE [db.]table
     | MODIFY COLUMN name DROP DEFAULT
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
-    | REPARTITION (<expr_list>) [ON COLUMNS (<column_list>)] INTO (<expr_list>)
     | PARTITION ON COLUMNS (<column_list>) (<expr_list>)
     | SPLIT PARTITION (<expr>) [ON COLUMNS (<column_list>)] INTO (<expr_list>)
     | MERGE PARTITION (<expr_list>)
@@ -228,21 +227,21 @@ ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id, area) (
 );
 ```
 
-使用 `REPARTITION` 可以重写一个或多个已有分区。默认情况下，它会继续使用当前表的分区列：
+使用 `SPLIT PARTITION` 将一个已有分区拆分为多个分区：
 
 ```sql
-ALTER TABLE sensor_readings REPARTITION (
+ALTER TABLE sensor_readings SPLIT PARTITION (
   device_id < 100
 ) INTO (
-  device_id < 40,
-  device_id >= 40 AND device_id < 100
+  device_id < 100 AND area < 'North',
+  device_id < 100 AND area >= 'North'
 );
 ```
 
-你也可以在 `REPARTITION` 或 `SPLIT PARTITION` 中添加 `ON COLUMNS`，在执行重分区的同时替换表的目标分区列：
+若还需要在拆分时引入新的分区列，可以添加 `ON COLUMNS`。以下示例假设表当前仅按 `device_id` 分区，`ON COLUMNS (device_id, area)` 会将 `area` 引入为新的分区列：
 
 ```sql
-ALTER TABLE sensor_readings REPARTITION (
+ALTER TABLE sensor_readings SPLIT PARTITION (
   device_id < 100
 ) ON COLUMNS (device_id, area) INTO (
   device_id < 100 AND area < 'South',
@@ -251,28 +250,6 @@ ALTER TABLE sensor_readings REPARTITION (
 ```
 
 如果省略 `ON COLUMNS`，则保留现有的分区列。
-
-使用 `SPLIT PARTITION` 将一个已有分区拆分为多个分区：
-
-```sql
-ALTER TABLE sensor_readings SPLIT PARTITION (
-  device_id < 100
-) INTO (
-  device_id < 100 AND area < 'South',
-  device_id < 100 AND area >= 'South'
-);
-```
-
-当你希望在拆分时同时修改目标分区列时，可以使用同样的 `SPLIT PARTITION ... ON COLUMNS` 语法：
-
-```sql
-ALTER TABLE sensor_readings SPLIT PARTITION (
-  device_id < 100
-) ON COLUMNS (device_id, area) INTO (
-  device_id < 100 AND area < 'South',
-  device_id < 100 AND area >= 'South'
-);
-```
 
 使用 `MERGE PARTITION` 将多个分区合并为一个分区。以下示例将两个分区合并为一个覆盖 `device_id < 100` 的分区：
 

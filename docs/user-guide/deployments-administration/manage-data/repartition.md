@@ -129,16 +129,23 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
 );
 ```
 
-You can also change the target partition columns during repartition. In the following example, `ON COLUMNS (device_id, area)` replaces the table's partition columns for the rewritten layout:
+To introduce a new partition column, use `SPLIT PARTITION ... ON COLUMNS`. The following example starts with a table partitioned only by `device_id`, then introduces `area` as a new partition column:
 
 ```sql
-ALTER TABLE sensor_readings REPARTITION (
+ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id) (
+  device_id < 100,
+  device_id >= 100
+);
+
+ALTER TABLE sensor_readings SPLIT PARTITION (
   device_id < 100
 ) ON COLUMNS (device_id, area) INTO (
   device_id < 100 AND area < 'South',
   device_id < 100 AND area >= 'South'
 );
 ```
+
+After the split, the table's partition columns are updated to `(device_id, area)`.
 
 ## Further reading
 

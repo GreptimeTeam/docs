@@ -130,16 +130,23 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
 );
 ```
 
-你也可以在重分区时直接替换目标分区列。下面的示例中，`ON COLUMNS (device_id, area)` 会把表的分区列切换为 `(device_id, area)`：
+若需要引入新的分区列，可以使用 `SPLIT PARTITION ... ON COLUMNS`。以下示例从仅按 `device_id` 分区的表出发，将 `area` 引入为新的分区列：
 
 ```sql
-ALTER TABLE sensor_readings REPARTITION (
+ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id) (
+  device_id < 100,
+  device_id >= 100
+);
+
+ALTER TABLE sensor_readings SPLIT PARTITION (
   device_id < 100
 ) ON COLUMNS (device_id, area) INTO (
   device_id < 100 AND area < 'South',
   device_id < 100 AND area >= 'South'
 );
 ```
+
+拆分完成后，表的分区列将更新为 `(device_id, area)`。
 
 ## 延伸阅读
 
