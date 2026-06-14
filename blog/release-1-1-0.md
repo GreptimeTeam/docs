@@ -88,7 +88,7 @@ COPY tbl FROM '/path/to/file.csv' WITH (
 * feat: update dashboard to v0.12.2 by [@ZonaHex](https://github.com/ZonaHex) in [#8010](https://github.com/GreptimeTeam/greptimedb/pull/8010)
 * feat: json2 flush by [@MichaelScofield](https://github.com/MichaelScofield) in [#8011](https://github.com/GreptimeTeam/greptimedb/pull/8011)
 * feat(cli): add metadata put key and table commands by [@WenyXu](https://github.com/WenyXu) in [#7989](https://github.com/GreptimeTeam/greptimedb/pull/7989)
-* feat(cli): add retry and import state fundations by [@fengjiachun](https://github.com/fengjiachun) in [#8007](https://github.com/GreptimeTeam/greptimedb/pull/8007)
+* feat(cli): add retry and import state foundations by [@fengjiachun](https://github.com/fengjiachun) in [#8007](https://github.com/GreptimeTeam/greptimedb/pull/8007)
 * feat: tune range cache by [@evenyag](https://github.com/evenyag) in [#8006](https://github.com/GreptimeTeam/greptimedb/pull/8006)
 * feat: support gRPC-Web on frontend gRPC server by [@onepizzateam](https://github.com/onepizzateam) in [#8027](https://github.com/GreptimeTeam/greptimedb/pull/8027)
 * feat: add seq watermark in record batch metrics by [@discord9](https://github.com/discord9) in [#8015](https://github.com/GreptimeTeam/greptimedb/pull/8015)
