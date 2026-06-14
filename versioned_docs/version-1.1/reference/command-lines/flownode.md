@@ -1,0 +1,46 @@
+---
+keywords: [GreptimeDB flownode, command-line interface, flownode configuration, flownode startup, flownode options, flownode examples]
+description: Comprehensive guide to GreptimeDB flownode command-line interface, including configuration options, startup commands, and practical examples for deploying flownode instances.
+---
+
+# Flownode
+
+## Subcommand options
+
+You can list all the options from the following command:
+
+```
+greptime flownode start --help
+```
+| Option                                | Description                                                                                                                                                                                                                                                                   |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `-c`/`--config-file`                  | The configuration file for flownode                                                                                                                                                                                                                                           |
+| `--env-prefix <ENV_PREFIX>`           | The prefix of environment variables, default is `GREPTIMEDB_FLOWNODE`                                                                                                                                                                                                         |
+| `--metasrv-addrs <METASRV_ADDRS>...`  | Metasrv address list                                                                                                                                                                                                                                                          |
+| `--node-id <NODE_ID>`                 | Flownode's id                                                                                                                                                                                                                                                                 |
+| `--grpc-bind-addr <GRPC_BIND_ADDR>`     | The address to bind the gRPC server                                                                                                                                                                                                                                           |
+| `--grpc-server-addr <GRPC_SERVER_ADDR>` | The address advertised to the metasrv, and used for connections from outside the host. If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `grpc_bind_addr` |
+
+:::note
+When deploying a separate flownode in a cluster with frontend authentication enabled, configure the frontend internal gRPC endpoint.
+You can use the frontend `internal_grpc` options or the `--internal-grpc-bind-addr` and `--internal-grpc-server-addr` command line options.
+Flownode connects to frontends through addresses discovered from metasrv and does not send authentication headers, so it should access the frontend internal gRPC service instead of the public authenticated gRPC service.
+:::
+
+## Examples
+
+### Start service with configurations
+
+Starts a flownode instance with customized configurations:
+
+```sh
+greptime flownode start -c config/flownode.example.toml
+```
+
+Starts a flownode instance with command line arguments specifying the address of the metasrv:
+
+```sh
+greptime flownode start --node-id=0 --grpc-bind-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002
+```
+
+The `flownode.example.toml` configuration file comes from the `config` directory of the `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` repository. You can find more example configuration files there. The `-c` option specifies the configuration file, for more information check [Configuration](/user-guide/deployments-administration/configuration.md).
