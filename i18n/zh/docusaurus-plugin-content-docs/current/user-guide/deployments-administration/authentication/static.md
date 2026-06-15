@@ -55,7 +55,7 @@ editor:rw=editor_pwd
 
 ### 密码格式
 
-默认情况下密码以明文存储。每条密码也可以使用显式的 verifier 格式，从而无需在配置文件中保存明文密码：
+从 v1.1 起，密码可以使用显式的 verifier 格式，从而无需在配置文件中保存明文密码。默认情况下密码以明文存储：
 
 - `plain:<password>` — 明文。未指定前缀时的默认格式。
 - `pbkdf2_sha256:<iterations>:<hex_salt>:<hex_hash>` — 以 PBKDF2-SHA256 哈希形式存储。
@@ -93,7 +93,7 @@ alice:readonly=pbkdf2_sha256:4096:73616c74:c5e478d59288c841aa530db6845c4c8d96289
 
 ### 生成密码 Verifier
 
-使用 `greptime user hash-password` 命令生成 verifier 字符串。该命令独立运行，不会启动任何服务端组件：
+从 v1.1 起，可以使用 `greptime user hash-password` 命令生成 verifier 字符串。该命令独立运行，不会启动任何服务端组件：
 
 ```shell
 echo -n "admin_pwd" | ./greptime user hash-password --password-stdin

@@ -55,7 +55,7 @@ In this configuration:
 
 ### Password Formats
 
-By default a password is stored as plaintext. Each password can instead use an explicit verifier format, so that plaintext passwords don't have to live in the configuration file:
+Since v1.1, a password can use an explicit verifier format, so that plaintext passwords don't have to live in the configuration file. By default a password is stored as plaintext:
 
 - `plain:<password>` — plaintext. This is the default when no prefix is given.
 - `pbkdf2_sha256:<iterations>:<hex_salt>:<hex_hash>` — a PBKDF2-SHA256 hash stored at rest.
@@ -93,7 +93,7 @@ Passwords are prefix-parsed. A legacy plaintext password that literally starts w
 
 ### Generating Password Verifiers
 
-Use the `greptime user hash-password` command to generate a verifier string. It runs standalone without starting any server component:
+Since v1.1, you can use the `greptime user hash-password` command to generate a verifier string. It runs standalone without starting any server component:
 
 ```shell
 echo -n "admin_pwd" | ./greptime user hash-password --password-stdin
