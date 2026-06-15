@@ -4,6 +4,8 @@ description: GreptimeDB v1.1.0 Changelog
 date: 2026-06-14
 ---
 
+# v1.1.0
+
 Release date: June 14, 2026
 
 v1.1.0 adds online partitioning for previously unpartitioned tables, an experimental
