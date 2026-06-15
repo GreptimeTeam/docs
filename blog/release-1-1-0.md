@@ -8,9 +8,9 @@ date: 2026-06-14
 
 Release date: June 14, 2026
 
-v1.1.0 adds online partitioning for previously unpartitioned tables, an experimental
-incremental read mode for batching flows, and new CSV import options, along with a number of
-performance and stability fixes.
+v1.1.0 adds online partitioning for previously unpartitioned tables, experimental incremental
+reads for batching flows, the experimental table semantic layer, and new CSV import options,
+along with performance and stability fixes.
 
 ### 👍 Highlights
 
@@ -45,9 +45,42 @@ It can also be set per flow with `WITH (experimental_enable_incremental_read = '
 source table must be append-only (`append_mode = 'true'`); otherwise the flow falls back to
 full-snapshot queries.
 
-**CSV import options.** `COPY FROM` adds two options for CSV. `SKIP_BAD_RECORDS = 'true'`
-skips rows that fail to parse or cast instead of aborting the import, and `HEADERS = 'false'`
-imports files without a header row, mapping columns by position to the table schema:
+**Table semantic layer.** The experimental table semantic layer lets tables carry
+`greptime.semantic.*` metadata, such as signal type, source, metric type, unit, temporality,
+and ingestion pipeline. GreptimeDB stamps this metadata automatically on supported ingestion
+paths, and you can also set it manually with `CREATE TABLE ... WITH (...)`. Consumers can
+query `information_schema.table_semantics` to understand what each table represents without
+guessing from table or column names.
+
+#### MCP Server v0.5.0
+
+GreptimeDB MCP Server v0.5.0 uses table semantic metadata in `describe_table`, so AI
+assistants can understand metrics, logs, and traces more directly. It also expands the tool
+set for SQL, TQL, RANGE queries, pipelines, and dashboards, with stdio/SSE/Streamable HTTP
+transports, read-only defaults, masking, and audit logging.
+
+#### Query performance improvements
+
+- **PromQL execution.** Range functions such as `rate` and `increase` run faster, with
+  benchmarks showing up to 97% lower execution time. Metric joins also improve through
+  TSID-based joins and narrow binary join collection, with one measured join elapsed time down
+  76.7%.
+- **Scan pruning.** Parquet prefiltering, prefilter-result caching, and remote dynamic
+  filters on datanode scans reduce unnecessary row reads. The TSBS `cpu-max-all-8` query was
+  4.5x faster with prefiltering.
+- **Read efficiency.** Page-index reads and range-cache reuse reduce storage reads for
+  scan-heavy queries. Page-index reads reduced SST bytes fetched by 93.2% on one workload.
+
+#### Dashboard
+
+- The built-in Perses dashboard now supports trace visualization: a trace list and a
+  per-trace detail/Gantt view from the trace table, using the GreptimeDB Perses data-source
+  plugin.
+
+#### CSV import options
+
+`COPY FROM` adds `SKIP_BAD_RECORDS = 'true'` for skipping invalid rows and `HEADERS = 'false'`
+for importing headerless CSV files:
 
 ```sql
 COPY tbl FROM '/path/to/file.csv' WITH (
@@ -56,12 +89,6 @@ COPY tbl FROM '/path/to/file.csv' WITH (
   HEADERS = 'false'
 );
 ```
-
-**Dashboard**
-
-- The built-in Perses dashboard now supports trace visualization: a trace list and a
-  per-trace detail/Gantt view from the trace table, using the GreptimeDB Perses data-source
-  plugin.
 
 ### Breaking changes
 
