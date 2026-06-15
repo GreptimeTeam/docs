@@ -86,7 +86,7 @@ ORDER BY p.region_id, p.peer_addr;
 否则你无法执行重分区。
 :::
 
-当前开源版支持使用 `PARTITION ON COLUMNS` 将未分区表调整为分区表，也支持通过 `SPLIT PARTITION` 和 `MERGE PARTITION` 继续调整已有分区。最常见的后续调整场景是 1 拆 2 或 2 合 1；对于更复杂的分区变更，也可以通过逐步拆分和合并来完成。
+当前开源版支持使用 `PARTITION ON COLUMNS` 将未分区表调整为分区表，也支持通过多次 `SPLIT PARTITION` / `MERGE PARTITION` 组合继续调整已有分区。最常见的后续调整场景是 1 拆 2 或 2 合 1；对于更复杂的分区变更，也可以通过逐步拆分和合并来完成。
 
 对象存储用于保存 region 文件，GC 则负责在引用释放后再回收旧文件，避免重分区过程中误删仍在使用的数据。
 
@@ -101,7 +101,7 @@ ORDER BY p.region_id, p.peer_addr;
 
 ## 重分区示例
 
-你可以先为未分区表创建分区，后续再通过重分区、合并和拆分来持续调整分区规则。
+你可以先为未分区表创建分区，后续再通过合并和拆分来持续调整分区规则。
 
 先为未分区表创建分区：
 
@@ -114,7 +114,7 @@ ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id, area) (
 );
 ```
 
-下面的示例展示了如何在保留现有分区列的前提下，继续调整已有分区：
+再调整已有分区。下面的示例展示了如何将 `device_id < 100` 的设备的分区键 `area` 从 `South` 更改为 `North`：
 
 ```sql
 ALTER TABLE sensor_readings MERGE PARTITION (
