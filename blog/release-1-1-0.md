@@ -63,8 +63,8 @@ transports, read-only defaults, masking, and audit logging.
 
 - **PromQL execution.** Range functions such as `rate` and `increase` run faster, with
   benchmarks showing up to 97% lower execution time. Metric joins also improve through
-  TSID-based joins and narrow binary join collection, with one measured join elapsed time down
-  76.7%.
+  TSID-based joins and narrow binary join collection. Overall, compared to v1.0, v1.1 reduces
+  average PromQL query time by 20% to 40%.
 - **Scan pruning.** Parquet prefiltering, prefilter-result caching, and remote dynamic
   filters on datanode scans reduce unnecessary row reads. The TSBS `cpu-max-all-8` query was
   4.5x faster with prefiltering.
