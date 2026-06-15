@@ -259,13 +259,14 @@ To disable this optimization for one HTTP SQL request, set the `query.enable_rem
 curl -X POST \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -H 'x-greptime-hints: query.enable_remote_dynamic_filter_pushdown=false' \
--d "sql=SELECT m.* FROM monitor m JOIN host_info h ON m.host = h.host WHERE h.region = 'us-west'" \
+--data-urlencode "sql=SELECT m.* FROM monitor m JOIN host_info h ON m.host = h.host WHERE h.region = 'us-west'" \
 http://localhost:4000/v1/sql
 ```
 
 The option defaults to `true`.
 Setting it to `false` disables Frontend-to-Datanode remote dynamic filter propagation for the current query only.
 It does not disable local dynamic filter optimizations inside one execution node.
+In standalone mode, there is no remote Frontend-to-Datanode propagation, so this option has no practical effect.
 
 For more information about request hints, see [HTTP hints](/user-guide/protocols/http.md#hints).
 
