@@ -245,7 +245,9 @@ SELECT * FROM monitor ORDER BY ts DESC;
 ## Remote dynamic filter pushdown
 
 GreptimeDB enables remote dynamic filter pushdown by default for distributed SQL queries.
-When a query operator such as TopK (`ORDER BY ... LIMIT`) or a join produces a dynamic filter, the Frontend can propagate that filter to Datanodes so region scans may prune data earlier.
+It is mainly used by distributed join queries.
+When a join builds a runtime dynamic filter from one side of the join, the Frontend can propagate that filter to Datanodes so scans on the other side may prune data earlier.
+Some other operators, such as TopK (`ORDER BY ... LIMIT`), may also produce dynamic filters in eligible plans.
 
 This is a best-effort performance optimization and does not change query results.
 It only applies when the distributed query plan contains a dynamic filter that can be sent to remote scans.
@@ -257,7 +259,7 @@ To disable this optimization for one HTTP SQL request, set the `query.enable_rem
 curl -X POST \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -H 'x-greptime-hints: query.enable_remote_dynamic_filter_pushdown=false' \
--d 'sql=SELECT * FROM monitor ORDER BY ts DESC LIMIT 10' \
+-d "sql=SELECT m.* FROM monitor m JOIN host_info h ON m.host = h.host WHERE h.region = 'us-west'" \
 http://localhost:4000/v1/sql
 ```
 
