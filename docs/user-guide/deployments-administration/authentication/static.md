@@ -96,10 +96,16 @@ Passwords are prefix-parsed. A legacy plaintext password that literally starts w
 Since v1.1, you can use the `greptime user hash-password` command to generate a verifier string. It runs standalone without starting any server component:
 
 ```shell
-echo -n "admin_pwd" | ./greptime user hash-password --password-stdin
+./greptime user hash-password --password-stdin
 ```
 
-This reads the plaintext password from stdin and prints the verifier to stdout. Copy the output into your user file as the password:
+This reads the plaintext password from stdin and prints the verifier to stdout. When run interactively, type the password and press Enter. In scripts, read it without echo and pipe it in, so the plaintext never appears in shell history or process listings:
+
+```shell
+read -rs PASSWORD && printf '%s' "$PASSWORD" | ./greptime user hash-password --password-stdin
+```
+
+Copy the output into your user file as the password:
 
 ```
 admin=pbkdf2_sha256:4096:<random_hex_salt>:<hex_hash>
@@ -117,7 +123,7 @@ Options:
 To generate a `mysql_native_password` verifier instead:
 
 ```shell
-echo -n "admin_pwd" | ./greptime user hash-password --password-stdin --format mysql_native_password
+./greptime user hash-password --password-stdin --format mysql_native_password
 ```
 
 ### Starting the Server

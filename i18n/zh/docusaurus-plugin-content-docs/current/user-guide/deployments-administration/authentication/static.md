@@ -96,10 +96,16 @@ alice:readonly=pbkdf2_sha256:4096:73616c74:c5e478d59288c841aa530db6845c4c8d96289
 从 v1.1 起，可以使用 `greptime user hash-password` 命令生成 verifier 字符串。该命令独立运行，不会启动任何服务端组件：
 
 ```shell
-echo -n "admin_pwd" | ./greptime user hash-password --password-stdin
+./greptime user hash-password --password-stdin
 ```
 
-它从标准输入读取明文密码，并将 verifier 打印到标准输出。将输出复制到用户文件中作为密码：
+它从标准输入读取明文密码，并将 verifier 打印到标准输出。交互式运行时，输入密码后按回车；在脚本中，使用不回显的方式读取再通过管道传入，避免明文出现在 shell 历史或进程列表中：
+
+```shell
+read -rs PASSWORD && printf '%s' "$PASSWORD" | ./greptime user hash-password --password-stdin
+```
+
+将输出复制到用户文件中作为密码：
 
 ```
 admin=pbkdf2_sha256:4096:<random_hex_salt>:<hex_hash>
@@ -117,7 +123,7 @@ admin=pbkdf2_sha256:4096:<random_hex_salt>:<hex_hash>
 生成 `mysql_native_password` 格式的 verifier：
 
 ```shell
-echo -n "admin_pwd" | ./greptime user hash-password --password-stdin --format mysql_native_password
+./greptime user hash-password --password-stdin --format mysql_native_password
 ```
 
 ### 启动服务器
