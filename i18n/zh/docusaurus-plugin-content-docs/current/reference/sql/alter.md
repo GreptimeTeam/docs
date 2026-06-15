@@ -94,7 +94,7 @@ ALTER TABLE [db.]table
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
     | PARTITION ON COLUMNS (<column_list>) (<expr_list>)
-    | SPLIT PARTITION (<expr>) INTO (<expr_list>)
+    | SPLIT PARTITION (<expr>) [ON COLUMNS (<column_list>)] INTO (<expr_list>)
     | MERGE PARTITION (<expr_list>)
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
@@ -233,10 +233,23 @@ ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id, area) (
 ALTER TABLE sensor_readings SPLIT PARTITION (
   device_id < 100
 ) INTO (
+  device_id < 100 AND area < 'North',
+  device_id < 100 AND area >= 'North'
+);
+```
+
+若还需要在拆分时引入新的分区列，可以添加 `ON COLUMNS`。以下示例假设表当前仅按 `device_id` 分区，`ON COLUMNS (device_id, area)` 会将 `area` 引入为新的分区列：
+
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) ON COLUMNS (device_id, area) INTO (
   device_id < 100 AND area < 'South',
   device_id < 100 AND area >= 'South'
 );
 ```
+
+如果省略 `ON COLUMNS`，则保留现有的分区列。
 
 使用 `MERGE PARTITION` 将多个分区合并为一个分区。以下示例将两个分区合并为一个覆盖 `device_id < 100` 的分区：
 
