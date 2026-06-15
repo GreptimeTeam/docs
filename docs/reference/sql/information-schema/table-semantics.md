@@ -9,7 +9,7 @@ description: Provides an experimental view over GreptimeDB table semantic metada
 The `TABLE_SEMANTICS` view is currently experimental and may change in future releases.
 :::
 
-The `TABLE_SEMANTICS` table provides a queryable view over GreptimeDB's [table semantic layer](/user-guide/concepts/semantic-layer.md). It returns one row for each table that carries at least one `greptime.semantic.*` table option. Tables without any semantic option do not appear in this view.
+The `TABLE_SEMANTICS` view provides a queryable interface over GreptimeDB's [table semantic layer](/user-guide/concepts/semantic-layer.md). It returns one row for each table that carries at least one `greptime.semantic.*` table option. Tables without any semantic option do not appear in this view.
 
 The semantic options describe what observability concept a table stands for, so a consumer (an LLM agent, an alert/dashboard builder, an ETL job) can align a table with its meaning without guessing from column names. They are set in two ways:
 

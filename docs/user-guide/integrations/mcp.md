@@ -67,7 +67,7 @@ greptimedb-mcp-server --host localhost --database public
 
 ## Configuration
 
-The server is configured through environment variables or CLI arguments.
+The server is configured through environment variables or CLI arguments. The table below lists the most common options; [HTTP server mode](#http-server-mode) adds a few more.
 
 | Environment variable | CLI argument | Default | Description |
 | --- | --- | --- | --- |

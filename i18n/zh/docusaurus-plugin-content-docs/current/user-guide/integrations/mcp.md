@@ -67,7 +67,7 @@ greptimedb-mcp-server --host localhost --database public
 
 ## 配置
 
-server 通过环境变量或命令行参数配置。
+server 通过环境变量或命令行参数配置。下表列出最常用的选项；[HTTP server 模式](#http-server-模式)还有额外参数。
 
 | 环境变量 | 命令行参数 | 默认值 | 说明 |
 | --- | --- | --- | --- |
