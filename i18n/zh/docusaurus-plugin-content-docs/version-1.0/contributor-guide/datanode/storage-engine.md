@@ -98,7 +98,7 @@ Mito 会按 primary key 对行分组，并按时间排序，因此 SST 中的数
 
 每个 Parquet SST 都会被切分为 row group，row group 是 Parquet 可以独立读取或跳过的单位。每个 row group 都带有列统计信息，例如最小值、最大值和 null 数量。Mito 还会为每个 SST 记录文件级元数据，包括时间范围、行数、row group 数量、可用索引以及 primary key 范围。这些统计信息会驱动下面介绍的扫描裁剪。
 
-Mito 支持两种 SST 格式：`flat`（默认）和 `primary_key`。它们以不同方式编码 primary key，并针对不同的 primary key 基数进行优化。如何选择两种格式，详见 [SST format](/reference/sql/create.md#创建指定-sst-格式的表) 和[表设计指南](/user-guide/deployments-administration/performance-tuning/design-table.md#选择合适的-sst-格式)。
+Mito 支持两种 SST 格式：`flat` 和 `primary_key`。`flat` 是新表的默认格式，适用于各种 primary key 基数，包括高基数 key。`primary_key` 是为了兼容旧表而保留的遗留格式。更多详情请参考 [SST format](/reference/sql/create.md#创建指定-sst-格式的表) 和[表设计指南](/user-guide/deployments-administration/performance-tuning/design-table.md#sst-格式)。
 
 <img src="/sst-layout.svg" alt="SST layout" style={{width: '80%', margin: '0 auto'}}/>
 
