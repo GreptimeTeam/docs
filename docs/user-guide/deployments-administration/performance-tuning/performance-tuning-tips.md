@@ -67,14 +67,11 @@ Some tips:
 - Double the cache size if the cache hit ratio is less than 50%
 - If using full-text index, leave 1/10 of disk space for the `staging_size` at least
 
-### Choosing the right SST format
+### SST format
 
-GreptimeDB supports two [SST formats](/reference/sql/create.md#create-a-table-with-sst-format): `flat` and `primary_key`. Choosing the right one based on the cardinality of your primary key can significantly improve performance.
+GreptimeDB stores data in SST files using the `flat` format by default. It works well across all primary key cardinalities, including high cardinality ones such as `trace_id` or `uuid`, so you are not expected to set the `sst_format` option manually. For tables with high cardinality primary keys, also consider using an [append-only table](/reference/sql/create.md#create-an-append-only-table) to further improve performance.
 
-- **`flat` format (default)**: Optimized for high cardinality primary keys. If your primary key contains columns like `trace_id` or `uuid`, the `flat` format delivers better write and query performance. For tables with high cardinality primary keys, also consider using an [append-only table](/reference/sql/create.md#create-an-append-only-table) to further improve performance.
-- **`primary_key` format**: May offer better performance when the primary key cardinality is not high.
-
-See [Choosing the SST format](/user-guide/deployments-administration/performance-tuning/design-table.md#choosing-the-sst-format) for more details, including how to switch the format on existing tables.
+The only reason to set `sst_format` is when upgrading from an old version of GreptimeDB, whose default was a legacy `primary_key` format. In that case, switch such tables to `flat`. See the [SST format](/user-guide/deployments-administration/performance-tuning/design-table.md#sst-format) guide for how to switch the format on existing tables, and [SST formats](/reference/sql/create.md#create-a-table-with-sst-format) for the reference.
 
 ### Using append-only table if possible
 
