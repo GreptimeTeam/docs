@@ -265,8 +265,8 @@ http://localhost:4000/v1/sql
 
 The option defaults to `true`.
 Setting it to `false` disables Frontend-to-Datanode remote dynamic filter propagation for the current query only.
+It also applies to standalone deployments when the query is executed through the local Frontend-to-Datanode region query path.
 It does not disable local dynamic filter optimizations inside one execution node.
-In standalone mode, there is no remote Frontend-to-Datanode propagation, so this option has no practical effect.
 
 For more information about request hints, see [HTTP hints](/user-guide/protocols/http.md#hints).
 
