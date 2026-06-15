@@ -86,7 +86,7 @@ ORDER BY p.region_id, p.peer_addr;
 否则你无法执行重分区。
 :::
 
-当前开源版支持使用 `PARTITION ON COLUMNS` 将未分区表调整为分区表，也支持通过 `REPARTITION`、`SPLIT PARTITION` 和 `MERGE PARTITION` 继续调整已有分区。最常见的后续调整场景是 1 拆 2 或 2 合 1；对于更复杂的分区变更，也可以通过逐步拆分和合并来完成。
+当前开源版支持使用 `PARTITION ON COLUMNS` 将未分区表调整为分区表，也支持通过 `SPLIT PARTITION` 和 `MERGE PARTITION` 继续调整已有分区。最常见的后续调整场景是 1 拆 2 或 2 合 1；对于更复杂的分区变更，也可以通过逐步拆分和合并来完成。
 
 对象存储用于保存 region 文件，GC 则负责在引用释放后再回收旧文件，避免重分区过程中误删仍在使用的数据。
 

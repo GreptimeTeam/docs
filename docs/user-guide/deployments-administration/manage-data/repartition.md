@@ -87,7 +87,7 @@ This feature is only available in distributed clusters and requires:
 Otherwise, you can't perform repartitioning.
 :::
 
-GreptimeDB supports repartitioning an unpartitioned table with `PARTITION ON COLUMNS`, and adjusting an existing partitioned table through `REPARTITION`, `SPLIT PARTITION`, and `MERGE PARTITION` operations.
+GreptimeDB supports repartitioning an unpartitioned table with `PARTITION ON COLUMNS`, and adjusting an existing partitioned table through `SPLIT PARTITION` and `MERGE PARTITION` operations.
 The most common follow-up changes are 1-to-2 splits and 2-to-1 merges.
 More complex changes can also be done step by step.
 
