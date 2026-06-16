@@ -133,6 +133,7 @@ You can configure the GreptimeDB Standalone instance through the `monitoring.sta
 ```yaml
 monitoring:
   enabled: true
+  ttl: 30d
   standalone:
     base:
      main:
@@ -169,13 +170,14 @@ For example, you can adjust the Vector image and resource limits as follows:
 ```yaml
 monitoring:
   enabled: true
+  ttl: 30d
   vector:
     # Configure Vector image registry
     registry: docker.io
     # Configure Vector image repository 
     repository: timberio/vector
     # Configure Vector image tag
-    tag: nightly-alpine
+    tag: "VAR::vectorImageVersion"
 
     # Configure Vector resources
     resources:
@@ -183,8 +185,8 @@ monitoring:
         cpu: "50m"
         memory: "64Mi"
       limits:
-        cpu: "50m" 
-        memory: "64Mi"
+        cpu: "250m" 
+        memory: "256Mi"
 ```
 
 ### YAML Configuration with `kubectl` Deployment

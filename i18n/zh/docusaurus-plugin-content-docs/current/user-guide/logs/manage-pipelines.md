@@ -204,7 +204,7 @@ Readable timestamp (UTC): 2024-06-27 12:02:34.257312110Z
 
 ## 问题调试
 
-首先，请参考 [快速入门示例](/user-guide/logs/quick-start.md#使用-pipeline-写入日志)来查看 Pipeline 正确的执行情况。
+首先，请参考 [快速入门示例](/user-guide/logs/quick-start.md#直接通过-http-写入日志)来查看 Pipeline 正确的执行情况。
 
 ### 调试创建 Pipeline
 

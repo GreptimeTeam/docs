@@ -57,9 +57,10 @@ In this case, the `frontend` image will be set to `greptime/greptimedb:latest`, 
 You can configure service ports using the following fields:
 
 - `httpServicePort`: Configures the HTTP service port, default `4000`
-- `grpcServicePort`: Configures the SQL service port, default `4001`
+- `grpcServicePort`: Configures the gRPC service port, default `4001`
 - `mysqlServicePort`: Configures the MySQL service port, default `4002`
 - `postgresServicePort`: Configures the PostgreSQL service port, default `4003`
+- `frontend.internalPort`: Configures the internal service port, default `4010`. This port is used for internal communication between GreptimeDB components. 
 
 ### Datanode Storage Configuration
 
@@ -591,6 +592,14 @@ You can enable Region Failover through the `meta.enableRegionFailover` field. Be
 ```yaml
 meta: 
   enableRegionFailover: true
+```
+
+### Enable IPv6
+
+The `enableIPv6` field controls IPv6 support. Set it to true to enable IPv6 address allocation and communication. Defaults to false. Ensure that the underlying network infrastructure supports IPv6 before enabling this option.
+
+```yaml
+enableIPv6: true
 ```
 
 ### Enable GC

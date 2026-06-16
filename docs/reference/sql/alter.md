@@ -95,7 +95,7 @@ ALTER TABLE [db.]table
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
     | PARTITION ON COLUMNS (<column_list>) (<expr_list>)
-    | SPLIT PARTITION (<expr>) INTO (<expr_list>)
+    | SPLIT PARTITION (<expr>) [ON COLUMNS (<column_list>)] INTO (<expr_list>)
     | MERGE PARTITION (<expr_list>)
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
@@ -235,10 +235,23 @@ Use `SPLIT PARTITION` to split an existing partition into multiple partitions:
 ALTER TABLE sensor_readings SPLIT PARTITION (
   device_id < 100
 ) INTO (
+  device_id < 100 AND area < 'North',
+  device_id < 100 AND area >= 'North'
+);
+```
+
+To also introduce a new partition column during a split, add `ON COLUMNS`. In the following example, the table is currently partitioned only by `device_id`, and `ON COLUMNS (device_id, area)` introduces `area` as a new partition column:
+
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) ON COLUMNS (device_id, area) INTO (
   device_id < 100 AND area < 'South',
   device_id < 100 AND area >= 'South'
 );
 ```
+
+When `ON COLUMNS` is omitted, the existing partition columns are preserved.
 
 Use `MERGE PARTITION` to merge multiple partitions into one. The following example merges two partitions into a single partition covering `device_id < 100`:
 

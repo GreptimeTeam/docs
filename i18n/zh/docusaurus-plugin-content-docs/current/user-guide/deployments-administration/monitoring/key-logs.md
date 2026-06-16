@@ -149,8 +149,8 @@ Closing staled region:
 #### Region Failover
 
 ```bash
-// Warn 级别，发现部分 region 未通过 Phi 健康检测，需要执行 failover 操作，冒号后面好打印出相关的 region ids
-Detects region failures:
+// Warn 级别，发现部分 region 未通过 Phi 健康检测，需要执行 failover 操作，冒号后面会打印出 datanode ID 和相关 region ids
+Detects region failures on datanode:
 
 // 某一个 region 迁移失败
 Failed to wait region migration procedure

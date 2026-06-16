@@ -129,6 +129,24 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
 );
 ```
 
+To introduce a new partition column, use `SPLIT PARTITION ... ON COLUMNS`. The following example starts with a table partitioned only by `device_id`, then introduces `area` as a new partition column:
+
+```sql
+ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id) (
+  device_id < 100,
+  device_id >= 100
+);
+
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) ON COLUMNS (device_id, area) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+After the split, the table's partition columns are updated to `(device_id, area)`.
+
 ## Further reading
 
 For a step-by-step tutorial with more background and examples, see [How to Split and Merge Partitions Online in GreptimeDB](https://greptime.com/blogs/2026-03-19-greptimedb-repartition-guide).

@@ -1,6 +1,6 @@
 ---
-keywords: [streaming process, flow management, Flownode components, Flownode limitations, batching mode]
-description: Overview of Flownode's batching mode, a component providing continuous data aggregation capabilities to the database, including its architecture and query execution flow.
+keywords: [batching mode, flow management, Flownode components, Flownode limitations, continuous aggregation]
+description: Overview of Flownode's batching mode, the active execution mode for continuous data aggregation, including its architecture and query execution flow.
 ---
 
 # Flownode Batching Mode Developer Guide
@@ -9,7 +9,7 @@ This guide provides a brief overview of the batching mode in `flownode`. It's in
 
 ## Overview
 
-The batching mode in `flownode` is designed for continuous data aggregation. It periodically executes a user-defined SQL query over small, discrete time windows. This is in contrast to a streaming mode where data is processed as it arrives.
+The batching mode in `flownode` is designed for continuous data aggregation. It periodically executes a user-defined SQL query over small, discrete time windows. This is in contrast to the original streaming mode, now deprecated, where data was processed as it arrived.
 
 The core idea is to:
 1.  Define a `flow` with a SQL query that aggregates data from a source table into a sink table.
@@ -51,7 +51,7 @@ A `BatchingTask` represents a single, independent data flow. Each task is associ
 
 ### `TimeWindowExpr`
 
-The `TimeWindowExpr` is a helper utility for dealing with time window functions like `TUMBLE`.
+The `TimeWindowExpr` is a helper utility for dealing with time window expressions like `date_bin`.
 
 -   **Evaluation**: It can take a timestamp and evaluate the time window expression to determine the start and end of the window that the timestamp falls into.
 -   **Window Size**: It can also determine the size (duration) of the time window from the expression.

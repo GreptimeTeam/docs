@@ -130,6 +130,28 @@ write_bytes_exhausted_policy = "wait"
 | `max_in_flight_write_bytes`     | 字符串 | `"0"`     | 所有并发写入请求体和消息（HTTP、gRPC、Flight）的最大总内存。设置为 `"0"` 表示禁用限制（无限制）。支持的单位：`B`、`KB`、`MB`、`GB` 等。示例：`"1GB"` 将并发写入总量限制为 1GB。                              |
 | `write_bytes_exhausted_policy`  | 字符串 | `"wait"`  | 写入字节配额耗尽时的策略。可选值：`"wait"`（默认，等待最多 10 秒）、`"wait(<duration>)"`（自定义超时时间，例如 `"wait(30s)"`）、`"fail"`（立即拒绝请求）。                                                      |
 
+### Datanode 查询并发限制
+
+这些选项用于限制单个 datanode 上可同时运行的读取查询数量。
+查询会一直计入并发限制，直到查询完成或客户端关闭结果流。
+如果达到并发限制，新查询最多等待 `concurrent_query_limiter_timeout` 配置的时间；如果仍然没有可用名额，查询将失败。
+
+这些选项适用于 `datanode` 子命令。
+
+```toml
+# Datanode 上允许同时运行的最大读取查询数量。
+# 设置为 0 表示禁用限制（默认为无限制）。
+max_concurrent_queries = 0
+
+# 当达到 max_concurrent_queries 时，查询等待可用名额的最长时间。
+concurrent_query_limiter_timeout = "100ms"
+```
+
+| 配置项                             | 类型   | 默认值    | 描述                                                                                                            |
+| ---------------------------------- | ------ | --------- | --------------------------------------------------------------------------------------------------------------- |
+| `max_concurrent_queries`           | 整数   | `0`       | Datanode 上允许同时运行的最大读取查询数量。设置为 `0` 表示禁用限制。                                  |
+| `concurrent_query_limiter_timeout` | 字符串 | `"100ms"` | 当达到 `max_concurrent_queries` 后，查询等待可用名额的最长时间。如果超时后仍然没有可用名额，查询将失败。 |
+
 ### 协议选项
 
 协议选项适用于 `frontend` 和 `standalone` 子命令，它指定了协议服务器地址和其他协议相关的选项。
@@ -428,9 +450,10 @@ vector_cache_size = "512MB"
 page_cache_size = "512MB"
 write_cache_size = "5GB"
 write_cache_ttl = "8h"
-scan_memory_limit = "50%"
+scan_memory_limit = "unlimited"
 scan_memory_on_exhausted = "fail"
 min_compaction_interval = "0m"
+schedule_compaction_after_edit = true
 default_flat_format = true
 sst_write_buffer_size = "8MB"
 max_concurrent_scan_files = 384
@@ -491,9 +514,10 @@ fork_dictionary_bytes = "1GiB"
 | `sst_write_buffer_size`                  | 字符串 | `8MB`         | SST 的写缓存大小                                                                                                       |
 | `max_concurrent_scan_files`             | 整数   | `384`         | 最大并发扫描的 SST 文件数量。                                                                                         |
 | `allow_stale_entries`                 | 布尔值 | `false`       | 是否允许 replay 时读取陈旧的 WAL 条目。                                                                              |
-| `scan_memory_limit`                   | 字符串 | `50%`         | 所有查询的表扫描内存限制。支持绝对大小（如 "2GB"）或系统内存百分比（如 "20%"）。设为 0 可禁用限制。               |
+| `scan_memory_limit`                   | 字符串 | `unlimited`   | 所有查询的表扫描内存限制。支持绝对大小（如 "2GB"）或系统内存百分比（如 "20%"）。设为 0 或 "unlimited" 可禁用限制。 |
 | `scan_memory_on_exhausted`           | 字符串 | `fail`        | 扫描内存耗尽时的行为。选项：`fail`（快速失败），`wait` 或 `wait(<duration>)`（等待内存）。                       |
 | `min_compaction_interval`           | 字符串 | `0m`          | 两次 compaction 之间的最小时间间隔。设为 "0m"（默认）允许 compactions 立即运行，无限制。                              |
+| `schedule_compaction_after_edit`    | 布尔值 | `true`        | 是否允许在成功的 region edit 之后调度 compaction。<br/>设为 `true` 是在 region edit 后调度 compaction 的必要但不充分条件，`min_compaction_interval` 等其他约束仍可能阻止 compaction 被调度。<br/>设为 `false` 则保证 region edit 后不会调度 compaction。 |
 | `default_flat_format`                | 布尔值 | `true`        | 是否启用 Flat 格式作为默认 SST 格式。                                                                                |
 | `scan_parallelism`                       | 整数   | `0`           | （已弃用，请使用 `max_concurrent_scan_files`）旧版扫描并发度选项。                                                |
 | `index` | -- | -- | Mito 引擎中索引的选项。 |
@@ -810,6 +834,10 @@ node_id = 42
 bind_addr = "127.0.0.1:3001"
 server_addr = "127.0.0.1:3001"
 runtime_size = 8
+
+[runtime]
+query_rt_size = 7
+ingest_rt_size = 8
 ```
 
 | Key              | Type   | Description                                 |
@@ -817,7 +845,9 @@ runtime_size = 8
 | node_id          | 整数   | 该 `datanode` 的唯一标识符。                |
 | grpc.bind_addr   | 字符串 | gRPC 服务绑定地址，默认为`"127.0.0.1:3001"`。 |
 | grpc.server_addr | 字符串 | 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `grpc.bind_addr` 中指定的相同。 |
-| grpc.rpc_runtime_size | 整数   | gRPC 服务器工作线程数，默认为 8。           |
+| grpc.runtime_size | 整数   | gRPC 服务器工作线程数，默认为 8。           |
+| runtime.query_rt_size | 整数   | 执行 datanode 查询操作的运行时线程数。默认值为 `max(num_cpus - 1, 1)`。 |
+| runtime.ingest_rt_size | 整数   | 执行 datanode 写入操作的运行时线程数。默认值为 CPU 核心数。 |
 
 ### 仅限于 `Frontend` 的配置
 

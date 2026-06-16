@@ -21,16 +21,17 @@ the moment, only built-in pipelines are supported.
 
 First, the data types and features in GreptimeDB are evolving. For
 forward-compatibility, we use the pipeline name for data model
-versioning. Currently we have following pipeline for trace:
+versioning. Currently we have the following built-in pipeline for trace:
 
-- `greptime_trace_v1`
+- `greptime_trace_v1`: The recommended data model for trace tables.
 
-It is required for user to specify this on OpenTelemetry OTLP/HTTP headers via
-`x-greptime-pipeline-name: greptime_trace_v1`.
+Specify the data model in OpenTelemetry OTLP/HTTP requests with the
+`x-greptime-pipeline-name` header. Use
+`x-greptime-pipeline-name: greptime_trace_v1` for new trace tables.
 
-We may introduce new data model by adding new available pipeline names. And we
-will keep previous pipeline supported. Note that new pipeline may not be
-compatible with previous ones so you are recommended to use it in new table.
+We may introduce new data models by adding new available pipeline names. Note
+that a new pipeline may not be compatible with previous ones, so you are
+recommended to use it in a new table.
 
 ## Data Model
 
@@ -57,6 +58,14 @@ OTLP/HTTP requests.
 The table will be automatically generated when your first data item arrived. It
 also follows our schema-less principle to update the table schema automatically
 for new columns, for example, the new attribute fields.
+
+For `greptime_trace_v1`, GreptimeDB also reconciles attribute column types while
+the schema evolves. When a trace table already exists, the existing table schema
+is authoritative for compatible incoming values. Scalar values can be coerced to
+an existing compatible column type, and existing `Int64` attribute columns may be
+widened to `Float64` when incoming values contain both integers and floats. If a
+span still cannot be written, GreptimeDB may reject that span while accepting the
+other spans in the request.
 
 A typical table structure generated from OpenTelemetry django instrument is like:
 
@@ -186,13 +195,13 @@ To customize the partition rule, you can:
    own rules.
 2. Use `x-greptime-hints` [HTTP header](/user-guide/protocols/http#hints) in
    your OTLP ingestion request, include a hint `trace_table_partitions=n` where
-   `n` is the partition number. Set `n` to `1` to disable partitioning.
+   `n` is the partition number. Set `n` to `0` or `1` to disable partitioning.
 
 ### Index
 
 We include [skipping
-index](/user-guide/manage-data/data-index.md#skipping-index) on `service_name`
-and `trace_id` for most typical queries.
+index](/user-guide/manage-data/data-index.md#skipping-index) on `service_name`,
+`trace_id`, and `parent_span_id` for most typical queries.
 
 In real-world, you may want to speed up queries on other fields like an attribute
 field. It's possible by apply additional index on these fields using [alter
@@ -200,6 +209,14 @@ table](/reference/sql/alter.md#create-an-index-for-a-column) statement.
 
 Unlike partition rules, index can be created on existing table and be affective
 on new data.
+
+### Partial Success
+
+When a trace request contains multiple spans, GreptimeDB may accept the spans
+that can be written and reject only the spans that fail deterministic validation,
+such as incompatible schema or values. In this case the OTLP response contains a
+`partial_success` section with `rejected_spans` and `error_message`. If all spans
+are rejected, GreptimeDB returns `400 Bad Request`.
 
 ### Append-only Mode
 

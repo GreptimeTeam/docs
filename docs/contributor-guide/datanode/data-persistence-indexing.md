@@ -21,7 +21,7 @@ Second, data of the same column tends to be homogeneous which helps with compres
 
 ## Data Persistence
 
-GreptimeDB provides a configuration item `storage.flush.global_write_buffer_size`, which is flush threshold of the total memory usage for all MemTables.
+GreptimeDB provides a configuration item `region_engine.mito.global_write_buffer_size`, which is flush threshold of the total memory usage for all MemTables.
 
 When the size of data buffered in MemTables reaches that threshold, GreptimeDB will pick MemTables and flush them to SST files.
 
@@ -41,7 +41,7 @@ The index files utilize the [Puffin][3] format, which offers significant flexibi
 
 ![Puffin](/puffin.png)
 
-Currently, the inverted index is the first supported index structure, and it is stored within the index file as a Blob.
+GreptimeDB stores several index structures in the Puffin file as Blobs, including the inverted index, the skipping index (backed by a bloom filter), and the full-text index. The inverted index was the first one supported and is described in detail below.
 
 ## Inverted Index
 

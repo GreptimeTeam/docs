@@ -21,6 +21,12 @@ greptime flownode start --help
 | `--rpc-bind-addr <RPC_BIND_ADDR>`     | gRPC 服务绑定地址                                                                                                                               |
 | `--rpc-server-addr <RPC_SERVER_ADDR>` | 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `rpc_bind_addr` 中指定的相同； |
 
+:::note
+如果在启用了 Frontend 认证的集群中单独部署 Flownode，请为 Frontend 配置 internal gRPC 地址。
+你可以通过 Frontend 的 `internal_grpc` 配置项，或者 `--internal-grpc-bind-addr` 和 `--internal-grpc-server-addr` 命令行选项来配置。
+Flownode 会使用从 Metasrv 发现的 Frontend 地址发起连接，且不会携带认证信息。因此，它应访问 Frontend 的 internal gRPC 服务，而不是需要认证的公开 gRPC 服务。
+:::
+
 所有的 `addr` 类选项都是 `ip:port` 形式的字符串。
 
 ## Examples

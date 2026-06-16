@@ -20,6 +20,7 @@ broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 
 # WAL 数据清理策略
 auto_prune_interval = "30m"
+auto_prune_logical_delete = false  # 若 Kafka 不支持 DeleteRecords，请设为 true
 auto_prune_parallelism = 10
 flush_trigger_size = "512MB"
 checkpoint_trigger_size = "128MB"
@@ -40,6 +41,7 @@ create_topic_timeout = "30s"
 | `provider`                 | 设置为 `"kafka"` 以启用 Remote WAL。                                                                                                                                                                                                                                                                                                                     |
 | `broker_endpoints`         | Kafka broker 的地址列表。                                                                                                                                                                                                                                                                                                                               |
 | `auto_prune_interval`      | 自动清理过期 WAL 的间隔时间，设为 `"0s"` 表示禁用。                                                                                                                                                                                                                                                               |
+| `auto_prune_logical_delete` | 若设为 `true`，自动清理 WAL 时仅推进 GreptimeDB 的元数据标记，并跳过 Kafka 的 `DeleteRecords` 调用。对于不支持 `DeleteRecords` 的 Kafka 部署，请将其设为 `true`。启用后，Kafka 中数据的实际删除将依赖 Kafka 自身的保留与清理策略。                                                                                                                                                                                       |
 | `auto_prune_parallelism`   | 并发清理任务的最大数量。                                                                                                                                                                                                                                                                                         |
 | `auto_create_topics`       | 是否自动创建 Kafka topic，设为 `false` 时需手动预创建。                                                                                                                                                                                                                                                           |
 | `num_topics`               | 用于存储 WAL 的 Kafka topic 数量。                                                                                                                                                                                                                                                                                |
@@ -60,7 +62,7 @@ create_topic_timeout = "30s"
 - Kafka 用户需具备以下权限：
   - 对 topics 追加数据；
   - 读取 topics 中数据；
-  - 删除 topics 中数据； 
+  - 删除 topics 中数据（若 `auto_prune_logical_delete = true` 则无需此权限）；
   - 若启用自动创建（`auto_create_topics = true`），还需具备 创建 topic 的权限。
 
 ## Datanode 配置

@@ -131,8 +131,30 @@ write_bytes_exhausted_policy = "wait"
 
 | Option                          | Type   | Default | Description                                                                                                                                                                                                                                           |
 | ------------------------------- | ------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `max_in_flight_write_bytes`     | String | `"0"`   | Maximum total memory for all concurrent write request bodies and messages (HTTP, gRPC, Flight). Set to `"0"` to disable the limit (unlimited). Supports units: `B`, `KB`, `MB`, `GB`, etc. Example: `"1GB"` limits total concurrent writes to 1GB. |
-| `write_bytes_exhausted_policy`  | String | `"wait"`| Policy when write bytes quota is exhausted. Options: `"wait"` (default, waits up to 10 seconds), `"wait(<duration>)"` (custom timeout, e.g., `"wait(30s)"`), `"fail"` (immediately reject the request).                                             |
+| `max_in_flight_write_bytes`     | String | `"0"`    | Maximum total memory for all concurrent write request bodies and messages (HTTP, gRPC, Flight). Set to `"0"` to disable the limit (unlimited). Supports units: `B`, `KB`, `MB`, `GB`, etc. Example: `"1GB"` limits total concurrent writes to 1GB. |
+| `write_bytes_exhausted_policy`  | String | `"wait"` | Policy when write bytes quota is exhausted. Options: `"wait"` (default, waits up to 10 seconds), `"wait(<duration>)"` (custom timeout, e.g., `"wait(30s)"`), `"fail"` (immediately reject the request).                                             |
+
+### Datanode query concurrency limit
+
+These options limit how many read queries can run at the same time on a datanode.
+A query counts toward the limit until it finishes or the client closes the result stream.
+If the limit is reached, a new query waits up to `concurrent_query_limiter_timeout` for an available slot before it fails.
+
+These options are valid in the `datanode` subcommand.
+
+```toml
+# Maximum number of read queries that can run at the same time on the datanode.
+# Set to 0 to disable the limit (unlimited by default).
+max_concurrent_queries = 0
+
+# Maximum time a query waits for an available slot when max_concurrent_queries is reached.
+concurrent_query_limiter_timeout = "100ms"
+```
+
+| Option                             | Type    | Default   | Description                                                                                                                                              |
+| ---------------------------------- | ------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `max_concurrent_queries`           | Integer | `0`       | Maximum number of read queries that can run at the same time on the datanode. Set to `0` to disable the limit.                              |
+| `concurrent_query_limiter_timeout` | String  | `"100ms"` | Maximum time a query waits for an available slot after `max_concurrent_queries` is reached. The query fails if no slot is available in time. |
 
 ### Protocol options
 
@@ -434,9 +456,10 @@ vector_cache_size = "512MB"
 page_cache_size = "512MB"
 write_cache_size = "5GB"
 write_cache_ttl = "8h"
-scan_memory_limit = "50%"
+scan_memory_limit = "unlimited"
 scan_memory_on_exhausted = "fail"
 min_compaction_interval = "0m"
+schedule_compaction_after_edit = true
 default_flat_format = true
 sst_write_buffer_size = "8MB"
 max_concurrent_scan_files = 384
@@ -497,9 +520,10 @@ Available options:
 | `sst_write_buffer_size`                  | String  | `8MB`         | Buffer size for SST writing.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `max_concurrent_scan_files`             | Integer | `384`         | Maximum number of SST files to scan concurrently.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `allow_stale_entries`                 | Bool    | `false`      | Whether to allow stale WAL entries during replay.                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `scan_memory_limit`                   | String  | `50%`        | Memory limit for table scans across all queries. Supports absolute size (e.g., "2GB") or percentage of system memory (e.g., "20%"). Setting it to 0 disables the limit.                                                                                                                                                                                                                                              |
+| `scan_memory_limit`                   | String  | `unlimited`  | Memory limit for table scans across all queries. Supports absolute size (e.g., "2GB") or percentage of system memory (e.g., "20%"). Setting it to 0 or "unlimited" disables the limit.                                                                                                                                                                                                                           |
 | `scan_memory_on_exhausted`           | String  | `fail`       | Behavior when scan memory is exhausted. Options: `fail` (fail fast), `wait` or `wait(<duration>)` (wait for memory).                                                                                                                                                                                                                                                 |
 | `min_compaction_interval`           | String  | `0m`         | Minimum time interval between two compactions. Set to "0m" (default) to allow compactions to run immediately without restriction.                                                                                                                                                                                                                                             |
+| `schedule_compaction_after_edit`    | Bool    | `true`       | Whether to allow scheduling a compaction after a successful region edit.<br/>Setting this to `true` is a necessary but not sufficient condition for scheduling compaction after a region edit. Other constraints, such as `min_compaction_interval`, may still prevent compaction from being scheduled.<br/>Setting this to `false` guarantees that compaction will not be scheduled after a region edit. |
 | `default_flat_format`                | Bool    | `true`       | Whether to enable flat format as the default SST format.                                                                                                                                                                                                                                                                                                             |
 | `scan_parallelism`                       | Integer | `0`           | (Deprecated, use `max_concurrent_scan_files` instead) Legacy option for scan parallelism.                                                                                                                                                                                                                                                                                                              |
 | `index`                                  | --      | --            | The options for index in Mito engine.                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -835,6 +859,10 @@ node_id = 42
 bind_addr = "127.0.0.1:3001"
 server_addr = "127.0.0.1:3001"
 runtime_size = 8
+
+[runtime]
+query_rt_size = 7
+ingest_rt_size = 8
 ```
 
 | Key               | Type    | Description                                                                                                                                                                                                                                                                     |
@@ -843,6 +871,8 @@ runtime_size = 8
 | grpc.bind_addr    | String  | The address to bind the gRPC server, `"127.0.0.1:3001"` by default.                                                                                                                                                                                                             |
 | grpc.server_addr  | String  | The address advertised to the metasrv, and used for connections from outside the host. If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `grpc.bind_addr`. |
 | grpc.runtime_size | Integer | The number of gRPC server worker threads, 8 by default.                                                                                                                                                                                                                         |
+| runtime.query_rt_size | Integer | The number of threads to execute datanode query operations. Defaults to `max(num_cpus - 1, 1)`. |
+| runtime.ingest_rt_size | Integer | The number of threads to execute datanode ingestion operations. Defaults to the number of CPU cores. |
 
 ### Frontend-only configuration
 

@@ -92,9 +92,10 @@ Supported hints:
 | `append_mode` | Boolean | `false` | Enables [append-only mode](/reference/sql/create.md#create-an-append-only-table) for the table, which disables deduplication by primary key and supports duplicate rows. For InfluxDB line protocol writes, an explicit `append_mode=true` hint creates the table with `append_mode = 'true'` and `merge_mode = 'last_row'`. |
 | `merge_mode` | String | None | Sets the [merge mode](/reference/sql/create.md#create-a-table-with-merge-mode) for the table, e.g. `last_non_null`, `last_row`. For auto-created InfluxDB line protocol tables, this hint takes precedence over [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md), which defaults to `last_non_null`. When `append_mode` is enabled, only `last_row` is allowed. |
 | `physical_table` | String | None | Specifies the physical table name for the [metric engine](/contributor-guide/datanode/metric-engine.md). |
+| `query.enable_remote_dynamic_filter_pushdown` | Boolean | `true` | Enables remote dynamic filter pushdown for SQL queries. Set it to `false` to disable Frontend-to-Datanode dynamic filter propagation for the current request. See [Remote dynamic filter pushdown](/user-guide/query-data/sql.md#remote-dynamic-filter-pushdown). |
 | `skip_wal` | Boolean | `false` | Skips WAL (Write-Ahead Log) writes for the table. |
 | `sst_format` | String | None | Sets the SST (Sorted String Table) file format for the table. Valid values: `flat`, `primary_key`. |
-| `trace_table_partitions` | Int | None | Override default partition number (16) of trace tables. Set to `1` to disable partitioning. |
+| `trace_table_partitions` | Int | None | Override default partition number (16) of trace tables. Set to `0` or `1` to disable partitioning. |
 
 For example, the following request sets TTL and append mode for auto-created tables:
 

@@ -190,9 +190,12 @@ To send OpenTelemetry Logs to GreptimeDB through OpenTelemetry SDK libraries, us
   - `X-Greptime-DB-Name`: `<dbname>`
   - `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](/user-guide/deployments-administration/authentication/static.md) and [HTTP API](/user-guide/protocols/http.md#authentication).
   - `X-Greptime-Log-Table-Name`: `<table_name>` (optional) - The table name to store the logs. If not provided, the default table name is `opentelemetry_logs`.
-  - `X-Greptime-Log-Extract-Keys`: `<extract_keys>` (optional) - The keys to extract from the attributes. The keys should be separated by commas (`,`). For example, `key1,key2,key3` will extract the keys `key1`, `key2`, and `key3` from the attributes and promote them to the top level of the log, setting them as tags. If the field type is array, float, or object, an error will be returned. If a pipeline is provided, this setting will be ignored.
-  - `X-Greptime-Log-Pipeline-Name`: `<pipeline_name>` (optional) - The pipeline name to process the logs. If not provided, the extract keys will be used to process the logs.
-  - `X-Greptime-Log-Pipeline-Version`: `<pipeline_version>` (optional) - The pipeline version to process the logs. If not provided, the latest version of the pipeline will be used.
+  - `X-Greptime-Log-Extract-Keys`: `<extract_keys>` (optional) - The keys to extract from the attributes. The keys should be separated by commas (`,`). For example, `key1,key2,key3` will extract the keys `key1`, `key2`, and `key3` from the attributes and promote them to the top level of the log, setting them as tags. Key matching is case-insensitive. If the same key exists in log attributes, scope attributes, and resource attributes, the value from log attributes takes precedence, followed by scope attributes and then resource attributes. Supported extracted value types are string, signed integer, unsigned integer, and boolean. If the field type is array, float, or object, an error will be returned. If a pipeline is provided, this setting will be ignored.
+  - `X-Greptime-Pipeline-Name`: `<pipeline_name>` (optional) - The pipeline name to process the logs. If not provided, GreptimeDB uses the built-in OTLP log mapping and applies `X-Greptime-Log-Extract-Keys` if it is provided.
+  - `X-Greptime-Pipeline-Version`: `<pipeline_version>` (optional) - The pipeline version to process the logs. If not provided, the latest version of the pipeline will be used.
+  - `X-Greptime-Pipeline-Params`: `<pipeline_params>` (optional) - The pipeline parameters to use when processing logs with a custom pipeline.
+
+`X-Greptime-Log-Pipeline-Name` and `X-Greptime-Log-Pipeline-Version` are also accepted as legacy aliases for the generic pipeline headers. Use `X-Greptime-Pipeline-Name` and `X-Greptime-Pipeline-Version` for new configurations.
 
 The request uses binary protobuf to encode the payload, so you need to use packages that support `HTTP/protobuf`.
 
@@ -206,6 +209,19 @@ For more information about the OpenTelemetry SDK, please refer to the official d
 
 Please refer to the sample code in the [OpenTelemetry Collector documentation](otel-collector.md), which includes how to send OpenTelemetry logs to GreptimeDB.
 You can also refer to the sample code in the [Alloy documentation](alloy.md#logs) to learn how to send OpenTelemetry logs to GreptimeDB.
+
+### Custom Pipeline Input
+
+When `X-Greptime-Pipeline-Name` is provided, GreptimeDB converts each OTLP log record to one pipeline event. The event uses the following fields:
+
+| Field | Description |
+| --- | --- |
+| `Timestamp` | The OTLP `time_unix_nano`. |
+| `ObservedTimestamp` | The OTLP `observed_time_unix_nano`. |
+| `TraceId`, `SpanId` | Hex-encoded IDs. |
+| `TraceFlags`, `SeverityText`, `SeverityNumber`, `Body` | The corresponding OTLP log fields. `Body` is converted to a string. |
+| `ResourceSchemaUrl`, `ScopeSchemaUrl`, `ScopeName`, `ScopeVersion` | The corresponding resource and scope fields. |
+| `ResourceAttributes`, `ScopeAttributes`, `LogAttributes` | Objects containing the corresponding OTLP attributes. |
 
 ### Data Model
 
@@ -237,6 +253,12 @@ Default table schema:
 
 - You can use `X-Greptime-Log-Table-Name` to specify the table name for storing the logs. If not provided, the default table name is `opentelemetry_logs`.
 - All attributes, including resource attributes, scope attributes, and log attributes, will be stored as a JSON column in the GreptimeDB table.
+- The `body` column is created with a fulltext index by default. The index is
+  enabled with the default fulltext settings: `analyzer=English`,
+  `case_sensitive=false`, and `backend=bloom`. For the Bloom backend, the
+  default `granularity` is `10240` and the default `false_positive_rate` is
+  `0.01`. For details, see the [fulltext index
+  documentation](/user-guide/manage-data/data-index.md#fulltext-index).
 - The timestamp of the log will be used as the timestamp index in GreptimeDB, with the column name `timestamp`. It is preferred to use `time_unix_nano` as the timestamp column. If `time_unix_nano` is not provided, `observed_time_unix_nano` will be used instead.
 
 ### Append Only
@@ -300,7 +322,7 @@ GreptimeDB maps the OTLP traces data model to a table schema. By default, trace 
 - Each row represents a single span.
 - `service_name` is used as a **Tag** (part of the **Primary Key**).
 - `timestamp` is used as the **Time Index**.
-- Resource attributes and span attributes are automatically flattened into separate columns.
+- Resource attributes, scope attributes, and span attributes are automatically flattened into separate columns.
   - Note: `resource_attributes.service.name` is excluded from flattening as it is already stored in the `service_name` column.
 - `span_events` and `span_links` are stored as `JSON` data types by default.
 
@@ -309,6 +331,12 @@ For more details on the data model and auxiliary tables, please refer to [Trace 
 Note:
 1. The `greptime_trace_v1` process uses the `trace_id` field to divide data into partitions for better performance. **Please make sure the first letter of the `trace_id` is evenly distributed**.
 2. For non-test scenarios, you might want to set a `ttl` to the trace table to avoid data overload. Set the HTTP header `x-greptime-hints: ttl=7d` would set a `ttl` of 7 days during the table creation, see [here](/reference/sql/create.md#table-options) for more details about `ttl` in table option.
+
+### Schema Evolution and Partial Success
+
+The `greptime_trace_v1` model automatically adds new flattened attribute columns. When a trace table already exists, GreptimeDB reconciles incoming attribute value types with the existing table schema. Compatible scalar values can be coerced to the existing column type, and existing `Int64` attribute columns may be widened to `Float64` when incoming values contain both integers and floats.
+
+If some spans in a trace request cannot be written because of incompatible schema or values, GreptimeDB may still accept the other spans and return an OTLP `partial_success` response with `rejected_spans` and `error_message`. If all spans are rejected, the endpoint returns a `400 Bad Request` response.
 
 ### Auxiliary Tables
 

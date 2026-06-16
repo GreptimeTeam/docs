@@ -25,7 +25,7 @@ The GreptimeDB Enterprise Edition deployment includes the following components:
 - Meta：Database cluster metadata management component
 - Datanode：Data node
 - Frontend：Entry point and protocol parsing node
-- Flownode(optional): Stream computing node
+- Flownode(optional): Flow computation node for continuous aggregation workloads
 - Vector Sidecar：Metrics collection agent
 - GreptimeDB Standalone: Cluster self-monitoring storage node
 
@@ -105,7 +105,7 @@ When Greptime staff first deliver the GreptimeDB Enterprise Edition to you, they
 ### Configuration Management
 
 The following are tools and documentation that can help with configuration:
-- tool: https://greptimedb-enterprise-wizard.mrsatangel.workers.dev/
+- tool: https://enterprise-wizard.greptime.com/
 - documentation: [common-helm-chart-configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)
 
 Before installation, you need to create a file to configure the GreptimeDB cluster. Adjust it according to your Kubernetes environment. Below is a reference configuration for `greptimedb-cluster-values.yaml`:
@@ -168,7 +168,13 @@ meta:
     #     username: "root"
     #     password: "root"
 
+  rbac:
+    create: true
+
   podTemplate:
+    serviceAccount:
+      create: true
+    
     main:
       # Meta resource configuration
       resources:
@@ -201,6 +207,12 @@ datanode:
     write_cache_ttl = "7d"
 
   podTemplate:
+#    serviceAccount:
+#      # Specifies whether a service account should be created
+#      create: false
+#      # Annotations to add to the service account
+#      annotations: {}
+      
     main:
       # -- Datanode resource
       resources:
@@ -273,8 +285,13 @@ flownode:
 monitoring:
   # -- Enable self-monitoring
   enabled: true
+
+  # -- The default retention time for monitoring data
+  ttl: 30d
+  
   standalone:
     base:
+#      serviceAccountName: "greptimedb-datanode"
       imagePullSecrets: 
         - name: "greptimedb-custom-image-pull-secret"
       main:
@@ -288,8 +305,10 @@ monitoring:
             memory: 8Gi
     # Self-monitoring standalone storage location, can be optionally configured for object storage
     # objectStorage:
+    #   cache:
+    #     cacheCapacity: "50GiB"
     #   s3:
-    #     secretName: "greptimedb-object-storage-secret"
+    #     secretName: "storage-credentials"
     #     bucket: "greptimedb-bucket"
     #     region: "ap-southeast-1"
     #     root: "greptimedb-monitor-data"  
@@ -303,12 +322,12 @@ monitoring:
   vector:
     registry: docker.io
     repository: timberio/vector
-    tag: 0.46.1-debian   
+    tag: "VAR::vectorImageVersion"
     # sidecar vector resource configuration
     resources:
       requests:
         cpu: '1'
-        memory: 1Gi
+        memory: "1Gi"
       limits:
         cpu: '1'
         memory: "1Gi" 
@@ -316,7 +335,6 @@ monitoring:
 # Object storage related configuration, enable as needed
 # Using MinIO
 # objectStorage:
-#   existingSecretName: "greptimedb-object-storage-secret"
 #   cache:
 #     cacheCapacity: "50GiB"
 #   s3:

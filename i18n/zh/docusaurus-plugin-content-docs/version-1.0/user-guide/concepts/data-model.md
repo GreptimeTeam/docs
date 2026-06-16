@@ -16,7 +16,7 @@ GreptimeDB 使用时序表来组织、压缩和管理数据的过期。数据模
 - `Timestamp` 是时序数据库的根基，表示数据的生成时间。每个表只能有一个 `Timestamp` 类型的列，也叫时间索引（`Time Index`）。
 - 其余列是 `Field` 列，存放实际的数据指标或日志内容，通常是数值或字符串，也可以是地理位置、时间戳等其他类型。
 
-表按时间序列组织行，同一时间序列内按 `Timestamp` 排序。表还可以对相同 `Tag` + `Timestamp` 的行做去重，具体取决于业务需求。选择合适的表结构对查询和存储效率至关重要，详见[表设计指南](/user-guide/deployments-administration/performance-tuning/design-table.md)。
+表按时间序列组织行，同一时间序列内按 `Timestamp` 排序。表还可以对相同 `Tag` + `Timestamp` 的行做去重，具体取决于业务需求。物理上，GreptimeDB 会把数据持久化为不可变的 Parquet SST 文件，行按照 `(primary key, timestamp)` 排序；当表没有 primary key（例如下面的 append-only 日志表）时，仅按照 timestamp 排序。要了解 SST 文件中的数据布局和裁剪方式，详见[存储引擎](/contributor-guide/datanode/storage-engine.md#sst-文件中的数据布局)文档。选择合适的表结构对查询和存储效率至关重要，详见[表设计指南](/user-guide/deployments-administration/performance-tuning/design-table.md)。
 
 ### Metrics
 

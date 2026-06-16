@@ -29,12 +29,6 @@ GreptimeDB 使用 [Apache Arrow][2]作为内存中的数据表示格式。它是
 
 在时序数据中，有两个重要的维度：时间戳和标签列（或者类似于关系数据库中的主键）。GreptimeDB 将数据分组到时间桶中，因此能在非常低的成本下定位和提取预期时间范围内的数据。GreptimeDB 中主要使用的持久文件格式 [Apache Parquet][3] 提供了多级索引和过滤器，使得在查询过程中很容易修剪数据。在未来，我们将更多地利用这个特性，并开发我们的分离索引来处理更复杂的用例。
 
-## 拓展性
-
-<!-- 在 GreptimeDB 中扩展操作非常简单。有两种方法可以做到：1. 通过 [Python Coprocessor][4] 接口；2. 像 [这样][5] 实现你的算子。 -->
-
-在 GreptimeDB 中扩展操作非常简单。你可以像 [这样][5] 实现你的算子。
-
 ## 分布式查询
 
 参考 [Distributed Querying][6].
@@ -42,6 +36,4 @@ GreptimeDB 使用 [Apache Arrow][2]作为内存中的数据表示格式。它是
 [1]: https://github.com/apache/arrow-datafusion
 [2]: https://arrow.apache.org/
 [3]: https://parquet.apache.org
-[4]: python-scripts.md
-[5]: https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-write-aggregate-function.md
 [6]: ../frontend/distributed-querying.md

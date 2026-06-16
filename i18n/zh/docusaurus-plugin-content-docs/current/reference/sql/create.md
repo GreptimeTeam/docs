@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 
 - [时间范围字符串](/reference/time-durations.md)，如 `1hour 12min 5s`。
 - `forever`, `NULL`, `0s` （或任何长度为 0 的时间范围，如 `0d`）或空字符串 `''`，表示数据永远不会被删除。
-- `instant`, 注意数据库的 TTL 不能设置为 `instant`。`instant` 表示数据在插入时立即删除，如果你想将输入发送到流任务而不保存它，可以使用 `instant`，请参阅[流管理文档](/user-guide/flow-computation/manage-flow.md#manage-flows)了解更多细节。
+- `instant`, 注意数据库的 TTL 不能设置为 `instant`。`instant` 表示数据在插入时立即删除。对于新的 Flow workload，请避免使用 `instant` TTL 的 source 表，因为它们会回退到已废弃的 streaming mode；请参阅 [Flow 管理文档](/user-guide/flow-computation/manage-flow.md#创建输入表)了解更多细节。
 - 未设置，可以使用 `ALTER TABLE <table-name> UNSET 'ttl'` 来取消表的 `ttl` 设置，这样表将继承数据库的 `ttl` 策略（如果有的话）。
 
 如果一张表有自己的 TTL 策略，那么它将使用该 TTL 策略。否则，数据库的 TTL 策略将被应用到表上。
@@ -503,9 +503,13 @@ CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
 [ COMMENT '<string>' ]
+[ WITH (<flow-option> = <value> [, ...]) ]
 AS
 <SQL>;
 ```
+
+`WITH` 子句用于指定 flow 选项。
+例如，实验性的 `experimental_enable_incremental_read` 选项可以为符合条件的 batching flow 启用增量 source 读取。
 
 对于 `CREATE FLOW`，`AS` 后面的查询既可以是常规 Flow 查询，也可以是 TQL 查询。GreptimeDB 现在还支持一种严格受限的 TQL CTE 写法，用来让 Flow 定义更清晰：
 

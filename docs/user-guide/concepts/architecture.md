@@ -19,7 +19,7 @@ GreptimeDB has three core components in distributed mode, and one optional compo
 - [**Metasrv**](/contributor-guide/metasrv/overview.md): Metadata and routing control plane. It manages catalogs/schemas/tables/regions, coordinates scheduling, and serves routing data to other nodes.
 - [**Frontend**](/contributor-guide/frontend/overview.md): Stateless access layer. It accepts client protocols, authenticates requests, plans/distributes queries, and routes writes/reads using metadata from Metasrv.
 - [**Datanode**](/contributor-guide/datanode/overview.md): Storage and execution layer. It stores table regions, handles reads/writes, persists WAL, and flushes data files to object storage.
-- [**Flownode (optional)**](/contributor-guide/flownode/overview.md): Streaming/continuous computation runtime for [Flow Computation](/user-guide/flow-computation/overview.md). It is used when flow workloads run as a separate service in distributed deployments.
+- [**Flownode (optional)**](/contributor-guide/flownode/overview.md): Continuous aggregation runtime for [Flow Computation](/user-guide/flow-computation/overview.md). Flow aggregation workloads use batching mode; the original streaming mode is deprecated.
 
 In standalone mode, you run one GreptimeDB process instead of managing these services separately.
 

@@ -7,6 +7,13 @@ description: An overview, key concepts, and step-by-step guides for managing rea
 
 This guide explains how to manage **Read Replicas (follower regions)** in GreptimeDB Enterprise, including how to add and remove read replicas at both the table and region levels, inspect the current regions distribution with the `SHOW REGION`, and apply placement constraints and recommended best practices for performance.
 
+:::warning Warning
+Read Replicas (Follower Regions) require [object storage](/user-guide/deployments-administration/configuration.md#storage-options) (e.g., AWS S3).
+Because Follower Regions may be scheduled onto different Datanodes, they must share access to Region data through object storage. Clusters using only local storage are not supported.
+
+Before allowing queries to read from Follower Regions, ensure that [GC](/user-guide/deployments-administration/manage-data/gc.md) is enabled on Metasrv and all Datanodes. Reading from Follower Regions is only supported when GC is enabled.
+:::
+
 ## Adding Read Replicas to a Table
 
 Adding a Read Replica is as simple as executing one SQL command:

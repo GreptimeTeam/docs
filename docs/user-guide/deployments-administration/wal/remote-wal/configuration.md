@@ -23,6 +23,7 @@ broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 
 # WAL data pruning options
 auto_prune_interval = "30m"
+auto_prune_logical_delete = false  # set to true if your Kafka deployment does not support DeleteRecords
 auto_prune_parallelism = 10
 flush_trigger_size = "512MB"
 checkpoint_trigger_size = "128MB"
@@ -43,6 +44,7 @@ create_topic_timeout = "30s"
 | `provider`                 | The WAL provider to use. Set to `"kafka"` to enable Remote WAL with Kafka.                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `broker_endpoints`         | List of Kafka broker addresses to connect to. Example: `["kafka.kafka-cluster.svc:9092"]`.                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `auto_prune_interval`      | How often to automatically prune (delete) stale WAL data. Specify as a duration string (e.g., `"30m"`). Set to `"0s"` to disable automatic pruning.                                                                                                                                                                                                                                                                                                                                             |
+| `auto_prune_logical_delete` | If `true`, automatic WAL pruning only advances GreptimeDB's metadata marker and skips Kafka `DeleteRecords`. Set this to `true` for Kafka deployments that do not support `DeleteRecords`. When enabled, actual data removal from Kafka topics relies on Kafka's own retention and cleanup policies.                                                                                                                                                                                           |
 | `auto_prune_parallelism`   | Maximum number of concurrent pruning tasks. Increasing this value may speed up pruning but will use more resources.                                                                                                                                                                                                                                                                                                                                                                              |
 | `auto_create_topics`       | If `true`, Metasrv will automatically create required Kafka topics. If `false`, you must manually create all topics before starting Metasrv.                                                                                                                                                                                                                                                                                                                                                    |
 | `num_topics`               | Number of Kafka topics to use for WAL storage. More topics can improve scalability and performance.                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -63,7 +65,7 @@ To ensure Remote WAL works correctly with Kafka, please check the following:
 - The Kafka user must have the following permissions:
   - **Append** records to WAL topics (requires LZ4 compression support).
   - **Read** records from WAL topics (requires LZ4 compression support).
-  - **Delete** records from WAL topics.
+  - **Delete** records from WAL topics (not required when `auto_prune_logical_delete = true`).
   - **Create** topics (only required if `auto_create_topics = true`).
 
 ## Datanode Configuration

@@ -48,7 +48,7 @@ You can also export data to a compressed CSV or JSON file:
 ```sql
 COPY tbl TO '/path/to/file.csv.gz' WITH (
   FORMAT = 'csv',
-  compression_type = 'gzip'
+  COMPRESSION_TYPE = 'gzip'
 );
 ```
 
@@ -64,7 +64,7 @@ When using compression, ensure the file extension matches the compression type: 
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
 | `START_TIME`/`END_TIME`| The time range within which data should be exported. `START_TIME` is inclusive and `END_TIME` is exclusive. | Optional |
-| `compression_type` | Compression algorithm for the exported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
+| `COMPRESSION_TYPE` | Compression algorithm for the exported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
 | `TIMESTAMP_FORMAT` | Custom format for timestamp columns when exporting to CSV or JSON format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers (e.g., `'%Y-%m-%d %H:%M:%S'`). Supported for CSV and JSON formats. | Optional |
 | `DATE_FORMAT` | Custom format for date columns when exporting to CSV or JSON format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers (e.g., `'%Y-%m-%d'`). Supported for CSV and JSON formats. | Optional |
 | `TIME_FORMAT` | Custom format for time columns when exporting to CSV or JSON format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers (e.g., `'%H:%M:%S'`). Supported for CSV and JSON formats. | Optional |
@@ -116,7 +116,16 @@ You can also import data from a compressed CSV or JSON file:
 ```sql
 COPY tbl FROM '/path/to/file.csv.gz' WITH (
   FORMAT = 'csv',
-  compression_type = 'gzip'
+  COMPRESSION_TYPE = 'gzip'
+);
+```
+
+When importing CSV data, you can set `SKIP_BAD_RECORDS = 'true'` to skip rows with parsing or casting errors and continue importing:
+
+```sql
+COPY tbl FROM '/path/to/file.csv' WITH (
+  FORMAT = 'csv',
+  SKIP_BAD_RECORDS = 'true'
 );
 ```
 
@@ -124,10 +133,14 @@ COPY tbl FROM '/path/to/file.csv.gz' WITH (
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet, ORC  | **Required** |
 | `PATTERN` | Use regex to match files. e.g., `*_today.parquet` | Optional |
-| `compression_type` | Compression algorithm for the imported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
+| `COMPRESSION_TYPE` | Compression algorithm for the imported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
+| `HEADERS` | Whether the CSV file has a header row. Supported values: `true`, `false`. Default is `true`. | Optional |
+| `SKIP_BAD_RECORDS` | Whether to skip rows with parsing or casting errors during CSV import. Supported values: `true`, `false`. Default is `false`. Only supported for CSV format. | Optional |
 
 :::tip NOTE
-The CSV file must have a header row to be imported correctly. The header row should contain the column names of the table.
+By default, CSV files are parsed with headers and columns are matched by name.
+
+To import headerless CSV files, set `HEADERS = 'false'`. In this mode, columns are mapped by position following the target table schema order. You can use `SHOW CREATE TABLE <table_name>` to inspect the table column order.
 :::
 
 #### `CONNECTION` Option
@@ -251,7 +264,7 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 | `QUERY` | The SQL SELECT statement to execute | **Required** |
 | `PATH` | The file path where the output will be written | **Required** |
 | `FORMAT` | The output file format: 'CSV', 'JSON', or 'PARQUET' | **Required** |
-| `compression_type` | Compression algorithm for the exported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
+| `COMPRESSION_TYPE` | Compression algorithm for the exported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
 | `TIMESTAMP_FORMAT` | Custom format for timestamp columns when exporting to CSV or JSON format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Supported for CSV and JSON formats. | Optional |
 | `DATE_FORMAT` | Custom format for date columns when exporting to CSV or JSON format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Supported for CSV and JSON formats. | Optional |
 | `TIME_FORMAT` | Custom format for time columns when exporting to CSV or JSON format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Supported for CSV and JSON formats. | Optional |
@@ -286,7 +299,7 @@ You can also export query results to a compressed file:
 ```sql
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (
   FORMAT = 'json',
-  compression_type = 'gzip'
+  COMPRESSION_TYPE = 'gzip'
 );
 ```
 

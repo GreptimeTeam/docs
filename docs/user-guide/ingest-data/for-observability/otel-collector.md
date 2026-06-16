@@ -41,6 +41,7 @@ exporters:
       # x-greptime-db-name: '<your_db_name>'
       # x-greptime-log-table-name: '<table_name>'
       # x-greptime-pipeline-name: '<pipeline_name>'
+      # x-greptime-pipeline-params: '<key=value,...>'
     tls:
       insecure: true
 
@@ -71,6 +72,7 @@ In the above configuration, we define a receiver `otlp` that can receive data fr
 
 Based on the otlphttp protocol, we have added some headers to specify certain parameters, such as `x-greptime-pipeline-name` and `x-greptime-log-table-name`:
 * The `x-greptime-pipeline-name` header is used to specify the pipeline name to use, and,
+* the `x-greptime-pipeline-params` header is used to pass parameters to the pipeline, and,
 * the `x-greptime-log-table-name` header is used to specify the table name in GreptimeDB where the data will be written.
 
 If you have enabled [authentication](/user-guide/deployments-administration/authentication/overview.md) in GreptimeDB, you need to use the `basicauth/client` extension to handle basic authentication.

@@ -177,7 +177,7 @@ The `ttl` value can be one of the following:
 
 - A [duration](/reference/time-durations.md) like `1hour 12min 5s`.
 - `forever`, `NULL`, an empty string `''` and `0s` (or any zero length duration, like `0d`), means the data will never be deleted.
-- `instant`, note that database's TTL can't be set to `instant`. `instant` means the data will be deleted instantly when inserted, useful if you want to send input to a flow task without saving it, see more details in [flow management documents](/user-guide/flow-computation/manage-flow.md#manage-flows).
+- `instant`, note that database's TTL can't be set to `instant`. `instant` means the data will be deleted instantly when inserted. Avoid using `instant` TTL source tables for new Flow workloads because they fall back to the deprecated streaming mode; see the [flow management documents](/user-guide/flow-computation/manage-flow.md#create-a-source-table).
 - Unset, `ttl` can be unset by using `ALTER TABLE <table-name> UNSET 'ttl'`, which means the table will inherit the database's ttl policy (if any).
 
 If a table has its own TTL policy, it will take precedence over the database TTL policy.
@@ -499,9 +499,13 @@ CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
 [ COMMENT '<string>' ]
+[ WITH (<flow-option> = <value> [, ...]) ]
 AS
 <SQL>;
 ```
+
+The `WITH` clause specifies flow options.
+For example, the experimental `experimental_enable_incremental_read` option enables incremental source reads for eligible batching flows.
 
 For `CREATE FLOW`, the query after `AS` can be a regular flow query or a TQL query. GreptimeDB also supports a strict TQL CTE form for cleaner flow definitions:
 

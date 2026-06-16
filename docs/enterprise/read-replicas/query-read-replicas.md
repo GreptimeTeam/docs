@@ -7,6 +7,13 @@ description: Overview, key concepts, and step-by-step instructions for managing 
 
 GreptimeDB allows you to read from **Region Replicas (follower regions)** to reduce load on Write Replicas (Leader regions) and improve query scalability. You can control the read preference through both **SQL** and **HTTP** protocols.
 
+:::warning Warning
+Read Replicas (Follower Regions) require [object storage](/user-guide/deployments-administration/configuration.md#storage-options) (e.g., AWS S3).
+Because Follower Regions may be scheduled onto different Datanodes, they must share access to Region data through object storage. Clusters using only local storage are not supported.
+
+Before allowing queries to read from Follower Regions, ensure that [GC](/user-guide/deployments-administration/manage-data/gc.md) is enabled on Metasrv and all Datanodes. Reading from Follower Regions is only supported when GC is enabled.
+:::
+
 ## Read Preference Options
 
 The `READ_PREFERENCE` setting accepts the following values:
@@ -15,10 +22,13 @@ The `READ_PREFERENCE` setting accepts the following values:
   Always read from write replicas.
 
 * **`follower`**
-  Read only from read replicas The query will fail if no read replicas exist.
+  Read only from read replicas. The query will fail if no read replicas exist.
 
 * **`follower_preferred`**
-  Prefer read replicas but fall back to write replicas if read replicas are unavailable.
+  Prefer read replicas. If read replicas are available, the query reads from a randomly selected read replica. If no read replica exists, the query falls back to a write replica.
+
+* **`random`**
+  Read from a randomly selected write replica or read replica.
 
 ## SQL Protocol
 

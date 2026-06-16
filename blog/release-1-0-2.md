@@ -4,6 +4,8 @@ description: GreptimeDB v1.0.2 Changelog
 date: 2026-05-14
 ---
 
+# v1.0.2
+
 Release date: May 14, 2026
 
 This release fixes a bug where a query could return incorrect rows when **all** of the following were true:

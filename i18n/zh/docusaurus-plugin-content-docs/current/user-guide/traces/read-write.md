@@ -113,8 +113,8 @@ GreptimeDB 的 OTEL 端点支持 Basic 认证。详情请参考 [鉴权](/user-g
 ### GreptimeDB Pipeline
 
 在 OTLP 接口中，我们要求 HTTP 头 `x-greptime-pipeline-name` 作为必选参数。在这里
-我们复用了日志接口中 Pipeline 的概念作为数据转化的机制。但是注意在 Trace 接口中
-我们目前仅支持内置的 `greptime_trace_v1`，自定义的 Pipeline 暂不支持。
+我们复用了日志接口中 Pipeline 的概念作为数据转化的机制。Trace 数据应使用内置的
+`greptime_trace_v1`。自定义的 Pipeline 暂不支持。
 
 ### Append-only 模式
 
