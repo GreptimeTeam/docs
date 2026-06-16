@@ -77,7 +77,7 @@ The server is configured through environment variables or CLI arguments. The tab
 | `GREPTIMEDB_PASSWORD` | `--password` | — | Database password. |
 | `GREPTIMEDB_DATABASE` | `--database` | `public` | Database name. |
 | `GREPTIMEDB_TIMEZONE` | `--timezone` | `UTC` | Session timezone. |
-| `GREPTIMEDB_HTTP_PORT` | — | `4000` | HTTP API port (for pipeline/dashboard tools). |
+| `GREPTIMEDB_HTTP_PORT` | `--http-port` | `4000` | HTTP API port (for pipeline/dashboard tools). |
 | `GREPTIMEDB_MASK_ENABLED` | `--mask-enabled` | `true` | Mask sensitive columns. |
 | `GREPTIMEDB_AUDIT_ENABLED` | `--audit-enabled` | `true` | Log every tool invocation. |
 | `GREPTIMEDB_ALLOW_WRITE` | `--allow-write` | `false` | Allow write/DDL via `execute_sql`. See [Write mode](#write-mode) below. |
