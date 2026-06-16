@@ -1,6 +1,6 @@
 ---
 keywords: [表分片, 分区规则, 分布式表, 插入数据, 分布式查询]
-description: 介绍表分片技术及其在 GreptimeDB 中的应用，包括分片时机、分区规则、创建分布式表、插入数据和分布式查询等内容。
+description: 介绍表分片技术及其在 GreptimeDB 中的应用，包括分片时机、分区规则、创建和调整分布式表、插入数据和分布式查询等内容。
 ---
 
 # 表分片
@@ -69,9 +69,7 @@ PARTITION ON COLUMNS (<COLUMN LIST>) (
 `PARTITION ON COLUMNS` 括号里只能写列名（如 `device_id`、`area`），不支持表达式。GreptimeDB 不支持 MySQL 的 `PARTITION BY RANGE` 语法。
 :::
 
-### 示例
-
-## 创建分布式表
+## 创建分区表
 
 你可以使用 MySQL CLI [连接到 GreptimeDB](/user-guide/protocols/mysql.md) 并创建一个分布式表。
 下方的示例创建了一个表并基于 `device_id` 列进行分区。
@@ -112,9 +110,51 @@ PARTITION ON COLUMNS (device_id, area) (
 
 以下内容以具有两个分区列的 `sensor_readings` 表为例。
 
-## 重分区
+## 为已有表分区
 
-如果你需要修改已创建表的分区规则，请参考单独的 [重分区](/user-guide/deployments-administration/manage-data/repartition.md) 页面。
+你也可以使用 `ALTER TABLE ... PARTITION ON COLUMNS` 为已有的未分区表分区。
+它的语法和创建分区表类似，只是把分区规则添加到已有表上：
+
+```sql
+ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id, area) (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South',
+  device_id >= 100 AND area <= 'East',
+  device_id >= 100 AND area > 'East'
+);
+```
+
+当一张表最初是单分区表，后续需要分布到多个 region 上时，可以使用这种方式。
+
+:::warning 警告
+为已有表分区属于重分区操作，仅支持分布式集群，并且需要共享对象存储和 GC。完整前置条件请参考[重分区](/user-guide/deployments-administration/manage-data/repartition.md#前置条件)。
+:::
+
+## 调整分区规则
+
+表分区后，你可以继续通过拆分热点分区或合并较小的冷分区来调整分区布局。
+
+使用 `SPLIT PARTITION` 将已有分区拆分为多个分区：
+
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100 AND area < 'South'
+) INTO (
+  device_id < 50 AND area < 'South',
+  device_id >= 50 AND device_id < 100 AND area < 'South'
+);
+```
+
+使用 `MERGE PARTITION` 将多个分区合并为一个分区：
+
+```sql
+ALTER TABLE sensor_readings MERGE PARTITION (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+如需了解前置条件、热点分区判断方法和更多分步示例，请参考[重分区](/user-guide/deployments-administration/manage-data/repartition.md)。
 
 ## 向表中插入数据
 
