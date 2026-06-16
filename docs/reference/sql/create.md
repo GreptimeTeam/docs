@@ -499,9 +499,13 @@ CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
 [ COMMENT '<string>' ]
+[ WITH (<flow-option> = <value> [, ...]) ]
 AS
 <SQL>;
 ```
+
+The `WITH` clause specifies flow options.
+For example, the experimental `experimental_enable_incremental_read` option enables incremental source reads for eligible batching flows.
 
 For `CREATE FLOW`, the query after `AS` can be a regular flow query or a TQL query. GreptimeDB also supports a strict TQL CTE form for cleaner flow definitions:
 

@@ -503,9 +503,13 @@ CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
 [ COMMENT '<string>' ]
+[ WITH (<flow-option> = <value> [, ...]) ]
 AS
 <SQL>;
 ```
+
+`WITH` 子句用于指定 flow 选项。
+例如，实验性的 `experimental_enable_incremental_read` 选项可以为符合条件的 batching flow 启用增量 source 读取。
 
 对于 `CREATE FLOW`，`AS` 后面的查询既可以是常规 Flow 查询，也可以是 TQL 查询。GreptimeDB 现在还支持一种严格受限的 TQL CTE 写法，用来让 Flow 定义更清晰：
 
