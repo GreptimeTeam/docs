@@ -31,7 +31,7 @@ The columns in the table:
 * `CONSTRAINT_SCHEMA`: The name of the database to which the constraint belongs.
 * `CONSTRAINT_NAME`: The name of the constraint, `TIME INDEX` or `PRIMARY`.
 * `TABLE_NAME`: The name of the table.
-* `CONSTRAINT_TYPE`: The type of the constraint. The value can be `TIME INDEX` or `PRIMARY KEY`. The `TIME INDEX` and `PRIMARY KEY` information is similar to the execution result of the `SHOW INDEX` statement.
+* `CONSTRAINT_TYPE`: The type of the constraint. The value can be `TIME INDEX` or `PRIMARY KEY`. These key constraints are also visible in [`STATISTICS`](./statistics.md), which backs `SHOW INDEX`.
 * `enforced`:  Doesn't support `CHECK` constraints, the value is always` YES`.
 
 ```sql
@@ -57,4 +57,3 @@ constraint_catalog: def
         table_name: monitor
    constraint_type: PRIMARY KEY
           enforced: YES
-

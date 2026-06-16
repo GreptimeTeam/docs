@@ -77,7 +77,7 @@ character_maximum_length: 2147483647
                data_type: string
            semantic_type: TAG
           column_default: NULL
-             is_nullable: Yes
+             is_nullable: YES
              column_type: string
           column_comment: NULL
                   srs_id: NULL
@@ -102,7 +102,7 @@ character_maximum_length: NULL
                data_type: double
            semantic_type: FIELD
           column_default: NULL
-             is_nullable: Yes
+             is_nullable: YES
              column_type: double
           column_comment: NULL
                   srs_id: NULL
@@ -127,7 +127,7 @@ character_maximum_length: NULL
                data_type: timestamp(3)
            semantic_type: TIMESTAMP
           column_default: current_timestamp()
-             is_nullable: No
+             is_nullable: NO
              column_type: timestamp(3)
           column_comment: NULL
                   srs_id: NULL
