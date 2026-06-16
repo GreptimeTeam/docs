@@ -86,6 +86,7 @@ x-greptime-hint-key2: value2
 | `append_mode` | Boolean | `false` | 启用表的 [append-only 模式](/reference/sql/create.md#创建-append-only-表)，该模式禁用按主键去重，支持重复行。对于 InfluxDB 行协议写入，显式设置 `append_mode=true` hint 时，会使用 `append_mode = 'true'` 和 `merge_mode = 'last_row'` 创建表。 |
 | `merge_mode` | String | 无 | 设置表的 [merge 模式](/reference/sql/create.md#创建带有-merge-模式的表)，例如 `last_non_null`、`last_row`。对于通过 InfluxDB 行协议自动创建的表，该 hint 优先于 [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md) 配置；该配置默认值为 `last_non_null`。启用 `append_mode` 时，仅允许使用 `last_row`。 |
 | `physical_table` | String | 无 | 指定 [metric 引擎](/contributor-guide/datanode/metric-engine.md)的物理表名。 |
+| `query.enable_remote_dynamic_filter_pushdown` | Boolean | `true` | 为 SQL 查询启用远程动态过滤下推。设置为 `false` 可为当前请求关闭 Frontend 到 Datanode 的动态过滤传播。请参阅[远程动态过滤下推](/user-guide/query-data/sql.md#远程动态过滤下推)。 |
 | `skip_wal` | Boolean | `false` | 跳过表的 WAL（Write-Ahead Log）写入。 |
 | `sst_format` | String | 无 | 设置表的 SST（Sorted String Table）文件格式。可选值：`flat`、`primary_key`。 |
 | `trace_table_partitions` | Int | None | 自定义 Trace 表的默认分区数（16）。设置为 `0` 或 `1` 时禁用分区。 |

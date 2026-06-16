@@ -228,6 +228,35 @@ SELECT * FROM monitor ORDER BY ts ASC;
 SELECT * FROM monitor ORDER BY ts DESC;
 ```
 
+## 远程动态过滤下推
+
+GreptimeDB 默认会为分布式 SQL 查询启用远程动态过滤下推。
+它主要用于分布式 Join 查询。
+当 Join 的一侧在运行时构建出动态过滤条件时，Frontend 可以将该过滤条件传播到 Datanode，让另一侧的扫描更早地裁剪数据。
+其他一些算子，例如 TopK（`ORDER BY ... LIMIT`），在符合条件的执行计划中也可能产生动态过滤条件。
+
+这是一个尽力而为的性能优化，不会改变查询结果。
+它只会在分布式查询计划中包含可发送到远端扫描的动态过滤条件时生效。
+如果查询计划中没有动态过滤条件，或者该过滤条件无法被安全编码或应用，GreptimeDB 会在没有远程动态过滤下推的情况下执行查询。
+
+要为单个 HTTP SQL 请求关闭该优化，可以将 `query.enable_remote_dynamic_filter_pushdown` hint 设置为 `false`：
+
+```bash
+curl -X POST \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-H 'x-greptime-hints: query.enable_remote_dynamic_filter_pushdown=false' \
+--data-urlencode "sql=SELECT m.* FROM monitor m JOIN host_info h ON m.host = h.host WHERE h.region = 'us-west'" \
+http://localhost:4000/v1/sql
+```
+
+该选项默认值为 `true`。
+设置为 `false` 后，只会为当前查询关闭 Frontend 到 Datanode 的远程动态过滤传播。
+当查询通过本地 Frontend 到 Datanode 的 region query 路径执行时，该选项也适用于 standalone 部署。
+当前没有用于修改该默认值的持久化 Frontend 或 Datanode 配置项。
+它不会关闭单个执行节点内部的本地动态过滤优化。
+
+有关请求 hints 的更多信息，请参阅 [HTTP hints](/user-guide/protocols/http.md#hints)。
+
 ## `CASE` 表达式
 
 你可以使用 `CASE` 表达式在查询中执行条件逻辑。

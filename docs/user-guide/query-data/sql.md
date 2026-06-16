@@ -242,6 +242,35 @@ SELECT * FROM monitor ORDER BY ts ASC;
 SELECT * FROM monitor ORDER BY ts DESC;
 ```
 
+## Remote dynamic filter pushdown
+
+GreptimeDB enables remote dynamic filter pushdown by default for distributed SQL queries.
+It is mainly used by distributed join queries.
+When a join builds a runtime dynamic filter from one side of the join, the Frontend can propagate that filter to Datanodes so scans on the other side may prune data earlier.
+Some other operators, such as TopK (`ORDER BY ... LIMIT`), may also produce dynamic filters in eligible plans.
+
+This is a best-effort performance optimization and does not change query results.
+It only applies when the distributed query plan contains a dynamic filter that can be sent to remote scans.
+If the query plan has no dynamic filter, or if the filter cannot be encoded or applied safely, GreptimeDB runs the query without remote dynamic filter pushdown.
+
+To disable this optimization for one HTTP SQL request, set the `query.enable_remote_dynamic_filter_pushdown` hint to `false`:
+
+```bash
+curl -X POST \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-H 'x-greptime-hints: query.enable_remote_dynamic_filter_pushdown=false' \
+--data-urlencode "sql=SELECT m.* FROM monitor m JOIN host_info h ON m.host = h.host WHERE h.region = 'us-west'" \
+http://localhost:4000/v1/sql
+```
+
+The option defaults to `true`.
+Setting it to `false` disables Frontend-to-Datanode remote dynamic filter propagation for the current query only.
+It also applies to standalone deployments when the query is executed through the local Frontend-to-Datanode region query path.
+Currently, there is no persistent Frontend or Datanode configuration option for changing this default.
+It does not disable local dynamic filter optimizations inside one execution node.
+
+For more information about request hints, see [HTTP hints](/user-guide/protocols/http.md#hints).
+
 ## `CASE` Expression
 
 You can use the `CASE` statement to perform conditional logic within your queries.
