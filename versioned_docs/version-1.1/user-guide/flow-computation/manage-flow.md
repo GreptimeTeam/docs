@@ -9,6 +9,10 @@ Each `flow` is a continuous aggregation query in GreptimeDB.
 It continuously updates the aggregated data based on the incoming data.
 This document describes how to create, and delete a flow.
 
+:::note
+Flow uses batching mode for aggregation and TQL workloads. Simple non-aggregation Flow queries currently use the deprecated streaming mode and are not recommended for new workloads.
+:::
+
 ## Create a Source Table
 
 Before creating a flow, you need to create a source table to store the raw data. Like this:
@@ -22,7 +26,9 @@ CREATE TABLE temp_sensor_data (
   PRIMARY KEY(sensor_id, loc)
 );
 ```
-However, if you don't want to store the raw data, you can use a temporary table as the source table by creating table using `WITH ('ttl' = 'instant')` table option:
+Avoid using `WITH ('ttl' = 'instant')` for new Flow source tables. Source tables with `ttl='instant'` fall back to the deprecated streaming mode. Keep the source data with an appropriate TTL instead, so aggregation and TQL Flow workloads can run in batching mode.
+
+For existing legacy streaming-mode deployments, a source table may use `WITH ('ttl' = 'instant')`:
 
 ```sql
 CREATE TABLE temp_sensor_data (
@@ -34,7 +40,7 @@ CREATE TABLE temp_sensor_data (
 ) WITH ('ttl' = 'instant');
 ```
 
-Setting `'ttl'` to `'instant'` will make the table a temporary table, which means it will automatically discard all inserted data and the table will always be empty, only sending them to flow task for computation.
+Setting `'ttl'` to `'instant'` makes the table discard inserted data immediately and only sends rows to a legacy streaming-mode flow task. This pattern is deprecated for new workloads.
 
 ## Create a Sink Table
 
@@ -101,6 +107,7 @@ CREATE [ OR REPLACE ] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
 [ COMMENT '<string>' ]
+[ WITH (<flow-option> = <value> [, ...]) ]
 AS 
 <SQL>;
 ```
@@ -117,6 +124,8 @@ Conversely, when `IF NOT EXISTS` is specified, the command will have no effect i
 - `EXPIRE AFTER` is an optional interval to expire the data from the Flow engine.
   For more details, please refer to the [`EXPIRE AFTER`](#expire-after) part.
 - `COMMENT` is the description of the flow.
+- `WITH` specifies flow options.
+  For example, the experimental `experimental_enable_incremental_read` option enables incremental source reads for eligible batching flows.
 - `SQL` part defines the continuous aggregation query.
   It defines the source tables provide data for the flow.
   Each flow can have multiple source tables.
@@ -152,11 +161,58 @@ It is important to note that the `EXPIRE AFTER` clause does not delete data from
 It only controls how the flow engine processes the data.
 If you want to delete data from the source or sink table, please [set the `TTL` option](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) when creating tables.
 
-Setting a reasonable time interval for `EXPIRE AFTER` is helpful to limit state size and avoid memory overflow. This is somewhere similar to the ["Watermarks"](https://docs.risingwave.com/processing/watermarks) concept in streaming processing.
+Setting a reasonable time interval for `EXPIRE AFTER` is helpful to limit how far back the batching engine needs to recompute results and to avoid excessive resource usage. It serves a similar purpose to bounding lateness in stream processing systems, but new Flow workloads should use batching mode.
 
 For example, if the flow engine processes the aggregation at 10:00:00 and the `'1 hour'::INTERVAL` is set,
 any input data that arrive now with a time index older than 1 hour (before 09:00:00) will expire and be ignore.
 Only data timestamped from 09:00:00 onwards will be used in the aggregation and update to sink table.
+
+### Experimental incremental source reads
+
+:::warning Experimental feature
+The `experimental_enable_incremental_read` option is experimental.
+Its behavior and limitations may change in future releases.
+:::
+
+For batching SQL flows whose source tables are append-only, you can enable incremental source reads:
+
+```sql
+CREATE TABLE temp_sensor_data (
+  sensor_id INT,
+  loc STRING,
+  temperature DOUBLE,
+  ts TIMESTAMP TIME INDEX,
+  PRIMARY KEY(sensor_id, loc)
+) WITH ('append_mode' = 'true');
+
+CREATE FLOW temp_monitoring
+SINK TO temp_alerts
+WITH (experimental_enable_incremental_read = 'true')
+AS
+SELECT
+  sensor_id,
+  loc,
+  max(temperature) AS max_temp,
+  date_bin('10 seconds'::INTERVAL, ts) AS time_window
+FROM temp_sensor_data
+GROUP BY
+  sensor_id,
+  loc,
+  time_window;
+```
+
+When this option is enabled, Flow keeps per-region source sequence watermarks and attempts to read only newly appended source rows after the initial full snapshot.
+This is an execution optimization and does not change the query result.
+
+The current limitations are:
+
+- All source tables must be append-only tables created with `append_mode = 'true'`.
+  Flow creation fails if any source table is not append-only.
+- The optimization only applies to batching SQL flows.
+  TQL flows, unsupported aggregate shapes, and simple projection/filter flows do not use incremental source reads.
+- Source tables created with `ttl = 'instant'` currently use streaming mode and do not use this batching-mode option.
+- The first run still needs a full snapshot.
+  Later runs may fall back to full snapshot or retry/repair when GreptimeDB cannot safely use incremental source reads.
 
 ### Write a SQL query
 

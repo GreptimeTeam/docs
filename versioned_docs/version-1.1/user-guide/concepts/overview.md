@@ -15,6 +15,7 @@ GreptimeDB is an observability database that unifies metrics, logs, and traces i
 
 **Deep dives:**
 - [Observability 2.0](./observability-2.md) — Wide events, unified data model, and the evolution beyond three pillars
+- [Table Semantic Layer](./semantic-layer.md) — Semantic metadata that tells AI agents and tools what observability concept each table represents
 - [Storage Location](./storage-location.md) — Object storage, local disk, and multi-engine storage options
 - [Key Concepts](./key-concepts.md) — Tables, regions, time index, data types, views, and flows
 - [Common Questions](./features-that-you-concern.md) — FAQ on updates, deletions, TTL, compression, high cardinality, and more

@@ -53,6 +53,79 @@ editor:rw=editor_pwd
 - `viewer` 拥有只读权限
 - `editor` 明确设置了读写权限
 
+### 密码格式
+
+从 v1.1 起，密码可以使用显式的 verifier 格式，从而无需在配置文件中保存明文密码。默认情况下密码以明文存储：
+
+- `plain:<password>` — 明文。未指定前缀时的默认格式。
+- `pbkdf2_sha256:<iterations>:<hex_salt>:<hex_hash>` — 以 PBKDF2-SHA256 哈希形式存储。
+- `mysql_native_password:<hex_sha1_sha1_password>` — 哈希形式的 verifier，同时仍可服务 MySQL `mysql_native_password` 握手。
+
+示例：
+
+```
+admin=plain:admin_pwd
+alice=pbkdf2_sha256:4096:73616c74:c5e478d59288c841aa530db6845c4c8d962893a001ce4e11a4963873aa98134a
+bob=mysql_native_password:6bb4837eb74329105ee4568dda7dc67ed2ca2ad9
+```
+
+权限模式可与 verifier 格式组合使用，verifier 写在 `=` 之后：
+
+```
+alice:readonly=pbkdf2_sha256:4096:73616c74:c5e478d59288c841aa530db6845c4c8d962893a001ce4e11a4963873aa98134a
+```
+
+#### 协议兼容性
+
+单一 verifier 格式无法服务所有协议。请根据客户端的连接方式选择格式：
+
+| Verifier | HTTP/gRPC Basic | PostgreSQL cleartext | MySQL clear password | MySQL `mysql_native_password` |
+| --- | --- | --- | --- | --- |
+| `plain:<password>`（或旧式 `user=password`） | 是 | 是 | 是 | 是 |
+| `pbkdf2_sha256:...` | 是 | 是 | 是 | 否 |
+| `mysql_native_password:...` | 否 | 否 | 否 | 是 |
+
+`pbkdf2_sha256` 只保护静态存储的密码，并不改变链路安全性。支持明文传输的协议在生产环境中仍需启用 TLS。
+
+:::warning 破坏性变更
+密码现在按前缀解析。如果旧式明文密码恰好以 `plain:`、`pbkdf2_sha256:` 或 `mysql_native_password:` 开头，其含义会发生变化。请使用 `plain:` 前缀保留字面值。例如，若要保留字面密码 `plain:secret`，应配置为 `user=plain:plain:secret`。
+:::
+
+### 生成密码 Verifier
+
+从 v1.1 起，可以使用 `greptime user hash-password` 命令生成 verifier 字符串。该命令独立运行，不会启动任何服务端组件：
+
+```shell
+./greptime user hash-password --password-stdin
+```
+
+它从标准输入读取明文密码，并将 verifier 打印到标准输出。交互式运行时，输入密码后按回车；在脚本中，使用不回显的方式读取再通过管道传入，避免明文出现在 shell 历史或进程列表中：
+
+```shell
+read -rs PASSWORD && printf '%s' "$PASSWORD" | ./greptime user hash-password --password-stdin
+```
+
+将输出复制到用户文件中作为密码：
+
+```
+admin=pbkdf2_sha256:4096:<random_hex_salt>:<hex_hash>
+```
+
+可用选项：
+
+- `--format <FORMAT>` — verifier 格式，`pbkdf2_sha256`（默认）或 `mysql_native_password`。
+- `--password <PASSWORD>` — 明文密码。与 `--password-stdin` 互斥，二者必须且只能指定其一。脚本中优先使用 `--password-stdin`，因为 `--password` 可能通过 shell 历史或进程列表泄露。
+- `--password-stdin` — 从标准输入读取明文密码。
+- `--iterations <N>` — PBKDF2-SHA256 迭代次数（默认 `4096`，范围 `1..=1000000`）。
+- `--salt-len <N>` — 随机盐长度，单位字节（默认 `16`，范围 `1..=1024`）。
+- `--salt-hex <HEX>` — 使用固定的十六进制盐替代随机盐，用于确定性的自动化场景。
+
+生成 `mysql_native_password` 格式的 verifier：
+
+```shell
+./greptime user hash-password --password-stdin --format mysql_native_password
+```
+
 ### 启动服务器
 
 在启动服务端时，需添加 `--user-provider` 参数，并将其设置为 `static_user_provider:file:<path_to_file>`（请将 `<path_to_file>` 替换为你的用户配置文件路径）：

@@ -130,6 +130,24 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
 );
 ```
 
+若需要引入新的分区列，可以使用 `SPLIT PARTITION ... ON COLUMNS`。以下示例从仅按 `device_id` 分区的表出发，将 `area` 引入为新的分区列：
+
+```sql
+ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id) (
+  device_id < 100,
+  device_id >= 100
+);
+
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) ON COLUMNS (device_id, area) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+拆分完成后，表的分区列将更新为 `(device_id, area)`。
+
 ## 延伸阅读
 
 如果你希望查看包含更多背景说明和完整示例的教程，请参考博客文章：[如何在 GreptimeDB 中在线拆分与合并分区](https://greptime.cn/blogs/2026-03-19-greptimedb-repartition-guide)。

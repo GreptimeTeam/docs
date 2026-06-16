@@ -22,7 +22,7 @@ GreptimeDB takes a different approach: one database engine for all three signal 
 GreptimeDB unifies the processing of metrics, logs, and traces through:
 - A consistent [data model](./data-model.md) that treats all observability data as timestamped wide events with context
 - Native support for both [SQL](/user-guide/query-data/sql.md) and [PromQL](/user-guide/query-data/promql.md) queries
-- Built-in stream processing capabilities ([Flow](/user-guide/flow-computation/overview.md)) for real-time aggregation and analytics
+- Built-in continuous aggregation capabilities ([Flow](/user-guide/flow-computation/overview.md)) for real-time aggregation and analytics
 - Seamless correlation analysis across different types of observability data (read the [SQL example](/getting-started/quick-start.md#correlate-metrics-logs-and-traces) for detailed info)
 
 It replaces complex legacy data stacks with a high-performance single solution.

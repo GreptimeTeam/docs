@@ -40,7 +40,7 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | `SCHEMA_PRIVILEGES` | Not implemented. Returns zero rows. |
 | `SESSION_STATUS` | Not implemented. Returns zero rows. |
 | `SESSION_VARIABLES` | Not supported. |
-| `STATISTICS` | Not supported. |
+| [`STATISTICS`](./statistics.md) | Provides index metadata in a MySQL-compatible shape. |
 | [`TABLES`](./tables.md) | Provides a list of tables that the current user has visibility of. Similar to `SHOW TABLES`. |
 | `TABLESPACES` | Not supported. |
 | `TABLE_PRIVILEGES` | Not implemented. Returns zero rows. |

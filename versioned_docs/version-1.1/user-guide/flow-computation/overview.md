@@ -1,14 +1,14 @@
 ---
-keywords: [Flow engine, real-time computation, ETL, data streams, user agent statistics, nginx logs]
-description: Discover how GreptimeDB's Flow engine enables real-time computation of data streams for ETL processes and on-the-fly calculations. Learn about its programming model, use cases, and a quick start example for calculating user agent statistics from nginx logs.
+keywords: [Flow engine, real-time computation, ETL, continuous aggregation, user agent statistics, nginx logs]
+description: Discover how GreptimeDB's Flow engine enables real-time continuous aggregations on incoming data for ETL processes and analytics. Learn about its batching execution model, use cases, and a quick start example for calculating user agent statistics from nginx logs.
 ---
 
 # Flow Computation
 
-GreptimeDB's Flow engine enables real-time computation of data streams.
-It is particularly beneficial for Extract-Transform-Load (ETL) processes or for performing on-the-fly filtering, calculations and queries such as sum, average, and other aggregations.
+GreptimeDB's Flow engine enables real-time computation on incoming data.
+It is particularly beneficial for Extract-Transform-Load (ETL) processes or for performing continuous aggregations such as sum, average, and other time-window calculations.
 The Flow engine ensures that data is processed incrementally and continuously,
-updating the final results as new streaming data arrives.
+updating the final results as new data arrives.
 You can think of it as a clever materialized views that know when to update result view table and how to update it with minimal effort.
 
 Use cases include:
@@ -17,6 +17,10 @@ Use cases include:
 - Downsampling data points, such as using average pooling, to reduce the volume of data for storage and analysis.
 
 ## Programming Model
+
+:::note
+Flow uses batching mode for aggregation and TQL workloads. Simple non-aggregation Flow queries currently use the deprecated streaming mode and are not recommended for new workloads.
+:::
 
 Upon data insertion into the source table,
 the data is concurrently ingested to the Flow engine.
@@ -122,4 +126,3 @@ The query results will display the total count of each user agent in the `user_a
 - [Continuous Aggregation](./continuous-aggregation.md): Explore the primary scenario in time-series data processing, with three common use cases for continuous aggregation.
 - [Manage Flow](manage-flow.md): Gain insights into the mechanisms of the Flow engine and the SQL syntax for defining a Flow.
 - [Expressions](expressions.md): Learn about the expressions supported by the Flow engine for data transformation.
-

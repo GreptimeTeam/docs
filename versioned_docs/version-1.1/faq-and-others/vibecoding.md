@@ -37,6 +37,16 @@ pip install greptimedb-mcp-server
 See the [greptimedb-mcp-server](https://github.com/GreptimeTeam/greptimedb-mcp-server)
 repo for transports (stdio, SSE, Streamable HTTP) and configuration.
 
+## Table semantic layer
+
+Tables can carry a [semantic layer](../user-guide/concepts/semantic-layer.md) of
+`greptime.semantic.*` metadata recording what observability concept each one
+represents — signal type, source, metric type, unit, and more. An agent queries
+`information_schema.table_semantics` to understand your tables without inferring
+meaning from column names; the MCP Server's `describe_table` surfaces the same
+metadata. GreptimeDB stamps it automatically on OTLP and Prometheus ingestion,
+and you can set it yourself with `CREATE TABLE ... WITH (...)`.
+
 ## GreptimeDB Skills
 
 GreptimeDB already speaks open standards that most coding agents know. For our

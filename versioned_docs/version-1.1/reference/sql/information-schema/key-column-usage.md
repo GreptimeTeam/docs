@@ -5,7 +5,7 @@ description: Describes the key constraints of the columns, such as the time inde
 
 # KEY_COLUMN_USAGE
 
-The `KEY_COLUMN_USAGE` table describes the key constraints of the columns, such as the time index key constraint.
+The `KEY_COLUMN_USAGE` table describes key constraints on columns, such as the time index and primary key constraints. Secondary index metadata is exposed in [`STATISTICS`](./statistics.md).
 
 ```sql
 USE INFORMATION_SCHEMA;
@@ -85,4 +85,3 @@ The description of columns in the `KEY_COLUMN_USAGE` table is as follows:
 - `referenced_table_schema`: The name of the schema referenced by the constraint. Currently in GreptimeDB, the value of this column in all constraints is `NULL`, except for the foreign key constraint.
 - `referenced_table_name`: The name of the table referenced by the constraint. Currently in GreptimeDB, the value of this column in all constraints is `NULL`, except for the foreign key constraint.
 - `referenced_column_name`: The name of the column referenced by the constraint. Currently in TiDB, the value of this column in all constraints is `NULL`, except for the foreign key constraint.
-

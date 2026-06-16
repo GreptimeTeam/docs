@@ -33,6 +33,14 @@ pip install greptimedb-mcp-server
 传输方式（stdio、SSE、Streamable HTTP）和配置详见
 [greptimedb-mcp-server](https://github.com/GreptimeTeam/greptimedb-mcp-server) 仓库。
 
+## 表语义层
+
+表可以携带一层[语义层](../user-guide/concepts/semantic-layer.md)元数据
+（`greptime.semantic.*`），记录每张表代表什么可观测性概念——signal type、source、
+metric type、单位等。Agent 查询 `information_schema.table_semantics` 就能理解你的表，
+无需从列名推断含义；MCP Server 的 `describe_table` 也会呈现同一份元数据。GreptimeDB 在
+OTLP 和 Prometheus 写入时自动打标，你也可以用 `CREATE TABLE ... WITH (...)` 自己设置。
+
 ## GreptimeDB Skills
 
 GreptimeDB 兼容大多数 coding agent 已经熟悉的开放标准。而对于我们自有的功能——pipeline、

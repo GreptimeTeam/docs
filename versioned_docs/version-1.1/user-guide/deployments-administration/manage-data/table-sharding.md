@@ -57,9 +57,13 @@ PARTITION ON COLUMNS (<COLUMN LIST>) (
 
 The syntax mainly consists of two parts:
 
-1. `PARTITION ON COLUMNS` followed by a comma-separated list of column names. This specifies which columns will be used for partitioning. The columns specified here must be of the Tag type (as specified by the PRIMARY KEY). Note that the ranges of all partitions must **not** overlap.
+1. `PARTITION ON COLUMNS` followed by a comma-separated list of column names. This specifies which columns will be used for partitioning. Currently, any column defined in the table can be used as a partition column. Note that the ranges of all partitions must **not** overlap.
 
 2. `RULE LIST` is a list of multiple partition rules. Each rule is a partition condition, and GreptimeDB generates partition names such as `p0`, `p1`, and so on for these rules. The expressions here can use `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, column names, and literals.
+
+:::tip Choosing partition columns
+We recommend partitioning on Tag columns (the primary key columns). This matters most for tables that are **not** append-only (deduplication is enabled): the partition columns should be a subset of the primary key columns. That way, rows with the same primary key always go to the same partition, so deduplication and merging keep working correctly.
+:::
 
 :::tip Note
 The parentheses in `PARTITION ON COLUMNS (...)` only accept column names (e.g., `device_id`, `area`), not expressions like `device_id + 1`. GreptimeDB does not support MySQL's `PARTITION BY RANGE` syntax.

@@ -54,10 +54,10 @@ GreptimeDB 提供了强大的[数据查询](./query-data/overview.md)功能。
 GreptimeDB 支持使用 PromQL 查询数据。
 请参考 [PromQL 文档](./query-data/promql.md) 以获取指导。
 
-### 流计算
+### Flow 计算
 
-对于实时数据处理和分析，GreptimeDB 提供了[流计算](./flow-computation/overview.md)，
-支持对数据流进行复杂计算。
+对于实时数据处理和分析，GreptimeDB 提供了 [Flow 计算](./flow-computation/overview.md)，
+支持对持续写入的时序数据进行持续聚合。
 
 ## 使用索引加速查询
 

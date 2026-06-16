@@ -38,7 +38,7 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 | `SCHEMA_PRIVILEGES` | 未实现。返回零行。 |
 | `SESSION_STATUS` | 未实现。返回零行。 |
 | `SESSION_VARIABLES` | 不支持。 |
-| `STATISTICS` | 不支持。 |
+| [`STATISTICS`](./statistics.md) | 以兼容 MySQL 的形式提供索引元数据。 |
 | [`TABLES`](./tables.md) | 提供了当前用户可见的表列表。类似于 `SHOW TABLES`。 |
 | `TABLESPACES` | 不支持。 |
 | `TABLE_PRIVILEGES` | 未实现。返回零行。 |

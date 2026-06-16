@@ -15,6 +15,7 @@ GreptimeDB 是一个可观测性数据库，在单一引擎中统一处理 metri
 
 **深入了解：**
 - [Observability 2.0](./observability-2.md) — 宽事件、统一数据模型，超越三支柱的演进
+- [表语义层](./semantic-layer.md) — 告诉 AI agent 和工具每张表代表什么可观测性概念的语义元数据
 - [存储位置](./storage-location.md) — 对象存储、本地盘、多引擎存储
 - [核心概念](./key-concepts.md) — 表、Region、时间索引、数据类型、视图、Flow
 - [常见问题](./features-that-you-concern.md) — 更新、删除、TTL、压缩、高基数等 FAQ
