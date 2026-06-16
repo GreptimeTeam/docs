@@ -1,0 +1,219 @@
+---
+keywords: [Trace, OpenTelemetry, Jaeger]
+description: 介绍 Trace 数据如何存入 GreptimeDB.
+---
+
+# Trace 数据模型
+
+:::warning
+
+本章内容目前仍处于实验阶段，在未来的版本中可能会有所调整。
+
+:::
+
+在本节，我们主要描述 Trace 数据如何转换成 GreptimeDB 的表结构。
+
+我们复用了 Pipeline 的概念来标记数据模型的版本，因此注意在 Trace 数据中暂时只能
+使用内置的 Pipeline。
+
+## 数据模型版本机制
+
+GreptimeDB 本身的数据类型和相关功能在持续演化。为了实现向后兼容，我们使用
+Pipeline 的名称来作为数据模型的版本。目前可用的内置 Pipeline 为：
+
+- `greptime_trace_v1`: trace 表推荐使用的数据模型。
+
+在使用 OTLP/HTTP 协议写入数据时，需要通过 `x-greptime-pipeline-name` HTTP 头指定数据模型。新的 trace 表请使用 `x-greptime-pipeline-name: greptime_trace_v1`。
+
+在未来我们可能引入新的 Pipeline 名称，即数据模型版本。新的 Pipeline 可能与老版本不兼容，因此建议创建新的数据表来使用。
+
+## 数据模型
+
+`greptime_trace_v1` 数据模型是非常直观的。默认情况下，Trace 数据存储在名为 `opentelemetry_traces` 的表中。你可以通过在 OTLP/HTTP 请求中指定 `x-greptime-trace-table-name` 请求头来自定义表名。
+
+- 所有常见的 [OpenTelemetry
+  Trace](https://opentelemetry.io/docs/concepts/signals/traces/) 数据字段都被映射为 GreptimeDB 的列。
+- `service_name` 从 `resource_attributes["service.name"]` 中提取，并用作 **Tag**（**主键**的一部分）。
+- `timestamp` 是 Span 的开始时间，用作 **时间索引**（Time Index）。
+- `duration_nano` 列由 `end_time - start_time` 生成。
+- 所有的属性字段被打平为列，按照 `[span|resource|scope]_attributes.[attribute_key]`
+  的命名方式生成名称。
+  - 注意：`resource_attributes.service.name` 被排除在打平之外，因为它已经存储在 `service_name` 列中。
+  - 如果属性的值是复合类型，如 `Array` 或 `Kvlist`，它将被存储为 GreptimeDB 的 `JSON` 类型。
+- 其他复合类型字段 `span_links` 和 `span_events` 将被存储为 `JSON` 类型。
+
+在插入第一条数据时，表将被创建。并且当数据中涉及新的字段时，表的结构会自动变更增加列。
+
+对于 `greptime_trace_v1`，GreptimeDB 还会在 schema 演进过程中协调 attribute 列的类型。当 trace 表已经存在时，已有表结构对兼容的新写入值具有优先级。兼容的标量值可以转换为已有列类型；当已有 `Int64` attribute 列后续收到整数和浮点数混合写入时，该列可能会被扩展为 `Float64`。如果某个 span 仍无法写入，GreptimeDB 可能只拒绝该 span，同时接受请求中的其他 span。
+
+以下是一个使用 OpenTelemetry Django 埋点生成的表结构：
+
+```
+timestamp                                  | 2025-05-07 10:03:29.657544
+timestamp_end                              | 2025-05-07 10:03:29.661714
+duration_nano                              | 4169970
+trace_id                                   | fb60d19aa36fdcb7d14a71ca0b9b42ae
+span_id                                    | 49806a2671f2ddcb
+span_kind                                  | SPAN_KIND_SERVER
+span_name                                  | POST todos/
+span_status_code                           | STATUS_CODE_UNSET
+span_status_message                        |
+trace_state                                |
+scope_name                                 | opentelemetry.instrumentation.django
+scope_version                              | 0.51b0
+service_name                               | myproject
+span_attributes.http.request.method        | POST
+span_attributes.url.full                   |
+span_attributes.server.address             | django:8000
+span_attributes.network.peer.address       |
+span_attributes.server.port                | 8000
+span_attributes.network.peer.port          |
+span_attributes.http.response.status_code  | 201
+span_attributes.network.protocol.version   | 1.1
+resource_attributes.telemetry.sdk.language | python
+resource_attributes.telemetry.sdk.name     | opentelemetry
+resource_attributes.telemetry.sdk.version  | 1.30.0
+span_events                                | []
+span_links                                 | []
+parent_span_id                             | eccc18b6fc210f31
+span_attributes.db.system                  |
+span_attributes.db.name                    |
+span_attributes.db.statement               |
+span_attributes.url.scheme                 | http
+span_attributes.url.path                   | /todos/
+span_attributes.client.address             | 10.89.0.5
+span_attributes.client.port                | 44302
+span_attributes.user_agent.original        | python-requests/2.32.3
+span_attributes.http.route                 | todos/
+```
+
+可以通过执行 `show create table opentelemetry_traces` 来查看表建表语句：
+
+```
+Table        | opentelemetry_traces
+Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (                                           +
+             |   "timestamp" TIMESTAMP(9) NOT NULL,                                                    +
+             |   "timestamp_end" TIMESTAMP(9) NULL,                                                    +
+             |   "duration_nano" BIGINT UNSIGNED NULL,                                                 +
+             |   "trace_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),    +
+             |   "span_id" STRING NULL,                                                                +
+             |   "span_kind" STRING NULL,                                                              +
+             |   "span_name" STRING NULL,                                                              +
+             |   "span_status_code" STRING NULL,                                                       +
+             |   "span_status_message" STRING NULL,                                                    +
+             |   "trace_state" STRING NULL,                                                            +
+             |   "scope_name" STRING NULL,                                                             +
+             |   "scope_version" STRING NULL,                                                          +
+             |   "service_name" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),+
+             |   "span_attributes.http.request.method" STRING NULL,                                    +
+             |   "span_attributes.url.full" STRING NULL,                                               +
+             |   "span_attributes.server.address" STRING NULL,                                         +
+             |   "span_attributes.network.peer.address" STRING NULL,                                   +
+             |   "span_attributes.server.port" BIGINT NULL,                                            +
+             |   "span_attributes.network.peer.port" BIGINT NULL,                                      +
+             |   "span_attributes.http.response.status_code" BIGINT NULL,                              +
+             |   "span_attributes.network.protocol.version" STRING NULL,                               +
+             |   "resource_attributes.telemetry.sdk.language" STRING NULL,                             +
+             |   "resource_attributes.telemetry.sdk.name" STRING NULL,                                 +
+             |   "resource_attributes.telemetry.sdk.version" STRING NULL,                              +
+             |   "span_events" JSON NULL,                                                              +
+             |   "span_links" JSON NULL,                                                               +
+             |   "parent_span_id" STRING NULL,                                                         +
+             |   "span_attributes.db.system" STRING NULL,                                              +
+             |   "span_attributes.db.name" STRING NULL,                                                +
+             |   "span_attributes.db.statement" STRING NULL,                                           +
+             |   "span_attributes.url.scheme" STRING NULL,                                             +
+             |   "span_attributes.url.path" STRING NULL,                                               +
+             |   "span_attributes.client.address" STRING NULL,                                         +
+             |   "span_attributes.client.port" BIGINT NULL,                                            +
+             |   "span_attributes.user_agent.original" STRING NULL,                                    +
+             |   "span_attributes.http.route" STRING NULL,                                             +
+             |   TIME INDEX ("timestamp"),                                                             +
+             |   PRIMARY KEY ("service_name")                                                          +
+             | )                                                                                       +
+             | PARTITION ON COLUMNS ("trace_id") (                                                     +
+             |   trace_id < '1',                                                                       +
+             |   trace_id >= 'f',                                                                      +
+             |   trace_id >= '1' AND trace_id < '2',                                                   +
+             |   trace_id >= '2' AND trace_id < '3',                                                   +
+             |   trace_id >= '3' AND trace_id < '4',                                                   +
+             |   trace_id >= '4' AND trace_id < '5',                                                   +
+             |   trace_id >= '5' AND trace_id < '6',                                                   +
+             |   trace_id >= '6' AND trace_id < '7',                                                   +
+             |   trace_id >= '7' AND trace_id < '8',                                                   +
+             |   trace_id >= '8' AND trace_id < '9',                                                   +
+             |   trace_id >= '9' AND trace_id < 'a',                                                   +
+             |   trace_id >= 'a' AND trace_id < 'b',                                                   +
+             |   trace_id >= 'b' AND trace_id < 'c',                                                   +
+             |   trace_id >= 'c' AND trace_id < 'd',                                                   +
+             |   trace_id >= 'd' AND trace_id < 'e',                                                   +
+             |   trace_id >= 'e' AND trace_id < 'f'                                                    +
+             | )                                                                                       +
+             | ENGINE=mito                                                                             +
+             | WITH(                                                                                   +
+             |   append_mode = 'true',                                                                 +
+             |   table_data_model = 'greptime_trace_v1'                                                +
+             | )
+```
+
+### 分区规则
+
+Trace 表包含了默认的 [分区规
+则](/user-guide/deployments-administration/manage-data/table-sharding.md#partition)，在
+`trace_id` 列上根据首个字符的取值划分区间。
+
+这个规则默认将引入 16 个分区，适合在 3-5 个 datanode 的部署规模下使用。
+
+如果数据量和部署规模更大，需要自定义分区规则，可以：
+
+1. 拷贝这个建表语句，并更新 `PARTITION ON` 这部分来设置更细致的分区规则，并在写
+   入数据之前创建这个表。
+2. 通过设置 OTLP 写入请求的 `x-greptime-hints` [HTTP
+   头](/user-guide/protocols/http#hints)，加入 `trace_table_partitions=n`，其中
+   `n` 是要设置的分区数。将 `n` 设置为 `0` 或 `1` 可以取消分区。
+
+### 索引
+
+我们默认对 `service_name`、`trace_id` 和 `parent_span_id` 三个常用字段使用[跳数索
+引](/user-guide/manage-data/data-index.md#skipping-index)，满足常见的查询场景。
+
+实际使用中，用户可能希望对一些特定的属性列增加索引，这可以通过[alter
+table](/reference/sql/alter.md#create-an-index-for-a-column)语句来实现。不同于分
+区规则，索引可以增量添加而不用重新建表。
+
+### Partial Success
+
+当一次 trace 请求包含多个 span 时，GreptimeDB 可能会接受可写入的 span，并只拒绝因确定性校验失败而无法写入的 span，例如 schema 或值不兼容。在这种情况下，OTLP 响应中会包含 `partial_success`，其中带有 `rejected_spans` 和 `error_message`。如果所有 span 都被拒绝，GreptimeDB 返回 `400 Bad Request`。
+
+### Append-only 模式
+
+通过此接口创建的表，默认为[Append-only 模
+式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表)。
+
+### TTL
+
+可以对 Trace 表应用 [过期时间规则](/reference/sql/alter.md#alter-table-options)。
+
+## 辅助表
+
+当你写入 Trace 数据时，GreptimeDB 会自动创建两个辅助表，以便于搜索服务和操作。这些表通过在主 Trace 表名后追加 `_services` 和 `_operations` 来命名。
+
+默认情况下，这些表被命名为 `opentelemetry_traces_services` 和 `opentelemetry_traces_operations`。如果你通过 `x-greptime-trace-table-name` HTTP 头部自定义了主 Trace 表名，辅助表也会相应地命名（例如 `<custom_table_name>_services` 和 `<custom_table_name>_operations`）。
+
+### 服务表 (`opentelemetry_traces_services`)
+
+该表存储 Trace 数据中发现的唯一服务名称列表。
+
+- **列**:
+  - `timestamp`: 所有条目都使用一个固定的时间戳 (2100-01-01 00:00:00)。
+  - `service_name`: 服务名称 (Tag)。
+
+### 操作表 (`opentelemetry_traces_operations`)
+
+该表存储 Trace 数据中发现的唯一操作（服务、Span 名称和 Span 类型）列表。
+
+- **列**:
+  - `timestamp`: 所有条目都使用一个固定的时间戳 (2100-01-01 00:00:00)。
+  - `service_name`: 服务名称 (Tag)。
+  - `span_name`: Span 名称 (Tag)。
+  - `span_kind`: Span 类型 (Tag)。
