@@ -90,3 +90,5 @@ GreptimeDB 为什么选择表模型：
 - 在 Observability 2.0 范式中，metrics、logs、traces 被视为同一组底层"宽事件"的不同投影。GreptimeDB 的统一表模型天然支持这一点——所有信号类型共享 Tag + Timestamp + Field schema，一条 SQL 就能做跨信号关联。详见 [Observability 2.0](./observability-2.md)。
 
 GreptimeDB 用 SQL 管理表 schema，参见[表管理](/user-guide/deployments-administration/manage-data/basic-table-operations.md)。不过 schema 定义不是强制的，更偏向 **Schemaless** 的方式——写入时自动建表、自动加列。详见[自动生成表结构](../ingest-data/overview.md#自动生成表结构)。
+
+除了列 schema，一张表还可以携带一层[表语义层](./semantic-layer.md)——记录它代表什么可观测性概念的语义元数据（signal type、source、metric type 等）——让 AI agent 和工具无需从列名去猜就能理解它。

@@ -55,6 +55,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/concepts/data-model',
             'user-guide/concepts/architecture',
             'user-guide/concepts/observability-2',
+            'user-guide/concepts/semantic-layer',
             'user-guide/concepts/storage-location',
             'user-guide/concepts/key-concepts',
             'user-guide/concepts/features-that-you-concern',

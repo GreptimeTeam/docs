@@ -109,3 +109,5 @@ GreptimeDB is designed on top of the table model for the following reasons:
 GreptimeDB uses SQL to manage table schema. Please refer to [table management](/user-guide/deployments-administration/manage-data/basic-table-operations.md) for more information.
 However, our definition of schema is not mandatory and leans towards a **schemaless** approach, similar to MongoDB.
 For more details, see [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
+
+Beyond the column schema, a table can carry a [table semantic layer](./semantic-layer.md) — semantic metadata recording which observability concept it represents (signal type, source, metric type, and more) — so AI agents and tooling can understand it without guessing from column names.

@@ -72,6 +72,8 @@ AI agents introduce a new level of observability complexity due to their non-det
 
 This is where wide events become essential. Traditional three-pillar approaches fail here: stuffing prompts into logs loses structure and makes analysis impossible, forcing tool calls into traces is too rigid for dynamic behavior, and pre-aggregating token metrics loses the critical context needed for debugging. AI agents produce high-cardinality (millions of unique sessions), high-dimensional (dozens of fields per execution), context-rich events—exactly what wide events are designed to handle. This isn't "observability for the AI age" as a marketing slogan; it's a direct technical consequence: non-deterministic systems require fine-grained, structured, retroactive analysis that only wide events can provide.
 
+The relationship runs both ways: AI agents also *query* observability data, and to do that well they need to know what each table represents. The [table semantic layer](./semantic-layer.md) gives agents and tools that metadata directly — signal type, source, metric type, and more — instead of forcing them to guess from column names.
+
 ## Why GreptimeDB is Built for This
 
 GreptimeDB's [architecture](/user-guide/concepts/architecture.md) naturally aligns with the Observability 2.0 paradigm. Its columnar engine efficiently compresses wide events (achieving 50% storage reduction compared to Loki and ~90% compared to Elasticsearch in production), and [native object storage](/user-guide/concepts/storage-location.md) (S3, Azure Blob, GCS) keeps costs low as wide event volumes grow. Below are the capabilities that matter most for wide events.
