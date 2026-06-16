@@ -1,6 +1,6 @@
 ---
 keywords: [架构, 计算存储分离, Metasrv, Frontend, Datanodes, Flownode, 对象存储, WAL, 数据库集群]
-description: GreptimeDB 架构概览，包括核心组件、用于流计算的可选 Flownode，以及分布式部署中的请求与数据路径。
+description: GreptimeDB 架构概览，包括核心组件、用于持续聚合的可选 Flownode，以及分布式部署中的请求与数据路径。
 ---
 
 # 架构
@@ -14,12 +14,12 @@ GreptimeDB 采用计算存储分离架构，持久化数据保存在对象存储
 
 ## 组件
 
-GreptimeDB 在分布式模式下有三个核心组件，以及一个用于流计算的可选组件：
+GreptimeDB 在分布式模式下有三个核心组件，以及一个用于持续聚合的可选组件：
 
 - [**Metasrv**](/contributor-guide/metasrv/overview.md)：元数据与路由控制平面。负责管理 catalog、schema、table、region 等元数据，协调调度，并为其他节点提供路由信息。
 - [**Frontend**](/contributor-guide/frontend/overview.md)：无状态接入层。接收客户端协议请求、执行鉴权、规划和分发查询，并根据 Metasrv 的元数据完成读写路由。
 - [**Datanode**](/contributor-guide/datanode/overview.md)：存储与执行层。负责存储表的 region，处理读写请求，持久化 WAL，并将数据文件刷入对象存储。
-- [**Flownode（可选）**](/contributor-guide/flownode/overview.md)：[流计算](/user-guide/flow-computation/overview.md)的流式/持续计算运行时。在分布式部署中，如果需要将 flow workload 独立为单独服务运行，就会使用 Flownode。
+- [**Flownode（可选）**](/contributor-guide/flownode/overview.md)：[Flow 计算](/user-guide/flow-computation/overview.md)的持续聚合运行时。Flow 聚合 workload 使用 batching mode；原始的 streaming mode 已经废弃。
 
 在 standalone 模式下，你运行的是一个 GreptimeDB 进程，而不是分别管理这些独立服务。
 

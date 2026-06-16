@@ -25,7 +25,7 @@ GreptimeDB 企业版部署包括以下组件：
 - Meta：数据库集群元数据信息管理组件
 - Datanode：数据节点
 - Frontend：入口和协议解析节点
-- Flownode(可选): 流计算节点
+- Flownode(可选): 面向持续聚合 workload 的 Flow 计算节点
 - Vector Sidecar：指标采集 agent
 - GreptimeDB Standalone: 集群自监控存储节点
 

@@ -70,7 +70,7 @@ The query processing layer in GreptimeDB's distributed architecture that serves 
 
 
 ### Flow Engine
-GreptimeDB's real-time stream processing system that enables continuous, incremental computation on streaming data. Flow Engine works like an intelligent materialized view that automatically updates result tables as new data arrives in source tables. It processes data at configurable intervals (default: one second) with minimal computational overhead, making it ideal for ETL processes, downsampling, real-time analytics, and continuous aggregation scenarios.
+GreptimeDB's continuous aggregation engine that enables incremental computation on incoming time-series data. Flow Engine works like an intelligent materialized view that automatically updates result tables as new data arrives in source tables. Aggregation and TQL workloads use batching mode; the original streaming mode is deprecated and is not recommended for new workloads.
 
 ---
 
@@ -183,7 +183,7 @@ The capability of a database system to handle growing volumes of data and increa
 A standardized programming language used for managing and manipulating relational databases. GreptimeDB supports SQL, allowing users to query metrics, logs, and events efficiently.
 
 ### Stream Processing
-The continuous, real-time processing of data streams as they arrive. In GreptimeDB, stream processing is implemented through the Flow Engine, which performs incremental computation on streaming time-series data. This enables instant filtering, computing, and aggregation of metrics, logs, and events, providing actionable insights with minimal latency.
+The continuous, real-time processing of data streams as they arrive. GreptimeDB's Flow Engine provides continuous aggregation through batching mode; its original streaming mode is deprecated and is not recommended for new workloads.
 
 ---
 

@@ -1,19 +1,19 @@
 ---
 name: greptimedb-flow
-description: Guide for creating GreptimeDB flow tasks — continuous aggregation that updates a sink table on the fly as data is ingested. Use when the user asks to build a materialized view, continuous aggregation, stream computation, downsampling job, or rollup. Triggers on phrases like "create flow", "continuous aggregation", "连续聚合", "物化视图", "materialized view", "downsampling", "流式聚合", "time window aggregation".
+description: Guide for creating GreptimeDB flow tasks — continuous aggregation that updates a sink table on the fly as data is ingested. Use when the user asks to build a materialized view, continuous aggregation, downsampling job, or rollup. Triggers on phrases like "create flow", "continuous aggregation", "连续聚合", "物化视图", "materialized view", "downsampling", "time window aggregation". Note that Flow's original streaming mode is deprecated; batching mode is active for aggregation workloads.
 ---
 
 # GreptimeDB Flow Guide
 
 Create GreptimeDB flow definition to do time window based aggregation on the fly
-while data ingested into GreptimeDB. This is how GreptimeDB's lightweight
-streaming engine works.
+while data ingested into GreptimeDB. This is how GreptimeDB's continuous
+aggregation engine works.
 
 Flow is also known as:
 
-1. Stream computing
+1. Continuous aggregation
 2. Materialized View
-3. Continuous aggregation
+3. Downsampling or rollup tasks
 
 ## The workflow
 
