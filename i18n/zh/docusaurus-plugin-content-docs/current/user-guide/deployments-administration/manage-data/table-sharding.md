@@ -110,9 +110,9 @@ PARTITION ON COLUMNS (device_id, area) (
 
 以下内容以具有两个分区列的 `sensor_readings` 表为例。
 
-## 为已有表添加分区
+## 为已有表分区
 
-你也可以使用 `ALTER TABLE ... PARTITION ON COLUMNS` 为已有的未分区表创建分区。
+你也可以使用 `ALTER TABLE ... PARTITION ON COLUMNS` 为已有的未分区表分区。
 它的语法和创建分区表类似，只是把分区规则添加到已有表上：
 
 ```sql
@@ -127,7 +127,7 @@ ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id, area) (
 当一张表最初是单分区表，后续需要分布到多个 region 上时，可以使用这种方式。
 
 :::warning 警告
-为已有表创建分区属于重分区操作，仅支持分布式集群，并且需要共享对象存储和 GC。完整前置条件请参考[重分区](/user-guide/deployments-administration/manage-data/repartition.md#前置条件)。
+为已有表分区属于重分区操作，仅支持分布式集群，并且需要共享对象存储和 GC。完整前置条件请参考[重分区](/user-guide/deployments-administration/manage-data/repartition.md#前置条件)。
 :::
 
 ## 调整分区规则

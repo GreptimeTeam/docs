@@ -110,7 +110,7 @@ PARTITION ON COLUMNS (device_id, area) (
 
 The following content uses the `sensor_readings` table with two partition columns as an example.
 
-## Add partitions to an existing table
+## Partition an existing table
 
 You can also partition an existing unpartitioned table with `ALTER TABLE ... PARTITION ON COLUMNS`.
 The syntax is similar to creating a partitioned table, except that the partition rule is added to an existing table:
