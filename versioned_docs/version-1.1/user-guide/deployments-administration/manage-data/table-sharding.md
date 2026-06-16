@@ -1,6 +1,6 @@
 ---
 keywords: [table sharding, GreptimeDB, partitioning methods, distributed tables, data management, SQL, query performance]
-description: Explains table sharding in GreptimeDB, including when to shard a table, partitioning methods, creating distributed tables, inserting data, querying data, and inspecting sharded tables.
+description: Explains table sharding in GreptimeDB, including when to shard a table, partitioning methods, creating and partitioning distributed tables, inserting data, querying data, and inspecting sharded tables.
 ---
 
 # Table Sharding
@@ -69,9 +69,7 @@ We recommend partitioning on Tag columns (the primary key columns). This matters
 The parentheses in `PARTITION ON COLUMNS (...)` only accept column names (e.g., `device_id`, `area`), not expressions like `device_id + 1`. GreptimeDB does not support MySQL's `PARTITION BY RANGE` syntax.
 :::
 
-### Example
-
-## Create a distributed table
+## Create a partitioned table
 
 You can use the MySQL CLI to [connect to GreptimeDB](/user-guide/protocols/mysql.md) and create a distributed table.
 The following example creates a table and partitions it based on the `device_id` column.
@@ -112,9 +110,51 @@ PARTITION ON COLUMNS (device_id, area) (
 
 The following content uses the `sensor_readings` table with two partition columns as an example.
 
-## Repartition a sharded table
+## Partition an existing table
 
-If you need to modify partition rules for an existing table, refer to the separate [Repartition](/user-guide/deployments-administration/manage-data/repartition.md) page.
+You can also partition an existing unpartitioned table with `ALTER TABLE ... PARTITION ON COLUMNS`.
+The syntax is similar to creating a partitioned table, except that the partition rule is added to an existing table:
+
+```sql
+ALTER TABLE sensor_readings PARTITION ON COLUMNS (device_id, area) (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South',
+  device_id >= 100 AND area <= 'East',
+  device_id >= 100 AND area > 'East'
+);
+```
+
+This is useful when a table starts as a single-partition table and later needs to be distributed across multiple regions.
+
+:::warning Warning
+Partitioning an existing table is a repartitioning operation. It is only supported in distributed clusters and requires shared object storage and GC. For the full prerequisites, see [Repartition](/user-guide/deployments-administration/manage-data/repartition.md#prerequisites).
+:::
+
+## Adjust partition rules
+
+After a table is partitioned, you can keep tuning its partition layout by splitting hot partitions or merging small cold partitions.
+
+Use `SPLIT PARTITION` to split an existing partition into multiple partitions:
+
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100 AND area < 'South'
+) INTO (
+  device_id < 50 AND area < 'South',
+  device_id >= 50 AND device_id < 100 AND area < 'South'
+);
+```
+
+Use `MERGE PARTITION` to merge multiple partitions into one:
+
+```sql
+ALTER TABLE sensor_readings MERGE PARTITION (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+For prerequisites, hotspot diagnosis, and more step-by-step examples, see [Repartition](/user-guide/deployments-administration/manage-data/repartition.md).
 
 ## Insert data into the table
 
