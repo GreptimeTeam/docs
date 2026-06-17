@@ -22,28 +22,26 @@ The following metrics help diagnose query performance issues:
 | Metric | Type | Description |
 |---|---|---|
 | greptime_mito_read_stage_elapsed_bucket | histogram | The elapsed time of different phases of a query in the storage engine. |
-| greptime_mito_cache_bytes | gauge | Size of cached contents |
-| greptime_mito_cache_hit | counter | Total count of cache hit |
-| greptime_mito_cache_miss | counter | Total count of cache miss |
+| greptime_mito_cache_bytes | gauge | Size of cached contents. The `type` label indicates the cache type. |
+| greptime_mito_cache_hit | counter | Total count of cache hit. The `type` label indicates the cache type. |
+| greptime_mito_cache_miss | counter | Total count of cache miss. The `type` label indicates the cache type. |
+| greptime_mito_cache_eviction | counter | Total count of cache eviction. The `type` label indicates the cache type. |
 
 
 ### Enlarging cache size
 
-You can monitor the `greptime_mito_cache_bytes` and `greptime_mito_cache_miss` metrics to determine if you need to increase the cache size. The `type` label in these metrics indicates the type of cache.
+Use `greptime_mito_cache_bytes{type="..."}` as the primary signal for cache pressure. If the metric is often close to the configured capacity of the corresponding cache, consider increasing that cache size. If the metric stays far below capacity, consider reducing that cache size to free memory or disk space for other caches. Use `greptime_mito_cache_hit`, `greptime_mito_cache_miss`, and `greptime_mito_cache_eviction` as supporting signals to judge whether resizing a cache is useful.
 
-If the `greptime_mito_cache_miss` metric is consistently high and increasing, or if the `greptime_mito_cache_bytes` metric reaches the cache capacity, you may need to adjust the cache size configurations of the storage engine.
-
-
-Here is an example:
-
+The following example lists the main cache size configurations. Some default cache sizes are adjusted according to system memory. See [Configuration](/user-guide/deployments-administration/configuration.md#region-engine-options) for the default values of these options.
 
 ```toml
 [[region_engine]]
 [region_engine.mito]
-# Cache size for the write cache. The `type` label value for this cache is `file`.
+# Cache size for the write cache. The `type` label value is `file` for data files.
 write_cache_size = "10G"
-# Download files from object storage to fill the cache on write cache miss
-enable_refill_cache_on_read = true
+# Percentage of write cache capacity allocated to index (puffin) files.
+# The `type` label value for this cache is `index`.
+index_cache_percent = 20
 # Cache size for SST metadata. The `type` label value for this cache is `sst_meta`.
 sst_meta_cache_size = "128MB"
 # Cache size for vectors and arrow arrays. The `type` label value for this cache is `vector`.
@@ -52,20 +50,34 @@ vector_cache_size = "512MB"
 page_cache_size = "512MB"
 # Cache size for time series selector (e.g. `last_value()`). The `type` label value for this cache is `selector_result`.
 selector_result_cache_size = "512MB"
+# Cache size for flat range scan results. The `type` label value for this cache is `range_result`.
+range_result_cache_size = "512MB"
+# Cache size for prefilter results. The `type` label value for this cache is `prefilter_result`.
+prefilter_result_cache_size = "128MB"
+# Cache size for manifest files. The `type` label value for this cache is `manifest`.
+manifest_cache_size = "256MB"
 
 [region_engine.mito.index]
-## The max capacity of the index staging directory.
-staging_size = "10GB"
+# Cache size for index metadata. The `type` label value for this cache is `index_metadata`.
+metadata_cache_size = "64MiB"
+# Cache size for index content. The `type` label value for this cache is `index_content`.
+content_cache_size = "128MiB"
+# Page size for the index content cache.
+content_cache_page_size = "64KiB"
+# Cache size for index query results. The `type` label value for this cache is `index_result`.
+result_cache_size = "128MiB"
+# The max capacity of the index staging directory. The `type` label value is `index_staging`.
+staging_size = "2GB"
 ```
-
 
 Some tips:
 
 - 1/10 of disk space for the write cache at least. It's recommended to use a large write cache when using object storage.
-- When using object storage, GreptimeDB automatically downloads files to fill the write cache on cache misses by default (`enable_refill_cache_on_read = true`). This improves query performance but may increase network traffic. Consider disabling this if you want to minimize network usage or storage costs.
+- The write cache is split between data files and index (puffin) files by `index_cache_percent`. If `greptime_mito_cache_bytes{type="index"}` is full but `greptime_mito_cache_bytes{type="file"}` is not, consider increasing `index_cache_percent`.
+- If a cache is consistently small compared with its configured capacity, reduce that cache size and allocate the resource to caches with higher pressure.
 - 1/4 of total memory for the `page_cache_size` at least if the memory usage is under 20%
 - Double the cache size if the cache hit ratio is less than 50%
-- If using full-text index, leave 1/10 of disk space for the `staging_size` at least
+- Tune `index.staging_size` only for index search workloads where `greptime_mito_cache_bytes{type="index_staging"}` approaches capacity, or staging misses and evictions show pressure. It is not necessary to enlarge this setting for every deployment.
 
 ### SST format
 
