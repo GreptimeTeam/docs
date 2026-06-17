@@ -93,7 +93,6 @@ stage: NULL
 
 The `EXPLAIN ANALYZE VERBOSE` command provides the detail metrics about the execution of scan plans.
 
-
 ## Scanner Metrics
 
 Scanner nodes, including `SeqScan`, `SeriesScan`, and `UnorderedScan`, can print
@@ -101,8 +100,8 @@ scanner-specific metrics in `EXPLAIN ANALYZE` and `EXPLAIN ANALYZE VERBOSE`
 output. These metrics help diagnose read-path behavior such as partitioning, SST
 pruning, index usage, cache behavior, and scanner timing.
 
-Verbose scanner metrics are diagnostic JSON-like text, not a stable public API.
-Optional zero-valued fields are usually omitted.
+Verbose scanner metrics are diagnostic text, not a stable public API. Optional
+zero-valued fields are usually omitted.
 
 ### Output Layout
 
@@ -150,6 +149,10 @@ scanner plan node. Scanner partitions record these values through
 `ExecutionPlanMetricsSet`, and the plan output aggregates them across
 partitions.
 
+The exact aggregate fields can vary by version and execution path. The output
+may include additional runtime fields such as `mem_used`, `elapsed_poll`, and
+`elapsed_await`.
+
 | Metric | Meaning |
 | --- | --- |
 | `output_rows` | Rows returned by the scanner plan node. |
@@ -163,7 +166,7 @@ partitions.
 Example with synthetic values:
 
 ```text
-SeqScan: region=0(1, 0), "partition_count":{"count":2, "mem_ranges":1, "files":1, "file_ranges":1} metrics=[output_rows: 128, elapsed_compute: 12ms, build_parts_cost: 1.2ms, build_reader_cost: 2.1ms, convert_cost: 300us, scan_cost: 8.4ms, yield_cost: 900us, ]
+SeqScan: region=0(1, 0), "partition_count":{"count":2, "mem_ranges":1, "files":1, "file_ranges":1} metrics=[output_rows: 128, elapsed_compute: 12ms, build_parts_cost: 1.2ms, build_reader_cost: 2.1ms, convert_cost: 300µs, scan_cost: 8.4ms, yield_cost: 900µs, ]
 ```
 
 ### Scanner Display Fields
@@ -225,7 +228,7 @@ Example with synthetic values:
     {
       "partition": 0,
       "metrics": {
-        "prepare_scan_cost": "500us",
+        "prepare_scan_cost": "500µs",
         "build_reader_cost": "2ms",
         "scan_cost": "8ms",
         "yield_cost": "1ms",
@@ -241,8 +244,8 @@ Example with synthetic values:
         "num_sst_record_batches": 2,
         "num_sst_batches": 2,
         "num_sst_rows": 96,
-        "first_poll": "600us",
-        "convert_cost": "300us",
+        "first_poll": "600µs",
+        "convert_cost": "300µs",
         "rg_bloom_filtered": 1,
         "rows_bloom_filtered": 1024,
         "fetch_metrics": {
@@ -251,7 +254,7 @@ Example with synthetic values:
           "cache_miss": 1
         },
         "metadata_cache_metrics": {
-          "metadata_load_cost": "100us",
+          "metadata_load_cost": "100µs",
           "mem_cache_hit": 1
         },
         "build_ranges_peak_mem_size": 2048,
