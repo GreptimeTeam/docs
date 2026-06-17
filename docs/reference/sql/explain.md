@@ -112,6 +112,11 @@ A scanner line can contain three layers of information:
   partition's `PartitionMetrics` snapshot separate.
 - DataFusion aggregate metrics in the trailing `metrics=[...]` section.
 
+In `metrics_per_partition`, partition means a DataFusion execution-plan output
+partition. It is not a GreptimeDB region and not a table partition created by
+`PARTITION BY COLUMNS()`. One scanner metric partition may cover one or more
+GreptimeDB scan ranges.
+
 Normal mode layout:
 
 ```text
