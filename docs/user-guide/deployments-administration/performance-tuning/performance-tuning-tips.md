@@ -11,14 +11,32 @@ GreptimeDB provides various metrics to help monitor and troubleshoot performance
 
 ## Query
 
-### ANALYZE QUERY
+### Analyze query performance
 
-GreptimeDB supports query analysis functionality.
-Using the `EXPLAIN ANALYZE [VERBOSE] <SQL>` statement, you can view step-by-step query execution times.
+To debug a slow query, run it with `EXPLAIN ANALYZE VERBOSE`:
+
+```sql
+EXPLAIN ANALYZE VERBOSE <SQL>;
+```
+
+`EXPLAIN ANALYZE` executes the query and collects runtime metrics from each execution stage. The `VERBOSE` option adds scan-level metrics that are useful for identifying why the query is slow and what can improve it. See [EXPLAIN](/reference/sql/explain.md) for the meaning of the metrics in the output.
+
+When comparing repeated runs, remember that cache state may affect the timing and result of the second run. If you want to avoid measuring a fully cached repeat, change the query condition slightly while keeping the query shape equivalent, for example by shifting the time range.
+
+If the cause is still unclear, include the full `EXPLAIN ANALYZE VERBOSE` output when creating an issue.
+
+Common findings:
+
+- **Many small files to search**: A high `num_file_ranges` value, especially when many files contain less than one full row group, can mean the scan has to open many small SST files. This often comes from backfilling many different time windows or from high compaction pressure. Consider adjusting `compaction.twcs.time_window`, reviewing the write or backfill pattern so rows fill time windows more naturally, and checking compaction status. Small files do not always hurt performance if the number of files is not large.
+- **Many rows filtered after scanning**: If `scan_cost` is high and `rows_precise_filtered` is also high, the scan reads many candidate rows and then removes them with exact filters. Consider adding an appropriate [index](/user-guide/manage-data/data-index.md) for selective filter columns. Index changes apply to newly flushed data; they do not immediately rewrite all existing SST files.
+- **Local cache misses during data fetch**: If `fetch_metrics.cache_miss`, `fetch_metrics.pages_to_fetch_store`, or `fetch_metrics.store_fetch_elapsed` is high, GreptimeDB is reading page data from object storage instead of local caches. Check the cache metrics below and consider increasing `write_cache_size` or `page_cache_size`.
+- **High scan preparation cost**: High `build_parts_cost` or `build_reader_cost` means GreptimeDB spends significant time building scan ranges or readers. Correlate this with `num_file_ranges`, metadata cache misses, and cache pressure.
+- **High metadata load time**: If `metadata_cache_metrics.metadata_load_cost` or `metadata_cache_metrics.cache_miss` is high, the SST metadata cache may be too small. Check `greptime_mito_cache_bytes{type="sst_meta"}` and consider increasing `sst_meta_cache_size`.
 
 ### Metrics
 
 The following metrics help diagnose query performance issues:
+
 | Metric | Type | Description |
 |---|---|---|
 | greptime_mito_read_stage_elapsed_bucket | histogram | The elapsed time of different phases of a query in the storage engine. |
