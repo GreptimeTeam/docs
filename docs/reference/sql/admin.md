@@ -94,7 +94,7 @@ admin build_index("logs");
 SELECT message FROM logs WHERE matches_term(message, 'fox');
 ```
 
-`admin build_index` sends build requests to all regions of the table. Each region only builds indexes for SST files whose recorded index metadata is inconsistent with the current table metadata. Files that already have the required index metadata are skipped, so rerunning the command is safe. The command returns an affected-row count, not a procedure ID, so use the verification queries below instead of `procedure_state`.
+`admin build_index` sends build requests to all regions of the table. Each region only builds indexes for SST files whose recorded index metadata is inconsistent with the current table metadata. Files that already have the required index metadata are skipped, so rerunning the command is safe. The command currently returns an affected-row count.
 
 Use `SHOW INDEX` to check logical index definitions:
 
