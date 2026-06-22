@@ -62,6 +62,112 @@ greptime cli data export [OPTIONS]
 - `data`: Exports table data only (`COPY DATABASE TO`)
 - `all`: Exports both schemas and data (default)
 
+## Export V2 Tool
+
+The Export V2 tool creates and manages snapshot-based exports. Compared with the legacy export command, Export V2 stores snapshot metadata in a manifest and supports snapshot management commands such as listing, verifying, and deleting snapshots.
+
+### Command Syntax
+
+```bash
+greptime cli data export-v2 <COMMAND> [OPTIONS]
+```
+
+### Commands
+
+| Command | Description |
+| ------- | ----------- |
+| `create` | Create a new snapshot. |
+| `list` | List snapshots under a parent storage location. |
+| `verify` | Verify snapshot integrity. |
+| `delete` | Delete a snapshot and all data under it. |
+
+### `export-v2 create` Options
+
+```bash
+greptime cli data export-v2 create [OPTIONS]
+```
+
+| Option | Required | Default | Description |
+| ------ | -------- | ------- | ----------- |
+| `--addr` | Yes | - | Server address to connect, for example `127.0.0.1:4000`. |
+| `--to` | Yes | - | Target snapshot location, for example `file:///tmp/snapshot` or `s3://bucket/path`. |
+| `--catalog` | No | `greptime` | Catalog name. |
+| `--schemas` | No | all non-system schemas | Schema list to export. Can be specified multiple times or as a comma-separated list. |
+| `--schema-only` | No | `false` | Export schema only, without table data. |
+| `--start-time` | No | - | Start time of the exported data range, in ISO 8601 format. |
+| `--end-time` | No | - | End time of the exported data range, in ISO 8601 format. |
+| `--chunk-time-window` | No | - | Chunk time window, for example `1h`, `6h`, `1d`, or `7d`. Requires both `--start-time` and `--end-time`. |
+| `--format` | No | `parquet` | Data format. Supported values are `parquet`, `csv`, and `json`. |
+| `--force` | No | `false` | Delete an existing snapshot at the target location and recreate it. |
+| `--parallelism` | No | `1` | Parallelism for server-side `COPY DATABASE` execution, per schema per chunk. |
+| `--chunk-parallelism` | No | `1` | Number of export chunks to run concurrently on the client. Supported range: `1` to `64`. |
+| `--progress` | No | `auto` | Progress reporting mode. Supported values: `auto`, `always`, `never`. |
+| `--auth-basic` | No | - | Basic authentication in `<username>:<password>` format. |
+| `--timeout` | No | `60s` | Request timeout, for example `30s` or `10min 20s`. |
+| `--proxy` | No | - | Proxy server address. Overrides the system proxy unless `--no-proxy` is set. |
+| `--no-proxy` | No | `false` | Disable proxy usage. |
+| `--s3`, `--oss`, `--gcs`, `--azblob` | No | - | Enable a remote object store backend. The snapshot URI provides the bucket/container and root path; backend-specific options such as region, endpoint, and credentials are available for the selected backend. |
+
+### `export-v2 list` Options
+
+```bash
+greptime cli data export-v2 list --location <LOCATION> [OPTIONS]
+```
+
+| Option | Required | Default | Description |
+| ------ | -------- | ------- | ----------- |
+| `--location` | Yes | - | Parent storage location whose direct subdirectories are snapshots. |
+| `--s3`, `--oss`, `--gcs`, `--azblob` | No | - | Enable a remote object store backend and its backend-specific options such as region, endpoint, and credentials. |
+
+### `export-v2 verify` Options
+
+```bash
+greptime cli data export-v2 verify --snapshot <SNAPSHOT> [OPTIONS]
+```
+
+| Option | Required | Default | Description |
+| ------ | -------- | ------- | ----------- |
+| `--snapshot` | Yes | - | Snapshot storage location, for example `file:///tmp/snapshot` or `s3://bucket/path`. |
+| `--s3`, `--oss`, `--gcs`, `--azblob` | No | - | Enable a remote object store backend and its backend-specific options such as region, endpoint, and credentials. |
+
+### `export-v2 delete` Options
+
+```bash
+greptime cli data export-v2 delete --snapshot <SNAPSHOT> [OPTIONS]
+```
+
+| Option | Required | Default | Description |
+| ------ | -------- | ------- | ----------- |
+| `--snapshot` | Yes | - | Snapshot storage location to delete. |
+| `--no-confirm`, `--yes` | No | `false` | Skip interactive confirmation. |
+| `--s3`, `--oss`, `--gcs`, `--azblob` | No | - | Enable a remote object store backend and its backend-specific options such as region, endpoint, and credentials. |
+
+### Examples
+
+Export schema only to a local snapshot:
+
+```bash
+greptime cli data export-v2 create \
+  --addr 127.0.0.1:4000 \
+  --to file:///tmp/snapshot \
+  --schema-only
+```
+
+Export data in a time range to object storage:
+
+```bash
+greptime cli data export-v2 create \
+  --addr 127.0.0.1:4000 \
+  --to s3://bucket/snapshots/prod-20250101 \
+  --start-time 2025-01-01T00:00:00Z \
+  --end-time 2025-01-31T23:59:59Z \
+  --chunk-time-window 1d \
+  --chunk-parallelism 4 \
+  --progress auto \
+  --s3 \
+  --s3-region us-west-2
+```
+
 ## Import Tool
 
 ### Command Syntax
@@ -84,3 +190,53 @@ greptime cli data import [OPTIONS]
 - `schema`: Imports table schemas only
 - `data`: Imports table data only
 - `all`: Imports both schemas and data (default)
+
+## Import V2 Tool
+
+The Import V2 tool imports data from snapshots created by Export V2. It supports dry-run verification, schema filtering, progress reporting, and client-side data task parallelism.
+
+### Command Syntax
+
+```bash
+greptime cli data import-v2 [OPTIONS]
+```
+
+### Options
+
+| Option | Required | Default | Description |
+| ------ | -------- | ------- | ----------- |
+| `--addr` | Yes | - | Server address to connect, for example `127.0.0.1:4000`. |
+| `--from` | Yes | - | Source snapshot location, for example `file:///tmp/snapshot` or `s3://bucket/path`. |
+| `--catalog` | No | `greptime` | Target catalog name. |
+| `--schemas` | No | all schemas in the snapshot | Schema list to import. Can be specified multiple times or as a comma-separated list. |
+| `--dry-run` | No | `false` | Verify the snapshot and planned import without executing the import. |
+| `--progress` | No | `auto` | Progress reporting mode. Supported values: `auto`, `always`, `never`. |
+| `--task-parallelism` | No | `1` | Number of import data tasks to run concurrently on the client. Supported range: `1` to `64`. |
+| `--auth-basic` | No | - | Basic authentication in `<username>:<password>` format. |
+| `--timeout` | No | `60s` | Request timeout, for example `30s` or `10min 20s`. |
+| `--proxy` | No | - | Proxy server address. Overrides the system proxy unless `--no-proxy` is set. |
+| `--no-proxy` | No | `false` | Disable proxy usage. |
+| `--s3`, `--oss`, `--gcs`, `--azblob` | No | - | Enable a remote object store backend. The snapshot URI provides the bucket/container and root path; backend-specific options such as region, endpoint, and credentials are available for the selected backend. |
+
+### Examples
+
+Dry-run import from a local snapshot:
+
+```bash
+greptime cli data import-v2 \
+  --addr 127.0.0.1:4000 \
+  --from file:///tmp/snapshot \
+  --dry-run
+```
+
+Import from object storage with progress reporting:
+
+```bash
+greptime cli data import-v2 \
+  --addr 127.0.0.1:4000 \
+  --from s3://bucket/snapshots/prod-20250101 \
+  --task-parallelism 4 \
+  --progress auto \
+  --s3 \
+  --s3-region us-west-2
+```
