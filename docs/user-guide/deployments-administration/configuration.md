@@ -419,6 +419,7 @@ GreptimeDB supports three WAL storage options—Local WAL, Remote WAL, and Noop 
 dir = "./greptimedb_data/logs"
 level = "info"
 enable_otlp_tracing = false
+enable_per_region_metrics = false
 otlp_endpoint = "localhost:4317"
 append_stdout = true
 [logging.tracing_sample_ratio]
@@ -428,6 +429,7 @@ default_ratio = 1.0
 - `dir`: log output directory.
 - `level`: output log level, available log level are `info`, `debug`, `error`, `warn`, the default level is `info`.
 - `enable_otlp_tracing`: whether to turn on tracing, not turned on by default.
+- `enable_per_region_metrics`: whether to expose per-region query load metrics, including `greptime_mito_region_query_cpu_time` and `greptime_mito_region_query_scanned_bytes`. This option is disabled by default because it creates one time series per region.
 - `otlp_endpoint`: Export the target endpoint of tracing using gRPC-based OTLP protocol, the default value is `localhost:4317`.
 - `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
 - `tracing_sample_ratio`: This field can configure the sampling rate of tracing. How to use `tracing_sample_ratio`, please refer to [How to configure tracing sampling rate](/user-guide/deployments-administration/monitoring/tracing.md#guide-how-to-configure-tracing-sampling-rate).
