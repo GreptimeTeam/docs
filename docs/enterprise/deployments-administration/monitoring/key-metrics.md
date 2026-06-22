@@ -19,6 +19,8 @@ Since each company typically has its own alerting system with potentially differ
 | `sum(rate(greptime_table_operator_ingest_rows{instance=~"$frontend"}[$__rate_interval]))` | Current rows written per second | Drops to 0 (or below threshold) for n minutes |
 | `greptime_mito_compaction_failure_total` | Compaction failures | Recent increase greater than 0 |
 | `greptime_mito_flush_failure_total` | Flush failures | Recent increase greater than 0 |
+| `sum by (instance, pod, region_id) (rate(greptime_mito_region_query_cpu_time{instance=~"$frontend"}[$__rate_interval]))` | Per-region query CPU time in nanoseconds | Use for read-load hotspot analysis after enabling `logging.enable_per_region_metrics`; avoid broad alerting because this metric has high cardinality |
+| `sum by (instance, pod, region_id) (rate(greptime_mito_region_query_scanned_bytes{instance=~"$frontend"}[$__rate_interval]))` | Per-region scanned bytes during queries | Use for read-load hotspot analysis after enabling `logging.enable_per_region_metrics`; avoid broad alerting because this metric has high cardinality |
 | `sum by(instance, pod, path, method, code) (rate(greptime_servers_http_requests_elapsed_count{path!~"/health\|/metrics"}[$__rate_interval]))` | HTTP request count and response codes | HTTP 200 request count below threshold for n minutes or non-200 response count above normal threshold for n minutes |
 | `sum by (instance, pod) (rate(greptime_mito_write_rows_total{instance=~"$datanode"}[$__rate_interval]))` | Storage engine write row count | Below normal threshold for n minutes |
 
