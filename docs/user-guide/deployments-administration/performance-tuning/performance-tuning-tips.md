@@ -255,3 +255,50 @@ CREATE TABLE IF NOT EXISTS cpu (
   PRIMARY KEY (hostname)
 );
 ```
+
+## Collect profiling data
+
+When GreptimeDB has high CPU or memory usage and the cause is unclear, collect profiling data from the affected node and provide it to developers for further analysis.
+
+Profiling is platform-specific and may be unavailable on some platforms or builds. CPU profiling is available on most Unix platforms. Memory profiling is available on Linux, but not available on macOS or Windows. Generating flamegraphs can consume extra memory because GreptimeDB needs to parse the profile and symbolize stack information in process. Be careful when collecting flamegraphs from nodes that are close to their memory limit.
+
+Profiling is node-local. Replace `127.0.0.1:4000` in the following examples with the HTTP address of the GreptimeDB node that has high CPU or memory usage.
+
+### CPU profiling
+
+Collect a 10-second CPU flamegraph while CPU usage is high:
+
+```bash
+curl -X POST -s 'http://127.0.0.1:4000/debug/prof/cpu?seconds=10&output=flamegraph' > greptime-cpu.svg
+```
+
+### Memory profiling
+
+Memory profiling requires heap profiling to be enabled. Official Docker images enable heap profiling by default. For self-built or non-Docker deployments, we recommend starting GreptimeDB with heap profiling enabled by default:
+
+```bash
+MALLOC_CONF=prof:true ./greptime standalone start
+```
+
+Collect a memory flamegraph whenever memory usage is high, especially if it is still increasing or has reached a new peak:
+
+```bash
+curl -X POST -s 'http://127.0.0.1:4000/debug/prof/mem?output=flamegraph' > greptime-mem.svg
+```
+
+You can also collect two memory profiles at different times and compare them to identify increased allocations:
+
+```bash
+curl -X POST -s 'http://127.0.0.1:4000/debug/prof/mem?output=proto' > greptime-mem-before.pprof
+curl -X POST -s 'http://127.0.0.1:4000/debug/prof/mem?output=proto' > greptime-mem-after.pprof
+```
+
+See [Profiling Tools](/reference/http-endpoints.md#profiling-tools) for the endpoint reference.
+
+When reporting the issue, include:
+
+- GreptimeDB version and deployment mode.
+- Affected component or node.
+- CPU flamegraph or memory flamegraph/profile files.
+- Approximate time range and workload when the issue happened.
+- Relevant metrics and logs if available.

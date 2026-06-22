@@ -141,14 +141,41 @@ For more information on tracing configuration, refer to the [tracing documentati
 ### Profiling Tools
 
 - **Base Path**: `/debug/prof/`
-- **Endpoints**:
-  - `cpu`
-  - `mem`
-- **Methods**: `POST` for profiling the database node.
-- **Description**: Runtime profiling for CPU or Memory usage.
-- **Usage**:
-  - Refer to [Profiling CPU](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-cpu.md) for detailed guide for CPU profiling.
-  - Refer to [Profiling Memory](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-memory.md) for detailed guide for Memory profiling.
+- **Description**: Runtime profiling for CPU or memory usage on the database node.
+
+CPU profiling:
+
+| Path | Method | Description |
+| --- | --- | --- |
+| `/debug/prof/cpu` | `POST` | Collects a CPU profile. Query parameters include `seconds`, `frequency`, and `output`. Supported output formats are `proto`, `text`, and `flamegraph`. |
+
+Example:
+
+```bash
+curl -X POST -s 'http://127.0.0.1:4000/debug/prof/cpu?seconds=10&output=flamegraph' > greptime-cpu.svg
+```
+
+Memory profiling:
+
+| Path | Method | Description |
+| --- | --- | --- |
+| `/debug/prof/mem` | `POST` | Dumps memory profiling data. Query parameter `output` supports `text`, `proto`, and `flamegraph`. |
+| `/debug/prof/mem/status` | `GET` | Checks whether heap profiling is active. |
+| `/debug/prof/mem/activate` | `POST` | Activates heap profiling. |
+| `/debug/prof/mem/deactivate` | `POST` | Deactivates heap profiling. |
+| `/debug/prof/mem/gdump` | `GET` | Checks whether jemalloc gdump is active. |
+| `/debug/prof/mem/gdump` | `POST` | Activates or deactivates jemalloc gdump. Use form field `activate=true` or `activate=false`. |
+| `/debug/prof/mem/symbol` | `POST` | Uploads a jemalloc heap dump file and returns a symbolicated flamegraph. |
+
+Examples:
+
+```bash
+curl -X POST -s 'http://127.0.0.1:4000/debug/prof/mem?output=flamegraph' > greptime-mem.svg
+curl -X GET 'http://127.0.0.1:4000/debug/prof/mem/status'
+curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
+```
+
+For operational guidance, see [Collect profiling data](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md#collect-profiling-data). For advanced usage, refer to [Profiling CPU](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-cpu.md) and [Profiling Memory](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-memory.md).
 
 ## Query Endpoints
 
