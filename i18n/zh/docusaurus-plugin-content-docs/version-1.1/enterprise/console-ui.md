@@ -56,3 +56,7 @@ GreptimeDB 企业版管理控制台是标准 GreptimeDB 仪表板的增强版本
 展示执行时间较长的 SQL/PromQL 查询，支持查看耗时、语句详情，并可使用 **Explain Query** 分析执行计划。
 
 ![Slow Query](/enterprise-console-slow-query.png)
+
+## 持续性能剖析
+
+管理控制台支持[持续性能剖析](/enterprise/console-ui/continuous-profiling)，可用于采集和分析 GreptimeDB 组件的 CPU 与内存 Profile。
