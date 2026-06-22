@@ -25,46 +25,17 @@ monitoring:
     highMemoryThresholdMB: 1024
 ```
 
-The profile table defaults to `public._gt_memory_profiles` and is created with a default TTL of 30 days. The monitor queries `process_resident_memory_bytes`, `greptime_memory_limit_in_bytes`, and `process_start_time_seconds`, then captures profiles from `POST /debug/prof/mem?output=proto`.
+The profile table defaults to `public._gt_memory_profiles` and is created with a default TTL of 30 days. The monitor uses memory usage, memory limit, and process start time metrics to decide when to capture a new profile.
 
-The dashboard apiserver exposes APIs to list, capture, download, and render memory profiles. List responses include `profile_id` and omit the raw profile payload.
-
-The Management Console lists captured profiles with filters for Pod, App, Role, and time range. Each row provides actions to open the flamegraph, compare with a base profile, or download the raw pprof file.
+The Management Console lists captured memory profiles with filters for Pod, App, Role, and time range. Use **Capture** to manually capture a profile for a component when you need an on-demand snapshot.
 
 ![Memory Profile list](/profile-page.png)
 
-```bash
-curl 'http://localhost:19095/api/v1/instances/ns_demo/memory-profiles?start=1760000000000000000&end=1760003600000000000&pod=demo-datanode-0&role=datanode&app=greptime-datanode&limit=100'
+The table shows when the profile was captured, the component App and Pod, the component endpoint, memory usage, usage percentage, and profile status. Use the row actions to open a flamegraph, compare the profile with a base profile, or download the raw pprof file for offline analysis.
 
-curl -X POST 'http://localhost:19095/api/v1/instances/ns_demo/memory-profiles/capture' \
-  -H 'Content-Type: application/json' \
-  -d '{"pod":"demo-datanode-0"}'
-
-curl 'http://localhost:19095/api/v1/instances/ns_demo/memory-profiles/<profile_id>'
-```
-
-You can download a target-minus-base memory diff profile in pprof proto format. The diff follows `go tool pprof -base` semantics: the base profile is scaled by `-1` and merged into the target profile.
-
-```bash
-curl 'http://localhost:19095/api/v1/instances/ns_demo/memory-profiles/<target_profile_id>/diff?base_profile_id=<base_profile_id>' \
-  -o memory-profile-diff.pprof
-
-go tool pprof -http=:0 memory-profile-diff.pprof
-```
-
-You can also render flamegraph HTML directly from a captured memory profile. Set `base_profile_id` to render a target-minus-base diff flamegraph.
+The flamegraph view renders a captured profile in the browser. The top toolbar supports common pprof interactions such as ordering, switching between **Left Heavy** and **Sandwich** views, importing and exporting profile data, and adjusting the display theme.
 
 ![Memory Profile flamegraph](/flame-ui.png)
-
-```bash
-curl 'http://localhost:19095/api/v1/instances/ns_demo/memory-profiles/<target_profile_id>/flamegraph?sample_index=inuse_space' \
-  -o memory-flamegraph.html
-
-curl 'http://localhost:19095/api/v1/instances/ns_demo/memory-profiles/<target_profile_id>/flamegraph?base_profile_id=<base_profile_id>&sample_index=inuse_space' \
-  -o memory-diff-flamegraph.html
-```
-
-Supported `sample_index` values are `inuse_space`, `inuse_objects`, `alloc_space`, and `alloc_objects`. The default is `inuse_space`.
 
 ## CPU Profiles
 
@@ -84,21 +55,8 @@ monitoring:
     frequency: 99
 ```
 
-The profile table defaults to `public._gt_cpu_profiles` and is created with a default TTL of 30 days. The monitor queries `rate(process_cpu_seconds_total[1m])`, `greptime_cpu_limit_in_millicores`, and `process_start_time_seconds`, then captures profiles from `POST /debug/prof/cpu?output=proto&seconds=<seconds>&frequency=<frequency>`.
+The profile table defaults to `public._gt_cpu_profiles` and is created with a default TTL of 30 days. The monitor uses CPU usage, CPU limit, and process start time metrics to decide when to capture a new profile.
 
-The dashboard apiserver exposes APIs to list, manually capture, and download CPU profiles:
+The **CPU Profile** page follows the same interaction pattern as Memory Profile. Use Pod, App, Role, and time range filters to find profile records. Use **Capture** for an on-demand CPU profile, and use row actions to open the flamegraph or download the raw pprof file for offline analysis.
 
-```bash
-curl 'http://localhost:19095/api/v1/instances/ns_demo/cpu-profiles?start=1760000000000000000&end=1760003600000000000&pod=demo-datanode-0&role=datanode&limit=100'
-
-curl -X POST 'http://localhost:19095/api/v1/instances/ns_demo/cpu-profiles/capture' \
-  -H 'Content-Type: application/json' \
-  -d '{"pod":"demo-datanode-0"}'
-
-curl 'http://localhost:19095/api/v1/instances/ns_demo/cpu-profiles/<profile_id>/download' \
-  -o cpu.pprof
-
-go tool pprof -http=:0 cpu.pprof
-```
-
-Manual capture ignores threshold state but still requires the pod to be discoverable from the corresponding CPU or memory metrics.
+Manual capture ignores threshold state but still requires the pod to be discoverable from the corresponding CPU metrics.

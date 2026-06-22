@@ -25,46 +25,17 @@ monitoring:
     highMemoryThresholdMB: 1024
 ```
 
-Profile 表默认是 `public._gt_memory_profiles`，创建时默认 TTL 为 30 天。监控器会查询 `process_resident_memory_bytes`、`greptime_memory_limit_in_bytes` 和 `process_start_time_seconds`，然后通过组件端点 `POST /debug/prof/mem?output=proto` 采集 Profile。
+Profile 表默认是 `public._gt_memory_profiles`，创建时默认 TTL 为 30 天。监控器会根据内存使用量、内存限制和进程启动时间指标判断何时采集新的 Profile。
 
-dashboard apiserver 提供用于列出、采集、下载和渲染内存 Profile 的 API。列表响应会包含 `profile_id`，但不包含原始 Profile 载荷。
-
-管理控制台会以列表形式展示已采集的 Profile，并支持按 Pod、App、Role 和时间范围筛选。每一行都提供打开火焰图、与 base Profile 比较，或下载原始 pprof 文件的操作。
+管理控制台会以列表形式展示已采集的内存 Profile，并支持按 Pod、App、Role 和时间范围筛选。需要按需采集组件 Profile 时，可以使用 **Capture**。
 
 ![内存 Profile 列表](/profile-page.png)
 
-```bash
-curl 'http://localhost:19095/api/v1/instances/ns_demo/memory-profiles?start=1760000000000000000&end=1760003600000000000&pod=demo-datanode-0&role=datanode&app=greptime-datanode&limit=100'
+列表会展示 Profile 的采集时间、组件 App 和 Pod、组件端点、内存用量、使用率以及 Profile 状态。你可以通过行内操作打开火焰图、与 base Profile 进行对比，或下载原始 pprof 文件用于离线分析。
 
-curl -X POST 'http://localhost:19095/api/v1/instances/ns_demo/memory-profiles/capture' \
-  -H 'Content-Type: application/json' \
-  -d '{"pod":"demo-datanode-0"}'
-
-curl 'http://localhost:19095/api/v1/instances/ns_demo/memory-profiles/<profile_id>'
-```
-
-你可以下载 target-minus-base 的内存差异 Profile，格式为 pprof proto。该差异遵循 `go tool pprof -base` 语义：base Profile 会按 `-1` 缩放后合并到 target Profile 中。
-
-```bash
-curl 'http://localhost:19095/api/v1/instances/ns_demo/memory-profiles/<target_profile_id>/diff?base_profile_id=<base_profile_id>' \
-  -o memory-profile-diff.pprof
-
-go tool pprof -http=:0 memory-profile-diff.pprof
-```
-
-你也可以直接从已采集的内存 Profile 渲染火焰图 HTML。设置 `base_profile_id` 后，会渲染 target-minus-base 的差异火焰图。
+火焰图视图会在浏览器中渲染已采集的 Profile。顶部工具栏支持常见 pprof 交互，例如排序、在 **Left Heavy** 和 **Sandwich** 视图间切换、导入导出 Profile 数据，以及调整展示主题。
 
 ![内存 Profile 火焰图](/flame-ui.png)
-
-```bash
-curl 'http://localhost:19095/api/v1/instances/ns_demo/memory-profiles/<target_profile_id>/flamegraph?sample_index=inuse_space' \
-  -o memory-flamegraph.html
-
-curl 'http://localhost:19095/api/v1/instances/ns_demo/memory-profiles/<target_profile_id>/flamegraph?base_profile_id=<base_profile_id>&sample_index=inuse_space' \
-  -o memory-diff-flamegraph.html
-```
-
-支持的 `sample_index` 值包括 `inuse_space`、`inuse_objects`、`alloc_space` 和 `alloc_objects`。默认值为 `inuse_space`。
 
 ## CPU Profile
 
@@ -84,21 +55,8 @@ monitoring:
     frequency: 99
 ```
 
-Profile 表默认是 `public._gt_cpu_profiles`，创建时默认 TTL 为 30 天。监控器会查询 `rate(process_cpu_seconds_total[1m])`、`greptime_cpu_limit_in_millicores` 和 `process_start_time_seconds`，然后通过组件端点 `POST /debug/prof/cpu?output=proto&seconds=<seconds>&frequency=<frequency>` 采集 Profile。
+Profile 表默认是 `public._gt_cpu_profiles`，创建时默认 TTL 为 30 天。监控器会根据 CPU 使用量、CPU 限制和进程启动时间指标判断何时采集新的 Profile。
 
-dashboard apiserver 提供用于列出、手动采集和下载 CPU Profile 的 API：
+**CPU Profile** 页面与 Memory Profile 页面使用相同的交互方式。你可以通过 Pod、App、Role 和时间范围筛选 Profile 记录；使用 **Capture** 按需采集 CPU Profile；并通过行内操作打开火焰图或下载原始 pprof 文件用于离线分析。
 
-```bash
-curl 'http://localhost:19095/api/v1/instances/ns_demo/cpu-profiles?start=1760000000000000000&end=1760003600000000000&pod=demo-datanode-0&role=datanode&limit=100'
-
-curl -X POST 'http://localhost:19095/api/v1/instances/ns_demo/cpu-profiles/capture' \
-  -H 'Content-Type: application/json' \
-  -d '{"pod":"demo-datanode-0"}'
-
-curl 'http://localhost:19095/api/v1/instances/ns_demo/cpu-profiles/<profile_id>/download' \
-  -o cpu.pprof
-
-go tool pprof -http=:0 cpu.pprof
-```
-
-手动采集会忽略阈值状态，但仍要求对应 Pod 能够从 CPU 或内存指标中被发现。
+手动采集会忽略阈值状态，但仍要求对应 Pod 能够从 CPU 指标中被发现。
