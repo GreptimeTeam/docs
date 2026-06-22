@@ -65,10 +65,10 @@ admin gc_regions(1, 2, 3, true);
 
 ## Build Index
 
-Use `ADMIN BUILD_INDEX` to manually build indexes for existing data files when the table metadata requires indexes that some SST files do not have yet. Typical use cases include adding an index to an existing column, migrating from data written before the index was available, or retrying after a previous index build failure.
+Use `admin build_index` to manually build indexes for existing data files when the table metadata requires indexes that some SST files do not have yet. Typical use cases include adding an index to an existing column, migrating from data written before the index was available, or retrying after a previous index build failure.
 
 ```sql
-ADMIN BUILD_INDEX('table_name');
+admin build_index("table_name");
 ```
 
 The function takes exactly one string argument. The table name can be unqualified or fully qualified. Unqualified names are resolved with the current query context.
@@ -78,23 +78,23 @@ For example, build a fulltext index for existing data:
 ```sql
 CREATE TABLE logs (
     ts TIMESTAMP TIME INDEX,
-    message TEXT,
+    message TEXT
 );
 
 INSERT INTO logs VALUES
     (1, 'The quick brown fox jumps over the lazy dog'),
     (2, 'The quick brown fox jumps over the lazy cat');
 
-ADMIN FLUSH_TABLE('logs');
+admin flush_table("logs");
 
 ALTER TABLE logs MODIFY COLUMN message SET FULLTEXT INDEX;
 
-ADMIN BUILD_INDEX('logs');
+admin build_index("logs");
 
-SELECT message FROM logs WHERE MATCHES(message, 'fox');
+SELECT message FROM logs WHERE matches_term(message, 'fox');
 ```
 
-`ADMIN BUILD_INDEX` sends build requests to all regions of the table. Each region only builds indexes for SST files whose recorded index metadata is inconsistent with the current table metadata. Files that already have the required index metadata are skipped, so rerunning the command is safe.
+`admin build_index` sends build requests to all regions of the table. Each region only builds indexes for SST files whose recorded index metadata is inconsistent with the current table metadata. Files that already have the required index metadata are skipped, so rerunning the command is safe. The command returns an affected-row count, not a procedure ID, so use the verification queries below instead of `procedure_state`.
 
 Use `SHOW INDEX` to check logical index definitions:
 
