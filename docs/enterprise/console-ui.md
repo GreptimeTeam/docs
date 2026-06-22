@@ -59,4 +59,4 @@ Displays long-running SQL and PromQL queries with detailed execution time and qu
 
 ## Continuous Profiling
 
-The Management Console supports [Continuous Profiling](/enterprise/console-ui/continuous-profiling) for capturing and analyzing GreptimeDB component CPU and memory profiles.
+The Management Console supports [Continuous Profiling](./continuous-profiling) for capturing and analyzing GreptimeDB component CPU and memory profiles.
