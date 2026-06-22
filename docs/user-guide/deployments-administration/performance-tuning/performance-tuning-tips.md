@@ -127,20 +127,6 @@ CREATE TABLE logs(
 
 ## Ingestion
 
-### Metrics
-
-The following metrics help diagnose ingestion issues:
-
-| Metric                                       | Type      | Description                                                                              |
-| -------------------------------------------- | --------- | ---------------------------------------------------------------------------------------- |
-| greptime_mito_write_stage_elapsed_bucket     | histogram | The elapsed time of different phases of processing a write request in the storage engine |
-| greptime_mito_write_buffer_bytes             | gauge     | The current estimated bytes allocated for the write buffer (memtables).                  |
-| greptime_mito_write_rows_total               | counter   | The number of rows written to the storage engine                                         |
-| greptime_mito_write_stall_total              | gauge     | The number of rows currently stalled due to high memory pressure                         |
-| greptime_mito_write_reject_total             | counter   | The number of rows rejected due to high memory pressure                                  |
-| raft_engine_sync_log_duration_seconds_bucket | histogram | The elapsed time of flushing the WAL to the disk                                         |
-| greptime_mito_flush_elapsed                  | histogram | The elapsed time of flushing the SST files                                               |
-
 ### Batching rows
 
 Batching means sending multiple rows to the database over the same request. This can significantly improve ingestion throughput. A recommended starting point is 1000 rows per batch. You can enlarge the batch size if latency and resource usage are still acceptable.
@@ -150,6 +136,79 @@ Batching means sending multiple rows to the database over the same request. This
 Although GreptimeDB can handle out-of-order data, it still affects performance. GreptimeDB infers a time window size from ingested data and partitions the data into multiple time windows according to their timestamps. If the written rows are not within the same time window, GreptimeDB needs to split them, which affects write performance.
 
 Generally, real-time data doesn't have the issues mentioned above as they always use the latest timestamp. If you need to import data with a long time range into the database, we recommend creating the table in advance and [specifying the compaction.twcs.time_window option](/reference/sql/create.md#create-a-table-with-custom-compaction-options).
+
+### Metrics
+
+The following metrics help diagnose ingestion issues. Most of these metrics are available in the official Grafana dashboards. Use the metric names below when you need custom PromQL or deeper investigation.
+
+| Metric                                       | Type      | Description                                                                                               |
+| -------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------- |
+| greptime_table_operator_ingest_rows          | counter   | The number of rows ingested by the table operator. Use the rate of this metric to track total write load. |
+| greptime_servers_http_requests_elapsed_bucket | histogram | HTTP request latency. Use labels such as `path`, `method`, and `code` to find write-related latency.      |
+| greptime_servers_grpc_requests_elapsed_bucket | histogram | gRPC request latency. Use labels such as `path` and `code` to find write-related latency.                 |
+| greptime_mito_handle_request_elapsed_bucket  | histogram | The elapsed time of handling storage engine requests on datanodes.                                        |
+| greptime_mito_write_stage_elapsed_bucket     | histogram | The elapsed time of different phases of processing a write request in the storage engine.                 |
+| greptime_mito_write_buffer_bytes             | gauge     | The current estimated bytes allocated for the write buffer (memtables).                                   |
+| greptime_mito_write_rows_total               | counter   | The number of rows written to the storage engine. Use it to compare write load across datanodes.          |
+| greptime_mito_write_stalling_count           | gauge     | The number of write requests currently stalled in each worker.                                            |
+| greptime_mito_write_stall_total              | counter   | The total number of write requests stalled due to high memory pressure or transient region states.        |
+| greptime_mito_write_reject_total             | counter   | The number of write requests rejected due to high memory pressure.                                         |
+| raft_engine_sync_log_duration_seconds_bucket | histogram | The elapsed time of flushing the WAL to the disk.                                                         |
+| greptime_mito_flush_requests_total           | counter   | The number of scheduled flush requests.                                                                   |
+| greptime_mito_flush_elapsed                  | histogram | The elapsed time of flushing SST files.                                                                   |
+| greptime_mito_flush_bytes_total              | counter   | The number of bytes flushed to SST files.                                                                 |
+| greptime_mito_flush_file_total               | counter   | The number of SST files produced by flush jobs.                                                           |
+
+### Check ingestion throughput and request latency
+
+Use `rate(greptime_table_operator_ingest_rows[$__rate_interval])` to observe the total ingestion rate. For protocol-level latency, check `greptime_servers_http_requests_elapsed_bucket` and `greptime_servers_grpc_requests_elapsed_bucket`. Filter by labels such as `path`, `method`, and `code` to separate write requests from health checks, metrics scraping, and query requests.
+
+If frontend protocol latency is high, compare it with datanode-side metrics such as `greptime_mito_handle_request_elapsed_bucket` and `greptime_mito_write_stage_elapsed_bucket`. This helps determine whether the bottleneck is in request handling before the storage engine or inside the datanode write path.
+
+### Diagnose datanode write pressure
+
+When datanode writes are slow or ingestion latency is high, first check whether the write buffer is under pressure:
+
+- `greptime_mito_write_buffer_bytes`
+- `greptime_mito_write_stall_total`
+- `greptime_mito_write_stalling_count`
+- `greptime_mito_write_reject_total`
+
+Write stalls mean GreptimeDB is applying backpressure instead of accepting writes immediately. Stalls can happen when the global write buffer reaches `global_write_buffer_size`, or when a region is temporarily not writable during internal state changes. If clients receive an error like `Engine write buffer is full, rejecting write requests`, the datanode has reached the reject threshold controlled by `global_write_buffer_reject_size`.
+
+When a datanode is under write pressure, check flush performance and write distribution before tuning the write buffer size. Increasing the write buffer only gives the datanode more memory headroom. It does not fix slow flushes or an unbalanced table that sends most writes to one region.
+
+### Check flush performance
+
+If the write buffer keeps growing or writes stall frequently, check whether flush is the bottleneck. Use `greptime_mito_flush_elapsed` to inspect flush latency, and use `greptime_mito_flush_requests_total`, `greptime_mito_flush_bytes_total`, and `greptime_mito_flush_file_total` to understand flush frequency and throughput.
+
+Datanode logs also help identify slow flushes and hot regions. Search for `Successfully flush memtables`. The log line includes the region, flush reason, SST files, `total_rows`, `total_bytes`, `cost`, encoded part count, and flush metrics. You can estimate flush throughput by dividing `total_rows` or `total_bytes` by `cost`.
+
+If flush elapsed time is high, for example 30 seconds or more, or the flush throughput is lower than the ingestion speed, increasing the write buffer size usually only delays stalls or rejects. In this case, review the table partitioning and region distribution so flush work can be spread across more regions and datanodes.
+
+If flush jobs are fast, usually finishing in several seconds, but the flush request rate is high and write buffer pressure appears often, increasing the write buffer size can help reduce flush frequency.
+
+### Check write distribution
+
+For partitioned tables, check whether writes are evenly distributed across datanodes and regions. Use `greptime_mito_write_rows_total` to compare datanode-level write rows, and `greptime_mito_handle_request_elapsed_bucket` to compare datanode request latency.
+
+You can also query [`REGION_STATISTICS`](/reference/sql/information-schema/region-statistics.md) to inspect region-level statistics such as `written_bytes_since_open` and `memtable_size`. If one datanode or one region receives most of the write load, adjust the table partitioning so the workload is spread across more regions and datanodes before increasing the write buffer size.
+
+### Tune write buffer size
+
+If stalls or rejects are caused by write buffer pressure, and flush performance and write distribution are healthy, consider increasing `region_engine.mito.global_write_buffer_size`. This is most useful for workloads with large rows, such as logs or traces. By default, `global_write_buffer_size` is auto-sized to 1/8 of OS memory with a maximum of 1GB. Increase it gradually, for example by 2x to 4x, and watch datanode memory usage.
+
+In most cases, leave `region_engine.mito.global_write_buffer_reject_size` unset so GreptimeDB uses the default reject threshold of 2x `global_write_buffer_size`. If you need writes to fail earlier under memory pressure, set it manually to a deliberate margin, commonly 1.5x to 2x `global_write_buffer_size`, based on available datanode memory and how early you want requests to be rejected. The value must be greater than `global_write_buffer_size`; otherwise, GreptimeDB sanitizes it back to 2x.
+
+Example:
+
+```toml
+[[region_engine]]
+[region_engine.mito]
+global_write_buffer_size = "2GB"
+# Optional. Leave unset unless you need a custom reject margin.
+global_write_buffer_reject_size = "3GB"
+```
 
 ## Schema
 
