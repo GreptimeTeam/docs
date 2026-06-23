@@ -98,6 +98,7 @@ Please refer to the following guides for detailed instructions on integrating Gr
 
 ## Query Logs
 
+- [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md#logs-query): Filter and search logs in the built-in Dashboard using a builder or code editor.
 - [Full-Text Search](./fulltext-search.md): Guide on using GreptimeDB's query language for effective searching and analysis of log data.
 
 ## Reference

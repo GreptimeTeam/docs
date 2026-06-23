@@ -485,28 +485,13 @@ ORDER BY m.ts, m.host;
 
 ## GreptimeDB Dashboard
 
-GreptimeDB 内置了 [Dashboard](./installation/greptimedb-dashboard.md)，用于数据探索和管理。
-
-### 数据探索
-
-打开 `http://localhost:4000/dashboard`，点 `+` 新建查询，输入 SQL，点 `Run All` 执行。点结果面板的 `Chart` 按钮可以可视化数据。
+GreptimeDB 内置 [控制台](./installation/greptimedb-dashboard.md)，地址为 `http://localhost:4000/dashboard`。**Table Query** 是通用查询入口（支持 SQL 和 PromQL），也可切换到 **Metrics Query**、**Logs Query** 和 **Traces Query** 使用专用视图。
 
 ```sql
 SELECT * FROM grpc_latencies;
 ```
 
 ![查询 gRPC 延迟](/select-grpc-latencies.png)
-
-### 用 InfluxDB Line Protocol 写入
-
-点 Dashboard 的 `Ingest` 图标，可以用 [InfluxDB Line Protocol](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md) 格式写入数据：
-
-```txt
-grpc_metrics,host=host1,method_name=GetUser latency=100,code=0 1720728021000000000
-grpc_metrics,host=host2,method_name=GetUser latency=110,code=1 1720728021000000000
-```
-
-点 `Write` 写入。`grpc_metrics` 表不存在会自动创建——这就是 GreptimeDB 的 [Schemaless](/user-guide/ingest-data/overview.md#自动生成表结构) 能力。
 
 ## 下一步
 
