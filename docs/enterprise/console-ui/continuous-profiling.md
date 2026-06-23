@@ -7,6 +7,8 @@ description: Configure and use Continuous Profiling in the GreptimeDB Enterprise
 
 Continuous Profiling in the Management Console monitors GreptimeDB component resource usage and stores pprof-format memory and CPU profiles in the monitoring GreptimeDB instance. It helps operators investigate memory growth, high CPU usage, and performance regressions without manually logging in to each component.
 
+The Continuous Profiling UI is available starting from dashboard version `v0.2.0-alpha.7`.
+
 Continuous Profiling is configured on the dashboard apiserver and works at the cluster level. When enabled, the monitor scans component series from cluster metrics, captures the first seen component, and captures later profiles when resource usage grows by the configured step or reaches a new high above the configured threshold.
 
 ## Memory Profiles
@@ -21,8 +23,8 @@ monitoring:
     enabled: true
     memory_profiles_database: public
     memory_profiles_table: _gt_memory_profiles
-    memoryProfileStepMB: 100
-    highMemoryThresholdMB: 1024
+    memory_profile_step_mb: 100
+    high_memory_threshold_mb: 1024
 ```
 
 The profile table defaults to `public._gt_memory_profiles` and is created with a default TTL of 30 days. The monitor uses memory usage, memory limit, and process start time metrics to decide when to capture a new profile.
@@ -49,8 +51,8 @@ monitoring:
     enabled: true
     cpu_profiles_database: public
     cpu_profiles_table: _gt_cpu_profiles
-    cpuProfileStepMillicores: 100
-    highCPUThresholdMillicores: 800
+    cpu_profile_step_millicores: 100
+    high_cpu_threshold_millicores: 800
     seconds: 5
     frequency: 99
 ```
