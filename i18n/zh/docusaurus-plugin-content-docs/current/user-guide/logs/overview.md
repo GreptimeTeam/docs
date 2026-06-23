@@ -95,6 +95,7 @@ GreptimeDB 与各种日志收集器无缝集成，提供全面的日志记录解
 
 ## 查询日志
 
+- [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md#logs-query)：在内置 Dashboard 中使用构建器或代码编辑器筛选和搜索日志。
 - [全文搜索](./fulltext-search.md)：使用 GreptimeDB 查询语言有效搜索和分析日志数据的指南。
 
 ## 参考
