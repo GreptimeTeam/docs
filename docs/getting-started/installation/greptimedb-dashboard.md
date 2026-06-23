@@ -91,7 +91,7 @@ GreptimeDB pre-configures two datasource plugins that connect to your local inst
 
 For example, the built-in **Node Exporter** dashboard uses PromQL to show CPU, memory, disk, and network panels with variables such as `job` and `host`:
 
-![Visualization](/dashboard/visulization.png)
+![Visualization](/dashboard/visualization.png)
 
 See [Perses integration](/user-guide/integrations/perses.md) for datasource connection, panel configuration, and Grafana migration.
 

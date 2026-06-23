@@ -91,7 +91,7 @@ GreptimeDB 预配置了两个数据源插件，自动连接到本地实例：
 
 例如，内置的 **Node Exporter** 大盘通过 PromQL 展示 CPU、内存、磁盘和网络面板，并支持 `job`、`host` 等变量：
 
-![Visualization](/dashboard/visulization.png)
+![Visualization](/dashboard/visualization.png)
 
 数据源连接、面板配置和 Grafana 迁移详见 [Perses 集成](/user-guide/integrations/perses.md)。
 
