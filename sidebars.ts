@@ -163,6 +163,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/kafka',
             'user-guide/integrations/telegraf',
             'user-guide/integrations/grafana',
+            'user-guide/integrations/perses',
             'user-guide/integrations/superset',
             'user-guide/integrations/metabase',
             'user-guide/integrations/emqx',

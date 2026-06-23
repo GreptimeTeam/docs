@@ -95,7 +95,7 @@ View and manage Flow tasks for continuous computation. See [Manage Flow](/user-g
 
 ### Visualization
 
-Turn query results into charts from the query result panel.
+Build Perses dashboards for metrics, logs, and traces. The embedded editor uses the same datasource plugins — see [Perses integration](/user-guide/integrations/perses.md) for connection and query configuration.
 
 ### Status
 
@@ -105,4 +105,5 @@ View node and cluster runtime status, including CPU and memory usage. See [Runti
 
 - [Quick Start](/getting-started/quick-start.md) — ingest and correlate metrics, logs, and traces
 - [User Guide](/user-guide/overview.md) — full reference for ingestion, querying, and operations
+- [Perses integration](/user-guide/integrations/perses.md) — configure GreptimeDB and Prometheus datasources in Perses
 - [Grafana integration](/user-guide/integrations/grafana.md) — production dashboards and alerting

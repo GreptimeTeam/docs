@@ -95,7 +95,7 @@ Traces Query 是面向 traces 的专用视图。选择 trace 表，按 trace ID 
 
 ### Visualization
 
-将查询结果可视化为图表。
+使用 Perses 构建 metrics、logs、traces 大盘。内嵌编辑器使用相同的数据源插件，连接与查询配置见 [Perses 集成](/user-guide/integrations/perses.md)。
 
 ### Status
 
@@ -105,4 +105,5 @@ Traces Query 是面向 traces 的专用视图。选择 trace 表，按 trace ID 
 
 - [快速开始](/getting-started/quick-start.md) — 写入数据并关联查询 metrics、logs 和 traces
 - [用户指南](/user-guide/overview.md) — 写入、查询和运维的完整参考
+- [Perses 集成](/user-guide/integrations/perses.md) — 在 Perses 中配置 GreptimeDB 与 Prometheus 数据源
 - [Grafana 集成](/user-guide/integrations/grafana.md) — 生产环境的仪表盘和告警
