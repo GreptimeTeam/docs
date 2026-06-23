@@ -1,13 +1,13 @@
 ---
-keywords: [Perses, GreptimeDB datasource, Prometheus datasource, PromQL, SQL, logs, dashboard migration]
-description: Configure GreptimeDB as a datasource in Perses using the GreptimeDB and Prometheus plugins to query metrics and logs.
+keywords: [Perses, GreptimeDB datasource, Prometheus datasource, PromQL, SQL, logs, traces, dashboard migration]
+description: Configure GreptimeDB as a datasource in Perses using the GreptimeDB and Prometheus plugins to query metrics, logs, and traces.
 ---
 
 # Perses
 
 [Perses](https://perses.dev/) is a CNCF observability dashboard project. You can connect a Perses instance to GreptimeDB with two official datasource plugins:
 
-- **GreptimeDB datasource** — run SQL against metrics and logs tables
+- **GreptimeDB datasource** — run SQL against metrics, logs, and traces tables
 - **Prometheus datasource** — run PromQL against GreptimeDB's Prometheus-compatible API
 
 The [GreptimeDB plugin](https://github.com/perses/plugins/tree/main/schemas/datasources/greptimedb) is part of the CNCF Perses plugin repository. Together, these plugins let you build unified observability dashboards on top of GreptimeDB's single-database storage. See [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) for the unified data model.
@@ -21,8 +21,9 @@ GreptimeDB also embeds Perses in the [built-in Dashboard](/getting-started/insta
 | **PromQL** | `PrometheusDatasource` | `PrometheusTimeSeriesQuery` | `TimeSeriesChart`, `GaugeChart`, `StatChart` |
 | **SQL time series** | `GreptimeDBDatasource` | `GreptimeDBTimeSeriesQuery` | `TimeSeriesChart`, `StatChart`, `Table` |
 | **Logs** | `GreptimeDBDatasource` | `GreptimeDBLogQuery` | `LogsTable` |
+| **Traces** | `GreptimeDBDatasource` | `GreptimeDBTraceQuery` | `TraceTable`, `TracingGanttChart` |
 
-Use **PromQL** for standard metrics dashboards. Use the **GreptimeDB** datasource for logs and SQL-based time series with `RANGE`, `ALIGN`, and `FILL`.
+Use **PromQL** for standard metrics dashboards. Use the **GreptimeDB** datasource for logs, traces, and SQL-based time series with `RANGE`, `ALIGN`, and `FILL`.
 
 ## Prerequisites
 
@@ -36,7 +37,7 @@ Use **PromQL** for standard metrics dashboards. Use the **GreptimeDB** datasourc
 | Prometheus metrics, `node_exporter`, existing PromQL dashboards | `PrometheusDatasource` | `http://<host>:4000/v1/prometheus` |
 | Log tables, trace tables, SQL time series (`RANGE`, `ALIGN`) | `GreptimeDBDatasource` | `http://<host>:4000` |
 
-Use **PromQL** for standard metrics dashboards. Use the **GreptimeDB** datasource for logs and advanced SQL aggregation.
+Use **PromQL** for standard metrics dashboards. Use the **GreptimeDB** datasource for logs, traces, and advanced SQL aggregation.
 
 ## GreptimeDB datasource plugin
 

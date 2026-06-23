@@ -1,13 +1,13 @@
 ---
-keywords: [Perses, GreptimeDB 数据源, Prometheus 数据源, PromQL, SQL, logs, 仪表盘迁移]
-description: 在 Perses 中将 GreptimeDB 配置为数据源，使用 GreptimeDB 与 Prometheus 插件查询 metrics 和 logs。
+keywords: [Perses, GreptimeDB 数据源, Prometheus 数据源, PromQL, SQL, logs, traces, 仪表盘迁移]
+description: 在 Perses 中将 GreptimeDB 配置为数据源，使用 GreptimeDB 与 Prometheus 插件查询 metrics、logs 和 traces。
 ---
 
 # Perses
 
 [Perses](https://perses.dev/) 是 CNCF 旗下的可观测性仪表盘项目。你可以通过两个官方数据源插件将 Perses 连接到 GreptimeDB：
 
-- **GreptimeDB 数据源** — 对 metrics、logs 表执行 SQL 查询
+- **GreptimeDB 数据源** — 对 metrics、logs、traces 表执行 SQL 查询
 - **Prometheus 数据源** — 通过 GreptimeDB 的 Prometheus 兼容 API 执行 PromQL 查询
 
 [GreptimeDB 插件](https://github.com/perses/plugins/tree/main/schemas/datasources/greptimedb) 已纳入 CNCF Perses 官方插件仓库。两个插件配合使用，可在 GreptimeDB 统一存储之上构建可观测性大盘。统一数据模型见 [为什么选择 GreptimeDB](/user-guide/concepts/why-greptimedb.md)。
@@ -21,8 +21,9 @@ GreptimeDB [内置控制台](/getting-started/installation/greptimedb-dashboard.
 | **PromQL** | `PrometheusDatasource` | `PrometheusTimeSeriesQuery` | `TimeSeriesChart`、`GaugeChart`、`StatChart` |
 | **SQL 时序** | `GreptimeDBDatasource` | `GreptimeDBTimeSeriesQuery` | `TimeSeriesChart`、`StatChart`、`Table` |
 | **Logs** | `GreptimeDBDatasource` | `GreptimeDBLogQuery` | `LogsTable` |
+| **Traces** | `GreptimeDBDatasource` | `GreptimeDBTraceQuery` | `TraceTable`、`TracingGanttChart` |
 
-标准 metrics 大盘使用 **PromQL**；logs 和使用 `RANGE`、`ALIGN`、`FILL` 的 SQL 时序查询使用 **GreptimeDB** 数据源。
+标准 metrics 大盘使用 **PromQL**；logs、traces 和使用 `RANGE`、`ALIGN`、`FILL` 的 SQL 时序查询使用 **GreptimeDB** 数据源。
 
 ## 前置条件
 
@@ -36,7 +37,7 @@ GreptimeDB [内置控制台](/getting-started/installation/greptimedb-dashboard.
 | Prometheus 指标、`node_exporter`、现有 PromQL 大盘 | `PrometheusDatasource` | `http://<host>:4000/v1/prometheus` |
 | 日志表、trace 表、SQL 时序（`RANGE`、`ALIGN`） | `GreptimeDBDatasource` | `http://<host>:4000` |
 
-标准 metrics 大盘使用 **PromQL**；logs 和高级 SQL 聚合使用 **GreptimeDB** 数据源。
+标准 metrics 大盘使用 **PromQL**；logs、traces 和高级 SQL 聚合使用 **GreptimeDB** 数据源。
 
 ## GreptimeDB 数据源插件
 

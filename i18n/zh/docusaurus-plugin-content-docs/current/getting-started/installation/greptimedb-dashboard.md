@@ -17,7 +17,7 @@ http://localhost:4000/dashboard
 
 如需禁用控制台 HTTP 服务，可在启动 frontend 时设置 `--disable-dashboard`。详见 [frontend 命令行参数](/reference/command-lines/frontend.md)。
 
-## 探索数据
+## 查询数据
 
 控制台提供通用查询入口和按信号类型划分的专用视图：
 
