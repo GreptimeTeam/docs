@@ -500,7 +500,14 @@ const sidebars: SidebarsConfig = {
             'enterprise/elasticsearch-compatible/aggregate',
           ],
         },
-        'enterprise/console-ui',
+        {
+          type: 'category',
+          label: 'Management Console',
+          items: [
+            'enterprise/console-ui',
+            'enterprise/console-ui/continuous-profiling',
+          ],
+        },
         {
           type: 'category',
           label: 'Read Replicas',
