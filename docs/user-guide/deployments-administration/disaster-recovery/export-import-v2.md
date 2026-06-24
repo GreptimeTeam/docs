@@ -68,22 +68,7 @@ By default, export and import use the `greptime` catalog. Add `--catalog <catalo
 
 Use the S3 backend for AWS S3 and S3-compatible services such as MinIO.
 
-### AWS S3
-
-```bash
-greptime cli data export-v2 create \
-  --addr 127.0.0.1:4000 \
-  --to s3://my-bucket/snapshots/prod-2026-06-23 \
-  --s3 \
-  --s3-bucket my-bucket \
-  --s3-region us-west-2 \
-  --s3-access-key-id "$AWS_ACCESS_KEY_ID" \
-  --s3-secret-access-key "$AWS_SECRET_ACCESS_KEY"
-```
-
-If your environment uses instance profiles or another credential provider, explicit access keys may not be required. The S3 backend still requires `--s3`, `--s3-bucket`, and `--s3-region`.
-
-### MinIO or another S3-compatible endpoint
+### S3-compatible endpoint
 
 For MinIO, pass `--s3-endpoint`:
 
@@ -94,8 +79,8 @@ greptime cli data export-v2 create \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id minioadmin \
-  --s3-secret-access-key minioadmin \
+  --s3-access-key-id superpower_ci_user \
+  --s3-secret-access-key superpower_password \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
@@ -107,8 +92,8 @@ greptime cli data export-v2 verify \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id minioadmin \
-  --s3-secret-access-key minioadmin \
+  --s3-access-key-id superpower_ci_user \
+  --s3-secret-access-key superpower_password \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
@@ -119,10 +104,12 @@ greptime cli data import-v2 \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id minioadmin \
-  --s3-secret-access-key minioadmin \
+  --s3-access-key-id superpower_ci_user \
+  --s3-secret-access-key superpower_password \
   --s3-endpoint http://127.0.0.1:9000
 ```
+
+For AWS S3, use the same `--s3` options but omit `--s3-endpoint` unless you use a custom endpoint. If your environment uses instance profiles or another credential provider, explicit access keys may not be required. The S3 backend still requires `--s3`, `--s3-bucket`, and `--s3-region`.
 
 ## Export selected schemas
 
@@ -182,13 +169,16 @@ Use a bounded time range and a chunk window for large datasets. Export/Import V2
 ```bash
 greptime cli data export-v2 create \
   --addr 127.0.0.1:4000 \
-  --to s3://my-bucket/snapshots/prod-2026-06 \
+  --to s3://greptime/snapshots/prod-2026-06 \
   --start-time 2026-06-01T00:00:00Z \
   --end-time 2026-07-01T00:00:00Z \
   --chunk-time-window 1d \
   --s3 \
-  --s3-bucket my-bucket \
-  --s3-region us-west-2
+  --s3-bucket greptime \
+  --s3-region us-west-2 \
+  --s3-access-key-id superpower_ci_user \
+  --s3-secret-access-key superpower_password \
+  --s3-endpoint http://127.0.0.1:9000
 ```
 
 `--chunk-time-window` requires both `--start-time` and `--end-time`.
@@ -287,21 +277,14 @@ greptime cli data export-v2 delete \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id minioadmin \
-  --s3-secret-access-key minioadmin \
+  --s3-access-key-id superpower_ci_user \
+  --s3-secret-access-key superpower_password \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
 ## Authentication, timeout, proxy, and progress
 
-If the GreptimeDB instance has basic authentication enabled, pass credentials with `--auth-basic`:
-
-```bash
-greptime cli data export-v2 create \
-  --addr 127.0.0.1:4000 \
-  --to file:///tmp/greptime-snapshots/demo \
-  --auth-basic '<username>:<password>'
-```
+If the GreptimeDB instance has basic authentication enabled, pass credentials with `--auth-basic <username>:<password>`.
 
 Set request timeout with `--timeout`, for example `--timeout 60s` or `--timeout 5m`.
 
