@@ -1,62 +1,93 @@
 ---
-keywords: [企业版, 管理控制台, 仪表板, 集群管理, 数据管理, 监控, UI]
-description: GreptimeDB 企业版管理控制台提供集群状态、区域管理、数据管理和监控等功能的可视化界面。
+keywords: [企业版, 管理控制台, 仪表板, 数据管理, 运维, 集群管理, 区域管理, 实例管理, 用户管理, 监控]
+description: GreptimeDB 企业版管理控制台在开源 Dashboard 基础上提供 Operation 运维能力，涵盖集群可观测性、Region 管理、实例配置与用户管理。
 ---
 
 # 管理控制台
 
-GreptimeDB 企业版管理控制台是标准 GreptimeDB 仪表板的增强版本，为企业用户提供更全面的集群可观测性与运维能力。
+GreptimeDB 企业版管理控制台在开源 [GreptimeDB 控制台](/getting-started/installation/greptimedb-dashboard.md) 基础上增加了企业版运维能力。侧边栏分为两组：
 
+| 分组 | 范围 |
+| --- | --- |
+| **Data Management** | 查询、写入与管理数据 — 与开源版 Dashboard 功能一致 |
+| **Operation** | 集群可观测性与治理 — 企业版专有 |
 
-## 集群概览
+## Data Management
+
+**Data Management** 涵盖查询、写入、pipeline、Flow 和 Visualization，与开源 Dashboard 功能一致。详见 [GreptimeDB 控制台](/getting-started/installation/greptimedb-dashboard.md)。
+
+## Operation
+
+**Operation** 提供企业版专有的集群可观测性与治理能力。
+
+### Overview
 
 **Overview** 页面展示集群整体运行状态和资源使用情况。
 
-- **Service Overview**：CPU、内存、存储使用率；数据写入速率；各协议请求速率。
-- **Storage Overview**：数据库数、表数、区域数；Manifest、WAL、Index 文件大小。
-- **Cluster**：节点类型；节点运行状态与资源使用率。
+- 数据库、表、Region 数量；存储大小与写入速率。
+- 集群 CPU、内存使用率及趋势。
+- 按角色（Frontend、Datanode、Metasrv、Flownode）查看各节点资源。
 
-![Overview](/enterprise-console-overview.png)
+![Overview](/entdashboard/overview.png)
 
-## 运维操作
+### Metrics
+
+**Metrics** 页面以单一内置监控视图展示集群运行指标，按 **Overview**、**Ingestion**、**Queries** 等分组组织。
+
+- 按节点角色和时间范围筛选。
+- 涵盖请求速率、延迟、存储与资源使用等指标。
+
+![Metrics](/entdashboard/metrics.png)
+
+### Instance Logs
+
+**Instance Logs** 支持检索和分析 GreptimeDB 组件日志。
+
+- 按角色、实例、日志级别、时间范围和关键词筛选。
+- 支持导出结果以便进一步分析。
+
+![Instance Logs](/entdashboard/logs.png)
+
+### Slow Query
+
+**Slow Query** 展示执行时间较长的 SQL 和 PromQL 查询。
+
+- 查看耗时与完整查询语句。
+- 使用 **Explain Query** 分析执行计划并优化性能。
+
+![Slow Query](/entdashboard/slowquery.png)
+
+### Region Management
 
 **Region Management** 提供 Region 级别的运维能力。
 
-- **Datanodes 视角**：查看各数据节点及 Region 详情，包括 Region ID、所属表、存储大小、WAL/Manifest/Index 占用、行数。
-- **Tables 视角**：按表查看 Region 分布，支持展开查看 Region 信息。
-- **Region 维护**：支持 Flush 与 Compact。
-- **Region 迁移**：将 Region 从一个节点迁移到另一个节点，支持超时配置和实时迁移状态展示。
+- **By Datanode** 与 **By Table** 视角查看 Region 分布与详情。
+- 支持 **Flush** 与 **Compact** 优化存储与性能。
+- 支持 **Migrate** 将 Region 在节点间迁移，并跟踪进度。
 
-![Region Management - Datanodes](/enterprise-console-region-datanodes.png)
+![Region Management](/entdashboard/region.png)
 
-![Region Management - Tables](/enterprise-console-region-tables.png)
+### Instance Management
 
-## 数据管理
+**Instance Management** 用于配置 GreptimeDB 集群连接。
 
-**Data Management** 页面提供 SQL/PromQL 查询、数据写入、日志查询、日志管道、链路追踪和 Flow 管理等功能。这些功能与开源版 Dashboard 和 Cloud Dashboard 保持一致，此处不再展开说明。
+- 设置 HTTP URL、Meta URL、默认数据库和时区。
+- 配置 Kubernetes License Secret 与部署信息。
+- 配置 GreptimeDB 与 Prometheus 监控端点。
+- 支持 **Test Connection**、**Save** 和 **Update License**。
 
-## 监控功能
+![Instance Management](/entdashboard/instancemanage.png)
 
-**Monitoring** 页面提供全方位的指标与日志监控。
+### User Management
 
-### 指标监控（Metrics）
+**User Management** 在控制台中管理用户账号与访问控制。
 
-提供多个分组的监控指标，包括 Overview、Ingestion、Queries、Resources、Frontend Requests、Frontend to Datanode、Mito Engine、OpenDAL、Metasrv 和 Flownode，覆盖集群运行状态、请求速率、延迟、资源使用等关键数据。
+- 创建用户并分配权限（Read、Write、Read & Write、Custom、Admin）。
+- 按表或模式配置表级 ACL。
+- RBAC 与 ACL 详情见[内置用户管理](./user.md)。
 
-![Metrics](/enterprise-console-monitor-metrics.png)
+![User Management](/entdashboard/usermanage.png)
 
-### 实例日志搜索（Instance Logs）
+### CPU and Memory Profiling
 
-支持按角色、实例、日志级别、时间范围和关键词筛选集群日志，结果可导出为 JSON。
-
-![Instance Logs](/enterprise-console-instance-logs.png)
-
-### 慢查询分析（Slow Query）
-
-展示执行时间较长的 SQL/PromQL 查询，支持查看耗时、语句详情，并可使用 **Explain Query** 分析执行计划。
-
-![Slow Query](/enterprise-console-slow-query.png)
-
-## 持续性能剖析
-
-管理控制台支持[持续性能剖析](./continuous-profiling)，可用于采集和分析 GreptimeDB 组件的 CPU 与内存 Profile。
+侧边栏提供 **Memory Profile** 与 **CPU Profile** 入口，用于对 GreptimeDB 组件做持续性能剖析。配置与使用见[持续性能剖析](./console-ui/continuous-profiling.md)。
