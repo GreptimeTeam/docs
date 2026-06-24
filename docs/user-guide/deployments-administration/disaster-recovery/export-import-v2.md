@@ -183,6 +183,19 @@ greptime cli data export-v2 create \
 
 `--chunk-time-window` requires both `--start-time` and `--end-time`.
 
+Chunks are created by time window. For example, a 15-minute range with `--chunk-time-window 5m` creates 3 chunks. During import, data tasks are scheduled per chunk and per schema. If the snapshot contains 3 chunks and 2 schemas with data, import schedules 6 data tasks.
+
+Snapshot data files are also organized by schema and chunk. For example, a multi-chunk snapshot can contain paths such as:
+
+```text
+logs/1/app_logs.parquet
+logs/2/app_logs.parquet
+logs/3/app_logs.parquet
+public/1/host_metrics.parquet
+public/2/host_metrics.parquet
+public/3/host_metrics.parquet
+```
+
 Choose the chunk window based on the data volume and density:
 
 - Use a larger window for small or sparse datasets to avoid too many small chunks.
@@ -221,7 +234,7 @@ greptime cli data export-v2 create \
 
 Run the same command again to resume after interruption.
 
-For import, progress is stored in a state file. By default, the state file is under `~/.greptime/import_state`. Override it with `--state-path` when you want an explicit state location:
+For import, progress is stored in a state file while the import is running. By default, the state file is under `~/.greptime/import_state`. Override it with `--state-path` when you want an explicit state location:
 
 ```bash
 greptime cli data import-v2 \
@@ -230,7 +243,9 @@ greptime cli data import-v2 \
   --state-path /tmp/greptime-import-demo.state
 ```
 
-If you intentionally want to rerun an import from scratch, use a different `--state-path` or remove the previous state file after confirming that doing so is safe.
+`--dry-run` does not create an import state file. A real import keeps the state file if it fails or is interrupted, so the next run can resume completed data tasks. After a successful import, import-v2 automatically deletes the state file because there is no remaining work to resume. A `.lock` file with the same prefix can remain; it is a lock file, not the import state content.
+
+If you intentionally want to rerun an import from scratch after a failed or interrupted run, use a different `--state-path` or remove the previous state file after confirming that doing so is safe.
 
 ## Dry-run an import
 
@@ -288,7 +303,7 @@ If the GreptimeDB instance has basic authentication enabled, pass credentials wi
 
 Set request timeout with `--timeout`, for example `--timeout 60s` or `--timeout 5m`.
 
-Use `--proxy` to set an HTTP proxy, or `--no-proxy` to disable proxy usage:
+For commands that connect to the GreptimeDB HTTP endpoint, such as `export-v2 create` and `import-v2`, use `--proxy` to set an HTTP proxy, or `--no-proxy` to disable proxy usage:
 
 ```bash
 greptime cli data import-v2 \
@@ -297,7 +312,7 @@ greptime cli data import-v2 \
   --no-proxy
 ```
 
-Control progress output with `--progress`:
+Long-running create and import commands support `--progress` to control progress output:
 
 - `auto`: show an interactive bar on a TTY, otherwise log progress. This is the default.
 - `always`: always emit progress; it uses a bar on a TTY and lightweight logs otherwise.
