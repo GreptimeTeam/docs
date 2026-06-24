@@ -7,6 +7,8 @@ description: Describes how to use GreptimeDB's Export and Import tools for datab
 
 This guide describes how to use GreptimeDB's Export and Import tools for database data backup and restoration operations. 
 
+For the resumable snapshot-based Export/Import V2 workflow, see [Export and Import Data with Export/Import V2](./export-import-v2.md).
+
 For detailed command-line options and advanced configurations, please refer to [Data Export & Import](/reference/command-lines/utilities/data.md).
 
 ## Overview
