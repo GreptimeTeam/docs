@@ -303,6 +303,7 @@ const config: Config = {
   ],
   trailingSlash: true,
   plugins: [
+    'docusaurus-plugin-image-zoom',
     // Only load docusaurus-biel plugin if biel_project_id is defined
     ...(biel_project_id ? [['docusaurus-biel', bielMetaMap[locale]]] : []),
     [llmsTxtGenerator, {
@@ -386,6 +387,13 @@ const config: Config = {
     footer: {
       style: 'dark',
       copyright: `©Copyright ${new Date().getFullYear()} Greptime Inc.`,
+    },
+    zoom: {
+      selector: '.markdown :not(em) > img',
+      background: {
+        light: 'rgb(255, 255, 255)',
+        dark: 'rgb(50, 50, 50)'
+      },
     },
     prism: {
       theme: greptimePrismLightTheme,
