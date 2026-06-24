@@ -32,9 +32,8 @@ GreptimeDB 企业版管理控制台在开源 [GreptimeDB 控制台](/getting-sta
 
 ### Metrics
 
-**Metrics** 页面提供分组的集群运行指标大盘。
+**Metrics** 页面以单一内置监控视图展示集群运行指标，按 **Overview**、**Ingestion**、**Queries** 等分组组织。
 
-- **Overview**、**Ingestion**、**Queries** 等面板，覆盖集群健康与负载。
 - 按节点角色和时间范围筛选。
 - 涵盖请求速率、延迟、存储与资源使用等指标。
 

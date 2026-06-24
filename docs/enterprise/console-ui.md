@@ -32,9 +32,8 @@ The **Overview** page displays cluster-wide status and resource usage.
 
 ### Metrics
 
-The **Metrics** page provides grouped monitoring dashboards for cluster operations.
+The **Metrics** page shows cluster operational metrics in a single built-in monitoring view, organized into **Overview**, **Ingestion**, and **Queries** sections.
 
-- **Overview**, **Ingestion**, and **Queries** panels for cluster health and workload.
 - Filter by node role and time range.
 - Covers request rates, latency, storage, and resource utilization.
 
