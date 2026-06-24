@@ -23,9 +23,11 @@ Before using Export/Import V2, make sure that:
 
 - The GreptimeDB HTTP endpoint is reachable, for example `127.0.0.1:4000`.
 - You have a `greptime` binary that includes the `cli data export-v2` and `cli data import-v2` commands.
-- The snapshot storage location is readable and writable by the client that runs the CLI.
+- The snapshot storage location is readable and writable by both the CLI client and the GreptimeDB server.
 
 For remote object storage, explicitly enable the backend and provide the backend options. For example, use `--s3` with `--s3-bucket` and `--s3-region` for S3-compatible storage.
+
+For `file://` snapshots, the path must be accessible from the GreptimeDB server as well as the CLI client. This usually means running the CLI on the same host as a standalone server, or mounting the same filesystem path into the GreptimeDB server. For remote, Kubernetes, or distributed deployments, use object storage such as S3 or MinIO instead of a local `file://` path.
 
 :::note
 
@@ -34,6 +36,8 @@ The snapshot URI, such as `s3://my-bucket/snapshots/prod`, identifies the snapsh
 :::
 
 ## Quick start with local filesystem
+
+Use a local filesystem snapshot only when the path is shared by the CLI client and the GreptimeDB server. For example, this works for a local standalone server when the CLI runs on the same host.
 
 Create a snapshot:
 
