@@ -1,62 +1,94 @@
 ---
-keywords: [enterprise, management console, dashboard, cluster management, monitoring, observability, UI]
-description: The GreptimeDB Enterprise Management Console provides an enhanced dashboard interface with advanced cluster management, monitoring, and operational capabilities for enterprise users.
+keywords: [enterprise, management console, dashboard, data management, operation, cluster management, region management, instance management, user management, monitoring]
+description: The GreptimeDB Enterprise Management Console extends the open-source Dashboard with Operation tools for cluster observability, region management, instance configuration, and user administration.
 ---
 
 # Management Console
 
-The GreptimeDB Enterprise Management Console is an enhanced version of the standard GreptimeDB dashboard, designed specifically for enterprise users who require advanced cluster observability and operational capabilities. It provides comprehensive monitoring, management, and operational tools that go beyond the standard dashboard functionality.
+The GreptimeDB Enterprise Management Console extends the open-source [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md) with enterprise operational capabilities. The sidebar is organized into two groups:
 
-
-## Overview
-
-The **Overview** page displays the overall cluster status and resource usage.
-
-- **Service Overview**: CPU, memory, and storage usage; data ingestion rate; request rates by protocol.
-- **Storage Overview**: Number of databases, tables, and regions; sizes of Manifest, WAL, and Index files.
-- **Cluster**: Node types; node status and resource usage.
-
-![Overview](/enterprise-console-overview.png)
-
-## Region Management
-
-**Region Management** provides region-level operational capabilities for advanced cluster administration.
-
-- **Datanodes view**: View details of each datanode and its regions, including region ID, associated table, storage size, WAL/Manifest/Index usage, and row count.
-- **Tables view**: View region distribution by table with expandable region details for comprehensive analysis.
-- **Region maintenance**: Execute Flush and Compact operations to optimize storage and performance.
-- **Region migration**: Migrate regions between nodes with configurable timeout settings and real-time progress tracking.
-
-![Region Management - Datanodes](/enterprise-console-region-datanodes.png)
-
-![Region Management - Tables](/enterprise-console-region-tables.png)
+| Group | Scope |
+| --- | --- |
+| **Data Management** | Query, ingest, and manage data — same features as the open-source Dashboard |
+| **Operation** | Cluster observability and administration — enterprise only |
 
 ## Data Management
 
-The **Data Management** page provides SQL/PromQL queries, data ingestion, logs queries, logs pipelines, traces queries, and Flow management. These features are consistent with the open-source Dashboard and Cloud Dashboard.
+**Data Management** covers query, ingest, pipelines, Flow, and Visualization — the same features as the open-source Dashboard. See [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md) for details.
 
-## Monitoring
+## Operation
 
-The **Monitoring** page provides comprehensive metrics and log monitoring capabilities for enterprise-grade observability.
+**Operation** provides enterprise-only tools for cluster observability and administration.
+
+### Overview
+
+The **Overview** page displays cluster-wide status and resource usage.
+
+- Database, table, and region counts; storage size and ingestion rate.
+- Cluster CPU and memory usage with utilization trends.
+- Per-node breakdown by role (Frontend, Datanode, Metasrv, Flownode).
+
+![Overview](/entdashboard/overview.png)
 
 ### Metrics
 
-Provides multiple groups of monitoring panels including Overview, Ingestion, Queries, Resources, Frontend Requests, Frontend to Datanode, Mito Engine, OpenDAL, Metasrv, and Flownode. These panels cover essential cluster metrics such as operational status, request rates, latency, and resource utilization.
+The **Metrics** page provides grouped monitoring dashboards for cluster operations.
 
-![Metrics](/enterprise-console-monitor-metrics.png)
+- **Overview**, **Ingestion**, and **Queries** panels for cluster health and workload.
+- Filter by node role and time range.
+- Covers request rates, latency, storage, and resource utilization.
+
+![Metrics](/entdashboard/metrics.png)
 
 ### Instance Logs
 
-Enables advanced log filtering and analysis with support for filtering by role, instance, log level, time range, and keywords. Log results can be exported to JSON format for further analysis.
+**Instance Logs** enables log search and analysis for GreptimeDB components.
 
-![Instance Logs](/enterprise-console-instance-logs.png)
+- Filter by role, instance, log level, time range, and keywords.
+- Export results for further analysis.
+
+![Instance Logs](/entdashboard/logs.png)
 
 ### Slow Query
 
-Displays long-running SQL and PromQL queries with detailed execution time and query text information. Includes **Explain Query** functionality for execution plan analysis and query optimization.
+**Slow Query** lists long-running SQL and PromQL queries.
 
-![Slow Query](/enterprise-console-slow-query.png)
+- View execution time and full query text.
+- Use **Explain Query** to analyze execution plans and optimize performance.
 
-## Continuous Profiling
+![Slow Query](/entdashboard/slowquery.png)
 
-The Management Console supports [Continuous Profiling](./continuous-profiling) for capturing and analyzing GreptimeDB component CPU and memory profiles.
+### Region Management
+
+**Region Management** provides region-level operational capabilities.
+
+- **By Datanode** and **By Table** views for region distribution and details.
+- **Flush** and **Compact** operations to optimize storage and performance.
+- **Migrate** regions between nodes with progress tracking.
+
+![Region Management](/entdashboard/region.png)
+
+### Instance Management
+
+**Instance Management** configures connections to GreptimeDB clusters.
+
+- Set HTTP URL, Meta URL, default database, and timezone.
+- Configure Kubernetes license secrets and deployment metadata.
+- Configure GreptimeDB and Prometheus monitoring endpoints.
+- **Test Connection**, **Save**, and **Update License** actions.
+
+![Instance Management](/entdashboard/instancemanage.png)
+
+### User Management
+
+**User Management** manages user accounts and access control in the console.
+
+- Create users and assign privileges (Read, Write, Read & Write, Custom, Admin).
+- Configure table-level ACLs by table or pattern.
+- For RBAC and ACL details, see [Built-in User Management](./user.md).
+
+![User Management](/entdashboard/usermanage.png)
+
+### CPU and Memory Profiling
+
+The sidebar provides **Memory Profile** and **CPU Profile** entries for continuous profiling of GreptimeDB components. For configuration and usage, see [Continuous Profiling](./console-ui/continuous-profiling.md).
