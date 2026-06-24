@@ -188,12 +188,12 @@ Chunks are created by time window. For example, a 15-minute range with `--chunk-
 Snapshot data files are also organized by schema and chunk. For example, a multi-chunk snapshot can contain paths such as:
 
 ```text
-logs/1/app_logs.parquet
-logs/2/app_logs.parquet
-logs/3/app_logs.parquet
-public/1/host_metrics.parquet
-public/2/host_metrics.parquet
-public/3/host_metrics.parquet
+data/logs/1/app_logs.parquet
+data/logs/2/app_logs.parquet
+data/logs/3/app_logs.parquet
+data/public/1/host_metrics.parquet
+data/public/2/host_metrics.parquet
+data/public/3/host_metrics.parquet
 ```
 
 Choose the chunk window based on the data volume and density:
