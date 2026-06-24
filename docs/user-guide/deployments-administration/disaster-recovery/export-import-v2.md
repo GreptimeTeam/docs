@@ -338,7 +338,6 @@ Common S3 options are:
 | `--s3-access-key-id` | Access key ID. Optional when the environment provides credentials. |
 | `--s3-secret-access-key` | Secret access key. Optional when the environment provides credentials. |
 | `--s3-endpoint` | Custom S3-compatible endpoint, such as a MinIO endpoint. |
-| `--s3-root` | Object store root prefix. |
 | `--s3-enable-virtual-host-style` | Enable virtual-hosted-style requests. |
 | `--s3-disable-ec2-metadata` | Disable EC2 metadata service credential lookup. |
 
