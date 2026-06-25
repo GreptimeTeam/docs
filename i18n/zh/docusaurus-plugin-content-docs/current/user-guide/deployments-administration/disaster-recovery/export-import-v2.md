@@ -25,7 +25,7 @@ V2 快照包含 schema 元数据、manifest 和数据文件。数据文件会被
 - 你的 `greptime` binary 包含 `cli data export-v2` 和 `cli data import-v2` 命令。
 - CLI client 和 GreptimeDB server 都能读写快照存储位置。
 
-对于远程对象存储，仅有快照 URI 还不够。你还需要显式启用对应的存储后端，并传入该后端的连接选项。例如，对于 S3-compatible 存储，需要同时使用 `--s3`、`--s3-bucket` 和 `--s3-region`。
+对于远程对象存储，仅有快照 URI 还不够。你还需要显式启用一个受支持的存储后端，并传入该后端的连接选项。Export/Import V2 支持 S3-compatible 存储、阿里云 OSS、Google Cloud Storage 和 Azure Blob Storage。例如，对于 S3-compatible 存储，需要同时使用 `--s3`、`--s3-bucket` 和 `--s3-region`。
 
 对于 `file://` 快照，路径必须同时能被 GreptimeDB server 和 CLI client 访问。通常这意味着 CLI 与 standalone server 运行在同一台主机上，或者将同一个文件系统路径挂载到 GreptimeDB server 中。对于远程、Kubernetes 或分布式部署，请使用 S3 或 MinIO 等对象存储，而不是本地 `file://` 路径。
 
@@ -64,7 +64,11 @@ greptime cli data import-v2 \
 
 默认情况下，导出和导入使用 `greptime` catalog。如果需要使用其他 catalog，请添加 `--catalog <catalog>`。
 
-## 导出到 S3 或 MinIO
+## 导出到远程对象存储
+
+Export/Import V2 可以将快照存储到 AWS S3、MinIO 等 S3-compatible 服务、阿里云 OSS、Google Cloud Storage 和 Azure Blob Storage。下面的示例使用 S3 backend，因为 S3 和 MinIO 是常见选择。对于其他对象存储，请使用 [支持的存储后端](#支持的存储后端) 中对应的 backend flag 和选项。
+
+### S3 或 MinIO
 
 对于 AWS S3 以及 MinIO 等 S3-compatible 服务，请使用 S3 backend。
 

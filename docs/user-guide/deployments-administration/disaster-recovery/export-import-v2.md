@@ -25,7 +25,7 @@ Before using Export/Import V2, make sure that:
 - You have a `greptime` binary that includes the `cli data export-v2` and `cli data import-v2` commands.
 - The snapshot storage location is readable and writable by both the CLI client and the GreptimeDB server.
 
-For remote object storage, explicitly enable the backend and provide the backend options. For example, use `--s3` with `--s3-bucket` and `--s3-region` for S3-compatible storage.
+For remote object storage, explicitly enable one supported backend and provide the backend options. Export/Import V2 supports S3-compatible storage, Alibaba Cloud OSS, Google Cloud Storage, and Azure Blob Storage. For example, use `--s3` with `--s3-bucket` and `--s3-region` for S3-compatible storage.
 
 For `file://` snapshots, the path must be accessible from the GreptimeDB server as well as the CLI client. This usually means running the CLI on the same host as a standalone server, or mounting the same filesystem path into the GreptimeDB server. For remote, Kubernetes, or distributed deployments, use object storage such as S3 or MinIO instead of a local `file://` path.
 
@@ -64,7 +64,11 @@ greptime cli data import-v2 \
 
 By default, export and import use the `greptime` catalog. Add `--catalog <catalog>` if you need another catalog.
 
-## Export to S3 or MinIO
+## Export to remote object storage
+
+Export/Import V2 can store snapshots in AWS S3, S3-compatible services such as MinIO, Alibaba Cloud OSS, Google Cloud Storage, and Azure Blob Storage. The examples below use the S3 backend because S3 and MinIO are common choices. For other object stores, use the corresponding backend flag and options described in [Supported storage backends](#supported-storage-backends).
+
+### S3 or MinIO
 
 Use the S3 backend for AWS S3 and S3-compatible services such as MinIO.
 
