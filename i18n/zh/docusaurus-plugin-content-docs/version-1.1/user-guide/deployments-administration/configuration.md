@@ -510,7 +510,9 @@ fork_dictionary_bytes = "1GiB"
 | `index_cache_percent`                    | 整数   | `20`          | 为索引（puffin）文件分配的写入缓存容量百分比（默认：20）。<br/>剩余容量用于数据（parquet）文件。<br/>必须在 0 到 100 之间（不包括边界）。例如，对于 5GiB 的写入缓存和 20% 的分配，<br/>1GiB 保留给索引文件，4GiB 用于数据文件。 |
 | `enable_refill_cache_on_read`            | 布尔值 | `true`        | 启用读取操作时的缓存回填（默认：true）。<br/>禁用时，不会在读取时回填缓存。                                            |
 | `manifest_cache_size`                    | 字符串 | `256MB`       | Manifest 缓存容量（默认：256MB）。                                                                                     |
-| `selector_result_cache_size`             | 字符串 | `512MB`       | `last_value()` 等时间线检索结果的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                         |
+| `selector_result_cache_size`             | 字符串 | `512MB`       | `last_value()` 等时间线检索结果的缓存。设为 0 可关闭该缓存<br/>未设置时默认为内存的 1/16，不超过 512MB。                         |
+| `range_result_cache_size`                | 字符串 | `512MB`       | Flat range scan 结果的缓存大小。设为 0 可关闭该缓存。<br/>未设置时默认为内存的 1/16，不超过 512MB。                         |
+| `prefilter_result_cache_size`            | 字符串 | `128MB`       | Prefilter 结果的缓存大小。设为 0 可关闭该缓存。<br/>未设置时默认为内存的 1/32，不超过 128MB。                         |
 | `sst_write_buffer_size`                  | 字符串 | `8MB`         | SST 的写缓存大小                                                                                                       |
 | `max_concurrent_scan_files`             | 整数   | `384`         | 最大并发扫描的 SST 文件数量。                                                                                         |
 | `allow_stale_entries`                 | 布尔值 | `false`       | 是否允许 replay 时读取陈旧的 WAL 条目。                                                                              |
@@ -524,10 +526,10 @@ fork_dictionary_bytes = "1GiB"
 | `index.aux_path` | 字符串 | `""` | 文件系统中索引的辅助目录路径，用于存储创建索引的中间文件和搜索索引的暂存文件，默认为 `{data_home}/index_intermediate`。为了向后兼容，该目录的默认名称为 `index_intermediate`。此路径包含两个子目录：- `__intm`: 用于存储创建索引时使用的中间文件。- `staging`: 用于存储搜索索引时使用的暂存文件。 |
 | `index.staging_size` | 字符串 | `2GB` | 暂存目录的最大容量。 |
 | `index.staging_ttl` | 字符串 | `7d` | 暂存目录的 TTL。默认为 7 天。设为 "0s" 可禁用 TTL。 |
-| `index.metadata_cache_size` | 字符串 | `64MiB` | 索引元数据的缓存大小。 |
-| `index.content_cache_size` | 字符串 | `128MiB` | 索引内容的缓存大小。 |
+| `index.metadata_cache_size` | 字符串 | `64MiB` | 索引元数据的缓存大小。<br/>未设置时默认为内存的 1/32，不超过 64MiB。 |
+| `index.content_cache_size` | 字符串 | `128MiB` | 索引内容的缓存大小。<br/>未设置时默认为内存的 1/16，不超过 128MiB。 |
 | `index.content_cache_page_size` | 字符串 | `64KiB` | 倒排索引内容缓存的页大小。 |
-| `index.result_cache_size` | 字符串 | `128MiB` | 索引查询结果的缓存大小。 |
+| `index.result_cache_size` | 字符串 | `128MiB` | 索引查询结果的缓存大小。<br/>未设置时默认为内存的 1/16，不超过 128MiB。 |
 | `inverted_index.create_on_flush`         | 字符串 | `auto`        | 是否在 flush 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                       |
 | `inverted_index.create_on_compaction`    | 字符串 | `auto`        | 是否在 compaction 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                  |
 | `inverted_index.apply_on_query`          | 字符串 | `auto`        | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                          |
