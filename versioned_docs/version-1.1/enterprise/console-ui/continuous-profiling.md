@@ -37,6 +37,23 @@ Memory profile configuration items:
 
 The profile table defaults to `public._gt_memory_profiles` and is created with a default TTL of 30 days. The monitor uses memory usage, memory limit, and process start time metrics to decide when to capture a new profile.
 
+The target GreptimeDB process must start with jemalloc memory profiling enabled, as described in [Profile memory usage of GreptimeDB](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-memory.md). For command-line deployments on Linux, start the process with `MALLOC_CONF=prof:true`:
+
+```bash
+MALLOC_CONF=prof:true ./greptime standalone start
+```
+
+For Helm deployments, add the environment variable to the target role, or to `base.podTemplate.main.env` to apply it to all GreptimeDB roles:
+
+```yaml
+base:
+  podTemplate:
+    main:
+      env:
+        - name: MALLOC_CONF
+          value: "prof:true"
+```
+
 The Management Console lists captured memory profiles with filters for Pod, App, Role, and time range. Use **Capture** to manually capture a profile for a component when you need an on-demand snapshot.
 
 ![Memory Profile list](/profile-page.png)
