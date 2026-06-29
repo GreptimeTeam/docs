@@ -37,7 +37,7 @@ monitoring:
 
 Profile 表默认是 `public._gt_memory_profiles`，创建时默认 TTL 为 30 天。监控器会根据内存使用量、内存限制和进程启动时间指标判断何时采集新的 Profile。
 
-目标 GreptimeDB 进程必须在启动时启用 jemalloc 内存 Profile，具体要求见 [Profile memory usage of GreptimeDB](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-memory.md)。对于 Linux 上的命令行部署，可以使用 `MALLOC_CONF=prof:true` 启动进程：
+目标 GreptimeDB 进程必须在启动时启用 jemalloc 内存 Profile，具体要求见 [Memory profiling](user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md#memory-profiling)。对于 Linux 上的命令行部署，可以使用 `MALLOC_CONF=prof:true` 启动进程：
 
 ```bash
 MALLOC_CONF=prof:true ./greptime standalone start

@@ -37,7 +37,7 @@ Memory profile configuration items:
 
 The profile table defaults to `public._gt_memory_profiles` and is created with a default TTL of 30 days. The monitor uses memory usage, memory limit, and process start time metrics to decide when to capture a new profile.
 
-The target GreptimeDB process must start with jemalloc memory profiling enabled, as described in [Profile memory usage of GreptimeDB](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-memory.md). For command-line deployments on Linux, start the process with `MALLOC_CONF=prof:true`:
+The target GreptimeDB process must start with jemalloc memory profiling enabled, as described in [Memory profiling](user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md#memory-profiling). For command-line deployments on Linux, start the process with `MALLOC_CONF=prof:true`:
 
 ```bash
 MALLOC_CONF=prof:true ./greptime standalone start
