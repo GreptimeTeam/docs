@@ -12,7 +12,8 @@ If a check fails or a metric looks off, hand off to `greptimedb-performance-diag
 Ask up front: **GreptimeDB version**, **deployment mode** (standalone or cluster), and
 **how it's deployed** (Kubernetes/operator, Docker, binary). Older versions may lack some
 metrics, and older Grafana dashboards may lack some panels — supplement from the
-[grafana directory](https://github.com/GreptimeTeam/greptimedb/tree/main/grafana).
+[grafana dashboards directory](https://github.com/GreptimeTeam/greptimedb/tree/main/grafana/dashboards),
+where each panel's PromQL is the canonical source for the metric names used below.
 
 **Running SQL and viewing metrics/logs.** To run the SQL in this guide, use any of: the
 `greptimedb-mcp-server` `execute_sql` tool if available; a **MySQL** or **PostgreSQL** client;
@@ -63,7 +64,7 @@ CREATE TABLE _health_check (
 );
 
 INSERT INTO _health_check (host, val, ts)
-VALUES ('node-1', 1.0, now()), ('node-1', 2.0, now());
+VALUES ('node-1', 1.0, now()), ('node-2', 2.0, now());
 
 SELECT * FROM _health_check;
 
@@ -144,8 +145,8 @@ discussion at https://github.com/GreptimeTeam/greptimedb. For self-monitoring us
 
 1. Self-monitoring deployment:
    https://docs.greptime.com/user-guide/deployments-administration/monitoring/cluster-monitoring-deployment/
-2. Grafana dashboards:
-   https://github.com/GreptimeTeam/greptimedb/tree/main/grafana
+2. Grafana dashboards (canonical source for metric names / PromQL):
+   https://github.com/GreptimeTeam/greptimedb/tree/main/grafana/dashboards
 3. Performance tuning tips (ingestion/health metric meanings):
    https://docs.greptime.com/user-guide/deployments-administration/performance-tuning/performance-tuning-tips/
 4. REGION_STATISTICS:

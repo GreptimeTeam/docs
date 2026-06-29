@@ -17,7 +17,8 @@ apply tuning itself. Once the cause is clear, hand off to:
 Before going deep, ask for the **GreptimeDB version** and deployment mode (standalone or
 cluster). Older versions may not expose some of the metrics below, and older Grafana
 dashboards may lack some panels — you can supplement them from the
-[grafana directory](https://github.com/GreptimeTeam/greptimedb/tree/main/grafana).
+[grafana dashboards directory](https://github.com/GreptimeTeam/greptimedb/tree/main/grafana/dashboards),
+where each panel's PromQL is the canonical source for the metric names used below.
 
 **Running SQL and viewing metrics/logs.** To run the SQL in this guide (`EXPLAIN ANALYZE`,
 `SELECT`, `SHOW CREATE TABLE`), use any of: the `greptimedb-mcp-server` `execute_sql` tool if
@@ -42,7 +43,7 @@ pressure trends, cache hit ratios, CPU/memory over time):
 1. Self-monitoring setup:
    https://docs.greptime.com/user-guide/deployments-administration/monitoring/cluster-monitoring-deployment/
 2. Import the Grafana dashboards (standalone or cluster):
-   https://github.com/GreptimeTeam/greptimedb/tree/main/grafana
+   https://github.com/GreptimeTeam/greptimedb/tree/main/grafana/dashboards
 
 If the dashboard version is old and missing a panel, give the user the raw PromQL from the
 phases below so they can add it.
@@ -190,8 +191,8 @@ export the logs/metrics for the incident window.
    https://docs.greptime.com/reference/sql/explain/
 3. Self-monitoring deployment:
    https://docs.greptime.com/user-guide/deployments-administration/monitoring/cluster-monitoring-deployment/
-4. Grafana dashboards:
-   https://github.com/GreptimeTeam/greptimedb/tree/main/grafana
+4. Grafana dashboards (canonical source for metric names / PromQL):
+   https://github.com/GreptimeTeam/greptimedb/tree/main/grafana/dashboards
 5. HTTP profiling endpoints:
    https://docs.greptime.com/reference/http-endpoints/#profiling-tools
 6. REGION_STATISTICS:
