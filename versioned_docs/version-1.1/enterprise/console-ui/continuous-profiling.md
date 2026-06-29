@@ -7,7 +7,7 @@ description: Configure and use Continuous Profiling in the GreptimeDB Enterprise
 
 Continuous Profiling in the Management Console monitors GreptimeDB component resource usage and stores pprof-format memory and CPU profiles in the monitoring GreptimeDB instance. It helps operators investigate memory growth, high CPU usage, and performance regressions without manually logging in to each component.
 
-The Continuous Profiling UI is available starting from dashboard version `v0.2.0-alpha.7`.
+The Continuous Profiling UI is available starting from dashboard version `v0.2.0-alpha.8`.
 
 Continuous Profiling is configured on the dashboard apiserver and works at the cluster level. When enabled, the monitor scans component series from cluster metrics, captures the first seen component, and captures later profiles when resource usage grows by the configured step or reaches a new high above the configured threshold.
 
