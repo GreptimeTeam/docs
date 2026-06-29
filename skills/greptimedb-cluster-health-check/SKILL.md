@@ -34,9 +34,10 @@ kubectl get pods -n <namespace>
 kubectl describe pod <pod> -n <namespace>   # for any pod not Running/Ready
 ```
 
-Every pod (metasrv, datanode, frontend, flownode) should be `Running`/`Ready` with no
-`CrashLoopBackOff` and no unexpected restarts. Also check the GreptimeDBCluster CR / operator
-status. For Docker or binary deployments, confirm each process is up and its HTTP endpoint
+Every enabled/deployed GreptimeDB role should be `Running`/`Ready` with no `CrashLoopBackOff`
+and no unexpected restarts. Core cluster roles are metasrv, datanode, and frontend; also check
+flownode when it is enabled/deployed. Check the GreptimeDBCluster CR / operator status too. For
+Docker or binary deployments, confirm each configured process is up and its HTTP endpoint
 responds.
 
 **Object store permission (fresh cluster)** — a common first-deploy failure. A process can

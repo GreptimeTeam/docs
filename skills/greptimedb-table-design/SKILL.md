@@ -110,14 +110,22 @@ Be explicit about the constraints. The highest-impact choices are fixed at `CREA
 **Not alterable** (require recreating the table):
 
 - Primary key
-- `append_mode`
-- Partitioning
 - `merge_mode`
 
 **Alterable on a live table:**
 
 - Add/drop **indexes** via `ALTER TABLE` — applies to **newly flushed data**, not existing
   SST files (see the data-index guide).
+- `append_mode` can change from `false` to `true`, but not from `true` back to `false`:
+
+  ```sql
+  ALTER TABLE my_table SET 'append_mode' = 'true';
+  ```
+
+- Existing unpartitioned tables can be repartitioned with
+  `ALTER TABLE ... PARTITION ON COLUMNS`, and partitioned tables can be adjusted with
+  `SPLIT PARTITION` / `MERGE PARTITION`. Repartitioning requires a distributed cluster,
+  shared object storage, and GC enabled.
 - `sst_format` → `flat` (only needed when upgrading from an old `primary_key`-format version):
 
   ```sql
@@ -126,8 +134,9 @@ Be explicit about the constraints. The highest-impact choices are fixed at `CREA
 
 - `compaction.twcs.time_window`, `TTL`, and other table options via `ALTER TABLE ... SET`.
 
-**When a baked-in choice is wrong** (e.g. wrong primary key, need partitioning, need to switch
-append/dedup mode), the path is to **create a new table with the right schema and migrate**:
+**When a baked-in choice is wrong** (e.g. wrong primary key, wrong `merge_mode`, or need to
+switch from append-only back to deduplicating mode), the path is to **create a new table with the
+right schema and migrate**:
 
 ```sql
 CREATE TABLE my_table_v2 ( ... corrected schema ... );
