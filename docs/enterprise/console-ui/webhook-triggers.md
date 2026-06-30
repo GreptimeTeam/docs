@@ -5,7 +5,7 @@ description: Configure enterprise dashboard webhook triggers to send notificatio
 
 # Webhook Triggers
 
-Webhook triggers monitor cluster resource usage metrics and send HTTP notifications when a configured threshold is reached. This is an enterprise-only feature and is available only when the enterprise dashboard is deployed.
+Webhook triggers monitor cluster resource usage metrics and send HTTP notifications when a configured threshold is reached. This is an enterprise-only feature and is available only when the enterprise dashboard is deployed with dashboard version `v0.2.0-alpha.10` or later.
 
 Configure webhook triggers per provisioned instance under `settings.monitoring.webhook_triggers` in the dashboard apiserver configuration. Enabled webhook triggers require a metrics source, either `settings.monitoring.greptimedb.url` or `settings.monitoring.metrics.prometheus`.
 

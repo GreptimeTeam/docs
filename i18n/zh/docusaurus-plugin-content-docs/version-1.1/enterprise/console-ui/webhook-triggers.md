@@ -5,7 +5,7 @@ description: 在企业版 dashboard 中配置 webhook 触发器，基于 Greptim
 
 # Webhook 触发器
 
-Webhook 触发器会监控集群资源使用指标，并在达到配置阈值时发送 HTTP 通知。该功能仅属于企业版，并且只有在部署企业版 dashboard 时可用。
+Webhook 触发器会监控集群资源使用指标，并在达到配置阈值时发送 HTTP 通知。该功能仅属于企业版，并且只有在部署 dashboard 版本 `v0.2.0-alpha.10` 或更高版本的企业版 dashboard 时可用。
 
 在 dashboard apiserver 配置中，按 provisioned instance 将 webhook 触发器配置到 `settings.monitoring.webhook_triggers` 下。启用 webhook 触发器需要配置指标数据源，即 `settings.monitoring.greptimedb.url` 或 `settings.monitoring.metrics.prometheus`。
 
