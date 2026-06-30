@@ -59,4 +59,4 @@ GreptimeDB 企业版管理控制台是标准 GreptimeDB 仪表板的增强版本
 
 ## 持续性能剖析
 
-管理控制台支持[持续性能剖析](./continuous-profiling)，可用于采集和分析 GreptimeDB 组件的 CPU 与内存 Profile。
+管理控制台支持[持续性能剖析](./continuous-profiling)，可用于采集和分析 GreptimeDB 组件的 CPU 与内存 Profile。同时也支持 [Webhook 触发器](./console-ui/webhook-triggers.md)，可基于集群资源使用指标发送通知。

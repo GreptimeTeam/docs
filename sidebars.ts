@@ -506,6 +506,7 @@ const sidebars: SidebarsConfig = {
           items: [
             'enterprise/console-ui',
             'enterprise/console-ui/continuous-profiling',
+            'enterprise/console-ui/webhook-triggers',
           ],
         },
         {
