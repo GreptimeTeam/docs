@@ -502,7 +502,8 @@
           "label": "Management Console",
           "items": [
             "enterprise/console-ui",
-            "enterprise/console-ui/continuous-profiling"
+            "enterprise/console-ui/continuous-profiling",
+            "enterprise/console-ui/webhook-triggers"
           ]
         },
         {
