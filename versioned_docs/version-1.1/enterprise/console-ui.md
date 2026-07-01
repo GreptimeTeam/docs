@@ -59,4 +59,4 @@ Displays long-running SQL and PromQL queries with detailed execution time and qu
 
 ## Continuous Profiling
 
-The Management Console supports [Continuous Profiling](./continuous-profiling) for capturing and analyzing GreptimeDB component CPU and memory profiles. It also supports [Webhook Triggers](./console-ui/webhook-triggers.md) for sending notifications based on cluster resource usage metrics.
+The Management Console supports [Continuous Profiling](./console-ui/continuous-profiling.md) for capturing and analyzing GreptimeDB component CPU and memory profiles. It also supports [Webhook Triggers](./console-ui/webhook-triggers.md) for sending notifications based on cluster resource usage metrics.
