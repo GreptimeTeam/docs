@@ -90,4 +90,4 @@ The **Metrics** page shows cluster operational metrics in a single built-in moni
 
 ### CPU and Memory Profiling
 
-The sidebar provides **Memory Profile** and **CPU Profile** entries for continuous profiling of GreptimeDB components. For configuration and usage, see [Continuous Profiling](./console-ui/continuous-profiling.md).
+The sidebar provides **Memory Profile** and **CPU Profile** entries for continuous profiling of GreptimeDB components. For configuration and usage, see [Continuous Profiling](./console-ui/continuous-profiling.md). The enterprise dashboard also supports [Webhook Triggers](./console-ui/webhook-triggers.md) for sending notifications based on cluster resource usage metrics.

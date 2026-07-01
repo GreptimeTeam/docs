@@ -90,4 +90,4 @@ GreptimeDB 企业版管理控制台在开源 [GreptimeDB 控制台](/getting-sta
 
 ### CPU and Memory Profiling
 
-侧边栏提供 **Memory Profile** 与 **CPU Profile** 入口，用于对 GreptimeDB 组件做持续性能剖析。配置与使用见[持续性能剖析](./console-ui/continuous-profiling.md)。
+侧边栏提供 **Memory Profile** 与 **CPU Profile** 入口，用于对 GreptimeDB 组件做持续性能剖析。配置与使用见[持续性能剖析](./console-ui/continuous-profiling.md)。企业版 dashboard 还支持 [Webhook 触发器](./console-ui/webhook-triggers.md)，可基于集群资源使用指标发送通知。
