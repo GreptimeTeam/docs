@@ -1,0 +1,19 @@
+blog/release-1-1-2.md
+  s_f8f3810ba801b9::t_87c9c927845157 1-96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "580d057c793d65f95395b2d4a05d56ba2f4861ee",
+  "prompts": {},
+  "sessions": {
+    "s_f8f3810ba801b9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0dd01c01bffeMoAwYeOMEvWoY8",
+        "model": "gpt-5.5"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
