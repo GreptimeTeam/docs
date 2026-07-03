@@ -146,9 +146,9 @@ DESC TABLE greptime_physical_table;
 ```sql
 SELECT *
 FROM greptime_physical_table
-WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
-  AND device = "device1"
-  AND job = "job1";
+WHERE greptime_timestamp > '2024-08-07 03:27:26.964000'
+  AND device = 'device1'
+  AND job = 'job1';
 ```
 
 ### 在 GreptimeDB 集群上使用 metric engine
@@ -194,10 +194,6 @@ with (
 
 ## 特殊标签
 
-:::warning 实验性特性
-此实验性功能可能存在预期外的行为，其功能未来可能发生变化。
-:::
-
 一般来说，一次 Remote write 请求的全部数据会以同样的配置项被写入到数据库中，例如，开启 metric engine 后使用的同一个物理表配置。
 即使指标的数量在增长，所有的逻辑表（即指标们）都会保存到同一张物理表中。
 对于写入这可能是没问题的。但是对于需要查询一小部分指标的场景，这种设置可能会拖慢查询速度，因为所有的指标都聚集在一张物理表上，而数据库需要对全表的数据进行扫描。
@@ -205,8 +201,8 @@ with (
 如果你可以预见大量的数据写入和每次只需查询小部分指标的场景，那么可以在写入时对存储位置进行划分以减缓后续查询的压力。
 对于一个 Remote write 请求中的每个指标，这种精细的控制可以通过写入时的配置项来达成。
 
-从 `v0.15` 开始，GreptimeDB 新增了对特殊标签的支持。
-这些标签(与它们的值)会在解析阶段被转换成写入时的配置项，使请求内的单个指标可以被更精细地控制。
+GreptimeDB 支持特殊标签。
+这些标签及其值会在解析阶段被转换成写入时的配置项，使请求内的单个指标可以被更精细地控制。
 这些标签不是互斥的，它们可以通过组合的方式达成更多样化的控制选择。
 
 以下是指标特殊标签的一个示例，注意这不是实际的数据模型。
@@ -255,11 +251,7 @@ GreptimeDB 可以识别一些标签的名称，并将它们转换成写入时的
 
 ## 在 Remote write 中使用 pipeline
 
-:::warning 实验性特性
-此实验性功能可能存在预期外的行为，其功能未来可能发生变化。
-:::
-
-从 `v0.15` 开始，GreptimeDB 支持在 Prometheus Remote Write 协议入口使用 pipeline 处理数据。
+GreptimeDB 支持在 Prometheus Remote Write 协议入口使用 pipeline 处理数据。
 你可以通过在 HTTP header 中将 `x-greptime-pipeline-name` 的值设置为需要执行的 pipeline 名称来使用 pipeline 处理流程。
 
 以下是一个非常简单的 pipeline 配置例子，使用 `vrl` 处理器来对每个指标增加一个 `source` 标签：

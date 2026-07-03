@@ -43,7 +43,7 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u
 
 </Tabs>
 
-The `/v1/influxdb/write` supports query params including:
+The `/v1/influxdb/write` API supports the following query parameters:
 
 * `db`: Specifies the database to write to. The default value is `public`.
 * `precision`: Defines the precision of the timestamp provided in the request body.  Accepted values are `ns` (nanoseconds), `us` (microseconds), `ms` (milliseconds), and `s` (seconds). The data type of timestamps written by this API is `TimestampNanosecond`, so the default precision is `ns` (nanoseconds). If you use timestamps with other precisions in the request body, you need to specify the precision using this parameter. This parameter ensures that timestamp values are accurately interpreted and stored with nanosecond precision.

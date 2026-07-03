@@ -9,7 +9,7 @@ GreptimeDB provides HTTP APIs for interacting with the database. For a complete 
 
 ## Base URL
 
-The base URL of API is `http(s)://<host>:<port>/`.
+The base URL of the API is `http(s)://<host>:<port>/`.
 
 - For the GreptimeDB instance running on the local machine,
   with default port configuration `4000`,
@@ -58,7 +58,7 @@ For example, the following request set `120s` timeout for the request:
 
 ```bash
 curl -X POST \
--H 'Authorization: Basic <base64-credentials>' \
+-H 'Authorization: Basic <base64-encoded-credentials>' \
 -H 'X-Greptime-Timeout: 120s' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'sql=show tables' \
@@ -101,7 +101,7 @@ For example, the following request sets TTL and append mode for auto-created tab
 
 ```bash
 curl -X POST \
--H 'Authorization: Basic <base64-credentials>' \
+-H 'Authorization: Basic <base64-encoded-credentials>' \
 -H 'x-greptime-hints: ttl=7d, append_mode=true' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'sql=INSERT INTO my_table VALUES (...)' \
@@ -124,7 +124,7 @@ To submit a SQL query to the GreptimeDB server via HTTP API, use the following f
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic <base64-credentials>' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'X-Greptime-Timeout: <timeout>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'sql=<SQL-statement>' \
@@ -180,7 +180,7 @@ For example, to insert data into the `monitor` table of database `public`, use t
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic <base64-credentials>' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'sql=INSERT INTO monitor VALUES ("127.0.0.1", 1667446797450, 0.1, 0.4), ("127.0.0.2", 1667446798450, 0.2, 0.3), ("127.0.0.1", 1667446798450, 0.5, 0.2)' \
   http://localhost:4000/v1/sql?db=public
@@ -199,7 +199,7 @@ For example, to retrieve data from the `monitor` table:
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic <base64-credentials>' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d "sql=SELECT * FROM monitor" \
   http://localhost:4000/v1/sql?db=public
@@ -265,7 +265,7 @@ For example, the following request uses the time zone `+1:00` for the query:
 
 ```bash
 curl -X POST \
--H 'Authorization: Basic <base64-credentials>' \
+-H 'Authorization: Basic <base64-encoded-credentials>' \
 -H 'X-Greptime-Timezone: +1:00' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'sql=SHOW VARIABLES time_zone;' \
@@ -307,7 +307,7 @@ You can use the `table` format in the query string parameters to get the output 
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic <base64-credentials>' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d "sql=SELECT * FROM monitor" \
   'http://localhost:4000/v1/sql?db=public&format=table'
@@ -328,7 +328,7 @@ Output
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic <base64-credentials>' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d "sql=SELECT * FROM monitor" \
   'http://localhost:4000/v1/sql?db=public&format=csvWithNames'
@@ -345,7 +345,7 @@ host,ts,cpu,memory
 Changes `format` to `csvWithNamesAndTypes`:
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic <base64-credentials>' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d "sql=SELECT * FROM monitor" \
   'http://localhost:4000/v1/sql?db=public&format=csvWithNamesAndTypes'
@@ -366,7 +366,7 @@ You can use the `influxdb_v1` format in the query string parameters to get the o
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic <base64-credentials>' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d "sql=SELECT * FROM monitor" \
   'http://localhost:4000/v1/sql?db=public&format=influxdb_v1&epoch=ms'
@@ -405,7 +405,7 @@ To parse and understand queries written in GreptimeDB's SQL dialect for tools li
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic <base64-credentials>' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d "sql=SELECT * FROM monitor" \
   http://localhost:4000/v1/sql/parse
@@ -558,7 +558,7 @@ For example:
 
 ```shell
 curl -X GET \
-  -H 'Authorization: Basic <base64-credentials>' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -G \
   --data-urlencode 'query=avg(system_metrics{idc="idc_a"})' \
   --data-urlencode 'start=1667446797' \
