@@ -216,6 +216,30 @@ ALTER TABLE monitor SET 'sst_format'='primary_key';
 ALTER TABLE monitor UNSET 'ttl';
 ```
 
+### Set repartition column hint
+
+:::info Enterprise feature
+This option is available in GreptimeDB Enterprise. For details, see [Auto Repartition](/enterprise/autopilot/auto-repartition.md).
+:::
+
+In GreptimeDB Enterprise, `repartition.column.hint` can be specified in `CREATE TABLE ... WITH` or changed later with `ALTER TABLE`.
+
+For an unpartitioned table, you can set the preferred column used by Auto Repartition:
+
+```sql
+ALTER TABLE table_name SET 'repartition.column.hint'='column_name';
+```
+
+To remove the hint:
+
+```sql
+ALTER TABLE table_name UNSET 'repartition.column.hint';
+```
+
+The hint only records metadata for future Auto Repartition. It does not trigger Repartition immediately.
+
+When using `ALTER TABLE`, the hint must be set or unset separately from other table options.
+
 ### Repartition, split, or merge partitions {#split-or-merge-partitions}
 
 Use `PARTITION ON COLUMNS` to repartition an unpartitioned table into multiple partitions:

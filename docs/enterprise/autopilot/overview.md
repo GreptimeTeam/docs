@@ -36,7 +36,7 @@ Autopilot is useful in the following scenarios:
 Different Autopilot strategies have their own limitations:
 
 - Region Balancer requires the number of schedulable Regions to be greater than the number of active Datanodes. Otherwise, moving Regions cannot make the load evenly distributed across Datanodes.
-- Auto Repartition only works for partitioned tables. It can only split tables that already have partition rules. If a table does not have partition rules, Auto Repartition does not generate new partition rules for it automatically. For more information about table partitioning and Repartition, see [Table Sharding](/user-guide/deployments-administration/manage-data/table-sharding.md) and [Repartition](/user-guide/deployments-administration/manage-data/repartition.md).
+- Auto Repartition works for partitioned tables and unpartitioned tables with `repartition.column.hint`. For unpartitioned tables, GreptimeDB Enterprise does not infer partition columns automatically. For more information about table partitioning and Repartition, see [Table Sharding](/user-guide/deployments-administration/manage-data/table-sharding.md) and [Repartition](/user-guide/deployments-administration/manage-data/repartition.md).
 
 ## Configuration
 

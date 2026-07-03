@@ -31,9 +31,45 @@ Auto Repartition is useful in the following scenarios:
 - You want to split large Regions into smaller Regions and distribute potential bottlenecks through later scheduling.
 - You want to reduce the operational cost of manually identifying large Regions and running Repartition.
 
+## Auto Repartition for unpartitioned tables
+
+Auto Repartition can also work with unpartitioned tables when a repartition column hint is specified. For an unpartitioned table, GreptimeDB Enterprise does not infer partition columns automatically. You can specify the preferred column for future Auto Repartition when creating the table:
+
+```sql
+CREATE TABLE sensor_readings (
+    host STRING,
+    cpu DOUBLE,
+    ts TIMESTAMP TIME INDEX,
+    PRIMARY KEY(host)
+)
+WITH ('repartition.column.hint'='host');
+```
+
+You can also set or update the hint later by using `ALTER TABLE`:
+
+```sql
+ALTER TABLE sensor_readings SET 'repartition.column.hint'='host';
+```
+
+To remove the hint:
+
+```sql
+ALTER TABLE sensor_readings UNSET 'repartition.column.hint';
+```
+
+The hint only records metadata for future Auto Repartition. It does not trigger Repartition immediately. After the table meets the Auto Repartition trigger conditions, GreptimeDB Enterprise can use the hinted column to generate partition boundaries and submit a Repartition action.
+
+The repartition column hint has the following restrictions:
+
+- It must specify exactly one column.
+- The specified column must exist in the table.
+- The specified column cannot be the time index column.
+- It can only be set on a table without partition metadata.
+- When using `ALTER TABLE`, it must be set or unset separately from other table options.
+
 ## Limitations
 
-Auto Repartition only works for partitioned tables. It can only split tables that already have partition rules. If a table does not have partition rules, Auto Repartition does not generate new partition rules for it automatically.
+Auto Repartition works for partitioned tables and unpartitioned tables with `repartition.column.hint`. For unpartitioned tables, GreptimeDB Enterprise does not infer partition columns automatically.
 
 For more information about table partitioning and Repartition, see [Table Sharding](/user-guide/deployments-administration/manage-data/table-sharding.md) and [Repartition](/user-guide/deployments-administration/manage-data/repartition.md).
 
