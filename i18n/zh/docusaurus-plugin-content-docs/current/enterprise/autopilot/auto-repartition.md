@@ -36,7 +36,7 @@ Auto Repartition 适合以下场景：
 当指定了重分区列 hint 时，Auto Repartition 也可以作用于未分区表。对于未分区表，GreptimeDB Enterprise 不会自动推断分区列。你需要先通过 `ALTER TABLE` 设置后续 Auto Repartition 使用的候选列：
 
 ```sql
-ALTER TABLE sensor_readings SET 'repartition.column.hint' = 'host';
+ALTER TABLE sensor_readings SET 'repartition.column.hint'='host';
 ```
 
 取消该 hint：

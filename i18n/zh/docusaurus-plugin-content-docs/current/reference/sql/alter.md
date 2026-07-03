@@ -220,10 +220,12 @@ ALTER TABLE monitor UNSET 'ttl';
 该选项仅在 GreptimeDB Enterprise 中可用。详细说明请参考 [Auto Repartition](/enterprise/autopilot/auto-repartition.md)。
 :::
 
+在 GreptimeDB Enterprise 中，`ALTER TABLE` 还支持以下企业版专属表选项。
+
 对于未分区表，可以设置 Auto Repartition 使用的候选列：
 
 ```sql
-ALTER TABLE table_name SET 'repartition.column.hint' = 'column_name';
+ALTER TABLE table_name SET 'repartition.column.hint'='column_name';
 ```
 
 取消该 hint：
