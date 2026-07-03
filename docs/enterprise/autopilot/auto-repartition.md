@@ -33,7 +33,19 @@ Auto Repartition is useful in the following scenarios:
 
 ## Auto Repartition for unpartitioned tables
 
-Auto Repartition can also work with unpartitioned tables when a repartition column hint is specified. For an unpartitioned table, GreptimeDB Enterprise does not infer partition columns automatically. You must first set the preferred column for future Auto Repartition by using `ALTER TABLE`:
+Auto Repartition can also work with unpartitioned tables when a repartition column hint is specified. For an unpartitioned table, GreptimeDB Enterprise does not infer partition columns automatically. You can specify the preferred column for future Auto Repartition when creating the table:
+
+```sql
+CREATE TABLE sensor_readings (
+    host STRING,
+    cpu DOUBLE,
+    ts TIMESTAMP TIME INDEX,
+    PRIMARY KEY(host)
+)
+WITH ('repartition.column.hint'='host');
+```
+
+You can also set or update the hint later by using `ALTER TABLE`:
 
 ```sql
 ALTER TABLE sensor_readings SET 'repartition.column.hint'='host';
@@ -49,12 +61,11 @@ The hint only records metadata for future Auto Repartition. It does not trigger 
 
 The repartition column hint has the following restrictions:
 
-- It must be set with `ALTER TABLE ... SET`; setting it in `CREATE TABLE ... WITH` is not supported.
 - It must specify exactly one column.
 - The specified column must exist in the table.
 - The specified column cannot be the time index column.
 - It can only be set on a table without partition metadata.
-- It must be set or unset separately from other table options.
+- When using `ALTER TABLE`, it must be set or unset separately from other table options.
 
 ## Limitations
 
