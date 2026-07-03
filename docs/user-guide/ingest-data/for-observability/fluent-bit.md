@@ -9,7 +9,7 @@ description: Instructions on integrating GreptimeDB with Fluent bit for Promethe
 
 You can forward Fluent Bit data to GreptimeDB. This document describes how to configure Fluent Bit to send logs, metrics, and traces to GreptimeDB.
 
-## Http
+## HTTP
 
 Using Fluent Bit's [HTTP Output Plugin](https://docs.fluentbit.io/manual/pipeline/outputs/http), you can send logs to GreptimeDB.
 Before configuring Fluent Bit, ensure that you understand the [log ingestion flow](/user-guide/logs/overview.md) and [how to use pipelines](/user-guide/logs/use-custom-pipelines.md).
