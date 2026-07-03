@@ -122,8 +122,8 @@ Standalone and cluster dashboards share these panels (cluster panels filter by i
 
 **Resources**
 
-- CPU: `rate(process_cpu_seconds_total[$__rate_interval])` vs
-  `greptime_cpu_limit_in_millicores`
+- CPU: `rate(process_cpu_seconds_total[$__rate_interval]) * 1000` vs
+  `greptime_cpu_limit_in_millicores` (both in millicores)
 - Memory: `process_resident_memory_bytes` vs `greptime_memory_limit_in_bytes`
 
 ### Phase 5. Interpret
