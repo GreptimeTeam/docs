@@ -214,6 +214,28 @@ ALTER TABLE monitor SET 'sst_format'='primary_key';
 ALTER TABLE monitor UNSET 'ttl';
 ```
 
+### 设置重分区列 hint
+
+:::info 企业版功能
+该选项仅在 GreptimeDB Enterprise 中可用。详细说明请参考 [Auto Repartition](/enterprise/autopilot/auto-repartition.md)。
+:::
+
+对于未分区表，可以设置 Auto Repartition 使用的候选列：
+
+```sql
+ALTER TABLE table_name SET 'repartition.column.hint' = 'column_name';
+```
+
+取消该 hint：
+
+```sql
+ALTER TABLE table_name UNSET 'repartition.column.hint';
+```
+
+该 hint 只会记录供后续 Auto Repartition 使用的元信息，不会立即触发重分区。
+
+该 hint 必须单独设置或取消，不能和其他 table options 一起修改。
+
 ### 重分区、拆分与合并 {#split-or-merge-partitions}
 
 使用 `PARTITION ON COLUMNS` 可以将未分区的表重分区为多个分区：

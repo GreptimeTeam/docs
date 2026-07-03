@@ -36,7 +36,7 @@ Autopilot 适合以下场景：
 不同 Autopilot 策略有各自的适用限制：
 
 - Region Balancer 要求可调度的 Region 数量大于活跃 Datanode 数量。否则即使迁移 Region，也无法让 Datanode 之间的负载变得均衡。
-- Auto Repartition 仅对多分区表有效，只能拆分已经带有分区规则的表。如果表没有分区规则，Auto Repartition 不会为它自动生成新的分区规则。关于表分区和重分区的说明，请参考[表分片](/user-guide/deployments-administration/manage-data/table-sharding.md)和[重分区](/user-guide/deployments-administration/manage-data/repartition.md)。
+- Auto Repartition 支持已分区表，以及设置了 `repartition.column.hint` 的未分区表。对于未分区表，GreptimeDB Enterprise 不会自动推断分区列。关于表分区和重分区的说明，请参考[表分片](/user-guide/deployments-administration/manage-data/table-sharding.md)和[重分区](/user-guide/deployments-administration/manage-data/repartition.md)。
 
 ## 配置
 
