@@ -222,10 +222,12 @@ ALTER TABLE monitor UNSET 'ttl';
 This option is available in GreptimeDB Enterprise. For details, see [Auto Repartition](/enterprise/autopilot/auto-repartition.md).
 :::
 
+In GreptimeDB Enterprise, `ALTER TABLE` also supports the following Enterprise-only table option.
+
 For an unpartitioned table, you can set the preferred column used by Auto Repartition:
 
 ```sql
-ALTER TABLE table_name SET 'repartition.column.hint' = 'column_name';
+ALTER TABLE table_name SET 'repartition.column.hint'='column_name';
 ```
 
 To remove the hint:

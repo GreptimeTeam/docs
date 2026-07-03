@@ -36,7 +36,7 @@ Auto Repartition is useful in the following scenarios:
 Auto Repartition can also work with unpartitioned tables when a repartition column hint is specified. For an unpartitioned table, GreptimeDB Enterprise does not infer partition columns automatically. You must first set the preferred column for future Auto Repartition by using `ALTER TABLE`:
 
 ```sql
-ALTER TABLE sensor_readings SET 'repartition.column.hint' = 'host';
+ALTER TABLE sensor_readings SET 'repartition.column.hint'='host';
 ```
 
 To remove the hint:
