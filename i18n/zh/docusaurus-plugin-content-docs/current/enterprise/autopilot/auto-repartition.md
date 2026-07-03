@@ -33,7 +33,19 @@ Auto Repartition 适合以下场景：
 
 ## 未分区表的 Auto Repartition
 
-当指定了重分区列 hint 时，Auto Repartition 也可以作用于未分区表。对于未分区表，GreptimeDB Enterprise 不会自动推断分区列。你需要先通过 `ALTER TABLE` 设置后续 Auto Repartition 使用的候选列：
+当指定了重分区列 hint 时，Auto Repartition 也可以作用于未分区表。对于未分区表，GreptimeDB Enterprise 不会自动推断分区列。你可以在创建表时指定后续 Auto Repartition 使用的候选列：
+
+```sql
+CREATE TABLE sensor_readings (
+    host STRING,
+    cpu DOUBLE,
+    ts TIMESTAMP TIME INDEX,
+    PRIMARY KEY(host)
+)
+WITH ('repartition.column.hint'='host');
+```
+
+你也可以后续通过 `ALTER TABLE` 设置或更新该 hint：
 
 ```sql
 ALTER TABLE sensor_readings SET 'repartition.column.hint'='host';
@@ -49,12 +61,11 @@ ALTER TABLE sensor_readings UNSET 'repartition.column.hint';
 
 重分区列 hint 有以下限制：
 
-- 必须通过 `ALTER TABLE ... SET` 设置；不支持在 `CREATE TABLE ... WITH` 中设置。
 - 只能指定一个列。
 - 指定的列必须存在于表中。
 - 指定的列不能是 time index 列。
 - 只能在没有 partition metadata 的表上设置。
-- 必须单独设置或取消，不能和其他 table options 一起修改。
+- 使用 `ALTER TABLE` 时，必须单独设置或取消，不能和其他 table options 一起修改。
 
 ## 限制
 
