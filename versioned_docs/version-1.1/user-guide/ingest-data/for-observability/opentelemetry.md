@@ -31,7 +31,7 @@ To send OpenTelemetry Metrics to GreptimeDB through OpenTelemetry SDK libraries,
   - `X-Greptime-DB-Name`: `<dbname>`
   - `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](https://docs.greptime.com/user-guide/deployments-administration/authentication/static/) and [HTTP API](https://docs.greptime.com/user-guide/protocols/http#authentication)
 
-The request uses binary protobuf to encode the payload, so you need to use packages that support `HTTP/protobuf`. For example, in Node.js, you can use [`exporter-trace-otlp-proto`](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-proto); in Go, you can use [`go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp`](https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp); in Java, you can use [`io.opentelemetry:opentelemetry-exporter-otlp`](https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-exporter-otlp); and in Python, you can use [`opentelemetry-exporter-otlp-proto-http`](https://pypi.org/project/opentelemetry-exporter-otlp-proto-http/).
+The request uses binary protobuf to encode the payload, so you need to use packages that support `HTTP/protobuf`. For example, in Node.js, you can use [`@opentelemetry/exporter-metrics-otlp-proto`](https://www.npmjs.com/package/@opentelemetry/exporter-metrics-otlp-proto); in Go, you can use [`go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp`](https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp); in Java, you can use [`io.opentelemetry:opentelemetry-exporter-otlp`](https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-exporter-otlp); and in Python, you can use [`opentelemetry-exporter-otlp-proto-http`](https://pypi.org/project/opentelemetry-exporter-otlp-proto-http/).
 
 :::tip NOTE
 The package names may change according to OpenTelemetry, so we recommend that you refer to the official OpenTelemetry documentation for the most up-to-date information.
@@ -115,7 +115,7 @@ For more information on the example code, please refer to the official documenta
 
 ### Prometheus Compatibility
 
-Starting from `v0.16`, GreptimeDB is introducing a Prometheus-compatible mode for the OTLP metrics ingestion.
+GreptimeDB supports a Prometheus-compatible mode for OTLP metrics ingestion.
 If the metrics data is persisted using the Prometheus-compatible format, you should be able to query them using PromQL, just like any Prometheus metrics.
 
 If you have not ingested any OTLP metrics before, it will automatically use the Prometheus-compatible format.
@@ -172,7 +172,7 @@ The Prometheus-compatible OTLP metrics data model is mapped to the GreptimeDB da
 - You can refer to the [Prometheus Data Model](./prometheus.md#data-model) for other details.
 - ExponentialHistogram is not supported yet.
 
-If you're using OTLP metrics before `v0.16`, you're ingesting the data without the Prometheus compatibility. Here are some mapping differences:
+If you are using a table that was created by an older OTLP metrics ingestion format, the existing table keeps that format. Here are some mapping differences:
 
 - All attributes, including resource attributes, scope attributes, and data point attributes, will be used as tag columns of the GreptimeDB table.
 - Each quantile of the Summary data type will be used as a separated data column of GreptimeDB, and the column name is `greptime_pxx`, where xx is the quantile, such as 90/99, etc.
