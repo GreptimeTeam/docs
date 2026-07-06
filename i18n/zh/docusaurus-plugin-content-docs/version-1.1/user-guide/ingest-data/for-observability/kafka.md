@@ -47,6 +47,8 @@ tls = {}
 
 有关 InfluxDB 行协议指标如何映射到 GreptimeDB 数据的详细信息，请参阅 InfluxDB 行协议文档中的[数据模型](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#数据模型)部分。
 
+当 Vector 使用 `decoding.codec = "influxdb"` 解析 Kafka 消息，并通过 `greptimedb_metrics` sink 写入时，每个 InfluxDB field 都会被转换为一个 metric 名称。例如，`census bees=23` 会写入名为 `census_bees` 的表，值存储在 `val` 列中。
+
 ## 日志
 
 开发人员通常处理两种类型的日志：JSON 日志和纯文本日志。

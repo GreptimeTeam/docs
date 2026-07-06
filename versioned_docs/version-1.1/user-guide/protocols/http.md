@@ -667,7 +667,7 @@ The result format is the same as `/sql` interface described in [Post SQL stateme
 curl -X POST \
   -H 'Authorization: token <username:password>' \
   -d '<influxdb-line-protocol-data>' \
-  'http://<API-host>/v1/influxdb/api/v2/write?precision=<time-precision>'
+  'http://<API-host>/v1/influxdb/api/v2/write?bucket=<db-name>&precision=<time-precision>'
 ```
 
 </TabItem>
@@ -691,7 +691,8 @@ curl -X POST \
 
 - `u`: The username. Optional. It is the authentication username for V1.
 - `p`: The password. Optional. It is the authentication password for V1.
-- `db`: The database name. Optional. The default value is `public`.
+- `bucket`: The database name for InfluxDB line protocol V2 writes. Optional. The default value is `public`.
+- `db`: The database name. This is the standard parameter for InfluxDB line protocol V1 writes. The V2 API also accepts `db` as a GreptimeDB compatibility alias, but `bucket` is recommended for V2. Optional. The default value is `public`.
 - `precision`: Defines the precision of the timestamp provided in the request body. Please refer to [InfluxDB Line Protocol](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md) in the user guide.
 
 ### Body

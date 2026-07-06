@@ -42,6 +42,9 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
 - `db` 是你要写入日志的数据库名称。
 - `table` 是你要写入日志的表名称。
 - `pipeline_name` 是你要用于处理日志的管道名称。
+- `custom_time_index` 是可选参数。当输入数据中的某个字段需要作为 GreptimeDB 的 time index 时，可以使用它。支持的格式为 `<field_name>;epoch;<resolution>` 和 `<field_name>;datestr;<format>`。
+
+`greptime_identity` pipeline 会直接根据 JSON 字段创建表。如果你希望 `scrape_timestamp` 这样的字段成为 GreptimeDB 的 time index，而不是普通列，可以在请求 URI 中设置 `custom_time_index`，也可以使用自定义 pipeline 来解析和映射该字段。
 
 ## OpenTelemetry
 
@@ -94,7 +97,7 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Header X-Greptime-DB-Name "<dbname>"
 ```
 
-本示例中，使用的是 [OpenTelemetry OTLP/HTTP API](/user-guide/ingest-data/for-observability/opentelemetry.md#opentelemetry-collectors) 接口。如需更多信息，请参阅 [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md) 文档。
+本示例使用的是 OpenTelemetry OTLP/HTTP API。不同 signal 支持的 header 和选项不同，具体请分别参考 OpenTelemetry API 的 [metrics](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api)、[logs](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-1) 和 [traces](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-2) 部分。
 
 ## Prometheus Remote Write
 

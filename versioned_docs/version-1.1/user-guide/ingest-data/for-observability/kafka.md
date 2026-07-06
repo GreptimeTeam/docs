@@ -48,6 +48,8 @@ tls = {}
 
 For details on how InfluxDB line protocol metrics are mapped to GreptimeDB data, please refer to the [Data Model](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#data-model) section in the InfluxDB line protocol documentation.
 
+When Vector decodes Kafka messages with `decoding.codec = "influxdb"` and writes them through the `greptimedb_metrics` sink, each InfluxDB field is converted into a metric name. For example, `census bees=23` is written to a table named `census_bees`, with the value stored in the `val` column.
+
 
 ## Logs
 

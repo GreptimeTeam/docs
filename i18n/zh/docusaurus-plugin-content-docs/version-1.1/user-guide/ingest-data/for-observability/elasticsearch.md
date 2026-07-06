@@ -80,7 +80,8 @@ GreptimeDB 支持通过实现以下两个 HTTP endpoint 来实现 Elasticsearch 
 ```bash
 curl -XPOST http://localhost:4000/v1/elasticsearch/_bulk \
   -H "Authorization: Basic <base64-encoded-credentials>" \
-  -H "Content-Type: application/json" -d @request.json
+  -H "Content-Type: application/x-ndjson" \
+  --data-binary @request.json
 ```
 
 我们可使用 `mysql` 客户端连接到 GreptimeDB，然后执行如下 SQL 语句来查看写入的数据：
@@ -111,8 +112,10 @@ output {
     elasticsearch {
         hosts => ["http://localhost:4000/v1/elasticsearch"]
         index => "my_index"
+        manage_template => false
+        ilm_enabled => false
+        data_stream => false
         parameters => {
-           "pipeline_name" => "my_pipeline"
            "msg_field" => "message"
         }
     }
@@ -123,7 +126,9 @@ output {
 
 - `hosts`: 指定 GreptimeDB 的 Elasticsearch 协议的 HTTP 地址，即 `http://${db_host}:${db_http_port}/v1/elasticsearch`；
 - `index`: 指定写入的表名；
-- `parameters`: 指定写入的 URL 参数，上面的例子中指定了 `pipeline_name` 和 `msg_field` 两个参数；
+- `manage_template`、`ilm_enabled` 和 `data_stream`: 关闭 Elasticsearch 的索引管理能力。GreptimeDB 兼容 Elasticsearch 的 `_bulk` 日志写入 API，但不管理 Elasticsearch template、ILM policy 或 data stream；
+- `parameters`: 指定写入的 URL 参数。上面的例子使用 `msg_field=message`，表示让 GreptimeDB 从 `message` 字段中解析原始日志内容。如果你要使用已经存在的 GreptimeDB pipeline，也可以在这里设置 `pipeline_name`。如果省略 `pipeline_name`，GreptimeDB 会使用内置的 `greptime_identity` pipeline；
+- 如果 Logstash 打印 X-Pack monitoring 尝试连接 `elasticsearch:9200` 的 warning，可以在 `logstash.yml` 中设置 `xpack.monitoring.enabled: false` 来关闭 Logstash monitoring。
 
 ### Filebeat
 
@@ -134,15 +139,18 @@ output.elasticsearch:
   hosts: ["http://localhost:4000/v1/elasticsearch"]
   index: "my_index"
   parameters:
-    pipeline_name: my_pipeline
     msg_field: message
+
+setup.ilm.enabled: false
+setup.template.enabled: false
 ```
 
 请关注以下与 GreptimeDB 相关的配置：
 
 - `hosts`: 指定 GreptimeDB 的 Elasticsearch 协议的 HTTP 地址，即 `http://${db_host}:${db_http_port}/v1/elasticsearch`，可根据实际情况进行调整；
 - `index`: 指定写入的表名；
-- `parameters`: 指定写入的 URL 参数，上面的例子中指定了 `pipeline_name` 和 `msg_field` 两个参数；
+- `parameters`: 指定写入的 URL 参数。上面的例子使用 `msg_field: message`，表示让 GreptimeDB 从 `message` 字段中解析原始日志内容。如果你要使用已经存在的 GreptimeDB pipeline，也可以在这里设置 `pipeline_name`。如果省略 `pipeline_name`，GreptimeDB 会使用内置的 `greptime_identity` pipeline；
+- `setup.ilm.enabled` 和 `setup.template.enabled`: 关闭 Elasticsearch index lifecycle management 和 template setup。GreptimeDB 兼容 Elasticsearch 的 `_bulk` 日志写入 API，但不管理 Elasticsearch template 或 ILM policy。
 
 ### Telegraf
 

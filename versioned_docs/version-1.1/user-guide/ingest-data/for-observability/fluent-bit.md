@@ -43,6 +43,9 @@ In params Uri,
 - `db` is the database name you want to write logs to.
 - `table` is the table name you want to write logs to.
 - `pipeline_name` is the pipeline name you want to use for processing logs.
+- `custom_time_index` is optional. Use it when a field in the input data should become the GreptimeDB time index. The supported formats are `<field_name>;epoch;<resolution>` and `<field_name>;datestr;<format>`.
+
+The `greptime_identity` pipeline creates the table directly from the JSON fields. If you want a field such as `scrape_timestamp` to become the GreptimeDB time index instead of a regular column, set `custom_time_index` in the request URI or use a custom pipeline to parse and map that field.
 
 ## OpenTelemetry
 
@@ -100,7 +103,7 @@ We recommend not writing metrics, logs, and traces to a single output simultaneo
 ```
 
 
-In this example, the [OpenTelemetry OTLP/HTTP API](/user-guide/ingest-data/for-observability/opentelemetry.md#opentelemetry-collectors) interface is used. For more information, and extra options, refer to the [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md) guide.
+In this example, the OpenTelemetry OTLP/HTTP API is used. For signal-specific headers and options, see the OpenTelemetry API sections for [metrics](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api), [logs](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-1), and [traces](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-2).
 
 ## Prometheus Remote Write
 

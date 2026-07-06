@@ -13,7 +13,7 @@ GreptimeDB 支持 HTTP InfluxDB Line 协议。
 
 #### Post 指标
 
-你可以通过 `/v1/influxdb/write` API 写入数据。
+你可以通过兼容 InfluxDB 的写入 API 写入数据。
 以下是一个示例：
 
 <Tabs>
@@ -21,7 +21,7 @@ GreptimeDB 支持 HTTP InfluxDB Line 协议。
 <TabItem value="InfluxDB line protocol V2" label="InfluxDB line protocol V2">
 
 ```shell
-curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public&precision=ms" \
+curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?bucket=public&precision=ms" \
  -H "authorization: token <greptime_user:greptimedb_password>" \
   --data-binary \
   'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450
@@ -43,9 +43,10 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u
 
 </Tabs>
 
-`/v1/influxdb/write` API 支持以下查询参数：
+兼容 InfluxDB 的写入 API 支持以下查询参数：
 
-* `db`：指定要写入的数据库。默认值为 `public`。
+* `bucket`：使用 InfluxDB line protocol V2 API 写入时，指定要写入的数据库。默认值为 `public`。
+* `db`：指定要写入的数据库。这是 InfluxDB line protocol V1 API 的标准参数。V2 API 也接受 `db` 作为 GreptimeDB 的兼容别名，但 V2 推荐使用 `bucket`。
 * `precision`：定义请求体中提供的时间戳的精度，可接受的值为 `ns`（纳秒）、`us`（微秒）、`ms`（毫秒）和 `s`（秒），默认值为 `ns`（纳秒）。该 API 写入的时间戳类型为 `TimestampNanosecond`，因此默认精度为 `ns`（纳秒）。如果你在请求体中使用了其他精度的时间戳，需要使用此参数指定精度。该参数确保时间戳能够被准确解释并以纳秒精度存储。
 
 你可以通过 HTTP hints 为自动创建的表设置选项。
@@ -76,7 +77,7 @@ default_merge_mode = "last_row"
 <TabItem value="InfluxDB line protocol V2" label="InfluxDB line protocol V2">
 
 ```shell
-curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public" \
+curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?bucket=public" \
   -H "authorization: token <greptime_user:greptimedb_password>" \
   --data-binary \
   'monitor,host=127.0.0.1 cpu=0.1,memory=0.4
@@ -107,10 +108,10 @@ GreptimeDB 与 InfluxDB 的行协议鉴权格式兼容，包括 V1 和 V2。
 
 <TabItem value="InfluxDB line protocol V2" label="InfluxDB line protocol V2">
 
-InfluxDB 的 [V2 协议](https://docs.influxdata.com/influxdb/v1.8/tools/api/?t=Auth+Enabled#apiv2query-http-endpoint) 使用了类似 HTTP 标准 basic 认证方案的格式。
+对于 InfluxDB line protocol V2 API，需要在 `Authorization` header 中使用 `token <username>:<password>` 格式传入用户名和密码。
 
 ```shell
-curl 'http://localhost:4000/v1/influxdb/api/v2/write?db=public' \
+curl 'http://localhost:4000/v1/influxdb/api/v2/write?bucket=public' \
     -H 'authorization: token <username:password>' \
     -d 'monitor,host=127.0.0.1 cpu=0.1,memory=0.4'
 ```
@@ -119,7 +120,7 @@ curl 'http://localhost:4000/v1/influxdb/api/v2/write?db=public' \
 
 <TabItem value="InfluxDB line protocol V1" label="InfluxDB line protocol V1">
 
-对于 InfluxDB 的 [V1 协议](https://docs.influxdata.com/influxdb/v1.8/tools/api/?t=Auth+Enabled#query-string-parameters-1) 的鉴权格式。在 HTTP 查询字符串中添加 `u` 作为用户和 `p` 作为密码，如下所示：
+对于 InfluxDB line protocol V1 API，在 HTTP 查询字符串中添加 `u` 作为用户名、`p` 作为密码：
 
 ```shell
 curl 'http://localhost:4000/v1/influxdb/write?db=public&u=<username>&p=<password>' \

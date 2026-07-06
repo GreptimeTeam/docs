@@ -649,7 +649,7 @@ curl -X GET \
 curl -X POST \
   -H 'Authorization: token <username:password>' \
   -d '<influxdb-line-protocol-data>' \
-  'http://<API-host>/v1/influxdb/api/v2/write?precision=<time-precision>'
+  'http://<API-host>/v1/influxdb/api/v2/write?bucket=<db-name>&precision=<time-precision>'
 ```
 
 </TabItem>
@@ -673,7 +673,8 @@ curl -X POST \
 
 - `u`: 用户名。可选。它是 V1 的鉴权用户名。
 - `p`: 密码。可选。它是 V1 的鉴权密码。
-- `db`: 数据库名称。可选。默认值是 `public`。
+- `bucket`: InfluxDB line protocol V2 写入使用的数据库名称。可选。默认值是 `public`。
+- `db`: 数据库名称。这是 InfluxDB line protocol V1 写入的标准参数。V2 API 也接受 `db` 作为 GreptimeDB 的兼容别名，但 V2 推荐使用 `bucket`。可选。默认值是 `public`。
 - `precision`: 定义请求体中提供的时间戳的精度。请参考用户指南中的 [InfluxDB 行协议](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md)文档。
 
 ### Body
