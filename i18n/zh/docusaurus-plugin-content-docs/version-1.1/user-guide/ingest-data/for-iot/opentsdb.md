@@ -17,7 +17,7 @@ GreptimeDB 的 HTTP Server 默认监听 `4000` 端口。例如使用 curl 写入
 
 ```shell
 curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put \
-    -H 'Authorization: Basic {{authentication}}' \
+    -H 'Authorization: Basic <base64-credentials>' \
     -d '
     {
         "metric": "sys.cpu.nice",
@@ -35,7 +35,7 @@ curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put \
 
 ```shell
 curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put \
-    -H 'Authorization: Basic {{authentication}}' \
+    -H 'Authorization: Basic <base64-credentials>' \
     -d '
     [
         {

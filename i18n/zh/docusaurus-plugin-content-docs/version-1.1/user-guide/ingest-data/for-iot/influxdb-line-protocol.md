@@ -13,7 +13,7 @@ GreptimeDB 支持 HTTP InfluxDB Line 协议。
 
 #### Post 指标
 
-你可以通过 `/influxdb/write` API 写入数据。
+你可以通过 `/v1/influxdb/write` API 写入数据。
 以下是一个示例：
 
 <Tabs>
@@ -22,7 +22,7 @@ GreptimeDB 支持 HTTP InfluxDB Line 协议。
 
 ```shell
 curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public&precision=ms" \
- -H "authorization: token {{greptime_user:greptimedb_password}}" \
+ -H "authorization: token <greptime_user:greptimedb_password>" \
   --data-binary \
   'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450
   monitor,host=127.0.0.2 cpu=0.2,memory=0.3 1667446798450
@@ -43,7 +43,7 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u
 
 </Tabs>
 
-`/influxdb/write` 支持查询参数，包括：
+`/v1/influxdb/write` API 支持以下查询参数：
 
 * `db`：指定要写入的数据库。默认值为 `public`。
 * `precision`：定义请求体中提供的时间戳的精度，可接受的值为 `ns`（纳秒）、`us`（微秒）、`ms`（毫秒）和 `s`（秒），默认值为 `ns`（纳秒）。该 API 写入的时间戳类型为 `TimestampNanosecond`，因此默认精度为 `ns`（纳秒）。如果你在请求体中使用了其他精度的时间戳，需要使用此参数指定精度。该参数确保时间戳能够被准确解释并以纳秒精度存储。
@@ -52,7 +52,7 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u
 例如，将 `append_mode` hint 设置为 `true` 以创建 append-only 表：
 
 ```shell
-curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u={{greptime_user}}&p={{greptimedb_password}}" \
+curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u=<greptime_user>&p=<greptimedb_password>" \
   -H 'x-greptime-hint-append_mode: true' \
   --data-binary \
   'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450'
@@ -77,7 +77,7 @@ default_merge_mode = "last_row"
 
 ```shell
 curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public" \
-  -H "authorization: token {{greptime_user:greptimedb_password}}" \
+  -H "authorization: token <greptime_user:greptimedb_password>" \
   --data-binary \
   'monitor,host=127.0.0.1 cpu=0.1,memory=0.4
   monitor,host=127.0.0.2 cpu=0.2,memory=0.3
@@ -111,7 +111,7 @@ InfluxDB 的 [V2 协议](https://docs.influxdata.com/influxdb/v1.8/tools/api/?t=
 
 ```shell
 curl 'http://localhost:4000/v1/influxdb/api/v2/write?db=public' \
-    -H 'authorization: token {{username:password}}' \
+    -H 'authorization: token <username:password>' \
     -d 'monitor,host=127.0.0.1 cpu=0.1,memory=0.4'
 ```
 

@@ -1,3 +1,8 @@
+---
+keywords: [EMQX, MQTT broker, IoT, data ingestion]
+description: 使用 GreptimeDB 作为 EMQX 的数据系统来存储 MQTT 消息。
+---
+
 # EMQX
 
 GreptimeDB 可以作为 EMQX 的数据系统。

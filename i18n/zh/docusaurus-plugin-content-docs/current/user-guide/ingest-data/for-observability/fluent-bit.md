@@ -119,4 +119,4 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
 
 - `db` 是你要写入指标的数据库名称。
 
-有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](/user-guide/ingest-data/for-observability/prometheus.md#data-model)部分。
+有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](/user-guide/ingest-data/for-observability/prometheus.md#数据模型)部分。
