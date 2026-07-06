@@ -54,26 +54,28 @@ on Phase 4 (confirm ingestion recovered). Run it anyway if you have any doubt th
 works.
 
 Run an end-to-end write/read to exercise the real write path (object store + WAL), not just
-process liveness (see access methods above):
+process liveness (see access methods above). Use a unique table name for each run, replace it
+consistently in every statement, and only drop the table created by this smoke test. For
+example, append the current timestamp: `_health_check_YYYYMMDD_HHMMSS`.
 
 ```sql
-CREATE TABLE _health_check (
+CREATE TABLE _health_check_20260706_123000 (
   host STRING,
   val  DOUBLE,
   ts   TIMESTAMP TIME INDEX,
   PRIMARY KEY (host)
 );
 
-INSERT INTO _health_check (host, val, ts)
+INSERT INTO _health_check_20260706_123000 (host, val, ts)
 VALUES ('node-1', 1.0, now()), ('node-2', 2.0, now());
 
-SELECT * FROM _health_check;
+SELECT * FROM _health_check_20260706_123000;
 
 -- Optionally force a flush so the object-store write path is exercised, then confirm:
-ADMIN flush_table("_health_check");
-SELECT count(*) FROM _health_check;
+ADMIN flush_table("_health_check_20260706_123000");
+SELECT count(*) FROM _health_check_20260706_123000;
 
-DROP TABLE _health_check;
+DROP TABLE _health_check_20260706_123000;
 ```
 
 If the insert or flush fails (e.g. object-store auth/permission error), stop here and treat it
