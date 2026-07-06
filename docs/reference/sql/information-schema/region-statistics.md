@@ -1,6 +1,6 @@
 ---
-keywords: [region statistics, rows, disk size, memtable size, sst size, index size]
-description: Provides detailed information about a region's statistics, including the total number of rows, disk size, and more. These statistics are approximate values.
+keywords: [region statistics, rows, disk size, memtable size, sst size, index size, query stats]
+description: Provides detailed information about a region's statistics, including row counts, write and query counters, disk size, and more. These statistics are approximate values.
 ---
 
 # REGION_STATISTICS
@@ -22,6 +22,8 @@ The output is as follows:
 | region_number            | UInt32 |      | NO   |         | FIELD         |
 | region_rows              | UInt64 |      | YES  |         | FIELD         |
 | written_bytes_since_open | UInt64 |      | YES  |         | FIELD         |
+| query_cpu_time_millis    | UInt64 |      | YES  |         | FIELD         |
+| query_scanned_bytes      | UInt64 |      | YES  |         | FIELD         |
 | disk_size                | UInt64 |      | YES  |         | FIELD         |
 | memtable_size            | UInt64 |      | YES  |         | FIELD         |
 | manifest_size            | UInt64 |      | YES  |         | FIELD         |
@@ -40,6 +42,8 @@ Fields in the `REGION_STATISTICS` table are described as follows:
 - `region_number`: The number of the region in the table.
 - `region_rows`: The number of rows in the region. It includes rows in SST files owned by this region and rows in memtables. Rows from SST files referenced from other regions are not counted.
 - `written_bytes_since_open`: The number of bytes written to the region since the region was opened.
+- `query_cpu_time_millis`: The cumulative query CPU time of the region since it was opened, in milliseconds.
+- `query_scanned_bytes`: The cumulative number of bytes scanned by queries since the region was opened.
 - `disk_size`:  The total size of data files in the region, including data, index and metadata etc.
 - `memtable_size`: The region's total size of memtables.
 - `manifest_size`: The region's total size of manifest files.
@@ -56,9 +60,9 @@ WHERE t.table_name = 'system_metrics';
 ```
 Output:
 ```sql
-+---------------+----------+---------------+-------------+--------------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
-| region_id     | table_id | region_number | region_rows | written_bytes_since_open | disk_size | memtable_size | manifest_size | sst_size | sst_num | index_size | engine | region_role |
-+---------------+----------+---------------+-------------+--------------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
-| 4398046511104 |     1024 |             0 |           8 |                        0 |      4922 |             0 |          1338 |     3249 |       1 |        335 | mito   | Leader      |
-+---------------+----------+---------------+-------------+--------------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
++---------------+----------+---------------+-------------+--------------------------+------------------------+---------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
+| region_id     | table_id | region_number | region_rows | written_bytes_since_open | query_cpu_time_millis | query_scanned_bytes | disk_size | memtable_size | manifest_size | sst_size | sst_num | index_size | engine | region_role |
++---------------+----------+---------------+-------------+--------------------------+------------------------+---------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
+| 4398046511104 |     1024 |             0 |           8 |                        0 |                      0 |                   0 |      4922 |             0 |          1338 |     3249 |       1 |        335 | mito   | Leader      |
++---------------+----------+---------------+-------------+--------------------------+------------------------+---------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
 ```
