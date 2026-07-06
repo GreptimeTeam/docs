@@ -378,7 +378,7 @@ You can also query via the Prometheus-compatible HTTP API:
 
 ```bash
 curl -X POST \
-  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   --data-urlencode 'query=quantile_over_time(0.95, grpc_latencies{host!=""}[5s])' \
   --data-urlencode 'start=2024-07-11 20:00:00Z' \
   --data-urlencode 'end=2024-07-11 20:00:20Z' \

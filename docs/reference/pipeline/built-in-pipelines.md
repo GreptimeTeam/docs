@@ -89,7 +89,7 @@ To instruct the server to use ts as the time index, set the following query para
 ```shell
 curl -X "POST" "http://localhost:4000/v1/ingest?db=public&table=pipeline_logs&pipeline_name=greptime_identity&custom_time_index=ts;epoch;s" \
      -H "Content-Type: application/json" \
-     -H "Authorization: Basic {{authentication}}" \
+     -H "Authorization: Basic <base64-encoded-credentials>" \
      -d $'[{"action": "login", "ts": 1742814853}]'
 ```
 
@@ -134,7 +134,7 @@ Here is a sample request:
 ```shell
 curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&pipeline_name=greptime_identity&version=<pipeline-version>" \
      -H "Content-Type: application/x-ndjson" \
-     -H "Authorization: Basic {{authentication}}" \
+     -H "Authorization: Basic <base64-encoded-credentials>" \
      -H "x-greptime-pipeline-params: max_nested_levels=5" \
      -d "$<log-items>"
 ```

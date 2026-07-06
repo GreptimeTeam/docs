@@ -110,7 +110,7 @@ transform:
 ```shell
 curl -X "POST" \
   "http://localhost:4000/v1/pipelines/nginx_pipeline" \
-     -H 'Authorization: Basic {{authentication}}' \
+     -H 'Authorization: Basic <base64-encoded-credentials>' \
      -F "file=@pipeline.yaml"
 ```
 
@@ -132,7 +132,7 @@ curl -X "POST" \
 curl -X POST \
   "http://localhost:4000/v1/ingest?db=public&table=custom_pipeline_logs&pipeline_name=nginx_pipeline" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Basic {{authentication}}" \
+  -H "Authorization: Basic <base64-encoded-credentials>" \
   -d '[
     {
       "message": "127.0.0.1 - - [25/May/2024:20:16:37 +0000] \"GET /index.html HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\""

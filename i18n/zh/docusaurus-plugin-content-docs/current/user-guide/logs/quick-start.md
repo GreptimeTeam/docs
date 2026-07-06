@@ -28,7 +28,7 @@ GreptimeDB 日志写入最简单的方法是通过使用 `greptime_identity` pip
 curl -X POST \
   "http://localhost:4000/v1/ingest?db=public&table=demo_logs&pipeline_name=greptime_identity" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Basic {{authentication}}" \
+  -H "Authorization: Basic <base64-encoded-credentials>" \
   -d '[
     {
       "timestamp": "2024-01-15T10:30:00Z",

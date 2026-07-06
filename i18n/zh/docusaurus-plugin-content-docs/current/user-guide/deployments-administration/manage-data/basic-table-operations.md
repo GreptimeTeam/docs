@@ -333,7 +333,7 @@ DROP DATABASE test;
 
 ```shell
 curl -X POST \
-  -H 'authorization: Basic {{authorization if exists}}' \
+  -H 'authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'sql=CREATE TABLE monitor (host STRING, ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP(), cpu FLOAT64 DEFAULT 0, memory FLOAT64, TIME INDEX (ts), PRIMARY KEY(host))' \
 http://localhost:4000/v1/sql?db=public
