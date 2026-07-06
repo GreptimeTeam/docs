@@ -14,7 +14,7 @@ GreptimeDB supports HTTP InfluxDB Line protocol.
 #### Post metrics
 
 You can write data to GreptimeDB using the InfluxDB-compatible write APIs.
-Here's an example of how to use this API:
+Here's an example of how to use these APIs:
 
 <Tabs>
 
