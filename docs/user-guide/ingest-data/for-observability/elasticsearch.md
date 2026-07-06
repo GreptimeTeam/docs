@@ -80,7 +80,8 @@ Then use the `curl` command to send this file as a request body to GreptimeDB:
 ```bash
 curl -XPOST http://localhost:4000/v1/elasticsearch/_bulk \
   -H "Authorization: Basic <base64-encoded-credentials>" \
-  -H "Content-Type: application/json" -d @request.json
+  -H "Content-Type: application/x-ndjson" \
+  --data-binary @request.json
 ```
 
 We can use a `mysql` client to connect to GreptimeDB and execute the following SQL to view the inserted data:
@@ -111,8 +112,10 @@ output {
     elasticsearch {
         hosts => ["http://localhost:4000/v1/elasticsearch"]
         index => "my_index"
+        manage_template => false
+        ilm_enabled => false
+        data_stream => false
         parameters => {
-           "pipeline_name" => "my_pipeline"
            "msg_field" => "message"
         }
     }
@@ -125,7 +128,11 @@ Please pay attention to the following GreptimeDB-related configurations:
   
 - `index`: Specifies the table name that will be written to.
   
-- `parameters`: Specifies the URL parameters for writing, where the example above specifies two parameters: `pipeline_name` and `msg_field`.
+- `manage_template`, `ilm_enabled`, and `data_stream`: Disable Elasticsearch index management features. GreptimeDB's Elasticsearch-compatible API supports log ingestion through `_bulk`, but does not manage Elasticsearch templates, ILM policies, or data streams.
+
+- `parameters`: Specifies the URL parameters for writing. The example above uses `msg_field=message`, which tells GreptimeDB to parse the original log content from the `message` field. You can also set `pipeline_name` here if you want to use an existing GreptimeDB pipeline. If `pipeline_name` is omitted, GreptimeDB uses the built-in `greptime_identity` pipeline.
+
+- If Logstash prints warnings about X-Pack monitoring trying to connect to `elasticsearch:9200`, disable Logstash monitoring by setting `xpack.monitoring.enabled: false` in `logstash.yml`.
 
 ### Filebeat
 
@@ -136,8 +143,10 @@ output.elasticsearch:
   hosts: ["http://localhost:4000/v1/elasticsearch"]
   index: "my_index"
   parameters:
-    pipeline_name: my_pipeline
     msg_field: message
+
+setup.ilm.enabled: false
+setup.template.enabled: false
 ```
 
 Please pay attention to the following GreptimeDB-related configurations:
@@ -146,7 +155,9 @@ Please pay attention to the following GreptimeDB-related configurations:
   
 - `index`: Specifies the table name that will be written to.
   
-- `parameters`: Specifies the URL parameters for writing, where the example above specifies two parameters: `pipeline_name` and `msg_field`.
+- `parameters`: Specifies the URL parameters for writing. The example above uses `msg_field: message`, which tells GreptimeDB to parse the original log content from the `message` field. You can also set `pipeline_name` here if you want to use an existing GreptimeDB pipeline. If `pipeline_name` is omitted, GreptimeDB uses the built-in `greptime_identity` pipeline.
+
+- `setup.ilm.enabled` and `setup.template.enabled`: Disable Elasticsearch index lifecycle management and template setup. GreptimeDB's Elasticsearch-compatible API supports log ingestion through `_bulk`, but does not manage Elasticsearch templates or ILM policies.
 
 ### Telegraf
 

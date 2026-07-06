@@ -207,5 +207,4 @@ auth = {strategy = "basic", user = "<username>", password = "<password>"}
 
 对于 loki 协议，`labels` 默认会使用时序场景下的 Tag 类型，请注意这部分字段不要使用高基数字段。
 `structured_metadata` 将会整体存储为一个 json 字段。
-请注意，由于 Vector 的配置里不允许设置 header 所以无法指定 pipeline。
-如果需要使用 pipeline 功能，请考虑使用 `greptimedb_logs` sink。
+请注意，Vector 的 Loki sink 配置不允许设置 header，因此不能通过 `X-Greptime-*` header 指定自定义 GreptimeDB 日志表或 pipeline。日志会写入 GreptimeDB 默认的 Loki 表 `loki_logs`。如果需要指定表名或使用 pipeline 功能，请考虑使用 `greptimedb_logs` sink。

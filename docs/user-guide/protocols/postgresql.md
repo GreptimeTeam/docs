@@ -8,13 +8,13 @@ description: Guide on connecting to GreptimeDB using PostgreSQL, managing tables
 ## Connect
 
 You can connect to GreptimeDB using PostgreSQL via port `4003`.
-Simply add the `-U` argument to your command, followed by your username and password. Here's an example:
+Use the `-U` argument to specify your username. If authentication is enabled, `psql` prompts for the password:
 
 ```shell
 psql -h <host> -p 4003 -U <username> -d public
 ```
 
-- For how to setup username and password for GreptimeDB, please refer to [Authentication](/user-guide/deployments-administration/authentication/overview.md).
+- To set up username and password for GreptimeDB, please refer to [Authentication](/user-guide/deployments-administration/authentication/overview.md).
 - If you want to use other ports for PostgreSQL, please refer to [Protocol options](/user-guide/deployments-administration/configuration.md#protocol-options) in the configuration document.
 
 
