@@ -9,7 +9,7 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
 
 你可以将 Fluent Bit 数据转发到 GreptimeDB。本文档介绍如何配置 Fluent Bit 以将日志、指标和跟踪发送到 GreptimeDB。
 
-## Http
+## HTTP
 
 使用 Fluent Bit 的 [HTTP 输出插件](https://docs.fluentbit.io/manual/pipeline/outputs/http)，你可以将日志发送到 GreptimeDB。Http 接口目前支持日志的写入。
 在配置 Fluent Bit 之前，请确保你已经了解[日志写入流程](/user-guide/logs/overview.md)和[如何使用 pipelines](/user-guide/logs/use-custom-pipelines.md)。
@@ -119,4 +119,4 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
 
 - `db` 是你要写入指标的数据库名称。
 
-有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](/user-guide/ingest-data/for-observability/prometheus.md#data-model)部分。
+有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](/user-guide/ingest-data/for-observability/prometheus.md#数据模型)部分。

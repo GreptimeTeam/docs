@@ -34,7 +34,7 @@ GreptimeDB 实现了兼容 Prometheus 的一系列 API，通过 `/v1/prometheus`
 
 ```shell
 curl -X POST \
-    -H 'Authorization: Basic {{authorization if exists}}' \
+    -H 'Authorization: Basic <base64-encoded-credentials>' \
     --data-urlencode 'query=irate(process_cpu_seconds_total[1h])' \
     --data-urlencode 'start=2024-11-24T00:00:00Z' \
     --data-urlencode 'end=2024-11-25T00:00:00Z' \

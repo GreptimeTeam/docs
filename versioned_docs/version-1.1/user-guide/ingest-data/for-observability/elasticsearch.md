@@ -79,7 +79,7 @@ Then use the `curl` command to send this file as a request body to GreptimeDB:
 
 ```bash
 curl -XPOST http://localhost:4000/v1/elasticsearch/_bulk \
-  -H "Authorization: Basic {{authentication}}" \
+  -H "Authorization: Basic <base64-encoded-credentials>" \
   -H "Content-Type: application/json" -d @request.json
 ```
 

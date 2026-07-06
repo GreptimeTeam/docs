@@ -14,7 +14,7 @@ You can use the following command to write logs via the HTTP interface:
 ```shell
 curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=<skip-error>" \
      -H "Content-Type: application/x-ndjson" \
-     -H "Authorization: Basic {{authentication}}" \
+     -H "Authorization: Basic <base64-encoded-credentials>" \
      -d "$<log-items>"
 ```
 

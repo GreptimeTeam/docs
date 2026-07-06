@@ -258,7 +258,7 @@ Default table schema:
   `case_sensitive=false`, and `backend=bloom`. For the Bloom backend, the
   default `granularity` is `10240` and the default `false_positive_rate` is
   `0.01`. For details, see the [fulltext index
-  documentation](/user-guide/manage-data/data-index.md#fulltext-index).
+  documentation](/user-guide/manage-data/data-index.md#full-text-index).
 - The timestamp of the log will be used as the timestamp index in GreptimeDB, with the column name `timestamp`. It is preferred to use `time_unix_nano` as the timestamp column. If `time_unix_nano` is not provided, `observed_time_unix_nano` will be used instead.
 
 ### Append Only

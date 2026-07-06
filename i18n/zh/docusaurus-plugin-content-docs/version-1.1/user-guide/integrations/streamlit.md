@@ -1,6 +1,6 @@
 ---
 keywords: [Streamlit, 数据应用, SQL 连接, MySQL 协议, Python]
-description: 使用 GreptimeCloud 和 Streamlit 构建数据应用的说明，包括创建 SQL 连接和运行 SQL 查询。
+description: 使用 GreptimeDB 和 Streamlit 构建数据应用的说明，包括创建 SQL 连接和运行 SQL 查询。
 ---
 
 # Streamlit

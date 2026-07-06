@@ -134,11 +134,7 @@ WITH(
 
 ## 在 Loki Push API 中使用 pipeline
 
-:::warning 实验性特性
-此实验性功能可能存在预期外的行为，其功能未来可能发生变化。
-:::
-
-从 `v0.15` 版本开始，GreptimeDB 支持使用 pipeline 来处理 Loki Push 请求。
+GreptimeDB 支持使用 pipeline 来处理 Loki Push 请求。
 你可以简单地设置 HTTP 头 `x-greptime-pipeline-name` 为目标 pipeline 名称来启用 pipeline 处理。
 
 **注意：** 当请求数据通过 pipeline 引擎时，GreptimeDB 会为 label 和元数据列名添加前缀：
@@ -222,7 +218,7 @@ loki.write "greptime_loki" {
 
 1. 首先，启动你的 GreptimeDB 实例。参见[这里](/getting-started/installation/overview.md)快速启动。
 
-2. [上传](/user-guide/logs/manage-pipelines.md#create-a-pipeline) pipeline 配置到数据库：
+2. [上传](/user-guide/logs/manage-pipelines.md#上传-pipeline) pipeline 配置到数据库：
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/pipelines/pp" -F "file=@pipeline.yaml"
