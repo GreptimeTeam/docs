@@ -79,7 +79,7 @@ GreptimeDB 支持通过实现以下两个 HTTP endpoint 来实现 Elasticsearch 
 
 ```bash
 curl -XPOST http://localhost:4000/v1/elasticsearch/_bulk \
-  -H "Authorization: Basic <base64-credentials>" \
+  -H "Authorization: Basic <base64-encoded-credentials>" \
   -H "Content-Type: application/json" -d @request.json
 ```
 

@@ -20,7 +20,7 @@ Use curl to insert one metric point:
 
 ```shell
 curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put \
-    -H 'Authorization: Basic <base64-credentials>' \
+    -H 'Authorization: Basic <base64-encoded-credentials>' \
     -d '
     {
         "metric": "sys.cpu.nice",
@@ -38,7 +38,7 @@ Or insert multiple metric points:
 
 ```shell
 curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put \
-    -H 'Authorization: Basic <base64-credentials>' \
+    -H 'Authorization: Basic <base64-encoded-credentials>' \
     -d '
     [
         {
