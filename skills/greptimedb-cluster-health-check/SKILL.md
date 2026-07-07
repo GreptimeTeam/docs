@@ -71,7 +71,7 @@ VALUES ('node-1', 1.0, now()), ('node-2', 2.0, now());
 
 SELECT * FROM _health_check_20260706_123000;
 
--- Optionally force a flush so the object-store write path is exercised, then confirm:
+-- Force a flush so the object-store write path is exercised, then confirm:
 ADMIN flush_table("_health_check_20260706_123000");
 SELECT count(*) FROM _health_check_20260706_123000;
 
