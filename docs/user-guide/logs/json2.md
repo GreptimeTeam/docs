@@ -9,7 +9,7 @@ JSON2 是 GreptimeDB 为日志和半结构化数据设计的 JSON 类型。
 它会将 JSON 中的字段以结构化、列式的方式存储，使常用字段能够像普通列一样被高效读取、过滤和聚合，同时保留 JSON 对动态结构的表达能力。
 
 :::note
-JSON2 目前处于 Beta 阶段。我们会保持向后兼容，并在后续版本中继续完善功能、改进当前限制。
+JSON2 目前处于 Beta 阶段，部分功能仍在持续完善中。
 :::
 
 ## 快速入门
@@ -105,13 +105,13 @@ ORDER BY ts;
 
 ```sql
 SELECT
-    json_get_string(attrs, 'http.path') AS path,
-    json_get_int(attrs, 'http.status') AS status,
-    json_get_float(attrs, 'latency_ms') AS latency_ms,
-    json_get_bool(attrs, 'error') AS error
+    json_get(attrs, 'http.path')::STRING AS path,
+    json_get(attrs, 'http.status')::INT8 AS status,
+    json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms,
+    json_get(attrs, 'error')::BOOLEAN AS error
 FROM application_logs
-WHERE json_get_int(attrs, 'http.status') >= 500
-   OR json_get_float(attrs, 'latency_ms') > 300
+WHERE json_get(attrs, 'http.status')::INT8 >= 500
+    OR json_get(attrs, 'latency_ms')::DOUBLE > 300
 ORDER BY ts;
 ```
 
@@ -119,19 +119,19 @@ ORDER BY ts;
 
 | path | status | latency_ms | error |
 | --- | --- | --- | --- |
-| /v1/orders | 200 | 386.4 | false |
-| /v1/orders | 500 | 71.2 | true |
+| /v1/orders | 200 | 386.4 | 0 |
+| /v1/orders | 500 | 71.2 | 1 |
 
 你也可以对 type hint 字段做聚合，例如统计每个 API 路径的请求量、错误数和平均延迟：
 
 ```sql
 SELECT
-    attrs.http.path AS path,
+    json_get(attrs, 'http.path')::STRING AS path,
     COUNT(*) AS requests,
-    SUM(CASE WHEN attrs.error THEN 1 ELSE 0 END) AS errors,
-    AVG(attrs.latency_ms) AS avg_latency_ms
+    SUM(CASE WHEN json_get(attrs, 'error')::BOOLEAN THEN 1 ELSE 0 END) AS errors,
+    ROUND(AVG(json_get(attrs, 'latency_ms')::DOUBLE), 1) AS avg_latency_ms
 FROM application_logs
-GROUP BY attrs.http.path;
+GROUP BY json_get(attrs, 'http.path')::STRING;
 ```
 
 查询结果如下：
@@ -189,40 +189,28 @@ ORDER BY ts;
 json_get(json_column, 'path.to.field')
 ```
 
-如果希望直接指定返回类型，也可以使用以下 JSON 函数：
-
-- `json_get_string(json_column, 'path.to.field')`
-- `json_get_int(json_column, 'path.to.field')`
-- `json_get_float(json_column, 'path.to.field')`
-- `json_get_bool(json_column, 'path.to.field')`
+如果希望直接指定返回类型，可以使用类型转换：
 
 例如：
 
 ```sql
 SELECT
-    json_get_string(attrs, 'http.path') AS path,
-    json_get_int(attrs, 'http.status') AS status,
-    json_get_float(attrs, 'latency_ms') AS latency_ms,
-    json_get_bool(attrs, 'error') AS error
+    json_get(attrs, 'http.path')::STRING AS path,
+    json_get(attrs, 'http.status')::INT8 AS status,
+    json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms,
+    json_get(attrs, 'error')::BOOLEAN AS error
 FROM application_logs
 ORDER BY ts;
 ```
 
-## 当前限制
-
-JSON2 目前有以下限制：
-
-- JSON2 列只能用于 append-only 表，因此建表时必须设置 `'append_mode' = 'true'`。
-- 写入 JSON2 列的 root 值必须是非空 JSON object。例如，`{"key":"value"}` 可以写入，`[]`、`"text"`、`1`、`true`、`null` 和 `{}` 暂不支持。
-- 目前不支持直接查询 JSON2 root 列本身，请查询具体子路径，例如 `attrs.http.status` 或 `json_get(attrs, 'http.status')`。
-- 目前不支持通过下标访问 JSON array 中的元素。例如，可以查询 `attrs.items`，但暂不支持 `attrs.items[0]` 或 `json_get(attrs, 'items[0]')` 这类访问方式。
-
 ## 未来规划
 
-JSON2 目前处于 Beta 阶段。后续版本会继续完善以下能力：
+JSON2 目前处于 Beta 阶段，仍有以下限制。后续版本会继续完善相关能力：
 
 - 支持在非 append-only 表中使用 JSON2。
 - 支持写入 array、string、number、boolean、`null` 和 `{}` 等非 object 或空 object 的 JSON root 值。
-- 支持通过 `json_get` 查询 JSON2 根列本身。
+- 支持查询 JSON2 root 列本身。目前请查询具体子路径，例如 `attrs.http.status` 或 `json_get(attrs, 'http.status')`。
+- 支持通过下标访问 JSON array 中的元素。目前可以查询 `attrs.items`，但暂不支持 `attrs.items[0]` 或 `json_get(attrs, 'items[0]')`。
+- 支持 `json_get_string`、`json_get_int`、`json_get_float` 和 `json_get_bool` 等函数处理 JSON2 类型。目前可以使用 `json_get(...)::TYPE` 指定返回类型。
 - 扩展 type hint 支持的类型，例如 `TIMESTAMP` 等时间类型。
 - 为 type hint 支持 `INVERTED INDEX`、`SKIPPING INDEX` 等索引选项。
