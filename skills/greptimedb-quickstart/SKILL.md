@@ -19,6 +19,10 @@ skills (each hosted as a fetchable markdown file at the URL below):
 - [`greptimedb-pipeline`](https://docs.greptime.com/skills/greptimedb-pipeline/SKILL.md) — parse, transform, and route logs.
 - [`greptimedb-flow`](https://docs.greptime.com/skills/greptimedb-flow/SKILL.md) — continuous aggregation / materialized views.
 - [`greptimedb-trigger`](https://docs.greptime.com/skills/greptimedb-trigger/SKILL.md) — alerting rules (Enterprise).
+- [`greptimedb-performance-diagnosis`](https://docs.greptime.com/skills/greptimedb-performance-diagnosis/SKILL.md) — find the bottleneck behind slow queries, stalled ingestion, or high resource usage.
+- [`greptimedb-performance-tuning`](https://docs.greptime.com/skills/greptimedb-performance-tuning/SKILL.md) — tune server config and table options for performance.
+- [`greptimedb-table-design`](https://docs.greptime.com/skills/greptimedb-table-design/SKILL.md) — design or improve table schemas, primary keys, indexes, and partitioning.
+- [`greptimedb-cluster-health-check`](https://docs.greptime.com/skills/greptimedb-cluster-health-check/SKILL.md) — verify a deployment is healthy after deploy, restart, upgrade, or scale.
 
 To load a sister skill at runtime, fetch its `SKILL.md` URL and follow the
 instructions inside. To install it persistently into the user's agent config,
@@ -322,6 +326,18 @@ should enable it. See
   [`greptimedb-trigger`](https://docs.greptime.com/skills/greptimedb-trigger/SKILL.md)
   (Enterprise only; for open source, point the user at Prometheus Alertmanager
   with GreptimeDB as the PromQL backend).
+- **Slow query, slow ingestion, write stall, high CPU, or high memory** — hand
+  off to
+  [`greptimedb-performance-diagnosis`](https://docs.greptime.com/skills/greptimedb-performance-diagnosis/SKILL.md)
+  first to identify the bottleneck.
+- **Known server config or table-option tuning** — cache sizing, write buffer,
+  WAL, or ingestion throughput — hand off to
+  [`greptimedb-performance-tuning`](https://docs.greptime.com/skills/greptimedb-performance-tuning/SKILL.md).
+- **Schema, primary key, index, partitioning, append-only, or merge-mode
+  decisions** — hand off to
+  [`greptimedb-table-design`](https://docs.greptime.com/skills/greptimedb-table-design/SKILL.md).
+- **Post-deploy, restart, upgrade, or scale health verification** — hand off to
+  [`greptimedb-cluster-health-check`](https://docs.greptime.com/skills/greptimedb-cluster-health-check/SKILL.md).
 
 ## Phase 5. Use llms.txt for deeper detail
 
