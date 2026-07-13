@@ -91,9 +91,9 @@ The query result is:
 
 | ts | app_name | trace_id | user_name | status | latency_ms | error |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1970-01-01 00:00:00.001 | checkout | 8f3a1c | Alice | 200 | 42.8 | false |
-| 1970-01-01 00:00:00.002 | checkout | 8f3a1d | Bob | 200 | 386.4 | false |
-| 1970-01-01 00:00:00.003 | checkout | 8f3a1e | anonymous | 500 | 71.2 | true |
+| 1970-01-01 00:00:00.001 | checkout | 8f3a1c | Alice | 200 | 42.8 | NULL |
+| 1970-01-01 00:00:00.002 | checkout | 8f3a1d | Bob | 200 | 386.4 | NULL |
+| 1970-01-01 00:00:00.003 | checkout | 8f3a1e | NULL | 500 | 71.2 | true |
 
 You can also use JSON functions and cast the return type explicitly:
 
@@ -113,7 +113,7 @@ The query result is:
 
 | path | status | latency_ms | error |
 | --- | --- | --- | --- |
-| /v1/orders | 200 | 386.4 | 0 |
+| /v1/orders | 200 | 386.4 | NULL |
 | /v1/orders | 500 | 71.2 | 1 |
 
 You can also aggregate fields, for example to count requests, errors, and average
