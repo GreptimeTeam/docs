@@ -447,7 +447,7 @@ max_background_purges = 4
 auto_flush_interval = "1h"
 global_write_buffer_size = "1GB"
 global_write_buffer_reject_size = "2GB"
-sst_meta_cache_size = "128MB"
+sst_meta_cache_size = "512MB"
 vector_cache_size = "512MB"
 page_cache_size = "512MB"
 write_cache_size = "5GB"
@@ -503,7 +503,7 @@ fork_dictionary_bytes = "1GiB"
 | `auto_flush_interval`                    | 字符串 | `1h`          | 自动 flush 超过 `auto_flush_interval` 没 flush 的 region                                                               |
 | `global_write_buffer_size`               | 字符串 | `1GB`         | 写入缓冲区大小，默认值为内存总量的 1/8，但不会超过 1GB                                                                 |
 | `global_write_buffer_reject_size`        | 字符串 | `2GB`         | 写入缓冲区内数据的大小超过 `global_write_buffer_reject_size` 后拒绝写入请求，默认为 `global_write_buffer_size` 的 2 倍 |
-| `sst_meta_cache_size`                    | 字符串 | `128MB`       | SST 元数据缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/32，不超过 128MB                                            |
+| `sst_meta_cache_size`                    | 字符串 | `512MB`       | SST 元数据缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/8，不超过 512MB                                            |
 | `vector_cache_size`                      | 字符串 | `512MB`       | 内存向量和 arrow array 的缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                             |
 | `page_cache_size`                        | 字符串 | `512MB`       | SST 数据页的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/8                                                             |
 | `write_cache_size`                       | 字符串 | `5GiB`        | 写入缓存容量。如果磁盘空间充足，建议设置更大的值。                                                                     |
