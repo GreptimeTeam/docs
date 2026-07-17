@@ -86,7 +86,6 @@ LIMIT 10;
 
 ## New Contributors
 
-* [@sunchanglong](https://github.com/sunchanglong) made their first contribution in [#8369](https://github.com/GreptimeTeam/greptimedb/pull/8369)
 * [@RitwijParmar](https://github.com/RitwijParmar) made their first contribution in [#8341](https://github.com/GreptimeTeam/greptimedb/pull/8341)
 
 ## All Contributors
