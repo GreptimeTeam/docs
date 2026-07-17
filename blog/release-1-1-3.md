@@ -50,10 +50,6 @@ We recommend users on earlier v1.1 releases upgrade to v1.1.3.
 * fix: apply log query limit after expressions by [@discord9](https://github.com/discord9) in [#8496](https://github.com/GreptimeTeam/greptimedb/pull/8496)
 * fix(query): delegate merge sort cardinality effect by [@discord9](https://github.com/discord9) in [#8532](https://github.com/GreptimeTeam/greptimedb/pull/8532)
 
-## New Contributors
-
-* [@sunchanglong](https://github.com/sunchanglong) made their first contribution in [#8431](https://github.com/GreptimeTeam/greptimedb/pull/8431)
-
 ## All Contributors
 
 We would like to thank the following contributors from the GreptimeDB community:
