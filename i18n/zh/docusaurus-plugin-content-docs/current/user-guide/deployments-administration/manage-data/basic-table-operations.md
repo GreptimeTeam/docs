@@ -296,7 +296,7 @@ Query OK, 0 rows affected (0.03 sec)
 ## 删除表
 
 :::danger 危险操作
-表删除后不可撤销！请谨慎操作！
+未开启 [soft-drop](./soft-drop.md) 时，表删除后不可撤销！请谨慎操作！
 :::
 
 `DROP TABLE [db.]table` 用于删除 `db` 或当前正在使用的数据库中的表。

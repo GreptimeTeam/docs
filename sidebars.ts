@@ -367,6 +367,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/manage-data/repartition',
                 'user-guide/deployments-administration/manage-data/compaction',
                 'user-guide/deployments-administration/manage-data/gc',
+                'user-guide/deployments-administration/manage-data/soft-drop',
               ],
             },
             {
@@ -661,6 +662,7 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/key-column-usage',
                 'reference/sql/information-schema/partitions',
                 'reference/sql/information-schema/procedure-info',
+                'reference/sql/information-schema/recycle-bin',
                 'reference/sql/information-schema/schemata',
                 'reference/sql/information-schema/statistics',
                 'reference/sql/information-schema/tables',

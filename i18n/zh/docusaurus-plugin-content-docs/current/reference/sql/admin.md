@@ -27,6 +27,7 @@ GreptimeDB 提供了一些管理函数来管理数据库和数据：
 * `reconcile_catalog()` 修复整个集群中所有表的元数据不一致问题，详细信息请阅读 [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md)。
 * `gc_table(table_name, [full_file_listing])` 对对象存储中已删除表的孤立 SST 文件进行垃圾回收，返回已处理的 Region 数量。可选参数 `full_file_listing`（默认为 `false`），设为 `true` 时启用全量文件扫描模式。
 * `gc_regions(region_id1, ..., region_idN, [full_file_listing])` 根据 Region ID 对对象存储中指定 Region 的孤立 SST 文件进行垃圾回收，返回已处理的 Region 数量。可选参数 `full_file_listing`（默认为 `false`），设为 `true` 时启用全量文件扫描模式。
+* `purge_table(table_name)` 永久 purge 一个 [soft-dropped table](/user-guide/deployments-administration/manage-data/soft-drop.md)。表名可以是未限定、schema 限定或完整限定名称。该函数只能通过 `ADMIN` 语句调用。
 
 例如：
 ```sql
@@ -56,4 +57,7 @@ admin gc_regions(1, 2, 3);
 
 -- 对指定 Region 进行垃圾回收（启用全量文件扫描）--
 admin gc_regions(1, 2, 3, true);
+
+-- 永久 purge 一个 soft-dropped table --
+admin purge_table("test");
 ```
