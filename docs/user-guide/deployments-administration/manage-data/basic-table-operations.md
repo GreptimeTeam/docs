@@ -300,7 +300,7 @@ The `ALTER TABLE` statement also supports adding, removing, and renaming columns
 ## Drop a table
 
 :::danger danger
-`DROP TABLE` cannot be undone. Use it with care!
+Without [soft-drop](./soft-drop.md), `DROP TABLE` cannot be undone. Use it with care!
 :::
 
 `DROP TABLE [db.]table` is used to drop the table in `db` or the current database in-use.Drop the table `monitor` in the current database:
@@ -356,4 +356,3 @@ If you set the default value of a timestamp column to a string without a time zo
 the client's time zone information will be automatically added.
 
 For more information about the effect of the client time zone, please refer to the [time zone](/user-guide/ingest-data/for-iot/sql.md#time-zone) section in the write data document.
-

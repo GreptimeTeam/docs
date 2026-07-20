@@ -25,6 +25,10 @@ On the Metasrv side, GC schedules cleanup tasks for regions and coordinates when
 [gc]
 enable = true              # Enable meta GC scheduler. default to be false; must match datanode.
 gc_cooldown_period = "5m"   # Minimum gap before the same region is GCed again.
+
+[gc.experimental_soft_drop]
+enable = false             # Enable soft-drop tables. Requires gc.enable = true.
+retention = "7d"            # How long soft-dropped tables are retained before purge.
 ```
 
 ### Options
@@ -33,6 +37,8 @@ gc_cooldown_period = "5m"   # Minimum gap before the same region is GCed again.
 | --- | --- |
 | `enable` | Enable the meta GC scheduler. Must match datanode GC enablement. |
 | `gc_cooldown_period` | Minimum interval before the same region is scheduled for GC again; keep datanode `lingering_time` longer than this. |
+| `experimental_soft_drop.enable` | Enable [soft-drop tables](./soft-drop.md). Requires `gc.enable = true`. |
+| `experimental_soft_drop.retention` | How long soft-dropped tables are retained before automatic purge. |
 
 ## Datanode Configuration
 

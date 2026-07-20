@@ -34,11 +34,11 @@ DROP DATABASE test;
 
 ## DROP TABLE
 
-`DROP TABLE` 从数据库中删除表，它将删除该表的表定义和所有表数据、索引、规则和约束。
+`DROP TABLE` 从数据库中删除表。默认情况下，它会删除该表的表定义和所有表数据、索引、规则和约束。如果在分布式集群中开启了 [soft-drop](/user-guide/deployments-administration/manage-data/soft-drop.md)，支持的表会进入 recycle bin，并且可以在 retention deadline 前恢复。
 
 :::danger 危险操作
 
-`DROP TABLE` 无法撤消。请谨慎使用！
+未开启 soft-drop 时，`DROP TABLE` 无法撤消。请谨慎使用！
 
 :::
 
@@ -57,6 +57,34 @@ DROP TABLE [ IF EXISTS ] table_name
   
 ```sql
 DROP TABLE monitor;
+```
+
+## UNDROP TABLE
+
+`UNDROP TABLE` 用于从 recycle bin 中恢复 soft-dropped table。
+
+### 语法
+
+```sql
+UNDROP TABLE table_name
+```
+
+- `table_name`: 要恢复的表名，可以是未限定、schema 限定或完整限定名称。
+
+如果已经存在同名 live table，`UNDROP TABLE` 会失败。
+
+### 示例
+
+恢复当前数据库中的 `monitor` 表：
+
+```sql
+UNDROP TABLE monitor;
+```
+
+通过完整限定名恢复表：
+
+```sql
+UNDROP TABLE greptime.public.monitor;
 ```
 
 ## DROP FLOW
@@ -96,4 +124,3 @@ Query OK, 0 rows affected (0.00 sec)
 ## DROP TRIGGER
 
 请参考 [Trigger 语法](/reference/sql/trigger-syntax.md#drop-trigger)文档。
-
