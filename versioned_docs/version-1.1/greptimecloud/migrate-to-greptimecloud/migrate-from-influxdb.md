@@ -223,7 +223,7 @@ then create a new Workbench file and add panels as your needs.
 for file in data.*; do
   curl -i --retry 3 \
     -X POST "https://${GREPTIME_HOST}/v1/influxdb/write?db=${GREPTIME_DB}&u=${GREPTIME_USERNAME}&p=${GREPTIME_PASSWORD}" \
-    --data-binary @${file}
+    --data-binary @"${file}"
   sleep 1
 done
 ```

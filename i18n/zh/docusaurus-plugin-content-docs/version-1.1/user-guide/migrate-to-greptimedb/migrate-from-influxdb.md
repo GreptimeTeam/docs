@@ -15,7 +15,7 @@ import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md'
 <TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
 
 ```shell
-curl -X POST 'http://<host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
+curl -X POST 'http://<host>:4000/v1/influxdb/api/v2/write?bucket=<db-name>' \
   -H 'authorization: token <greptime_user:greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
@@ -185,7 +185,7 @@ $writeApi->write($point);
 for file in data.*; do
   curl -i --retry 3 \
     -X POST "http://${GREPTIME_HOST}:4000/v1/influxdb/write?db=${GREPTIME_DB}&u=${GREPTIME_USERNAME}&p=${GREPTIME_PASSWORD}" \
-    --data-binary @${file}
+    --data-binary @"${file}"
   sleep 1
 done
 ```
