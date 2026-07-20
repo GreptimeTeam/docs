@@ -37,14 +37,13 @@ Common findings:
 
 The following metrics help diagnose query performance issues:
 
-| Metric | Type | Description |
-|---|---|---|
-| greptime_mito_read_stage_elapsed_bucket | histogram | The elapsed time of different phases of a query in the storage engine. |
-| greptime_mito_cache_bytes | gauge | Size of cached contents. The `type` label indicates the cache type. |
-| greptime_mito_cache_hit | counter | Total count of cache hit. The `type` label indicates the cache type. |
-| greptime_mito_cache_miss | counter | Total count of cache miss. The `type` label indicates the cache type. |
-| greptime_mito_cache_eviction | counter | Total count of cache eviction. The `type` label indicates the cache type. |
-
+| Metric                                  | Type      | Description                                                               |
+| --------------------------------------- | --------- | ------------------------------------------------------------------------- |
+| greptime_mito_read_stage_elapsed_bucket | histogram | The elapsed time of different phases of a query in the storage engine.    |
+| greptime_mito_cache_bytes               | gauge     | Size of cached contents. The `type` label indicates the cache type.       |
+| greptime_mito_cache_hit                 | counter   | Total count of cache hit. The `type` label indicates the cache type.      |
+| greptime_mito_cache_miss                | counter   | Total count of cache miss. The `type` label indicates the cache type.     |
+| greptime_mito_cache_eviction            | counter   | Total count of cache eviction. The `type` label indicates the cache type. |
 
 ### Enlarging cache size
 
@@ -124,7 +123,6 @@ CREATE TABLE logs(
 ) WITH (skip_wal = 'true');
 ```
 
-
 ## Ingestion
 
 ### Batching rows
@@ -141,23 +139,23 @@ Generally, real-time data doesn't have the issues mentioned above as they always
 
 The following metrics help diagnose ingestion issues. Most of these metrics are available in the official Grafana dashboards. Use the metric names below when you need custom PromQL or deeper investigation.
 
-| Metric                                       | Type      | Description                                                                                               |
-| -------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------- |
-| greptime_table_operator_ingest_rows          | counter   | The number of rows ingested by the table operator. Use the rate of this metric to track total write load. |
+| Metric                                        | Type      | Description                                                                                               |
+| --------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------- |
+| greptime_table_operator_ingest_rows           | counter   | The number of rows ingested by the table operator. Use the rate of this metric to track total write load. |
 | greptime_servers_http_requests_elapsed_bucket | histogram | HTTP request latency. Use labels such as `path`, `method`, and `code` to find write-related latency.      |
 | greptime_servers_grpc_requests_elapsed_bucket | histogram | gRPC request latency. Use labels such as `path` and `code` to find write-related latency.                 |
-| greptime_mito_handle_request_elapsed_bucket  | histogram | The elapsed time of handling storage engine requests on datanodes.                                        |
-| greptime_mito_write_stage_elapsed_bucket     | histogram | The elapsed time of different phases of processing a write request in the storage engine.                 |
-| greptime_mito_write_buffer_bytes             | gauge     | The current estimated bytes allocated for the write buffer (memtables).                                   |
-| greptime_mito_write_rows_total               | counter   | The number of rows written to the storage engine. Use it to compare write load across datanodes.          |
-| greptime_mito_write_stalling_count           | gauge     | The number of write requests currently stalled in each worker.                                            |
-| greptime_mito_write_stall_total              | counter   | The total number of write requests stalled due to high memory pressure or transient region states.        |
-| greptime_mito_write_reject_total             | counter   | The number of write requests rejected due to high memory pressure.                                         |
-| raft_engine_sync_log_duration_seconds_bucket | histogram | The elapsed time of flushing the WAL to the disk.                                                         |
-| greptime_mito_flush_requests_total           | counter   | The number of scheduled flush requests.                                                                   |
-| greptime_mito_flush_elapsed                  | histogram | The elapsed time of flushing SST files.                                                                   |
-| greptime_mito_flush_bytes_total              | counter   | The number of bytes flushed to SST files.                                                                 |
-| greptime_mito_flush_file_total               | counter   | The number of SST files produced by flush jobs.                                                           |
+| greptime_mito_handle_request_elapsed_bucket   | histogram | The elapsed time of handling storage engine requests on datanodes.                                        |
+| greptime_mito_write_stage_elapsed_bucket      | histogram | The elapsed time of different phases of processing a write request in the storage engine.                 |
+| greptime_mito_write_buffer_bytes              | gauge     | The current estimated bytes allocated for the write buffer (memtables).                                   |
+| greptime_mito_write_rows_total                | counter   | The number of rows written to the storage engine. Use it to compare write load across datanodes.          |
+| greptime_mito_write_stalling_count            | gauge     | The number of write requests currently stalled in each worker.                                            |
+| greptime_mito_write_stall_total               | counter   | The total number of write requests stalled due to high memory pressure or transient region states.        |
+| greptime_mito_write_reject_total              | counter   | The number of write requests rejected due to high memory pressure.                                        |
+| raft_engine_sync_log_duration_seconds_bucket  | histogram | The elapsed time of flushing the WAL to the disk.                                                         |
+| greptime_mito_flush_requests_total            | counter   | The number of scheduled flush requests.                                                                   |
+| greptime_mito_flush_elapsed                   | histogram | The elapsed time of flushing SST files.                                                                   |
+| greptime_mito_flush_bytes_total               | counter   | The number of bytes flushed to SST files.                                                                 |
+| greptime_mito_flush_file_total                | counter   | The number of SST files produced by flush jobs.                                                           |
 
 ### Check ingestion throughput and request latency
 
@@ -174,7 +172,7 @@ When datanode writes are slow or ingestion latency is high, first check whether 
 - `greptime_mito_write_stalling_count`
 - `greptime_mito_write_reject_total`
 
-Write stalls mean GreptimeDB is applying backpressure instead of accepting writes immediately. Stalls can happen when the global write buffer reaches `global_write_buffer_size`, or when a region is temporarily not writable during internal state changes. If clients receive an error like `Engine write buffer is full, rejecting write requests`, the datanode has reached the reject threshold controlled by `global_write_buffer_reject_size`.
+Write stalls mean GreptimeDB is applying backpressure instead of accepting writes immediately. Stalls can happen when the global write buffer reaches `global_write_buffer_size`, when a region reaches its effective per-region limit, or when a region is temporarily not writable during internal state changes. If clients receive an error like `Engine write buffer is full, rejecting write requests`, the datanode has reached either the global reject threshold controlled by `global_write_buffer_reject_size` or the per-region reject threshold controlled by `write_buffer_size` or `default_region_write_buffer_size`.
 
 When a datanode is under write pressure, check flush performance and write distribution before tuning the write buffer size. Increasing the write buffer only gives the datanode more memory headroom. It does not fix slow flushes or an unbalanced table that sends most writes to one region.
 
@@ -200,6 +198,8 @@ If stalls or rejects are caused by write buffer pressure, and flush performance 
 
 In most cases, leave `region_engine.mito.global_write_buffer_reject_size` unset so GreptimeDB uses the default reject threshold of 2x `global_write_buffer_size`. If you need writes to fail earlier under memory pressure, set it manually to a deliberate margin, commonly 1.5x to 2x `global_write_buffer_size`, based on available datanode memory and how early you want requests to be rejected. The value must be greater than `global_write_buffer_size`; otherwise, GreptimeDB sanitizes it back to 2x.
 
+For hot-region protection, configure a per-table `write_buffer_size` or set `region_engine.mito.default_region_write_buffer_size` as the cluster default. A per-table `write_buffer_size` takes precedence over the engine default. Each affected region flushes when it reaches the configured size and rejects writes at twice that size, while other regions on the same worker can continue accepting writes. The default value of `default_region_write_buffer_size` is `0`, which disables default per-region limits.
+
 Example:
 
 ```toml
@@ -208,6 +208,14 @@ Example:
 global_write_buffer_size = "2GB"
 # Optional. Leave unset unless you need a custom reject margin.
 global_write_buffer_reject_size = "3GB"
+# Optional. Use 0 to disable the default per-region limit.
+default_region_write_buffer_size = "512MB"
+```
+
+To override the region limit for a specific table:
+
+```sql
+ALTER TABLE monitor SET 'write_buffer_size'='1GB';
 ```
 
 ## Schema
