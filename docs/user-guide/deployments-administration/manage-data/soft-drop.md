@@ -17,7 +17,7 @@ Soft-drop is configured on Metasrv under the GC configuration. It requires Metas
 [gc]
 enable = true
 
-[gc.soft_drop]
+[gc.experimental_soft_drop]
 enable = true
 retention = "7d"
 ```
@@ -26,9 +26,9 @@ The options are:
 
 | Option | Description |
 | --- | --- |
-| `gc.enable` | Enables the Metasrv GC scheduler. Required when `gc.soft_drop.enable = true`. |
-| `gc.soft_drop.enable` | Enables soft-drop for supported tables in distributed mode. |
-| `gc.soft_drop.retention` | How long a soft-dropped table can stay in the recycle bin before Metasrv GC automatically purges it. The value must be at least `1ms`. |
+| `gc.enable` | Enables the Metasrv GC scheduler. Required when `gc.experimental_soft_drop.enable = true`. |
+| `gc.experimental_soft_drop.enable` | Enables soft-drop for supported tables in distributed mode. |
+| `gc.experimental_soft_drop.retention` | How long a soft-dropped table can stay in the recycle bin before Metasrv GC automatically purges it. The value must be at least `1ms`. |
 
 Restart Metasrv after changing these options. For ordinary file GC, keep Metasrv and Datanode GC settings consistent as described in [Garbage Collection](./gc.md).
 
@@ -104,4 +104,4 @@ Purging is permanent. After purge finishes, the table disappears from `informati
 
 ## Automatic purge
 
-Metasrv GC periodically scans soft-dropped tables. When a table's `retention_expires_at` deadline has passed, GC submits the same purge procedure used by `ADMIN purge_table()`. The retention deadline is fixed when the table is dropped, so changing `gc.soft_drop.retention` later does not change existing dropped tables.
+Metasrv GC periodically scans soft-dropped tables. When a table's `retention_expires_at` deadline has passed, GC submits the same purge procedure used by `ADMIN purge_table()`. The retention deadline is fixed when the table is dropped, so changing `gc.experimental_soft_drop.retention` later does not change existing dropped tables.
