@@ -34,7 +34,7 @@ DROP DATABASE test;
 
 ## DROP TABLE
 
-`DROP TABLE` 从数据库中删除表，它将删除该表的表定义和所有表数据、索引、规则和约束。如果在分布式集群中开启了 [soft-drop](/user-guide/deployments-administration/manage-data/soft-drop.md)，支持的表会进入 recycle bin，并且可以在 retention deadline 前恢复。
+`DROP TABLE` 从数据库中删除表。默认情况下，它会删除该表的表定义和所有表数据、索引、规则和约束。如果在分布式集群中开启了 [soft-drop](/user-guide/deployments-administration/manage-data/soft-drop.md)，支持的表会进入 recycle bin，并且可以在 retention deadline 前恢复。
 
 :::danger 危险操作
 

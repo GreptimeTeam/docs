@@ -83,14 +83,14 @@ The table is restored with its original data if no live table with the same full
 Use the admin function `purge_table()` to permanently delete a soft-dropped table before the retention deadline:
 
 ```sql
-ADMIN purge_table('monitor');
+ADMIN purge_table("monitor");
 ```
 
 You can pass an unqualified, schema-qualified, or fully qualified table name:
 
 ```sql
-ADMIN purge_table('public.monitor');
-ADMIN purge_table('greptime.public.monitor');
+ADMIN purge_table("public.monitor");
+ADMIN purge_table("greptime.public.monitor");
 ```
 
 Purging is permanent. After purge finishes, the table disappears from `information_schema.recycle_bin` and cannot be restored. `purge_table()` is available only through the `ADMIN` statement; calling it from a normal `SELECT` statement is rejected.
@@ -100,7 +100,7 @@ Purging is permanent. After purge finishes, the table disappears from `informati
 - You can create a new table with the same name after the old table is soft-dropped.
 - `UNDROP TABLE` fails if a live table with the same full name already exists.
 - Dropping a newly recreated table fails while an older tombstone still owns the same full name. Purge or restore the older tombstone first.
-- `ADMIN purge_table('<name>')` resolves the tombstoned table, not a live table with the same name.
+- `ADMIN purge_table("table_name")` resolves the tombstoned table, not a live table with the same name.
 
 ## Automatic purge
 
