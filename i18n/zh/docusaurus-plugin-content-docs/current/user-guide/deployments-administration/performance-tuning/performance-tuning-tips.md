@@ -37,13 +37,13 @@ EXPLAIN ANALYZE VERBOSE <SQL>;
 
 以下指标可用于诊断查询性能问题：
 
-| 指标 | 类型 | 描述 |
-|---|---|---|
-| greptime_mito_read_stage_elapsed_bucket | histogram | 存储引擎中查询不同阶段的耗时。 |
-| greptime_mito_cache_bytes | gauge | 缓存内容的大小。`type` 标签表示缓存类型。 |
-| greptime_mito_cache_hit | counter | 缓存命中总数。`type` 标签表示缓存类型。 |
-| greptime_mito_cache_miss | counter | 缓存未命中总数。`type` 标签表示缓存类型。 |
-| greptime_mito_cache_eviction | counter | 缓存淘汰总数。`type` 标签表示缓存类型。 |
+| 指标                                    | 类型      | 描述                                      |
+| --------------------------------------- | --------- | ----------------------------------------- |
+| greptime_mito_read_stage_elapsed_bucket | histogram | 存储引擎中查询不同阶段的耗时。            |
+| greptime_mito_cache_bytes               | gauge     | 缓存内容的大小。`type` 标签表示缓存类型。 |
+| greptime_mito_cache_hit                 | counter   | 缓存命中总数。`type` 标签表示缓存类型。   |
+| greptime_mito_cache_miss                | counter   | 缓存未命中总数。`type` 标签表示缓存类型。 |
+| greptime_mito_cache_eviction            | counter   | 缓存淘汰总数。`type` 标签表示缓存类型。   |
 
 ### 增大缓存大小
 
@@ -139,23 +139,23 @@ CREATE TABLE logs(
 
 以下指标有助于诊断写入问题。大多数指标可在官方 Grafana dashboard 中找到。需要自定义 PromQL 或深入排查时，可以使用下列指标名。
 
-| 指标 | 类型 | 描述 |
-|---|---|---|
-| greptime_table_operator_ingest_rows | counter | table operator 摄入的行数。可使用该指标的 rate 追踪总写入负载。 |
+| 指标                                          | 类型      | 描述                                                                      |
+| --------------------------------------------- | --------- | ------------------------------------------------------------------------- |
+| greptime_table_operator_ingest_rows           | counter   | table operator 摄入的行数。可使用该指标的 rate 追踪总写入负载。           |
 | greptime_servers_http_requests_elapsed_bucket | histogram | HTTP 请求延迟。可使用 `path`、`method` 和 `code` 等标签定位写入相关延迟。 |
-| greptime_servers_grpc_requests_elapsed_bucket | histogram | gRPC 请求延迟。可使用 `path` 和 `code` 等标签定位写入相关延迟。 |
-| greptime_mito_handle_request_elapsed_bucket | histogram | Datanode 上处理存储引擎请求的耗时。 |
-| greptime_mito_write_stage_elapsed_bucket | histogram | 存储引擎中处理写入请求的不同阶段的耗时。 |
-| greptime_mito_write_buffer_bytes | gauge | 当前为写入缓冲区（memtables）分配的字节数（估算）。 |
-| greptime_mito_write_rows_total | counter | 写入存储引擎的行数。可用于比较不同 datanode 的写入负载。 |
-| greptime_mito_write_stalling_count | gauge | 每个 worker 中当前被阻塞的写入请求数。 |
-| greptime_mito_write_stall_total | counter | 由于高内存压力或临时 region 状态而被阻塞的写入请求总数。 |
-| greptime_mito_write_reject_total | counter | 由于内存压力过高而被拒绝的写入请求数。 |
-| raft_engine_sync_log_duration_seconds_bucket | histogram | 将 WAL 刷入磁盘的耗时。 |
-| greptime_mito_flush_requests_total | counter | 已调度的 flush 请求数。 |
-| greptime_mito_flush_elapsed | histogram | 刷入 SST 文件的耗时。 |
-| greptime_mito_flush_bytes_total | counter | flush 到 SST 文件的字节数。 |
-| greptime_mito_flush_file_total | counter | flush job 生成的 SST 文件数。 |
+| greptime_servers_grpc_requests_elapsed_bucket | histogram | gRPC 请求延迟。可使用 `path` 和 `code` 等标签定位写入相关延迟。           |
+| greptime_mito_handle_request_elapsed_bucket   | histogram | Datanode 上处理存储引擎请求的耗时。                                       |
+| greptime_mito_write_stage_elapsed_bucket      | histogram | 存储引擎中处理写入请求的不同阶段的耗时。                                  |
+| greptime_mito_write_buffer_bytes              | gauge     | 当前为写入缓冲区（memtables）分配的字节数（估算）。                       |
+| greptime_mito_write_rows_total                | counter   | 写入存储引擎的行数。可用于比较不同 datanode 的写入负载。                  |
+| greptime_mito_write_stalling_count            | gauge     | 每个 worker 中当前被阻塞的写入请求数。                                    |
+| greptime_mito_write_stall_total               | counter   | 由于高内存压力或临时 region 状态而被阻塞的写入请求总数。                  |
+| greptime_mito_write_reject_total              | counter   | 由于内存压力过高而被拒绝的写入请求数。                                    |
+| raft_engine_sync_log_duration_seconds_bucket  | histogram | 将 WAL 刷入磁盘的耗时。                                                   |
+| greptime_mito_flush_requests_total            | counter   | 已调度的 flush 请求数。                                                   |
+| greptime_mito_flush_elapsed                   | histogram | 刷入 SST 文件的耗时。                                                     |
+| greptime_mito_flush_bytes_total               | counter   | flush 到 SST 文件的字节数。                                               |
+| greptime_mito_flush_file_total                | counter   | flush job 生成的 SST 文件数。                                             |
 
 ### 检查写入吞吐和请求延迟
 
@@ -172,7 +172,7 @@ CREATE TABLE logs(
 - `greptime_mito_write_stalling_count`
 - `greptime_mito_write_reject_total`
 
-写入阻塞表示 GreptimeDB 正在施加背压，而不是立即接受写入。当全局写入缓冲区达到 `global_write_buffer_size`，或 region 在内部状态变化期间暂时不可写时，可能出现阻塞。如果客户端收到类似 `Engine write buffer is full, rejecting write requests` 的错误，表示 datanode 已达到由 `global_write_buffer_reject_size` 控制的拒绝阈值。
+写入阻塞表示 GreptimeDB 正在施加背压，而不是立即接受写入。当全局写入缓冲区达到 `global_write_buffer_size`、region 达到其有效的单 region 限制，或 region 在内部状态变化期间暂时不可写时，可能出现阻塞。如果客户端收到类似 `Engine write buffer is full, rejecting write requests` 的错误，表示 datanode 已达到由 `global_write_buffer_reject_size` 控制的全局拒绝阈值，或达到由 `write_buffer_size` / `default_region_write_buffer_size` 控制的单 region 拒绝阈值。
 
 当 datanode 存在写入压力时，在调大写入缓冲区之前，请先检查 flush 性能和写入分布。增大写入缓冲区只会给 datanode 更多内存余量，并不能修复缓慢的 flush，也不能修复把大部分写入发送到单个 region 的不均衡表。
 
@@ -198,6 +198,8 @@ Datanode 日志也有助于识别慢 flush 和热点 region。搜索 `Successful
 
 多数情况下，请保持 `region_engine.mito.global_write_buffer_reject_size` 未设置，让 GreptimeDB 使用默认的拒绝阈值，即 `global_write_buffer_size` 的 2 倍。如果希望在内存压力下更早失败，可以根据可用 datanode 内存以及希望多早拒绝请求，手动设置一个有意保留的边界，通常为 `global_write_buffer_size` 的 1.5 到 2 倍。该值必须大于 `global_write_buffer_size`；否则 GreptimeDB 会将其修正回 2 倍。
 
+如需保护热点 region，可以配置表级 `write_buffer_size`，或设置 `region_engine.mito.default_region_write_buffer_size` 作为集群默认值。表级 `write_buffer_size` 优先于引擎默认值。每个受影响的 region 在达到配置大小时 flush，并在达到该大小的 2 倍时拒绝写入，而同一 worker 上的其他 region 可以继续接受写入。`default_region_write_buffer_size` 的默认值为 `0`，表示禁用默认单 region 限制。
+
 示例：
 
 ```toml
@@ -206,6 +208,14 @@ Datanode 日志也有助于识别慢 flush 和热点 region。搜索 `Successful
 global_write_buffer_size = "2GB"
 # 可选。除非需要自定义拒绝边界，否则保持未设置。
 global_write_buffer_reject_size = "3GB"
+# 可选。使用 0 禁用默认单 region 限制。
+default_region_write_buffer_size = "512MB"
+```
+
+如需覆盖特定表的 region 限制：
+
+```sql
+ALTER TABLE monitor SET 'write_buffer_size'='1GB';
 ```
 
 ## 表结构
