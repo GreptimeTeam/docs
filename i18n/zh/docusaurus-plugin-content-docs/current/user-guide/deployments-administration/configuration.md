@@ -96,6 +96,7 @@ export GREPTIMEDB_DATANODE__STORAGE__DATA_HOME=/data/greptimedb
   - `GREPTIMEDB_FRONTEND`
   - `GREPTIMEDB_METASRV`
   - `GREPTIMEDB_DATANODE`
+  - `GREPTIMEDB_FLOWNODE`
   - `GREPTIMEDB_STANDALONE`
 
 - 使用**双下划线 `__`**作为分隔符。例如，数据结构 `storage.data_home` 转换为 `STORAGE__DATA_HOME`。
@@ -171,7 +172,7 @@ addr = "127.0.0.1:4000"
 timeout = "0s"
 body_limit = "64MB"
 enable_cors = true
-cors_allowed_origins = ["https://example.com"]
+# cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
 prom_validation_mode = "strict"
 experimental_enable_prometheus_native_histogram = false
 experimental_enable_explain_analyze_stream = false
@@ -260,6 +261,11 @@ max_inflight_requests = 3000
 |            | default_merge_mode | 字符串 | InfluxDB 协议自动创建表时使用的默认 merge 模式。可选值：`last_non_null`、`last_row`。默认值：`last_non_null` |
 | opentsdb   |                    |        | OpenTSDB 协议选项                                            |
 |            | enable             | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                          |
+| jaeger     |                    |        | Jaeger 协议选项                                              |
+|            | enable             | 布尔值 | 是否在 HTTP API 中启用 Jaeger 协议，默认为 true              |
+| otlp       |                    |        | OpenTelemetry 协议选项                                       |
+|            | enable             | 布尔值 | 是否在 HTTP API 中启用 OpenTelemetry 协议，默认为 true       |
+|            | trace_ingest_chunk_size | 整数 | 每个 trace 写入分块的最大 span 数量。设为 `0` 可禁用分块。 |
 | prom_store |                              |        | Prometheus 远程存储选项                                                                                                                                                                                         |
 |            | enable                       | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true                                                                                                                                                         |
 |            | with_metric_engine           | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true                                                                                                                                                     |
@@ -669,11 +675,11 @@ meta_election_lock_id = 1
 # - `round_robin`（默认值）
 # - `lease_based`
 # - `load_based`
-# 详情请参阅 "https://docs.greptime.com/developer-guide/metasrv/selector"
+# 详情请参阅 [selector 文档](/contributor-guide/metasrv/selector.md)
 selector = "round_robin"
 # 是否启用 region failover。
 # 该功能仅适用于运行在集群模式下的 GreptimeDB，并且需要满足以下条件：
-# - 使用 Remote WAL
+# - 使用 Remote WAL，或使用 Local WAL 且将 `allow_region_failover_on_local_wal` 设置为 `true`
 # - 使用共享存储（例如 S3）
 enable_region_failover = false
 ## 设置启动 region 故障检测的延迟时间。
@@ -844,10 +850,10 @@ timeout = "3s"
 | `grpc.http2_keep_alive_interval`              | String  | `10s`                | 服务器端 HTTP/2 保持连接间隔。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `grpc.http2_keep_alive_timeout`               | String  | `3s`                 | 服务器端 HTTP/2 保持连接超时时间。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `backend`                                     | String  | `etcd_store`           | 元数据存储类型。<br/>- `etcd_store` (默认)<br/>- `memory_store` (纯内存存储 - 仅用于测试)<br/>- `postgres_store`<br/>- `mysql_store` |
-| `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为  postgre_store 和 mysql_store 时有效。** |
+| `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为  postgres_store 和 mysql_store 时有效。** |
 | `meta_schema_name` | String | -- | 可选的 PostgreSQL schema，用于元数据表和选举表名称限定。当 PostgreSQL public schema 不可写入时（例如 PostgreSQL 15+ 限制 public schema），可设置此参数为可写入的 schema。GreptimeDB 将使用 `meta_schema_name.meta_table_name`。<br/>**仅在 backend 为 postgres_store 时有效。** |
 | `auto_create_schema` | Bool | `true` | 如果 PostgreSQL schema 不存在则自动创建。启用后，系统会在创建元数据表之前执行 `CREATE SCHEMA IF NOT EXISTS <schema_name>`。这在生产环境中可能受限于手动创建 schema 的情况下非常有用。注意：PostgreSQL 用户必须具有 CREATE SCHEMA 权限才能使此功能生效。<br/>**仅在 backend 为 postgres_store 时有效。** |
-| `meta_election_lock_id` | Integer | `1` | 用于领导选举的 PostgreSQL 咨询锁 id。**仅在 backend 为  postgre_store 时有效。** |
+| `meta_election_lock_id` | Integer | `1` | 用于领导选举的 PostgreSQL 咨询锁 id。**仅在 backend 为  postgres_store 时有效。** |
 | `procedure`                                   | --      | --                   |                                                                                                                                      |
 | `procedure.max_retry_times`                   | 整数    | `12`                 | Procedure 的最大重试次数。                                                                                                           |
 | `procedure.retry_delay`                       | 字符串  | `500ms`              | Procedure 初始重试延迟，延迟会指数增长。                                                                                             |

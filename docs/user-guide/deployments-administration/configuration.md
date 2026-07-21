@@ -99,6 +99,7 @@ export GREPTIMEDB_DATANODE__STORAGE__DATA_HOME=/data/greptimedb
   - `GREPTIMEDB_FRONTEND`
   - `GREPTIMEDB_METASRV`
   - `GREPTIMEDB_DATANODE`
+  - `GREPTIMEDB_FLOWNODE`
   - `GREPTIMEDB_STANDALONE`
 
 - Use **double underscore `__`** separators. For example, the data structure `storage.data_home` is transformed to `STORAGE__DATA_HOME`.
@@ -176,7 +177,7 @@ addr = "127.0.0.1:4000"
 timeout = "0s"
 body_limit = "64MB"
 enable_cors = true
-cors_allowed_origins = ["https://example.com"]
+# cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
 prom_validation_mode = "strict"
 experimental_enable_prometheus_native_histogram = false
 experimental_enable_explain_analyze_stream = false
@@ -685,11 +686,11 @@ meta_election_lock_id = 1
 # - `round_robin` (default value)
 # - `lease_based`
 # - `load_based`
-# For details, please see "https://docs.greptime.com/developer-guide/metasrv/selector".
+# For details, please see [selector documentation](/contributor-guide/metasrv/selector.md).
 selector = "round_robin"
 # Whether to enable region failover.
 # This feature is only available on GreptimeDB running on cluster mode and:
-# - Using Remote WAL
+# - Using Remote WAL, or Local WAL with `allow_region_failover_on_local_wal` set to `true`
 # - Using shared storage (e.g., S3)
 enable_region_failover = false
 ## The delay before starting region failure detection.
