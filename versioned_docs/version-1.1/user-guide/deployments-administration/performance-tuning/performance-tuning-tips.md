@@ -37,13 +37,14 @@ Common findings:
 
 The following metrics help diagnose query performance issues:
 
-| Metric                                  | Type      | Description                                                               |
-| --------------------------------------- | --------- | ------------------------------------------------------------------------- |
-| greptime_mito_read_stage_elapsed_bucket | histogram | The elapsed time of different phases of a query in the storage engine.    |
-| greptime_mito_cache_bytes               | gauge     | Size of cached contents. The `type` label indicates the cache type.       |
-| greptime_mito_cache_hit                 | counter   | Total count of cache hit. The `type` label indicates the cache type.      |
-| greptime_mito_cache_miss                | counter   | Total count of cache miss. The `type` label indicates the cache type.     |
-| greptime_mito_cache_eviction            | counter   | Total count of cache eviction. The `type` label indicates the cache type. |
+| Metric | Type | Description |
+|---|---|---|
+| greptime_mito_read_stage_elapsed_bucket | histogram | The elapsed time of different phases of a query in the storage engine. |
+| greptime_mito_cache_bytes | gauge | Size of cached contents. The `type` label indicates the cache type. |
+| greptime_mito_cache_hit | counter | Total count of cache hit. The `type` label indicates the cache type. |
+| greptime_mito_cache_miss | counter | Total count of cache miss. The `type` label indicates the cache type. |
+| greptime_mito_cache_eviction | counter | Total count of cache eviction. The `type` label indicates the cache type. |
+
 
 ### Enlarging cache size
 
@@ -123,6 +124,7 @@ CREATE TABLE logs(
 ) WITH (skip_wal = 'true');
 ```
 
+
 ## Ingestion
 
 ### Batching rows
@@ -139,23 +141,23 @@ Generally, real-time data doesn't have the issues mentioned above as they always
 
 The following metrics help diagnose ingestion issues. Most of these metrics are available in the official Grafana dashboards. Use the metric names below when you need custom PromQL or deeper investigation.
 
-| Metric                                        | Type      | Description                                                                                               |
-| --------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------- |
-| greptime_table_operator_ingest_rows           | counter   | The number of rows ingested by the table operator. Use the rate of this metric to track total write load. |
+| Metric                                       | Type      | Description                                                                                               |
+| -------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------- |
+| greptime_table_operator_ingest_rows          | counter   | The number of rows ingested by the table operator. Use the rate of this metric to track total write load. |
 | greptime_servers_http_requests_elapsed_bucket | histogram | HTTP request latency. Use labels such as `path`, `method`, and `code` to find write-related latency.      |
 | greptime_servers_grpc_requests_elapsed_bucket | histogram | gRPC request latency. Use labels such as `path` and `code` to find write-related latency.                 |
-| greptime_mito_handle_request_elapsed_bucket   | histogram | The elapsed time of handling storage engine requests on datanodes.                                        |
-| greptime_mito_write_stage_elapsed_bucket      | histogram | The elapsed time of different phases of processing a write request in the storage engine.                 |
-| greptime_mito_write_buffer_bytes              | gauge     | The current estimated bytes allocated for the write buffer (memtables).                                   |
-| greptime_mito_write_rows_total                | counter   | The number of rows written to the storage engine. Use it to compare write load across datanodes.          |
-| greptime_mito_write_stalling_count            | gauge     | The number of write requests currently stalled in each worker.                                            |
-| greptime_mito_write_stall_total               | counter   | The total number of write requests stalled due to high memory pressure or transient region states.        |
-| greptime_mito_write_reject_total              | counter   | The number of write requests rejected due to high memory pressure.                                        |
-| raft_engine_sync_log_duration_seconds_bucket  | histogram | The elapsed time of flushing the WAL to the disk.                                                         |
-| greptime_mito_flush_requests_total            | counter   | The number of scheduled flush requests.                                                                   |
-| greptime_mito_flush_elapsed                   | histogram | The elapsed time of flushing SST files.                                                                   |
-| greptime_mito_flush_bytes_total               | counter   | The number of bytes flushed to SST files.                                                                 |
-| greptime_mito_flush_file_total                | counter   | The number of SST files produced by flush jobs.                                                           |
+| greptime_mito_handle_request_elapsed_bucket  | histogram | The elapsed time of handling storage engine requests on datanodes.                                        |
+| greptime_mito_write_stage_elapsed_bucket     | histogram | The elapsed time of different phases of processing a write request in the storage engine.                 |
+| greptime_mito_write_buffer_bytes             | gauge     | The current estimated bytes allocated for the write buffer (memtables).                                   |
+| greptime_mito_write_rows_total               | counter   | The number of rows written to the storage engine. Use it to compare write load across datanodes.          |
+| greptime_mito_write_stalling_count           | gauge     | The number of write requests currently stalled in each worker.                                            |
+| greptime_mito_write_stall_total              | counter   | The total number of write requests stalled due to high memory pressure or transient region states.        |
+| greptime_mito_write_reject_total             | counter   | The number of write requests rejected due to high memory pressure.                                         |
+| raft_engine_sync_log_duration_seconds_bucket | histogram | The elapsed time of flushing the WAL to the disk.                                                         |
+| greptime_mito_flush_requests_total           | counter   | The number of scheduled flush requests.                                                                   |
+| greptime_mito_flush_elapsed                  | histogram | The elapsed time of flushing SST files.                                                                   |
+| greptime_mito_flush_bytes_total              | counter   | The number of bytes flushed to SST files.                                                                 |
+| greptime_mito_flush_file_total               | counter   | The number of SST files produced by flush jobs.                                                           |
 
 ### Check ingestion throughput and request latency
 

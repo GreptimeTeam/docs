@@ -41,7 +41,7 @@ CREATE DATABASE [IF NOT EXISTS] db_name [WITH <options>]
 - **TTL 和 Compaction 选项**（`ttl`、`compaction.*`）：这些选项具有**持续影响**。没有指定这些值的表会持续继承数据库级别的值。更改数据库 TTL 或 compaction 选项会立即影响所有没有明确自行设置这些选项的表。
 
 - **其他选项**（`memtable.type`、`append_mode`、`merge_mode`、`skip_wal`、`sst_format`）：这些选项充当**模板变量**，仅在创建新表时应用。更改这些数据库级别的选项不会影响已存在的表——它们仅作为新创建表的默认值。
-  :::
+:::
 
 在创建表时，如果未提供相应的表选项，将使用在数据库级别配置的选项或者默认值。
 
@@ -141,31 +141,31 @@ ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
 
 #### 索引
 
+
 GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-guide/manage-data/data-index.md)章节查看更多信息。
 
 ### 表选项
 
 用户可以使用 `WITH` 添加表选项。有效的选项包括以下内容：
 
-| 选项                                   | 描述                                         | 值                                                                                                                                                                                                                                                  |
-| -------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ttl`                                  | 表数据的存储时间                             | 一个时间范围字符串，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`                                                                                                                                |
-| `storage`                              | 自定义表的存储引擎，存储引擎提供商的名字     | 字符串，类似 `S3`、`Gcs` 等。必须在 `[[storage.providers]]` 列表里配置，参考 [configuration](/user-guide/deployments-administration/configuration.md#存储引擎提供商)。                                                                              |
-| `compaction.type`                      | Compaction 策略                              | 字符串值。只支持 `twcs`。你可以阅读这篇[文章](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html)来了解 `twcs` compaction 策略                                                                               |
-| `compaction.twcs.trigger_file_num`     | 某个窗口内触发 compaction 的最小文件数量阈值 | 字符串值，如 '8'。只在 `compaction.type` 为 `twcs` 时可用                                                                                                                                                                                           |
-| `compaction.twcs.time_window`          | Compaction 时间窗口                          | 字符串值，如 '1d' 表示 1 天。该表会根据时间戳将数据分区到不同的时间窗口中。只在 `compaction.type` 为 `twcs` 时可用                                                                                                                                  |
-| `compaction.twcs.max_output_file_size` | TWCS compaction 的最大输出文件大小           | 字符串值，如 '1GB'、'512MB'。设置 TWCS compaction 产生的文件的最大大小。只在 `compaction.type` 为 `twcs` 时可用                                                                                                                                     |
-| `memtable.type`                        | memtable 的类型                              | 字符串值，支持 `time_series`，`partition_tree`                                                                                                                                                                                                      |
-| `append_mode`                          | 该表是否时 append-only 的                    | 字符串值。默认值为 'false'，根据 'merge_mode' 按主键和时间戳删除重复行。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行                                                                                                   |
-| `merge_mode`                           | 合并重复行的策略                             | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。                                                                            |
-| `sst_format`                           | SST 文件的格式                               | 字符串值，支持 `primary_key`，`flat`。默认为 `flat`。`flat` 格式建议用于具有高基数主键的表。                                                                                                                                                        |
-| `comment`                              | 表级注释                                     | 字符串值。                                                                                                                                                                                                                                          |
-| `index.type`                           | Index 类型                                   | **仅用于 metric engine** 字符串值，支持 `none`, `skipping`.                                                                                                                                                                                         |
-| `skip_wal`                             | 是否关闭表的预写日志                         | 字符串类型。当设置为 `'true'` 时表的写入数据将不会持久化到预写日志，可以避免存储磨损同时提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。                                                 |
-| `write_buffer_size`                    | 该表的单 region 写缓冲区限制                 | 字符串类型，例如 `'512MB'` 或 `'1GB'`。设置后，该表的每个 region 会在写缓冲区达到该大小时触发 flush，并在达到该大小的 2 倍时拒绝写入。该表选项会覆盖 `region_engine.mito.default_region_write_buffer_size`。设置为 `'0'` 或取消设置可禁用表级限制。 |
+| 选项                                        | 描述                                     | 值                                                                                                                                                                       |
+| ------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ttl`                                       | 表数据的存储时间                         | 一个时间范围字符串，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`                                                     |
+| `storage`                                   | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。必须在 `[[storage.providers]]` 列表里配置，参考 [configuration](/user-guide/deployments-administration/configuration.md#存储引擎提供商)。                 |
+| `compaction.type`                           | Compaction 策略                          | 字符串值。只支持 `twcs`。你可以阅读这篇[文章](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html)来了解 `twcs` compaction 策略    |
+| `compaction.twcs.trigger_file_num`   | 某个窗口内触发 compaction 的最小文件数量阈值           | 字符串值，如 '8'。只在 `compaction.type` 为 `twcs` 时可用                                                                                                                |
+| `compaction.twcs.time_window`               | Compaction 时间窗口                      | 字符串值，如 '1d' 表示 1 天。该表会根据时间戳将数据分区到不同的时间窗口中。只在 `compaction.type` 为 `twcs` 时可用                                                       |
+| `compaction.twcs.max_output_file_size`      | TWCS compaction 的最大输出文件大小          | 字符串值，如 '1GB'、'512MB'。设置 TWCS compaction 产生的文件的最大大小。只在 `compaction.type` 为 `twcs` 时可用                                                        |
+| `memtable.type`                             | memtable 的类型                          | 字符串值，支持 `time_series`，`partition_tree`                                                                                                                           |
+| `append_mode`                               | 该表是否时 append-only 的                | 字符串值。默认值为 'false'，根据 'merge_mode' 按主键和时间戳删除重复行。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行                        |
+| `merge_mode`                                | 合并重复行的策略                         | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。 |
+| `sst_format`                                | SST 文件的格式                            | 字符串值，支持 `primary_key`，`flat`。默认为 `flat`。`flat` 格式建议用于具有高基数主键的表。   |
+| `comment`                                   | 表级注释                                 | 字符串值。                                                                                                                                                               |
+| `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值，支持 `none`, `skipping`.                                                                                                             |
+| `skip_wal`                                | 是否关闭表的预写日志                               | 字符串类型。当设置为 `'true'` 时表的写入数据将不会持久化到预写日志，可以避免存储磨损同时提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。 |
+| `write_buffer_size`                       | 该表的单 region 写缓冲区限制                       | 字符串类型，例如 `'512MB'` 或 `'1GB'`。设置后，该表的每个 region 会在写缓冲区达到该大小时触发 flush，并在达到该大小的 2 倍时拒绝写入。该表选项会覆盖 `region_engine.mito.default_region_write_buffer_size`。设置为 `'0'` 或取消设置可禁用表级限制。 |
 
 #### 创建指定 TTL 的表
-
 例如，创建一个存储数据 TTL(Time-To-Live) 为七天的表：
 
 ```sql
@@ -174,7 +174,6 @@ CREATE TABLE IF NOT EXISTS temperatures(
   temperature DOUBLE DEFAULT 10,
 ) with(ttl='7d');
 ```
-
 `ttl` 值是一个字符串，支持以下类型的值：
 
 - [时间范围字符串](/reference/time-durations.md)，如 `1hour 12min 5s`。
@@ -185,17 +184,14 @@ CREATE TABLE IF NOT EXISTS temperatures(
 如果一张表有自己的 TTL 策略，那么它将使用该 TTL 策略。否则，数据库的 TTL 策略将被应用到表上。
 
 比如说，如果表的 TTL 设置为 `forever`，那么无论数据库的 TTL 是什么，数据都不会被删除。但是如果你取消表的 TTL 设置：
-
 ```sql
 ALTER TABLE <table-name> UNSET 'ttl';
 ```
-
 那么数据库的 TTL 将会被应用到表上。
 
 请注意表和数据库的默认 TTL 策略都是未设置，也就是没有设置 TTL，代表着数据永远不会删除。
 
 #### 创建自定义存储的表
-
 或者创建一个表单独将数据存储在 Google Cloud Storage 服务上：
 
 ```sql
@@ -206,7 +202,6 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ```
 
 #### 创建自定义 compaction 参数的表
-
 创建带自定义 twcs compaction 参数的表。这个表会尝试根据数据的时间戳将数据按 1 天的时间窗口分区，并会在最新时间窗口内的文件超过 8 个时合并该窗口的文件
 
 ```sql
@@ -223,9 +218,7 @@ with(
 ```
 
 #### 创建 Append-Only 表
-
 创建一个 append-only 表来关闭去重
-
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
@@ -264,6 +257,7 @@ SELECT * from metrics ORDER BY host, ts;
 | host2 | 1970-01-01T00:00:00.001 | 11.0 |        |
 +-------+-------------------------+------+--------+
 ```
+
 
 创建带有 `last_non_null` merge 模式的表。
 
@@ -311,16 +305,15 @@ CREATE TABLE IF NOT EXISTS temperatures(
 metric engine 使用合成物理宽表来存储大量的小表数据，实现重用相同列和元数据的效果。详情请参考 [metric engine 文档](/contributor-guide/datanode/metric-engine)和[表引擎](/reference/about-greptimedb-engines.md)介绍。
 
 创建一个使用 metric engine 的物理表。
-
 ```sql
 CREATE TABLE greptime_physical_table (
     greptime_timestamp TIMESTAMP(3) NOT NULL,
     greptime_value DOUBLE NULL,
     TIME INDEX (greptime_timestamp),
-)
+) 
 engine = metric
 with (
-    "physical_metric_table" = "",
+    "physical_metric_table" = "",   
 );
 ```
 
@@ -335,7 +328,7 @@ CREATE TABLE greptime_physical_table (
     greptime_timestamp TIMESTAMP(3) NOT NULL,
     greptime_value DOUBLE NULL,
     TIME INDEX (greptime_timestamp),
-)
+) 
 engine = metric
 with (
     "physical_metric_table" = "",
@@ -360,6 +353,7 @@ with('sst_format'='flat');
 ```
 
 `flat` 格式针对高基数主键进行了优化，是新建表的默认 SST 格式。
+
 
 ### 列选项
 

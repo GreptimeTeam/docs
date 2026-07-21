@@ -41,7 +41,7 @@ Database options behave differently:
 - **TTL and Compaction options** (`ttl`, `compaction.*`): These options have ongoing effect. Tables without specified values will continuously inherit database-level values. Changing the database TTL or compaction options will immediately impact all tables that don't have their own settings.
 
 - **Other options** (`memtable.type`, `append_mode`, `merge_mode`, `skip_wal`, `sst_format`): These act as template variables that are only applied when creating new tables. Changing these database-level options will NOT affect existing tables - they only serve as defaults for newly created tables.
-  :::
+:::
 
 When creating a table, if the corresponding table options are not provided, the options configured at the database level will be applied.
 
@@ -147,25 +147,24 @@ GreptimeDB provides various type of indexes to accelerate query. Please refer to
 
 Users can add table options by using `WITH`. The valid options contain the following:
 
-| Option                                 | Description                                                       | Value                                                                                                                                                                                                                                                                                                                             |
-| -------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ttl`                                  | The storage time of the table data                                | A time duration string such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. Supported time units are: `s` / `m` / `h` / `d`.                                                                                                                                                                                            |
-| `storage`                              | The name of the table storage engine provider                     | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/deployments-administration/configuration.md#storage-engine-provider).                                                                                                                                   |
-| `compaction.type`                      | Compaction strategy of the table                                  | String value. Only `twcs` is allowed.                                                                                                                                                                                                                                                                                             |
-| `compaction.twcs.trigger_file_num`     | Number of files in a specific time window to trigger a compaction | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy.                                                                       |
-| `compaction.twcs.time_window`          | Compaction time window                                            | String value, such as '1d' for 1 day. The table usually partitions rows into different time windows by their timestamps. Only available when `compaction.type` is `twcs`.                                                                                                                                                         |
-| `compaction.twcs.max_output_file_size` | Maximum allowed output file size for TWCS compaction              | String value, such as '1GB', '512MB'. Sets the maximum size for files produced by TWCS compaction. Only available when `compaction.type` is `twcs`.                                                                                                                                                                               |
-| `memtable.type`                        | Type of the memtable.                                             | String value, supports `time_series`, `partition_tree`.                                                                                                                                                                                                                                                                           |
-| `append_mode`                          | Whether the table is append-only                                  | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.                                                                                               |
-| `merge_mode`                           | The strategy to merge duplicate rows                              | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.                                                                         |
-| `sst_format`                           | The format of SST files                                           | String value, supports `primary_key`, `flat`. Default is `flat`. `flat` is recommended for tables which have a large number of unique primary keys.                                                                                                                                                                               |
-| `comment`                              | Table level comment                                               | String value.                                                                                                                                                                                                                                                                                                                     |
-| `skip_wal`                             | Whether to disable Write-Ahead-Log for this table                 | String type. When set to `'true'`, the data written to the table will not be persisted to the write-ahead log, which can avoid storage wear and improve write throughput. However, when the process restarts, any unflushed data will be lost. Please use this feature only when the data source itself can ensure reliability.   |
-| `write_buffer_size`                    | Per-region write buffer limit for this table                      | String type, such as `'512MB'` or `'1GB'`. When set, each region of the table flushes when its write buffer reaches this size and rejects writes when it reaches twice this size. The table option overrides `region_engine.mito.default_region_write_buffer_size`. Set it to `'0'` or unset it to disable the table-level limit. |
-| `index.type`                           | Index type                                                        | **Only for metric engine** String value, supports `none`, `skipping`.                                                                                                                                                                                                                                                             |
+| Option                                      | Description                                                     | Value                                                                                                                                                                                                                                                       |
+| ------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ttl`                                       | The storage time of the table data                              | A time duration string such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. Supported time units are: `s` / `m` / `h` / `d`.                                                                                                                      |
+| `storage`                                   | The name of the table storage engine provider                   | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/deployments-administration/configuration.md#storage-engine-provider).                                                                            |
+| `compaction.type`                           | Compaction strategy of the table                                | String value. Only `twcs` is allowed.                                                                                                                                                                                                                       |
+| `compaction.twcs.trigger_file_num`          | Number of files in a specific time window to trigger a compaction | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
+| `compaction.twcs.time_window`               | Compaction time window                                          | String value, such as '1d' for 1 day. The table usually partitions rows into different time windows by their timestamps. Only available when `compaction.type` is `twcs`.                                                                                   |
+| `compaction.twcs.max_output_file_size`      | Maximum allowed output file size for TWCS compaction           | String value, such as '1GB', '512MB'. Sets the maximum size for files produced by TWCS compaction. Only available when `compaction.type` is `twcs`.                                                                                                        |
+| `memtable.type`                             | Type of the memtable.                                           | String value, supports `time_series`, `partition_tree`.                                                                                                                                                                                                     |
+| `append_mode`                               | Whether the table is append-only                                | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.                         |
+| `merge_mode`                                | The strategy to merge duplicate rows                            | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.   |
+| `sst_format`                                | The format of SST files                            | String value, supports `primary_key`, `flat`. Default is `flat`. `flat` is recommended for tables which have a large number of unique primary keys.   |
+| `comment`                                   | Table level comment                                             | String value.                                                                                                                                                                                                                                               |
+| `skip_wal`                                | Whether to disable Write-Ahead-Log for this table                               | String type. When set to `'true'`, the data written to the table will not be persisted to the write-ahead log, which can avoid storage wear and improve write throughput. However, when the process restarts, any unflushed data will be lost. Please use this feature only when the data source itself can ensure reliability. |
+| `write_buffer_size`                       | Per-region write buffer limit for this table                                    | String type, such as `'512MB'` or `'1GB'`. When set, each region of the table flushes when its write buffer reaches this size and rejects writes when it reaches twice this size. The table option overrides `region_engine.mito.default_region_write_buffer_size`. Set it to `'0'` or unset it to disable the table-level limit. |
+| `index.type`                                | Index type                                                      | **Only for metric engine** String value, supports `none`, `skipping`.                                                                                                                                                                                       |
 
 #### Create a table with TTL
-
 For example, to create a table with the storage data TTL(Time-To-Live) is seven days:
 
 ```sql
@@ -186,17 +185,14 @@ If a table has its own TTL policy, it will take precedence over the database TTL
 Otherwise, the database TTL policy will be applied to the table.
 
 So if table's TTL is set to `forever`, no matter what the database's TTL is, the data will never be deleted. But if you unset table TTL using:
-
 ```sql
 ALTER TABLE <table-name> UNSET 'ttl';
 ```
-
 Then the database's TTL will be applied to the table.
 
 Note that the default TTL setting for table and database is unset, which also means the data will never be deleted.
 
 #### Create a table with custom storage
-
 Create a table that stores the data in Google Cloud Storage:
 
 ```sql
@@ -207,7 +203,6 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ```
 
 #### Create a table with custom compaction options
-
 Create a table with custom compaction options. The table will attempt to partition data into 1-day time window based on the timestamps of the data and merges files within each time window if they exceed 8 files.
 
 ```sql
@@ -224,9 +219,7 @@ with(
 ```
 
 #### Create an append-only table
-
 Create an append-only table which disables deduplication.
-
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
@@ -235,9 +228,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ```
 
 #### Create a table with merge mode
-
 Create a table with `last_row` merge mode, which is the default merge mode.
-
 ```sql
 create table if not exists metrics(
     host string,
@@ -251,7 +242,6 @@ with('merge_mode'='last_row');
 ```
 
 Under `last_row` mode, the table merges rows with the same primary key and timestamp by only keeping the latest row.
-
 ```sql
 INSERT INTO metrics VALUES ('host1', 0, 0, NULL), ('host2', 1, NULL, 1);
 INSERT INTO metrics VALUES ('host1', 0, NULL, 10), ('host2', 1, 11, NULL);
@@ -266,8 +256,8 @@ SELECT * from metrics ORDER BY host, ts;
 +-------+-------------------------+------+--------+
 ```
 
-Create a table with `last_non_null` merge mode.
 
+Create a table with `last_non_null` merge mode.
 ```sql
 create table if not exists metrics(
     host string,
@@ -281,7 +271,6 @@ with('merge_mode'='last_non_null');
 ```
 
 Under `last_non_null` mode, the table merges rows with the same primary key and timestamp by keeping the latest non-null value of each field.
-
 ```sql
 INSERT INTO metrics VALUES ('host1', 0, 0, NULL), ('host2', 1, NULL, 1);
 INSERT INTO metrics VALUES ('host1', 0, NULL, 10), ('host2', 1, 11, NULL);
@@ -309,10 +298,9 @@ CREATE TABLE IF NOT EXISTS temperatures(
 
 #### Create a physical table with metric engine
 
-The metric engine use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. For details, please refer to the [metric engine document](/contributor-guide/datanode/metric-engine) and [Table Engines](/reference/about-greptimedb-engines.md) introduction.
+The metric engine use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. For details, please refer to the [metric engine document](/contributor-guide/datanode/metric-engine) and [Table Engines](/reference/about-greptimedb-engines.md)  introduction.
 
 Create a physical table with the metric engine.
-
 ```sql
 CREATE TABLE greptime_physical_table (
     greptime_timestamp TIMESTAMP(3) NOT NULL,
@@ -361,6 +349,8 @@ with('sst_format'='flat');
 ```
 
 The `flat` format is optimized for high cardinality primary keys and is the default SST format for new tables.
+
+
 
 ### Column options
 
@@ -501,6 +491,7 @@ CREATE EXTERNAL TABLE city (
 ```
 
 In this example, we explicitly defined the `ts` column as the Time Index column. If there is no suitable Time Index column in the file, you can also create a placeholder column and add a `DEFAULT expr` constraint.
+
 
 ## CREATE FLOW
 

@@ -37,13 +37,13 @@ EXPLAIN ANALYZE VERBOSE <SQL>;
 
 以下指标可用于诊断查询性能问题：
 
-| 指标                                    | 类型      | 描述                                      |
-| --------------------------------------- | --------- | ----------------------------------------- |
-| greptime_mito_read_stage_elapsed_bucket | histogram | 存储引擎中查询不同阶段的耗时。            |
-| greptime_mito_cache_bytes               | gauge     | 缓存内容的大小。`type` 标签表示缓存类型。 |
-| greptime_mito_cache_hit                 | counter   | 缓存命中总数。`type` 标签表示缓存类型。   |
-| greptime_mito_cache_miss                | counter   | 缓存未命中总数。`type` 标签表示缓存类型。 |
-| greptime_mito_cache_eviction            | counter   | 缓存淘汰总数。`type` 标签表示缓存类型。   |
+| 指标 | 类型 | 描述 |
+|---|---|---|
+| greptime_mito_read_stage_elapsed_bucket | histogram | 存储引擎中查询不同阶段的耗时。 |
+| greptime_mito_cache_bytes | gauge | 缓存内容的大小。`type` 标签表示缓存类型。 |
+| greptime_mito_cache_hit | counter | 缓存命中总数。`type` 标签表示缓存类型。 |
+| greptime_mito_cache_miss | counter | 缓存未命中总数。`type` 标签表示缓存类型。 |
+| greptime_mito_cache_eviction | counter | 缓存淘汰总数。`type` 标签表示缓存类型。 |
 
 ### 增大缓存大小
 
@@ -139,23 +139,23 @@ CREATE TABLE logs(
 
 以下指标有助于诊断写入问题。大多数指标可在官方 Grafana dashboard 中找到。需要自定义 PromQL 或深入排查时，可以使用下列指标名。
 
-| 指标                                          | 类型      | 描述                                                                      |
-| --------------------------------------------- | --------- | ------------------------------------------------------------------------- |
-| greptime_table_operator_ingest_rows           | counter   | table operator 摄入的行数。可使用该指标的 rate 追踪总写入负载。           |
+| 指标 | 类型 | 描述 |
+|---|---|---|
+| greptime_table_operator_ingest_rows | counter | table operator 摄入的行数。可使用该指标的 rate 追踪总写入负载。 |
 | greptime_servers_http_requests_elapsed_bucket | histogram | HTTP 请求延迟。可使用 `path`、`method` 和 `code` 等标签定位写入相关延迟。 |
-| greptime_servers_grpc_requests_elapsed_bucket | histogram | gRPC 请求延迟。可使用 `path` 和 `code` 等标签定位写入相关延迟。           |
-| greptime_mito_handle_request_elapsed_bucket   | histogram | Datanode 上处理存储引擎请求的耗时。                                       |
-| greptime_mito_write_stage_elapsed_bucket      | histogram | 存储引擎中处理写入请求的不同阶段的耗时。                                  |
-| greptime_mito_write_buffer_bytes              | gauge     | 当前为写入缓冲区（memtables）分配的字节数（估算）。                       |
-| greptime_mito_write_rows_total                | counter   | 写入存储引擎的行数。可用于比较不同 datanode 的写入负载。                  |
-| greptime_mito_write_stalling_count            | gauge     | 每个 worker 中当前被阻塞的写入请求数。                                    |
-| greptime_mito_write_stall_total               | counter   | 由于高内存压力或临时 region 状态而被阻塞的写入请求总数。                  |
-| greptime_mito_write_reject_total              | counter   | 由于内存压力过高而被拒绝的写入请求数。                                    |
-| raft_engine_sync_log_duration_seconds_bucket  | histogram | 将 WAL 刷入磁盘的耗时。                                                   |
-| greptime_mito_flush_requests_total            | counter   | 已调度的 flush 请求数。                                                   |
-| greptime_mito_flush_elapsed                   | histogram | 刷入 SST 文件的耗时。                                                     |
-| greptime_mito_flush_bytes_total               | counter   | flush 到 SST 文件的字节数。                                               |
-| greptime_mito_flush_file_total                | counter   | flush job 生成的 SST 文件数。                                             |
+| greptime_servers_grpc_requests_elapsed_bucket | histogram | gRPC 请求延迟。可使用 `path` 和 `code` 等标签定位写入相关延迟。 |
+| greptime_mito_handle_request_elapsed_bucket | histogram | Datanode 上处理存储引擎请求的耗时。 |
+| greptime_mito_write_stage_elapsed_bucket | histogram | 存储引擎中处理写入请求的不同阶段的耗时。 |
+| greptime_mito_write_buffer_bytes | gauge | 当前为写入缓冲区（memtables）分配的字节数（估算）。 |
+| greptime_mito_write_rows_total | counter | 写入存储引擎的行数。可用于比较不同 datanode 的写入负载。 |
+| greptime_mito_write_stalling_count | gauge | 每个 worker 中当前被阻塞的写入请求数。 |
+| greptime_mito_write_stall_total | counter | 由于高内存压力或临时 region 状态而被阻塞的写入请求总数。 |
+| greptime_mito_write_reject_total | counter | 由于内存压力过高而被拒绝的写入请求数。 |
+| raft_engine_sync_log_duration_seconds_bucket | histogram | 将 WAL 刷入磁盘的耗时。 |
+| greptime_mito_flush_requests_total | counter | 已调度的 flush 请求数。 |
+| greptime_mito_flush_elapsed | histogram | 刷入 SST 文件的耗时。 |
+| greptime_mito_flush_bytes_total | counter | flush 到 SST 文件的字节数。 |
+| greptime_mito_flush_file_total | counter | flush job 生成的 SST 文件数。 |
 
 ### 检查写入吞吐和请求延迟
 
