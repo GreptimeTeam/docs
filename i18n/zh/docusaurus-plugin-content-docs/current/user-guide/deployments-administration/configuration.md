@@ -246,7 +246,11 @@ max_inflight_requests = 3000
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
 |            | timeout            | 字符串 | HTTP 请求超时时间。设为 "0s" 可禁用超时（默认值为 "0s"）。                              |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
+|            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
+|            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
 |            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
+|            | experimental_enable_prometheus_native_histogram | 布尔值 | 是否启用实验性的 Prometheus native histogram 写入，默认为 false。 |
+|            | experimental_enable_explain_analyze_stream | 布尔值 | 是否启用实验性的 `EXPLAIN ANALYZE` 流式输出，默认为 false。 |
 | grpc       |                    |        | gRPC 服务器选项                                              |
 |            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
@@ -256,6 +260,8 @@ max_inflight_requests = 3000
 |            | enable             | 布尔值 | 是否启用 MySQL 协议，默认为 true                             |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                 |
+|            | keep_alive         | 字符串 | 服务端保持连接时间。设为 `0s` 可禁用。 |
+|            | prepared_stmt_cache_size | 整数 | MySQL prepared statement 缓存的最大条目数，默认为 10000。 |
 | influxdb   |                    |        | InfluxDB 协议选项                                            |
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true            |
 |            | default_merge_mode | 字符串 | InfluxDB 协议自动创建表时使用的默认 merge 模式。可选值：`last_non_null`、`last_row`。默认值：`last_non_null` |
@@ -278,6 +284,7 @@ max_inflight_requests = 3000
 |            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                       |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                 |
+|            | keep_alive         | 字符串 | 服务端保持连接时间。设为 `0s` 可禁用。 |
 
 对 MySQL，Postgres 和 gRPC 接口，我们支持 TLS 配置
 
@@ -287,7 +294,7 @@ max_inflight_requests = 3000
 |                                          | `mode`      | String  | TLS 模式，支持 `disable`, `prefer` and `require` |
 |                                          | `cert_path` | String  | TLS 证书文件路径                                 |
 |                                          | `key_path`  | String  | TLS 私钥文件路径                                 |
-|                                          | `watch`     | Boolean | 监控文件变化，自动重新加载证书或私钥             |
+|                                          | `watch`     | Boolean | 监控文件变化，自动重新加载证书或私钥。`grpc.tls` 不支持自动重新加载，请保持 `grpc.tls.watch` 为 `false`。 |
 
 ### 查询选项
 
@@ -658,7 +665,7 @@ store_key_prefix = ""
 # - `mysql_store`
 backend = "etcd_store"
 # 在 RDS 中存储元数据的表名。仅在使用 RDS kvbackend 时生效。
-# **仅在 backend 为 `postgres_store` 或 `mysql_store` 时使用。**
+# **仅在 backend 为 `postgres_store` 时使用。**
 meta_table_name = "greptime_metakv"
 # PostgreSQL 元数据表和选举表使用的 schema。
 # 当 PostgreSQL public schema 不可写时（例如 PostgreSQL 15+ 限制 public schema），
@@ -833,12 +840,17 @@ timeout = "3s"
 | `data_home`                                   | String  | `./greptimedb_data/metasrv/`      | 工作目录。                                                                                                                           |
 | `bind_addr`                                   | String  | `127.0.0.1:3002`     | Metasrv 的绑定地址。                                                                                                                 |
 | `server_addr`                                 | String  | `127.0.0.1:3002`     | frontend 和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                                                 |
-| `store_addrs`                                 | Array   | `["127.0.0.1:2379"]`     | 元数据服务地址，默认值为 `["127.0.0.1:2379"]`。支持配置多个服务地址，格式为 `["ip1:port1","ip2:port2",...]`。默认使用 Etcd 作为元数据后端。<br/>根据你的存储服务器类型配置地址，例如：<br/>- 使用 `127.0.0.1:2379` 连接到 etcd<br/>- 使用 `password=password dbname=postgres user=postgres host=localhost port=5432` 连接到 postgres<br/>- 使用 `mysql://user:password@ip:port/dbname` 连接到 mysql |
+| `store_addrs`                                 | Array   | `["127.0.0.1:2379"]`     | 元数据服务地址，默认值为 `["127.0.0.1:2379"]`。支持配置多个服务地址，格式为 `["ip1:port1","ip2:port2",...]`。默认使用 Etcd 作为元数据后端。<br/>根据你的存储服务器类型配置地址，例如：<br/>- 使用 `127.0.0.1:2379` 连接到 etcd<br/>- 使用 `"password=password dbname=postgres user=postgres host=localhost port=5432"` 连接到 postgres<br/>- 使用 `"mysql://user:password@ip:port/dbname"` 连接到 mysql |
 | `selector`                                    | String  | `round_robin`                | Datanode 选择器类型。<br/>- `round_robin`（默认值）<br/>- `lease_based`<br/>- `load_based`<br/>详见 [选择器](/contributor-guide/metasrv/selector.md)。                                      |
-| `enable_region_failover`                      | Bool    | `false`                      | 是否启用 region failover。<br/>该功能仅适用于运行在集群模式下的 GreptimeDB，并且需要满足以下条件：<br/>- 使用 Remote WAL<br/>- 使用共享存储（例如 S3）。   |
+| `enable_region_failover`                      | Bool    | `false`                      | 是否启用 region failover。<br/>该功能仅适用于运行在集群模式下的 GreptimeDB，并且需要满足以下条件：<br/>- 使用 Remote WAL，或使用 Local WAL 且将 `allow_region_failover_on_local_wal` 设置为 `true`<br/>- 使用共享存储（例如 S3）。   |
 | `region_failure_detector_initialization_delay` | String  | `10m`                        | 设置启动 region 故障检测的延迟时间。该延迟有助于避免在所有 Datanode 尚未完全启动时，Metasrv 过早启动 region 故障检测，从而导致不必要的 region failover。尤其适用于未通过 GreptimeDB Operator 部署的集群，此时可能未正确启用集群维护模式，提前检测可能会引发误判。 |
 | `allow_region_failover_on_local_wal`          | Bool    | `false` | 是否允许在本地 WAL 上进行 region failover。<br/>**此选项不建议设置为 true，因为这可能会在故障转移期间导致数据丢失。** |
 | `node_max_idle_time`                          | String  | `24hours`            | 从 metasrv 内存中删除节点信息前允许的最大空闲时间。超过该时间未发送心跳的节点将被视为不活跃并被删除。                 |
+| `backend_tls`                                 | --      | --                   | kv store 后端的 TLS 配置，适用于 etcd、PostgreSQL 和 MySQL 后端。 |
+| `backend_tls.mode`                            | String  | `prefer`             | kv store 后端的 TLS 模式，可选值为 `disable`、`prefer` 和 `require`。 |
+| `backend_tls.cert_path`                       | String  | --                   | 客户端 TLS 证书文件路径。 |
+| `backend_tls.key_path`                        | String  | --                   | 客户端 TLS 私钥文件路径。 |
+| `backend_tls.ca_cert_path`                    | String  | --                   | 受信任 CA 证书文件路径。 |
 | `backend_client`                              | --      | --                   | 后端客户端选项。<br/>目前仅适用于使用 etcd 作为元数据存储时。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `backend_client.keep_alive_timeout`           | String  | `3s`                 | 后端客户端的保持连接超时时间。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `backend_client.keep_alive_interval`          | String  | `10s`                | 后端客户端的保持连接间隔。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
@@ -846,17 +858,24 @@ timeout = "3s"
 | `grpc`                                        | --      | --                   | gRPC 服务器选项。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `grpc.bind_addr`                              | String  | `127.0.0.1:3002`     | gRPC 服务器的绑定地址。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `grpc.server_addr`                            | String  | `127.0.0.1:3002`     | frontend 和 datanode 连接到 metasrv 的通信服务器地址。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `grpc.runtime_size`                           | Integer | `8`                  | 服务器工作线程数。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `grpc.runtime_size`                           | Integer | `8`                  | 服务器工作线程数。 |
+| `grpc.max_recv_message_size`                  | String  | `512MB`              | gRPC 服务器的最大接收消息大小。 |
+| `grpc.max_send_message_size`                  | String  | `512MB`              | gRPC 服务器的最大发送消息大小。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `grpc.http2_keep_alive_interval`              | String  | `10s`                | 服务器端 HTTP/2 保持连接间隔。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `grpc.http2_keep_alive_timeout`               | String  | `3s`                 | 服务器端 HTTP/2 保持连接超时时间。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `http`                                        | --      | --                   | HTTP 服务器选项。 |
+| `http.addr`                                   | String  | `127.0.0.1:4000`     | HTTP 服务器地址。 |
+| `http.timeout`                                | String  | `0s`                 | HTTP 请求超时时间。设为 `0s` 可禁用超时。 |
+| `http.body_limit`                             | String  | `64MB`               | HTTP 最大 body 大小。 |
 | `backend`                                     | String  | `etcd_store`           | 元数据存储类型。<br/>- `etcd_store` (默认)<br/>- `memory_store` (纯内存存储 - 仅用于测试)<br/>- `postgres_store`<br/>- `mysql_store` |
-| `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为  postgres_store 和 mysql_store 时有效。** |
-| `meta_schema_name` | String | -- | 可选的 PostgreSQL schema，用于元数据表和选举表名称限定。当 PostgreSQL public schema 不可写入时（例如 PostgreSQL 15+ 限制 public schema），可设置此参数为可写入的 schema。GreptimeDB 将使用 `meta_schema_name.meta_table_name`。<br/>**仅在 backend 为 postgres_store 时有效。** |
+| `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为 postgres_store 时有效。** |
+| `meta_schema_name` | String | `greptime_schema` | 可选的 PostgreSQL schema，用于元数据表和选举表名称限定。当 PostgreSQL public schema 不可写入时（例如 PostgreSQL 15+ 限制 public schema），可设置此参数为可写入的 schema。GreptimeDB 将使用 `meta_schema_name.meta_table_name`。<br/>**仅在 backend 为 postgres_store 时有效。** |
 | `auto_create_schema` | Bool | `true` | 如果 PostgreSQL schema 不存在则自动创建。启用后，系统会在创建元数据表之前执行 `CREATE SCHEMA IF NOT EXISTS <schema_name>`。这在生产环境中可能受限于手动创建 schema 的情况下非常有用。注意：PostgreSQL 用户必须具有 CREATE SCHEMA 权限才能使此功能生效。<br/>**仅在 backend 为 postgres_store 时有效。** |
 | `meta_election_lock_id` | Integer | `1` | 用于领导选举的 PostgreSQL 咨询锁 id。**仅在 backend 为  postgres_store 时有效。** |
 | `procedure`                                   | --      | --                   |                                                                                                                                      |
 | `procedure.max_retry_times`                   | 整数    | `12`                 | Procedure 的最大重试次数。                                                                                                           |
-| `procedure.retry_delay`                       | 字符串  | `500ms`              | Procedure 初始重试延迟，延迟会指数增长。                                                                                             |
+| `procedure.retry_delay`                       | 字符串  | `500ms`              | Procedure 初始重试延迟，延迟会指数增长。 |
+| `procedure.max_metadata_value_size`           | String  | `1500KiB`            | 单个 Procedure 元数据值被拆分为多个后端条目前允许的最大大小。                                                                                             |
 | `procedure.max_running_procedures`            | Integer | `128`                  | 同一时间可以运行的程序最大数量。如果运行的程序数量超过此限制，程序将被拒绝。 |
 | `failure_detector`                            | --      | --                   | 故障检测选项。                                                                                                                       |
 | `failure_detector.threshold`                  | 浮点数  | `8.0`                | 判定节点故障前可接受的最大 φ 值。<br/>较低的值反应更快但会产生更多误报。                                                            |
