@@ -179,9 +179,6 @@ body_limit = "64MB"
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
 prom_validation_mode = "strict"
-experimental_enable_prometheus_native_histogram = false
-experimental_enable_explain_analyze_stream = false
-
 [grpc]
 bind_addr = "127.0.0.1:4001"
 runtime_size = 8
@@ -254,8 +251,6 @@ The following table describes the options in detail:
 |            | enable_cors          | Boolean | Whether to enable HTTP CORS support, true by default. |
 |            | cors_allowed_origins | Array   | Customized allowed origins for HTTP CORS. |
 |            | prom_validation_mode | String  | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with [UTF-8 REPLACEMENT CHARACTER U+FFFD, which looks like �](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)), `unchecked`(do not validate strings). |
-|            | experimental_enable_prometheus_native_histogram | Boolean | Whether to enable experimental Prometheus native histogram ingestion, false by default. |
-|            | experimental_enable_explain_analyze_stream | Boolean | Whether to enable experimental streaming output for `EXPLAIN ANALYZE`, false by default. |
 | grpc       |                      |         | gRPC server options                                                                                                                                                                                                                                                                                                                                                                        |
 |            | bind_addr            | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                                                                                                                                                                                                                                                                           |
 |            | runtime_size         | Integer | The number of server worker threads, 8 by default                                                                                                                                                                                                                                                                                                                                          |
@@ -671,7 +666,7 @@ store_key_prefix = ""
 # - `mysql_store`
 backend = "etcd_store"
 # Table name in RDS to store metadata. Effect when using a RDS kvbackend.
-# **Only used when backend is `postgres_store`.**
+# **Only used when backend is RDS kvbackend.**
 meta_table_name = "greptime_metakv"
 # Optional PostgreSQL schema for metadata table and election table name qualification.
 # When PostgreSQL public schema is not writable (e.g., PostgreSQL 15+ with restricted public),
@@ -688,7 +683,7 @@ meta_election_lock_id = 1
 # - `round_robin` (default value)
 # - `lease_based`
 # - `load_based`
-# For details, please see [selector documentation](/contributor-guide/metasrv/selector.md).
+# For details, please see "https://docs.greptime.com/contributor-guide/metasrv/selector".
 selector = "round_robin"
 # Whether to enable region failover.
 # This feature is only available on GreptimeDB running on cluster mode and:
@@ -892,7 +887,7 @@ timeout = "3s"
 | `http.timeout`                                | String  | `0s`                         | HTTP request timeout. Set to `0s` to disable timeout. |
 | `http.body_limit`                             | String  | `64MB`                       | HTTP max body size.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `backend`                                     | String  | `etcd_store`                 | The datastore for metasrv.<br/>- `etcd_store` (default)<br/>- `memory_store` (In memory metadata storage - only used for testing.)<br/>- `postgres_store`<br/>- `mysql_store`                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| `meta_table_name`                             | String  | `greptime_metakv`            | Table name in RDS to store metadata. Effect when using a RDS kvbackend.<br/>**Only used when backend is `postgres_store`.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `meta_table_name`                             | String  | `greptime_metakv`            | Table name in RDS to store metadata. Effect when using a RDS kvbackend.<br/>**Only used when backend is RDS kvbackend.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `meta_schema_name`                            | String  | `greptime_schema`            | Optional PostgreSQL schema for metadata table and election table name qualification. When PostgreSQL public schema is not writable (e.g., PostgreSQL 15+ with restricted public), set this to a writable schema. GreptimeDB will use `meta_schema_name.meta_table_name`.<br/>**Only used when backend is `postgres_store`.**                                                                                                                                                                                                                                                                                           |
 | `auto_create_schema`                          | Bool    | `true`                       | Automatically create PostgreSQL schema if it doesn't exist. When enabled, the system will execute `CREATE SCHEMA IF NOT EXISTS <schema_name>` before creating metadata tables. This is useful in production environments where manual schema creation may be restricted. Note: The PostgreSQL user must have CREATE SCHEMA permission for this to work.<br/>**Only used when backend is `postgres_store`.**                                                                                                                                                                                                           |
 | `meta_election_lock_id`                       | Integer | `1`                          | Advisory lock id in PostgreSQL for election. Effect when using PostgreSQL as kvbackend<br/>**Only used when backend is `postgres_store`.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |

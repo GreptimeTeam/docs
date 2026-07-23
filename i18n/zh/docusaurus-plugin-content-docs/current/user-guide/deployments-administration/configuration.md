@@ -174,9 +174,6 @@ body_limit = "64MB"
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
 prom_validation_mode = "strict"
-experimental_enable_prometheus_native_histogram = false
-experimental_enable_explain_analyze_stream = false
-
 [grpc]
 bind_addr = "127.0.0.1:4001"
 runtime_size = 8
@@ -249,8 +246,6 @@ max_inflight_requests = 3000
 |            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
 |            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
 |            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
-|            | experimental_enable_prometheus_native_histogram | 布尔值 | 是否启用实验性的 Prometheus native histogram 写入，默认为 false。 |
-|            | experimental_enable_explain_analyze_stream | 布尔值 | 是否启用实验性的 `EXPLAIN ANALYZE` 流式输出，默认为 false。 |
 | grpc       |                    |        | gRPC 服务器选项                                              |
 |            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
@@ -665,7 +660,7 @@ store_key_prefix = ""
 # - `mysql_store`
 backend = "etcd_store"
 # 在 RDS 中存储元数据的表名。仅在使用 RDS kvbackend 时生效。
-# **仅在 backend 为 `postgres_store` 时使用。**
+# **仅在 backend 为 RDS kvbackend 时使用。**
 meta_table_name = "greptime_metakv"
 # PostgreSQL 元数据表和选举表使用的 schema。
 # 当 PostgreSQL public schema 不可写时（例如 PostgreSQL 15+ 限制 public schema），
@@ -682,7 +677,7 @@ meta_election_lock_id = 1
 # - `round_robin`（默认值）
 # - `lease_based`
 # - `load_based`
-# 详情请参阅 [selector 文档](/contributor-guide/metasrv/selector.md)
+# 详情请参阅 "https://docs.greptime.com/contributor-guide/metasrv/selector/"
 selector = "round_robin"
 # 是否启用 region failover。
 # 该功能仅适用于运行在集群模式下的 GreptimeDB，并且需要满足以下条件：
@@ -868,7 +863,7 @@ timeout = "3s"
 | `http.timeout`                                | String  | `0s`                 | HTTP 请求超时时间。设为 `0s` 可禁用超时。 |
 | `http.body_limit`                             | String  | `64MB`               | HTTP 最大 body 大小。 |
 | `backend`                                     | String  | `etcd_store`           | 元数据存储类型。<br/>- `etcd_store` (默认)<br/>- `memory_store` (纯内存存储 - 仅用于测试)<br/>- `postgres_store`<br/>- `mysql_store` |
-| `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为 postgres_store 时有效。** |
+| `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为 RDS kvbackend 时有效。** |
 | `meta_schema_name` | String | `greptime_schema` | 可选的 PostgreSQL schema，用于元数据表和选举表名称限定。当 PostgreSQL public schema 不可写入时（例如 PostgreSQL 15+ 限制 public schema），可设置此参数为可写入的 schema。GreptimeDB 将使用 `meta_schema_name.meta_table_name`。<br/>**仅在 backend 为 postgres_store 时有效。** |
 | `auto_create_schema` | Bool | `true` | 如果 PostgreSQL schema 不存在则自动创建。启用后，系统会在创建元数据表之前执行 `CREATE SCHEMA IF NOT EXISTS <schema_name>`。这在生产环境中可能受限于手动创建 schema 的情况下非常有用。注意：PostgreSQL 用户必须具有 CREATE SCHEMA 权限才能使此功能生效。<br/>**仅在 backend 为 postgres_store 时有效。** |
 | `meta_election_lock_id` | Integer | `1` | 用于领导选举的 PostgreSQL 咨询锁 id。**仅在 backend 为  postgres_store 时有效。** |
