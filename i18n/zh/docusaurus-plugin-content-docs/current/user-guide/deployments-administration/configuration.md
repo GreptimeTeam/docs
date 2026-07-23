@@ -174,6 +174,8 @@ body_limit = "64MB"
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
 prom_validation_mode = "strict"
+experimental_enable_prometheus_native_histogram = false
+experimental_enable_explain_analyze_stream = true
 [grpc]
 bind_addr = "127.0.0.1:4001"
 runtime_size = 8
@@ -223,7 +225,7 @@ enable = true
 
 [otlp]
 enable = true
-trace_ingest_chunk_size = 128
+trace_ingest_chunk_size = 512
 
 [prom_store]
 enable = true
@@ -246,6 +248,8 @@ max_inflight_requests = 3000
 |            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
 |            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
 |            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
+|            | experimental_enable_prometheus_native_histogram | 布尔值 | 实验性：启用 Prometheus remote write v2 native histogram 写入，默认为 false。 |
+|            | experimental_enable_explain_analyze_stream | 布尔值 | 实验性：启用 `POST /v1/sql/analyze/stream`，用于流式返回 `EXPLAIN ANALYZE VERBOSE` 指标，默认为 true。 |
 | grpc       |                    |        | gRPC 服务器选项                                              |
 |            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
@@ -703,6 +707,7 @@ node_max_idle_time = "24hours"
 # enable_telemetry = true
 
 # kv store backend 的 TLS 配置（适用于 etcd、PostgreSQL 和 MySQL backend）。
+# 如果此处和 `store_addrs` 连接字符串中都配置了 TLS，则此处配置会覆盖 `store_addrs` 中的 TLS 设置。
 [backend_tls]
 mode = "prefer"
 cert_path = ""
@@ -841,8 +846,8 @@ timeout = "3s"
 | `region_failure_detector_initialization_delay` | String  | `10m`                        | 设置启动 region 故障检测的延迟时间。该延迟有助于避免在所有 Datanode 尚未完全启动时，Metasrv 过早启动 region 故障检测，从而导致不必要的 region failover。尤其适用于未通过 GreptimeDB Operator 部署的集群，此时可能未正确启用集群维护模式，提前检测可能会引发误判。 |
 | `allow_region_failover_on_local_wal`          | Bool    | `false` | 是否允许在本地 WAL 上进行 region failover。<br/>**此选项不建议设置为 true，因为这可能会在故障转移期间导致数据丢失。** |
 | `node_max_idle_time`                          | String  | `24hours`            | 从 metasrv 内存中删除节点信息前允许的最大空闲时间。超过该时间未发送心跳的节点将被视为不活跃并被删除。                 |
-| `backend_tls`                                 | --      | --                   | kv store 后端的 TLS 配置，适用于 etcd、PostgreSQL 和 MySQL 后端。 |
-| `backend_tls.mode`                            | String  | `prefer`             | kv store 后端的 TLS 模式，可选值为 `disable`、`prefer` 和 `require`。 |
+| `backend_tls`                                 | --      | --                   | kv store 后端的 TLS 配置，适用于 etcd、PostgreSQL 和 MySQL 后端。如果此处和 `store_addrs` 连接字符串中都配置了 TLS，则此处配置会覆盖 `store_addrs` 中的 TLS 设置。 |
+| `backend_tls.mode`                            | String  | `prefer`             | kv store 后端的 TLS 模式，可选值为 `disable`、`prefer`、`require`、`verify_ca` 和 `verify_full`。 |
 | `backend_tls.cert_path`                       | String  | --                   | 客户端 TLS 证书文件路径。 |
 | `backend_tls.key_path`                        | String  | --                   | 客户端 TLS 私钥文件路径。 |
 | `backend_tls.ca_cert_path`                    | String  | --                   | 受信任 CA 证书文件路径。 |
@@ -864,7 +869,7 @@ timeout = "3s"
 | `http.body_limit`                             | String  | `64MB`               | HTTP 最大 body 大小。 |
 | `backend`                                     | String  | `etcd_store`           | 元数据存储类型。<br/>- `etcd_store` (默认)<br/>- `memory_store` (纯内存存储 - 仅用于测试)<br/>- `postgres_store`<br/>- `mysql_store` |
 | `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为 RDS kvbackend 时有效。** |
-| `meta_schema_name` | String | `greptime_schema` | 可选的 PostgreSQL schema，用于元数据表和选举表名称限定。当 PostgreSQL public schema 不可写入时（例如 PostgreSQL 15+ 限制 public schema），可设置此参数为可写入的 schema。GreptimeDB 将使用 `meta_schema_name.meta_table_name`。<br/>**仅在 backend 为 postgres_store 时有效。** |
+| `meta_schema_name` | String | -- | 可选的 PostgreSQL schema，用于元数据表和选举表名称限定。当 PostgreSQL public schema 不可写入时（例如 PostgreSQL 15+ 限制 public schema），可设置此参数为可写入的 schema。GreptimeDB 将使用 `meta_schema_name.meta_table_name`。<br/>**仅在 backend 为 postgres_store 时有效。** |
 | `auto_create_schema` | Bool | `true` | 如果 PostgreSQL schema 不存在则自动创建。启用后，系统会在创建元数据表之前执行 `CREATE SCHEMA IF NOT EXISTS <schema_name>`。这在生产环境中可能受限于手动创建 schema 的情况下非常有用。注意：PostgreSQL 用户必须具有 CREATE SCHEMA 权限才能使此功能生效。<br/>**仅在 backend 为 postgres_store 时有效。** |
 | `meta_election_lock_id` | Integer | `1` | 用于领导选举的 PostgreSQL 咨询锁 id。**仅在 backend 为  postgres_store 时有效。** |
 | `procedure`                                   | --      | --                   |                                                                                                                                      |
