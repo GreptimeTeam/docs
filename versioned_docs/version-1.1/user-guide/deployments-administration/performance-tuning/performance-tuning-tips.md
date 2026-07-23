@@ -1,11 +1,13 @@
 ---
-keywords: [GreptimeDB performance tuning, query optimization, caching, primary keys, append-only tables, metrics]
-description: Tips for tuning GreptimeDB performance, including query optimization, caching, enlarging cache size, primary keys, and using append-only tables. Also covers metrics for diagnosing query and ingestion issues.
+keywords: [GreptimeDB performance tuning, query optimization, caching, schema design, indexes, primary keys, append-only tables, metrics]
+description: Tips for tuning GreptimeDB performance, including query optimization, caching, schema design, indexes, primary keys, and append-only tables. Also covers metrics for diagnosing query and ingestion issues.
 ---
 
 # Performance Tuning Tips
 
 A GreptimeDB instance's default configuration may not fit all use cases. It's important to tune the database configurations and usage according to the scenario.
+
+Performance tuning is not limited to server configuration. Table schema and index design directly affect ingestion and query efficiency. See [Design Your Table Schema](/user-guide/deployments-administration/performance-tuning/design-table.md) for guidance on primary keys, append-only and deduplicating tables, index selection, table layout, and partitioning.
 
 GreptimeDB provides various metrics to help monitor and troubleshoot performance issues. The official repository provides [Grafana dashboard templates](https://github.com/GreptimeTeam/greptimedb/tree/main/grafana) for both standalone and cluster modes.
 
@@ -28,10 +30,24 @@ If the cause is still unclear, include the full `EXPLAIN ANALYZE VERBOSE` output
 Common findings:
 
 - **Many small files to search**: A high `num_file_ranges` value, especially when many files contain less than one full row group, can mean the scan has to open many small SST files. This often comes from backfilling many different time windows or from high compaction pressure. Consider adjusting `compaction.twcs.time_window`, reviewing the write or backfill pattern so rows fill time windows more naturally, and checking compaction status. Small files do not always hurt performance if the number of files is not large.
-- **Many rows filtered after scanning**: If `scan_cost` is high and `rows_precise_filtered` is also high, the scan reads many candidate rows and then removes them with exact filters. Consider adding an appropriate [index](/user-guide/manage-data/data-index.md) for selective filter columns. Index changes apply to newly flushed data; they do not immediately rewrite all existing SST files.
+- **Many rows filtered after scanning**: If `scan_cost` is high and `rows_precise_filtered` is also high, the scan reads many candidate rows and then removes them with exact filters. See [Add indexes to improve filtering](#add-indexes-to-improve-filtering).
 - **Local cache misses during data fetch**: If `fetch_metrics.cache_miss`, `fetch_metrics.pages_to_fetch_store`, or `fetch_metrics.store_fetch_elapsed` is high, GreptimeDB is reading page data from object storage instead of local caches. Check the cache metrics below and consider increasing `write_cache_size` or `page_cache_size`.
 - **High scan preparation cost**: High `build_parts_cost` or `build_reader_cost` means GreptimeDB spends significant time building scan ranges or readers. Correlate this with `num_file_ranges`, metadata cache misses, and cache pressure.
 - **High metadata load time**: If `metadata_cache_metrics.metadata_load_cost` or `metadata_cache_metrics.cache_miss` is high, the SST metadata cache may be too small. Check `greptime_mito_cache_bytes{type="sst_meta"}` and consider increasing `sst_meta_cache_size`.
+
+### Add indexes to improve filtering
+
+Indexes can reduce the amount of data that GreptimeDB reads and filters. If `EXPLAIN ANALYZE VERBOSE` shows high `scan_cost` and many `rows_precise_filtered`, compare the query's `WHERE` predicates with the table schema. Columns that occur frequently in selective filters and are not already covered by the leading primary key columns are good index candidates.
+
+Choose the index type based on the query and the column:
+
+- Use an inverted index for filters on low-cardinality columns, including equality, range, and `IN` predicates.
+- Use a skipping index for equality filters on high-cardinality columns such as trace IDs and request IDs.
+- Use a full-text index for searches over unstructured text.
+
+Indexes have storage and memory costs and can increase flush and compaction latency, so avoid indexing every column. See [Index in the table design guide](/user-guide/deployments-administration/performance-tuning/design-table.md#index) for how indexes complement primary key ordering and how to select an index type. See [Data Index](/user-guide/manage-data/data-index.md) for index syntax and management.
+
+After adding an index, rerun the same query with `EXPLAIN ANALYZE VERBOSE` and compare `scan_cost` and `rows_precise_filtered`. Index pruning also appears in the `rg_*_filtered` and `rows_*_filtered` counters for the corresponding index type. Currently, a newly added index only takes effect for newly flushed data: the index is built for SST files produced by subsequent flushes, but is not added to existing SST files.
 
 ### Metrics
 
@@ -211,6 +227,8 @@ global_write_buffer_reject_size = "3GB"
 ```
 
 ## Schema
+
+Schema design affects both query and ingestion performance. This section describes one optimization for metric tables. For guidance on primary keys, indexes, append-only and deduplicating tables, and partitioning, see [Design Your Table Schema](/user-guide/deployments-administration/performance-tuning/design-table.md).
 
 ### Using multiple fields
 

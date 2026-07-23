@@ -1,11 +1,13 @@
 ---
-keywords: [性能调优, 查询性能, 缓存配置, 写入优化, 表结构设计, 指标监控, 对象存储, 批量写入, append-only 表]
-description: 提供 GreptimeDB 性能调优的技巧，包括查询性能指标、缓存配置、写入优化和表结构设计建议。
+keywords: [性能调优, 查询优化, 缓存配置, 表结构设计, 索引, 主键, append-only 表, 指标监控]
+description: 提供 GreptimeDB 性能调优的技巧，包括查询优化、缓存配置、表结构设计、索引、主键和 append-only 表，以及用于诊断查询和写入问题的指标。
 ---
 
 # 性能调优技巧
 
 GreptimeDB 实例的默认配置可能不适合所有场景。因此根据场景调整数据库配置和使用方式相当重要。
+
+性能调优不仅限于服务器配置。表结构和索引设计会直接影响写入和查询效率。有关主键、append-only 表与去重表、索引选择、表布局和分区的指导，请参阅[设计表结构](/user-guide/deployments-administration/performance-tuning/design-table.md)。
 
 GreptimeDB 提供了各种指标来帮助监控和排查性能问题。官方仓库里提供了用于独立模式和集群模式的 [Grafana dashboard 模版](https://github.com/GreptimeTeam/greptimedb/tree/main/grafana)。
 
@@ -28,10 +30,24 @@ EXPLAIN ANALYZE VERBOSE <SQL>;
 常见发现：
 
 - **需要搜索大量小文件**：`num_file_ranges` 较高，尤其是许多文件不足一个完整 row group 时，通常表示扫描需要打开大量小 SST 文件。这往往来自对大量不同时间窗口的回填，或 compaction 压力较高。可以考虑调整 `compaction.twcs.time_window`，检查写入或回填模式，让行更自然地填满时间窗口，并检查 compaction 状态。如果文件数量不多，小文件不一定会影响性能。
-- **扫描后过滤了大量行**：如果 `scan_cost` 较高且 `rows_precise_filtered` 也较高，说明扫描读取了大量候选行，然后又通过精确过滤移除了它们。可以考虑为选择性较高的过滤列添加合适的[索引](/user-guide/manage-data/data-index.md)。索引变更会作用于新 flush 的数据，不会立即重写所有已有 SST 文件。
+- **扫描后过滤了大量行**：如果 `scan_cost` 较高且 `rows_precise_filtered` 也较高，说明扫描读取了大量候选行，然后又通过精确过滤移除了它们。请参阅[添加索引以提升过滤性能](#添加索引以提升过滤性能)。
 - **数据读取时本地缓存未命中**：如果 `fetch_metrics.cache_miss`、`fetch_metrics.pages_to_fetch_store` 或 `fetch_metrics.store_fetch_elapsed` 较高，说明 GreptimeDB 正在从对象存储读取 page 数据，而不是从本地缓存读取。请检查下文的缓存指标，并考虑增大 `write_cache_size` 或 `page_cache_size`。
 - **扫描准备成本较高**：`build_parts_cost` 或 `build_reader_cost` 较高，表示 GreptimeDB 花了较多时间构建扫描范围或 reader。请结合 `num_file_ranges`、元数据缓存未命中以及缓存压力一起分析。
 - **元数据加载时间较高**：如果 `metadata_cache_metrics.metadata_load_cost` 或 `metadata_cache_metrics.cache_miss` 较高，可能是 SST 元数据缓存过小。请检查 `greptime_mito_cache_bytes{type="sst_meta"}`，并考虑增大 `sst_meta_cache_size`。
+
+### 添加索引以提升过滤性能
+
+索引可以减少 GreptimeDB 需要读取和过滤的数据量。如果 `EXPLAIN ANALYZE VERBOSE` 显示 `scan_cost` 较高且 `rows_precise_filtered` 很多，请将查询中的 `WHERE` 谓词与表结构进行比较。经常用于选择性过滤，且未被主键前导列覆盖的列，是较好的索引候选列。
+
+请根据查询和列选择索引类型：
+
+- 对低基数列上的过滤条件（包括等值、范围和 `IN` 谓词）使用倒排索引。
+- 对 trace ID 和 request ID 等高基数列上的等值过滤使用跳数索引。
+- 对非结构化文本搜索使用全文索引。
+
+索引会占用存储和内存，并可能增加 flush 和 compaction 延迟，因此不要为每一列都创建索引。有关索引如何补充主键排序以及如何选择索引类型，请参阅表设计指南中的[索引](/user-guide/deployments-administration/performance-tuning/design-table.md#索引)。有关索引语法和管理方式，请参阅[数据索引](/user-guide/manage-data/data-index.md)。
+
+添加索引后，请使用 `EXPLAIN ANALYZE VERBOSE` 重新运行同一查询，并比较 `scan_cost` 和 `rows_precise_filtered`。索引裁剪也会体现在对应索引类型的 `rg_*_filtered` 和 `rows_*_filtered` 计数器中。目前，新添加的索引仅对新 flush 的数据生效：后续 flush 生成 SST 文件时会为其构建索引，但不会为已有 SST 文件添加索引。
 
 ### 指标
 
@@ -209,6 +225,8 @@ global_write_buffer_reject_size = "3GB"
 ```
 
 ## 表结构
+
+表结构设计会同时影响查询和写入性能。本节介绍一项针对指标表的优化。有关主键、索引、append-only 表与去重表以及分区的指导，请参阅[设计表结构](/user-guide/deployments-administration/performance-tuning/design-table.md)。
 
 ### 使用多值
 

@@ -114,7 +114,8 @@ Be explicit about the constraints. The highest-impact choices are fixed at `CREA
 
 **Alterable on a live table:**
 
-- Add/drop **indexes** via `ALTER TABLE` — applies to **newly flushed data**, not existing
+- Add/drop **indexes** via `ALTER TABLE`. Explain that this only affects newly flushed data:
+  the index is built for SST files produced by subsequent flushes and is not added to existing
   SST files (see the data-index guide).
 - `append_mode` can change from `false` to `true`, but not from `true` back to `false`:
 
