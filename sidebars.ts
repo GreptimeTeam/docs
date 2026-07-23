@@ -238,6 +238,7 @@ const sidebars: SidebarsConfig = {
               label: 'Overview',
             },
             'user-guide/logs/quick-start',
+            'user-guide/logs/json2',
             'user-guide/logs/use-custom-pipelines',
             'user-guide/logs/fulltext-search',
             'user-guide/logs/manage-pipelines',
