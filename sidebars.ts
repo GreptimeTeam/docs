@@ -388,6 +388,7 @@ const sidebars: SidebarsConfig = {
                   label: 'Overview',
                 },
                 'user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data',
+                'user-guide/deployments-administration/disaster-recovery/export-import-v2',
                 'user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data',
                 'user-guide/deployments-administration/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster',
               ],
