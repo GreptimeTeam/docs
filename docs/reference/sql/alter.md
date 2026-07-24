@@ -193,6 +193,7 @@ Currently following options are supported:
 - `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy.
 - `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction.
 - `sst_format`: the SST format of the table. The value can be `flat` or `primary_key`. A table supports changing the format in both directions: `primary_key` to `flat` and `flat` to `primary_key`.
+- `write_buffer_size`: the per-region write buffer stall threshold of the table. For a positive value such as `512MB`, GreptimeDB schedules a flush when mutable memtable usage reaches half the value, stalls writes at the value, and rejects writes at twice the value. The table option overrides `region_engine.mito.default_region_write_buffer_size`. Setting it to `0` explicitly disables the per-region limit even when the engine default is nonzero. Unsetting it removes the table override and falls back to the engine default.
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
@@ -208,12 +209,16 @@ ALTER TABLE monitor SET 'compaction.twcs.trigger_file_num'='8';
 ALTER TABLE monitor SET 'sst_format'='flat';
 
 ALTER TABLE monitor SET 'sst_format'='primary_key';
+
+ALTER TABLE monitor SET 'write_buffer_size'='512MB';
 ```
 
 ### Unset table options
 
 ```sql
 ALTER TABLE monitor UNSET 'ttl';
+
+ALTER TABLE monitor UNSET 'write_buffer_size';
 ```
 
 ### Set repartition column hint

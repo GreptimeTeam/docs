@@ -163,6 +163,7 @@ GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-
 | `comment`                                   | 表级注释                                 | 字符串值。                                                                                                                                                               |
 | `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值，支持 `none`, `skipping`.                                                                                                             |
 | `skip_wal`                                | 是否关闭表的预写日志                               | 字符串类型。当设置为 `'true'` 时表的写入数据将不会持久化到预写日志，可以避免存储磨损同时提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。 |
+| `write_buffer_size`                       | 该表的单 region 写缓冲区阻塞阈值                   | 字符串类型，例如 `'512MB'` 或 `'1GB'`。设置为正值后，mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入。该表选项会覆盖 `region_engine.mito.default_region_write_buffer_size`。即使引擎默认值非零，显式设置为 `'0'` 也会禁用单 region 限制。取消设置会移除表级覆盖，并回退到引擎默认值。 |
 
 #### 创建指定 TTL 的表
 例如，创建一个存储数据 TTL(Time-To-Live) 为七天的表：

@@ -188,7 +188,7 @@ CREATE TABLE logs(
 - `greptime_mito_write_stalling_count`
 - `greptime_mito_write_reject_total`
 
-写入阻塞表示 GreptimeDB 正在施加背压，而不是立即接受写入。当全局写入缓冲区达到 `global_write_buffer_size`，或 region 在内部状态变化期间暂时不可写时，可能出现阻塞。如果客户端收到类似 `Engine write buffer is full, rejecting write requests` 的错误，表示 datanode 已达到由 `global_write_buffer_reject_size` 控制的拒绝阈值。
+写入阻塞表示 GreptimeDB 正在施加背压，而不是立即接受写入。当全局写入缓冲区达到 `global_write_buffer_size`、region 达到其有效的单 region 阻塞阈值，或 region 在内部状态变化期间暂时不可写时，可能出现阻塞。如果客户端收到类似 `Engine write buffer is full, rejecting write requests` 的错误，表示 datanode 已达到由 `global_write_buffer_reject_size` 控制的全局拒绝阈值，或达到由 `write_buffer_size` / `default_region_write_buffer_size` 控制的单 region 拒绝阈值。
 
 当 datanode 存在写入压力时，在调大写入缓冲区之前，请先检查 flush 性能和写入分布。增大写入缓冲区只会给 datanode 更多内存余量，并不能修复缓慢的 flush，也不能修复把大部分写入发送到单个 region 的不均衡表。
 
@@ -214,6 +214,8 @@ Datanode 日志也有助于识别慢 flush 和热点 region。搜索 `Successful
 
 多数情况下，请保持 `region_engine.mito.global_write_buffer_reject_size` 未设置，让 GreptimeDB 使用默认的拒绝阈值，即 `global_write_buffer_size` 的 2 倍。如果希望在内存压力下更早失败，可以根据可用 datanode 内存以及希望多早拒绝请求，手动设置一个有意保留的边界，通常为 `global_write_buffer_size` 的 1.5 到 2 倍。该值必须大于 `global_write_buffer_size`；否则 GreptimeDB 会将其修正回 2 倍。
 
+如需保护热点 region，可以配置表级 `write_buffer_size`，或设置 `region_engine.mito.default_region_write_buffer_size` 作为集群默认值。生效值是写入阻塞阈值：mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入，而同一 worker 上的其他 region 可以继续接受写入。表级 `write_buffer_size` 优先于引擎默认值。表级选项显式设置为 `0` 会禁用单 region 限制，取消设置则会回退到引擎默认值。`default_region_write_buffer_size` 的默认值为 `0`，表示禁用默认单 region 限制。
+
 示例：
 
 ```toml
@@ -222,6 +224,14 @@ Datanode 日志也有助于识别慢 flush 和热点 region。搜索 `Successful
 global_write_buffer_size = "2GB"
 # 可选。除非需要自定义拒绝边界，否则保持未设置。
 global_write_buffer_reject_size = "3GB"
+# 可选。使用 0 禁用默认单 region 限制。
+default_region_write_buffer_size = "512MB"
+```
+
+如需覆盖特定表的 region 限制：
+
+```sql
+ALTER TABLE monitor SET 'write_buffer_size'='1GB';
 ```
 
 ## 表结构
