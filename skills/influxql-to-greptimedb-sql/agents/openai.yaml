@@ -1,0 +1,4 @@
+interface:
+  display_name: "InfluxQL to GreptimeDB SQL"
+  short_description: "Convert InfluxQL queries into GreptimeDB SQL"
+  default_prompt: "Use $influxql-to-greptimedb-sql to convert this InfluxQL query into GreptimeDB SQL."
