@@ -191,7 +191,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
 - `compaction.twcs.max_output_file_size`: TWCS compaction 策略的最大允许输出文件大小。
 - `compaction.twcs.trigger_file_num`: 某个窗口内触发 compaction 的最小文件数量阈值。
 - `sst_format`: 表的 SST 格式。值可以是 `flat` 或 `primary_key`。表支持双向格式转换：`primary_key` 转换为 `flat`，以及 `flat` 转换为 `primary_key`。
-- `write_buffer_size`: 表的单 region 写缓冲区限制。设置为 `512MB` 等大小后，每个 region 会在达到该大小时 flush，并在达到该大小的 2 倍时拒绝写入。设置为 `0` 或取消设置可禁用表级限制，并在配置了 `region_engine.mito.default_region_write_buffer_size` 时使用该默认值。
+- `write_buffer_size`: 表的单 region 写缓冲区阻塞阈值。设置为 `512MB` 等正值后，mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入。该表选项会覆盖 `region_engine.mito.default_region_write_buffer_size`。即使引擎默认值非零，显式设置为 `0` 也会禁用单 region 限制。取消设置会移除表级覆盖，并回退到引擎默认值。
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';

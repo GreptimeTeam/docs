@@ -174,7 +174,7 @@ When datanode writes are slow or ingestion latency is high, first check whether 
 - `greptime_mito_write_stalling_count`
 - `greptime_mito_write_reject_total`
 
-Write stalls mean GreptimeDB is applying backpressure instead of accepting writes immediately. Stalls can happen when the global write buffer reaches `global_write_buffer_size`, when a region reaches its effective per-region limit, or when a region is temporarily not writable during internal state changes. If clients receive an error like `Engine write buffer is full, rejecting write requests`, the datanode has reached either the global reject threshold controlled by `global_write_buffer_reject_size` or the per-region reject threshold controlled by `write_buffer_size` or `default_region_write_buffer_size`.
+Write stalls mean GreptimeDB is applying backpressure instead of accepting writes immediately. Stalls can happen when the global write buffer reaches `global_write_buffer_size`, when a region reaches its effective per-region stall threshold, or when a region is temporarily not writable during internal state changes. If clients receive an error like `Engine write buffer is full, rejecting write requests`, the datanode has reached either the global reject threshold controlled by `global_write_buffer_reject_size` or the per-region reject threshold controlled by `write_buffer_size` or `default_region_write_buffer_size`.
 
 When a datanode is under write pressure, check flush performance and write distribution before tuning the write buffer size. Increasing the write buffer only gives the datanode more memory headroom. It does not fix slow flushes or an unbalanced table that sends most writes to one region.
 
@@ -200,7 +200,7 @@ If stalls or rejects are caused by write buffer pressure, and flush performance 
 
 In most cases, leave `region_engine.mito.global_write_buffer_reject_size` unset so GreptimeDB uses the default reject threshold of 2x `global_write_buffer_size`. If you need writes to fail earlier under memory pressure, set it manually to a deliberate margin, commonly 1.5x to 2x `global_write_buffer_size`, based on available datanode memory and how early you want requests to be rejected. The value must be greater than `global_write_buffer_size`; otherwise, GreptimeDB sanitizes it back to 2x.
 
-For hot-region protection, configure a per-table `write_buffer_size` or set `region_engine.mito.default_region_write_buffer_size` as the cluster default. A per-table `write_buffer_size` takes precedence over the engine default. Each affected region flushes when it reaches the configured size and rejects writes at twice that size, while other regions on the same worker can continue accepting writes. The default value of `default_region_write_buffer_size` is `0`, which disables default per-region limits.
+For hot-region protection, configure a per-table `write_buffer_size` or set `region_engine.mito.default_region_write_buffer_size` as the cluster default. The effective value is the stall threshold: GreptimeDB schedules a flush when mutable memtable usage reaches half the value, stalls writes at the value, and rejects writes at twice the value, while other regions on the same worker can continue accepting writes. A table-level `write_buffer_size` takes precedence over the engine default. An explicit table value of `0` disables the per-region limit, while unsetting the table option falls back to the engine default. The default value of `default_region_write_buffer_size` is `0`, which disables default per-region limits.
 
 Example:
 
