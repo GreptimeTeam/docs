@@ -15,6 +15,7 @@ This is the GreptimeDB documentation for AI agents.
 - `greptimedb-performance-tuning`: For tuning server config and table options — cache sizing, write buffer, WAL, and ingestion throughput
 - `greptimedb-table-design`: For designing a table schema for performance, or improving an existing one — primary key, indexes, append-only/merge mode, and partitioning
 - `greptimedb-cluster-health-check`: For verifying a deployment is healthy after a deploy/restart — pod readiness, object-store smoke test, error logs, and key metrics
+- `influxql-to-greptimedb-sql`: For converting InfluxQL queries to GreptimeDB SQL while identifying semantic differences
 
 The `greptimedb-quickstart` skill is also hosted at <https://docs.greptime.com/SKILL.md> (and <https://docs.greptime.cn/SKILL.md>), so any AI coding agent can load it with a single instruction:
 
@@ -61,3 +62,7 @@ Using `skills` cli tool to install the skill to your coding agents.
 ### `greptimedb-cluster-health-check`
 
 `npx skills add https://github.com/GreptimeTeam/docs/tree/main/skills/greptimedb-cluster-health-check`
+
+### `influxql-to-greptimedb-sql`
+
+`npx skills add https://github.com/GreptimeTeam/docs/tree/main/skills/influxql-to-greptimedb-sql`
