@@ -19,7 +19,7 @@ Rewrite InfluxQL queries as reviewable GreptimeDB SQL. Convert queries without e
 4. Rewrite the query structure before rewriting functions:
    - `FROM` measurement → `FROM` table;
    - time predicates → the GreptimeDB time column and `INTERVAL`;
-   - `GROUP BY time()` → GreptimeDB Range Query with `FILL NULL` when `fill()` is omitted, or the matching Range Query fill mode when it is present;
+   - `GROUP BY time()` → GreptimeDB Range Query with `FILL NULL` when `fill()` is omitted, or the matching Range Query fill mode when it is present, and report its window-boundary difference;
    - use `date_bin()` only for `fill(none)` or when the user accepts omitted empty windows;
    - tag grouping → `GROUP BY` or Range Query `BY (...)`;
    - functions → equivalent aggregates, scalar functions, or window expressions.
@@ -27,6 +27,7 @@ Rewrite InfluxQL queries as reviewable GreptimeDB SQL. Convert queries without e
    - order `first_value` and `last_value` explicitly by the time column;
    - convert InfluxQL percentile arguments from percentages to SQL values in `0..1`;
    - remove `/.../` delimiters from regex literals and escape SQL strings correctly;
+   - report leading and trailing window differences for every Range Query `FILL` conversion;
    - never silently drop `SLIMIT`, `SOFFSET`, `tz()`, or unsupported functions;
    - never describe an approximate conversion as exact.
 
@@ -101,7 +102,7 @@ InfluxQL `GROUP BY time()` queries without an explicit time predicate stop at `n
 
 #### `GROUP BY time()`
 
-InfluxQL defaults an omitted `fill()` to `fill(null)`. Use Range Query with `FILL NULL` to preserve empty windows:
+InfluxQL defaults an omitted `fill()` to `fill(null)`. Use Range Query with `FILL NULL` to fill internal empty windows:
 
 ```sql
 SELECT
@@ -150,6 +151,8 @@ Prefer GreptimeDB Range Query for all InfluxQL time grouping except `fill(none)`
 | `fill(0)` | `FILL 0` |
 | `fill(none)` | Omit `FILL`, or use a `date_bin` query |
 
+Always report that Range Query `FILL` only emits windows between each series' first and last data-bearing windows. Unlike InfluxQL, it does not emit leading or trailing windows across the full query time range, and different series may therefore cover different window ranges.
+
 ```sql
 SELECT
   ts,
@@ -168,6 +171,30 @@ ALIGN '5m' TO '1970-01-01T00:02:00Z' BY (host)
 ```
 
 Validate offset behavior with boundary data. Do not append a type cast to the `TO` literal.
+
+### Grafana query variables
+
+When migrating a Grafana panel from an InfluxDB data source to the GreptimeDB data source, rewrite the common macros as follows:
+
+| InfluxQL panel query | GreptimeDB SQL panel query |
+|---|---|
+| `WHERE $timeFilter` | `WHERE $__timeFilter(<time_index>)` |
+| `GROUP BY time($__interval)` | Aggregate with `RANGE '$__interval'`, then use `ALIGN '$__interval'` |
+
+For example:
+
+```sql
+SELECT
+  ts,
+  host,
+  avg(usage) RANGE '$__interval' FILL NULL AS mean_usage
+FROM cpu
+WHERE $__timeFilter(ts)
+ALIGN '$__interval' BY (host)
+ORDER BY ts;
+```
+
+Preserve any additional panel filters and report the Range Query `FILL` boundary difference described above.
 
 ### Functions
 
@@ -296,9 +323,20 @@ ORDER BY ts DESC
 LIMIT 100;
 ```
 
+Assumptions:
+
+- `cpu` is the target table, `ts` is its time index, and `host` is the complete series key.
+
+Semantic differences:
+
+- `FILL PREV` fills only between each series' first and last data-bearing windows; it does not emit leading or trailing windows across the complete query time range.
+- SQL `LIMIT 100` applies to the complete result, while InfluxQL applies `LIMIT 100` per series. Use `row_number() OVER (PARTITION BY host ORDER BY ts DESC)` and filter by row number when exact per-series limiting is required.
+
 ### Sources
 
+- GreptimeDB migration from InfluxDB: <https://docs.greptime.com/user-guide/migrate-to-greptimedb/migrate-from-influxdb/>
+- GreptimeDB SQL guide: <https://docs.greptime.com/user-guide/query-data/sql/>
 - GreptimeDB Range Query: <https://docs.greptime.com/reference/sql/range/>
-- GreptimeDB SQL functions: <https://docs.greptime.com/reference/sql/functions/df-functions/>
+- GreptimeDB SQL functions: <https://docs.greptime.com/reference/sql/functions/overview/>
 - InfluxQL specification: <https://docs.influxdata.com/influxdb/v2/reference/syntax/influxql/spec/>
 - InfluxQL functions: <https://docs.influxdata.com/influxdb/v2/query-data/influxql/functions/>
