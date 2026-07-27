@@ -453,6 +453,7 @@ const sidebars: SidebarsConfig = {
             },
             'enterprise/deployments-administration/env-affinity-region-placement',
             'enterprise/deployments-administration/authentication',
+            'enterprise/deployments-administration/query-guard',
             {
               type: 'category',
               label: 'Monitoring',
