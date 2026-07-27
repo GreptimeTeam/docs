@@ -7,6 +7,10 @@ import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md'
 
 # Migrate from InfluxDB
 
+If you use an AI coding agent to migrate queries, give it the
+[`influxql-to-greptimedb-sql` Skill](/faq-and-others/vibecoding.md#greptimedb-skills)
+to convert InfluxQL to GreptimeDB SQL and identify semantic differences.
+
 <DocTemplate>
 
 <div id="write-data-http-api">

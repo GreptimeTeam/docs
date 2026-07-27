@@ -56,6 +56,8 @@ flow、trigger——安装一个 Skill 能把完整工作流教给 agent，效�
   `CREATE TRIGGER`（企业版）。
 - **`self-monitoring-export`** —— 用于集群故障排查：从用户描述中推断日志导出的时间范围，
   然后导出集群自监控日志和指标供工程排查。
+- **`influxql-to-greptimedb-sql`** —— 将 InfluxQL 查询转换为 GreptimeDB SQL，
+  同时识别时间窗口、填充和逐序列 `LIMIT` 的语义差异。
 
 Skills 遵循 [Agent Skills](https://agentskills.io/) 开放标准，因此可用于 Claude Code、
 OpenAI Codex CLI、GitHub Copilot、Cursor 等。每个 Skill 也以可直接抓取的 markdown 文件
