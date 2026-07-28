@@ -5,6 +5,12 @@ description: Covers the SQL DROP statement for removing databases, tables, flows
 
 # DROP
 
+:::tip
+
+GreptimeDB Enterprise provides the [Query Guard](/enterprise/deployments-administration/query-guard.md) plugin, which can completely ban `DROP TABLE` / `DROP DATABASE` statements for all users, including administrators.
+
+:::
+
 ## DROP DATABASE
 
 `DROP DATABASE` drops a database. It removes the catalog entries for the database and deletes the directory containing the data.

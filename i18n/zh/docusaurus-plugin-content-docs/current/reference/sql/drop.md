@@ -5,6 +5,12 @@ description: DROP 用于删除数据库、表、流或视图，操作不可撤�
 
 # DROP
 
+:::tip
+
+GreptimeDB 企业版提供了 [Query Guard](/enterprise/deployments-administration/query-guard.md) 插件，可以对所有用户（包括管理员）完全禁止 `DROP TABLE` / `DROP DATABASE` 语句。
+
+:::
+
 ## DROP DATABASE
 
 `DROP DATABASE` 用于删除数据库，它删除数据库的目录项并删除包含数据的目录。
