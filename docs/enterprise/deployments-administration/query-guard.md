@@ -29,8 +29,10 @@ protocol:
 
 - SQL path: `DROP TABLE` and `DROP DATABASE` statements are rejected with a
   `NotSupported` error.
-- gRPC path: `DROP TABLE` DDL requests are rejected. Note that `DROP DATABASE` is
-  SQL-only; the gRPC protocol has no drop-database request.
+- gRPC path: structured `DROP TABLE` DDL requests are rejected. The structured
+  gRPC DDL request has no drop-database variant; however, SQL statements sent over
+  gRPC go through the same SQL interceptors, so the `DROP DATABASE` ban applies to
+  SQL over gRPC as well.
 
 Internal operations such as TTL-based data expiration and automatic cleanup bypass
 the frontend protocol-layer interceptors and are **not** affected by these bans.

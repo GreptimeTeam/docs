@@ -24,8 +24,9 @@ Query Guard 是 GreptimeDB 企业版提供的一个插件，它在 Frontend 协�
 该限制同时覆盖 SQL 协议（MySQL、PostgreSQL 和 HTTP）和 gRPC 协议：
 
 - SQL 路径：`DROP TABLE` 和 `DROP DATABASE` 语句会被拒绝，返回 `NotSupported` 错误。
-- gRPC 路径：`DROP TABLE` DDL 请求会被拒绝。注意 `DROP DATABASE` 仅存在于 SQL 协议中，
-  gRPC 协议没有删除数据库的请求。
+- gRPC 路径：结构化的 `DROP TABLE` DDL 请求会被拒绝。结构化 gRPC DDL 请求没有
+  删除数据库的变体；但通过 gRPC 发送的 SQL 语句同样会经过 SQL 拦截器，因此
+  `DROP DATABASE` 禁令对 gRPC 上的 SQL 同样生效。
 
 内部操作（例如基于 TTL 的数据过期和自动清理）不经过 Frontend 协议层拦截器，
 因此**不受**这些限制影响。
