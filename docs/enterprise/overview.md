@@ -30,6 +30,8 @@ which are described in detail in the documentation in this section:
 - [LDAP Authentication](./deployments-administration/authentication.md): Secure your system with LDAP-based authentication for access management.
 - [Audit Logging](./deployments-administration/monitoring/audit-logging.md): Track and monitor
   user activity with detailed audit logs.
+- [Query Guard](./deployments-administration/query-guard.md): Ban `DROP TABLE` / `DROP DATABASE`
+  statements for all users and reject cross-catalog access.
 - [Automatic region load balance](./autopilot/region-balancer.md): Auto balance
   datanodes workload by moving regions between them.
 - [Elasticsearch query compatibility](./elasticsearch-compatible/overview.md): Use GreptimeDB backed Kibana for your logs.
