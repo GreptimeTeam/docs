@@ -11,8 +11,10 @@ It provides the following protections:
 
 - **Ban `DROP TABLE`**: reject all `DROP TABLE` statements.
 - **Ban `DROP DATABASE`**: reject all `DROP DATABASE` statements.
-- **Disallow cross-catalog queries**: reject queries that reference tables across
-  different catalogs.
+- **Reject `COPY` statements**: reject all `COPY` statements.
+- **Disallow cross-catalog access**: reject queries that reference tables across
+  different catalogs, cross-catalog gRPC DDL requests, and Flight bulk inserts
+  targeting a different catalog.
 
 ## Overview
 
@@ -58,8 +60,10 @@ it takes effect on the frontend where it is configured.
 - **Every frontend must carry the configuration.** In a deployment with multiple
   frontends, you must add the plugin configuration to every frontend's config file;
   frontends without the configuration will still execute `DROP` statements.
-- **Enabling the plugin also disallows cross-catalog queries.** Turning on
-  `query_guard` automatically enables `disallow_cross_catalog_query`, even if you
-  only want the `DROP` bans.
+- **Enabling the plugin activates all protections except the `DROP` bans.**
+  Turning on `query_guard` automatically rejects `COPY` statements, cross-catalog
+  queries, cross-catalog gRPC DDL requests, and Flight bulk inserts targeting a
+  different catalog, even if you only want the `DROP` bans. The `DROP` bans are
+  controlled separately by `ban_drop_table` and `ban_drop_database`.
 - The bans are enforced at the protocol layer. Changing the configuration requires
   a restart of the frontend to take effect.

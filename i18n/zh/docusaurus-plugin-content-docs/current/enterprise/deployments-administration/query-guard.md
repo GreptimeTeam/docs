@@ -10,7 +10,9 @@ Query Guard 是 GreptimeDB 企业版提供的一个插件，它在 Frontend 协�
 
 - **禁止 `DROP TABLE`**：拒绝所有 `DROP TABLE` 语句。
 - **禁止 `DROP DATABASE`**：拒绝所有 `DROP DATABASE` 语句。
-- **禁止跨 catalog 查询**：拒绝引用不同 catalog 下表的查询。
+- **拒绝 `COPY` 语句**：拒绝所有 `COPY` 语句。
+- **禁止跨 catalog 访问**：拒绝引用不同 catalog 下表的查询、跨 catalog 的
+  gRPC DDL 请求，以及写入其他 catalog 的 Flight bulk insert。
 
 ## 工作原理
 
@@ -52,6 +54,8 @@ ban_drop_database = true
 - **每个 Frontend 都必须携带该配置。** 在多 Frontend 部署中，
   必须在每个 Frontend 的配置文件中添加该插件配置；
   未配置的 Frontend 仍会正常执行 `DROP` 语句。
-- **启用插件会同时禁止跨 catalog 查询。** 开启 `query_guard` 会自动启用
-  `disallow_cross_catalog_query`，即使你只想禁止 `DROP` 语句。
+- **启用插件会激活除 `DROP` 禁令外的所有保护。** 开启 `query_guard` 会自动拒绝
+  `COPY` 语句、跨 catalog 查询、跨 catalog 的 gRPC DDL 请求，以及写入其他
+  catalog 的 Flight bulk insert，即使你只想禁止 `DROP` 语句。`DROP` 禁令由
+  `ban_drop_table` 和 `ban_drop_database` 单独控制。
 - 该限制在协议层强制执行，修改配置后需要重启 Frontend 才能生效。
