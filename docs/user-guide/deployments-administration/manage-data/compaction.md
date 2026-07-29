@@ -202,7 +202,7 @@ The time range has the following rules and behavior:
 - Regular compaction keeps the existing TWCS trigger rules and only considers candidate windows that overlap the range. Specifying a range does not force an otherwise ineligible window to be compacted.
 - SWCS preserves its forced-compaction behavior. If an SST file in a selected window also spans other windows, GreptimeDB transitively includes those dependent windows. The actual compacted windows can therefore extend beyond the requested range; this ensures that all rows from shared input SST files are retained.
 
-The following diagram shows the process of strict window compression:
+The following diagram shows the process of strict window compaction:
 
 In Figure A, there are 3 overlapping SST files: `[0, 3]` (which includes timestamps 0, 1, 2, and 3), `[3, 8]`, and `[8, 10]`.
 The strict window compaction strategy will assign the file `[3, 8]` that covers windows 0, 4, and 8 to three separate windows respectively. This allows it to merge with `[0, 3]` and `[8, 10]` separately.
