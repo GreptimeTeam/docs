@@ -46,6 +46,12 @@ admin compact_table("test", "swcs", "parallelism=2");
 -- 启动 SWCS compaction，自定义时间窗口和并行度 --
 admin compact_table("test", "swcs", "window=1800,parallelism=2");
 
+-- 对左闭右开的时间范围 [start_time, end_time) 启动常规 compaction --
+admin compact_table("test", "regular", "start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z");
+
+-- 对指定时间范围启动 SWCS compaction --
+admin compact_table("test", "strict_window", "window=3600,start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z");
+
 -- 对已删除的表进行垃圾回收 --
 admin gc_table("test");
 
