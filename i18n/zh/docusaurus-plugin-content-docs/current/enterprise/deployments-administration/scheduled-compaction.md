@@ -35,9 +35,11 @@ cron 表达式包含秒字段。例如，`0 0 0 * * *` 表示每天在所配置�
 | `max_concurrent_regions` | `4` | 单个任务并发提交 Region Compaction 请求的最大数量，必须大于 `0`。 |
 | `compact_parallelism` | `1` | 传递给每个 Region Compaction 请求的并行度，必须大于 `0`。 |
 | `manual_trigger_cooldown_secs` | `3600` | 人工触发与最近一次任务之间的最小间隔。最近的任务可以是定时触发或人工触发。设置为 `0` 可禁用冷却时间；该配置不会延迟定时任务。 |
-| `max_history_jobs` | `100` | Metasrv KV backend 中最多保留的已完成任务报告数量，必须大于 `0`。 |
+| `max_history_jobs` | `100` | 后续任务完成并执行历史清理后，Metasrv KV backend 中最多保留的终态任务报告数量，必须大于 `0`。 |
 
 只有 leader Metasrv 会运行 scheduler。leader 发生切换后，新的 leader 会继续根据所配置的 cron 表达式调度后续任务。
+
+新的 leader 会在启动 scheduler 前，将遗留在 `running` 状态的任务标记为 `cancelled`，并输出 warning 日志。该状态变更不会取消前一个 leader 已经提交的 Region 请求。`cancelled` 是终态，会在后续任务完成时按照 `max_history_jobs` 参与历史清理。
 
 ## HTTP endpoints
 
@@ -95,4 +97,4 @@ curl --get \
 }
 ```
 
-任务状态包括 `running`、`succeeded` 和 `partial_failed`。失败任务的状态包含失败原因，格式为 `{"failed": "<reason>"}`。`execution_result` 记录尝试提交和成功提交的 Region 请求数量，以及各 Region 的提交失败信息。
+`status` 字段的取值可以是 `"running"`、`"succeeded"`、`"partial_failed"` 或 `"cancelled"`。失败任务的 `status` 值为 `{"failed": "<reason>"}`。`execution_result` 记录尝试提交和成功提交的 Region 请求数量，以及各 Region 的提交失败信息。

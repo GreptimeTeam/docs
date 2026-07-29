@@ -35,9 +35,11 @@ The cron expression includes seconds. For example, `0 0 0 * * *` runs at midnigh
 | `max_concurrent_regions` | `4` | The maximum number of Region compaction requests submitted concurrently by one job. Must be greater than `0`. |
 | `compact_parallelism` | `1` | The compaction parallelism passed to each Region request. Must be greater than `0`. |
 | `manual_trigger_cooldown_secs` | `3600` | The minimum interval between a manual trigger and the most recent job, whether that job was scheduled or manually triggered. Set it to `0` to disable the cooldown. Scheduled jobs are not delayed by this option. |
-| `max_history_jobs` | `100` | The maximum number of completed job reports retained in the Metasrv KV backend. Must be greater than `0`. |
+| `max_history_jobs` | `100` | The maximum number of terminal job reports retained after history pruning runs when a job completes. Must be greater than `0`. |
 
 Only the leader Metasrv runs the scheduler. After leadership changes, the new leader continues scheduling future jobs from the configured cron expression.
+
+Before starting the scheduler, a new leader marks jobs left in `running` state as `cancelled` and writes a warning log. This status change does not cancel Region requests that were already submitted by the previous leader. Cancelled jobs are terminal and participate in history pruning the next time a job completes.
 
 ## HTTP endpoints
 
@@ -95,4 +97,4 @@ The trigger and query endpoints return JSON job reports. A completed successful 
 }
 ```
 
-Possible job states are `running`, `succeeded`, and `partial_failed`. A failed job carries its reason as `{"failed": "<reason>"}`. The execution result records how many Region requests were attempted and submitted, together with Region-level submission failures.
+The `status` field is `"running"`, `"succeeded"`, `"partial_failed"`, or `"cancelled"`. A failed job uses `{"failed": "<reason>"}` as the `status` value. The execution result records how many Region requests were attempted and submitted, together with Region-level submission failures.
