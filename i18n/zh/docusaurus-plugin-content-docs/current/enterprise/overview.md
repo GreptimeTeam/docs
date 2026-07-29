@@ -30,6 +30,7 @@ GreptimeDB Enterprise 包括以下高级功能，
 - [审计日志](./deployments-administration/monitoring/audit-logging.md)：记录数据库用户行为的日志。
 - [Query Guard](./deployments-administration/query-guard.md)：对所有用户（包括管理员）禁止 `DROP TABLE` / `DROP DATABASE` 语句，并拒绝跨 catalog 访问。
 - [自动分区平衡](./autopilot/region-balancer.md)：通过分区监控和迁移在 datanode 之间自动平衡负载。
+- [定时 Compaction](./deployments-administration/scheduled-compaction.md)：定期为所有物理 Region 提交 regular Compaction 请求，并提供用于人工触发和任务查询的 HTTP endpoints。
 - [Elasticsearch 查询兼容性](./elasticsearch-compatible/overview.md)：在 Kibana 中以 GreptimeDB 作为后端。
 - [Greptime 企业版管理控制台](./console-ui.md)：加强版本的管理界面，提供更多的集群管理和监控功能。
 - [读副本](./read-replicas/overview.md)：专门运行复杂的查询操作的 datanode，避免影响实时写入。

@@ -34,6 +34,7 @@ which are described in detail in the documentation in this section:
   statements for all users and reject cross-catalog access.
 - [Automatic region load balance](./autopilot/region-balancer.md): Auto balance
   datanodes workload by moving regions between them.
+- [Scheduled Compaction](./deployments-administration/scheduled-compaction.md): Periodically submit regular compaction requests for all physical Regions, with HTTP endpoints for manual triggers and job queries.
 - [Elasticsearch query compatibility](./elasticsearch-compatible/overview.md): Use GreptimeDB backed Kibana for your logs.
 - [Greptime Enterprise Management Console](./console-ui.md): An enhanced version of our dashboard UI,
   carries more cluster management and monitoring features.
