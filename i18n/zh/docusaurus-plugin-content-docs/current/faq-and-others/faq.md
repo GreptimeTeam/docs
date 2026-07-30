@@ -308,6 +308,17 @@ ORDER BY files DESC;
 - 支持手动 Region 迁移进行负载均衡——参见 [Region 迁移指南](/user-guide/deployments-administration/manage-data/region-migration.md)。
 - 自动 Region 故障转移保障容灾——参见 [Region 故障转移](/user-guide/deployments-administration/manage-data/region-failover.md)。
 
+### 如何实现多租户？
+
+推荐按**数据库**或**表**的维度隔离租户，而不是把所有租户塞进同一张表、仅靠一个 tag 区分。
+
+- **每个租户一个数据库**：为每个租户单独建一个[数据库](/reference/sql/create.md#create-database)。隔离最彻底——Schema 独立，TTL 等表默认选项和访问控制都按租户区分。
+- **每个租户一张表**：在同一个数据库内，给每个租户单独一张表（或用表名前缀）。适合租户共享配置、但仍希望数据层面隔离的场景。
+
+不用担心数据库或表的数量太多。GreptimeDB 的分布式架构可以水平扩展——表会切分成 Region 分布到各个 datanode 上，表和 Region 数量增长时加 datanode 即可。表的数量没有硬性上限，性能主要取决于主键设计而非表数量（参见[扩展能力](#greptimedb-的扩展能力如何)）。
+
+租户级别的访问控制，开源版可用[用户认证](/user-guide/deployments-administration/authentication/overview.md)，企业版 / GreptimeCloud 可用 RBAC。
+
 ### 有哪些灾备方案？
 
 GreptimeDB 提供多种灾备策略：

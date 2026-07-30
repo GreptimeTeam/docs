@@ -308,6 +308,17 @@ ORDER BY files DESC;
 - Manual region migration for load balancing — see [Region Migration Guide](/user-guide/deployments-administration/manage-data/region-migration.md).
 - Automatic region failover for disaster recovery — see [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md).
 
+### How do I implement multi-tenancy?
+
+The recommended approach is to isolate tenants at the **database** or **table** level, rather than mixing every tenant into one shared table distinguished only by a tag.
+
+- **Database per tenant**: Give each tenant its own [database](/reference/sql/create.md#create-database). This provides the cleanest isolation — separate schemas, per-tenant TTL and other table defaults, and independent access control.
+- **Table per tenant**: Within a shared database, give each tenant its own table (or table prefix). A good fit when tenants share configuration but you still want data-level separation.
+
+Don't worry about ending up with a large number of databases or tables. GreptimeDB's distributed architecture scales horizontally — tables are split into regions spread across datanodes, and you add datanodes as the table and region count grows. There is no hard limit on the number of tables, and performance depends on primary key design rather than table count (see [scalability characteristics](#what-are-greptimedbs-scalability-characteristics)).
+
+For per-tenant access control, use [user-level authentication](/user-guide/deployments-administration/authentication/overview.md) in the open-source version, or RBAC in Enterprise / GreptimeCloud.
+
 ### What disaster recovery options are available?
 
 GreptimeDB offers multiple disaster recovery strategies:
