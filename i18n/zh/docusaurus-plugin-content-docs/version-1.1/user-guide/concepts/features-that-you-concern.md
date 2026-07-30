@@ -17,7 +17,7 @@ GreptimeDB 将所有可观测数据——metrics、logs、traces——作为带�
 
 ## 支持删除数据吗？
 
-支持，参见[删除数据](/user-guide/ingest-data/overview.md#删除数据)。
+支持，参见[删除数据](/user-guide/manage-data/overview.md#删除数据)。
 
 ## 可以按表设置 TTL 或保留策略吗？
 
@@ -79,7 +79,7 @@ GreptimeDB 通过多层手段解决高基数挑战：
 
 ## 支持 JSON 数据吗？
 
-支持，参见 [JSON 函数](/reference/sql/functions/overview.md#json-functions)。
+支持，参见 [JSON 函数](/reference/sql/functions/json.md)。
 
 ## 更多问题？
 

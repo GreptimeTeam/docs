@@ -164,7 +164,7 @@ table.complete();
 CompletableFuture<Result<WriteOk, Err>> future = client.write(table);
 ```
 
-GreptimeDB 支持使用 [JSON 类型数据](/reference/sql/data-types.md#json-类型) 存储复杂的数据结构。你可以在表结构中定义 JSON 列，并使用 Map 对象插入数据：
+GreptimeDB 支持使用 [JSON 类型数据](/reference/sql/data-types.md#json-type-experimental) 存储复杂的数据结构。你可以在表结构中定义 JSON 列，并使用 Map 对象插入数据：
 
 ```java
 // 为 sensor_readings 构建表结构

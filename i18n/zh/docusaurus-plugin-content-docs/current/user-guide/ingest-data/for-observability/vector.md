@@ -124,6 +124,8 @@ GreptimeDB 支持多种日志数据写入方式，包括：
 我们强烈建议所有的用户使用 `greptimedb_logs` sink 来写入日志数据，因为它是为 GreptimeDB 优化的，能够更好地支持 GreptimeDB 的特性。
 并且推荐开启各种协议的压缩功能，以提高数据传输效率。
 
+<AnchorAlias id="using-greptimedb_logs-sink-recommended" />
+
 ### 使用 `greptimedb_logs` sink (推荐)
 
 ```toml

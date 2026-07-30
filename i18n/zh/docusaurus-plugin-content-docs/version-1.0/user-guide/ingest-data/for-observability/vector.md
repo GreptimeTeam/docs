@@ -47,7 +47,7 @@ new_naming = true
 ```
 
 Vector 使用 gRPC 与 GreptimeDB 进行通信，因此 Vector sink 的默认端口是 `4001`。
-如果你在使用 [自定义配置](/user-guide/deployments-administration/configuration.md#configuration-file) 启动 GreptimeDB 时更改了默认的 gRPC 端口，请使用你自己的端口。
+如果你在使用 [自定义配置](/user-guide/deployments-administration/configuration.md#configuration-file-options) 启动 GreptimeDB 时更改了默认的 gRPC 端口，请使用你自己的端口。
 
 如有更多需求请前往 [Vector GreptimeDB Configuration](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) 查看更多配置项。
 
@@ -123,6 +123,8 @@ GreptimeDB 支持多种日志数据写入方式，包括：
 
 我们强烈建议所有的用户使用 `greptimedb_logs` sink 来写入日志数据，因为它是为 GreptimeDB 优化的，能够更好地支持 GreptimeDB 的特性。
 并且推荐开启各种协议的压缩功能，以提高数据传输效率。
+
+<AnchorAlias id="using-greptimedb_logs-sink-recommended" />
 
 ### 使用 `greptimedb_logs` sink (推荐)
 

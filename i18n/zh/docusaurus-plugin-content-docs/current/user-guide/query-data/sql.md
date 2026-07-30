@@ -257,6 +257,8 @@ http://localhost:4000/v1/sql
 
 有关请求 hints 的更多信息，请参阅 [HTTP hints](/user-guide/protocols/http.md#hints)。
 
+<AnchorAlias id="case-expression" />
+
 ## `CASE` 表达式
 
 你可以使用 `CASE` 表达式在查询中执行条件逻辑。

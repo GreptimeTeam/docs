@@ -198,7 +198,7 @@ SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GE
 ### Full‑Text Search
 
 For the text fields `request_line` and `user_agent`, you can use `matches_term` function to search logs.
-Remember, we created the full-text index for these two columns when [creating a pipeline](#create-a-pipeline).
+Remember, we created the full-text index for these two columns when [creating a pipeline](#create-a-custom-pipeline).
 This allows for high-performance full-text searches.
 
 For example, query the logs with `request_line` containing `/index.html` or `/api/login`.

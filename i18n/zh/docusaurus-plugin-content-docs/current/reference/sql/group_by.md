@@ -70,4 +70,4 @@ FROM system_metrics
 GROUP BY dt
 ```
 
-请参考 [date_trunc](./functions/overview.md#date_trunc) 获取更多信息。
+请参考 [date_trunc](./functions/df-functions.md#date_trunc) 获取更多信息。

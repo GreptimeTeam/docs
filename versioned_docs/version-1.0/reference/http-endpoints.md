@@ -18,7 +18,7 @@ Endpoints that is not versioned (under `/v1`). For admin usage like health check
 - **Description**: Provides a health check endpoint to verify that the server is running.
 - **Usage**: Access this endpoint to check the health status of the server.
 
-Please refer to the [check GreptimeDB health documentation](/enterprise/deployments-administration/monitoring/check-db-status.md#check-if-greptimedb-is-running-normally) for an example.
+Please refer to the [check GreptimeDB health documentation](/user-guide/deployments-administration/monitoring/check-db-status.md#check-if-greptimedb-is-running-normally) for an example.
 
 ### Status
 
@@ -27,7 +27,7 @@ Please refer to the [check GreptimeDB health documentation](/enterprise/deployme
 - **Description**: Retrieves the current status of the server.
 - **Usage**: Use this endpoint to obtain server status information.
 
-Please refer to the [Check GreptimeDB status documentation](/enterprise/deployments-administration/monitoring/check-db-status.md#check-greptimedb-status) for an example.
+Please refer to the [Check GreptimeDB status documentation](/user-guide/deployments-administration/monitoring/check-db-status.md#check-greptimedb-runtime-status) for an example.
 
 ### Metrics
 

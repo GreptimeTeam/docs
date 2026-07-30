@@ -29,6 +29,8 @@ greptime standalone start --http-addr 127.0.0.1:4000
 
 有关 Greptime 命令行支持的所有选项，请参阅 [GreptimeDB 命令行界面](/reference/command-lines/overview.md)。
 
+<AnchorAlias id="configuration-file-options" />
+
 ### 配置文件选项
 
 你可以在 TOML 文件中指定配置项。
@@ -152,6 +154,8 @@ concurrent_query_limiter_timeout = "100ms"
 | ---------------------------------- | ------ | --------- | --------------------------------------------------------------------------------------------------------------- |
 | `max_concurrent_queries`           | 整数   | `0`       | Datanode 上允许同时运行的最大读取查询数量。设置为 `0` 表示禁用限制。                                  |
 | `concurrent_query_limiter_timeout` | 字符串 | `100ms` | 当达到 `max_concurrent_queries` 后，查询等待可用名额的最长时间。如果超时后仍然没有可用名额，查询将失败。 |
+
+<AnchorAlias id="protocol-options" />
 
 ### 协议选项
 
@@ -312,6 +316,8 @@ max_inflight_requests = 3000
 parallelism = 0
 ```
 
+<AnchorAlias id="storage-options" />
+
 ### 存储选项
 
 `存储`选项在 `datanode` 和 `standalone` 模式下有效，它指定了数据库数据目录和其他存储相关的选项。
@@ -464,6 +470,8 @@ default_ratio = 1.0
 - `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
 
 如何使用分布式追踪，请参考 [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
+
+<AnchorAlias id="region-engine-options" />
 
 ### Region 引擎选项
 
@@ -642,6 +650,8 @@ default_timezone = "UTC"
 
 `default_timezone` 的值可以是任何时区名称，例如 `Europe/Berlin` 或 `Asia/Shanghai`。
 有关客户端时区如何影响数据的写入和查询，请参阅[时区](/user-guide/timezone.md#时区对-sql-语句的影响)文档。
+
+<AnchorAlias id="metasrv-only-configuration" />
 
 ### 仅限于 Metasrv 的配置
 

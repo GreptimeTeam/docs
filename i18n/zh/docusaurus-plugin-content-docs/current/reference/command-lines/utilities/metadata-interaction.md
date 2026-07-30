@@ -111,6 +111,8 @@ greptime cli meta put table route [OPTIONS]
 | `--catalog-name <CATALOG_NAME>` | 所属 catalog 的名称                                    | greptime |
 | `--value-stdin`                 | 从标准输入读取 JSON 编码的 `TableRouteValue`（必填）   | -        |
 
+<AnchorAlias id="delete-key-value-pair" />
+
 ## 删除键值对
 
 ### 命令语法

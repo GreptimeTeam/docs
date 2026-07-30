@@ -132,6 +132,8 @@ WITH(
 1 row in set (0.00 sec)
 ```
 
+<AnchorAlias id="using-pipeline-with-loki-push-api" />
+
 ## 在 Loki Push API 中使用 pipeline
 
 GreptimeDB 支持使用 pipeline 来处理 Loki Push 请求。

@@ -15,6 +15,8 @@ description: 介绍如何在 GreptimeDB 中管理 Pipeline，包括创建、删�
 在使用 HTTP API 进行 Pipeline 管理时，你需要提供有效的鉴权信息。
 请参考[鉴权](/user-guide/protocols/http.md#鉴权)文档了解详细信息。
 
+<AnchorAlias id="upload-a-pipeline" />
+
 ## 上传 Pipeline
 
 GreptimeDB 提供了专用的 HTTP 接口用于创建 Pipeline。

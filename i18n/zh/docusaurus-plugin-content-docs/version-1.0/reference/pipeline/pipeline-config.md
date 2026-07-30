@@ -897,6 +897,8 @@ Transform 由一个或多个配置组成，每个配置包含以下字段：
 - `on_failure`（可选）: 转换失败时的处理方式
 - `default`（可选）: 默认值
 
+<AnchorAlias id="transform-in-version-2" />
+
 ### 版本 2 中的 Transform
 
 在最初的 pipeline 版本中，你需要在 transform 中手动指定所有的字段，来将它们持久化到数据库中。

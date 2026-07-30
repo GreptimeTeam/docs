@@ -7,6 +7,8 @@ description: 介绍如何将 GreptimeDB 作为 Prometheus 的长期存储解决�
 
 GreptimeDB 可以作为 Prometheus 的长期存储解决方案，提供无缝集成体验。
 
+<AnchorAlias id="remote-write-configuration" />
+
 ## 配置 Remote Write
 
 ### Prometheus 配置文件
@@ -41,6 +43,8 @@ remote_read:
 ### Vector 配置文件
 
 如果你使用 Vector ，请在 Vector 配置文件（`vector.toml`）中配置 Remote Write。有关更多信息，请参阅 [Vector 文档](vector.md#使用-prometheus-remote-write-协议).
+
+<AnchorAlias id="data-model" />
 
 ## 数据模型
 
@@ -150,6 +154,8 @@ WHERE greptime_timestamp > '2024-08-07 03:27:26.964000'
   AND device = 'device1'
   AND job = 'job1';
 ```
+
+<AnchorAlias id="greptimedb-cluster-with-metric-engine" />
 
 ### 在 GreptimeDB 集群上使用 metric engine
 

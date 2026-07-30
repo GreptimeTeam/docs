@@ -71,12 +71,12 @@ Or a JSON log:
 ```
 
 GreptimeDB transforms these logs into structured data with multiple columns and automatically creates the necessary tables.
-A pipeline processes the logs into structured data before ingestion into GreptimeDB. Different log formats require different [Pipelines](/user-guide/logs/quick-start.md#write-logs-by-pipeline) for parsing. See the following sections for details.
+A pipeline processes the logs into structured data before ingestion into GreptimeDB. Different log formats require different [Pipelines](/user-guide/logs/use-custom-pipelines.md) for parsing. See the following sections for details.
 
 ### Logs with JSON format
 
 For logs in JSON format (e.g., `{"timestamp": "2024-12-23T10:00:00Z", "level": "INFO", "message": "Service started"}`),
-you can use the built-in [`greptime_identity`](/user-guide/logs/manage-pipelines.md#greptime_identity) pipeline for direct ingestion.
+you can use the built-in [`greptime_identity`](/reference/pipeline/built-in-pipelines.md#greptime_identity) pipeline for direct ingestion.
 This pipeline creates columns automatically based on the fields in your JSON log message.
 
 Simply configure Vector's `transforms` settings to parse the JSON message and use the `greptime_identity` pipeline as shown in the following example:

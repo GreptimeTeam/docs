@@ -226,7 +226,7 @@ SHOW INDEXES FROM monitor;
 +---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
 ```
 
-For more info about `SHOW` statement, please read the [SHOW reference](/reference/sql/show.md#show).
+For more info about `SHOW` statement, please read the [SHOW reference](/reference/sql/show.md).
 
 ## List Existing Tables
 

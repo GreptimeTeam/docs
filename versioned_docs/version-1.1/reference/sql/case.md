@@ -33,7 +33,7 @@ The `CASE` statement can be used in various clauses, such as `SELECT`, `WHERE`, 
 ### Use `CASE` in `SELECT`
 
 In the `SELECT` clause, you can use the `CASE` statement to create new columns based on conditions.
-please see [the example](/user-guide/query-data/sql.md#case) in the query data guide.
+please see [the example](/user-guide/query-data/sql.md#case-expression) in the query data guide.
 
 You can also use `CASE` with functions like `SUM` to conditionally aggregate data.
 for example, you can calculate the total number of logs with status 200 and 404:

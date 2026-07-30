@@ -5,6 +5,8 @@ description: 介绍了 GreptimeDB 的预写日志（WAL）机制，包括其命�
 
 # 预写日志
 
+<AnchorAlias id="introduction" />
+
 ## 介绍
 
 我们的存储引擎受到了日志结构合并树（Log-structured Merge Tree，LSMT）的启发。对数据的变更操作直接应用于 MemTable 而不是持久化到磁盘上的数据页，这显著提高了性能，但也带来了持久化相关的问题，特别是在 Datanode 意外崩溃时。与所有类似 LSMT 的存储引擎一样，GreptimeDB 使用预写日志（Write-Ahead Log，WAL）来确保数据被可靠地持久化，并且保证崩溃时的数据完整性。

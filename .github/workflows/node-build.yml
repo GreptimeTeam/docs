@@ -30,3 +30,27 @@ jobs:
       - run: pnpm install
       - run: pnpm test
       - run: pnpm run build
+
+  check-links:
+    name: Check ${{ matrix.doc-lang }} links
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        doc-lang: [en, zh]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.6.0
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm check:links
+        env:
+          DOC_LANG: ${{ matrix.doc-lang }}

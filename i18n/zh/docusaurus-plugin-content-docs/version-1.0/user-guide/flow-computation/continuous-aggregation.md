@@ -398,6 +398,8 @@ SELECT * FROM ngx_distribution;
 6 rows in set (0.00 sec)
 ```
 
+<AnchorAlias id="using-tql-with-flow-for-advanced-time-series-analysis" />
+
 ## 将 TQL 与 Flow 结合使用进行高级时序分析
 
 :::warning 实验性特性

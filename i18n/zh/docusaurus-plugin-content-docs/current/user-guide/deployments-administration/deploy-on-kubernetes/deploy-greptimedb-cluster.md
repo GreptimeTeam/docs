@@ -227,6 +227,8 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 ```
 </details>
 
+<AnchorAlias id="setup-valuesyaml" />
+
 ## 配置 `values.yaml`
 
 `values.yaml` 文件设置了 GreptimeDB 的一些参数和配置，是定义 helm chart 的关键。
@@ -392,6 +394,8 @@ kubectl -n default port-forward --address 0.0.0.0 svc/mycluster-frontend 4000:40
 打开浏览器并访问 `http://localhost:4000/dashboard` 来访问 [GreptimeDB Dashboard](https://github.com/GrepTimeTeam/dashboard)。
 
 如果你想使用其他工具如 `mysql` 或 `psql` 来连接 GreptimeDB 集群，你可以参考 [快速入门](/getting-started/quick-start.md)。
+
+<AnchorAlias id="cleanup" />
 
 ## 删除集群
 

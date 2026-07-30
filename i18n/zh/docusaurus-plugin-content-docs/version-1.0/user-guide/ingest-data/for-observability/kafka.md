@@ -47,6 +47,8 @@ tls = {}
 
 有关 InfluxDB 行协议指标如何映射到 GreptimeDB 数据的详细信息，请参阅 InfluxDB 行协议文档中的[数据模型](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#数据模型)部分。
 
+<AnchorAlias id="logs" />
+
 ## 日志
 
 开发人员通常处理两种类型的日志：JSON 日志和纯文本日志。
@@ -70,12 +72,12 @@ tls = {}
 
 GreptimeDB 将这些日志转换为具有多个列的结构化数据，并自动创建必要的表。
 Pipeline 在写入到 GreptimeDB 之前将日志处理为结构化数据。
-不同的日志格式需要不同的 [Pipeline](/user-guide/logs/quick-start.md#write-logs-by-pipeline) 来解析，详情请继续阅读下面的内容。
+不同的日志格式需要不同的 [Pipeline](/user-guide/logs/use-custom-pipelines.md) 来解析，详情请继续阅读下面的内容。
 
 ### JSON 格式的日志
 
 对于 JSON 格式的日志（例如 `{"timestamp": "2024-12-23T10:00:00Z", "level": "INFO", "message": "Service started"}`），
-你可以使用内置的 [`greptime_identity`](/user-guide/logs/manage-pipelines.md#greptime_identity) pipeline 直接写入日志。
+你可以使用内置的 [`greptime_identity`](/reference/pipeline/built-in-pipelines.md#greptime_identity) pipeline 直接写入日志。
 此 pipeline 根据 JSON 日志消息中的字段自动创建列。
 
 你只需要配置 Vector 的 `transforms` 设置以解析 JSON 消息，并使用 `greptime_identity` pipeline，如以下示例所示：
