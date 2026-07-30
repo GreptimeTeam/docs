@@ -13,7 +13,8 @@ enabling you to easily write data tailored to your specific scenarios.
 GreptimeDB supports schemaless writing, automatically creating tables and adding necessary columns as data is ingested.
 This capability ensures that you do not need to manually define schemas beforehand, making it easier to manage and integrate diverse data sources seamlessly.
 <!-- TODO: add links to protocols and integrations -->
-This feature is supported for all protocols and integrations, except [SQL](./for-iot/sql.md).
+This feature is supported for all protocols and integrations, except
+[SQL](./for-iot/sql.md) and [Apache Flink](/user-guide/integrations/flink.md).
 
 ## Recommended Data Ingestion Methods
 

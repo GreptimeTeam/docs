@@ -9,7 +9,7 @@ The [GreptimeDB connector for Apache Flink](https://github.com/GreptimeTeam/flin
 supports:
 
 - Writing insert-only records through Flink SQL, the Table API, or the DataStream API.
-- Reading a GreptimeDB table as a bounded Flink SQL or Table API source.
+- Reading a GreptimeDB table as a bounded source through Flink SQL or the Table API.
 
 The connector requires Java 17 and Apache Flink 2.0.x.
 
