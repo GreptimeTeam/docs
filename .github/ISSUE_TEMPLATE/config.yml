@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: GreptimeDB product issues
+    url: https://github.com/GreptimeTeam/greptimedb/issues/new/choose
+    about: Report a GreptimeDB bug or request a product feature
   - name: GreptimeDB Discussions
     url: https://github.com/orgs/GreptimeTeam/discussions
     about: Ask GreptimeDB usage and support questions
