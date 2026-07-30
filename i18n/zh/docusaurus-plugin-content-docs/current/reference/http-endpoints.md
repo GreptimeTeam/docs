@@ -5,11 +5,36 @@ description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表�
 
 # HTTP API 端点列表
 
+GreptimeDB 提供两个 HTTP Server：
+
+| Server | 默认地址 | 用途 |
+|--------|---------|------|
+| **主 HTTP Server** | `127.0.0.1:4000` | 内部/运维使用。提供所有路径，包括 `/health`、`/metrics`、`/config`、`/debug/*` 等管理端点，以及全部 `/v1` 和 `/dashboard` 路径。该端口应保持私有，仅对可信运维人员开放。 |
+| **公共 HTTP API Server** | `127.0.0.1:4006` | 面向用户的访问。仅提供 `/v1` API 和 `/dashboard`，可安全地暴露给数据库终端用户。默认禁用；可在配置文件中设置 `http.enable_api_server = true` 来启用。 |
+
+建议仅在内部/运维场景下使用主 HTTP Server 端口。如需将 GreptimeDB 作为服务对外暴露给终端用户，请启用专用公共 API Server，并仅对外暴露该端口。
+
+```toml
+[http]
+# 主 HTTP Server — 保持内部访问
+addr = "127.0.0.1:4000"
+
+# 启用公共 API Server 并将其绑定到可外部访问的地址
+enable_api_server = true
+api_server_addr = "0.0.0.0:4006"
+```
+
+详见[配置文档](/user-guide/deployments-administration/configuration.md#协议选项)中的 `[http]` 选项。
+
 以下是 GreptimeDB 中各种 HTTP 路径及其用法的完整列表：
 
 ## 管理 API
 
 未版本化的端点（不在 `/v1` 下）。用于健康检查、状态、指标等管理用途。
+
+:::note
+管理 API 端点**仅**在主 HTTP Server（默认端口 `4000`）上可用。即使启用了 `http.enable_api_server`，专用公共 API Server 也不会暴露这些端点。
+:::
 
 ### 健康检查
 
