@@ -144,6 +144,8 @@ ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
 
 GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-guide/manage-data/data-index.md)章节查看更多信息。
 
+<AnchorAlias id="table-options" />
+
 ### 表选项
 
 用户可以使用 `WITH` 添加表选项。有效的选项包括以下内容：
@@ -217,6 +219,8 @@ with(
 );
 ```
 
+<AnchorAlias id="create-an-append-only-table" />
+
 #### 创建 Append-Only 表
 创建一个 append-only 表来关闭去重
 ```sql
@@ -225,6 +229,8 @@ CREATE TABLE IF NOT EXISTS temperatures(
   temperature DOUBLE DEFAULT 10,
 ) with('append_mode'='true');
 ```
+
+<AnchorAlias id="create-a-table-with-merge-mode" />
 
 #### 创建带有 merge 模式的表
 
@@ -407,6 +413,8 @@ CREATE TABLE system_metrics (
 Query OK, 0 rows affected (0.01 sec)
 ```
 
+<AnchorAlias id="index-column-option" />
+
 #### `INDEX` 列选项
 
 更多关于索引配置、性能对比和使用指南的信息，请参考[索引](/user-guide/manage-data/data-index.md)章节。
@@ -542,7 +550,7 @@ CREATE [OR REPLACE] VIEW [ IF NOT EXISTS ] <view-name>
 AS select_statement
 ```
 
-用于创建或更新视图，请阅读[视图用户指南](/user-guide/query-data/view.md#视图)。
+用于创建或更新视图，请阅读[视图用户指南](/user-guide/query-data/view.md#view)。
 
 ## 创建 Trigger
 

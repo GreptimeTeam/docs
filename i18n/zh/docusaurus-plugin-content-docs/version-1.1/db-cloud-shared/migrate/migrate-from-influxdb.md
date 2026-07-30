@@ -34,6 +34,8 @@ SHOW CREATE TABLE measurement_name;
 
 <InjectContent id="get-database-connection-information" content={props.children}/>
 
+<AnchorAlias id="write-data" />
+
 ## 写入数据
 
 GreptimeDB 兼容 InfluxDB 的行协议格式，包括 v1 和 v2。
@@ -53,6 +55,8 @@ GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容�
 要配置 Telegraf，只需将 GreptimeDB 的 URL 添加到 Telegraf 配置中：
 
 <InjectContent id="write-data-telegraf" content={props.children}/>
+
+<AnchorAlias id="client-libraries" />
 
 ### 客户端库
 

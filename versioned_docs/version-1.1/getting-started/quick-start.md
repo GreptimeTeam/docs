@@ -83,7 +83,7 @@ CREATE TABLE app_logs (
 ) WITH ('append_mode'='true');
 ```
 
-- `log_msg` enables [full-text index](/user-guide/manage-data/data-index.md#fulltext-index) for keyword search.
+- `log_msg` enables [full-text index](/user-guide/manage-data/data-index.md#full-text-index) for keyword search.
 - [`append_mode`](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables) optimizes for log workloads (no deduplication overhead).
 
 ### Traces table

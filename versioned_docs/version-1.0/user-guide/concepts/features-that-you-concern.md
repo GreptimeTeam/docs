@@ -81,7 +81,7 @@ Yes. We offer [built-in functions](/reference/sql/functions/geo.md) for Geohash,
 
 ## Any JSON support?
 
-See [JSON functions](/reference/sql/functions/overview.md#json-functions).
+See [JSON functions](/reference/sql/functions/json.md).
 
 ## More Questions?
 

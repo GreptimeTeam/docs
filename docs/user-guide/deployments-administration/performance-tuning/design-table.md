@@ -378,10 +378,10 @@ CREATE TABLE IF NOT EXISTS `raw_logs` (
 ```
 
 The `message` field is full-text indexed using the `FULLTEXT INDEX` option.
-See [fulltext column options](/reference/sql/create.md#fulltext-column-option) for more information.
+See [fulltext column options](/reference/sql/create.md#index-column-option) for more information.
 
 Storing and querying structured logs usually have better performance than unstructured logs with full-text index.
-It's recommended to [use Pipeline](/user-guide/logs/quick-start.md#create-a-pipeline) to convert logs into structured logs.
+It's recommended to [use Pipeline](/user-guide/logs/use-custom-pipelines.md#create-a-custom-pipeline) to convert logs into structured logs.
 
 
 ### When to use index

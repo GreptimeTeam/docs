@@ -18,7 +18,7 @@ description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表�
 - **描述**: 提供一个健康检查端点以验证服务器是否正在运行。
 - **用法**: 访问此端点以检查服务器的健康状态。
 
-请参考[检查 GreptimeDB 健康状态文档](/enterprise/deployments-administration/monitoring/check-db-status.md#查看-greptimedb-是否正常运行)获取示例。
+请参考[检查 GreptimeDB 健康状态文档](/user-guide/deployments-administration/monitoring/check-db-status.md#check-if-greptimedb-is-running-normally)获取示例。
 
 ### 状态
 
@@ -27,7 +27,7 @@ description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表�
 - **描述**: 检索服务器的当前状态。
 - **用法**: 使用此端点获取服务器状态信息。
 
-请参考[检查 GreptimeDB 状态文档](/enterprise/deployments-administration/monitoring/check-db-status.md#查看-greptimedb-的部署状态)获取示例。
+请参考[检查 GreptimeDB 状态文档](/user-guide/deployments-administration/monitoring/check-db-status.md#check-greptimedb-runtime-status)获取示例。
 
 ### 指标
 

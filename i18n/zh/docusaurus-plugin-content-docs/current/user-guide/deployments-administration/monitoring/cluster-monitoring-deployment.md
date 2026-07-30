@@ -103,7 +103,7 @@ mycluster-monitor-standalone-0       1/1     Running   0          6m35s
 kubectl -n default port-forward svc/mycluster-grafana 18080:80
 ```
 
-请参考[访问 Grafana 仪表盘](#访问-grafana仪表盘)章节来查看相应的数据面板。
+请参考[访问 Grafana 仪表盘](#访问-grafana-仪表盘)章节来查看相应的数据面板。
 
 
 ## 配置监控数据的收集

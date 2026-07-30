@@ -222,7 +222,7 @@ In the `greptime_loki`, the `x-greptime-pipeline-name` header is added to indica
 
 1. First, start your GreptimeDB instance. See [here](/getting-started/installation/overview.md) for quick startup.
 
-2. [Upload](/user-guide/logs/manage-pipelines.md#create-a-pipeline) the pipeline configuration to the database using `curl`:
+2. [Upload](/user-guide/logs/manage-pipelines.md#upload-a-pipeline) the pipeline configuration to the database using `curl`:
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/pipelines/pp" -F "file=@pipeline.yaml"

@@ -49,6 +49,8 @@ tls = {}
 
 当 Vector 使用 `decoding.codec = "influxdb"` 解析 Kafka 消息，并通过 `greptimedb_metrics` sink 写入时，每个 InfluxDB field 都会被转换为一个 metric 名称。例如，`census bees=23` 会写入名为 `census_bees` 的表，值存储在 `val` 列中。
 
+<AnchorAlias id="logs" />
+
 ## 日志
 
 开发人员通常处理两种类型的日志：JSON 日志和纯文本日志。

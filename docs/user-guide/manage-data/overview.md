@@ -24,7 +24,7 @@ Excessive updates may negatively impact query performance, even though the perfo
 #### Update all fields in a table
 
 By default, when updating data, all fields will be overwritten with the new values,
-except for [InfluxDB line protocol](/user-guide/protocols/influxdb-line-protocol.md), which only [updates the specified fields](#overwrite-specific-fields-in-a-table).
+except for [InfluxDB line protocol](/user-guide/protocols/influxdb-line-protocol.md), which only [updates the specified fields](#update-specific-fields-in-a-table).
 The following example using SQL demonstrates the behavior of overwriting all fields in a table.
 
 Assuming you have a table named `monitor` with the following schema.

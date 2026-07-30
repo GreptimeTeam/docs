@@ -8,6 +8,8 @@ description: 通过 HTTP 接口检查 GreptimeDB 的健康状态、部署状态�
 GreptimeDB 包含了一系列的 HTTP 接口可供查询 GreptimeDB 的运行情况。
 以下发起的 HTTP 请求均假定 GreptimeDB 运行在节点 `127.0.0.1` 上，其 HTTP 服务监听默认的 `4000` 端口。
 
+<AnchorAlias id="check-if-greptimedb-is-running-normally" />
+
 ## 查看 GreptimeDB 是否正常运行：
 
 你可以使用 `/health` 接口检查 GreptimeDB 是否正常运行。
@@ -33,6 +35,8 @@ date: Sun, 26 Apr 2026 13:46:41 GMT
 ```
 
 有关健康检查接口的更多信息，请参考[健康检查接口](/reference/http-endpoints.md#健康检查)。
+
+<AnchorAlias id="check-greptimedb-runtime-status" />
 
 ## 查看 GreptimeDB 的部署状态
 

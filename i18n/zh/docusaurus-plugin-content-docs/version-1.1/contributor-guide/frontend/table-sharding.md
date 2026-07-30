@@ -7,6 +7,8 @@ description: 介绍 GreptimeDB 中表数据的分片方法，包括分区和 Reg
 
 对于任何分布式数据库来说，数据的分片都是必不可少的。本文将描述 GreptimeDB 中的表数据如何进行分片。
 
+<AnchorAlias id="partition" />
+
 ## 分区
 
 有关创建分区表的语法，请参阅用户指南中的[表分片](/user-guide/deployments-administration/manage-data/table-sharding.md)部分。

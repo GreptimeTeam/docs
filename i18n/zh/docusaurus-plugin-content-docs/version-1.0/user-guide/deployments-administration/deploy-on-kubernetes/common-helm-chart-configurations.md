@@ -480,6 +480,8 @@ debugPod:
       cpu: 200m
 ```
 
+<AnchorAlias id="configuring-metasrv-backend-storage" />
+
 ### 配置 Metasrv 后端存储
 
 #### 使用 MySQL 和 PostgreSQL 作为后端存储
@@ -584,6 +586,8 @@ meta:
 
 - `etcd.endpoints`: etcd 服务地址。
 - `etcd.storeKeyPrefix`: etcd 存储 key 前缀。所有 key 都会被存储在这个前缀下。如果你希望使用一个 etcd 集群为多个 GreptimeDB 集群提供服务，你可以为每个 GreptimeDB 集群配置不同的存储 key 前缀。这仅用于测试和调试目的。
+
+<AnchorAlias id="enable-region-failover" />
 
 ### 启用 Region Failover
 

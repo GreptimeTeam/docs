@@ -10,6 +10,7 @@
     "start:zh": "DOC_LANG=zh pnpm start",
     "prebuild": "pnpm sync-skill",
     "build": "docusaurus build",
+    "check:links": "DOCS_LINK_CHECK=true pnpm build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
