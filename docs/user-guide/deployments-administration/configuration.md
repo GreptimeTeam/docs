@@ -161,6 +161,9 @@ concurrent_query_limiter_timeout = "100ms"
 
 Protocol options are valid in `frontend` and `standalone` subcommands,
 specifying protocol server addresses and other protocol-related options.
+In particular, `http.enable_api_server` lets you start a dedicated public HTTP API server that serves only the `/v1` APIs and `/dashboard`, while keeping the main HTTP server for internal and operational endpoints.
+This separation is useful when you want to expose GreptimeDB to end users or applications without also exposing admin paths such as health, metrics, config, or debug endpoints.
+To use it, set `http.enable_api_server = true` and configure `http.api_server_addr` to the address you want to expose externally, while keeping `http.addr` private for operator access.
 
 :::tip NOTE
 The HTTP protocol configuration is available for all GreptimeDB components: `frontend`, `datanode`, `flownode`, and `metasrv`.

@@ -156,6 +156,9 @@ concurrent_query_limiter_timeout = "100ms"
 ### 协议选项
 
 协议选项适用于 `frontend` 和 `standalone` 子命令，它指定了协议服务器地址和其他协议相关的选项。
+其中，`http.enable_api_server` 可用于启动一个专门对外提供服务的公共 HTTP API Server，它只暴露 `/v1` API 和 `/dashboard`，而主 HTTP Server 继续用于内部和运维端点。
+这种分离方式适合希望将 GreptimeDB 暴露给终端用户或应用程序、同时又不暴露 health、metrics、config、debug 等管理路径的场景。
+使用时，将 `http.enable_api_server = true`，并把 `http.api_server_addr` 配置为你希望对外暴露的地址，同时将 `http.addr` 保持为仅供运维访问的内部地址。
 
 :::tip 提示
 HTTP 协议配置适用于所有 GreptimeDB 组件：`frontend`、`datanode`、`flownode` 和 `metasrv`。
