@@ -16,7 +16,8 @@ For GreptimeDB product bugs and feature requests, use the
 
 ## Set up the project
 
-Use Node.js 20 or newer and pnpm 8.6.0. CI currently uses Node.js 22.
+Use Node.js 22 and pnpm 8.6.0 to match the main build CI. `package.json`
+currently allows Node.js 18 or newer.
 
 ```shell
 pnpm install
@@ -35,9 +36,10 @@ Common commands:
 | Run unit tests | `pnpm test` |
 | Run TypeScript checks | `pnpm typecheck` |
 
-`DOC_LANG` selects the locale. Normal start and build commands run
-`pnpm sync-skill` first. The strict link commands build Nightly and every
-released documentation version from 1.0 onward.
+`DOC_LANG` selects the locale. The repository enables pnpm pre/post scripts, so
+normal start and build commands run `pnpm sync-skill` first. The strict link
+commands build Nightly and every released documentation version from 1.0
+onward.
 
 Use pnpm. Dependency changes should update `pnpm-lock.yaml`; documentation-only
 changes must not touch lockfiles.
@@ -91,6 +93,47 @@ Versioned docs are user-facing sources, not disposable generated files. When
 creating a version, keep `versions.json`, `versioned_docs/`,
 `versioned_sidebars/`, the matching Chinese directory and sidebar JSON, and
 `variables/variables-<version>.ts` consistent.
+
+## Reference snippets
+
+Add an English Nightly category to `sidebars.ts`:
+
+```typescript
+{
+  type: 'category',
+  label: 'Category name',
+  items: ['path/to/page'],
+}
+```
+
+For Chinese navigation, add a matching translation to
+`i18n/zh/docusaurus-plugin-content-docs/current.json`. The key must use the
+English category label from `sidebars.ts`:
+
+```json
+{
+  "sidebar.docs.category.Category name": {
+    "message": "Translated category name",
+    "description": "The label for category Category name in sidebar docs"
+  }
+}
+```
+
+Reuse Markdown content through an MDX import:
+
+```mdx
+import SharedContent from './shared-content.md'
+
+<SharedContent />
+```
+
+Version variable filenames must match their documentation directories. For
+example, pages under `versioned_docs/version-1.2/` use
+`variables/variables-1.2.ts`; Nightly pages use
+`variables/variables-nightly.ts`.
+
+Add release notes under `blog/`. Follow the filename, front matter, and section
+structure of the newest release note.
 
 ## Writing guidelines
 
@@ -151,9 +194,8 @@ convention.
 
 ## Variables and generated files
 
-Use `VAR::<name>` for version-specific values. Define the value in
-`variables/variables-nightly.ts` and in each applicable
-`variables/variables-<version>.ts`.
+Use `VAR::<name>` for version-specific values. Define the value in the matching
+file under `variables/`.
 
 Do not edit generated outputs:
 

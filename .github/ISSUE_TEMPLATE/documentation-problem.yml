@@ -1,6 +1,6 @@
 name: Documentation problem
 description: Report incorrect, missing, outdated, or broken documentation
-title: "[Docs]: "
+title: "[Docs Bug]: "
 labels: ["documentation", "bug"]
 body:
   - type: input

@@ -4,8 +4,8 @@
 
 ## Scope
 
-- Documentation versions:
-- Languages:
+- Documentation versions: <!-- e.g. Nightly, 1.1 -->
+- Languages: <!-- e.g. English, Chinese -->
 
 ## Verification
 

@@ -17,10 +17,9 @@ build
 
 .temp_patch
 
-# Root AGENTS.md is the shared project guide; CLAUDE.md symlinks to it.
+# Root AGENTS.md is the shared project guide; CLAUDE.md imports it.
 # Personal or machine-local agent overrides stay untracked.
 /.local/
-!CLAUDE.md
 
 # Transpiled JavaScript files (TypeScript sources are tracked)
 docusaurus.config.js

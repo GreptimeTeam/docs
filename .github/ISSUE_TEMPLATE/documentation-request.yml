@@ -1,6 +1,6 @@
 name: Documentation request
 description: Suggest new documentation or an improvement to existing content
-title: "[Docs]: "
+title: "[Docs Request]: "
 labels: ["documentation", "enhancement"]
 body:
   - type: textarea
