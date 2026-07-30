@@ -1,15 +1,19 @@
-## What's Changed in this PR
+## What changed
 
-<!--
-    Please confirm that you have revised the corresponding version of the document, ensuring it can run on the corresponding version of GreptimeDB. If other versions are involved, make the necessary adjustments accordingly.
-    Note: `nightly` for the weekly built version, which is not released yet.
--->
+<!-- Explain what changed and why. Link a related issue when applicable. -->
 
-*Describe the change in this PR*
+## Scope
 
+- Documentation versions:
+- Languages:
+
+## Verification
+
+<!-- List commands run and any manual checks. -->
 
 ## Checklist
 
-- [ ] Please confirm that all corresponding versions of the documents have been revised.
-- [ ] Please ensure that the content in `sidebars.ts` matches the current document structure when you changed the document structure.
-- [ ] This change requires follow-up update in localized docs.
+- [ ] I verified the content against the applicable GreptimeDB version.
+- [ ] I updated the relevant documentation versions and languages, or explained why not.
+- [ ] I checked changed links and anchors.
+- [ ] I updated navigation when the document structure changed.

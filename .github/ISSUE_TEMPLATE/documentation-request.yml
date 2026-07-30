@@ -1,0 +1,37 @@
+name: Documentation request
+description: Suggest new documentation or an improvement to existing content
+title: "[Docs]: "
+labels: ["documentation", "enhancement"]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What documentation do you need?
+      description: Describe the task or question the documentation should help with.
+    validations:
+      required: true
+
+  - type: textarea
+    id: audience
+    attributes:
+      label: Who is this documentation for?
+      description: Describe the reader and their use case.
+    validations:
+      required: true
+
+  - type: input
+    id: scope
+    attributes:
+      label: Versions and languages
+      description: For example, Nightly and v1.1, English and Chinese.
+      placeholder: Nightly, English
+    validations:
+      required: false
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Suggested content
+      description: Outline the content or link to useful references.
+    validations:
+      required: false
