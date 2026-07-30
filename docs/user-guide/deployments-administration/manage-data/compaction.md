@@ -174,7 +174,35 @@ The `parallelism` parameter is also available for regular compaction:
 ADMIN COMPACT_TABLE("monitor", "regular", "parallelism=2");
 ```
 
-The following diagram shows the process of strict window compression:
+### Limit manual compaction to a time range
+
+Both regular and SWCS manual compactions can be limited to a time range by setting `start_time` and `end_time` in the options string:
+
+```sql
+-- Regular compaction for a time range
+ADMIN COMPACT_TABLE(
+    "monitor",
+    "regular",
+    "parallelism=2,start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z"
+);
+
+-- SWCS compaction for a time range
+ADMIN COMPACT_TABLE(
+    "monitor",
+    "strict_window",
+    "window=3600,start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z"
+);
+```
+
+The time range has the following rules and behavior:
+
+- `start_time` and `end_time` must be specified together, and `start_time` must be earlier than `end_time`.
+- The range is half-open: `[start_time, end_time)`. It selects compaction windows that overlap the range rather than filtering individual rows.
+- A timestamp with an explicit time zone or UTC offset uses that zone. A timestamp without one uses the current query session time zone.
+- Regular compaction keeps the existing TWCS trigger rules and only considers candidate windows that overlap the range. Specifying a range does not force an otherwise ineligible window to be compacted.
+- SWCS preserves its forced-compaction behavior. If an SST file in a selected window also spans other windows, GreptimeDB transitively includes those dependent windows. The actual compacted windows can therefore extend beyond the requested range; this ensures that all rows from shared input SST files are retained.
+
+The following diagram shows the process of strict window compaction:
 
 In Figure A, there are 3 overlapping SST files: `[0, 3]` (which includes timestamps 0, 1, 2, and 3), `[3, 8]`, and `[8, 10]`.
 The strict window compaction strategy will assign the file `[3, 8]` that covers windows 0, 4, and 8 to three separate windows respectively. This allows it to merge with `[0, 3]` and `[8, 10]` separately.

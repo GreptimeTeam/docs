@@ -47,6 +47,12 @@ admin compact_table("test", "swcs", "parallelism=2");
 -- Schedule an SWCS compaction with custom time window and parallelism --
 admin compact_table("test", "swcs", "window=1800,parallelism=2");
 
+-- Schedule a regular compaction for the half-open time range [start_time, end_time) --
+admin compact_table("test", "regular", "start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z");
+
+-- Schedule an SWCS compaction for a time range --
+admin compact_table("test", "strict_window", "window=3600,start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z");
+
 -- Garbage collect orphaned SST files for a dropped table --
 admin gc_table("test");
 

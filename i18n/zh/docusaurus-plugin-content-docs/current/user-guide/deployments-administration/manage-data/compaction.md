@@ -171,6 +171,34 @@ ADMIN COMPACT_TABLE("monitor", "swcs", "window=1800,parallelism=2");
 ADMIN COMPACT_TABLE("monitor", "regular", "parallelism=2");
 ```
 
+### 限定手动压缩的时间范围
+
+常规压缩和 SWCS 手动压缩都可以通过在选项字符串中设置 `start_time` 和 `end_time` 来限定时间范围：
+
+```sql
+-- 对指定时间范围执行常规压缩
+ADMIN COMPACT_TABLE(
+    "monitor",
+    "regular",
+    "parallelism=2,start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z"
+);
+
+-- 对指定时间范围执行 SWCS 压缩
+ADMIN COMPACT_TABLE(
+    "monitor",
+    "strict_window",
+    "window=3600,start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z"
+);
+```
+
+时间范围遵循以下规则和行为：
+
+- `start_time` 和 `end_time` 必须同时指定，并且 `start_time` 必须早于 `end_time`。
+- 时间范围是左闭右开的 `[start_time, end_time)`。它用于选择与该范围重叠的压缩窗口，而不是过滤单独的数据行。
+- 带有明确时区或 UTC 偏移量的时间戳使用指定的时区；未指定时区的时间戳使用当前查询会话的时区。
+- 常规压缩保留已有的 TWCS 触发规则，并且只考虑与该范围重叠的候选窗口。指定时间范围不会强制压缩不满足触发条件的窗口。
+- SWCS 保留强制压缩语义。如果选中窗口中的 SST 文件还跨越其他窗口，GreptimeDB 会递归包含这些依赖窗口。因此，实际压缩的窗口可能超出请求的时间范围；这可以确保共享输入 SST 文件中的所有数据行都被保留。
+
 下图展示了一次 SWCS 压缩的过程：
 
 在图 A 中，有 3 个重叠的 SST 文件，分别是 `[0, 3]`（也就是包含 0、1、2、3 的时间戳）、`[3, 8]` 和 `[8, 10]`。
