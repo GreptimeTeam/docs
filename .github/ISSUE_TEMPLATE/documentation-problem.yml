@@ -1,0 +1,45 @@
+name: Documentation problem
+description: Report incorrect, missing, outdated, or broken documentation
+title: "[Docs Bug]: "
+labels: ["documentation", "bug"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page URL
+      description: Link to the affected page.
+      placeholder: https://docs.greptime.com/...
+    validations:
+      required: true
+
+  - type: input
+    id: scope
+    attributes:
+      label: Documentation version and language
+      description: For example, Nightly English, v1.1 Chinese, or all versions.
+      placeholder: Nightly English
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong?
+      description: Describe the incorrect, missing, outdated, or broken content.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should the documentation say or show?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add screenshots, logs, source links, or other useful context.
+    validations:
+      required: false
