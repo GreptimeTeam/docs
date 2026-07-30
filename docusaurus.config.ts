@@ -56,7 +56,7 @@ const latestVersion = versions[0];
 const latestVersionNumber = parseFloat(latestVersion);
 const linkCheckVersions = [
   'current',
-  ...versions.filter(version => version.startsWith('1.')),
+  ...versions.filter(version => Number.parseInt(version, 10) >= 1),
 ];
 
 const metaMap = {
