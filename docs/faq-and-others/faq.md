@@ -312,12 +312,12 @@ ORDER BY files DESC;
 
 The recommended approach is to isolate tenants at the **database** or **table** level, rather than mixing every tenant into one shared table distinguished only by a tag.
 
-- **Database per tenant**: Give each tenant its own [database](/reference/sql/create.md#create-database). This provides the cleanest isolation — separate schemas, per-tenant TTL and other table defaults, and independent access control.
+- **Database per tenant**: Give each tenant its own [database](/reference/sql/create.md#create-database). This keeps each tenant's data cleanly separated, with independent schema, TTL, and other table defaults.
 - **Table per tenant**: Within a shared database, give each tenant its own table (or table prefix). A good fit when tenants share configuration but you still want data-level separation.
 
 Don't worry about ending up with a large number of databases or tables. GreptimeDB's distributed architecture scales horizontally — tables are split into regions spread across datanodes, and you add datanodes as the table and region count grows. There is no hard limit on the number of tables, and performance depends on primary key design rather than table count (see [scalability characteristics](#what-are-greptimedbs-scalability-characteristics)).
 
-For per-tenant access control, use [user-level authentication](/user-guide/deployments-administration/authentication/overview.md) in the open-source version, or RBAC in Enterprise / GreptimeCloud.
+**Access control**: The open-source version does not enforce database- or table-level tenant isolation — its [authentication](/user-guide/deployments-administration/authentication/overview.md) authorizes a user against every catalog and schema, and the permission check only distinguishes read from write, not the target table. A read-only user can therefore still query any tenant's data. In open source you must enforce tenant isolation in your application layer (or via separate deployments). Enterprise and GreptimeCloud provide RBAC and ACL for true per-tenant access control.
 
 ### What disaster recovery options are available?
 
