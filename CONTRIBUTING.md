@@ -65,7 +65,9 @@ changes must not touch lockfiles.
 
 Use `docs/` and the Chinese `current/` tree for unreleased features. Update a
 released version only when the change is valid for that GreptimeDB release.
-Keep English and Chinese aligned in meaning, but write each language naturally.
+When adding or expanding user-facing documentation, update the corresponding
+Chinese page in the same pull request. Keep English and Chinese aligned in
+meaning, but write each language naturally.
 
 New pages require front matter and an H1:
 

@@ -55,8 +55,9 @@ must not touch lockfiles.
   Chinese `current/` tree for unreleased features. Change a released version
   only when the content is valid for that GreptimeDB release.
 - Treat versioned docs as user-facing source files, not disposable generated
-  output. Keep English and Chinese aligned in meaning, but write each language
-  naturally.
+  output. When adding or expanding user-facing documentation, update the
+  corresponding Chinese page in the same PR. Keep English and Chinese aligned
+  in meaning, but write each language naturally.
 - Verify version-sensitive claims against the applicable release, source code,
   or an authoritative reference. Do not infer behavior from a nearby page or a
   newer documentation version.
