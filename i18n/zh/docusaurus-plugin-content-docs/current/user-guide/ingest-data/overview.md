@@ -21,9 +21,9 @@ GreptimeDB 支持针对特定场景的各种数据写入方法，以确保最佳
 
 - [可观测场景](./for-observability/overview.md)：适用于实时监控和警报。
 - [物联网场景](./for-iot/overview.md)：适用于实时数据和复杂的物联网基础设施。
+- [Apache Flink](/user-guide/integrations/flink.md)：使用 Flink SQL、Table API 或 DataStream API 将仅包含 insert 操作的数据写入 GreptimeDB。
 
 ## 下一步
 
 - [查询数据](/user-guide/query-data/overview.md): 学习如何通过查询 GreptimeDB 数据库来探索数据。
 - [管理数据](/user-guide/manage-data/overview.md): 学习如何更新和删除数据等，确保数据完整性和高效的数据管理。
-

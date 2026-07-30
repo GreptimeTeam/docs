@@ -21,9 +21,9 @@ GreptimeDB supports various data ingestion methods for specific scenarios, ensur
 
 - [For Observability Scenarios](./for-observability/overview.md): Suitable for real-time monitoring and alerting.
 - [For IoT Scenarios](./for-iot/overview.md): Suitable for real-time data and complex IoT infrastructures.
+- [Apache Flink](/user-guide/integrations/flink.md): Use Flink SQL, the Table API, or the DataStream API to write insert-only records to GreptimeDB.
 
 ## Next Steps
 
 - [Query Data](/user-guide/query-data/overview.md): Learn how to explore your data by querying your GreptimeDB database.
 - [Manage Data](/user-guide/manage-data/overview.md): Learn how to update and delete data, etc., to ensure data integrity and efficient data management.
-
