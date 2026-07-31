@@ -469,6 +469,46 @@ default_ratio = 1.0
 
 How to use distributed tracing, please reference [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#tutorial-use-jaeger-to-trace-greptimedb)
 
+### Lifecycle event recorder
+
+The lifecycle event recorder persists procedure lifecycle events in the `greptime_private.events` system table. Configure it in `standalone` mode or on Metasrv in a distributed deployment:
+
+```toml
+[event_recorder]
+# TTL of the events table. Defaults to 90 days.
+ttl = "90d"
+
+# Omit this option to record all current and future event types.
+# Use an empty array to disable event recording.
+event_types = ["create_table", "drop_table"]
+```
+
+- `ttl`: The TTL of the events table. The default is `90d`.
+- `event_types`: The event types to record. When omitted, all current and future event types are recorded. Set it to `[]` to disable event recording.
+
+Standalone supports the following event types:
+
+```text
+create_database, alter_database, drop_database,
+create_flow, drop_flow,
+create_table, create_logical_tables, alter_table, alter_logical_tables,
+drop_table, undrop_table, purge_dropped_table, truncate_table,
+create_view, drop_view
+```
+
+Metasrv supports the following event types:
+
+```text
+region_migration,
+create_database, alter_database, drop_database,
+create_flow, drop_flow,
+create_table, create_logical_tables, alter_table, alter_logical_tables,
+drop_table, undrop_table, purge_dropped_table, truncate_table,
+create_view, drop_view,
+repartition, repartition_group,
+batch_gc, wal_prune
+```
+
 ### Region engine options
 
 The parameters corresponding to different storage engines can be configured for `datanode` and `standalone` in the `[region_engine]` section. Currently, options for `mito` and `metric` region engines are available.
