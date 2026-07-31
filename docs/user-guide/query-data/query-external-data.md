@@ -12,17 +12,18 @@ Currently, we support queries on `Parquet`, `CSV`, `ORC`, and `NDJson` format fi
 We use the [Taxi Zone Lookup Table](https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv) data as an example.
 
 ```bash
-curl "https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv" -o /tmp/taxi+_zone_lookup.csv
+mkdir -p greptimedb_data/copy
+curl "https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv" -o greptimedb_data/copy/taxi+_zone_lookup.csv
 ```
 
 Create an external table:
 
 ```sql
-CREATE EXTERNAL TABLE taxi_zone_lookup with (location='/tmp/taxi+_zone_lookup.csv',format='csv');
+CREATE EXTERNAL TABLE taxi_zone_lookup with (location='taxi+_zone_lookup.csv',format='csv');
 ```
 
 :::tip NOTE
-In standalone deployments, external table locations that reference local files are sandboxed to the `storage.copy_root` directory (default `<data_home>/copy`). In distributed deployments, local file locations are not supported. See [Migrate Local SQL File Access](/user-guide/deployments-administration/migrate-local-sql-file-access.md) for details.
+In standalone deployments, external table locations that reference local files are sandboxed to the `storage.copy_root` directory (default `<data_home>/copy`), so this example downloads the file into `greptimedb_data/copy` and uses a location relative to that directory. In distributed deployments, local file locations are not supported. See [Migrate Local SQL File Access](/user-guide/deployments-administration/migrate-local-sql-file-access.md) for details.
 :::
 
 You can check the schema of the external table like follows:
@@ -71,15 +72,15 @@ SELECT `Zone`, `Borough` FROM taxi_zone_lookup LIMIT 5;
 Let's download some data:
 
 ```bash
-mkdir /tmp/external
-curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-01.parquet" -o /tmp/external/yellow_tripdata_2022-01.parquet
-curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-02.parquet" -o /tmp/external/yellow_tripdata_2022-02.parquet
+mkdir -p greptimedb_data/copy/external
+curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-01.parquet" -o greptimedb_data/copy/external/yellow_tripdata_2022-01.parquet
+curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-02.parquet" -o greptimedb_data/copy/external/yellow_tripdata_2022-02.parquet
 ```
 
 Verify the download:
 
 ```bash
-ls -l /tmp/external
+ls -l greptimedb_data/copy/external
 total 165368
 -rw-r--r--  1 wenyxu  wheel  38139949 Apr 28 14:35 yellow_tripdata_2022-01.parquet
 -rw-r--r--  1 wenyxu  wheel  45616512 Apr 28 14:36 yellow_tripdata_2022-02.parquet
@@ -88,7 +89,7 @@ total 165368
 Create the external table:
 
 ```sql
-CREATE EXTERNAL TABLE yellow_tripdata with(location='/tmp/external/',format='parquet');
+CREATE EXTERNAL TABLE yellow_tripdata with(location='external/',format='parquet');
 ```
 
 Run queries:
