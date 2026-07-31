@@ -1,0 +1,24 @@
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/configuration.md
+  s_97cc817dba5a71::t_66940b1bccce44 498
+  s_97cc817dba5a71::t_2a84b587e9f6bb 474-490,492-497,499-513
+  s_97cc817dba5a71::t_7dd7c0130efee7 491
+docs/user-guide/deployments-administration/configuration.md
+  s_97cc817dba5a71::t_2a84b587e9f6bb 472-495,497-511
+  s_97cc817dba5a71::t_66940b1bccce44 496
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.17",
+  "base_commit_sha": "6bda5174eadbe66ca494c74c6ae618ad8a076a7e",
+  "prompts": {},
+  "sessions": {
+    "s_97cc817dba5a71": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fb1c8-c02d-7fe1-86b2-db0e93e5c4a1",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": null
+    }
+  }
+}
