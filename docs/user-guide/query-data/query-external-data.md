@@ -21,6 +21,10 @@ Create an external table:
 CREATE EXTERNAL TABLE taxi_zone_lookup with (location='/tmp/taxi+_zone_lookup.csv',format='csv');
 ```
 
+:::tip NOTE
+In standalone deployments, external table locations that reference local files are sandboxed to the `storage.copy_root` directory (default `<data_home>/copy`). In distributed deployments, local file locations are not supported. See [Migrate Local SQL File Access](/user-guide/deployments-administration/migrate-local-sql-file-access.md) for details.
+:::
+
 You can check the schema of the external table like follows:
 
 ```sql

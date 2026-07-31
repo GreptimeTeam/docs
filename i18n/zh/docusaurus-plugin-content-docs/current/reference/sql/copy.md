@@ -19,6 +19,8 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 
 :::tip NOTE
 导出的文件会生成在执行该查询的 GreptimeDB 服务端节点上，而不是发起 SQL 的客户端机器上。请确保路径在服务端可访问且可写，或使用 `CONNECTION` 导出到 S3、GCS、Azure Blob Storage 等云存储服务。
+
+在单机部署模式下，本地文件路径受限于 `storage.copy_root` 目录（默认为 `<data_home>/copy`）；在分布式部署模式下，本地文件访问被完全禁止。详情请参阅[迁移本地 SQL 文件访问](/user-guide/deployments-administration/migrate-local-sql-file-access.md)。
 :::
 
 例如，可以使用自定义时间戳和日期格式导出数据到 CSV 或 JSON 文件：

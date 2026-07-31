@@ -21,6 +21,10 @@ curl "https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv" -o /tmp/
 CREATE EXTERNAL TABLE taxi_zone_lookup with (location='/tmp/taxi+_zone_lookup.csv',format='csv');
 ```
 
+:::tip NOTE
+在单机部署模式下，引用本地文件的外部表 location 受限于 `storage.copy_root` 目录（默认为 `<data_home>/copy`）；在分布式部署模式下，不支持本地文件 location。详情请参阅[迁移本地 SQL 文件访问](/user-guide/deployments-administration/migrate-local-sql-file-access.md)。
+:::
+
 检查外部表的组织和结构：
 
 ```sql

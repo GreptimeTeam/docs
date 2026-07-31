@@ -330,6 +330,7 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | type                      | String  | Storage type, supports "File", "S3" and "Oss" etc.                               |
 | File    |                           |         | Local file storage options, valid when type="File"                               |
 |         | data_home                 | String  | Database storage root directory, "./greptimedb_data" by default                  |
+|         | copy_root                 | String  | Root directory for standalone SQL access to local files (default `<data_home>/copy`). Relative paths in `COPY` and external tables are resolved below this directory; absolute paths are accepted only when they fall inside it. Distributed deployments always reject local-file SQL access. See [Migrate Local SQL File Access](./migrate-local-sql-file-access.md) for upgrade guidance. |
 | S3      |                           |         | AWS S3 storage options, valid when type="S3"                                     |
 |         | name                      | String  | The storage provider name, default is `S3`                                       |
 |         | bucket                    | String  | The S3 bucket name                                                               |

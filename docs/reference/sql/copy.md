@@ -23,6 +23,8 @@ data (`/xxx/xxx/output.parquet` in this case).
 
 :::tip NOTE
 The output file is created on the GreptimeDB server node that executes the query, not on the client machine that issues the SQL. Make sure the path is accessible and writable on that server, or export to S3, GCS, Azure Blob Storage, or other supported cloud storage services via `CONNECTION`.
+
+In standalone deployments, local file paths are sandboxed to the `storage.copy_root` directory (default `<data_home>/copy`). In distributed deployments, local file access is disabled entirely. See [Migrate Local SQL File Access](/user-guide/deployments-administration/migrate-local-sql-file-access.md) for details.
 :::
 
 For example, to export data to CSV or JSON with custom timestamp and date formats:

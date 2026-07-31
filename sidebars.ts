@@ -403,6 +403,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/maintenance/table-reconciliation',
               ]
             },
+            'user-guide/deployments-administration/migrate-local-sql-file-access',
             'user-guide/deployments-administration/troubleshooting',
             'user-guide/deployments-administration/run-on-android',
             'user-guide/deployments-administration/upgrade',
