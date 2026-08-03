@@ -655,6 +655,9 @@ default_timezone = "UTC"
 
 ### 仅限于 Metasrv 的配置
 
+`datanode.client` 选项用于配置从 Metasrv 到 Datanode 的出站 gRPC 连接。
+客户端的消息大小限制独立于 `[grpc]` 服务器的消息大小限制。
+
 ```toml
 # 工作主目录。
 data_home = "./greptimedb_data"
@@ -805,6 +808,12 @@ connect_timeout = "10s"
 ## 接受连接时的 `TCP_NODELAY` 选项，默认为 true。
 tcp_nodelay = true
 
+## gRPC 客户端可接收的最大消息大小。
+max_recv_message_size = "512MB"
+
+## gRPC 客户端可发送的最大消息大小。
+max_send_message_size = "512MB"
+
 [wal]
 # 可用的 WAL 提供者：
 # - `raft_engine`（默认）：由于 metasrv 目前仅涉及远程 WAL，因此没有 raft-engine WAL 配置。
@@ -898,6 +907,8 @@ timeout = "3s"
 | `datanode.client.timeout`                     | 字符串  | `10s`                | 操作超时。                                                                                                                           |
 | `datanode.client.connect_timeout`             | 字符串  | `10s`                | 连接服务器超时。                                                                                                                     |
 | `datanode.client.tcp_nodelay`                 | 布尔值  | `true`               | 接受连接的 `TCP_NODELAY` 选项。                                                                                                      |
+| `datanode.client.max_recv_message_size`       | 字符串  | `512MB`              | gRPC 客户端可接收的最大消息大小。                                                                                                    |
+| `datanode.client.max_send_message_size`       | 字符串  | `512MB`              | gRPC 客户端可发送的最大消息大小。                                                                                                    |
 | wal                                           | --      | --                   | --                                                                                                                                   |
 | wal.provider                                  | String  | `raft_engine` | --                                                                                                                                   |
 | wal.broker_endpoints                          | Array   | --                   | Kafka 集群的端点                                                                                                                     |
@@ -946,16 +957,23 @@ ingest_rt_size = 8
 
 ### 仅限于 `Frontend` 的配置
 
+`datanode.client` 选项用于配置从 Frontend 到 Datanode 的出站 gRPC 连接。
+客户端的消息大小限制独立于 `[grpc]` 服务器的消息大小限制。
+
 ```toml
 [datanode]
 [datanode.client]
 connect_timeout = "1s"
 tcp_nodelay = true
+max_recv_message_size = "512MB"
+max_send_message_size = "512MB"
 ```
 
-| Key                               | Type | Default | Description             |
-|-----------------------------------|------|---------|-------------------------|
-| `datanode`                        | --   | --      |                         |
-| `datanode.client`                 | --   | --      | Datanode 客户端选项。         |
-| `datanode.client.connect_timeout` | 字符串  | `1s`    | 连接服务器超时。                |
-| `datanode.client.tcp_nodelay`     | 布尔值  | `true`  | 接受连接的 `TCP_NODELAY` 选项。 |
+| Key                                             | Type   | Default | Description                              |
+| ----------------------------------------------- | ------ | ------- | ---------------------------------------- |
+| `datanode`                                      | --     | --      |                                          |
+| `datanode.client`                               | --     | --      | Datanode 客户端选项。                    |
+| `datanode.client.connect_timeout`               | 字符串 | `1s`    | 连接服务器超时。                         |
+| `datanode.client.tcp_nodelay`                   | 布尔值 | `true`  | 接受连接的 `TCP_NODELAY` 选项。          |
+| `datanode.client.max_recv_message_size`         | 字符串 | `512MB` | gRPC 客户端可接收的最大消息大小。        |
+| `datanode.client.max_send_message_size`         | 字符串 | `512MB` | gRPC 客户端可发送的最大消息大小。        |
