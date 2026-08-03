@@ -12,7 +12,7 @@ GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2
 
 ### 👍 Highlights
 
-- **JSON2 type system maturity** — Variant payloads are now encoded as JSONB instead of serde JSON bytes, with type hints, write-time validation (rejecting non-object values and validating append mode), and a fix for selecting whole JSON2 columns ([#8247](https://github.com/GreptimeTeam/greptimedb/pull/8247), [#8381](https://github.com/GreptimeTeam/greptimedb/pull/8381), [#8435](https://github.com/GreptimeTeam/greptimedb/pull/8435), [#8683](https://github.com/GreptimeTeam/greptimedb/pull/8683)).
+- **JSON2 type system maturity** — Variant payloads are now encoded as JSONB instead of serde JSON bytes, with type hints, write-time validation (rejecting non-object values and validating append mode), and a fix for selecting whole JSON2 columns ([#8247](https://github.com/GreptimeTeam/greptimedb/pull/8247), [#8381](https://github.com/GreptimeTeam/greptimedb/pull/8381), [#8434](https://github.com/GreptimeTeam/greptimedb/pull/8434), [#8435](https://github.com/GreptimeTeam/greptimedb/pull/8435), [#8683](https://github.com/GreptimeTeam/greptimedb/pull/8683)).
 
   ```sql
   CREATE TABLE t (id INT, doc JSON2);
@@ -27,27 +27,27 @@ GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2
   -- regex filters on dictionary-encoded columns are now semantically correct and fast
   ```
 
-- **Soft-drop table lifecycle** — `DROP TABLE` is now a soft delete: data enters a reclaimable state with offline cleanup ([#8458](https://github.com/GreptimeTeam/greptimedb/pull/8458)), WAL retirement support ([#8475](https://github.com/GreptimeTeam/greptimedb/pull/8475)), and groundwork for recovery ([#8061](https://github.com/GreptimeTeam/greptimedb/pull/8061)).
+- **Soft-drop table lifecycle with `UNDROP TABLE`** — `DROP TABLE` is now a soft delete: the table enters a recycle bin and can be restored with `UNDROP TABLE` before the retention period expires ([#8546](https://github.com/GreptimeTeam/greptimedb/pull/8546), [#8554](https://github.com/GreptimeTeam/greptimedb/pull/8554)), with retention-based GC ([#8526](https://github.com/GreptimeTeam/greptimedb/pull/8526)), offline cleanup ([#8458](https://github.com/GreptimeTeam/greptimedb/pull/8458)), and WAL retirement ([#8475](https://github.com/GreptimeTeam/greptimedb/pull/8475)).
 
   ```sql
   DROP TABLE t;  -- soft delete: data is reclaimable instead of immediately physically removed
   ```
 
-- **Prometheus Remote Write v2 native histograms** — Support for the Prometheus Remote Write v2 protocol ([#8361](https://github.com/GreptimeTeam/greptimedb/pull/8361)) and persistence of native histograms ([#8382](https://github.com/GreptimeTeam/greptimedb/pull/8382)).
+- **Prometheus Remote Write v2 with native histograms** — Support for the Remote Write v2 protocol ([#8361](https://github.com/GreptimeTeam/greptimedb/pull/8361)), persistence and validation of native histograms ([#8382](https://github.com/GreptimeTeam/greptimedb/pull/8382), [#8654](https://github.com/GreptimeTeam/greptimedb/pull/8654)), and PromQL native histogram functions ([#8664](https://github.com/GreptimeTeam/greptimedb/pull/8664)).
 
   ```text
   remote_write:
     - url: http://greptimedb:4000/v1/prometheus/write
   ```
 
-- **RangeSelect projection pruning** — The optimizer prunes RangeSelect input projections to reduce scanned columns and I/O ([#8570](https://github.com/GreptimeTeam/greptimedb/pull/8570)).
+- **RangeSelect projection pruning** — Range queries now prune unused input columns before the RangeSelect plan, reducing scanned columns and I/O ([#8570](https://github.com/GreptimeTeam/greptimedb/pull/8570)).
 
   ```sql
   EXPLAIN SELECT ts, value FROM metrics WHERE ts > now() - INTERVAL '1 hour';
   -- only the needed columns are scanned
   ```
 
-- **Faster export/import v2 with progress and resume** — The CLI's export/import v2 gained chunk parallelism, progress reporting, and import resume support, plus extensive e2e hardening including MinIO roundtrips ([#8292](https://github.com/GreptimeTeam/greptimedb/pull/8292), [#8294](https://github.com/GreptimeTeam/greptimedb/pull/8294), [#8300](https://github.com/GreptimeTeam/greptimedb/pull/8300), [#8310](https://github.com/GreptimeTeam/greptimedb/pull/8310), [#8314](https://github.com/GreptimeTeam/greptimedb/pull/8314)).
+- **Parallel, resumable export/import v2** — The snapshot-based export/import v2 gained concurrent chunk export (`--chunk-parallelism`), parallel import tasks (`--task-parallelism`), progress reporting (`--progress`), and resume: re-running the same command skips completed chunks and tasks instead of starting over. See the [export/import v2 guide](https://docs.greptime.com/user-guide/deployments-administration/disaster-recovery/export-import-v2).
 
   ```bash
   greptime cli export --v2 --progress   # parallel chunks with progress reporting
