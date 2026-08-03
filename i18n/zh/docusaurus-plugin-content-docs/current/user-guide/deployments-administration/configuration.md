@@ -471,6 +471,46 @@ default_ratio = 1.0
 
 如何使用分布式追踪，请参考 [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
 
+### 生命周期事件记录器
+
+生命周期事件记录器会将 Procedure 的生命周期事件持久化到 `greptime_private.events` 系统表。在单机模式下使用 `standalone` 配置；在分布式部署中，在 Metasrv 上配置：
+
+```toml
+[event_recorder]
+# 事件表的 TTL，默认值为 90 天。
+ttl = "90d"
+
+# 省略此项以记录当前及未来的所有事件类型。
+# 使用空数组可禁用事件记录。
+event_types = ["create_table", "drop_table"]
+```
+
+- `ttl`：事件表的 TTL，默认值为 `90d`。
+- `event_types`：要记录的事件类型。省略时记录当前及未来的所有事件类型；设为 `[]` 可禁用事件记录。
+
+standalone 支持以下事件类型：
+
+```text
+create_database, alter_database, drop_database,
+create_flow, drop_flow,
+create_table, create_logical_tables, alter_table, alter_logical_tables,
+drop_table, undrop_table, purge_dropped_table, truncate_table,
+create_view, drop_view
+```
+
+Metasrv 支持以下事件类型：
+
+```text
+region_migration,
+create_database, alter_database, drop_database,
+create_flow, drop_flow,
+create_table, create_logical_tables, alter_table, alter_logical_tables,
+drop_table, undrop_table, purge_dropped_table, truncate_table,
+create_view, drop_view,
+repartition, repartition_group,
+batch_gc, wal_prune
+```
+
 <AnchorAlias id="region-engine-options" />
 
 ### Region 引擎选项
