@@ -7,6 +7,8 @@ description: 介绍 GreptimeDB 的导出和导入工具，用于数据库备份�
 
 本指南描述了如何使用 GreptimeDB 的导出和导入工具进行数据库备份和恢复。
 
+如需使用基于快照、支持断点续传的 Export/Import V2 工作流，请参阅[使用 Export/Import V2 导出和导入数据](./export-import-v2.md)。
+
 有关详细的命令行选项和高级配置，请参阅 [数据导出和导入](/reference/command-lines/utilities/data.md)。
 
 ## 概述
