@@ -10,6 +10,10 @@ Release date: July 31, 2026
 
 GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2 type system to maturity, large query performance improvements via dictionary-encoded series keys, soft-drop table lifecycle management, Prometheus Remote Write v2 native histogram support, and a large set of correctness and stability fixes.
 
+### Breaking changes
+
+* fix!: sandbox SQL local filesystem access by [@fengjiachun](https://github.com/fengjiachun) in [#8708](https://github.com/GreptimeTeam/greptimedb/pull/8708)
+
 ### 👍 Highlights
 
 #### JSON2 类型系统成熟
@@ -189,7 +193,6 @@ EXPLAIN SELECT ts, value FROM metrics WHERE ts > now() - INTERVAL '1 hour';
 * fix(metric-engine): prevent stale metadata cache fills by [@shuiyisong](https://github.com/shuiyisong) in [#8699](https://github.com/GreptimeTeam/greptimedb/pull/8699)
 * fix(mito2): fence async index builds by schema generation by [@killme2008](https://github.com/killme2008) in [#8697](https://github.com/GreptimeTeam/greptimedb/pull/8697)
 * fix: make select whole json2 column worked by [@MichaelScofield](https://github.com/MichaelScofield) in [#8683](https://github.com/GreptimeTeam/greptimedb/pull/8683)
-* fix!: sandbox SQL local filesystem access by [@fengjiachun](https://github.com/fengjiachun) in [#8708](https://github.com/GreptimeTeam/greptimedb/pull/8708)
 * fix(meta): preserve legacy WAL options compatibility by [@WenyXu](https://github.com/WenyXu) in [#8707](https://github.com/GreptimeTeam/greptimedb/pull/8707)
 
 ## All Contributors
