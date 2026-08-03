@@ -1,7 +1,7 @@
 ---
 keywords: [release, GreptimeDB, changelog, v1.2.0-beta.1]
 description: GreptimeDB v1.2.0-beta.1 Changelog
-date: 2026-08-01
+date: 2026-07-31
 ---
 
 # v1.2.0-beta.1
