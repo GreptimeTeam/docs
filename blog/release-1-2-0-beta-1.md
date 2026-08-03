@@ -47,6 +47,22 @@ GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2
   -- only the needed columns are scanned
   ```
 
+- **Faster export/import v2 with progress and resume** — The CLI's export/import v2 gained chunk parallelism, progress reporting, and import resume support, plus extensive e2e hardening including MinIO roundtrips ([#8292](https://github.com/GreptimeTeam/greptimedb/pull/8292), [#8294](https://github.com/GreptimeTeam/greptimedb/pull/8294), [#8300](https://github.com/GreptimeTeam/greptimedb/pull/8300), [#8310](https://github.com/GreptimeTeam/greptimedb/pull/8310), [#8314](https://github.com/GreptimeTeam/greptimedb/pull/8314)).
+
+  ```bash
+  greptime cli export --v2 --progress   # parallel chunks with progress reporting
+  ```
+
+### Dashboard
+
+The bundled GreptimeDB dashboard was updated to **v0.13.10**:
+
+- Save dashboards as self-contained **snapshots** (time range, variables, and panel data) that open read-only without querying live data sources ([dashboard#627](https://github.com/GreptimeTeam/dashboard/pull/627)).
+- Result tables support **column resizing** for easier inspection, including trace queries, with a dedicated table resize mode ([dashboard#628](https://github.com/GreptimeTeam/dashboard/pull/628), [#632](https://github.com/GreptimeTeam/dashboard/pull/632), [#635](https://github.com/GreptimeTeam/dashboard/pull/635), [#636](https://github.com/GreptimeTeam/dashboard/pull/636)).
+- New prominent **support menu** and refreshed icon/status styling ([dashboard#629](https://github.com/GreptimeTeam/dashboard/pull/629)).
+- PromQL editor fixes (query header, Prometheus plugin sync) and all supported Perses plugins ([dashboard#630](https://github.com/GreptimeTeam/dashboard/pull/630), [#631](https://github.com/GreptimeTeam/dashboard/pull/631), [#633](https://github.com/GreptimeTeam/dashboard/pull/633)).
+- Virtual-list logs show a tip for hidden columns; SQL editor executes correctly when the cursor is after a SQL line ([dashboard#637](https://github.com/GreptimeTeam/dashboard/pull/637), [#622](https://github.com/GreptimeTeam/dashboard/pull/622)).
+
 ### Breaking changes
 
 * fix!: sandbox SQL local filesystem access by [@fengjiachun](https://github.com/fengjiachun) in [#8708](https://github.com/GreptimeTeam/greptimedb/pull/8708)
