@@ -10,56 +10,49 @@ Release date: July 31, 2026
 
 GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2 type system to maturity, large query performance improvements via dictionary-encoded series keys, soft-drop table lifecycle management, Prometheus Remote Write v2 native histogram support, and a large set of correctness and stability fixes.
 
+### 👍 Highlights
+
+- **JSON2 type system maturity** — Variant payloads are now encoded as JSONB instead of serde JSON bytes, with type hints, write-time validation (rejecting non-object values and validating append mode), and a fix for selecting whole JSON2 columns ([#8247](https://github.com/GreptimeTeam/greptimedb/pull/8247), [#8381](https://github.com/GreptimeTeam/greptimedb/pull/8381), [#8435](https://github.com/GreptimeTeam/greptimedb/pull/8435), [#8683](https://github.com/GreptimeTeam/greptimedb/pull/8683)).
+
+  ```sql
+  CREATE TABLE t (id INT, doc JSON2);
+  INSERT INTO t VALUES (1, '{"a": 1, "b": [1, 2]}');
+  SELECT doc FROM t;  -- returns the full JSON document
+  ```
+
+- **Faster queries with dictionary-encoded series keys** — In-memory primary key columns now use dictionary arrays to alleviate series key expansion, gaining ~24% end-to-end query performance ([#8541](https://github.com/GreptimeTeam/greptimedb/pull/8541)); dictionary-encoded regex filters also get correct semantics and the fast path back ([#8688](https://github.com/GreptimeTeam/greptimedb/pull/8688)).
+
+  ```sql
+  SELECT * FROM metrics WHERE job = 'node' AND path ~ '/api/.*';
+  -- regex filters on dictionary-encoded columns are now semantically correct and fast
+  ```
+
+- **Soft-drop table lifecycle** — `DROP TABLE` is now a soft delete: data enters a reclaimable state with offline cleanup ([#8458](https://github.com/GreptimeTeam/greptimedb/pull/8458)), WAL retirement support ([#8475](https://github.com/GreptimeTeam/greptimedb/pull/8475)), and groundwork for recovery ([#8061](https://github.com/GreptimeTeam/greptimedb/pull/8061)).
+
+  ```sql
+  DROP TABLE t;  -- soft delete: data is reclaimable instead of immediately physically removed
+  ```
+
+- **Prometheus Remote Write v2 native histograms** — Support for the Prometheus Remote Write v2 protocol ([#8361](https://github.com/GreptimeTeam/greptimedb/pull/8361)) and persistence of native histograms ([#8382](https://github.com/GreptimeTeam/greptimedb/pull/8382)).
+
+  ```text
+  remote_write:
+    - url: http://greptimedb:4000/v1/prometheus/write
+  ```
+
+- **RangeSelect projection pruning** — The optimizer prunes RangeSelect input projections to reduce scanned columns and I/O ([#8570](https://github.com/GreptimeTeam/greptimedb/pull/8570)).
+
+  ```sql
+  EXPLAIN SELECT ts, value FROM metrics WHERE ts > now() - INTERVAL '1 hour';
+  -- only the needed columns are scanned
+  ```
+
 ### Breaking changes
 
 * fix!: sandbox SQL local filesystem access by [@fengjiachun](https://github.com/fengjiachun) in [#8708](https://github.com/GreptimeTeam/greptimedb/pull/8708)
-
-### 👍 Highlights
-
-#### JSON2 类型系统成熟
-
-JSON2 列从“能存”到“好用”：Variant payload 改为 JSONB 二进制编码，支持 type hint、写入校验（拒绝非 object 值、append 模式校验），并修复了 SELECT 整列 JSON2 的问题。
-
-```sql
-CREATE TABLE t (id INT, doc JSON2);
-INSERT INTO t VALUES (1, '{"a": 1, "b": [1, 2]}');
-SELECT doc FROM t;  -- 返回完整 JSON 文档
-```
-
-#### Dictionary 编码查询加速
-
-series key 使用 dictionary array 缓解膨胀，端到端查询性能提升约 24%（[#8541](https://github.com/GreptimeTeam/greptimedb/pull/8541)）；同时修复了 dictionary 编码下 regex 过滤的语义与性能回退（[#8688](https://github.com/GreptimeTeam/greptimedb/pull/8688)）。
-
-```sql
-SELECT * FROM metrics WHERE job = 'node' AND path ~ '/api/.*';
--- dictionary 编码列上的 regex 过滤现在语义正确且走快路径
-```
-
-#### 表软删除（Soft Drop）全链路
-
-DROP TABLE 变软删除：数据进入可回收状态，支持离线清理（[#8458](https://github.com/GreptimeTeam/greptimedb/pull/8458)）、WAL 退役配合（[#8475](https://github.com/GreptimeTeam/greptimedb/pull/8475)），并为恢复流程打好基础（[#8061](https://github.com/GreptimeTeam/greptimedb/pull/8061)）。
-
-```sql
-DROP TABLE t;   -- 软删除，数据可回收而非立即物理删除
-```
-
-#### Prometheus Remote Write v2 原生直方图
-
-支持 Prometheus Remote Write v2 协议（[#8361](https://github.com/GreptimeTeam/greptimedb/pull/8361)）与 native histogram 持久化（[#8382](https://github.com/GreptimeTeam/greptimedb/pull/8382)）。
-
-```text
-remote_write:
-  - url: http://greptimedb:4000/v1/prometheus/write
-```
-
-#### RangeSelect 投影剪枝
-
-查询优化器对 RangeSelect 输入做投影剪枝，减少扫描列与 IO（[#8570](https://github.com/GreptimeTeam/greptimedb/pull/8570)）。
-
-```sql
-EXPLAIN SELECT ts, value FROM metrics WHERE ts > now() - INTERVAL '1 hour';
--- 只取所需列，减少扫描量
-```
+* chore!: update promql-parser to v0.10.0, remove `holt_winters` by [@shuiyisong](https://github.com/shuiyisong) in [#8457](https://github.com/GreptimeTeam/greptimedb/pull/8457)
+* feat!: remove configuration of sparse_primary_key_encoding by [@sunng87](https://github.com/sunng87) in [#8470](https://github.com/GreptimeTeam/greptimedb/pull/8470)
+* fix(pipeline)!: check integer narrowing by [@discord9](https://github.com/discord9) in [#8589](https://github.com/GreptimeTeam/greptimedb/pull/8589)
 
 ### 🚀 Features
 
