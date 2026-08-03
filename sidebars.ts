@@ -162,6 +162,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/vector',
             'user-guide/integrations/kafka',
             'user-guide/integrations/flink',
+            'user-guide/integrations/spark',
             'user-guide/integrations/telegraf',
             'user-guide/integrations/grafana',
             'user-guide/integrations/perses',
