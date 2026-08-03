@@ -7,7 +7,7 @@ description: Learn how to use the JSON2 type in GreptimeDB, including table crea
 
 JSON2 is a JSON type in GreptimeDB designed for logs and semi-structured data.
 It stores fields inside JSON in a structured, columnar form so that frequently
-used fields can be read, filtered, and aggregated efficiently like regular 
+used fields can be read, filtered, and aggregated efficiently like regular
 columns, while still preserving the flexibility of JSON for dynamic schemas.
 
 :::note
@@ -24,7 +24,7 @@ still queried frequently.
 ### Create a table
 
 When creating a table, you can declare a JSON2 column with the `JSON2` type.
-Currently, JSON2 can only be used in append-only tables, so you must set 
+Currently, JSON2 can only be used in append-only tables, so you must set
 `'append_mode' = 'true'` when creating the table.
 
 ```sql
@@ -114,7 +114,7 @@ The query result is:
 | path | status | latency_ms | error |
 | --- | --- | --- | --- |
 | /v1/orders | 200 | 386.4 | NULL |
-| /v1/orders | 500 | 71.2 | 1 |
+| /v1/orders | 500 | 71.2 | true |
 
 You can also aggregate fields, for example to count requests, errors, and average
 latency for each API path:
@@ -139,12 +139,14 @@ The query result is:
 
 ### JSON Field Type hints
 
-JSON2 supports type hints, which let you declare concrete data types for 
-subpaths. Once declared, these subpaths are stored using the specified types,
-which provides query performance close to regular columns and enforces type
-validation during writes.
+JSON2 supports type hints for declaring concrete data types for selected
+subpaths. Type hints are recommended for frequently queried subpaths with known
+and stable types. These subpaths are stored using the specified types, providing
+query performance close to regular columns. JSON2 also validates their values
+during writes. Type hints are optional. For subpaths without type hints, JSON2
+infers their types from the values written to the column.
 
-The basic syntax for a type hint is:
+The syntax for declaring type hints is:
 
 ```sql
 json_column JSON2 (
@@ -170,9 +172,9 @@ Type hints currently support the following data types:
 Type hints allow `NULL` by default. If you specify `NOT NULL`, that path must
 exist in the written JSON.
 
-As shown in the quick start example above, type hints can be declared directly
-in the `CREATE TABLE` statement. For example, you can define the `attrs` JSON2
-column with type hints for commonly queried subpaths:
+You can declare type hints directly in the `CREATE TABLE` statement. The
+following example defines type hints for commonly queried subpaths in the
+`attrs` column:
 
 ```sql
 CREATE TABLE application_logs (
@@ -201,7 +203,7 @@ CREATE TABLE application_logs (
 default. If you want to specify the return type directly, add a cast after the
 function.
 
-The basic syntax of `json_get` is:
+The syntax of `json_get` is:
 
 ```sql
 json_get(json_column, 'path.to.field')::TYPE

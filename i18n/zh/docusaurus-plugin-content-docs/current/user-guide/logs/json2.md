@@ -107,7 +107,7 @@ ORDER BY ts;
 | path | status | latency_ms | error |
 | --- | --- | --- | --- |
 | /v1/orders | 200 | 386.4 | NULL |
-| /v1/orders | 500 | 71.2 | 1 |
+| /v1/orders | 500 | 71.2 | true |
 
 你也可以对字段做聚合，例如统计每个 API 路径的请求量、错误数和平均延迟：
 
@@ -131,9 +131,9 @@ GROUP BY json_get(attrs, 'http.path')::STRING;
 
 ### JSON 字段 Type hint
 
-JSON2 支持 type hint，用于为子路径声明确定的数据类型。声明后，这些子路径会按指定类型存储，从而获得接近普通列的查询性能，并在写入时进行类型校验。
+JSON2 支持使用 type hint 为指定的子路径声明确定的数据类型。对于类型已知且稳定、需要频繁查询的子路径，建议使用 type hint。这些子路径会按指定类型存储，从而获得接近普通列的查询性能。JSON2 还会在写入时校验这些子路径的值。Type hint 是可选的。对于未声明 type hint 的子路径，JSON2 会根据写入列中的值推断其类型。
 
-Type hint 的基本语法如下：
+声明 type hint 的语法如下：
 
 ```sql
 json_column JSON2 (
@@ -158,7 +158,7 @@ Type hint 的路径使用点号分隔，例如 `user.id` 对应 JSON 中的
 
 Type hint 默认允许 `NULL`。如果设置 `NOT NULL`，写入的 JSON 中必须存在该路径。
 
-如上面的快速入门示例所示，type hint 可以直接在 `CREATE TABLE` 语句中声明。例如，可以为 `attrs` 这个 JSON2 列中经常查询的子路径定义 type hint：
+可以直接在 `CREATE TABLE` 语句中声明 type hint。下面的示例为 `attrs` 列中经常查询的子路径定义了 type hint：
 
 ```sql
 CREATE TABLE application_logs (
@@ -185,7 +185,7 @@ CREATE TABLE application_logs (
 
 `json_get` 用于按路径读取 JSON2 中的嵌套字段。默认返回字符串类型；如果希望直接指定返回类型，可以在函数后使用类型转换。
 
-`json_get` 的基本语法如下：
+`json_get` 的语法如下：
 
 ```sql
 json_get(json_column, 'path.to.field')::TYPE
