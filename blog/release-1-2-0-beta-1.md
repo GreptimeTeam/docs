@@ -8,7 +8,7 @@ date: 2026-07-31
 
 Release date: July 31, 2026
 
-GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2 type system to maturity, large query performance improvements via dictionary-encoded series keys, soft-drop table lifecycle management, Prometheus Remote Write v2 native histogram support, and a large set of correctness and stability fixes.
+GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2 type system to maturity, large query performance improvements via dictionary-encoded series keys, Prometheus Remote Write v2 native histogram support, and a large set of correctness and stability fixes.
 
 ### 👍 Highlights
 
@@ -25,17 +25,6 @@ GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2
   ```sql
   SELECT * FROM metrics WHERE job = 'node' AND path ~ '/api/.*';
   -- regex filters on dictionary-encoded columns are now semantically correct and fast
-  ```
-
-- **Experimental soft-drop table lifecycle with `UNDROP TABLE`** — Distributed deployments can opt into soft drop: with `gc.enable` and `gc.experimental_soft_drop.enable` set on metasrv and `region_engine.mito.gc.enable` on datanodes, a dropped table enters a recycle bin and can be restored with `UNDROP TABLE` before the retention period (default 7d) expires ([#8546](https://github.com/GreptimeTeam/greptimedb/pull/8546), [#8554](https://github.com/GreptimeTeam/greptimedb/pull/8554)), with retention-based GC ([#8526](https://github.com/GreptimeTeam/greptimedb/pull/8526)), offline cleanup ([#8458](https://github.com/GreptimeTeam/greptimedb/pull/8458)), and WAL retirement ([#8475](https://github.com/GreptimeTeam/greptimedb/pull/8475)). Disabled by default; not yet available in standalone mode, and file-engine tables and metric logical tables are still hard-dropped.
-
-  ```sql
-  DROP TABLE t;    -- with soft-drop enabled, the table enters the recycle bin
-  UNDROP TABLE t;  -- restore it before the retention period expires
-  ```
-
-  ```sql
-  DROP TABLE t;  -- soft delete: data is reclaimable instead of immediately physically removed
   ```
 
 - **Prometheus Remote Write v2 with native histograms** — Support for the Remote Write v2 protocol ([#8361](https://github.com/GreptimeTeam/greptimedb/pull/8361)), persistence and validation of native histograms ([#8382](https://github.com/GreptimeTeam/greptimedb/pull/8382), [#8654](https://github.com/GreptimeTeam/greptimedb/pull/8654)), and PromQL native histogram functions ([#8664](https://github.com/GreptimeTeam/greptimedb/pull/8664)). Prometheus sends v1 unless `protobuf_message` is set; native histogram ingestion is experimental and disabled by default (`experimental_enable_prometheus_native_histogram` under `[http]`).
