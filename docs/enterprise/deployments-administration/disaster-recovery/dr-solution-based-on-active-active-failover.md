@@ -142,6 +142,47 @@ Test both planned and unplanned failover regularly. The test should cover active
 
 - **Service discovery or endpoint update.** Health automation can update DNS, a service registry, or the application's endpoint set. Include health-check intervals, DNS TTL, and connection-pool refresh time in the RTO estimate.
 
+### HAProxy example
+
+The following minimal configuration exposes a local TCP endpoint at `127.0.0.1:14000`. HAProxy sends traffic to node A while it is healthy and switches to node B after three consecutive failed health checks. Node A becomes eligible again after two consecutive successful checks.
+
+Although both GreptimeDB nodes can accept writes, this example uses active-standby traffic routing to keep application writes on one node during normal operation. Replace the hostnames, ports, bind address, and timeouts for your environment.
+
+```text title="haproxy.cfg"
+global
+    log /dev/log local0
+    log /dev/log local1 notice
+    daemon
+
+defaults
+    mode tcp
+    log global
+    option tcplog
+    timeout connect 5s
+    timeout client 30s
+    timeout server 30s
+
+frontend local_in
+    bind 127.0.0.1:14000
+    default_backend greptimedb_nodes
+
+backend greptimedb_nodes
+    balance first
+
+    # Preferred node
+    server node-a node-a:4000 check inter 2s fall 3 rise 2
+
+    # Failover node
+    server node-b node-b:4000 check inter 2s fall 3 rise 2 backup
+```
+
+Validate the configuration before starting HAProxy:
+
+```shell
+haproxy -c -f haproxy.cfg
+haproxy -f haproxy.cfg
+```
+
 ## Operational Checklist
 
 Monitor both nodes for availability, replication errors, replication delay, and storage capacity. Also use an end-to-end probe that writes to one node and verifies the result on the peer.

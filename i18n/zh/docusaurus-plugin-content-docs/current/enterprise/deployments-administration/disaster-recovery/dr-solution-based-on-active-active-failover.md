@@ -142,6 +142,47 @@ RTO 包括故障检测、端点切换、连接重试和应用恢复时间。Grep
 
 - **服务发现或端点更新。** 健康检查系统可以更新 DNS、服务注册表或应用的端点集合。估算 RTO 时，需要计入健康检查间隔、DNS TTL 和连接池刷新时间。
 
+### HAProxy 示例
+
+以下最小配置在 `127.0.0.1:14000` 暴露一个本地 TCP 端点。节点 A 健康时，HAProxy 将流量发送到节点 A；连续三次健康检查失败后切换到节点 B。节点 A 连续两次健康检查成功后，会重新成为可选节点。
+
+虽然两个 GreptimeDB 节点都能接受写入，但该示例使用主备流量路由，使应用在正常情况下只向一个节点写入。请根据实际环境替换主机名、端口、监听地址和超时时间。
+
+```text title="haproxy.cfg"
+global
+    log /dev/log local0
+    log /dev/log local1 notice
+    daemon
+
+defaults
+    mode tcp
+    log global
+    option tcplog
+    timeout connect 5s
+    timeout client 30s
+    timeout server 30s
+
+frontend local_in
+    bind 127.0.0.1:14000
+    default_backend greptimedb_nodes
+
+backend greptimedb_nodes
+    balance first
+
+    # Preferred node
+    server node-a node-a:4000 check inter 2s fall 3 rise 2
+
+    # Failover node
+    server node-b node-b:4000 check inter 2s fall 3 rise 2 backup
+```
+
+启动 HAProxy 前先检查配置：
+
+```shell
+haproxy -c -f haproxy.cfg
+haproxy -f haproxy.cfg
+```
+
 ## 运维检查清单
 
 应监控两个节点的可用性、复制错误、复制延迟和存储容量，并通过端到端探针向一个节点写入数据，再从对端核验结果。
