@@ -691,6 +691,9 @@ refer to the [Time Zone](/user-guide/timezone.md#impact-of-time-zone-on-sql-stat
 
 ### Metasrv-only configuration
 
+The `datanode.client` options configure outbound gRPC connections from Metasrv to Datanodes.
+The client message size limits are independent of the `[grpc]` server message size limits.
+
 ```toml
 # The working home directory.
 data_home = "./greptimedb_data"
@@ -840,6 +843,12 @@ connect_timeout = "10s"
 ## `TCP_NODELAY` option for accepted connections.
 tcp_nodelay = true
 
+## The maximum receive message size for the gRPC client.
+max_recv_message_size = "512MB"
+
+## The maximum send message size for the gRPC client.
+max_send_message_size = "512MB"
+
 [wal]
 # Available wal providers:
 # - `raft_engine` (default): there're none raft-engine wal config since metasrv only involves in remote wal currently.
@@ -952,6 +961,8 @@ timeout = "3s"
 | `datanode.client.timeout`                     | String  | `10s`                        | Operation timeout.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `datanode.client.connect_timeout`             | String  | `10s`                        | Connect server timeout.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `datanode.client.tcp_nodelay`                 | Bool    | `true`                       | `TCP_NODELAY` option for accepted connections.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `datanode.client.max_recv_message_size`       | String  | `512MB`                      | The maximum receive message size for the gRPC client.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `datanode.client.max_send_message_size`       | String  | `512MB`                      | The maximum send message size for the gRPC client.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `wal`                                         | --      | --                           | --                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `wal.provider`                                | String  | `raft_engine`                | --                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `wal.broker_endpoints`                        | Array   | --                           | The broker endpoints of the Kafka cluster.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -999,16 +1010,23 @@ ingest_rt_size = 8
 
 ### Frontend-only configuration
 
+The `datanode.client` options configure outbound gRPC connections from Frontend to Datanodes.
+The client message size limits are independent of the `[grpc]` server message size limits.
+
 ```toml
 [datanode]
 [datanode.client]
 connect_timeout = "1s"
 tcp_nodelay = true
+max_recv_message_size = "512MB"
+max_send_message_size = "512MB"
 ```
 
-| Key                               | Type   | Default | Description                                    |
-| --------------------------------- | ------ | ------- | ---------------------------------------------- |
-| `datanode`                        | --     | --      | Datanode options.                              |
-| `datanode.client`                 | --     | --      | Datanode client options.                       |
-| `datanode.client.connect_timeout` | String | `1s`    | Connect server timeout.                        |
-| `datanode.client.tcp_nodelay`     | Bool   | `true`  | `TCP_NODELAY` option for accepted connections. |
+| Key                                             | Type   | Default | Description                                            |
+| ----------------------------------------------- | ------ | ------- | ------------------------------------------------------ |
+| `datanode`                                      | --     | --      | Datanode options.                                      |
+| `datanode.client`                               | --     | --      | Datanode client options.                               |
+| `datanode.client.connect_timeout`               | String | `1s`    | Connect server timeout.                                |
+| `datanode.client.tcp_nodelay`                   | Bool   | `true`  | `TCP_NODELAY` option for accepted connections.         |
+| `datanode.client.max_recv_message_size`         | String | `512MB` | The maximum receive message size for the gRPC client.  |
+| `datanode.client.max_send_message_size`         | String | `512MB` | The maximum send message size for the gRPC client.     |
