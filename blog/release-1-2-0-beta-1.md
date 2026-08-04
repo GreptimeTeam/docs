@@ -27,6 +27,8 @@ GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2
   -- regex filters on dictionary-encoded columns are now semantically correct and fast
   ```
 
+- **Security hardening and access control** — Local-file SQL access (`COPY FROM/TO`, `COPY DATABASE`, file-engine external tables) is now sandboxed to `<storage.data_home>/copy` behind the new `storage.copy_root` option, and datanode local-file access is disabled in distributed deployments ([#8708](https://github.com/GreptimeTeam/greptimedb/pull/8708); migration guide: [docs#2677](https://github.com/GreptimeTeam/docs/pull/2677)). Table-level permission checks are enforced across query and write protocols ([#8552](https://github.com/GreptimeTeam/greptimedb/pull/8552)), database ACL gaps are closed and creators get access to newly created databases ([#8492](https://github.com/GreptimeTeam/greptimedb/pull/8492), [#8566](https://github.com/GreptimeTeam/greptimedb/pull/8566)), restricted HTTP endpoints require authentication ([#8672](https://github.com/GreptimeTeam/greptimedb/pull/8672)), and Postgres now supports SCRAM-SHA-256 ([#8304](https://github.com/GreptimeTeam/greptimedb/pull/8304)). An optional dedicated API server port (`http.enable_api_server`, default `false`; `http.api_server_addr`, default `127.0.0.1:4006`) exposes only `/v1` and the dashboard, keeping admin endpoints off the main port ([#8657](https://github.com/GreptimeTeam/greptimedb/pull/8657)).
+
 - **Prometheus Remote Write v2 with native histograms** — Support for the Remote Write v2 protocol ([#8361](https://github.com/GreptimeTeam/greptimedb/pull/8361)), persistence and validation of native histograms ([#8382](https://github.com/GreptimeTeam/greptimedb/pull/8382), [#8654](https://github.com/GreptimeTeam/greptimedb/pull/8654)), and PromQL native histogram functions ([#8664](https://github.com/GreptimeTeam/greptimedb/pull/8664)). Prometheus sends v1 unless `protobuf_message` is set; native histogram ingestion is experimental and disabled by default (`experimental_enable_prometheus_native_histogram` under `[http]`).
 
   ```text
@@ -35,10 +37,15 @@ GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2
       protobuf_message: io.prometheus.write.v2.Request
   ```
 
-  ```text
-  remote_write:
-    - url: http://greptimedb:4000/v1/prometheus/write
-  ```
+- **Splunk HEC ingestion** — New Splunk HEC-compatible endpoints at `/v1/splunk/services/collector/event` and `/v1/splunk/services/collector/raw`, with health probes, gzip support, and pipeline override via the `x-greptime-pipeline-name` header ([#8321](https://github.com/GreptimeTeam/greptimedb/pull/8321), [#8491](https://github.com/GreptimeTeam/greptimedb/pull/8491)). Vector's `splunk_hec` sink, the OpenTelemetry Collector `splunk_hec` exporter, and Fluent Bit can point at GreptimeDB by changing URL and token.
+
+- **Cluster lifecycle events** — The event recorder now covers table, database, flow, and view DDL events on top of region migration, plus WAL prune, batch GC, and repartition events ([#8549](https://github.com/GreptimeTeam/greptimedb/pull/8549), [#8623](https://github.com/GreptimeTeam/greptimedb/pull/8623), [#8626](https://github.com/GreptimeTeam/greptimedb/pull/8626), [#8627](https://github.com/GreptimeTeam/greptimedb/pull/8627), [#8632](https://github.com/GreptimeTeam/greptimedb/pull/8632), [#8648](https://github.com/GreptimeTeam/greptimedb/pull/8648), [#8665](https://github.com/GreptimeTeam/greptimedb/pull/8665), [#8673](https://github.com/GreptimeTeam/greptimedb/pull/8673), [#8677](https://github.com/GreptimeTeam/greptimedb/pull/8677)). Configure with `[event_recorder] ttl` (default 90 days) and `event_types` (omitted = record all, `[]` = disabled); docs: [docs#2678](https://github.com/GreptimeTeam/docs/pull/2678).
+
+- **Streaming EXPLAIN ANALYZE** — `POST /v1/sql/analyze/stream` streams per-stage metrics while a distributed query is still running, instead of waiting for completion; slow queries also record metrics on timeout. Enabled by default (`http.experimental_enable_explain_analyze_stream`, default `true`) ([#8380](https://github.com/GreptimeTeam/greptimedb/pull/8380), [#8405](https://github.com/GreptimeTeam/greptimedb/pull/8405), [#8584](https://github.com/GreptimeTeam/greptimedb/pull/8584), [#8644](https://github.com/GreptimeTeam/greptimedb/pull/8644), [#8668](https://github.com/GreptimeTeam/greptimedb/pull/8668)).
+
+- **PromQL semantics aligned with Prometheus** — Ordinary NaN samples are preserved, `or` matching handles missing labels and empty operands, range queries align to range tails, and remote read schemas are bound per query ([#8494](https://github.com/GreptimeTeam/greptimedb/pull/8494), [#8502](https://github.com/GreptimeTeam/greptimedb/pull/8502), [#8504](https://github.com/GreptimeTeam/greptimedb/pull/8504), [#8650](https://github.com/GreptimeTeam/greptimedb/pull/8650), [#8591](https://github.com/GreptimeTeam/greptimedb/pull/8591)); promql-parser updated to v0.10 ([#8457](https://github.com/GreptimeTeam/greptimedb/pull/8457)).
+
+- **Finer control over flush and compaction** — Table-level `auto_flush_interval` with `ALTER TABLE SET` ([#8357](https://github.com/GreptimeTeam/greptimedb/pull/8357), [#8403](https://github.com/GreptimeTeam/greptimedb/pull/8403)), per-region write buffer limits ([#8473](https://github.com/GreptimeTeam/greptimedb/pull/8473)), configurable parquet row group size ([#8446](https://github.com/GreptimeTeam/greptimedb/pull/8446)), `ADMIN COMPACT_TABLE` with `start_time`/`end_time` ranges ([#8685](https://github.com/GreptimeTeam/greptimedb/pull/8685)), and cancelable flush jobs ([#8669](https://github.com/GreptimeTeam/greptimedb/pull/8669)).
 
 - **RangeSelect projection pruning** — Range queries now prune unused input columns before the RangeSelect plan, reducing scanned columns and I/O ([#8570](https://github.com/GreptimeTeam/greptimedb/pull/8570)).
 
@@ -57,9 +64,7 @@ GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2
   # rerun the same command to resume from existing progress
   ```
 
-  ```bash
-  greptime cli export --v2 --progress   # parallel chunks with progress reporting
-  ```
+- **Also notable** — MySQL as an object store backend ([#8560](https://github.com/GreptimeTeam/greptimedb/pull/8560); repartition unsupported on it), Flow scheduling and window-update stability fixes ([#8360](https://github.com/GreptimeTeam/greptimedb/pull/8360), [#8544](https://github.com/GreptimeTeam/greptimedb/pull/8544), [#8582](https://github.com/GreptimeTeam/greptimedb/pull/8582), [#8389](https://github.com/GreptimeTeam/greptimedb/pull/8389), [#8409](https://github.com/GreptimeTeam/greptimedb/pull/8409), [#8611](https://github.com/GreptimeTeam/greptimedb/pull/8611)), and repartition polish ([#8291](https://github.com/GreptimeTeam/greptimedb/pull/8291), [#8497](https://github.com/GreptimeTeam/greptimedb/pull/8497), [#8678](https://github.com/GreptimeTeam/greptimedb/pull/8678)).
 
 ### Dashboard
 
