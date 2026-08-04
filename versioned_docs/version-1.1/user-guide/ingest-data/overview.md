@@ -14,7 +14,8 @@ GreptimeDB supports schemaless writing, automatically creating tables and adding
 This capability ensures that you do not need to manually define schemas beforehand, making it easier to manage and integrate diverse data sources seamlessly.
 <!-- TODO: add links to protocols and integrations -->
 This feature is supported for all protocols and integrations, except
-[SQL](./for-iot/sql.md) and [Apache Flink](/user-guide/integrations/flink.md).
+[SQL](./for-iot/sql.md), [Apache Flink](/user-guide/integrations/flink.md), and
+[Apache Spark](/user-guide/integrations/spark.md).
 
 ## Recommended Data Ingestion Methods
 
@@ -23,6 +24,7 @@ GreptimeDB supports various data ingestion methods for specific scenarios, ensur
 - [For Observability Scenarios](./for-observability/overview.md): Suitable for real-time monitoring and alerting.
 - [For IoT Scenarios](./for-iot/overview.md): Suitable for real-time data and complex IoT infrastructures.
 - [Apache Flink](/user-guide/integrations/flink.md): Use Flink SQL, the Table API, or the DataStream API to write insert-only records to GreptimeDB.
+- [Apache Spark](/user-guide/integrations/spark.md): Write batch DataFrames and Structured Streaming micro-batches to GreptimeDB.
 
 ## Next Steps
 
