@@ -247,7 +247,7 @@ max_inflight_requests = 3000
 | ---------- | ------------------ | ------ | ------------------------------------------------------------ |
 | http       |                    |        | HTTP 服务器选项                                              |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
-|            | timeout            | 字符串 | HTTP 请求超时时间。设为 "0s" 可禁用超时（默认值为 "0s"）。                              |
+|            | timeout            | 字符串 | HTTP 请求超时时间。设为 "0s" 可禁用超时（默认值为 "0s"）。启用 Prometheus Remote Write [批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式) 时，非零且不超过 `prom_store.pending_rows_flush_interval` 加 1 秒的超时值会被自动调整为该值。                              |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
 |            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
 |            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |

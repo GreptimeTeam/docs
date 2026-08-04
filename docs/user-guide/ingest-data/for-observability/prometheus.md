@@ -335,6 +335,18 @@ The following table describes the batching-related options:
 Batching mode only takes effect when both `with_metric_engine` is `true` and `pending_rows_flush_interval` is set to a non-zero duration.
 :::
 
+### Request timeout and retries
+
+When [`http.timeout`](/user-guide/deployments-administration/configuration.md#protocol-options) is set to a non-zero duration and a remote write request to `/v1/prometheus/write` exceeds it,
+GreptimeDB responds with `504 Gateway Timeout` instead of `408 Request Timeout`.
+Prometheus and other remote write senders retry on `5xx` responses,
+so a timed-out request is retried automatically instead of being dropped.
+
+In batching mode, rows that have been accepted into a pending batch continue to flush in the background even after the request times out.
+To ensure a request can wait long enough for its batch to flush,
+GreptimeDB raises a non-zero `http.timeout` that is less than or equal to `pending_rows_flush_interval` plus 1 second to that value and logs a warning.
+Setting `http.timeout = "0s"` (the default) disables the HTTP timeout entirely.
+
 ### Customized physical table
 
 By default, the metric engine will automatically create a physical table named `greptime_physical_table` if it does not already exist. For performance optimization, you may choose to create a physical table with customized configurations.

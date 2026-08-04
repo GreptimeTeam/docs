@@ -326,6 +326,20 @@ pending_rows_flush_interval = "500ms"
 批量写入模式仅在 `with_metric_engine` 为 `true` 且 `pending_rows_flush_interval` 设置为非零时间间隔时生效。
 :::
 
+### 请求超时与重试
+
+当 [`http.timeout`](/user-guide/deployments-administration/configuration.md#协议选项) 设置为非零值，
+且发往 `/v1/prometheus/write` 的 Remote Write 请求处理时间超过该值时，
+GreptimeDB 会返回 `504 Gateway Timeout` 而不是 `408 Request Timeout`。
+Prometheus 及其他 Remote Write 发送端会对 `5xx` 响应进行重试，
+因此超时的请求会被自动重试，而不是被直接丢弃。
+
+在批量写入模式下，已被接受到待刷写批次中的行数据即使在请求超时后仍会继续在后台刷写。
+为了确保请求能够等待足够长的时间以完成批次刷写，
+如果 `http.timeout` 为非零值且不超过 `pending_rows_flush_interval` 加 1 秒，
+GreptimeDB 会将其自动调整为该值并输出警告日志。
+设置 `http.timeout = "0s"`（默认值）则完全禁用 HTTP 超时。
+
 ### 自定义物理表
 
 默认情况下，metric engine 会自动创建一个名为 `greptime_physical_table` 的物理表。
