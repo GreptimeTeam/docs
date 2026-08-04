@@ -113,6 +113,34 @@ GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127
 
 本节将介绍主要的配置项，请前往 GitHub 查看[所有配置项](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/config.md)。
 
+### 运行时选项
+
+GreptimeDB 在多个专用的 Tokio 运行时上执行后台任务。
+这些选项适用于所有子命令（`standalone`、`datanode`、`frontend` 和 `metasrv`）。
+
+```toml
+[runtime]
+# 执行全局读操作的运行时线程数。
+# 默认为 CPU 核心数。
+global_rt_size = 8
+
+# 执行 compaction 操作的线程数。
+# 默认为 max(num_cpus / 2, 1)。
+compact_rt_size = 4
+
+# compaction 操作的最大阻塞线程数。
+# compaction picker 的 CPU 工作运行在 compact 运行时的阻塞线程池中，
+# 该限制可防止 compaction 规划的突发负载耗尽所有可用 CPU。
+# 默认为 max(num_cpus / 2, 1)。显式设置为 0 时会被调整为 1。
+compact_rt_max_blocking_threads = 4
+```
+
+| 配置项                                  | 类型   | 默认值                   | 描述                                                                                                                                   |
+| --------------------------------------- | ------ | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `runtime.global_rt_size`                | 整数   | CPU 核心数               | 执行全局读操作的运行时线程数。                                                                                                          |
+| `runtime.compact_rt_size`               | 整数   | `max(num_cpus / 2, 1)`   | 执行 compaction 操作的线程数。                                                                                                          |
+| `runtime.compact_rt_max_blocking_threads` | 整数 | `max(num_cpus / 2, 1)`   | compaction 操作的最大阻塞线程数。compaction picker 的 CPU 工作运行在该阻塞线程池中。显式设置为 `0` 时会被调整为 `1`。                    |
+
 ### 写入内存限制选项
 
 内存限制选项控制所有协议（HTTP、gRPC 和 Arrow Flight）并发写入请求使用的总内存。
@@ -994,6 +1022,8 @@ ingest_rt_size = 8
 | grpc.runtime_size | 整数   | gRPC 服务器工作线程数，默认为 8。           |
 | runtime.query_rt_size | 整数   | 执行 datanode 查询操作的运行时线程数。默认值为 `max(num_cpus - 1, 1)`。 |
 | runtime.ingest_rt_size | 整数   | 执行 datanode 写入操作的运行时线程数。默认值为 CPU 核心数。 |
+
+所有组件共享的通用运行时选项，请参阅[运行时选项](#运行时选项)。
 
 ### 仅限于 `Frontend` 的配置
 
