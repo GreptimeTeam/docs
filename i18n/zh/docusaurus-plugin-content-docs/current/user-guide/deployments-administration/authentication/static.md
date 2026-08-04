@@ -60,6 +60,7 @@ editor:rw=editor_pwd
 - `plain:<password>` — 明文。未指定前缀时的默认格式。
 - `pbkdf2_sha256:<iterations>:<hex_salt>:<hex_hash>` — 以 PBKDF2-SHA256 哈希形式存储。
 - `mysql_native_password:<hex_sha1_sha1_password>` — 哈希形式的 verifier，同时仍可服务 MySQL `mysql_native_password` 握手。
+- `pg_scram_sha256:<iterations>:<hex_salt>:<hex_stored_key>:<hex_server_key>` — SCRAM-SHA-256 verifier，用于 PostgreSQL 的 SASL 握手。从 v1.2 起支持。
 
 示例：
 
@@ -67,6 +68,7 @@ editor:rw=editor_pwd
 admin=plain:admin_pwd
 alice=pbkdf2_sha256:4096:73616c74:c5e478d59288c841aa530db6845c4c8d962893a001ce4e11a4963873aa98134a
 bob=mysql_native_password:6bb4837eb74329105ee4568dda7dc67ed2ca2ad9
+carol=pg_scram_sha256:4096:73616c74:53706a13f10b3c031b4c355d75ebd6500d3478062ce7d262710c3e60de02b93f:a19ce79824bd7ad68d96b8c00b0f1cc776bd0feca54d663301bb9866a860545b
 ```
 
 权限模式可与 verifier 格式组合使用，verifier 写在 `=` 之后：
@@ -79,17 +81,38 @@ alice:readonly=pbkdf2_sha256:4096:73616c74:c5e478d59288c841aa530db6845c4c8d96289
 
 单一 verifier 格式无法服务所有协议。请根据客户端的连接方式选择格式：
 
-| Verifier | HTTP/gRPC Basic | PostgreSQL cleartext | MySQL clear password | MySQL `mysql_native_password` |
-| --- | --- | --- | --- | --- |
-| `plain:<password>`（或旧式 `user=password`） | 是 | 是 | 是 | 是 |
-| `pbkdf2_sha256:...` | 是 | 是 | 是 | 否 |
-| `mysql_native_password:...` | 否 | 否 | 否 | 是 |
+| Verifier | HTTP/gRPC Basic | PostgreSQL SCRAM-SHA-256 | PostgreSQL cleartext | MySQL clear password | MySQL `mysql_native_password` |
+| --- | --- | --- | --- | --- | --- |
+| `plain:<password>`（或旧式 `user=password`） | 是 | 是 | 是 | 是 | 是 |
+| `pbkdf2_sha256:...` | 是 | 否 | 是 | 是 | 否 |
+| `mysql_native_password:...` | 否 | 否 | 否 | 否 | 是 |
+| `pg_scram_sha256:...` | 是 | 是 | 是 | 是 | 否 |
 
 `pbkdf2_sha256` 只保护静态存储的密码，并不改变链路安全性。支持明文传输的协议在生产环境中仍需启用 TLS。
 
 :::warning 破坏性变更
-密码现在按前缀解析。如果旧式明文密码恰好以 `plain:`、`pbkdf2_sha256:` 或 `mysql_native_password:` 开头，其含义会发生变化。请使用 `plain:` 前缀保留字面值。例如，若要保留字面密码 `plain:secret`，应配置为 `user=plain:plain:secret`。
+密码现在按前缀解析。如果旧式明文密码恰好以 `plain:`、`pbkdf2_sha256:`、`mysql_native_password:` 或 `pg_scram_sha256:` 开头，其含义会发生变化。请使用 `plain:` 前缀保留字面值。例如，若要保留字面密码 `plain:secret`，应配置为 `user=plain:plain:secret`。
 :::
+
+#### PostgreSQL SCRAM-SHA-256
+
+SCRAM-SHA-256 让 PostgreSQL 客户端不必以明文发送密码。
+
+PostgreSQL 在连接建立时就要确定唯一一种鉴权方式，此时服务端还不知道用户名是否存在。为了不泄露配置了哪些用户，GreptimeDB 只有在凭证文件里**所有**用户都支持 SCRAM 时才提供 SCRAM——也就是所有 verifier 都是 `plain:` 或 `pg_scram_sha256:`。
+
+:::warning
+只要有一个 `pbkdf2_sha256:` 或 `mysql_native_password:` 用户，整个实例的 PostgreSQL 鉴权就会退回明文，包括那些自身 verifier 支持 SCRAM 的用户。想用 SCRAM 就不要混用 verifier 格式。
+:::
+
+不支持 channel binding（`SCRAM-SHA-256-PLUS`）。
+
+可以用 libpq 的 `require_auth` 参数确认服务端提供的是哪种方式：
+
+```shell
+psql "host=127.0.0.1 port=4003 user=carol dbname=public require_auth=scram-sha-256"
+```
+
+如果实例已经退回明文，这条命令会报 `server requested a cleartext password`。
 
 ### 生成密码 Verifier
 
@@ -113,10 +136,10 @@ admin=pbkdf2_sha256:4096:<random_hex_salt>:<hex_hash>
 
 可用选项：
 
-- `--format <FORMAT>` — verifier 格式，`pbkdf2_sha256`（默认）或 `mysql_native_password`。
+- `--format <FORMAT>` — verifier 格式，`pbkdf2_sha256`（默认）、`mysql_native_password` 或 `pg_scram_sha256`。
 - `--password <PASSWORD>` — 明文密码。与 `--password-stdin` 互斥，二者必须且只能指定其一。脚本中优先使用 `--password-stdin`，因为 `--password` 可能通过 shell 历史或进程列表泄露。
 - `--password-stdin` — 从标准输入读取明文密码。
-- `--iterations <N>` — PBKDF2-SHA256 迭代次数（默认 `4096`，范围 `1..=1000000`）。
+- `--iterations <N>` — PBKDF2-SHA256 / SCRAM-SHA-256 迭代次数（默认 `4096`，范围 `1..=1000000`）。
 - `--salt-len <N>` — 随机盐长度，单位字节（默认 `16`，范围 `1..=1024`）。
 - `--salt-hex <HEX>` — 使用固定的十六进制盐替代随机盐，用于确定性的自动化场景。
 
@@ -124,6 +147,12 @@ admin=pbkdf2_sha256:4096:<random_hex_salt>:<hex_hash>
 
 ```shell
 ./greptime user hash-password --password-stdin --format mysql_native_password
+```
+
+生成 PostgreSQL SCRAM-SHA-256 格式的 verifier：
+
+```shell
+./greptime user hash-password --password-stdin --format pg_scram_sha256
 ```
 
 ### 启动服务器
