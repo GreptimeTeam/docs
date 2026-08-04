@@ -115,6 +115,34 @@ GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127
 In this section, we will introduce some main configuration options.
 For all options, refer to the [Configuration Reference](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/config.md) on Github.
 
+### Runtime options
+
+GreptimeDB executes background work on several dedicated Tokio runtimes.
+These options are valid in all subcommands (`standalone`, `datanode`, `frontend`, and `metasrv`).
+
+```toml
+[runtime]
+# The number of threads to execute the runtime for global read operations.
+# Defaults to the number of CPU cores.
+global_rt_size = 8
+
+# The number of threads to execute compaction operations.
+# Defaults to max(num_cpus / 2, 1).
+compact_rt_size = 4
+
+# The maximum number of blocking threads for compaction operations.
+# Compaction picker CPU work runs on the compact runtime's blocking thread pool,
+# so this limit prevents bursts of compaction planning from consuming all available CPUs.
+# Defaults to max(num_cpus / 2, 1). An explicit 0 is clamped to 1.
+compact_rt_max_blocking_threads = 4
+```
+
+| Option                               | Type    | Default                  | Description                                                                                                                                                                            |
+| ------------------------------------ | ------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `runtime.global_rt_size`             | Integer | The number of CPU cores  | The number of threads to execute the runtime for global read operations.                                                                                                                |
+| `runtime.compact_rt_size`            | Integer | `max(num_cpus / 2, 1)`   | The number of threads to execute compaction operations.                                                                                                                                    |
+| `runtime.compact_rt_max_blocking_threads` | Integer | `max(num_cpus / 2, 1)` | The maximum number of blocking threads for compaction operations. Compaction picker CPU work runs on this blocking thread pool. An explicit `0` is clamped to `1`.                          |
+
 ### Write memory limiter options
 
 Memory limiter options control the total memory used by concurrent write requests across all protocols (HTTP, gRPC, and Arrow Flight).
@@ -1007,6 +1035,8 @@ ingest_rt_size = 8
 | grpc.runtime_size | Integer | The number of gRPC server worker threads, 8 by default.                                                                                                                                                                                                                         |
 | runtime.query_rt_size | Integer | The number of threads to execute datanode query operations. Defaults to `max(num_cpus - 1, 1)`. |
 | runtime.ingest_rt_size | Integer | The number of threads to execute datanode ingestion operations. Defaults to the number of CPU cores. |
+
+For the common runtime options shared by all components, see [Runtime options](#runtime-options).
 
 ### Frontend-only configuration
 
