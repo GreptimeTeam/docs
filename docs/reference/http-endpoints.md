@@ -266,6 +266,13 @@ Refer to the original Prometheus documentation for more information on the [Prom
 - **Description**: Compatible with Loki's API for log ingestion.
 - **Usage**: Send log data in Loki's format to this endpoint.
 
+### Splunk HEC Compatibility
+
+- **Path**: `/v1/splunk/services/collector/event`, `/v1/splunk/services/collector/raw`, `/v1/splunk/services/collector/health`
+- **Methods**: `POST` for the ingestion endpoints, `GET` for the health endpoint
+- **Description**: Compatible with the Splunk HTTP Event Collector (HEC) protocol for log ingestion.
+- **Usage**: Send JSON events to `/event` or plain text to `/raw`. See [Ingest Data with Splunk](/user-guide/ingest-data/for-observability/splunk.md).
+
 ### OpenTSDB Protocol
 
 - **Path**: `/v1/opentsdb/api/put`

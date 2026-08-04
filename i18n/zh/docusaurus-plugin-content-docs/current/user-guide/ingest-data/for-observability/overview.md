@@ -1,6 +1,6 @@
 ---
-keywords: [可观测性, Prometheus, Vector, OpenTelemetry, InfluxDB Line Protocol]
-description: 介绍 GreptimeDB 在可观测性场景中的应用，包括与 Prometheus、Vector、OpenTelemetry 和 InfluxDB Line Protocol 的集成。
+keywords: [可观测性, Prometheus, Vector, OpenTelemetry, InfluxDB Line Protocol, Splunk]
+description: 介绍 GreptimeDB 在可观测性场景中的应用，包括与 Prometheus、Vector、OpenTelemetry、InfluxDB Line Protocol 和 Splunk 的集成。
 ---
 
 # 可观测场景数据写入
@@ -17,5 +17,6 @@ GreptimeDB 与领先的可观测性工具无缝集成，为你提供系统健康
 - [InfluxDB Line Protocol](influxdb-line-protocol.md)：一种广泛使用的时间序列数据协议，便于从 InfluxDB 迁移到 GreptimeDB。该文档同样介绍了 Telegraf 的集成方式。
 - [Loki](loki.md)：一种广泛使用的日志写入协议，便于从 Loki 迁移到 GreptimeDB。本文档还介绍了 Alloy 集成方法。
 - [Elasticsearch](elasticsearch.md)：通过 Elasticsearch `_bulk` API 写入日志，兼容 Logstash、Filebeat 和 Telegraf。
+- [Splunk](splunk.md)：通过 Splunk HTTP Event Collector (HEC) 协议写入日志，兼容 Vector 和 OpenTelemetry Collector。
 - [Fluent Bit](fluent-bit.md)：将 Fluent Bit 中的指标、日志和 trace 转发到 GreptimeDB。
 - [Kafka](kafka.md)：通过 Vector 消费 Kafka 中的指标和日志并写入 GreptimeDB。
