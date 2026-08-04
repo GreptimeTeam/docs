@@ -27,13 +27,24 @@ GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2
   -- regex filters on dictionary-encoded columns are now semantically correct and fast
   ```
 
-- **Soft-drop table lifecycle with `UNDROP TABLE`** — `DROP TABLE` is now a soft delete: the table enters a recycle bin and can be restored with `UNDROP TABLE` before the retention period expires ([#8546](https://github.com/GreptimeTeam/greptimedb/pull/8546), [#8554](https://github.com/GreptimeTeam/greptimedb/pull/8554)), with retention-based GC ([#8526](https://github.com/GreptimeTeam/greptimedb/pull/8526)), offline cleanup ([#8458](https://github.com/GreptimeTeam/greptimedb/pull/8458)), and WAL retirement ([#8475](https://github.com/GreptimeTeam/greptimedb/pull/8475)).
+- **Experimental soft-drop table lifecycle with `UNDROP TABLE`** — Distributed deployments can opt into soft drop: with `gc.enable` and `gc.experimental_soft_drop.enable` set on metasrv and `region_engine.mito.gc.enable` on datanodes, a dropped table enters a recycle bin and can be restored with `UNDROP TABLE` before the retention period (default 7d) expires ([#8546](https://github.com/GreptimeTeam/greptimedb/pull/8546), [#8554](https://github.com/GreptimeTeam/greptimedb/pull/8554)), with retention-based GC ([#8526](https://github.com/GreptimeTeam/greptimedb/pull/8526)), offline cleanup ([#8458](https://github.com/GreptimeTeam/greptimedb/pull/8458)), and WAL retirement ([#8475](https://github.com/GreptimeTeam/greptimedb/pull/8475)). Disabled by default; not yet available in standalone mode, and file-engine tables and metric logical tables are still hard-dropped.
+
+  ```sql
+  DROP TABLE t;    -- with soft-drop enabled, the table enters the recycle bin
+  UNDROP TABLE t;  -- restore it before the retention period expires
+  ```
 
   ```sql
   DROP TABLE t;  -- soft delete: data is reclaimable instead of immediately physically removed
   ```
 
-- **Prometheus Remote Write v2 with native histograms** — Support for the Remote Write v2 protocol ([#8361](https://github.com/GreptimeTeam/greptimedb/pull/8361)), persistence and validation of native histograms ([#8382](https://github.com/GreptimeTeam/greptimedb/pull/8382), [#8654](https://github.com/GreptimeTeam/greptimedb/pull/8654)), and PromQL native histogram functions ([#8664](https://github.com/GreptimeTeam/greptimedb/pull/8664)).
+- **Prometheus Remote Write v2 with native histograms** — Support for the Remote Write v2 protocol ([#8361](https://github.com/GreptimeTeam/greptimedb/pull/8361)), persistence and validation of native histograms ([#8382](https://github.com/GreptimeTeam/greptimedb/pull/8382), [#8654](https://github.com/GreptimeTeam/greptimedb/pull/8654)), and PromQL native histogram functions ([#8664](https://github.com/GreptimeTeam/greptimedb/pull/8664)). Prometheus sends v1 unless `protobuf_message` is set; native histogram ingestion is experimental and disabled by default (`experimental_enable_prometheus_native_histogram` under `[http]`).
+
+  ```text
+  remote_write:
+    - url: http://greptimedb:4000/v1/prometheus/write
+      protobuf_message: io.prometheus.write.v2.Request
+  ```
 
   ```text
   remote_write:
@@ -47,7 +58,15 @@ GreptimeDB v1.2.0-beta.1 is the first beta of the v1.2 line. It brings the JSON2
   -- only the needed columns are scanned
   ```
 
-- **Parallel, resumable export/import v2** — The snapshot-based export/import v2 gained concurrent chunk export (`--chunk-parallelism`), parallel import tasks (`--task-parallelism`), progress reporting (`--progress`), and resume: re-running the same command skips completed chunks and tasks instead of starting over. See the [export/import v2 guide](https://docs.greptime.com/user-guide/deployments-administration/disaster-recovery/export-import-v2).
+- **Parallel, resumable export/import v2** — The snapshot-based export/import v2 gained concurrent chunk export (`--chunk-parallelism`), parallel import tasks (`--task-parallelism`), and progress reporting (`--progress auto|always|never`); resume works by re-running the same command, which skips completed chunks and tasks instead of starting over. See the [export/import v2 guide](https://docs.greptime.com/user-guide/deployments-administration/disaster-recovery/export-import-v2).
+
+  ```bash
+  greptime cli data export-v2 create \
+    --addr 127.0.0.1:4000 \
+    --to file:///tmp/greptime-snapshots/demo \
+    --chunk-parallelism 4
+  # rerun the same command to resume from existing progress
+  ```
 
   ```bash
   greptime cli export --v2 --progress   # parallel chunks with progress reporting
