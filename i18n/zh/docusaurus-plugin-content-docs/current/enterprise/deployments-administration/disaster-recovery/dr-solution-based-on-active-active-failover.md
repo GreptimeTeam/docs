@@ -11,7 +11,7 @@ GreptimeDB 企业版可以将两个 Standalone 节点部署为对等节点。两
 
 ## 架构
 
-![两个 GreptimeDB 节点双向复制数据，并由外部故障切换机制管理流量](/img/active-active-forwarding.svg)
+![两个 GreptimeDB 节点双向复制数据，并由外部故障切换机制管理流量](/img/active-active-forwarding-zh.svg)
 
 两个节点相互独立地提供服务：
 

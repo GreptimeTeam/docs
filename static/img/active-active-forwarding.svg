@@ -25,12 +25,12 @@
   <text class="label" x="600" y="96" text-anchor="middle">Load balancer · Client driver · Service discovery</text>
 
   <rect class="node" x="90" y="245" width="390" height="190" rx="18"/>
-  <text class="title" x="285" y="295" text-anchor="middle">Site A · GreptimeDB node A</text>
+  <text class="title" x="285" y="295" text-anchor="middle">Zone A · GreptimeDB node A</text>
   <text class="label" x="285" y="335" text-anchor="middle">Accepts reads and writes</text>
   <text class="label" x="285" y="369" text-anchor="middle">Keeps a complete data copy</text>
 
   <rect class="node" x="720" y="245" width="390" height="190" rx="18"/>
-  <text class="title" x="915" y="295" text-anchor="middle">Site B · GreptimeDB node B</text>
+  <text class="title" x="915" y="295" text-anchor="middle">Zone B · GreptimeDB node B</text>
   <text class="label" x="915" y="335" text-anchor="middle">Accepts reads and writes</text>
   <text class="label" x="915" y="369" text-anchor="middle">Keeps a complete data copy</text>
 
