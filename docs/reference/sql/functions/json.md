@@ -37,6 +37,7 @@ Extracts values with specific types from JSON values through specific paths.
 * `json_get_float(json, path)` to extract a float value from a JSON value by the path, while integer and boolean values will be converted to floats.
 * `json_get_string(json, path)` to extract a string value from a JSON value by the path. All valid JSON values will be converted to strings, including null values, objects and arrays.
 * `json_get_object(json, path)` to extract an object value from a JSON value by the path. Returns NULL if the path does not point to an object.
+* `json_object_keys(json)` to return the outermost keys of a JSON object as a string list. Returns `[]` for an empty object and `NULL` for non-object JSON values or `NULL` input.
 
 `path` is a string that select and extract elements from a json value. The following operators in the path are supported:
 
@@ -72,6 +73,22 @@ SELECT json_to_string(json_get_object(parse_json('{"a": {"b": {"c": {"d": 42}}}}
 +---------------------------------------------------------------------------------------------------+
 | {"d":42}                                                                                          |
 +---------------------------------------------------------------------------------------------------+
+
+SELECT json_object_keys(parse_json('{"a": 1, "b": {"c": 2}}'));
+
++---------------------------------------------------------------+
+| json_object_keys(parse_json(Utf8("{"a": 1, "b": {"c": 2}}"))) |
++---------------------------------------------------------------+
+| [a, b]                                                        |
++---------------------------------------------------------------+
+
+SELECT json_object_keys(parse_json('{}'));
+
++------------------------------------------+
+| json_object_keys(parse_json(Utf8("{}"))) |
++------------------------------------------+
+| []                                       |
++------------------------------------------+
 ```
 
 ## Validation
