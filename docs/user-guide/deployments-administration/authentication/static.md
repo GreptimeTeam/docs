@@ -98,7 +98,7 @@ Passwords are prefix-parsed. A legacy plaintext password that literally starts w
 
 SCRAM-SHA-256 lets PostgreSQL clients authenticate without sending the password in cleartext.
 
-PostgreSQL negotiates a single authentication method when a connection starts, before the server knows whether the username exists. To avoid leaking which users are configured, GreptimeDB offers SCRAM only when **every** user in the credential file can do SCRAM — that is, every verifier is `plain:` or `pg_scram_sha256:`.
+PostgreSQL negotiates a single authentication method when a connection starts. The server does receive the username at that point, but picking the method per user would reveal whether that user exists and what verifier format it uses. GreptimeDB therefore decides globally: it offers SCRAM only when **every** user in the credential file can do SCRAM — that is, every verifier is `plain:` or `pg_scram_sha256:`. An unknown username is answered with a throwaway verifier and still runs the full handshake, so a failed login looks the same as a wrong password.
 
 :::warning
 A single `pbkdf2_sha256:` or `mysql_native_password:` user makes the whole instance fall back to cleartext for PostgreSQL, including users whose own verifier supports SCRAM. If you want SCRAM, do not mix verifier formats.
@@ -106,7 +106,7 @@ A single `pbkdf2_sha256:` or `mysql_native_password:` user makes the whole insta
 
 Channel binding (`SCRAM-SHA-256-PLUS`) is not supported.
 
-You can check which method the server offers with libpq's `require_auth` parameter:
+You can check which method the server offers with libpq's `require_auth` parameter, which needs libpq or `psql` 16 or newer:
 
 ```shell
 psql "host=127.0.0.1 port=4003 user=carol dbname=public require_auth=scram-sha-256"

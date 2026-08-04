@@ -98,7 +98,7 @@ alice:readonly=pbkdf2_sha256:4096:73616c74:c5e478d59288c841aa530db6845c4c8d96289
 
 SCRAM-SHA-256 让 PostgreSQL 客户端不必以明文发送密码。
 
-PostgreSQL 在连接建立时就要确定唯一一种鉴权方式，此时服务端还不知道用户名是否存在。为了不泄露配置了哪些用户，GreptimeDB 只有在凭证文件里**所有**用户都支持 SCRAM 时才提供 SCRAM——也就是所有 verifier 都是 `plain:` 或 `pg_scram_sha256:`。
+PostgreSQL 在连接建立时就要确定唯一一种鉴权方式。此时服务端其实已经拿到了用户名，但如果按用户来选鉴权方式，就会暴露这个用户是否存在、以及它用的是哪种 verifier 格式。所以 GreptimeDB 是全局判断的：只有凭证文件里**所有**用户都支持 SCRAM 时才提供 SCRAM——也就是所有 verifier 都是 `plain:` 或 `pg_scram_sha256:`。对于不存在的用户名，服务端会用一个临时构造的 verifier 走完整个握手流程，因此登录失败和密码错误在客户端看来是一样的。
 
 :::warning
 只要有一个 `pbkdf2_sha256:` 或 `mysql_native_password:` 用户，整个实例的 PostgreSQL 鉴权就会退回明文，包括那些自身 verifier 支持 SCRAM 的用户。想用 SCRAM 就不要混用 verifier 格式。
@@ -106,7 +106,7 @@ PostgreSQL 在连接建立时就要确定唯一一种鉴权方式，此时服务
 
 不支持 channel binding（`SCRAM-SHA-256-PLUS`）。
 
-可以用 libpq 的 `require_auth` 参数确认服务端提供的是哪种方式：
+可以用 libpq 的 `require_auth` 参数确认服务端提供的是哪种方式，这个参数需要 libpq 或 `psql` 16 及以上版本：
 
 ```shell
 psql "host=127.0.0.1 port=4003 user=carol dbname=public require_auth=scram-sha-256"

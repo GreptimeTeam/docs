@@ -7,7 +7,7 @@ description: 介绍如何使用 Splunk HTTP Event Collector (HEC) 协议将日�
 
 ## 概述
 
-GreptimeDB 实现了 [Splunk HTTP Event Collector (HEC)](https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector) 协议的一个子集。已经在用 HEC 的采集器——Vector、OpenTelemetry Collector、Fluent Bit——只需要改一下地址和 token 就能写入 GreptimeDB。
+GreptimeDB 实现了 [Splunk HTTP Event Collector (HEC)](https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector) 协议的一个子集。已经在用 HEC 的采集器——比如 Vector 和 OpenTelemetry Collector——只需要改一下地址和 token 就能写入 GreptimeDB。
 
 提供两个写入端点：
 
@@ -17,6 +17,10 @@ GreptimeDB 实现了 [Splunk HTTP Event Collector (HEC)](https://docs.splunk.com
 Splunk 的 `index` 对应 GreptimeDB 的表。`host`、`source`、`sourcetype` 以及 `fields` 下的各个 key 会成为 Tag 列，GreptimeDB 会把它们加进表的主键。
 
 不支持 indexer acknowledgment（`/services/collector/ack`）。`channel` 参数会被接收但忽略。
+
+:::tip 注意
+Fluent Bit 自带的 `splunk` output 用不了这个端点。它把请求路径写死成 `/services/collector/event`，也没有提供配置路径的选项，所以在没有反向代理的情况下访问不到 GreptimeDB 的 `/v1/splunk`。要从 Fluent Bit 写入，请改用[它的 HTTP output](/user-guide/ingest-data/for-observability/fluent-bit.md)。
+:::
 
 ## HTTP API
 
@@ -52,7 +56,7 @@ Authorization: Splunk greptime_user:greptime_pwd
 
 `POST /v1/splunk/services/collector/event`
 
-请求体是一个或多个 HEC 事件对象。它们可以用任意分隔符拼接、也可以完全不加分隔符，或者放在一个顶层 JSON 数组里——两种批量形式 GreptimeDB 都能解析。
+请求体是一个或多个 HEC 事件对象。它们可以直接拼接、用换行或空格这类 JSON 空白字符分隔，也可以放在一个顶层 JSON 数组里。其他分隔符（比如逗号、分号）会导致解析失败，请求返回 HEC code `6`。
 
 ### 字段映射
 
@@ -233,7 +237,7 @@ WITH(
 | `17` | 健康检查端点返回，表示 collector 正常 |
 
 :::warning
-校验失败会让整个请求失败。一批事件里只要有一条缺字段、字段为空或字段解析不了，这一批就一条都不会写入——端点不会跳过坏事件继续写其余的。
+校验失败会让整个请求失败。一批事件里只要有一条缺 `event`、`event` 为空，或者 `time` 存在但解析不了，这一批就一条都不会写入——端点不会跳过坏事件继续写其余的。`host`、`source` 这类可选元数据缺失不影响写入。
 :::
 
 ## Vector
@@ -271,7 +275,11 @@ encoding.codec = "text"
 batch.max_events = 1
 ```
 
-Vector 批量发送时事件之间没有分隔符，所以在 raw 端点上一整批会被当成一个事件。要么像上面这样设 `batch.max_events = 1`，要么传一个 `linebreaker`，要么就用默认的 `event` 模式。
+Vector 批量发送时事件之间没有分隔符，所以在 raw 端点上一整批会被当成一个事件。像上面这样设 `batch.max_events = 1`，或者用默认的 `event` 模式即可。
+
+:::tip 注意
+服务端的 `linebreaker` 本来可以把这样一批切开，但这个 sink 送不出去：它没有配置任意 query 参数的选项，把参数拼到 `endpoint` 上也不行——Vector 是把 `endpoint` 和采集路径按字符串直接拼接的，`http://localhost:4000/v1/splunk?linebreaker=%0A` 会拼成 `/v1/splunk?linebreaker=%0A/services/collector/raw?index=...`，路由匹配不上。能自由设置 query 参数的 HEC 客户端可以正常使用 `linebreaker`。
+:::
 
 ## OpenTelemetry Collector
 

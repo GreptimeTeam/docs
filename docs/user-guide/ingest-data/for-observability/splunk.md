@@ -7,7 +7,7 @@ description: Use the Splunk HTTP Event Collector (HEC) protocol to ingest log da
 
 ## Overview
 
-GreptimeDB implements a subset of the [Splunk HTTP Event Collector (HEC)](https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector) protocol, so shippers that already speak HEC — Vector, the OpenTelemetry Collector, Fluent Bit — can write to GreptimeDB by changing the endpoint URL and the token.
+GreptimeDB implements a subset of the [Splunk HTTP Event Collector (HEC)](https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector) protocol, so shippers that already speak HEC — such as Vector and the OpenTelemetry Collector — can write to GreptimeDB by changing the endpoint URL and the token.
 
 Two ingestion endpoints are available:
 
@@ -17,6 +17,10 @@ Two ingestion endpoints are available:
 Splunk's `index` maps to a GreptimeDB table. `host`, `source`, `sourcetype` and the keys under `fields` become tag columns, which GreptimeDB adds to the table's primary key.
 
 Indexer acknowledgment (`/services/collector/ack`) is not implemented. The `channel` parameter is accepted and ignored.
+
+:::tip NOTE
+Fluent Bit's native `splunk` output cannot be used here. It hardcodes the request path to `/services/collector/event` and exposes no path setting, so it cannot reach GreptimeDB's `/v1/splunk` mount without a reverse proxy. To send data from Fluent Bit, use [its HTTP output](/user-guide/ingest-data/for-observability/fluent-bit.md) instead.
+:::
 
 ## HTTP API
 
@@ -52,7 +56,7 @@ The health endpoint is public and never requires a token.
 
 `POST /v1/splunk/services/collector/event`
 
-The body is one or more HEC event objects. They may be concatenated with any separator or none at all, or wrapped in a top-level JSON array — GreptimeDB accepts both batch forms.
+The body is one or more HEC event objects. They may be concatenated directly, separated by JSON whitespace such as a newline or a space, or wrapped in a top-level JSON array. Any other separator, a comma or a semicolon for example, is a parse error and fails the request with HEC code `6`.
 
 ### Field mapping
 
@@ -233,7 +237,7 @@ The response body is `{"text": ..., "code": ...}`, matching HEC. Clients branch 
 | `17` | Returned by the health endpoint to report a healthy collector |
 
 :::warning
-Validation rejects the whole request. If any event in a batch has a missing, blank, or unparsable field, none of the events in that batch are written — the endpoint does not skip bad events and keep the rest.
+Validation rejects the whole request. If any event in a batch has a missing or blank `event`, or a `time` that is present but unparsable, none of the events in that batch are written — the endpoint does not skip bad events and keep the rest. Optional metadata such as `host` or `source` may be absent without any effect.
 :::
 
 ## Vector
@@ -271,7 +275,11 @@ encoding.codec = "text"
 batch.max_events = 1
 ```
 
-Vector concatenates batched events with no separator, so on the raw endpoint a whole batch arrives as one event. Either set `batch.max_events = 1` as above, pass a `linebreaker`, or stay on the default `event` target.
+Vector concatenates batched events with no separator, so on the raw endpoint a whole batch arrives as one event. Set `batch.max_events = 1` as above, or stay on the default `event` target.
+
+:::tip NOTE
+`linebreaker` would split such a batch server-side, but this particular sink cannot send it: it has no option for arbitrary query parameters, and appending one to `endpoint` does not work because Vector joins `endpoint` and the collector path as plain strings — `http://localhost:4000/v1/splunk?linebreaker=%0A` becomes `/v1/splunk?linebreaker=%0A/services/collector/raw?index=...`, which no longer matches the route. HEC clients that can set query parameters use `linebreaker` normally.
+:::
 
 ## OpenTelemetry Collector
 
