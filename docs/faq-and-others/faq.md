@@ -308,13 +308,24 @@ ORDER BY files DESC;
 - Manual region migration for load balancing — see [Region Migration Guide](/user-guide/deployments-administration/manage-data/region-migration.md).
 - Automatic region failover for disaster recovery — see [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md).
 
+### How do I implement multi-tenancy?
+
+The recommended approach is to isolate tenants at the **database** or **table** level, rather than mixing every tenant into one shared table distinguished only by a tag.
+
+- **Database per tenant**: Give each tenant its own [database](/reference/sql/create.md#create-database). This keeps each tenant's data cleanly separated, with independent schema, TTL, and other table defaults.
+- **Table per tenant**: Within a shared database, give each tenant its own table (or table prefix). A good fit when tenants share configuration but you still want data-level separation.
+
+Don't worry about ending up with a large number of databases or tables. GreptimeDB's distributed architecture scales horizontally — tables are split into regions spread across datanodes, and you add datanodes as the table and region count grows. There is no hard limit on the number of tables, and performance depends on primary key design rather than table count (see [scalability characteristics](#what-are-greptimedbs-scalability-characteristics)).
+
+**Access control**: The open-source version does not enforce database- or table-level tenant isolation — its [authentication](/user-guide/deployments-administration/authentication/overview.md) authorizes a user against every catalog and schema, and the permission check only distinguishes read from write, not the target table. A read-only user can therefore still query any tenant's data. In open source you must enforce tenant isolation in your application layer (or via separate deployments). Enterprise and GreptimeCloud provide RBAC and ACL for true per-tenant access control.
+
 ### What disaster recovery options are available?
 
 GreptimeDB offers multiple disaster recovery strategies:
 
 - **Standalone DR**: Remote WAL + object storage, RPO=0, RTO in minutes.
 - **Region Failover**: Automatic failover for individual regions with minimal downtime.
-- **Active-Active Failover** (Enterprise): Synchronous request replication between two nodes.
+- **Active-Active Failover** (Enterprise): Asynchronous request replication between two nodes.
 - **Cross-Region Single Cluster**: Spans three regions with zero RPO and region-level fault tolerance.
 - **Backup and Restore**: Periodic data backups with RPO depending on backup frequency.
 

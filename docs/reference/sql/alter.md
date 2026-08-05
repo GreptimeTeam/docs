@@ -193,6 +193,8 @@ Currently following options are supported:
 - `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy.
 - `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction.
 - `sst_format`: the SST format of the table. The value can be `flat` or `primary_key`. A table supports changing the format in both directions: `primary_key` to `flat` and `flat` to `primary_key`.
+- `write_buffer_size`: the per-region write buffer stall threshold of the table. For a positive value such as `512MB`, GreptimeDB schedules a flush when mutable memtable usage reaches half the value, stalls writes at the value, and rejects writes at twice the value. The table option overrides `region_engine.mito.default_region_write_buffer_size`. Setting it to `0` explicitly disables the per-region limit even when the engine default is nonzero. Unsetting it removes the table override and falls back to the engine default.
+- `auto_flush_interval`: how long a region of this table may go without a flush before one is triggered. The value is a [time duration string](/reference/time-durations.md) and must be greater than zero. The table option overrides the engine-wide `region_engine.mito.auto_flush_interval`.
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
@@ -208,13 +210,55 @@ ALTER TABLE monitor SET 'compaction.twcs.trigger_file_num'='8';
 ALTER TABLE monitor SET 'sst_format'='flat';
 
 ALTER TABLE monitor SET 'sst_format'='primary_key';
+
+ALTER TABLE monitor SET 'write_buffer_size'='512MB';
+
+ALTER TABLE monitor SET 'auto_flush_interval'='5m';
 ```
+
+To drop the `auto_flush_interval` override and fall back to the engine-wide setting, set it
+to `NULL`:
+
+```sql
+ALTER TABLE monitor SET 'auto_flush_interval' = NULL;
+```
+
+:::warning
+`auto_flush_interval` does not support `UNSET`. `ALTER TABLE monitor UNSET 'auto_flush_interval'`
+returns an error; use `SET ... = NULL` as shown above.
+:::
 
 ### Unset table options
 
 ```sql
 ALTER TABLE monitor UNSET 'ttl';
+
+ALTER TABLE monitor UNSET 'write_buffer_size';
 ```
+
+### Set repartition column hint
+
+:::info Enterprise feature
+This option is available in GreptimeDB Enterprise. For details, see [Auto Repartition](/enterprise/autopilot/auto-repartition.md).
+:::
+
+In GreptimeDB Enterprise, `repartition.column.hint` can be specified in `CREATE TABLE ... WITH` or changed later with `ALTER TABLE`.
+
+For an unpartitioned table, you can set the preferred column used by Auto Repartition:
+
+```sql
+ALTER TABLE table_name SET 'repartition.column.hint'='column_name';
+```
+
+To remove the hint:
+
+```sql
+ALTER TABLE table_name UNSET 'repartition.column.hint';
+```
+
+The hint only records metadata for future Auto Repartition. It does not trigger Repartition immediately.
+
+When using `ALTER TABLE`, the hint must be set or unset separately from other table options.
 
 ### Repartition, split, or merge partitions {#split-or-merge-partitions}
 
@@ -306,7 +350,7 @@ You can specify the following options using `FULLTEXT INDEX WITH` when enabling 
 - `granularity`: (For `bloom` backend) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size. Default is `10240`.
 - `false_positive_rate`: (For `bloom` backend) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size. Value is a float between `0` and `1`. Default is `0.01`.
 
-For more information on full-text index configuration and performance comparison, refer to the [Full-Text Index Configuration Guide](/user-guide/manage-data/data-index.md#fulltext-index).
+For more information on full-text index configuration and performance comparison, refer to the [Full-Text Index Configuration Guide](/user-guide/manage-data/data-index.md#full-text-index).
 
 If `WITH <options>` is not specified, `FULLTEXT INDEX` will use the default values.
 

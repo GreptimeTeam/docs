@@ -39,6 +39,8 @@ INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr )
 - 关键字 `FILL`，可以跟在一个 Range 表达式后，详情请见[FILL Option](#fill-选项) 。
 
 
+<AnchorAlias id="fill-option" />
+
 ## `FILL` 选项
 
 `FILL` 选项指定了在某个聚合的时间片上没有数据，或者聚合字段的值为空时的数据填充方法。

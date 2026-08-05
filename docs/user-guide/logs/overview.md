@@ -90,6 +90,7 @@ Please refer to the following guides for detailed instructions on integrating Gr
 - [Fluent Bit](/user-guide/ingest-data/for-observability/fluent-bit.md#http)
 - [OpenTelemetry Collector](/user-guide/ingest-data/for-observability/otel-collector.md)
 - [Loki](/user-guide/ingest-data/for-observability/loki.md#using-pipeline-with-loki-push-api)
+- [Splunk](/user-guide/ingest-data/for-observability/splunk.md#using-a-pipeline)
 
 ## Learn More About Pipelines
 
@@ -98,6 +99,7 @@ Please refer to the following guides for detailed instructions on integrating Gr
 
 ## Query Logs
 
+- [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md#logs-query): Filter and search logs in the built-in Dashboard using a builder or code editor.
 - [Full-Text Search](./fulltext-search.md): Guide on using GreptimeDB's query language for effective searching and analysis of log data.
 
 ## Reference

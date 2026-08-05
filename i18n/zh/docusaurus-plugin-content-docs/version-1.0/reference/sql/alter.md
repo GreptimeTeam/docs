@@ -179,6 +179,8 @@ ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
 
 删除默认值后，该列将使用 `NULL` 作为默认值。数据库只允许对可为空的列删除默认值。
 
+<AnchorAlias id="alter-table-options" />
+
 ### 修改表的参数
 
 `ALTER TABLE` 语句也可以用来更改表的选项。
@@ -255,6 +257,8 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
 重分区相关操作仅支持在分布式集群中执行。
 必须开启共享对象存储和 GC，并确保所有 datanode 都能访问同一对象存储后再执行这些语句。
 :::
+
+<AnchorAlias id="create-an-index-for-a-column" />
 
 ### 创建列的索引
 

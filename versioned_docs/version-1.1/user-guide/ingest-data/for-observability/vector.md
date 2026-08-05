@@ -41,7 +41,7 @@ password = "<password>"
 new_naming = true
 ```
 
-Vector uses gRPC to communicate with GreptimeDB, so the default port for Vector sink is `4001`. If you changed the default gRPC port when starting GreptimeDB with [custom configuration](/user-guide/deployments-administration/configuration.md#configuration-file), please use your own port.
+Vector uses gRPC to communicate with GreptimeDB, so the default port for Vector sink is `4001`. If you changed the default gRPC port when starting GreptimeDB with [custom configuration](/user-guide/deployments-administration/configuration.md#configuration-file-options), please use your own port.
 
 For more requirements, please visit [Vector GreptimeDB Configuration](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) to view more configuration options.
 
@@ -198,4 +198,4 @@ For meanings of `labels` and `structured_metadata`, please refer to [Loki docume
 
 For Loki protocol, `labels` will use Tag type in time series scenarios by default, please avoid using high-cardinality fields for these fields. `structured_metadata` will be stored as a complete JSON field.
 
-Note that since Vector's configuration doesn't allow setting headers, you cannot specify pipeline. If you need to use pipeline functionality, please consider using `greptimedb_logs` sink.
+Note that since Vector's Loki sink configuration doesn't allow setting headers, you cannot specify a custom GreptimeDB log table or pipeline through `X-Greptime-*` headers. Logs are written to GreptimeDB's default Loki table, `loki_logs`. If you need to specify a table or use pipeline functionality, please consider using the `greptimedb_logs` sink.

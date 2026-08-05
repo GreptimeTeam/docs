@@ -19,3 +19,8 @@ internals of data modeling.
 - [Trace Data Modeling in GreptimeDB](./data-model.md)
 - [Extending Trace Data](./extend-trace.md)
 
+## Query Traces
+
+- [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md#traces-query): Search traces and inspect span records in the built-in Dashboard using a builder or code editor.
+- [Ingestion and Query](./read-write.md#query): Jaeger-compatible API and SQL query interfaces.
+

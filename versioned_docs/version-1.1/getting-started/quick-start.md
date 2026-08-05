@@ -83,7 +83,7 @@ CREATE TABLE app_logs (
 ) WITH ('append_mode'='true');
 ```
 
-- `log_msg` enables [full-text index](/user-guide/manage-data/data-index.md#fulltext-index) for keyword search.
+- `log_msg` enables [full-text index](/user-guide/manage-data/data-index.md#full-text-index) for keyword search.
 - [`append_mode`](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables) optimizes for log workloads (no deduplication overhead).
 
 ### Traces table
@@ -378,7 +378,7 @@ You can also query via the Prometheus-compatible HTTP API:
 
 ```bash
 curl -X POST \
-  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   --data-urlencode 'query=quantile_over_time(0.95, grpc_latencies{host!=""}[5s])' \
   --data-urlencode 'start=2024-07-11 20:00:00Z' \
   --data-urlencode 'end=2024-07-11 20:00:20Z' \

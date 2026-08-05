@@ -19,6 +19,8 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 
 :::tip NOTE
 导出的文件会生成在执行该查询的 GreptimeDB 服务端节点上，而不是发起 SQL 的客户端机器上。请确保路径在服务端可访问且可写，或使用 `CONNECTION` 导出到 S3、GCS、Azure Blob Storage 等云存储服务。
+
+在单机部署模式下，本地文件路径受限于 `storage.copy_root` 目录（默认为 `<data_home>/copy`）；在分布式部署模式下，本地文件访问被完全禁止。详情请参阅[迁移本地 SQL 文件访问](/user-guide/deployments-administration/migrate-local-sql-file-access.md)。
 :::
 
 例如，可以使用自定义时间戳和日期格式导出数据到 CSV 或 JSON 文件：
@@ -129,11 +131,38 @@ COPY tbl FROM '/path/to/file.csv' WITH (
 | `COMPRESSION_TYPE` | 导入文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
 | `HEADERS` | CSV 文件是否包含表头。支持的值：`true`、`false`。默认值为 `true`。 | 可选 |
 | `SKIP_BAD_RECORDS` | 导入 CSV 时是否跳过解析或类型转换错误的行。支持的值：`true`、`false`。默认值为 `false`。仅支持 CSV 格式。 | 可选 |
+| `STRICT_HEADERS` | 导入前是否根据表结构校验 CSV 表头。支持的值：`true`、`false`。默认值为 `false`。仅支持 CSV 格式，且要求 `HEADERS = 'true'`。 | 可选 |
 
 :::tip NOTE
 默认情况下，CSV 会按包含表头的方式解析，并按列名匹配表字段。
 
 如果要导入不包含表头的 CSV 文件，请设置 `HEADERS = 'false'`。此时会按目标表的字段顺序进行位置映射。你可以使用 `SHOW CREATE TABLE <table_name>` 查看表字段顺序。
+:::
+
+#### STRICT_HEADERS 选项
+
+默认的表头匹配是宽松的：表里没有的 CSV 列会被忽略，CSV 里没有的表字段则走正常的插入和默认值处理。
+
+设置 `STRICT_HEADERS = 'true'` 会在读取数据之前先校验表头。出现以下任一情况都会导入失败：
+
+- CSV 里有表中不存在的列；
+- 表中有 CSV 里没有的列；
+- CSV 表头里有重复的列名。
+
+```sql
+COPY monitor FROM 'monitor.csv' WITH (FORMAT = 'CSV', STRICT_HEADERS = 'true');
+```
+
+不匹配时会一次性报出三类问题：
+
+```
+ERROR:  CSV header mismatch in path: monitor.csv, unknown columns: ["extra"], missing columns: [], duplicate columns: []
+```
+
+:::warning
+缺列检查针对表的**全部**列，包括可空列和有默认值的列。CSV 少了其中任何一列都会被拒绝。
+
+`STRICT_HEADERS = 'true'` 不能和 `HEADERS = 'false'` 同时使用——无表头的 CSV 没有表头可校验，这个组合会返回 `strict_headers=true requires headers=true`。
 :::
 
 #### Connection 选项

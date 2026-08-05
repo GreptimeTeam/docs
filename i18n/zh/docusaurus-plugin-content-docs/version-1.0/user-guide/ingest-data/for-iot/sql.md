@@ -73,6 +73,8 @@ VALUES
 
 通过上面的语句，我们成功的向 `monitor` 表中插入了六条数据。请参考 [`INSERT`](/reference/sql/insert.md) 获得更多写入数据的相关信息。
 
+<AnchorAlias id="time-zone" />
+
 ## 时区
 
 SQL 客户端中指定的时区将影响没有时区信息的字符串格式的时间戳。

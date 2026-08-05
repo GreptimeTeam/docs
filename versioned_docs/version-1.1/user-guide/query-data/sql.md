@@ -467,7 +467,7 @@ Use POST method to query data:
 
 ```shell
 curl -X POST \
-  -H 'authorization: Basic {{authorization if exists}}' \
+  -H 'authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'sql=select * from monitor' \
 http://localhost:4000/v1/sql?db=public

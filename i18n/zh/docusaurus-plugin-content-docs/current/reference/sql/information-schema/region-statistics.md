@@ -1,6 +1,6 @@
 ---
-keywords: [Region 统计信息, REGION_STATISTICS 表, 总行数, 磁盘大小, 近似值]
-description: REGION_STATISTICS 表提供关于某个 Region 统计信息的详细数据，包括总行数、磁盘大小等。
+keywords: [Region 统计信息, REGION_STATISTICS 表, 总行数, 磁盘大小, 查询统计, 近似值]
+description: REGION_STATISTICS 表提供关于某个 Region 统计信息的详细数据，包括总行数、写入与查询计数、磁盘大小等。
 ---
 
 # REGION_STATISTICS
@@ -22,6 +22,8 @@ DESC REGION_STATISTICS;
 | region_number            | UInt32 |      | NO   |         | FIELD         |
 | region_rows              | UInt64 |      | YES  |         | FIELD         |
 | written_bytes_since_open | UInt64 |      | YES  |         | FIELD         |
+| query_cpu_time_millis    | UInt64 |      | YES  |         | FIELD         |
+| query_scanned_bytes      | UInt64 |      | YES  |         | FIELD         |
 | disk_size                | UInt64 |      | YES  |         | FIELD         |
 | memtable_size            | UInt64 |      | YES  |         | FIELD         |
 | manifest_size            | UInt64 |      | YES  |         | FIELD         |
@@ -40,6 +42,8 @@ DESC REGION_STATISTICS;
 - `region_number`: Region 在表中的编号。
 - `region_rows`: Region 中的记录行数。它包括该 Region 自有 SST 文件中的行数以及 memtable 中的行数，不包含引用其他 Region SST 文件中的行数。
 - `written_bytes_since_open`: Region 自打开以来写入的字节数。
+- `query_cpu_time_millis`: Region 自打开以来累计的查询 CPU 时间，单位为毫秒。
+- `query_scanned_bytes`: Region 自打开以来查询累计扫描的字节数。
 - `disk_size`: Region 中数据文件的总大小，包括数据、索引及元信息等。
 - `memtable_size`: Region 中内存 memtables 的总大小。
 - `manifest_size`: Region 中元信息 manifest 文件的总大小。
@@ -58,9 +62,9 @@ WHERE t.table_name = 'system_metrics';
 
 输出：
 ```sql
-+---------------+----------+---------------+-------------+--------------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
-| region_id     | table_id | region_number | region_rows | written_bytes_since_open | disk_size | memtable_size | manifest_size | sst_size | sst_num | index_size | engine | region_role |
-+---------------+----------+---------------+-------------+--------------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
-| 4398046511104 |     1024 |             0 |           8 |                        0 |      4922 |             0 |          1338 |     3249 |       1 |        335 | mito   | Leader      |
-+---------------+----------+---------------+-------------+--------------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
++---------------+----------+---------------+-------------+--------------------------+------------------------+---------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
+| region_id     | table_id | region_number | region_rows | written_bytes_since_open | query_cpu_time_millis | query_scanned_bytes | disk_size | memtable_size | manifest_size | sst_size | sst_num | index_size | engine | region_role |
++---------------+----------+---------------+-------------+--------------------------+------------------------+---------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
+| 4398046511104 |     1024 |             0 |           8 |                        0 |                      0 |                   0 |      4922 |             0 |          1338 |     3249 |       1 |        335 | mito   | Leader      |
++---------------+----------+---------------+-------------+--------------------------+------------------------+---------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
 ```

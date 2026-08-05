@@ -60,6 +60,7 @@ Since v1.1, a password can use an explicit verifier format, so that plaintext pa
 - `plain:<password>` — plaintext. This is the default when no prefix is given.
 - `pbkdf2_sha256:<iterations>:<hex_salt>:<hex_hash>` — a PBKDF2-SHA256 hash stored at rest.
 - `mysql_native_password:<hex_sha1_sha1_password>` — a hashed verifier that still serves the MySQL `mysql_native_password` handshake.
+- `pg_scram_sha256:<iterations>:<hex_salt>:<hex_stored_key>:<hex_server_key>` — a SCRAM-SHA-256 verifier that serves the PostgreSQL SASL handshake. Available since v1.2.
 
 Example:
 
@@ -67,6 +68,7 @@ Example:
 admin=plain:admin_pwd
 alice=pbkdf2_sha256:4096:73616c74:c5e478d59288c841aa530db6845c4c8d962893a001ce4e11a4963873aa98134a
 bob=mysql_native_password:6bb4837eb74329105ee4568dda7dc67ed2ca2ad9
+carol=pg_scram_sha256:4096:73616c74:53706a13f10b3c031b4c355d75ebd6500d3478062ce7d262710c3e60de02b93f:a19ce79824bd7ad68d96b8c00b0f1cc776bd0feca54d663301bb9866a860545b
 ```
 
 Permission modes combine with verifier formats. The verifier goes after the `=`:
@@ -79,17 +81,38 @@ alice:readonly=pbkdf2_sha256:4096:73616c74:c5e478d59288c841aa530db6845c4c8d96289
 
 A single verifier format does not serve every protocol. Choose the format based on how clients connect:
 
-| Verifier | HTTP/gRPC Basic | PostgreSQL cleartext | MySQL clear password | MySQL `mysql_native_password` |
-| --- | --- | --- | --- | --- |
-| `plain:<password>` (or legacy `user=password`) | yes | yes | yes | yes |
-| `pbkdf2_sha256:...` | yes | yes | yes | no |
-| `mysql_native_password:...` | no | no | no | yes |
+| Verifier | HTTP/gRPC Basic | PostgreSQL SCRAM-SHA-256 | PostgreSQL cleartext | MySQL clear password | MySQL `mysql_native_password` |
+| --- | --- | --- | --- | --- | --- |
+| `plain:<password>` (or legacy `user=password`) | yes | yes | yes | yes | yes |
+| `pbkdf2_sha256:...` | yes | no | yes | yes | no |
+| `mysql_native_password:...` | no | no | no | no | yes |
+| `pg_scram_sha256:...` | yes | yes | yes | yes | no |
 
 `pbkdf2_sha256` protects passwords at rest; it does not change wire security. Cleartext-capable protocols still need TLS in production.
 
 :::warning Breaking change
-Passwords are prefix-parsed. A legacy plaintext password that literally starts with `plain:`, `pbkdf2_sha256:`, or `mysql_native_password:` changes meaning. Use the `plain:` prefix to keep the literal value. For example, to keep the literal password `plain:secret`, configure it as `user=plain:plain:secret`.
+Passwords are prefix-parsed. A legacy plaintext password that literally starts with `plain:`, `pbkdf2_sha256:`, `mysql_native_password:`, or `pg_scram_sha256:` changes meaning. Use the `plain:` prefix to keep the literal value. For example, to keep the literal password `plain:secret`, configure it as `user=plain:plain:secret`.
 :::
+
+#### PostgreSQL SCRAM-SHA-256
+
+SCRAM-SHA-256 lets PostgreSQL clients authenticate without sending the password in cleartext.
+
+PostgreSQL negotiates a single authentication method when a connection starts. The server does receive the username at that point, but picking the method per user would reveal whether that user exists and what verifier format it uses. GreptimeDB therefore decides globally: it offers SCRAM only when **every** user in the credential file can do SCRAM — that is, every verifier is `plain:` or `pg_scram_sha256:`. An unknown username is answered with a throwaway verifier and still runs the full handshake, so a failed login looks the same as a wrong password.
+
+:::warning
+A single `pbkdf2_sha256:` or `mysql_native_password:` user makes the whole instance fall back to cleartext for PostgreSQL, including users whose own verifier supports SCRAM. If you want SCRAM, do not mix verifier formats.
+:::
+
+Channel binding (`SCRAM-SHA-256-PLUS`) is not supported.
+
+You can check which method the server offers with libpq's `require_auth` parameter, which needs libpq or `psql` 16 or newer:
+
+```shell
+psql "host=127.0.0.1 port=4003 user=carol dbname=public require_auth=scram-sha-256"
+```
+
+When the instance has fallen back to cleartext, that command fails with `server requested a cleartext password`.
 
 ### Generating Password Verifiers
 
@@ -113,10 +136,10 @@ admin=pbkdf2_sha256:4096:<random_hex_salt>:<hex_hash>
 
 Options:
 
-- `--format <FORMAT>` — verifier format, `pbkdf2_sha256` (default) or `mysql_native_password`.
+- `--format <FORMAT>` — verifier format, `pbkdf2_sha256` (default), `mysql_native_password`, or `pg_scram_sha256`.
 - `--password <PASSWORD>` — plaintext password. Mutually exclusive with `--password-stdin`; exactly one is required. Prefer `--password-stdin` in scripts, since `--password` can leak through shell history or process listings.
 - `--password-stdin` — read the plaintext password from stdin.
-- `--iterations <N>` — PBKDF2-SHA256 iteration count (default `4096`, range `1..=1000000`).
+- `--iterations <N>` — PBKDF2-SHA256 / SCRAM-SHA-256 iteration count (default `4096`, range `1..=1000000`).
 - `--salt-len <N>` — random salt length in bytes (default `16`, range `1..=1024`).
 - `--salt-hex <HEX>` — fixed salt as hex instead of a random one, for deterministic automation.
 
@@ -124,6 +147,12 @@ To generate a `mysql_native_password` verifier instead:
 
 ```shell
 ./greptime user hash-password --password-stdin --format mysql_native_password
+```
+
+To generate a PostgreSQL SCRAM-SHA-256 verifier:
+
+```shell
+./greptime user hash-password --password-stdin --format pg_scram_sha256
 ```
 
 ### Starting the Server

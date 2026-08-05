@@ -5,11 +5,36 @@ description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表�
 
 # HTTP API 端点列表
 
+GreptimeDB 提供两个 HTTP Server：
+
+| Server | 默认地址 | 用途 |
+|--------|---------|------|
+| **主 HTTP Server** | `127.0.0.1:4000` | 内部/运维使用。提供所有路径，包括 `/health`、`/metrics`、`/config`、`/debug/*` 等管理端点，以及全部 `/v1` 和 `/dashboard` 路径。该端口应保持私有，仅对可信运维人员开放。 |
+| **公共 HTTP API Server** | `127.0.0.1:4006` | 面向用户的访问。仅提供 `/v1` API 和 `/dashboard`，可安全地暴露给数据库终端用户。默认禁用；可在配置文件中设置 `http.enable_api_server = true` 来启用。 |
+
+建议仅在内部/运维场景下使用主 HTTP Server 端口。或者也可以通过 HTTP 代理安全地暴露该端口，前提是限制直接访问，并且代理仅允许所需的协议。但是如需将 GreptimeDB 作为服务对外暴露给终端用户，我们更推荐启用专用公共 API Server，并仅对外暴露该端口。
+
+```toml
+[http]
+# 主 HTTP Server — 保持内部访问
+addr = "127.0.0.1:4000"
+
+# 启用公共 API Server 并将其绑定到可外部访问的地址
+enable_api_server = true
+api_server_addr = "0.0.0.0:4006"
+```
+
+详见[配置文档](/user-guide/deployments-administration/configuration.md#协议选项)中的 `[http]` 选项。
+
 以下是 GreptimeDB 中各种 HTTP 路径及其用法的完整列表：
 
 ## 管理 API
 
 未版本化的端点（不在 `/v1` 下）。用于健康检查、状态、指标等管理用途。
+
+:::note
+管理 API 端点**仅**在主 HTTP Server（默认端口 `4000`）上可用。即使启用了 `http.enable_api_server`，专用公共 API Server 也不会暴露这些端点。
+:::
 
 ### 健康检查
 
@@ -18,7 +43,7 @@ description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表�
 - **描述**: 提供一个健康检查端点以验证服务器是否正在运行。
 - **用法**: 访问此端点以检查服务器的健康状态。
 
-请参考[检查 GreptimeDB 健康状态文档](/enterprise/deployments-administration/monitoring/check-db-status.md#查看-greptimedb-是否正常运行)获取示例。
+请参考[检查 GreptimeDB 健康状态文档](/user-guide/deployments-administration/monitoring/check-db-status.md#check-if-greptimedb-is-running-normally)获取示例。
 
 ### 状态
 
@@ -27,7 +52,7 @@ description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表�
 - **描述**: 检索服务器的当前状态。
 - **用法**: 使用此端点获取服务器状态信息。
 
-请参考[检查 GreptimeDB 状态文档](/enterprise/deployments-administration/monitoring/check-db-status.md#查看-greptimedb-的部署状态)获取示例。
+请参考[检查 GreptimeDB 状态文档](/user-guide/deployments-administration/monitoring/check-db-status.md#check-greptimedb-runtime-status)获取示例。
 
 ### 指标
 
@@ -141,14 +166,41 @@ curl --data "false" http://127.0.0.1:4000/debug/enable_trace
 ### 性能分析工具
 
 - **基础路径**: `/debug/prof/`
-- **端点**:
-  - `cpu`
-  - `mem`
-- **方法**: `POST` 用于分析数据库节点。
-- **描述**: 运行时 CPU 或内存使用情况分析。
-- **用法**:
-  - 有关 CPU 分析的详细指南，请参阅 [CPU 分析](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-cpu.md)。
-  - 有关内存分析的详细指南，请参阅 [内存分析](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-memory.md)。
+- **描述**: 数据库节点运行时 CPU 或内存使用情况分析。
+
+CPU 性能分析：
+
+| 路径 | 方法 | 描述 |
+| --- | --- | --- |
+| `/debug/prof/cpu` | `POST` | 采集 CPU profile。查询参数包括 `seconds`、`frequency` 和 `output`。支持的输出格式为 `proto`、`text` 和 `flamegraph`。 |
+
+示例：
+
+```bash
+curl -X POST -s 'http://127.0.0.1:4000/debug/prof/cpu?seconds=10&output=flamegraph' > greptime-cpu.svg
+```
+
+内存性能分析：
+
+| 路径 | 方法 | 描述 |
+| --- | --- | --- |
+| `/debug/prof/mem` | `POST` | 导出内存 profile 数据。查询参数 `output` 支持 `text`、`proto` 和 `flamegraph`。 |
+| `/debug/prof/mem/status` | `GET` | 检查堆分析是否处于启用状态。 |
+| `/debug/prof/mem/activate` | `POST` | 启用堆分析。 |
+| `/debug/prof/mem/deactivate` | `POST` | 停用堆分析。 |
+| `/debug/prof/mem/gdump` | `GET` | 检查 jemalloc gdump 是否处于启用状态。 |
+| `/debug/prof/mem/gdump` | `POST` | 启用或停用 jemalloc gdump。使用表单字段 `activate=true` 或 `activate=false`。 |
+| `/debug/prof/mem/symbol` | `POST` | 上传 jemalloc heap dump 文件并返回符号化后的火焰图。 |
+
+示例：
+
+```bash
+curl -X POST -s 'http://127.0.0.1:4000/debug/prof/mem?output=flamegraph' > greptime-mem.svg
+curl -X GET 'http://127.0.0.1:4000/debug/prof/mem/status'
+curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
+```
+
+运维指导请参阅[采集性能分析数据](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md#采集性能分析数据)。高级用法请参阅 [CPU 分析](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-cpu.md) 和 [内存分析](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-memory.md)。
 
 ## 查询端点
 
@@ -238,6 +290,13 @@ curl --data "false" http://127.0.0.1:4000/debug/enable_trace
 - **方法**: `POST`
 - **描述**: 以兼容 Loki 的 API 写入日志。
 - **用法**: 将日志数据以 Loki 的格式发送到此端点。
+
+### Splunk HEC 兼容性
+
+- **路径**: `/v1/splunk/services/collector/event`、`/v1/splunk/services/collector/raw`、`/v1/splunk/services/collector/health`
+- **方法**: 写入端点为 `POST`，健康检查端点为 `GET`
+- **描述**: 以兼容 Splunk HTTP Event Collector (HEC) 的协议写入日志。
+- **用法**: 向 `/event` 发送 JSON 事件，或向 `/raw` 发送纯文本。参考[使用 Splunk 协议写入数据](/user-guide/ingest-data/for-observability/splunk.md)。
 
 ### OpenTSDB 协议
 

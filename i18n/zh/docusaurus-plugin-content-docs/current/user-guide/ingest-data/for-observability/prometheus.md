@@ -7,6 +7,8 @@ description: 介绍如何将 GreptimeDB 作为 Prometheus 的长期存储解决�
 
 GreptimeDB 可以作为 Prometheus 的长期存储解决方案，提供无缝集成体验。
 
+<AnchorAlias id="remote-write-configuration" />
+
 ## 配置 Remote Write
 
 ### Prometheus 配置文件
@@ -41,6 +43,8 @@ remote_read:
 ### Vector 配置文件
 
 如果你使用 Vector ，请在 Vector 配置文件（`vector.toml`）中配置 Remote Write。有关更多信息，请参阅 [Vector 文档](vector.md#使用-prometheus-remote-write-协议).
+
+<AnchorAlias id="data-model" />
 
 ## 数据模型
 
@@ -146,10 +150,12 @@ DESC TABLE greptime_physical_table;
 ```sql
 SELECT *
 FROM greptime_physical_table
-WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
-  AND device = "device1"
-  AND job = "job1";
+WHERE greptime_timestamp > '2024-08-07 03:27:26.964000'
+  AND device = 'device1'
+  AND job = 'job1';
 ```
+
+<AnchorAlias id="greptimedb-cluster-with-metric-engine" />
 
 ### 在 GreptimeDB 集群上使用 metric engine
 
@@ -194,8 +200,8 @@ with (
 
 ## 特殊标签
 
-:::warning 实验性特性
-此实验性功能可能存在预期外的行为，其功能未来可能发生变化。
+:::warning Experimental Feature
+该实验性功能可能存在非预期行为，未来功能也可能发生变化。
 :::
 
 一般来说，一次 Remote write 请求的全部数据会以同样的配置项被写入到数据库中，例如，开启 metric engine 后使用的同一个物理表配置。
@@ -205,8 +211,8 @@ with (
 如果你可以预见大量的数据写入和每次只需查询小部分指标的场景，那么可以在写入时对存储位置进行划分以减缓后续查询的压力。
 对于一个 Remote write 请求中的每个指标，这种精细的控制可以通过写入时的配置项来达成。
 
-从 `v0.15` 开始，GreptimeDB 新增了对特殊标签的支持。
-这些标签(与它们的值)会在解析阶段被转换成写入时的配置项，使请求内的单个指标可以被更精细地控制。
+GreptimeDB 支持特殊标签。
+这些标签及其值会在解析阶段被转换成写入时的配置项，使请求内的单个指标可以被更精细地控制。
 这些标签不是互斥的，它们可以通过组合的方式达成更多样化的控制选择。
 
 以下是指标特殊标签的一个示例，注意这不是实际的数据模型。
@@ -255,11 +261,7 @@ GreptimeDB 可以识别一些标签的名称，并将它们转换成写入时的
 
 ## 在 Remote write 中使用 pipeline
 
-:::warning 实验性特性
-此实验性功能可能存在预期外的行为，其功能未来可能发生变化。
-:::
-
-从 `v0.15` 开始，GreptimeDB 支持在 Prometheus Remote Write 协议入口使用 pipeline 处理数据。
+GreptimeDB 支持在 Prometheus Remote Write 协议入口使用 pipeline 处理数据。
 你可以通过在 HTTP header 中将 `x-greptime-pipeline-name` 的值设置为需要执行的 pipeline 名称来使用 pipeline 处理流程。
 
 以下是一个非常简单的 pipeline 配置例子，使用 `vrl` 处理器来对每个指标增加一个 `source` 标签：
@@ -323,6 +325,20 @@ pending_rows_flush_interval = "500ms"
 :::tip
 批量写入模式仅在 `with_metric_engine` 为 `true` 且 `pending_rows_flush_interval` 设置为非零时间间隔时生效。
 :::
+
+### 请求超时与重试
+
+当 [`http.timeout`](/user-guide/deployments-administration/configuration.md#协议选项) 设置为非零值，
+且发往 `/v1/prometheus/write` 的 Remote Write 请求处理时间超过该值时，
+GreptimeDB 会返回 `504 Gateway Timeout` 而不是 `408 Request Timeout`。
+Prometheus 及其他 Remote Write 发送端会对 `5xx` 响应进行重试，
+因此超时的请求会被自动重试，而不是被直接丢弃。
+
+在批量写入模式下，已被接受到待刷写批次中的行数据即使在请求超时后仍会继续在后台刷写。
+为了确保请求能够等待足够长的时间以完成批次刷写，
+如果 `http.timeout` 为非零值且不超过 `pending_rows_flush_interval` 加 1 秒，
+GreptimeDB 会将其自动调整为该值并输出警告日志。
+设置 `http.timeout = "0s"`（默认值）则完全禁用 HTTP 超时。
 
 ### 自定义物理表
 

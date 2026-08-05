@@ -1,6 +1,6 @@
 ---
 keywords: [Streamlit, data apps, SQL connection, MySQL protocol, Python]
-description: Instructions for using GreptimeCloud with Streamlit to build data apps, including creating a SQL connection and running SQL queries.
+description: Instructions for using GreptimeDB with Streamlit to build data apps, including creating a SQL connection and running SQL queries.
 ---
 
 # Streamlit

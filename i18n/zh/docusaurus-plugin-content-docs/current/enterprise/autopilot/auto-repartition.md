@@ -31,9 +31,45 @@ Auto Repartition 适合以下场景：
 - 希望将大 Region 拆分为多个小 Region，并通过后续调度打散潜在的负载瓶颈；
 - 希望减少手动分析大 Region 和手动执行 Repartition 的运维成本。
 
+## 未分区表的 Auto Repartition
+
+当指定了重分区列 hint 时，Auto Repartition 也可以作用于未分区表。对于未分区表，GreptimeDB Enterprise 不会自动推断分区列。你可以在创建表时指定后续 Auto Repartition 使用的候选列：
+
+```sql
+CREATE TABLE sensor_readings (
+    host STRING,
+    cpu DOUBLE,
+    ts TIMESTAMP TIME INDEX,
+    PRIMARY KEY(host)
+)
+WITH ('repartition.column.hint'='host');
+```
+
+你也可以后续通过 `ALTER TABLE` 设置或更新该 hint：
+
+```sql
+ALTER TABLE sensor_readings SET 'repartition.column.hint'='host';
+```
+
+取消该 hint：
+
+```sql
+ALTER TABLE sensor_readings UNSET 'repartition.column.hint';
+```
+
+该 hint 只会记录供后续 Auto Repartition 使用的元信息，不会立即触发重分区。当表满足 Auto Repartition 的触发条件后，GreptimeDB Enterprise 可以使用该 hint 指定的列生成分区边界，并提交 Repartition 操作。
+
+重分区列 hint 有以下限制：
+
+- 只能指定一个列。
+- 指定的列必须存在于表中。
+- 指定的列不能是 time index 列。
+- 只能在没有 partition metadata 的表上设置。
+- 使用 `ALTER TABLE` 时，必须单独设置或取消，不能和其他 table options 一起修改。
+
 ## 限制
 
-Auto Repartition 仅对多分区表有效，只能拆分已经带有分区规则的表。如果表没有分区规则，Auto Repartition 不会为它自动生成新的分区规则。
+Auto Repartition 支持已分区表，以及设置了 `repartition.column.hint` 的未分区表。对于未分区表，GreptimeDB Enterprise 不会自动推断分区列。
 
 关于表分区和重分区的说明，请参考[表分片](/user-guide/deployments-administration/manage-data/table-sharding.md)和[重分区](/user-guide/deployments-administration/manage-data/repartition.md)。
 

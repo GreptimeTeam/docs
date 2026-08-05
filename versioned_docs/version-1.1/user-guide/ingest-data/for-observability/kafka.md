@@ -48,6 +48,8 @@ tls = {}
 
 For details on how InfluxDB line protocol metrics are mapped to GreptimeDB data, please refer to the [Data Model](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#data-model) section in the InfluxDB line protocol documentation.
 
+When Vector decodes Kafka messages with `decoding.codec = "influxdb"` and writes them through the `greptimedb_metrics` sink, each InfluxDB field is converted into a metric name. For example, `census bees=23` is written to a table named `census_bees`, with the value stored in the `val` column.
+
 
 ## Logs
 
@@ -76,7 +78,7 @@ A pipeline processes the logs into structured data before ingestion into Greptim
 ### Logs with JSON format
 
 For logs in JSON format (e.g., `{"timestamp": "2024-12-23T10:00:00Z", "level": "INFO", "message": "Service started"}`),
-you can use the built-in [`greptime_identity`](/user-guide/logs/manage-pipelines.md#greptime_identity) pipeline for direct ingestion.
+you can use the built-in [`greptime_identity`](/reference/pipeline/built-in-pipelines.md#greptime_identity) pipeline for direct ingestion.
 This pipeline creates columns automatically based on the fields in your JSON log message.
 
 Simply configure Vector's `transforms` settings to parse the JSON message and use the `greptime_identity` pipeline as shown in the following example:

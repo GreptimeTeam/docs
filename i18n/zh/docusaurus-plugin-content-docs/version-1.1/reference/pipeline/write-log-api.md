@@ -14,7 +14,7 @@ description: 介绍如何通过 HTTP 接口使用指定的 Pipeline 将日志写
 ```shell
 curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=<skip-error>" \
      -H "Content-Type: application/x-ndjson" \
-     -H "Authorization: Basic {{authentication}}" \
+     -H "Authorization: Basic <base64-encoded-credentials>" \
      -d "$<log-items>"
 ```
 

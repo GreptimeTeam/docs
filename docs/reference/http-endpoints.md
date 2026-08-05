@@ -5,11 +5,36 @@ description: Provides a full list of HTTP paths and their usage in GreptimeDB, i
 
 # HTTP API Endpoint List
 
+GreptimeDB provides two HTTP servers:
+
+| Server | Default address | Purpose |
+|--------|----------------|---------|
+| **Main HTTP server** | `127.0.0.1:4000` | Internal / operational use. Serves all paths, including admin endpoints such as `/health`, `/metrics`, `/config`, and `/debug/*`, as well as all `/v1` and `/dashboard` paths. Keep this port private and accessible only by trusted operators. |
+| **Public HTTP API server** | `127.0.0.1:4006` | User-facing access. Serves only `/v1` APIs and `/dashboard`. Safe to expose to database end-users. Disabled by default; enable it with `http.enable_api_server = true` in your configuration file. |
+
+We recommend keeping the main HTTP server port for internal/operational use only. Alternatively, it can be safely exposed through an HTTP proxy, provided direct access is restricted and the proxy allows only the required protocols. But If you want to expose GreptimeDB as a service to end-users, enable the dedicated public API server and expose only its port.
+
+```toml
+[http]
+# Main HTTP server — keep this internal
+addr = "127.0.0.1:4000"
+
+# Enable the public API server and bind it to an externally accessible address
+enable_api_server = true
+api_server_addr = "0.0.0.0:4006"
+```
+
+See the [configuration documentation](/user-guide/deployments-administration/configuration.md#protocol-options) for all `[http]` options.
+
 Here is the full list for the various HTTP paths and their usage in GreptimeDB:
 
 ## Admin APIs
 
 Endpoints that is not versioned (under `/v1`). For admin usage like health check, status, metrics, etc.
+
+:::note
+Admin API endpoints are available **only** on the main HTTP server (default port `4000`). They are not exposed by the dedicated public API server even when `http.enable_api_server` is enabled.
+:::
 
 ### Health Check
 
@@ -18,7 +43,7 @@ Endpoints that is not versioned (under `/v1`). For admin usage like health check
 - **Description**: Provides a health check endpoint to verify that the server is running.
 - **Usage**: Access this endpoint to check the health status of the server.
 
-Please refer to the [check GreptimeDB health documentation](/enterprise/deployments-administration/monitoring/check-db-status.md#check-if-greptimedb-is-running-normally) for an example.
+Please refer to the [check GreptimeDB health documentation](/user-guide/deployments-administration/monitoring/check-db-status.md#check-if-greptimedb-is-running-normally) for an example.
 
 ### Status
 
@@ -27,7 +52,7 @@ Please refer to the [check GreptimeDB health documentation](/enterprise/deployme
 - **Description**: Retrieves the current status of the server.
 - **Usage**: Use this endpoint to obtain server status information.
 
-Please refer to the [Check GreptimeDB status documentation](/enterprise/deployments-administration/monitoring/check-db-status.md#check-greptimedb-status) for an example.
+Please refer to the [Check GreptimeDB status documentation](/user-guide/deployments-administration/monitoring/check-db-status.md#check-greptimedb-runtime-status) for an example.
 
 ### Metrics
 
@@ -141,14 +166,41 @@ For more information on tracing configuration, refer to the [tracing documentati
 ### Profiling Tools
 
 - **Base Path**: `/debug/prof/`
-- **Endpoints**:
-  - `cpu`
-  - `mem`
-- **Methods**: `POST` for profiling the database node.
-- **Description**: Runtime profiling for CPU or Memory usage.
-- **Usage**:
-  - Refer to [Profiling CPU](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-cpu.md) for detailed guide for CPU profiling.
-  - Refer to [Profiling Memory](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-memory.md) for detailed guide for Memory profiling.
+- **Description**: Runtime profiling for CPU or memory usage on the database node.
+
+CPU profiling:
+
+| Path | Method | Description |
+| --- | --- | --- |
+| `/debug/prof/cpu` | `POST` | Collects a CPU profile. Query parameters include `seconds`, `frequency`, and `output`. Supported output formats are `proto`, `text`, and `flamegraph`. |
+
+Example:
+
+```bash
+curl -X POST -s 'http://127.0.0.1:4000/debug/prof/cpu?seconds=10&output=flamegraph' > greptime-cpu.svg
+```
+
+Memory profiling:
+
+| Path | Method | Description |
+| --- | --- | --- |
+| `/debug/prof/mem` | `POST` | Dumps memory profiling data. Query parameter `output` supports `text`, `proto`, and `flamegraph`. |
+| `/debug/prof/mem/status` | `GET` | Checks whether heap profiling is active. |
+| `/debug/prof/mem/activate` | `POST` | Activates heap profiling. |
+| `/debug/prof/mem/deactivate` | `POST` | Deactivates heap profiling. |
+| `/debug/prof/mem/gdump` | `GET` | Checks whether jemalloc gdump is active. |
+| `/debug/prof/mem/gdump` | `POST` | Activates or deactivates jemalloc gdump. Use form field `activate=true` or `activate=false`. |
+| `/debug/prof/mem/symbol` | `POST` | Uploads a jemalloc heap dump file and returns a symbolicated flamegraph. |
+
+Examples:
+
+```bash
+curl -X POST -s 'http://127.0.0.1:4000/debug/prof/mem?output=flamegraph' > greptime-mem.svg
+curl -X GET 'http://127.0.0.1:4000/debug/prof/mem/status'
+curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
+```
+
+For operational guidance, see [Collect profiling data](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md#collect-profiling-data). For advanced usage, refer to [Profiling CPU](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-cpu.md) and [Profiling Memory](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-memory.md).
 
 ## Query Endpoints
 
@@ -238,6 +290,13 @@ Refer to the original Prometheus documentation for more information on the [Prom
 - **Methods**: `POST`
 - **Description**: Compatible with Loki's API for log ingestion.
 - **Usage**: Send log data in Loki's format to this endpoint.
+
+### Splunk HEC Compatibility
+
+- **Path**: `/v1/splunk/services/collector/event`, `/v1/splunk/services/collector/raw`, `/v1/splunk/services/collector/health`
+- **Methods**: `POST` for the ingestion endpoints, `GET` for the health endpoint
+- **Description**: Compatible with the Splunk HTTP Event Collector (HEC) protocol for log ingestion.
+- **Usage**: Send JSON events to `/event` or plain text to `/raw`. See [Ingest Data with Splunk](/user-guide/ingest-data/for-observability/splunk.md).
 
 ### OpenTSDB Protocol
 

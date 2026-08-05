@@ -18,6 +18,8 @@ API Base URL 是 `http(s)://{{host}}:{{port}}/`。
 
 ## 通用 Headers
 
+<AnchorAlias id="authentication" />
+
 ### 鉴权
 
 假设你已经正确设置了数据库[鉴权](/user-guide/deployments-administration/authentication/overview.md)，
@@ -102,6 +104,8 @@ http://localhost:4000/v1/sql
 
 请参考 [Admin APIs 接口](/reference/http-endpoints.md#管理-api)文档以获取更多信息。
 
+<AnchorAlias id="post-sql-statements" />
+
 ## POST SQL 语句
 
 要通过 HTTP API 向 GreptimeDB 服务器提交 SQL 语句，请使用以下格式：
@@ -143,6 +147,8 @@ http://{{API-host}}/v1/sql
 ### Body
 
 - `sql`: SQL 语句。必填。
+
+<AnchorAlias id="response" />
 
 ### 响应
 

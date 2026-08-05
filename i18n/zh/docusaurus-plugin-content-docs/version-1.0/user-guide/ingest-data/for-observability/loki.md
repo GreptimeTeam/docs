@@ -132,6 +132,8 @@ WITH(
 1 row in set (0.00 sec)
 ```
 
+<AnchorAlias id="using-pipeline-with-loki-push-api" />
+
 ## 在 Loki Push API 中使用 pipeline
 
 :::warning 实验性特性
@@ -222,7 +224,7 @@ loki.write "greptime_loki" {
 
 1. 首先，启动你的 GreptimeDB 实例。参见[这里](/getting-started/installation/overview.md)快速启动。
 
-2. [上传](/user-guide/logs/manage-pipelines.md#create-a-pipeline) pipeline 配置到数据库：
+2. [上传](/user-guide/logs/manage-pipelines.md#upload-a-pipeline) pipeline 配置到数据库：
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/pipelines/pp" -F "file=@pipeline.yaml"

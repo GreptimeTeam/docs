@@ -3,6 +3,8 @@ keywords: [视图, SQL 视图, 创建视图, 更新视图, 删除视图, 显示�
 description: 介绍了视图的定义、使用示例、更新、显示定义、列出视图和删除视图的方法。
 ---
 
+<AnchorAlias id="view" />
+
 # 视图
 
 在 SQL 中，视图（View）是基于 SQL 语句的结果集的虚拟表。

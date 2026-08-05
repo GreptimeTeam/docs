@@ -5,7 +5,7 @@ description: Describes how to write logs to GreptimeDB using a pipeline via the 
 
 # APIs for Writing Logs
 
-Before writing logs, please read the [Pipeline Configuration](/user-guide/logs/use-custom-pipelines.md#upload-pipeline) to complete the configuration setup and upload.
+Before writing logs, please read the [Pipeline Configuration](/user-guide/logs/use-custom-pipelines.md#upload-the-pipeline) to complete the configuration setup and upload.
 
 ## HTTP API
 
@@ -14,7 +14,7 @@ You can use the following command to write logs via the HTTP interface:
 ```shell
 curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=<skip-error>" \
      -H "Content-Type: application/x-ndjson" \
-     -H "Authorization: Basic {{authentication}}" \
+     -H "Authorization: Basic <base64-encoded-credentials>" \
      -d "$<log-items>"
 ```
 
@@ -157,4 +157,4 @@ The table is also set with a ttl of 1 day.
 
 ## Examples
 
-Please refer to the "Writing Logs" section in the [Quick Start](/user-guide/logs/quick-start.md#direct-http-ingestion) and [Using Custom Pipelines](/user-guide/logs/use-custom-pipelines.md#write-logs) guide for examples.
+Please refer to the "Writing Logs" section in the [Quick Start](/user-guide/logs/quick-start.md#direct-http-ingestion) and [Using Custom Pipelines](/user-guide/logs/use-custom-pipelines.md#ingest-logs-using-the-pipeline) guide for examples.

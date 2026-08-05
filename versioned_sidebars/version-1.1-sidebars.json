@@ -162,6 +162,8 @@
             "user-guide/integrations/prometheus",
             "user-guide/integrations/vector",
             "user-guide/integrations/kafka",
+            "user-guide/integrations/flink",
+            "user-guide/integrations/spark",
             "user-guide/integrations/telegraf",
             "user-guide/integrations/grafana",
             "user-guide/integrations/superset",
@@ -497,7 +499,15 @@
             "enterprise/elasticsearch-compatible/aggregate"
           ]
         },
-        "enterprise/console-ui",
+        {
+          "type": "category",
+          "label": "Management Console",
+          "items": [
+            "enterprise/console-ui",
+            "enterprise/console-ui/continuous-profiling",
+            "enterprise/console-ui/webhook-triggers"
+          ]
+        },
         {
           "type": "category",
           "label": "Read Replicas",

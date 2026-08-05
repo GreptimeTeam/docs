@@ -220,7 +220,7 @@ GreptimeCloud 控制台提供了名为 Workbench 的数据可视化工作台。
 for file in data.*; do
   curl -i --retry 3 \
     -X POST "https://${GREPTIME_HOST}/v1/influxdb/write?db=${GREPTIME_DB}&u=${GREPTIME_USERNAME}&p=${GREPTIME_PASSWORD}" \
-    --data-binary @${file}
+    --data-binary @"${file}"
   sleep 1
 done
 ```

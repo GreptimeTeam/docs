@@ -1,8 +1,26 @@
 This guide will help you understand the differences between the data models of GreptimeDB and InfluxDB, and guide you through the migration process.
 
-## Data model in difference
+## Data model differences
 
 To understand the differences between the data models of InfluxDB and GreptimeDB, please refer to the [Data Model](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#data-model) in the Ingest Data documentation.
+
+InfluxDB line protocol data is mapped to a GreptimeDB table as follows:
+
+| InfluxDB | GreptimeDB |
+| --- | --- |
+| Measurement | Table |
+| Tag | Primary key column |
+| Field | Field column |
+| Timestamp | `greptime_timestamp` time index column |
+
+After writing representative data, verify each auto-created table before starting the full migration. Replace `measurement_name` with a measurement from your sample data:
+
+```sql
+DESC TABLE measurement_name;
+SHOW CREATE TABLE measurement_name;
+```
+
+Confirm that the column types and primary key columns match your expectations, especially when measurements contain high-cardinality tags. If you need a different schema, [create the table manually](/user-guide/deployments-administration/manage-data/basic-table-operations.md#create-a-table) before importing data.
 
 ## Database connection information
 
@@ -10,7 +28,8 @@ Before you begin writing or querying data, it's crucial to comprehend the differ
 
 - **Token**: The InfluxDB API token, used for authentication, aligns with the GreptimeDB authentication. When interacting with GreptimeDB using InfluxDB's client libraries or HTTP API, you can use `<greptimedb_user:greptimedb_password>` as the token.
 - **Organization**: Unlike InfluxDB, GreptimeDB does not require an organization for connection.
-- **Bucket**: In InfluxDB, a bucket serves as a container for time series data, which is equivalent to the database name in GreptimeDB.
+- **Bucket**: An InfluxDB bucket is equivalent to a GreptimeDB database. Use `bucket` with the v2 write API and `db` with the v1 write API.
+- **Database**: Ensure that the target database exists before writing data. Self-hosted GreptimeDB provides the `public` database by default; create other databases with [`CREATE DATABASE`](/user-guide/deployments-administration/manage-data/basic-table-operations.md#create-a-database).
 
 <InjectContent id="get-database-connection-information" content={props.children}/>
 
@@ -24,6 +43,8 @@ facilitating a seamless migration from InfluxDB to GreptimeDB.
 To write a measurement to GreptimeDB, you can use the following HTTP API request:
 
 <InjectContent id="write-data-http-api" content={props.children}/>
+
+The `precision` parameter must match the timestamps in the request body. Accepted values are `ns`, `us`, `ms`, and `s`; the default is `ns`. For details, see the [InfluxDB line protocol documentation](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#protocols).
 
 ### Telegraf
 
@@ -47,18 +68,27 @@ You can code in your language of choice by referencing the connection informatio
 
 ## Query data
 
-GreptimeDB does not support Flux and InfluxQL, opting instead for SQL and PromQL.
+GreptimeDB does not support Flux and InfluxQL. Migrate these queries to SQL or PromQL.
 
-SQL is a universal language designed for managing and manipulating relational databases.
-With flexible capabilities for data retrieval, manipulation, and analytics,
-it is also reduce the learning curve for users who are already familiar with SQL.
+The following table summarizes common InfluxQL-to-SQL mappings:
 
-PromQL (Prometheus Query Language) allows users to select and aggregate time series data in real time,
-The result of an expression can either be shown as a graph, viewed as tabular data in Prometheus's expression browser,
+| InfluxQL | GreptimeDB SQL |
+| --- | --- |
+| Measurement | Table |
+| Tag or field | Column |
+| `time` | Time index column, such as `greptime_timestamp` |
+| `GROUP BY time()` | [Range Query](/reference/sql/range.md) or [`date_bin()`](/reference/sql/functions/df-functions.md#date_bin) |
+| Latest point in each group | [`row_number()`](/reference/sql/functions/df-functions.md#row_number) window function |
+| `difference()` or `elapsed()` | [`lag()`](/reference/sql/functions/df-functions.md#lag) or [`lead()`](/reference/sql/functions/df-functions.md#lead) window function |
+
+For more query conversion examples, see the [InfluxDB to GreptimeDB migration guide](https://greptime.com/blogs/2026-06-02-influxdb-to-greptimedb-migration-guide).
+
+PromQL (Prometheus Query Language) allows users to select and aggregate time series data in real time.
+The result of an expression can be shown as a graph, viewed as tabular data in Prometheus's expression browser,
 or consumed by external systems via the [HTTP API](/user-guide/query-data/promql.md#prometheus-http-api).
 
-Suppose you are querying the maximum cpu usage from the `monitor` table, recorded over the past 24 hours.
-In influxQL, the query might look something like this:
+Suppose you are querying the maximum CPU usage from the `monitor` table, recorded over the past 24 hours.
+In InfluxQL, the query might look something like this:
 
 ```sql [InfluxQL]
 SELECT
@@ -68,12 +98,12 @@ FROM
 WHERE
    time > now() - 24h
 GROUP BY
-   time(1h)
+   time(1h), host
 ```
 
 This InfluxQL query computes the maximum value of the `cpu` field from the `monitor` table,
 considering only the data where the time is within the last 24 hours.
-The results are then grouped into one-hour intervals.
+The results are then grouped into one-hour intervals for each host.
 
 In Flux, the query might look something like this:
 
@@ -84,33 +114,33 @@ from(bucket: "public")
   |> aggregateWindow(every: 1h, fn: max)
 ```
 
-The similar query in GreptimeDB SQL would be:
+A similar query in GreptimeDB SQL is:
 
 ```sql [SQL]
 SELECT
     greptime_timestamp,
     host,
-    AVG(cpu) RANGE '1h' as mean_cpu
+    MAX(cpu) RANGE '1h' AS max_cpu
 FROM
     monitor
 WHERE
     greptime_timestamp > NOW() - '24 hours'::INTERVAL
-ALIGN '1h' TO NOW
+ALIGN '1h' TO NOW BY (host)
 ORDER BY greptime_timestamp DESC;
 ```
 
 In this SQL query,
-the `RANGE` clause determines the time window for the `AVG(cpu)` aggregation function,
+the `RANGE` clause determines the time window for the `MAX(cpu)` aggregation function,
 while the `ALIGN` clause sets the alignment time for the time series data.
 For more information on time window grouping, please refer to the [Aggregate data by time window](/user-guide/query-data/sql.md#aggregate-data-by-time-window) document.
 
-The similar query in PromQL would be something like:
+A similar query in PromQL is:
 
 ```promql
-avg_over_time(monitor[1h])
+max_over_time(monitor{__field__="cpu"}[1h])
 ```
-To query time series data from the last 24 hours,
-you need to execute this PromQL, using the `start` and `end` parameters of the HTTP API to define the time range.
+
+The `[1h]` selector defines the lookback window. To produce one result per hour like the SQL query above, execute this PromQL as a range query, using the HTTP API's `start` and `end` parameters to define the time range and `step=1h` to define the evaluation interval.
 For more information on PromQL, please refer to the [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) document.
 
 ## Visualize data
@@ -125,7 +155,9 @@ For a seamless migration of data from InfluxDB to GreptimeDB, you can follow the
 
 1. Write data to both GreptimeDB and InfluxDB to avoid data loss during migration.
 2. Export all historical data from InfluxDB and import the data into GreptimeDB.
-3. Stop writing data to InfluxDB and remove the InfluxDB server.
+3. Validate the schema, row counts, time ranges, and critical query results.
+4. Gradually move read traffic to GreptimeDB.
+5. Stop writing to InfluxDB after validation succeeds.
 
 ### Write data to both GreptimeDB and InfluxDB simultaneously
 
@@ -221,7 +253,7 @@ cpu,cpu=cpu-total,host=bogon usage_iowait=0 1714375710000000000
 
 ### Import Data to GreptimeDB
 
-Before importing data to GreptimeDB, if the data file is too large, it's recommended to split the data file into multiple slices:
+For large data sets, export and import by measurement and time range, record completed batches so that interrupted migrations can resume, and split large files into smaller slices:
 
 ```shell
 split -l 100000 -d -a 10 data data.
@@ -255,5 +287,25 @@ export GREPTIME_DB=<db-name>
 Import the data from the files into GreptimeDB:
 
 <InjectContent id="import-data-shell" content={props.children}/>
+
+### Validate imported data
+
+Before moving read traffic, compare each measurement in InfluxDB and GreptimeDB. At minimum, verify the row count, time range, non-null field count, and critical aggregations. For example:
+
+```sql
+SELECT
+    COUNT(*) AS row_count,
+    COUNT(cpu) AS cpu_value_count,
+    MIN(greptime_timestamp) AS min_ts,
+    MAX(greptime_timestamp) AS max_ts
+FROM monitor;
+
+SELECT host, COUNT(*) AS row_count
+FROM monitor
+GROUP BY host
+ORDER BY row_count DESC;
+```
+
+Keep dual writes enabled while gradually moving read traffic. Stop writing to InfluxDB only after these checks and application-level queries produce the expected results.
 
 If you need a more detailed migration plan or example scripts, please provide the specific table structure and data volume. The [GreptimeDB official community](https://github.com/orgs/GreptimeTeam/discussions) will offer further support. Welcome to join the [Greptime Slack](http://greptime.com/slack).

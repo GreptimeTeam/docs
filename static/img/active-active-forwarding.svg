@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title description">
+  <title id="title">GreptimeDB active-active failover architecture</title>
+  <desc id="description">An external traffic layer directs clients to two peer GreptimeDB nodes that serve reads and writes and replicate data asynchronously in both directions.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="async-arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#e25aa8"/>
+    </marker>
+    <style>
+      .title { font: 600 20px Arial, sans-serif; fill: #170128; }
+      .label { font: 17px Arial, sans-serif; fill: #39314a; }
+      .traffic { fill: #eefaff; stroke: #2491ad; stroke-width: 2; }
+      .node { fill: #f8f7ff; stroke: #6f6fff; stroke-width: 2; }
+      .flow { fill: none; stroke: #6f6fff; stroke-width: 3; marker-end: url(#arrow); }
+      .async { fill: none; stroke: #e25aa8; stroke-width: 3; stroke-dasharray: 10 7; marker-end: url(#async-arrow); }
+    </style>
+  </defs>
+
+  <rect width="1200" height="560" fill="#ffffff"/>
+
+  <rect class="traffic" x="390" y="35" width="420" height="80" rx="12"/>
+  <text class="title" x="600" y="70" text-anchor="middle">External traffic failover</text>
+  <text class="label" x="600" y="96" text-anchor="middle">Load balancer · Client driver · Service discovery</text>
+
+  <rect class="node" x="90" y="245" width="390" height="190" rx="18"/>
+  <text class="title" x="285" y="295" text-anchor="middle">Zone A · GreptimeDB node A</text>
+  <text class="label" x="285" y="335" text-anchor="middle">Accepts reads and writes</text>
+  <text class="label" x="285" y="369" text-anchor="middle">Keeps a complete data copy</text>
+
+  <rect class="node" x="720" y="245" width="390" height="190" rx="18"/>
+  <text class="title" x="915" y="295" text-anchor="middle">Zone B · GreptimeDB node B</text>
+  <text class="label" x="915" y="335" text-anchor="middle">Accepts reads and writes</text>
+  <text class="label" x="915" y="369" text-anchor="middle">Keeps a complete data copy</text>
+
+  <path class="flow" d="M525 115 L330 245"/>
+  <path class="flow" d="M675 115 L870 245"/>
+
+  <path class="async" d="M480 305 C565 250, 635 250, 720 305"/>
+  <path class="async" d="M720 395 C635 450, 565 450, 480 395"/>
+  <text class="label" x="600" y="230" text-anchor="middle">Bidirectional asynchronous replication</text>
+
+  <text class="label" x="600" y="515" text-anchor="middle">The nodes are peers; neither is a permanently designated primary.</text>
+</svg>

@@ -47,7 +47,7 @@ new_naming = true
 ```
 
 Vector 使用 gRPC 与 GreptimeDB 进行通信，因此 Vector sink 的默认端口是 `4001`。
-如果你在使用 [自定义配置](/user-guide/deployments-administration/configuration.md#configuration-file) 启动 GreptimeDB 时更改了默认的 gRPC 端口，请使用你自己的端口。
+如果你在使用 [自定义配置](/user-guide/deployments-administration/configuration.md#配置文件选项) 启动 GreptimeDB 时更改了默认的 gRPC 端口，请使用你自己的端口。
 
 如有更多需求请前往 [Vector GreptimeDB Configuration](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) 查看更多配置项。
 
@@ -123,6 +123,8 @@ GreptimeDB 支持多种日志数据写入方式，包括：
 
 我们强烈建议所有的用户使用 `greptimedb_logs` sink 来写入日志数据，因为它是为 GreptimeDB 优化的，能够更好地支持 GreptimeDB 的特性。
 并且推荐开启各种协议的压缩功能，以提高数据传输效率。
+
+<AnchorAlias id="using-greptimedb_logs-sink-recommended" />
 
 ### 使用 `greptimedb_logs` sink (推荐)
 
@@ -207,5 +209,4 @@ auth = {strategy = "basic", user = "<username>", password = "<password>"}
 
 对于 loki 协议，`labels` 默认会使用时序场景下的 Tag 类型，请注意这部分字段不要使用高基数字段。
 `structured_metadata` 将会整体存储为一个 json 字段。
-请注意，由于 Vector 的配置里不允许设置 header 所以无法指定 pipeline。
-如果需要使用 pipeline 功能，请考虑使用 `greptimedb_logs` sink。
+请注意，Vector 的 Loki sink 配置不允许设置 header，因此不能通过 `X-Greptime-*` header 指定自定义 GreptimeDB 日志表或 pipeline。日志会写入 GreptimeDB 默认的 Loki 表 `loki_logs`。如果需要指定表名或使用 pipeline 功能，请考虑使用 `greptimedb_logs` sink。

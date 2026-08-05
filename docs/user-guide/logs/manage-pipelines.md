@@ -22,7 +22,7 @@ Assuming you have prepared a pipeline configuration file `pipeline.yaml`, use th
 ```shell
 ## Upload the pipeline file. 'test' is the name of the pipeline
 curl -X "POST" "http://localhost:4000/v1/pipelines/test" \
-  -H "Authorization: Basic {{authentication}}" \
+  -H "Authorization: Basic <base64-encoded-credentials>" \
   -F "file=@pipeline.yaml"
 ```
 
@@ -52,7 +52,7 @@ You can use the following HTTP interface to delete a pipeline:
 ```shell
 ## 'test' is the name of the pipeline
 curl -X "DELETE" "http://localhost:4000/v1/pipelines/test?version=2024-06-27%2012%3A02%3A34.257312110Z" \
-  -H "Authorization: Basic {{authentication}}"
+  -H "Authorization: Basic <base64-encoded-credentials>"
 ```
 
 In the above example, we deleted a pipeline named `test`. The `version` parameter is required to specify the version of the pipeline to be deleted.
@@ -64,13 +64,13 @@ Querying a pipeline with a name through HTTP interface as follow:
 ```shell
 ## 'test' is the name of the pipeline, it will return a pipeline with latest version if the pipeline named `test` exists.
 curl "http://localhost:4000/v1/pipelines/test" \
-  -H "Authorization: Basic {{authentication}}"
+  -H "Authorization: Basic <base64-encoded-credentials>"
 ```
 
 ```shell
 ## with the version parameter, it will return the specify version pipeline.
 curl "http://localhost:4000/v1/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000" \
-  -H "Authorization: Basic {{authentication}}"
+  -H "Authorization: Basic <base64-encoded-credentials>"
 ```
 
  If the pipeline exists, the output should be:
@@ -92,7 +92,7 @@ In the output above, the `pipeline` field is a YAML-formatted string. You can us
 
 ```shell
 curl "http://localhost:4000/v1/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000" \
-  -H "Authorization: Basic {{authentication}}" \
+  -H "Authorization: Basic <base64-encoded-credentials>" \
   | jq -r '.pipelines[0].pipeline'
 ```
 
@@ -213,7 +213,7 @@ You may encounter errors when creating a Pipeline. For example, when creating a 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/pipelines/test" \
      -H "Content-Type: application/x-yaml" \
-     -H "Authorization: Basic {{authentication}}" \
+     -H "Authorization: Basic <base64-encoded-credentials>" \
      -d $'processors:
   - date:
       field: time
@@ -250,7 +250,7 @@ Therefore, We need to modify the configuration of the `gsub` Processor and chang
 ```bash
 curl -X "POST" "http://localhost:4000/v1/pipelines/test" \
      -H "Content-Type: application/x-yaml" \
-     -H "Authorization: Basic {{authentication}}" \
+     -H "Authorization: Basic <base64-encoded-credentials>" \
      -d $'processors:
   - date:
       field: time
@@ -286,7 +286,7 @@ We can test the Pipeline using the `dryrun` interface. We will test it with erro
 ```bash
 curl -X "POST" "http://localhost:4000/v1/pipelines/_dryrun?pipeline_name=test" \
      -H "Content-Type: application/json" \
-     -H "Authorization: Basic {{authentication}}" \
+     -H "Authorization: Basic <base64-encoded-credentials>" \
      -d $'{"message": 1998.08,"time":"2024-05-25 20:16:37.217"}'
 ```
 
@@ -302,7 +302,7 @@ Let's change the value of the message field to a string type and test the pipeli
 ```bash
 curl -X "POST" "http://localhost:4000/v1/pipelines/_dryrun?pipeline_name=test" \
      -H "Content-Type: application/json" \
-     -H "Authorization: Basic {{authentication}}" \
+     -H "Authorization: Basic <base64-encoded-credentials>" \
      -d $'{"message": "1998.08","time":"2024-05-25 20:16:37.217"}'
 ```
 

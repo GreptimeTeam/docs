@@ -257,6 +257,8 @@ http://localhost:4000/v1/sql
 
 有关请求 hints 的更多信息，请参阅 [HTTP hints](/user-guide/protocols/http.md#hints)。
 
+<AnchorAlias id="case-expression" />
+
 ## `CASE` 表达式
 
 你可以使用 `CASE` 表达式在查询中执行条件逻辑。
@@ -446,7 +448,7 @@ ALIGN '1d' TO '2023-12-01T00:00:00+08:00' BY (host);
 
 ```shell
 curl -X POST \
-  -H 'authorization: Basic {{authorization if exists}}' \
+  -H 'authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'sql=select * from monitor' \
 http://localhost:4000/v1/sql?db=public

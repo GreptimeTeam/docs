@@ -13,16 +13,16 @@ GreptimeDB supports HTTP InfluxDB Line protocol.
 
 #### Post metrics
 
-You can write data to GreptimeDB using the `/influxdb/write` API.
-Here's an example of how to use this API:
+You can write data to GreptimeDB using the InfluxDB-compatible write APIs.
+Here's an example of how to use these APIs:
 
 <Tabs>
 
 <TabItem value="InfluxDB line protocol V2" label="InfluxDB line protocol V2">
 
 ```shell
-curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public&precision=ms" \
-  -H "authorization: token {{greptime_user:greptimedb_password}}" \
+curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?bucket=public&precision=ms" \
+  -H "authorization: token <greptime_user:greptimedb_password>" \
   --data-binary \
   'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450
   monitor,host=127.0.0.2 cpu=0.2,memory=0.3 1667446798450
@@ -33,7 +33,7 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public&precisi
 <TabItem value="InfluxDB line protocol V1" label="InfluxDB line protocol V1">
 
 ```shell
-curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u={{greptime_user}}&p={{greptimedb_password}}" \
+curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u=<greptime_user>&p=<greptimedb_password>" \
 --data-binary \
 'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450
  monitor,host=127.0.0.2 cpu=0.2,memory=0.3 1667446798450
@@ -43,16 +43,17 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u
 
 </Tabs>
 
-The `/influxdb/write` supports query params including:
+The InfluxDB-compatible write APIs support the following query parameters:
 
-* `db`: Specifies the database to write to. The default value is `public`.
+* `bucket`: Specifies the database to write to when using the InfluxDB line protocol V2 API. The default value is `public`.
+* `db`: Specifies the database to write to. This is the standard parameter for the InfluxDB line protocol V1 API. The V2 API also accepts `db` as a GreptimeDB compatibility alias, but `bucket` is recommended for V2.
 * `precision`: Defines the precision of the timestamp provided in the request body.  Accepted values are `ns` (nanoseconds), `us` (microseconds), `ms` (milliseconds), and `s` (seconds). The data type of timestamps written by this API is `TimestampNanosecond`, so the default precision is `ns` (nanoseconds). If you use timestamps with other precisions in the request body, you need to specify the precision using this parameter. This parameter ensures that timestamp values are accurately interpreted and stored with nanosecond precision.
 
 You can pass HTTP hints to set options on auto-created tables.
 For example, set the `append_mode` hint to `true` to create an append-only table:
 
 ```shell
-curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u={{greptime_user}}&p={{greptimedb_password}}" \
+curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u=<greptime_user>&p=<greptimedb_password>" \
   -H 'x-greptime-hint-append_mode: true' \
   --data-binary \
   'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450'
@@ -76,8 +77,8 @@ You can also omit the timestamp when sending requests. GreptimeDB will use the c
 <TabItem value="InfluxDB line protocol V2" label="InfluxDB line protocol V2">
 
 ```shell
-curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public" \
-  -H "authorization: token {{greptime_user:greptimedb_password}}" \
+curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?bucket=public" \
+  -H "authorization: token <greptime_user:greptimedb_password>" \
   --data-binary \
   'monitor,host=127.0.0.1 cpu=0.1,memory=0.4
   monitor,host=127.0.0.2 cpu=0.2,memory=0.3
@@ -88,7 +89,7 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public" \
 <TabItem value="InfluxDB line protocol V1" label="InfluxDB line protocol V1">
 
 ```shell
-curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&u={{greptime_user}}&p={{greptimedb_password}}" \
+curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&u=<greptime_user>&p=<greptimedb_password>" \
 --data-binary \
 'monitor,host=127.0.0.1 cpu=0.1,memory=0.4
  monitor,host=127.0.0.2 cpu=0.2,memory=0.3
@@ -107,11 +108,11 @@ If you have [configured authentication](/user-guide/deployments-administration/a
 
 <TabItem value="InfluxDB line protocol V2" label="InfluxDB line protocol V2">
 
-InfluxDB's [V2 protocol](https://docs.influxdata.com/influxdb/v1.8/tools/api/?t=Auth+Enabled#apiv2query-http-endpoint) uses a format much like HTTP's standard basic authentication scheme.
+For the InfluxDB line protocol V2 API, pass the username and password in the `Authorization` header using the `token <username>:<password>` format.
 
 ```shell
-curl 'http://localhost:4000/v1/influxdb/api/v2/write?db=public' \
-    -H 'authorization: token {{username:password}}' \
+curl 'http://localhost:4000/v1/influxdb/api/v2/write?bucket=public' \
+    -H 'authorization: token <username:password>' \
     -d 'monitor,host=127.0.0.1 cpu=0.1,memory=0.4'
 ```
 
@@ -119,7 +120,7 @@ curl 'http://localhost:4000/v1/influxdb/api/v2/write?db=public' \
 
 <TabItem value="InfluxDB line protocol V1" label="InfluxDB line protocol V1">
 
-For the authentication format of InfluxDB's [V1 protocol](https://docs.influxdata.com/influxdb/v1.8/tools/api/?t=Auth+Enabled#query-string-parameters-1). Add `u` for user and `p` for password to the HTTP query string as shown below:
+For the InfluxDB line protocol V1 API, add `u` for user and `p` for password to the HTTP query string:
 
 ```shell
 curl 'http://localhost:4000/v1/influxdb/write?db=public&u=<username>&p=<password>' \

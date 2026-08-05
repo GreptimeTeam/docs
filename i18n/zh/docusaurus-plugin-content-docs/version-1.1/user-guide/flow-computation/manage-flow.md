@@ -223,6 +223,8 @@ SELECT AGGR_FUNCTION(column1, column2,..) [, TIME_WINDOW_FUNCTION() as time_wind
 
 有关如何在实时分析、监控和仪表板中使用持续聚合的更多示例，请参阅[持续聚合](./continuous-aggregation.md)。
 
+<AnchorAlias id="define-time-window" />
+
 ### 定义时间窗口
 
 时间窗口是持续聚合查询的重要属性。

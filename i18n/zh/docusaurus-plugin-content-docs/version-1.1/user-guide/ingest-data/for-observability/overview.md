@@ -10,8 +10,12 @@ GreptimeDB 与领先的可观测性工具无缝集成，为你提供系统健康
 
 - [在 GreptimeDB 中存储万亿级日志，并快速获得分析结果](/user-guide/logs/overview.md).
 - [Prometheus Remote Write](prometheus.md)：将 GreptimeDB 作为 Prometheus 的远程存储，适用于实时监控和警报。
-- [Vector](vector.md)：将 GreptimeDB 用作 Vector 的接收端，适用于复杂的数据流水线和多样化的数据源。
 - [OpenTelemetry](opentelemetry.md)：将 telemetry 数据收集并导出到 GreptimeDB，以获取详细的可观测性洞察。
+- [OpenTelemetry Collector](otel-collector.md)：通过 OpenTelemetry Collector 将指标、日志和 trace 路由到 GreptimeDB。
+- [Vector](vector.md)：将 GreptimeDB 用作 Vector 的接收端，适用于复杂的数据流水线和多样化的数据源。
+- [Alloy](alloy.md)：将 GreptimeDB 用作 Grafana Alloy 的数据接收端。
 - [InfluxDB Line Protocol](influxdb-line-protocol.md)：一种广泛使用的时间序列数据协议，便于从 InfluxDB 迁移到 GreptimeDB。该文档同样介绍了 Telegraf 的集成方式。
 - [Loki](loki.md)：一种广泛使用的日志写入协议，便于从 Loki 迁移到 GreptimeDB。本文档还介绍了 Alloy 集成方法。
-
+- [Elasticsearch](elasticsearch.md)：通过 Elasticsearch `_bulk` API 写入日志，兼容 Logstash、Filebeat 和 Telegraf。
+- [Fluent Bit](fluent-bit.md)：将 Fluent Bit 中的指标、日志和 trace 转发到 GreptimeDB。
+- [Kafka](kafka.md)：通过 Vector 消费 Kafka 中的指标和日志并写入 GreptimeDB。

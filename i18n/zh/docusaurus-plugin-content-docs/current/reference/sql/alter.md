@@ -181,6 +181,8 @@ ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
 
 删除默认值后，该列将使用 `NULL` 作为默认值。数据库只允许对可为空的列删除默认值。
 
+<AnchorAlias id="alter-table-options" />
+
 ### 修改表的参数
 
 `ALTER TABLE` 语句也可以用来更改表的选项。
@@ -191,6 +193,8 @@ ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
 - `compaction.twcs.max_output_file_size`: TWCS compaction 策略的最大允许输出文件大小。
 - `compaction.twcs.trigger_file_num`: 某个窗口内触发 compaction 的最小文件数量阈值。
 - `sst_format`: 表的 SST 格式。值可以是 `flat` 或 `primary_key`。表支持双向格式转换：`primary_key` 转换为 `flat`，以及 `flat` 转换为 `primary_key`。
+- `write_buffer_size`: 表的单 region 写缓冲区阻塞阈值。设置为 `512MB` 等正值后，mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入。该表选项会覆盖 `region_engine.mito.default_region_write_buffer_size`。即使引擎默认值非零，显式设置为 `0` 也会禁用单 region 限制。取消设置会移除表级覆盖，并回退到引擎默认值。
+- `auto_flush_interval`: 该表的 region 最长多久没有 flush 就触发一次 flush。值是一个[时间范围字符串](/reference/time-durations.md)，必须大于 0。该表选项会覆盖引擎级的 `region_engine.mito.auto_flush_interval`。
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
@@ -206,13 +210,54 @@ ALTER TABLE monitor SET 'compaction.twcs.trigger_file_num'='8';
 ALTER TABLE monitor SET 'sst_format'='flat';
 
 ALTER TABLE monitor SET 'sst_format'='primary_key';
+
+ALTER TABLE monitor SET 'write_buffer_size'='512MB';
+
+ALTER TABLE monitor SET 'auto_flush_interval'='5m';
 ```
+
+要移除 `auto_flush_interval` 的表级覆盖、回退到引擎级配置，把它设为 `NULL`：
+
+```sql
+ALTER TABLE monitor SET 'auto_flush_interval' = NULL;
+```
+
+:::warning
+`auto_flush_interval` 不支持 `UNSET`。执行 `ALTER TABLE monitor UNSET 'auto_flush_interval'`
+会报错，请用上面的 `SET ... = NULL`。
+:::
 
 ### 移除表参数
 
 ```sql
 ALTER TABLE monitor UNSET 'ttl';
+
+ALTER TABLE monitor UNSET 'write_buffer_size';
 ```
+
+### 设置重分区列 hint
+
+:::info 企业版功能
+该选项仅在 GreptimeDB Enterprise 中可用。详细说明请参考 [Auto Repartition](/enterprise/autopilot/auto-repartition.md)。
+:::
+
+在 GreptimeDB Enterprise 中，可以在 `CREATE TABLE ... WITH` 中指定 `repartition.column.hint`，也可以后续通过 `ALTER TABLE` 修改。
+
+对于未分区表，可以设置 Auto Repartition 使用的候选列：
+
+```sql
+ALTER TABLE table_name SET 'repartition.column.hint'='column_name';
+```
+
+取消该 hint：
+
+```sql
+ALTER TABLE table_name UNSET 'repartition.column.hint';
+```
+
+该 hint 只会记录供后续 Auto Repartition 使用的元信息，不会立即触发重分区。
+
+使用 `ALTER TABLE` 时，该 hint 必须单独设置或取消，不能和其他 table options 一起修改。
 
 ### 重分区、拆分与合并 {#split-or-merge-partitions}
 
@@ -281,6 +326,8 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
 重分区相关操作仅支持在分布式集群中执行。
 必须开启共享对象存储和 GC，并确保所有 datanode 都能访问同一对象存储后再执行这些语句。
 :::
+
+<AnchorAlias id="create-an-index-for-a-column" />
 
 ### 创建列的索引
 

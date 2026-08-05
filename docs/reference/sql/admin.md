@@ -29,6 +29,7 @@ GreptimeDB provides some administration functions to manage the database and dat
 * `reconcile_catalog()` to reconcile the metadata inconsistency of all tables in the entire cluster, read [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md) for more details.
 * `gc_table(table_name, [full_file_listing])` to garbage collect orphaned SST files in object storage for a dropped table. Returns the number of processed regions. The optional `full_file_listing` boolean (default `false`) enables a thorough scan of all files when set to `true`.
 * `gc_regions(region_id1, ..., region_idN, [full_file_listing])` to garbage collect orphaned SST files in object storage for one or more specific regions by their region ids. Returns the number of processed regions. The optional `full_file_listing` boolean (default `false`) enables a thorough scan of all files when set to `true`.
+* `purge_table(table_name)` to permanently purge a [soft-dropped table](/enterprise/soft-drop.md). The table name can be unqualified, schema-qualified, or fully qualified. This function is only available in the GreptimeDB Enterprise database through the `ADMIN` statement.
 
 For example:
 ```sql
@@ -47,6 +48,12 @@ admin compact_table("test", "swcs", "parallelism=2");
 -- Schedule an SWCS compaction with custom time window and parallelism --
 admin compact_table("test", "swcs", "window=1800,parallelism=2");
 
+-- Schedule a regular compaction for the half-open time range [start_time, end_time) --
+admin compact_table("test", "regular", "start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z");
+
+-- Schedule an SWCS compaction for a time range --
+admin compact_table("test", "strict_window", "window=3600,start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z");
+
 -- Build missing indexes for existing SST files after adding or changing indexes --
 admin build_index("test");
 
@@ -61,6 +68,9 @@ admin gc_regions(1, 2, 3);
 
 -- Garbage collect orphaned SST files for specific regions with full file listing --
 admin gc_regions(1, 2, 3, true);
+
+-- Permanently purge a soft-dropped table --
+admin purge_table("test");
 ```
 
 ## Build Index

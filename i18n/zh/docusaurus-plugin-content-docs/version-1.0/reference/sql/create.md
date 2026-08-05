@@ -144,6 +144,8 @@ ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
 
 GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-guide/manage-data/data-index.md)章节查看更多信息。
 
+<AnchorAlias id="table-options" />
+
 ### 表选项
 
 用户可以使用 `WITH` 添加表选项。有效的选项包括以下内容：
@@ -177,7 +179,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 
 - [时间范围字符串](/reference/time-durations.md)，如 `1hour 12min 5s`。
 - `forever`, `NULL`, `0s` （或任何长度为 0 的时间范围，如 `0d`）或空字符串 `''`，表示数据永远不会被删除。
-- `instant`, 注意数据库的 TTL 不能设置为 `instant`。`instant` 表示数据在插入时立即删除，如果你想将输入发送到流任务而不保存它，可以使用 `instant`，请参阅[流管理文档](/user-guide/flow-computation/manage-flow.md#manage-flows)了解更多细节。
+- `instant`, 注意数据库的 TTL 不能设置为 `instant`。`instant` 表示数据在插入时立即删除，如果你想将输入发送到流任务而不保存它，可以使用 `instant`，请参阅[流管理文档](/user-guide/flow-computation/manage-flow.md)了解更多细节。
 - 未设置，可以使用 `ALTER TABLE <table-name> UNSET 'ttl'` 来取消表的 `ttl` 设置，这样表将继承数据库的 `ttl` 策略（如果有的话）。
 
 如果一张表有自己的 TTL 策略，那么它将使用该 TTL 策略。否则，数据库的 TTL 策略将被应用到表上。
@@ -216,6 +218,8 @@ with(
 );
 ```
 
+<AnchorAlias id="create-an-append-only-table" />
+
 #### 创建 Append-Only 表
 创建一个 append-only 表来关闭去重
 ```sql
@@ -224,6 +228,8 @@ CREATE TABLE IF NOT EXISTS temperatures(
   temperature DOUBLE DEFAULT 10,
 ) with('append_mode'='true');
 ```
+
+<AnchorAlias id="create-a-table-with-merge-mode" />
 
 #### 创建带有 merge 模式的表
 
@@ -406,6 +412,8 @@ CREATE TABLE system_metrics (
 Query OK, 0 rows affected (0.01 sec)
 ```
 
+<AnchorAlias id="index-column-option" />
+
 #### `INDEX` 列选项
 
 更多关于索引配置、性能对比和使用指南的信息，请参考[索引](/user-guide/manage-data/data-index.md)章节。
@@ -537,7 +545,7 @@ CREATE [OR REPLACE] VIEW [ IF NOT EXISTS ] <view-name>
 AS select_statement
 ```
 
-用于创建或更新视图，请阅读[视图用户指南](/user-guide/query-data/view.md#视图)。
+用于创建或更新视图，请阅读[视图用户指南](/user-guide/query-data/view.md#view)。
 
 ## 创建 Trigger
 

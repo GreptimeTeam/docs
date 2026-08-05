@@ -79,6 +79,8 @@ SELECT * FROM decimals;
 使用 MySQL/PostgreSQL 协议写入时间戳字符串字面量时，值的范围限制为 '0001-01-01 00:00:00' 到 '9999-12-31 23:59:59'。
 :::
 
+<AnchorAlias id="interval-type" />
+
 ### Interval 类型详解
 
 `Interval` 类型用于需要跟踪和操作时间间隔的场景。它的编写语法如下：
@@ -232,6 +234,8 @@ public=> SELECT INTERVAL '1 year 2 month';
 (1 row)
 ```
 
+<AnchorAlias id="json-type-experimental" />
+
 ## JSON 类型（实验功能）
 
 :::warning
@@ -265,7 +269,7 @@ SELECT * FROM json_data;
 
 ### 查询 JSON 数据
 
-您可以直接查询 JSON 数据，也可以使用 GreptimeDB 提供的 [JSON 函数](./functions/overview.md#json-functions) 提取特定字段。以下是一个示例：
+您可以直接查询 JSON 数据，也可以使用 GreptimeDB 提供的 [JSON 函数](./functions/json.md) 提取特定字段。以下是一个示例：
 
 ```sql
 SELECT json_get_string(my_json, '$.name') as name FROM json_data;

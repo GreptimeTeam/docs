@@ -1,260 +1,241 @@
 # Contributing to GreptimeDB Docs
 
-Thank you for your interest in contributing to the GreptimeDB Docs repository!
-We appreciate your involvement in this open-source project and welcome contributions from the community.
+Contributions to the GreptimeDB documentation are welcome. Use an issue to
+report incorrect, missing, or outdated documentation. Use a pull request for a
+concrete fix or new document.
 
-## How to contribute
+For GreptimeDB product bugs and feature requests, use the
+[GreptimeDB repository](https://github.com/GreptimeTeam/greptimedb/issues).
 
-We welcome contributions to the GreptimeDB Docs repository in the following ways:
+## Before you start
 
-- Submit an issue to report a problem or suggest an improvement.
-- Submit a pull request to add new documents.
+- Find the documentation version and language affected by the change.
+- Read the existing page and nearby pages before changing structure or links.
+- Verify technical claims against the applicable GreptimeDB release.
+- Keep a pull request focused on one logical change.
 
+## Set up the project
 
-## Project structure
-
-This project uses [Docusaurus](https://docusaurus.io/) as the documentation framework,
-following its architecture principles and guidelines.
-
-```
-docs/
-├── blog
-│   ├── release-0-9-1.md
-│   ├── release-0-9-2.md
-├── docs
-│   ├── getting-started
-│   │   ├── overview.md
-│   │   └── ...
-│   ├── user-guide
-│   └── ...
-├── versioned_docs
-│   ├── version-0.9
-│   └── ...
-├── sidebars.ts
-├── i18n
-│   └── zh
-│       └── docusaurus-plugin-content-docs
-│           ├── current
-│           ├── version-0.9
-│           ├── current.json
-│           ├── version-0.9.json
-│           └── ...
-├── src
-│   ├── css
-│   │   └── custom.css
-│   └── plugins
-│       └── variable-placeholder.ts
-├── variables
-│   ├── variables-0.9.ts
-│   ├── variables-nightly.ts
-│   └── ...
-├── static
-│   └── img
-├── docusaurus.config.ts
-├── package.json
-├── README.md
-└── pnpm-lock.yaml
-```
-### Key Directories and files
-
-- `/blog/` - Markdown files for release notes.
-- `/docs/` - Documentation files for the nightly version.
-- `sidebars.ts` - Configuration file for the navigation sidebar metadata for the nightly version of the documentation.
-- `/versioned_docs/` - Documentation files for older versions.
-- `/versioned_docs` - Markdown files for the documentation of old versions.
-- `/versioned_sidebars` - Configuration file for the navigation sidebar metadata of the documentation of old versions.
-- `/i18n/zh/docusaurus-plugin-content-docs` - Localized documentation Markdown files for the Chinese language.
-  - `/current/` - Nightly version of the localized documentation.
-  - `/version-<doc-version>` - Localized documentation for the specified version.
-  - `/current.json` - Navigation sidebar metadata for the nightly version of the localized documentation.
-  - `/version-<doc-version>.json` - Navigation sidebar metadata for the specified version of the localized documentation.
-- `/src/plugins/variable-placeholder.ts` - Custom plugin that replaces variables in the documentation.
-
-## Documentation Versioning
-
-Documentation versions align with GreptimeDB versions:
-
-- **Nightly version**: Unreleased features.
-- **Versioned docs**: Stable releases (e.g., v0.9, v0.10) that include all features up to the specified version.
-
-
-## Adding a new document
-
-### English documents
-
-- Add new documents to the `./docs` directory for the nightly version.
-- Ensure the document's H1 header is the title, which will be used in the sidebar.
-- Update `sidebars.ts` to include the new document:
-
-```ts
-{
-  type: 'category',
-  label: '<Navigation name>',
-  items: [
-    'user-guide/manage-data/overview',
-    '<your file path>',
-    '...',
-  ],
-},
-```
-
-### Localized documents
-
-* Add new localized documents under ./i18n/<locale>/docusaurus-plugin-content-docs/current.
-* Follow the same guidelines as for English documents, that the H1 header is the title, which will be used in the sidebar.
-* If adding a new directory, update current.json for translations:
-
-```
-"sidebar.docs.category.<category-label>": {
-  "message": "<The localized label for the category, for example, 管理数据>",
-  "description": "Description"
-},
-```
-
-## Adding a new release note
-
-Add a new Markdown file to the `/blog` dictionary.
-The content structure should remain consistency as the previous release notes.
-
-## Modifying existing documents
-
-- English documents: Modify documents in `./docs` and ensure consistency across all relevant versions in `./versioned_docs`.
-- Localized documents: Modify localized documents in `./i18n/<locale>/docusaurus-plugin-content-docs/<version>` and ensure consistency across versions.
-
-### Updating `df-functions.md`
-
-Use the following command to generate `./docs/reference/sql/functions/df-functions.md`.
-
-```shell
-ruby src/misc/update_functions.rb
-```
-
-Then copy the English content to the corresponding localized file.
-
-## Deleting documents
-
-- English documents: Remove the document and update the `sidebars.ts` configuration.
-- Localized documents: Remove the document and update the corresponding json file of the sidebar configuration.
-
-## Images
-
-### Adding images
-
-Place images in the `./static/img` directory and reference them with a relative path:
-
-```markdown
-![image](/img/xxx.png)
-```
-
-### Image style
-
-Please use the [`example.drawio.svg`](static/img/example.drawio.svg) template for diagrams, maintaining consistency in colors and style.
-
-## Markdown links
-
-Relative path and absolute path are both supported in the markdown links.
-The absolute file paths are resolved relative to the content root, usually `docs/` or localized ones like `i18n/<localize>/plugin-content-docs/current`.
-
-For example, link to the `Ingest Data` document in the `./docs` directory:
-
-```markdown
-[Ingest Data](/user-guide/ingest-data/overview.md)
-```
-
-Always use the `.md` extension when linking to other documentation files.
-This ensures that the files are correctly linked to the corresponding version.
-For example, use `[Ingest Data](/user-guide/ingest-data/overview.md)` instead of `[Ingest Data](/user-guide/ingest-data/overview)`.
-
-## Using tabs
-
-You can the `Tabs` component to display different content in the same position.
-Please refer to the [Docusaurus documentation](https://docusaurus.io/docs/markdown-features/tabs) for more information.
-
-## Variable Placeholders
-
-You can utilize variable placeholders in the documentation to replace the variables with actual values.
-These placeholders are defined in the `./variables` directory.
-The variable file name must match the version name in the `versioned_docs` directory.
-For instance, `version-0.9` should have a corresponding `variables-0.9.ts` file.
-
-To use a variable placeholder in the documentation, follow this syntax:
-
-```markdown
-VAR::<variableName>
-```
-
-Add the variable name to the corresponding variable file:
-
-```ts
-export const variables = {
-  // ...
-  variableName: 'name',
-  // ...
-};
-```
-
-For a practical example, please refer to the [GreptimeDB Standalone installation document](docs/getting-started/installation/greptimedb-standalone.md#linux-and-macos).
-
-## Include other Markdown files
-
-You can include other Markdown files in the current Markdown file.
-For example, if you want to include the `shared-content.md` file in the current file, you can use the following code:
-
-```markdown
-import IncludesharedContent from './shared-content.md'
-<IncludesharedContent/>
-```
-
-## Document templates
-
-Document templates can help you reuse the same outlines and structures in multiple documents. For example, you can create a template file for all SDK documents and only write the SDK-specific content in each individual SDK document.
-
-For an example, please refer to the [gRPC-SDK dictionary](docs/user-guide/ingest-data/for-iot/grpc-sdks).
-
-## Build and preview the docs locally
-
-We highly encourage you to preview your changes locally before submitting a pull request.
-This project requires Node.js version 20.x or higher.
-Use `npm install -g pnpm` to install package manager, and start a local server with the following commands:
+Use Node.js 22 and pnpm 8.6.0 to match the main build CI. `package.json`
+currently allows Node.js 18 or newer.
 
 ```shell
 pnpm install
-pnpm run start
 ```
 
-You can also use `pnpm run build` to check dead links.
+Common commands:
 
-### Preview the localized documentation
+| Task | Command |
+| --- | --- |
+| Preview English | `pnpm start` |
+| Preview Chinese | `pnpm start:zh` |
+| Build English | `pnpm build` |
+| Build Chinese | `DOC_LANG=zh pnpm build` |
+| Check English links and anchors | `DOC_LANG=en pnpm check:links` |
+| Check Chinese links and anchors | `DOC_LANG=zh pnpm check:links` |
+| Run unit tests | `pnpm test` |
+| Run TypeScript checks | `pnpm typecheck` |
 
-To preview the documentation in a specific language, use command `pnpm run start --locale <localize language>`.
-For example:
+`DOC_LANG` selects the locale. The repository enables pnpm pre/post scripts, so
+normal start and build commands run `pnpm sync-skill` first. The strict link
+commands build Nightly and every released documentation version from 1.0
+onward.
 
-```cmd
-DOC_LANG=zh pnpm start
+Use pnpm. Dependency changes should update `pnpm-lock.yaml`; documentation-only
+changes must not touch lockfiles.
+
+## Repository layout
+
+- `docs/`: English Nightly docs for unreleased changes.
+- `versioned_docs/version-<version>/`: English docs for released versions.
+- `i18n/zh/docusaurus-plugin-content-docs/current/`: Chinese Nightly docs.
+- `i18n/zh/docusaurus-plugin-content-docs/version-<version>/`: Chinese released
+  docs.
+- `sidebars.ts`, `versioned_sidebars/`, and
+  `i18n/zh/docusaurus-plugin-content-docs/*.json`: navigation.
+- `variables/`: version-specific values for `VAR::<name>` placeholders.
+- `src/`: Docusaurus components, theme overrides, plugins, and scripts.
+- `skills/`: sources for published GreptimeDB agent skills.
+- `static/`: images, downloads, and generated skill copies.
+- `blog/`: release notes.
+
+`versions.json` lists released documentation versions with the newest first.
+
+## Add or update documentation
+
+Use `docs/` and the Chinese `current/` tree for unreleased features. Update a
+released version only when the change is valid for that GreptimeDB release.
+When adding or expanding user-facing documentation, update the corresponding
+Chinese page in the same pull request. Keep English and Chinese aligned in
+meaning, but write each language naturally.
+
+New pages require front matter and an H1:
+
+```markdown
+---
+keywords: [GreptimeDB, documentation]
+description: A short description of the page.
+---
+
+# Page title
 ```
 
-## PR title check
+Add English Nightly pages to `sidebars.ts`. Update the corresponding
+versioned sidebar or Chinese sidebar JSON when the same structural change
+applies there.
 
-We use [action-semantic-pull-request](https://github.com/amannn/action-semantic-pull-request) to ensure that PR titles follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.
+When moving or deleting a page:
 
-## Backport nightly changes to versioned docs
+- Update every sidebar that references it.
+- Update inbound links in the affected versions and languages.
+- Preserve established routes or anchors when external links may depend on
+  them.
 
-Some doc modifications on latest nightly (current) are required to backport to
-released docs. We created a script to simplify this process.
+Versioned docs are user-facing sources, not disposable generated files. When
+creating a version, keep `versions.json`, `versioned_docs/`,
+`versioned_sidebars/`, the matching Chinese directory and sidebar JSON, and
+`variables/variables-<version>.ts` consistent.
 
-To backport the changes, first commit your changes on nightly docs. Then execute
+## Reference snippets
 
-```sh
-pnpm run backport
+Add an English Nightly category to `sidebars.ts`:
+
+```typescript
+{
+  type: 'category',
+  label: 'Category name',
+  items: ['path/to/page'],
+}
 ```
 
-This command will apply all the changes from git `HEAD~1` to last release
-versioned docs. Then are several options to customize this behavior
+For Chinese navigation, add a matching translation to
+`i18n/zh/docusaurus-plugin-content-docs/current.json`. The key must use the
+English category label from `sidebars.ts`:
 
-```sh
-pnpm run backport --help
+```json
+{
+  "sidebar.docs.category.Category name": {
+    "message": "Translated category name",
+    "description": "The label for category Category name in sidebar docs"
+  }
+}
 ```
 
-Note that we cannot guarantee success of this command because sometimes there
-are more changes to versioned docs that blocks us from apply it. You will need
-to resolve the conflicts manually.
+Reuse Markdown content through an MDX import:
+
+```mdx
+import SharedContent from './shared-content.md'
+
+<SharedContent />
+```
+
+Version variable filenames must match their documentation directories. For
+example, pages under `versioned_docs/version-1.2/` use
+`variables/variables-1.2.ts`; Nightly pages use
+`variables/variables-nightly.ts`.
+
+Add release notes under `blog/`. Follow the filename, front matter, and section
+structure of the newest release note.
+
+## Writing guidelines
+
+- Use plain, direct English without marketing filler.
+- Write Chinese naturally for Chinese developers; avoid literal translation.
+- Keep commands, SQL, configuration keys, API names, and examples exact and
+  copy-pasteable.
+- State which release a version-specific feature or option applies to.
+- Follow the terminology already used by the surrounding documentation.
+
+## Links and anchors
+
+Include the `.md` extension in links to documentation source files:
+
+```markdown
+[Ingest data](/user-guide/ingest-data/overview.md)
+```
+
+Root-relative documentation paths keep readers in their current documentation
+version.
+
+Read the source paragraph and destination section before changing a link. A
+link can intentionally land on an overview or option section that sends readers
+to a detailed page. A green link checker proves that the target exists, not
+that it is the right target.
+
+Heading slugs are public URLs. When a heading is renamed or translated but the
+section still represents the same concept, preserve the established anchor
+with the global `AnchorAlias` component:
+
+```mdx
+<AnchorAlias id="upload-a-pipeline" />
+
+## Upload the Pipeline
+```
+
+Place the alias immediately before the exact heading it represents. Keep IDs
+unique within the page. Do not import `AnchorAlias` in a document; it is
+registered globally. Do not add or move an alias only to silence the checker.
+
+Run both strict link commands after changing links, headings, routes, versions,
+localization, or MDX anchor handling.
+
+## Images and shared content
+
+Put site assets under `static/` and reference them from the site root:
+
+```markdown
+![Diagram](/img/example.drawio.svg)
+```
+
+Use [`static/img/example.drawio.svg`](static/img/example.drawio.svg) as the
+style reference for diagrams.
+
+Docusaurus MDX supports shared Markdown imports and tabs. Reuse the existing
+patterns near the page you are editing instead of introducing a second
+convention.
+
+## Variables and generated files
+
+Use `VAR::<name>` for version-specific values. Define the value in the matching
+file under `variables/`.
+
+Do not edit generated outputs:
+
+- Edit `skills/<name>/SKILL.md`, not `static/SKILL.md` or `static/skills/**`.
+  `pnpm sync-skill` regenerates the static copies.
+- Do not edit `build/`, `.docusaurus/`, or JavaScript transpiled from tracked
+  TypeScript.
+- Generate `docs/reference/sql/functions/df-functions.md` with
+  `ruby src/misc/update_functions.rb`, then update the matching localized file.
+
+## Backport Nightly changes
+
+The backport script applies the last commit from the English and Chinese
+Nightly trees to the latest released documentation version.
+
+```shell
+pnpm backport:dry
+pnpm backport
+```
+
+Run the dry run first and inspect the result. The script cannot determine
+whether a change is valid for the target release. Use `pnpm backport --help`
+for additional options.
+
+## Before opening a pull request
+
+1. Review the complete diff for unintended versions, languages, generated
+   files, and lockfile changes.
+2. Run `git diff --check`.
+3. Build each affected language.
+4. Run both strict link commands for link, heading, route, version,
+   localization, or MDX changes.
+5. Run `pnpm test` and `pnpm typecheck` for components, plugins, theme, or
+   configuration changes.
+6. Check the rendered sidebar after navigation changes.
+7. Use a [Conventional Commit](https://www.conventionalcommits.org/) style PR
+   title and fill in the pull request template.
+
+CI checks the build, unit tests, Markdown, spelling, front matter for
+documentation pages, and the PR title. Build success does not replace manual
+review of technical claims and link destinations.

@@ -9,14 +9,16 @@ GreptimeDB 提供了 HTTP API 用于与数据库进行交互。如需查看完�
 
 ## Base URL
 
-API Base URL 是 `http(s)://{{host}}:{{port}}/`。
+API 的 Base URL 是 `http(s)://<host>:<port>/`。
 
 - 对于在本地机器上运行的 GreptimeDB 实例，Base URL 是 `http://localhost:4000/`，默认端口配置为 `4000`。你可以在[配置文件](/user-guide/deployments-administration/configuration.md#protocol-options)中更改服务的 host 和 port。
-- 对于 GreptimeCloud，Base URL 是 `https://{{host}}/`。你可以在 GreptimeCloud 控制台的 "Connection Information" 中找到 host。
+- 对于 GreptimeCloud，Base URL 是 `https://<host>/`。你可以在 GreptimeCloud 控制台的 "Connection Information" 中找到 host。
 
-在以下内容中，我们使用 `http://{{API-host}}/` 作为 Base URL 来演示 API。
+在以下内容中，我们使用 `http://<API-host>/` 作为 Base URL 来演示 API。
 
 ## 通用 Headers
+
+<AnchorAlias id="authentication" />
 
 ### 鉴权
 
@@ -52,7 +54,7 @@ GreptimeDB 支持在 HTTP 请求中使用 `X-Greptime-Timeout` 请求头，用�
 
 ```bash
 curl -X POST \
--H 'Authorization: Basic {{authentication}}' \
+-H 'Authorization: Basic <base64-encoded-credentials>' \
 -H 'X-Greptime-Timeout: 120s' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'sql=show tables' \
@@ -95,7 +97,7 @@ x-greptime-hint-key2: value2
 
 ```bash
 curl -X POST \
--H 'Authorization: Basic {{authentication}}' \
+-H 'Authorization: Basic <base64-encoded-credentials>' \
 -H 'x-greptime-hints: ttl=7d, append_mode=true' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'sql=INSERT INTO my_table VALUES (...)' \
@@ -111,17 +113,19 @@ http://localhost:4000/v1/sql
 
 请参考 [Admin APIs 接口](/reference/http-endpoints.md#管理-api)文档以获取更多信息。
 
+<AnchorAlias id="post-sql-statements" />
+
 ## POST SQL 语句
 
 要通过 HTTP API 向 GreptimeDB 服务器提交 SQL 语句，请使用以下格式：
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic {{authentication}}' \
-  -H 'X-Greptime-Timeout: {{timeout}}' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
+  -H 'X-Greptime-Timeout: <timeout>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d 'sql={{SQL-statement}}' \
-http://{{API-host}}/v1/sql
+  -d 'sql=<SQL-statement>' \
+  'http://<API-host>/v1/sql'
 ```
 
 ### Headers
@@ -153,6 +157,8 @@ http://{{API-host}}/v1/sql
 
 - `sql`: SQL 语句。必填。
 
+<AnchorAlias id="response" />
+
 ### 响应
 
 响应是一个 JSON 对象，包含以下字段：
@@ -168,7 +174,7 @@ http://{{API-host}}/v1/sql
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'sql=INSERT INTO monitor VALUES ("127.0.0.1", 1667446797450, 0.1, 0.4), ("127.0.0.2", 1667446798450, 0.2, 0.3), ("127.0.0.1", 1667446798450, 0.5, 0.2)' \
   http://localhost:4000/v1/sql?db=public
@@ -186,7 +192,7 @@ Response 包含受影响的行数：
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d "sql=SELECT * FROM monitor" \
   http://localhost:4000/v1/sql?db=public
@@ -252,7 +258,7 @@ GreptimeDB 支持 HTTP 请求中的 `X-Greptime-Timezone` header。
 
 ```bash
 curl -X POST \
--H 'Authorization: Basic {{authentication}}' \
+-H 'Authorization: Basic <base64-encoded-credentials>' \
 -H 'X-Greptime-Timezone: +1:00' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'sql=SHOW VARIABLES time_zone;' \
@@ -294,7 +300,7 @@ http://localhost:4000/v1/sql
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d "sql=SELECT * FROM monitor" \
   http://localhost:4000/v1/sql?db=public&format=table
@@ -315,7 +321,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d "sql=SELECT * FROM monitor" \
   http://localhost:4000/v1/sql?db=public&format=csvWithNames
@@ -332,7 +338,7 @@ host,ts,cpu,memory
 将 `format` 改为 `csvWithNamesAndTypes`：
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d "sql=SELECT * FROM monitor" \
   http://localhost:4000/v1/sql?db=public&format=csvWithNamesAndTypes
@@ -353,7 +359,7 @@ String,TimestampMillisecond,Float64,Float64
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d "sql=SELECT * FROM monitor" \
   http://localhost:4000/v1/sql?db=public&format=influxdb_v1&epoch=ms
@@ -393,7 +399,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d "sql=SELECT * FROM monitor" \
   http://localhost:4000/v1/sql/parse
@@ -544,7 +550,7 @@ GreptimeDB 同样暴露了一个自己的 HTTP API 用于 PromQL 查询，即在
 
 ```shell
 curl -X GET \
-  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   -G \
   --data-urlencode 'query=avg(system_metrics{idc="idc_a"})' \
   --data-urlencode 'start=1667446797' \
@@ -647,9 +653,9 @@ curl -X GET \
 
 ```shell
 curl -X POST \
-  -H 'Authorization: token {{username:password}}' \
-  -d '{{Influxdb-line-protocol-data}}' \
-  http://{{API-host}}/v1/influxdb/api/v2/write?precision={{time-precision}}
+  -H 'Authorization: token <username:password>' \
+  -d '<influxdb-line-protocol-data>' \
+  'http://<API-host>/v1/influxdb/api/v2/write?bucket=<db-name>&precision=<time-precision>'
 ```
 
 </TabItem>
@@ -658,8 +664,8 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  -d '{{Influxdb-line-protocol-data}}' \
-  http://{{API-host}}/v1/influxdb/write?u={{username}}&p={{password}}&precision={{time-precision}}
+  -d '<influxdb-line-protocol-data>' \
+  'http://<API-host>/v1/influxdb/write?u=<username>&p=<password>&precision=<time-precision>'
 ```
 
 </TabItem>
@@ -667,13 +673,14 @@ curl -X POST \
 
 ### Headers
 
-- `Authorization`: **与其他 API 不同**，InfluxDB 行协议 API 使用 InfluxDB 鉴权格式。对于 V2 协议，Authorization 是 `token {{username:password}}`。
+- `Authorization`: **与其他 API 不同**，InfluxDB 行协议 API 使用 InfluxDB 鉴权格式。对于 V2 协议，Authorization 是 `token <username:password>`。
 
 ### Query string parameters
 
 - `u`: 用户名。可选。它是 V1 的鉴权用户名。
 - `p`: 密码。可选。它是 V1 的鉴权密码。
-- `db`: 数据库名称。可选。默认值是 `public`。
+- `bucket`: InfluxDB line protocol V2 写入使用的数据库名称。可选。默认值是 `public`。
+- `db`: 数据库名称。这是 InfluxDB line protocol V1 写入的标准参数。V2 API 也接受 `db` 作为 GreptimeDB 的兼容别名，但 V2 推荐使用 `bucket`。可选。默认值是 `public`。
 - `precision`: 定义请求体中提供的时间戳的精度。请参考用户指南中的 [InfluxDB 行协议](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md)文档。
 
 ### Body

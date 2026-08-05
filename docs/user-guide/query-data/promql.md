@@ -35,7 +35,7 @@ For example, the following query will return the CPU usage of the `process_cpu_s
 
 ```shell
 curl -X POST \
-    -H 'Authorization: Basic {{authorization if exists}}' \
+    -H 'Authorization: Basic <base64-encoded-credentials>' \
     --data-urlencode 'query=irate(process_cpu_seconds_total[1h])' \
     --data-urlencode 'start=2024-11-24T00:00:00Z' \
     --data-urlencode 'end=2024-11-25T00:00:00Z' \

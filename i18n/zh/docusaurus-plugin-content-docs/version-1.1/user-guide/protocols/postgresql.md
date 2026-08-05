@@ -8,7 +8,7 @@ description: 介绍如何通过 PostgreSQL 协议连接和使用 GreptimeDB。
 ## 连接数据库
 
 你可以通过端口 `4003` 使用 PostgreSQL 连接到 GreptimeDB。
-只需在命令中添加 `-U` 参数，后跟你的用户名和密码。以下是一个示例：
+使用 `-U` 参数指定用户名。如果启用了鉴权，`psql` 会提示你输入密码：
 
 ```shell
 psql -h <host> -p 4003 -U <username> -d public

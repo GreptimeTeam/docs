@@ -27,6 +27,7 @@ GreptimeDB 提供了一些管理函数来管理数据库和数据：
 * `reconcile_catalog()` 修复整个集群中所有表的元数据不一致问题，详细信息请阅读 [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md)。
 * `gc_table(table_name, [full_file_listing])` 对对象存储中已删除表的孤立 SST 文件进行垃圾回收，返回已处理的 Region 数量。可选参数 `full_file_listing`（默认为 `false`），设为 `true` 时启用全量文件扫描模式。
 * `gc_regions(region_id1, ..., region_idN, [full_file_listing])` 根据 Region ID 对对象存储中指定 Region 的孤立 SST 文件进行垃圾回收，返回已处理的 Region 数量。可选参数 `full_file_listing`（默认为 `false`），设为 `true` 时启用全量文件扫描模式。
+* `purge_table(table_name)` 永久 purge 一个 [soft-dropped table](/enterprise/soft-drop.md)。表名可以是未限定、schema 限定或完整限定名称。该函数仅在 GreptimeDB 企业版中可用，且只能通过 `ADMIN` 语句调用。
 
 例如：
 ```sql
@@ -45,6 +46,12 @@ admin compact_table("test", "swcs", "parallelism=2");
 -- 启动 SWCS compaction，自定义时间窗口和并行度 --
 admin compact_table("test", "swcs", "window=1800,parallelism=2");
 
+-- 对左闭右开的时间范围 [start_time, end_time) 启动常规 compaction --
+admin compact_table("test", "regular", "start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z");
+
+-- 对指定时间范围启动 SWCS compaction --
+admin compact_table("test", "strict_window", "window=3600,start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z");
+
 -- 对已删除的表进行垃圾回收 --
 admin gc_table("test");
 
@@ -56,4 +63,7 @@ admin gc_regions(1, 2, 3);
 
 -- 对指定 Region 进行垃圾回收（启用全量文件扫描）--
 admin gc_regions(1, 2, 3, true);
+
+-- 永久 purge 一个 soft-dropped table --
+admin purge_table("test");
 ```

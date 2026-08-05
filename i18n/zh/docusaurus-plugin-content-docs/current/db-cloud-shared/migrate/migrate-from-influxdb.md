@@ -4,6 +4,24 @@
 
 要了解 InfluxDB 和 GreptimeDB 的数据模型之间的差异，请参考写入数据文档中的[数据模型](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#数据模型)。
 
+InfluxDB 行协议数据与 GreptimeDB 表的映射关系如下：
+
+| InfluxDB | GreptimeDB |
+| --- | --- |
+| Measurement | 表 |
+| Tag | 主键列 |
+| Field | 字段列 |
+| Timestamp | `greptime_timestamp` 时间索引列 |
+
+写入有代表性的样本数据后，请在开始完整迁移前检查每个自动创建的表。将 `measurement_name` 替换为样本数据中的 measurement 名称：
+
+```sql
+DESC TABLE measurement_name;
+SHOW CREATE TABLE measurement_name;
+```
+
+确认列类型和主键列符合预期，尤其是 measurement 包含高基数 tag 时。如果需要使用不同的表结构，请在导入数据前[手动创建表](/user-guide/deployments-administration/manage-data/basic-table-operations.md#创建表)。
+
 ## 数据库连接信息
 
 在写入或查询数据之前，需要了解 InfluxDB 和 GreptimeDB 之间的数据库连接信息的差异。
@@ -11,9 +29,12 @@
 - **Token**：InfluxDB API 中的 token 用于身份验证，与 GreptimeDB 身份验证相同。
   当使用 InfluxDB 的客户端库或 HTTP API 与 GreptimeDB 交互时，你可以使用 `<greptimedb_user:greptimedb_password>` 作为 token。
 - **Organization**：GreptimeDB 中没有组织。
-- **Bucket**：在 InfluxDB 中，bucket 是时间序列数据的容器，与 GreptimeDB 中的数据库名称相同。
+- **Bucket**：InfluxDB 的 bucket 对应 GreptimeDB 数据库。v2 写入 API 使用 `bucket`，v1 写入 API 使用 `db`。
+- **Database**：写入前请确认目标数据库已经存在。自托管 GreptimeDB 默认提供 `public` 数据库；其他数据库需要通过 [`CREATE DATABASE`](/user-guide/deployments-administration/manage-data/basic-table-operations.md#创建数据库) 创建。
 
 <InjectContent id="get-database-connection-information" content={props.children}/>
+
+<AnchorAlias id="write-data" />
 
 ## 写入数据
 
@@ -26,12 +47,16 @@ GreptimeDB 兼容 InfluxDB 的行协议格式，包括 v1 和 v2。
 
 <InjectContent id="write-data-http-api" content={props.children}/>
 
+`precision` 参数必须与请求体中的时间戳精度一致。可选值为 `ns`、`us`、`ms` 和 `s`，默认值为 `ns`。详情请参考 [InfluxDB 行协议文档](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#协议)。
+
 ### Telegraf
 
 GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容。
 要配置 Telegraf，只需将 GreptimeDB 的 URL 添加到 Telegraf 配置中：
 
 <InjectContent id="write-data-telegraf" content={props.children}/>
+
+<AnchorAlias id="client-libraries" />
 
 ### 客户端库
 
@@ -47,11 +72,20 @@ GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容�
 
 ## 查询数据
 
-GreptimeDB 不支持 Flux 和 InfluxQL，而是使用 SQL 和 PromQL。
+GreptimeDB 不支持 Flux 和 InfluxQL，请将这些查询迁移为 SQL 或 PromQL。
 
-SQL 是一种通用的用于管理和操作关系数据库的语言。
-具有灵活的数据检索、操作和分析功能，
-减少了已经熟悉 SQL 的用户的学习曲线。
+下表汇总了常见的 InfluxQL 到 GreptimeDB SQL 映射：
+
+| InfluxQL | GreptimeDB SQL |
+| --- | --- |
+| Measurement | 表 |
+| Tag 或 Field | 列 |
+| `time` | 时间索引列，例如 `greptime_timestamp` |
+| `GROUP BY time()` | [Range Query](/reference/sql/range.md) 或 [`date_bin()`](/reference/sql/functions/df-functions.md#date_bin) |
+| 查询每个分组的最新数据点 | [`row_number()`](/reference/sql/functions/df-functions.md#row_number) 窗口函数 |
+| `difference()` 或 `elapsed()` | [`lag()`](/reference/sql/functions/df-functions.md#lag) 或 [`lead()`](/reference/sql/functions/df-functions.md#lead) 窗口函数 |
+
+更多查询改写示例请参考[从 InfluxDB 到 GreptimeDB 迁移指南](https://greptime.cn/blogs/2026-06-02-influxdb-to-greptimedb-migration-guide)。
 
 PromQL（Prometheus 查询语言）允许用户实时选择和聚合时间序列数据，
 表达式的结果可以显示为图形，也可以在 Prometheus 的表达式浏览器中以表格数据的形式查看，
@@ -68,11 +102,11 @@ FROM
 WHERE 
    time > now() - 24h 
 GROUP BY 
-   time(1h)
+   time(1h), "host"
 ```
 
-此 InfluxQL 查询计算 `monitor` 表中 `cpu`字段的最大值，
-其中时间大于当前时间减去 24 小时，结果以一小时为间隔进行分组。
+此 InfluxQL 查询计算 `monitor` 表中 `cpu` 字段的最大值，
+其中时间大于当前时间减去 24 小时，结果按 host 和一小时的时间窗口分组。
 
 该查询在 Flux 中的表达如下：
 
@@ -89,28 +123,27 @@ from(bucket: "public")
 SELECT
     greptime_timestamp,
     host,
-    AVG(cpu) RANGE '1h' as mean_cpu
+    MAX(cpu) RANGE '1h' AS max_cpu
 FROM
     monitor
 WHERE
     greptime_timestamp > NOW() - '24 hours'::INTERVAL
-ALIGN '1h' TO NOW
+ALIGN '1h' TO NOW BY (host)
 ORDER BY greptime_timestamp DESC;
 ```
 
 在该 SQL 查询中，
-`RANGE` 子句确定了 AVG(cpu) 聚合函数的时间窗口，
+`RANGE` 子句确定了 `MAX(cpu)` 聚合函数的时间窗口，
 而 `ALIGN` 子句设置了时间序列数据的对齐时间。
 有关按时间窗口分组的更多详细信息，请参考[按时间窗口聚合数据](/user-guide/query-data/sql.md#按时间窗口聚合数据)文档。
 
 在 PromQL 中，类似的查询为：
 
 ```promql
-avg_over_time(monitor[1h])
+max_over_time(monitor{__field__="cpu"}[1h])
 ```
 
-要查询最后 24 小时的时间序列数据，
-你需要执行此 PromQL 并使用 HTTP API 的 `start` 和 `end` 参数定义时间范围。
+`[1h]` 范围选择器定义回看窗口。要像上面的 SQL 查询一样每小时输出一个结果，请将此 PromQL 作为范围查询执行：使用 HTTP API 的 `start` 和 `end` 参数定义时间范围，并通过 `step=1h` 定义求值间隔。
 有关 PromQL 的更多信息，请参考 [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) 文档。
 
 ## 可视化数据
@@ -125,7 +158,9 @@ avg_over_time(monitor[1h])
 
 1. 同时将数据写入 GreptimeDB 和 InfluxDB，以避免迁移过程中的数据丢失。
 2. 从 InfluxDB 导出所有历史数据，并将数据导入 GreptimeDB。
-3. 停止向 InfluxDB 写入数据，并移除 InfluxDB 服务器。
+3. 验证表结构、行数、时间范围和关键查询结果。
+4. 将读流量逐步切换到 GreptimeDB。
+5. 验证通过后停止向 InfluxDB 写入数据。
 
 ### 双写 GreptimeDB 和 InfluxDB
 
@@ -221,7 +256,7 @@ cpu,cpu=cpu-total,host=bogon usage_iowait=0 1714375710000000000
 
 ### 导入数据到 GreptimeDB
 
-在将数据导入 GreptimeDB 之前，如果数据文件过大，建议将数据文件拆分为多个片段：
+对于大数据集，建议按 measurement 和时间范围分批导出及导入，记录已完成的批次以便断点续传，并将大文件拆分为较小的片段：
 
 ```shell
 split -l 100000 -d -a 10 data data.
@@ -255,5 +290,25 @@ export GREPTIME_DB=<db-name>
 将数据导入到 GreptimeDB：
 
 <InjectContent id="import-data-shell" content={props.children}/>
+
+### 验证导入的数据
+
+切换读流量前，请逐个对比 InfluxDB 和 GreptimeDB 中的 measurement。至少应验证行数、时间范围、字段非空数量和关键聚合结果。例如：
+
+```sql
+SELECT
+    COUNT(*) AS row_count,
+    COUNT(cpu) AS cpu_value_count,
+    MIN(greptime_timestamp) AS min_ts,
+    MAX(greptime_timestamp) AS max_ts
+FROM monitor;
+
+SELECT host, COUNT(*) AS row_count
+FROM monitor
+GROUP BY host
+ORDER BY row_count DESC;
+```
+
+逐步切换读流量期间应保持双写。只有上述检查和应用关键查询均符合预期后，才能停止向 InfluxDB 写入数据。
 
 如果您需要更详细的迁移方案或示例脚本，请提供具体的表结构和数据量信息。[GreptimeDB 官方社区](https://github.com/orgs/GreptimeTeam/discussions)将为您提供进一步的支持。欢迎加入 [Greptime Slack](http://greptime.com/slack) 社区交流。

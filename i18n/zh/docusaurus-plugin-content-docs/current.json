@@ -246,5 +246,9 @@
   "sidebar.docs.category.Built-in User Management": {
     "message": "用户管理",
     "description": "The label for category Built-in User Management in sidebar docs"
+  },
+  "sidebar.docs.category.Management Console": {
+    "message": "管理控制台",
+    "description": "The label for category Management Console in sidebar docs"
   }
 }

@@ -203,7 +203,7 @@ The output `Readable timestamp (UTC)` represents the creation time of the pipeli
 
 ## Debug
 
-First, please refer to the [Quick Start example](/user-guide/logs/quick-start.md#write-logs-by-pipeline) to see the correct execution of the Pipeline.
+First, please refer to the [Quick Start example](/user-guide/logs/quick-start.md#direct-http-ingestion) to see the correct execution of the Pipeline.
 
 ### Debug creating a Pipeline
 

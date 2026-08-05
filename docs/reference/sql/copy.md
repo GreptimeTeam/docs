@@ -23,6 +23,8 @@ data (`/xxx/xxx/output.parquet` in this case).
 
 :::tip NOTE
 The output file is created on the GreptimeDB server node that executes the query, not on the client machine that issues the SQL. Make sure the path is accessible and writable on that server, or export to S3, GCS, Azure Blob Storage, or other supported cloud storage services via `CONNECTION`.
+
+In standalone deployments, local file paths are sandboxed to the `storage.copy_root` directory (default `<data_home>/copy`). In distributed deployments, local file access is disabled entirely. See [Migrate Local SQL File Access](/user-guide/deployments-administration/migrate-local-sql-file-access.md) for details.
 :::
 
 For example, to export data to CSV or JSON with custom timestamp and date formats:
@@ -136,11 +138,38 @@ COPY tbl FROM '/path/to/file.csv' WITH (
 | `COMPRESSION_TYPE` | Compression algorithm for the imported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
 | `HEADERS` | Whether the CSV file has a header row. Supported values: `true`, `false`. Default is `true`. | Optional |
 | `SKIP_BAD_RECORDS` | Whether to skip rows with parsing or casting errors during CSV import. Supported values: `true`, `false`. Default is `false`. Only supported for CSV format. | Optional |
+| `STRICT_HEADERS` | Whether to validate CSV headers against the table schema before importing. Supported values: `true`, `false`. Default is `false`. Only supported for CSV format, and requires `HEADERS = 'true'`. | Optional |
 
 :::tip NOTE
 By default, CSV files are parsed with headers and columns are matched by name.
 
 To import headerless CSV files, set `HEADERS = 'false'`. In this mode, columns are mapped by position following the target table schema order. You can use `SHOW CREATE TABLE <table_name>` to inspect the table column order.
+:::
+
+#### STRICT_HEADERS Option
+
+By default, header matching is lenient: CSV columns the table does not have are ignored, and table columns the CSV does not have fall back to the normal insert and default-value handling.
+
+Set `STRICT_HEADERS = 'true'` to validate the header row before any data is read. The import fails if the CSV has:
+
+- a column the table does not have,
+- no column for a column the table does have,
+- the same header name more than once.
+
+```sql
+COPY monitor FROM 'monitor.csv' WITH (FORMAT = 'CSV', STRICT_HEADERS = 'true');
+```
+
+A mismatch reports all three categories at once:
+
+```
+ERROR:  CSV header mismatch in path: monitor.csv, unknown columns: ["extra"], missing columns: [], duplicate columns: []
+```
+
+:::warning
+The missing-column check covers **every** column in the table, including nullable columns and columns with a default value. A CSV that omits any of them is rejected.
+
+`STRICT_HEADERS = 'true'` cannot be combined with `HEADERS = 'false'` — a headerless CSV has no header names to validate. The combination returns `strict_headers=true requires headers=true`.
 :::
 
 #### `CONNECTION` Option

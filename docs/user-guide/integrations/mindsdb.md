@@ -1,6 +1,6 @@
 ---
 keywords: [MindsDB, machine learning, data source, configuration, SQL]
-description: Guide on configuring GreptimeCloud as a data source in MindsDB for machine learning capabilities.
+description: Guide on configuring GreptimeDB as a data source in MindsDB for machine learning capabilities.
 ---
 
 # MindsDB

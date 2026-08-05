@@ -621,7 +621,7 @@ datanode:
     [region_engine.mito.gc]
     enable = true
     lingering_time = "10m"
-    unknown_file_lingering_time = "1h"
+    unknown_file_lingering_time = "1d"
 ```
 
 Make sure the datanode `lingering_time` is longer than the metasrv `gc_cooldown_period` to avoid deleting files that may still be in use.

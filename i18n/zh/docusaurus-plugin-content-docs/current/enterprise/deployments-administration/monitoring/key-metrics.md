@@ -19,6 +19,8 @@ description: 监控 GreptimeDB 集群的关键指标，包括 CPU、内存、磁
 | `sum(rate(greptime_table_operator_ingest_rows{instance=~"$frontend"}[$__rate_interval]))` | 当前每秒写入的行数 | 持续 n 分钟跌 0（或低于阈值） |
 | `greptime_mito_compaction_failure_total` | compaction 失败 | 最近新增大于 0 |
 | `greptime_mito_flush_failure_total` | flush 失败 | 最近新增大于 0 |
+| `sum by (instance, pod, region_id) (rate(greptime_mito_region_query_cpu_time{instance=~"$frontend"}[$__rate_interval]))` | Region 维度查询 CPU 时间，单位为纳秒 | 启用 `logging.enable_per_region_metrics` 后用于分析读负载热点；该指标基数较高，不建议直接作为大范围告警指标 |
+| `sum by (instance, pod, region_id) (rate(greptime_mito_region_query_scanned_bytes{instance=~"$frontend"}[$__rate_interval]))` | Region 维度查询扫描字节数 | 启用 `logging.enable_per_region_metrics` 后用于分析读负载热点；该指标基数较高，不建议直接作为大范围告警指标 |
 | `sum by(instance, pod, path, method, code) (rate(greptime_servers_http_requests_elapsed_count{path!~"/health\|/metrics"}[$__rate_interval]))` | HTTP 请求数和返回的响应码 | 响应码 200 的请求数量持续 n 分钟低于阈值或者响应码非 200 的请求数量持续 n 分钟大于正常阈值 |
 | `sum by (instance, pod) (rate(greptime_mito_write_rows_total{instance=~"$datanode"}[$__rate_interval]))` | 存储引擎写入行数 | 持续 n 分钟低于正常阈值 |
 

@@ -28,6 +28,8 @@ GreptimeDB 能够将日志自动解析和转换为多列的结构化数据，
 127.0.0.1 - - [25/May/2024:20:16:37 +0000] "GET /index.html HTTP/1.1" 200 612 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 ```
 
+<AnchorAlias id="create-a-pipeline" />
+
 ## 创建自定义 Pipeline
 
 GreptimeDB 提供 HTTP 接口用于创建 pipeline。
@@ -103,6 +105,8 @@ transform:
 有关 pipeline 配置选项的详细信息，
 请参考 [Pipeline 配置](/reference/pipeline/pipeline-config.md) 文档。
 
+<AnchorAlias id="upload-the-pipeline" />
+
 ## 上传 Pipeline
 
 执行以下命令上传 pipeline 配置：
@@ -110,7 +114,7 @@ transform:
 ```shell
 curl -X "POST" \
   "http://localhost:4000/v1/pipelines/nginx_pipeline" \
-     -H 'Authorization: Basic {{authentication}}' \
+     -H 'Authorization: Basic <base64-encoded-credentials>' \
      -F "file=@pipeline.yaml"
 ```
 
@@ -124,6 +128,8 @@ curl -X "POST" \
 所有 pipeline 都存储在 `greptime_private.pipelines` 表中。
 参考[查询 Pipeline](manage-pipelines.md#查询-pipeline) 来查看 pipeline 数据。
 
+<AnchorAlias id="ingest-logs-using-the-pipeline" />
+
 ## 使用 Pipeline 写入日志
 
 以下示例使用 `nginx_pipeline` pipeline 将日志写入 `custom_pipeline_logs` 表来格式化和转换日志消息：
@@ -132,7 +138,7 @@ curl -X "POST" \
 curl -X POST \
   "http://localhost:4000/v1/ingest?db=public&table=custom_pipeline_logs&pipeline_name=nginx_pipeline" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Basic {{authentication}}" \
+  -H "Authorization: Basic <base64-encoded-credentials>" \
   -d '[
     {
       "message": "127.0.0.1 - - [25/May/2024:20:16:37 +0000] \"GET /index.html HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\""

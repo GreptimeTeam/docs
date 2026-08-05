@@ -31,6 +31,7 @@ const greptimePrismDarkTheme = {
 
 const locale = process.env.DOC_LANG || 'en';
 const biel_project_id = process.env.BIEL_PROJECT_ID;
+const isLinkCheck = process.env.DOCS_LINK_CHECK === 'true';
 
 // Shared between docs preset and llms plugin to keep exclusions in sync
 const docsExcludePatterns = [
@@ -53,6 +54,10 @@ const availableLocales = isVersioningCommand ? ['en', 'zh'] : [locale];
 // Get the latest version (first item in versions array)
 const latestVersion = versions[0];
 const latestVersionNumber = parseFloat(latestVersion);
+const linkCheckVersions = [
+  'current',
+  ...versions.filter(version => Number.parseInt(version, 10) >= 1),
+];
 
 const metaMap = {
   'en': [
@@ -210,8 +215,8 @@ const config: Config = {
   projectName: 'docs', // Usually your repo name.
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
-  onBrokenAnchors: "ignore",
+  onBrokenMarkdownLinks: isLinkCheck ? 'throw' : 'warn',
+  onBrokenAnchors: isLinkCheck ? 'throw' : 'ignore',
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
@@ -240,6 +245,7 @@ const config: Config = {
           routeBasePath: '/',
           exclude: docsExcludePatterns,
           showLastUpdateTime: true,
+          onlyIncludeVersions: isLinkCheck ? linkCheckVersions : undefined,
           versions: {
             current: {
               label: 'Nightly',
@@ -303,6 +309,7 @@ const config: Config = {
   ],
   trailingSlash: true,
   plugins: [
+    'docusaurus-plugin-image-zoom',
     // Only load docusaurus-biel plugin if biel_project_id is defined
     ...(biel_project_id ? [['docusaurus-biel', bielMetaMap[locale]]] : []),
     [llmsTxtGenerator, {
@@ -386,6 +393,13 @@ const config: Config = {
     footer: {
       style: 'dark',
       copyright: `©Copyright ${new Date().getFullYear()} Greptime Inc.`,
+    },
+    zoom: {
+      selector: '.markdown :not(em) > img',
+      background: {
+        light: 'rgb(255, 255, 255)',
+        dark: 'rgb(50, 50, 50)'
+      },
     },
     prism: {
       theme: greptimePrismLightTheme,

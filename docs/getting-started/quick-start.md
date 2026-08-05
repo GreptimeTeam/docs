@@ -83,7 +83,7 @@ CREATE TABLE app_logs (
 ) WITH ('append_mode'='true');
 ```
 
-- `log_msg` enables [full-text index](/user-guide/manage-data/data-index.md#fulltext-index) for keyword search.
+- `log_msg` enables [full-text index](/user-guide/manage-data/data-index.md#full-text-index) for keyword search.
 - [`append_mode`](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables) optimizes for log workloads (no deduplication overhead).
 
 ### Traces table
@@ -378,7 +378,7 @@ You can also query via the Prometheus-compatible HTTP API:
 
 ```bash
 curl -X POST \
-  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
   --data-urlencode 'query=quantile_over_time(0.95, grpc_latencies{host!=""}[5s])' \
   --data-urlencode 'start=2024-07-11 20:00:00Z' \
   --data-urlencode 'end=2024-07-11 20:00:20Z' \
@@ -485,28 +485,13 @@ ORDER BY m.ts, m.host;
 
 ## GreptimeDB Dashboard
 
-GreptimeDB offers a [Dashboard](./installation/greptimedb-dashboard.md) for data exploration and management.
-
-### Explore data
-
-Access the Dashboard at `http://localhost:4000/dashboard`. Click the `+` button to add a query, write SQL, and click `Run All`. Click the `Chart` button in the result panel to visualize the data.
+GreptimeDB includes a built-in [Dashboard](./installation/greptimedb-dashboard.md) at `http://localhost:4000/dashboard`. Use **Table Query** as the general query entry (SQL and PromQL), or switch to **Metrics Query**, **Logs Query**, and **Traces Query** for signal-specific views.
 
 ```sql
 SELECT * FROM grpc_latencies;
 ```
 
 ![select gRPC latencies](/select-grpc-latencies.png)
-
-### Ingest data by InfluxDB Line Protocol
-
-Click the `Ingest` icon in the Dashboard to write data in [InfluxDB Line Protocol](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md) format. For example:
-
-```txt
-grpc_metrics,host=host1,method_name=GetUser latency=100,code=0 1720728021000000000
-grpc_metrics,host=host2,method_name=GetUser latency=110,code=1 1720728021000000000
-```
-
-Click `Write` to ingest the data. The `grpc_metrics` table is created automatically if it doesn't exist — this is GreptimeDB's [schemaless](/user-guide/ingest-data/overview.md#automatic-schema-generation) capability in action.
 
 ## Next steps
 

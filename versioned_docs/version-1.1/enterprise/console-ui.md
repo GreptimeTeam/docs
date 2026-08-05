@@ -56,3 +56,7 @@ Enables advanced log filtering and analysis with support for filtering by role, 
 Displays long-running SQL and PromQL queries with detailed execution time and query text information. Includes **Explain Query** functionality for execution plan analysis and query optimization.
 
 ![Slow Query](/enterprise-console-slow-query.png)
+
+## Continuous Profiling
+
+The Management Console supports [Continuous Profiling](./console-ui/continuous-profiling.md) for capturing and analyzing GreptimeDB component CPU and memory profiles. It also supports [Webhook Triggers](./console-ui/webhook-triggers.md) for sending notifications based on cluster resource usage metrics.

@@ -12,6 +12,12 @@ v1.1.0 adds online partitioning for previously unpartitioned tables, experimenta
 reads for batching flows, the experimental table semantic layer, and new CSV import options,
 along with performance and stability fixes.
 
+:::warning
+
+v1.1.0 contains a critical JSON compatibility bug that affects users upgrading from v1.0.x when using the JSON data type. We strongly recommend users on v1.1.0 who use the JSON data type upgrade to [v1.1.1](./release-1-1-1.md) or later.
+
+:::
+
 ### 👍 Highlights
 
 **Partition an existing table.** Previously only tables created with `PARTITION ON COLUMNS`

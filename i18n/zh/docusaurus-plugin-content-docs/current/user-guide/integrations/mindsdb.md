@@ -1,6 +1,6 @@
 ---
 keywords: [MindsDB, 机器学习平台, 数据库集成, 配置示例, SQL]
-description: 介绍如何使用 MindsDB 将 GreptimeCloud 实例集成到机器学习平台，并提供了配置示例。
+description: 介绍如何将 GreptimeDB 作为 MindsDB 的数据源，用于机器学习场景，并提供配置示例。
 ---
 
 # MindsDB

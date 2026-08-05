@@ -214,7 +214,7 @@ GreptimeDB 使用 SQL 作为主要查询语言，并支持许多流行的 SQL �
     }
     ```
     
-    如果你正在使用 [高层级 API](/user-guide/ingest-data/for-iot/grpc-sdks/go.md#高层级-api) 来插入数据，你可以在模型中同时声明 GORM 和 GreptimeDB Tag。
+    如果你正在使用 [高层级 API](/user-guide/ingest-data/for-iot/grpc-sdks/go.md#high-level-api) 来插入数据，你可以在模型中同时声明 GORM 和 GreptimeDB Tag。
     
     ```go
     type CpuMetric struct {

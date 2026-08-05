@@ -1,0 +1,20 @@
+name: Check Release Note Sync
+
+on:
+  pull_request:
+    paths:
+      - 'blog/release-*.md'
+
+jobs:
+  check-release-note-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check release notes match GitHub Release bodies
+        run: bash .github/scripts/check-release-note-sync.sh "${{ github.event.pull_request.base.sha }}"
+        env:
+          RELEASE_REPO: GreptimeTeam/greptimedb
