@@ -992,7 +992,8 @@ timeout = "3s"
 | `datanode.client.max_recv_message_size`       | 字符串  | `512MB`              | gRPC 客户端可接收的最大消息大小。                                                                                                    |
 | `datanode.client.max_send_message_size`       | 字符串  | `512MB`              | gRPC 客户端可发送的最大消息大小。                                                                                                    |
 | wal                                           | --      | --                   | --                                                                                                                                   |
-| wal.provider                                  | String  | `raft_engine` | --                                                                                                                                   |
+| wal.provider                                  | String  | `raft_engine` | --
+| `wal.sync_period`                             | String  | `5s`                 | WAL 日志文件执行 fsync 的时间间隔。<br/>**仅在 provider 为 `raft_engine` 时使用。** |                                                                                                                                   |
 | wal.broker_endpoints                          | Array   | --                   | Kafka 集群的端点                                                                                                                     |
 | `wal.auto_create_topics`                      | Bool    | `true`               | 自动为 WAL 创建 topics <br/>设置为 `true` 则自动为 WAL 创建 topics <br/>否则，使用名为 `topic_name_prefix_[0..num_topics)` 的 topics |
 | `wal.auto_prune_interval`                     | String  | `0s`                 | 定期自动裁剪远程 WAL 的时间间隔 <br/>设置为 `0s` 表示禁止自动裁剪 |
