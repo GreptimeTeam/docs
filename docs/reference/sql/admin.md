@@ -1,6 +1,6 @@
 ---
-keywords: [ADMIN statement, SQL, administration functions, flush table, compact table, migrate region, gc table, gc regions]
-description: Describes the `ADMIN` statement used to run administration functions, including examples for flushing tables, scheduling compactions, migrating regions, querying procedure states, and garbage collecting orphaned files.
+keywords: [ADMIN statement, SQL, administration functions, flush table, compact table, build index, migrate region, gc table, gc regions]
+description: Describes the `ADMIN` statement used to run administration functions, including examples for flushing tables, scheduling compactions, building indexes, migrating regions, querying procedure states, and garbage collecting orphaned files.
 ---
 
 # ADMIN
@@ -20,6 +20,7 @@ GreptimeDB provides some administration functions to manage the database and dat
 * `flush_region(region_id)` to flush a region's memtables into SST file by region id. Find the region id through [PARTITIONS](./information-schema/partitions.md) table.
 * `compact_table(table_name, [type], [options])` to schedule a compaction task for a table by table name, read [compaction](/user-guide/deployments-administration/manage-data/compaction.md#strict-window-compaction-strategy-swcs-and-manual-compaction) for more details.
 * `compact_region(region_id)` to schedule a compaction task for a region by region id.
+* `build_index(table_name)` to build missing physical indexes for a table's existing SST files after adding or changing index definitions.
 * `migrate_region(region_id, from_peer, to_peer, [timeout])` to migrate regions between datanodes, please read the [Region Migration](/user-guide/deployments-administration/manage-data/region-migration.md).
 * `procedure_state(procedure_id)` to query a procedure state by its id.
 * `flush_flow(flow_name)` to flush a flow's output into the sink table.
@@ -53,6 +54,9 @@ admin compact_table("test", "regular", "start_time=2026-01-01T00:00:00Z,end_time
 -- Schedule an SWCS compaction for a time range --
 admin compact_table("test", "strict_window", "window=3600,start_time=2026-01-01T00:00:00Z,end_time=2026-02-01T00:00:00Z");
 
+-- Build missing indexes for existing SST files after adding or changing indexes --
+admin build_index("test");
+
 -- Garbage collect orphaned SST files for a dropped table --
 admin gc_table("test");
 
@@ -68,3 +72,58 @@ admin gc_regions(1, 2, 3, true);
 -- Permanently purge a soft-dropped table --
 admin purge_table("test");
 ```
+
+## Build Index
+
+Use `admin build_index` to manually build indexes for existing data files when the table metadata requires indexes that some SST files do not have yet. Typical use cases include adding an index to an existing column, migrating from data written before the index was available, or retrying after a previous index build failure.
+
+```sql
+admin build_index("table_name");
+```
+
+The function takes exactly one string argument. The table name can be unqualified or fully qualified. Unqualified names are resolved with the current query context.
+
+For example, build a fulltext index for existing data:
+
+```sql
+CREATE TABLE logs (
+    ts TIMESTAMP TIME INDEX,
+    message TEXT
+);
+
+INSERT INTO logs VALUES
+    (1, 'The quick brown fox jumps over the lazy dog'),
+    (2, 'The quick brown fox jumps over the lazy cat');
+
+admin flush_table("logs");
+
+ALTER TABLE logs MODIFY COLUMN message SET FULLTEXT INDEX;
+
+admin build_index("logs");
+
+SELECT message FROM logs WHERE matches_term(message, 'fox');
+```
+
+`admin build_index` sends build requests to all regions of the table. Each region only builds indexes for SST files whose recorded index metadata is inconsistent with the current table metadata. Files that already have the required index metadata are skipped, so rerunning the command is safe. The command currently returns an affected-row count.
+
+Use `SHOW INDEX` to check logical index definitions:
+
+```sql
+SHOW INDEX FROM logs;
+```
+
+You can also query `information_schema.ssts_index_meta` to check physical index metadata for SST files:
+
+```sql
+SELECT COUNT(*) AS fulltext_index_meta_count
+FROM information_schema.ssts_index_meta
+WHERE table_id = (
+    SELECT table_id
+    FROM information_schema.tables
+    WHERE table_schema = 'public'
+      AND table_name = 'logs'
+)
+AND index_type LIKE 'fulltext%';
+```
+
+Building indexes reads SST data and writes index files, so it consumes CPU, memory, and I/O resources. In asynchronous index build mode, automatic flush, compaction, and schema-change triggers may run at the same time as a manual build. Duplicate in-flight work is deduplicated or aborted, and the command remains safe to rerun.
