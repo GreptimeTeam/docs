@@ -358,6 +358,7 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 |         | type              | 字符串 | 存储类型，支持 "File"，"S3" 和 "Oss" 等。           |
 | File    |                   |        | 本地文件存储选项，当 type="File" 时有效             |
 |         | data_home         | 字符串 | 数据库存储根目录，默认为 "./greptimedb_data"          |
+|         | copy_root         | 字符串 | 单机模式下 SQL 访问本地文件的根目录（默认为 `<data_home>/copy`）。`COPY` 语句和外部表中的相对路径将在该目录下解析；仅当绝对路径位于该目录内时才被接受。分布式部署始终禁止 SQL 访问本地文件。升级指引请参阅[迁移本地 SQL 文件访问](/user-guide/deployments-administration/migrate-local-sql-file-access.md)。 |
 | S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                |
 |         | name            | 字符串 |  存储提供商名字，默认为 `S3`               |
 |         | bucket            | 字符串 | S3 桶名称                                           |

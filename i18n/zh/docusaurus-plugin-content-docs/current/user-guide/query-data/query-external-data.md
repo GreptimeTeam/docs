@@ -12,14 +12,19 @@ description: 介绍如何查询外部数据文件，包括创建外部表和查�
 以 [Taxi Zone Lookup Table](https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv) 数据为例。
 
 ```bash
-curl "https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv" -o /tmp/taxi+_zone_lookup.csv
+mkdir -p greptimedb_data/copy
+curl "https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv" -o greptimedb_data/copy/taxi+_zone_lookup.csv
 ```
 
 创建一个外部表：
 
 ```sql
-CREATE EXTERNAL TABLE taxi_zone_lookup with (location='/tmp/taxi+_zone_lookup.csv',format='csv');
+CREATE EXTERNAL TABLE taxi_zone_lookup with (location='taxi+_zone_lookup.csv',format='csv');
 ```
+
+:::tip NOTE
+在单机部署模式下，引用本地文件的外部表 location 受限于 `storage.copy_root` 目录（默认为 `<data_home>/copy`），因此本示例将文件下载到 `greptimedb_data/copy` 目录，并使用相对于该目录的 location。在分布式部署模式下，不支持本地文件 location。详情请参阅[迁移本地 SQL 文件访问](/user-guide/deployments-administration/migrate-local-sql-file-access.md)。
+:::
 
 检查外部表的组织和结构：
 
@@ -67,15 +72,15 @@ SELECT `Zone`, `Borough` FROM taxi_zone_lookup LIMIT 5;
 首先下载一些数据：
 
 ```bash
-mkdir /tmp/external
-curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-01.parquet" -o /tmp/external/yellow_tripdata_2022-01.parquet
-curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-02.parquet" -o /tmp/external/yellow_tripdata_2022-02.parquet
+mkdir -p greptimedb_data/copy/external
+curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-01.parquet" -o greptimedb_data/copy/external/yellow_tripdata_2022-01.parquet
+curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-02.parquet" -o greptimedb_data/copy/external/yellow_tripdata_2022-02.parquet
 ```
 
 验证下载情况：
 
 ```bash
-ls -l /tmp/external
+ls -l greptimedb_data/copy/external
 total 165368
 -rw-r--r--  1 wenyxu  wheel  38139949 Apr 28 14:35 yellow_tripdata_2022-01.parquet
 -rw-r--r--  1 wenyxu  wheel  45616512 Apr 28 14:36 yellow_tripdata_2022-02.parquet
@@ -84,7 +89,7 @@ total 165368
 创建外部表
 
 ```sql
-CREATE EXTERNAL TABLE yellow_tripdata with(location='/tmp/external/',format='parquet');
+CREATE EXTERNAL TABLE yellow_tripdata with(location='external/',format='parquet');
 ```
 
 执行查询：
