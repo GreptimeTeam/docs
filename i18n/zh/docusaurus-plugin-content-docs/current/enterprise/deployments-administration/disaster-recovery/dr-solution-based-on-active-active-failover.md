@@ -9,6 +9,10 @@ GreptimeDB 企业版可以将两个 Standalone 节点部署为对等节点。两
 
 该拓扑适用于边缘和中小型部署：无需运维 GreptimeDB 分布式集群，也能获得节点级或站点级容灾能力。负载均衡器、客户端驱动或服务发现系统负责将流量发送到可用节点。
 
+<AnchorAlias id="架构与读写路径" />
+<AnchorAlias id="写入路径" />
+<AnchorAlias id="查询路径" />
+
 ## 架构
 
 ![两个 GreptimeDB 节点双向复制数据，并由外部故障切换机制管理流量](/img/active-active-forwarding-zh.svg)
@@ -85,7 +89,7 @@ end = 1000000
 | 对端或站点间网络不可用 | 健康节点继续服务，待处理的数据变更等待对端恢复。 | 保持流量在健康节点，并监控复制状态和本地存储容量。 |
 | 一个节点不可用 | 外部切换机制将流量转走之前，发送到该节点的请求会失败。 | 确认存活节点健康，然后切换或排空流量。 |
 | 不可用节点恢复 | 待处理的数据变更自动同步；追平前两个节点的数据可能不同。 | 保持流量稳定，核验数据和 Schema 后再恢复常规路由。 |
-| 本地复制存储耗尽或不可用 | 为保证数据可恢复性，新的写入可能失败。 | 恢复存储容量，并根据应用语义重试失败的写入。 |
+| 源节点本地存储空间耗尽或不可用 | 为保证数据可恢复性，新的写入可能被拒绝。 | 恢复本地存储容量，并根据应用语义重试失败的写入。 |
 | 节点及其存储永久丢失 | 尚未复制的数据变更可能不在存活节点上。 | 如果存在其他数据副本，从中恢复，并评估实际 RPO。 |
 
 ### 切换流量
@@ -130,6 +134,8 @@ RTO 包括故障检测、端点切换、连接重试和应用恢复时间。Grep
 
 应定期演练计划内和计划外的故障切换。演练需要覆盖存量连接、连接池、正在执行的写入，以及核验备用节点所需的时间。
 
+<AnchorAlias id="故障切换实现方式" />
+
 ## 选择流量切换机制
 
 - **负载均衡器。** 配置主动健康检查，并从转发列表中移除故障端点。托管负载均衡器或独立的 HAProxy 实例可以将切换策略与应用解耦。
@@ -144,7 +150,7 @@ RTO 包括故障检测、端点切换、连接重试和应用恢复时间。Grep
 
 ### HAProxy 示例
 
-以下最小配置在 `127.0.0.1:14000` 暴露一个本地 TCP 端点。节点 A 健康时，HAProxy 将流量发送到节点 A；连续三次健康检查失败后切换到节点 B。节点 A 连续两次健康检查成功后，会重新成为可选节点。
+以下最小配置通过 `127.0.0.1:14000` 上的本地 TCP 端点代理 GreptimeDB HTTP API。节点 A 健康时，HAProxy 将流量发送到节点 A；连续三次健康检查失败后切换到节点 B。节点 A 连续两次健康检查成功后，会重新成为可选节点。
 
 虽然两个 GreptimeDB 节点都能接受写入，但该示例使用主备流量路由，使应用在正常情况下只向一个节点写入。请根据实际环境替换主机名、端口、监听地址和超时时间。
 
@@ -162,19 +168,19 @@ defaults
     timeout client 30s
     timeout server 30s
 
-frontend local_in
+frontend greptimedb_http
     bind 127.0.0.1:14000
-    default_backend greptimedb_nodes
+    default_backend greptimedb_http_nodes
 
-backend greptimedb_nodes
-    balance first
-
+backend greptimedb_http_nodes
     # Preferred node
     server node-a node-a:4000 check inter 2s fall 3 rise 2
 
     # Failover node
     server node-b node-b:4000 check inter 2s fall 3 rise 2 backup
 ```
+
+该配置只代理端口 `4000` 上的 HTTP API。如需代理 MySQL 或 PostgreSQL 协议，请分别创建独立的 frontend 和 backend，并将目标端口设置为 `4002` 或 `4003`。
 
 启动 HAProxy 前先检查配置：
 

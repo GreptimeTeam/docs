@@ -9,6 +9,10 @@ GreptimeDB Enterprise can deploy two standalone nodes as peers. Both nodes accep
 
 This topology is intended for edge and small-to-medium deployments that need node-level or site-level disaster recovery without operating a distributed GreptimeDB cluster. A load balancer, client driver, or service-discovery system directs traffic to an available node.
 
+<AnchorAlias id="architecture-and-readwrite-paths" />
+<AnchorAlias id="write-path" />
+<AnchorAlias id="query-path" />
+
 ## Architecture
 
 ![Two GreptimeDB nodes replicate data in both directions, with traffic managed by an external failover mechanism](/img/active-active-forwarding.svg)
@@ -85,7 +89,7 @@ The exact endpoints and table ID ranges depend on the deployment. Contact Grepti
 | Peer or inter-site network is unavailable | The healthy node continues serving. Pending changes wait for the peer to recover. | Keep traffic on the healthy node and monitor replication health and local storage capacity. |
 | One node is unavailable | Traffic sent to that node fails until the external failover mechanism redirects it. | Confirm the surviving node is healthy, then switch or drain traffic. |
 | The unavailable node returns | Pending changes are replicated automatically. The nodes may differ until catch-up completes. | Keep traffic stable and verify data and schema before restoring normal routing. |
-| Local replication storage is exhausted or unavailable | New writes may fail to preserve recoverability. | Restore storage capacity and retry failed writes according to application semantics. |
+| The source node's local storage is full or unavailable | New writes may be rejected to preserve recoverability. | Restore local storage capacity and retry failed writes according to application semantics. |
 | A node and its storage are permanently lost | Changes not yet replicated may be missing from the surviving node. | Recover from another data copy if available and assess the actual RPO. |
 
 ### Fail over traffic
@@ -130,6 +134,8 @@ RTO includes failure detection, endpoint switching, connection retry, and applic
 
 Test both planned and unplanned failover regularly. The test should cover active connections, connection pools, in-flight writes, and the time required to validate the alternate node.
 
+<AnchorAlias id="failover-implementation-methods" />
+
 ## Choose a Traffic Failover Mechanism
 
 - **Load balancer.** Configure active health checks and remove an unhealthy endpoint from rotation. A managed load balancer or a separate HAProxy instance keeps the failover policy outside applications.
@@ -144,7 +150,7 @@ Test both planned and unplanned failover regularly. The test should cover active
 
 ### HAProxy example
 
-The following minimal configuration exposes a local TCP endpoint at `127.0.0.1:14000`. HAProxy sends traffic to node A while it is healthy and switches to node B after three consecutive failed health checks. Node A becomes eligible again after two consecutive successful checks.
+The following minimal configuration exposes the GreptimeDB HTTP API through a local TCP endpoint at `127.0.0.1:14000`. HAProxy sends traffic to node A while it is healthy and switches to node B after three consecutive failed health checks. Node A becomes eligible again after two consecutive successful checks.
 
 Although both GreptimeDB nodes can accept writes, this example uses active-standby traffic routing to keep application writes on one node during normal operation. Replace the hostnames, ports, bind address, and timeouts for your environment.
 
@@ -162,19 +168,19 @@ defaults
     timeout client 30s
     timeout server 30s
 
-frontend local_in
+frontend greptimedb_http
     bind 127.0.0.1:14000
-    default_backend greptimedb_nodes
+    default_backend greptimedb_http_nodes
 
-backend greptimedb_nodes
-    balance first
-
+backend greptimedb_http_nodes
     # Preferred node
     server node-a node-a:4000 check inter 2s fall 3 rise 2
 
     # Failover node
     server node-b node-b:4000 check inter 2s fall 3 rise 2 backup
 ```
+
+This configuration proxies only the HTTP API on port `4000`. To proxy the MySQL or PostgreSQL protocol, create separate frontend and backend pairs that target port `4002` or `4003`, respectively.
 
 Validate the configuration before starting HAProxy:
 
