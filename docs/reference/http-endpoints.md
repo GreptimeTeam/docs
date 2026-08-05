@@ -5,11 +5,36 @@ description: Provides a full list of HTTP paths and their usage in GreptimeDB, i
 
 # HTTP API Endpoint List
 
+GreptimeDB provides two HTTP servers:
+
+| Server | Default address | Purpose |
+|--------|----------------|---------|
+| **Main HTTP server** | `127.0.0.1:4000` | Internal / operational use. Serves all paths, including admin endpoints such as `/health`, `/metrics`, `/config`, and `/debug/*`, as well as all `/v1` and `/dashboard` paths. Keep this port private and accessible only by trusted operators. |
+| **Public HTTP API server** | `127.0.0.1:4006` | User-facing access. Serves only `/v1` APIs and `/dashboard`. Safe to expose to database end-users. Disabled by default; enable it with `http.enable_api_server = true` in your configuration file. |
+
+We recommend keeping the main HTTP server port for internal/operational use only. Alternatively, it can be safely exposed through an HTTP proxy, provided direct access is restricted and the proxy allows only the required protocols. But If you want to expose GreptimeDB as a service to end-users, enable the dedicated public API server and expose only its port.
+
+```toml
+[http]
+# Main HTTP server — keep this internal
+addr = "127.0.0.1:4000"
+
+# Enable the public API server and bind it to an externally accessible address
+enable_api_server = true
+api_server_addr = "0.0.0.0:4006"
+```
+
+See the [configuration documentation](/user-guide/deployments-administration/configuration.md#protocol-options) for all `[http]` options.
+
 Here is the full list for the various HTTP paths and their usage in GreptimeDB:
 
 ## Admin APIs
 
 Endpoints that is not versioned (under `/v1`). For admin usage like health check, status, metrics, etc.
+
+:::note
+Admin API endpoints are available **only** on the main HTTP server (default port `4000`). They are not exposed by the dedicated public API server even when `http.enable_api_server` is enabled.
+:::
 
 ### Health Check
 

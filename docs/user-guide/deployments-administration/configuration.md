@@ -189,6 +189,9 @@ concurrent_query_limiter_timeout = "100ms"
 
 Protocol options are valid in `frontend` and `standalone` subcommands,
 specifying protocol server addresses and other protocol-related options.
+In particular, `http.enable_api_server` lets you start a dedicated public HTTP API server that serves only the `/v1` APIs and `/dashboard`, while keeping the main HTTP server for internal and operational endpoints.
+This separation is useful when you want to expose GreptimeDB to end users or applications without also exposing admin paths such as health, metrics, config, or debug endpoints.
+To use it, set `http.enable_api_server = true` and configure `http.api_server_addr` to the address you want to expose externally, while keeping `http.addr` private for operator access.
 
 :::tip NOTE
 The HTTP protocol configuration is available for all GreptimeDB components: `frontend`, `datanode`, `flownode`, and `metasrv`.
@@ -207,6 +210,9 @@ body_limit = "64MB"
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
 experimental_enable_explain_analyze_stream = true
+# Enable the dedicated public HTTP API server (serves /v1 and /dashboard only)
+enable_api_server = false
+api_server_addr = "127.0.0.1:4006"
 [grpc]
 bind_addr = "127.0.0.1:4001"
 runtime_size = 8
@@ -281,6 +287,8 @@ The following table describes the options in detail:
 |            | enable_cors          | Boolean | Whether to enable HTTP CORS support, true by default. |
 |            | cors_allowed_origins | Array   | Customized allowed origins for HTTP CORS. |
 |            | experimental_enable_explain_analyze_stream | Boolean | Experimental: enable `POST /v1/sql/analyze/stream` for streaming `EXPLAIN ANALYZE VERBOSE` metrics, true by default. |
+|            | enable_api_server    | Boolean | Whether to start the dedicated public HTTP API server. This server serves only the `/v1` APIs and `/dashboard`, making it safe to expose to end users. The main HTTP server (`addr`) is intended for internal use. Disabled by default; set to `true` to enable. |
+|            | api_server_addr      | String  | The address to bind the dedicated public HTTP API server, `"127.0.0.1:4006"` by default. Only takes effect when `enable_api_server` is `true`. |
 | grpc       |                      |         | gRPC server options                                                                                                                                                                                                                                                                                                                                                                        |
 |            | bind_addr            | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                                                                                                                                                                                                                                                                           |
 |            | runtime_size         | Integer | The number of server worker threads, 8 by default                                                                                                                                                                                                                                                                                                                                          |
@@ -823,6 +831,9 @@ http2_keep_alive_timeout = "3s"
 addr = "127.0.0.1:4000"
 timeout = "0s"
 body_limit = "64MB"
+## Enable the dedicated public HTTP API server (serves /v1 and /dashboard only).
+enable_api_server = false
+api_server_addr = "127.0.0.1:4006"
 
 ## Procedure storage options.
 [procedure]
@@ -971,6 +982,8 @@ timeout = "3s"
 | `http.addr`                                   | String  | `127.0.0.1:4000`             | HTTP server address. |
 | `http.timeout`                                | String  | `0s`                         | HTTP request timeout. Set to `0s` to disable timeout. |
 | `http.body_limit`                             | String  | `64MB`                       | HTTP max body size.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `http.enable_api_server`                      | Bool    | `false`                      | Whether to start the dedicated public HTTP API server. When enabled, a separate server is started at `api_server_addr` that serves only `/v1` APIs and `/dashboard`. The main HTTP server is kept for internal use. |
+| `http.api_server_addr`                        | String  | `127.0.0.1:4006`             | The address to bind the dedicated public HTTP API server. Only takes effect when `enable_api_server` is `true`. |
 | `backend`                                     | String  | `etcd_store`                 | The datastore for metasrv.<br/>- `etcd_store` (default)<br/>- `memory_store` (In memory metadata storage - only used for testing.)<br/>- `postgres_store`<br/>- `mysql_store`                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `meta_table_name`                             | String  | `greptime_metakv`            | Table name in RDS to store metadata. Effect when using a RDS kvbackend.<br/>**Only used when backend is RDS kvbackend.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `meta_schema_name`                            | String  | --                           | Optional PostgreSQL schema for metadata table and election table name qualification. When PostgreSQL public schema is not writable (e.g., PostgreSQL 15+ with restricted public), set this to a writable schema. GreptimeDB will use `meta_schema_name.meta_table_name`.<br/>**Only used when backend is `postgres_store`.**                                                                                                                                                                                                                                                                                           |

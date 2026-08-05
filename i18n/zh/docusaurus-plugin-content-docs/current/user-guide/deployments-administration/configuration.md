@@ -188,6 +188,9 @@ concurrent_query_limiter_timeout = "100ms"
 ### 协议选项
 
 协议选项适用于 `frontend` 和 `standalone` 子命令，它指定了协议服务器地址和其他协议相关的选项。
+其中，`http.enable_api_server` 可用于启动一个专门对外提供服务的公共 HTTP API Server，它只暴露 `/v1` API 和 `/dashboard`，而主 HTTP Server 继续用于内部和运维端点。
+这种分离方式适合希望将 GreptimeDB 暴露给终端用户或应用程序、同时又不暴露 health、metrics、config、debug 等管理路径的场景。
+使用时，将 `http.enable_api_server = true`，并把 `http.api_server_addr` 配置为你希望对外暴露的地址，同时将 `http.addr` 保持为仅供运维访问的内部地址。
 
 :::tip 提示
 HTTP 协议配置适用于所有 GreptimeDB 组件：`frontend`、`datanode`、`flownode` 和 `metasrv`。
@@ -206,6 +209,9 @@ body_limit = "64MB"
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
 experimental_enable_explain_analyze_stream = true
+# 启用专用公共 HTTP API Server（仅提供 /v1 和 /dashboard）
+enable_api_server = false
+api_server_addr = "127.0.0.1:4006"
 [grpc]
 bind_addr = "127.0.0.1:4001"
 runtime_size = 8
@@ -280,6 +286,8 @@ max_inflight_requests = 3000
 |            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
 |            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
 |            | experimental_enable_explain_analyze_stream | 布尔值 | 实验性：启用 `POST /v1/sql/analyze/stream`，用于流式返回 `EXPLAIN ANALYZE VERBOSE` 指标，默认为 true。 |
+|            | enable_api_server    | 布尔值 | 是否启动专用公共 HTTP API Server。该 Server 仅提供 `/v1` API 和 `/dashboard`，可安全地对外暴露给终端用户。主 HTTP Server（`addr`）用于内部使用。默认禁用；设为 `true` 可启用。 |
+|            | api_server_addr      | 字符串 | 专用公共 HTTP API Server 的绑定地址，默认为 `"127.0.0.1:4006"`。仅在 `enable_api_server` 为 `true` 时生效。 |
 | grpc       |                    |        | gRPC 服务器选项                                              |
 |            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
@@ -827,6 +835,9 @@ http2_keep_alive_timeout = "3s"
 addr = "127.0.0.1:4000"
 timeout = "0s"
 body_limit = "64MB"
+## 启用专用公共 HTTP API Server（仅提供 /v1 和 /dashboard）。
+enable_api_server = false
+api_server_addr = "127.0.0.1:4006"
 
 ## Procedure 选项
 [procedure]
@@ -957,6 +968,8 @@ timeout = "3s"
 | `http.addr`                                   | String  | `127.0.0.1:4000`     | HTTP 服务器地址。 |
 | `http.timeout`                                | String  | `0s`                 | HTTP 请求超时时间。设为 `0s` 可禁用超时。 |
 | `http.body_limit`                             | String  | `64MB`               | HTTP 最大 body 大小。 |
+| `http.enable_api_server`                      | Bool    | `false`              | 是否启动专用公共 HTTP API Server。启用后，会在 `api_server_addr` 地址启动一个独立 Server，仅提供 `/v1` API 和 `/dashboard`。主 HTTP Server 保留用于内部使用。 |
+| `http.api_server_addr`                        | String  | `127.0.0.1:4006`     | 专用公共 HTTP API Server 的绑定地址。仅在 `enable_api_server` 为 `true` 时生效。 |
 | `backend`                                     | String  | `etcd_store`           | 元数据存储类型。<br/>- `etcd_store` (默认)<br/>- `memory_store` (纯内存存储 - 仅用于测试)<br/>- `postgres_store`<br/>- `mysql_store` |
 | `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为 RDS kvbackend 时有效。** |
 | `meta_schema_name` | String | -- | 可选的 PostgreSQL schema，用于元数据表和选举表名称限定。当 PostgreSQL public schema 不可写入时（例如 PostgreSQL 15+ 限制 public schema），可设置此参数为可写入的 schema。GreptimeDB 将使用 `meta_schema_name.meta_table_name`。<br/>**仅在 backend 为 postgres_store 时有效。** |
