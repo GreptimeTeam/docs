@@ -87,6 +87,7 @@ GreptimeDB 与各种日志收集器无缝集成，提供全面的日志记录解
 - [Fluent Bit](/user-guide/ingest-data/for-observability/fluent-bit.md#http)
 - [OpenTelemetry Collector](/user-guide/ingest-data/for-observability/otel-collector.md)
 - [Loki](/user-guide/ingest-data/for-observability/loki.md#using-pipeline-with-loki-push-api)
+- [Splunk](/user-guide/ingest-data/for-observability/splunk.md#使用-pipeline)
 
 ## 了解更多关于 Pipeline 的信息
 

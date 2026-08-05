@@ -291,6 +291,13 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 - **描述**: 以兼容 Loki 的 API 写入日志。
 - **用法**: 将日志数据以 Loki 的格式发送到此端点。
 
+### Splunk HEC 兼容性
+
+- **路径**: `/v1/splunk/services/collector/event`、`/v1/splunk/services/collector/raw`、`/v1/splunk/services/collector/health`
+- **方法**: 写入端点为 `POST`，健康检查端点为 `GET`
+- **描述**: 以兼容 Splunk HTTP Event Collector (HEC) 的协议写入日志。
+- **用法**: 向 `/event` 发送 JSON 事件，或向 `/raw` 发送纯文本。参考[使用 Splunk 协议写入数据](/user-guide/ingest-data/for-observability/splunk.md)。
+
 ### OpenTSDB 协议
 
 - **路径**: `/v1/opentsdb/api/put`

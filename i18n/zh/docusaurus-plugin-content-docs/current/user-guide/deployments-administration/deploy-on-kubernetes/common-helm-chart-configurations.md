@@ -624,7 +624,7 @@ datanode:
     [region_engine.mito.gc]
     enable = true
     lingering_time = "10m"
-    unknown_file_lingering_time = "1h"
+    unknown_file_lingering_time = "1d"
 ```
 
 请确保 `datanode` 的 `lingering_time` 大于 `meta` 的 `gc_cooldown_period`，以避免正在使用的文件过早被删除。

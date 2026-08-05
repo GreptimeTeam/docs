@@ -12,7 +12,7 @@ GreptimeDB GC 会延迟删除 SST/索引文件，直到所有引用（运行中�
 ## 工作原理
 
 - **角色**：Meta 决定何时/何处清理；Datanode 负责实际删除，同时保护正在使用的文件。
-- **安全窗口**：`lingering_time` 会额外保留已移除文件；`unknown_file_lingering_time` 用于极少见的保护场景。
+- **安全窗口**：`lingering_time` 会额外保留已移除文件；`unknown_file_lingering_time` 用于极少见的保护场景，且只在全量列举 GC 时生效。
 - **列举模式**：快速模式删除系统已标记的文件；全量列举遍历对象存储以发现滞留/孤儿文件。
 
 ![GC 工作流程图](/gc-flow.zh.svg)
@@ -50,7 +50,7 @@ Datanode 负责实际删除，同时保护仍在使用中的文件。
 [region_engine.mito.gc]
 enable = true                   # 开启 datanode GC worker；必须与 meta 一致。
 lingering_time = "10m"           # 已移除文件在活跃查询期间保留时长。
-unknown_file_lingering_time = "1h" # 未记录 expel time 的文件保留时长；罕见保护。
+unknown_file_lingering_time = "1d" # 未记录 expel time 的文件保留时长；罕见保护。
 ```
 
 ### 配置
@@ -59,7 +59,16 @@ unknown_file_lingering_time = "1h" # 未记录 expel time 的文件保留时长�
 | --- | --- |
 | `enable` | 启用 datanode GC worker，必须与 meta GC 的 `enable` 一致。 |
 | `lingering_time` | manifest 中已移除文件在删除前的保留时长，用于保护长时间 follower-region 查询/跨 region 引用；请设置为大于 `gc_cooldown_period`。设为 `"0s"` 表示立即删除。 |
-| `unknown_file_lingering_time` | 对缺少 expel time 的文件的安全保留时间（未在 manifest 中追踪）。建议设置为较长值；此类情况较少。 |
+| `unknown_file_lingering_time` | 对缺少 expel time 的文件的安全保留时间（未在 manifest 中追踪）。只在全量列举 GC 时生效，默认值为 `1d`。 |
+
+对于活跃或已打开的 region，未知文件只有在对象存储的 last-modified 时间早于
+`now - unknown_file_lingering_time` 时才会被删除。如果对象存储不返回 last-modified
+时间，该文件会被保留。属于已 drop region 的未知文件则直接删除，不受这个窗口限制。
+
+:::warning
+`unknown_file_lingering_time` 要设得宽裕一些。长时间运行的 flush 或 compaction 会先写出
+文件、之后才写入 manifest，窗口太短会删掉正在写入的数据。
+:::
 
 :::warning
 `gc.enable` 必须在 metasrv 与所有 datanode 上保持一致。开关不一致会导致 GC 被跳过或卡住。
