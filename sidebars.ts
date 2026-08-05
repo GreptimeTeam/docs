@@ -370,7 +370,6 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/manage-data/repartition',
                 'user-guide/deployments-administration/manage-data/compaction',
                 'user-guide/deployments-administration/manage-data/gc',
-                'user-guide/deployments-administration/manage-data/soft-drop',
               ],
             },
             {
@@ -527,6 +526,7 @@ const sidebars: SidebarsConfig = {
           ],
         },
         'enterprise/trigger',
+        'enterprise/soft-drop',
         'enterprise/user',
         {
           type: 'category',

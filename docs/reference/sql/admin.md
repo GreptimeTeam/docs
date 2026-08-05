@@ -28,7 +28,7 @@ GreptimeDB provides some administration functions to manage the database and dat
 * `reconcile_catalog()` to reconcile the metadata inconsistency of all tables in the entire cluster, read [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md) for more details.
 * `gc_table(table_name, [full_file_listing])` to garbage collect orphaned SST files in object storage for a dropped table. Returns the number of processed regions. The optional `full_file_listing` boolean (default `false`) enables a thorough scan of all files when set to `true`.
 * `gc_regions(region_id1, ..., region_idN, [full_file_listing])` to garbage collect orphaned SST files in object storage for one or more specific regions by their region ids. Returns the number of processed regions. The optional `full_file_listing` boolean (default `false`) enables a thorough scan of all files when set to `true`.
-* `purge_table(table_name)` to permanently purge a [soft-dropped table](/user-guide/deployments-administration/manage-data/soft-drop.md). The table name can be unqualified, schema-qualified, or fully qualified. This function is only available through the `ADMIN` statement.
+* `purge_table(table_name)` to permanently purge a [soft-dropped table](/enterprise/soft-drop.md). The table name can be unqualified, schema-qualified, or fully qualified. This function is only available in the GreptimeDB Enterprise database through the `ADMIN` statement.
 
 For example:
 ```sql

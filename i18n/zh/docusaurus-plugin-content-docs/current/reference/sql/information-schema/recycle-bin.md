@@ -5,6 +5,12 @@ description: 介绍 INFORMATION_SCHEMA 中的 RECYCLE_BIN 表。
 
 # RECYCLE_BIN
 
+:::tip 注意
+
+本功能仅在 GreptimeDB 企业版中可用。
+
+:::
+
 `RECYCLE_BIN` 表列出仍可恢复的 soft-dropped table。
 
 ```sql

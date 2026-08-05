@@ -1,6 +1,6 @@
 ---
-keywords: [soft drop, recycle bin, drop table, undrop table, purge table, data recovery]
-description: How to enable and use soft-drop tables in GreptimeDB.
+keywords: [soft drop, recycle bin, drop table, undrop table, purge table, data recovery, GreptimeDB Enterprise]
+description: How to enable and use soft-drop tables in GreptimeDB Enterprise.
 ---
 
 # Soft-Drop Tables
@@ -30,7 +30,7 @@ The options are:
 | `gc.experimental_soft_drop.enable` | Enables soft-drop for supported tables in distributed mode. |
 | `gc.experimental_soft_drop.retention` | How long a soft-dropped table can stay in the recycle bin before Metasrv GC automatically purges it. The value must be at least `1ms`. |
 
-Restart Metasrv after changing these options. For ordinary file GC, keep Metasrv and Datanode GC settings consistent as described in [Garbage Collection](./gc.md).
+Restart Metasrv after changing these options. For ordinary file GC, keep Metasrv and Datanode GC settings consistent as described in [Garbage Collection](/user-guide/deployments-administration/manage-data/gc.md).
 
 ## Drop a table
 

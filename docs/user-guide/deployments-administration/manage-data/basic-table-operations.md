@@ -300,7 +300,7 @@ The `ALTER TABLE` statement also supports adding, removing, and renaming columns
 ## Drop a table
 
 :::danger danger
-Without [soft-drop](./soft-drop.md), `DROP TABLE` cannot be undone. Use it with care!
+Without [soft-drop](/enterprise/soft-drop.md) (GreptimeDB Enterprise only), `DROP TABLE` cannot be undone. Use it with care!
 :::
 
 `DROP TABLE [db.]table` is used to drop the table in `db` or the current database in-use.Drop the table `monitor` in the current database:
