@@ -32,6 +32,8 @@ which are described in detail in the documentation in this section:
   user activity with detailed audit logs.
 - [Query Guard](./deployments-administration/query-guard.md): Ban `DROP TABLE` / `DROP DATABASE`
   statements for all users and reject cross-catalog access.
+- [Soft-Drop Tables](./soft-drop.md): Protect tables from accidental `DROP TABLE`
+  operations and restore them from the recycle bin within the retention period.
 - [Automatic region load balance](./autopilot/region-balancer.md): Auto balance
   datanodes workload by moving regions between them.
 - [Scheduled Compaction](./deployments-administration/scheduled-compaction.md): Periodically submit regular compaction requests for all physical Regions, with HTTP endpoints for manual triggers and job queries.

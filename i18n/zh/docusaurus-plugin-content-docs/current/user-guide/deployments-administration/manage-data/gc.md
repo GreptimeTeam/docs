@@ -27,7 +27,7 @@ enable = true              # 开启 meta GC 调度器，默认值为 false；必
 gc_cooldown_period = "5m"   # 同一 region 再次 GC 的最小间隔。
 
 [gc.experimental_soft_drop]
-enable = false             # 开启 soft-drop table。要求 gc.enable = true。
+enable = false             # 开启 soft-drop table（仅 GreptimeDB 企业版）。要求 gc.enable = true。
 retention = "7d"            # Soft-dropped table 被 purge 前的保留时长。
 ```
 
@@ -37,7 +37,7 @@ retention = "7d"            # Soft-dropped table 被 purge 前的保留时长。
 | --- | --- |
 | `enable` | 启用 meta GC 调度器，必须与 datanode 的 GC 开关一致。 |
 | `gc_cooldown_period` | 同一 region 再次被调度 GC 的最小间隔；请保证 datanode 的 `lingering_time` 大于该值。 |
-| `experimental_soft_drop.enable` | 启用 [soft-drop table](./soft-drop.md)。要求 `gc.enable = true`。 |
+| `experimental_soft_drop.enable` | 启用 [soft-drop table](/enterprise/soft-drop.md)（仅 GreptimeDB 企业版）。要求 `gc.enable = true`。 |
 | `experimental_soft_drop.retention` | Soft-dropped table 自动 purge 前的保留时长。 |
 
 ## Datanode 配置

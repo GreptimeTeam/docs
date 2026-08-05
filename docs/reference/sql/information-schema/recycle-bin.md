@@ -5,6 +5,12 @@ description: Describes the RECYCLE_BIN table in INFORMATION_SCHEMA.
 
 # RECYCLE_BIN
 
+:::tip NOTE
+
+This feature is only available in the GreptimeDB Enterprise database.
+
+:::
+
 The `RECYCLE_BIN` table lists soft-dropped tables that are still eligible for restore.
 
 ```sql

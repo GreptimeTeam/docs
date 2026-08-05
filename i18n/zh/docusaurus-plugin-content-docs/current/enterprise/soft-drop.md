@@ -1,6 +1,6 @@
 ---
-keywords: [soft drop, recycle bin, drop table, undrop table, purge table, 数据恢复]
-description: 介绍如何在 GreptimeDB 中开启和使用 soft-drop table。
+keywords: [soft drop, recycle bin, drop table, undrop table, purge table, 数据恢复, GreptimeDB 企业版]
+description: 介绍如何在 GreptimeDB 企业版中开启和使用 soft-drop table。
 ---
 
 # Soft-Drop Table
@@ -30,7 +30,7 @@ retention = "7d"
 | `gc.experimental_soft_drop.enable` | 在分布式模式中为支持的表启用 soft-drop。 |
 | `gc.experimental_soft_drop.retention` | Soft-dropped table 在 recycle bin 中保留多久后由 Metasrv GC 自动 purge。该值必须至少为 `1ms`。 |
 
-修改配置后请重启 Metasrv。普通文件 GC 仍需按照[垃圾回收（GC）](./gc.md)中的说明，保持 Metasrv 与 Datanode 的 GC 配置一致。
+修改配置后请重启 Metasrv。普通文件 GC 仍需按照[垃圾回收（GC）](/user-guide/deployments-administration/manage-data/gc.md)中的说明，保持 Metasrv 与 Datanode 的 GC 配置一致。
 
 ## 删除表
 

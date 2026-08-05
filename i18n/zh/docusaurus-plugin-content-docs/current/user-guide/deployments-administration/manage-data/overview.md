@@ -14,4 +14,3 @@ description: 提供 GreptimeDB 数据管理的概述，包括存储位置说明�
 * [Region Migration](region-migration.md): 为负载均衡迁移 Region
 * [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md)
 * [Compaction](compaction.md)
-* [Soft-Drop Table](soft-drop.md): 防止误删表并在保留期内恢复

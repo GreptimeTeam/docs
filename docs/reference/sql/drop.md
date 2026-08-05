@@ -41,7 +41,7 @@ DROP DATABASE test;
 
 ## DROP TABLE
 
-`DROP TABLE` removes tables from the database. By default, it removes the table definition and all table data, indexes, rules, and constraints for that table. If [soft-drop](/user-guide/deployments-administration/manage-data/soft-drop.md) is enabled in a distributed cluster, supported tables are moved to the recycle bin and can be restored before the retention deadline.
+`DROP TABLE` removes tables from the database. By default, it removes the table definition and all table data, indexes, rules, and constraints for that table. If [soft-drop](/enterprise/soft-drop.md) is enabled in a distributed cluster, supported tables are moved to the recycle bin and can be restored before the retention deadline.
 
 :::danger Danger
 
@@ -68,6 +68,12 @@ DROP TABLE monitor;
 ```
 
 ## UNDROP TABLE
+
+:::tip NOTE
+
+This feature is only available in the GreptimeDB Enterprise database.
+
+:::
 
 `UNDROP TABLE` restores a soft-dropped table from the recycle bin.
 
