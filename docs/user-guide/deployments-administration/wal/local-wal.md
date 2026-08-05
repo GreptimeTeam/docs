@@ -14,6 +14,7 @@ purge_threshold = "1GB"
 purge_interval = "1m"
 read_batch_size = 128
 sync_write = false
+sync_period = "5s"
 ```
 
 ## Options
@@ -29,6 +30,7 @@ If you are using Helm Chart to deploy GreptimeDB, you can refer to [Common Helm 
 | `purge_interval`     | The interval to trigger purging                                                                                      | `1m`              |
 | `read_batch_size`    | The read batch size                                                                                                  | `128`             |
 | `sync_write`         | Whether to call fsync when writing every log                                                                         | `false`           |
+| `sync_period`        | The interval between periodic fsync operations                                                                       | `5s`              |
 
 ## Best practices
 
