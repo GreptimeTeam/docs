@@ -15,6 +15,7 @@ purge_threshold = "1GB"
 purge_interval = "1m"
 read_batch_size = 128
 sync_write = false
+sync_period = "5s"
 ```
 
 ## 选项
@@ -30,6 +31,7 @@ sync_write = false
 | `purge_interval`  | 触发清理的时间间隔                                                                              | `1m`              |
 | `read_batch_size` | 读取批次大小                                                                                    | `128`             |
 | `sync_write`      | 是否在每次写入日志时调用 fsync                                                                  | `false`           |
+| `sync_period`     | 定期执行 fsync 的时间间隔                                                                       | `5s`              |
 
 ## 最佳实践
 
