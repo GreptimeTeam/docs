@@ -205,8 +205,6 @@ timeout = "0s"
 body_limit = "64MB"
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
-prom_validation_mode = "strict"
-experimental_enable_prometheus_native_histogram = false
 experimental_enable_explain_analyze_stream = true
 [grpc]
 bind_addr = "127.0.0.1:4001"
@@ -262,6 +260,8 @@ trace_ingest_chunk_size = 512
 [prom_store]
 enable = true
 with_metric_engine = true
+prom_validation_mode = "strict"
+experimental_enable_prometheus_native_histogram = false
 pending_rows_flush_interval = "0s"
 max_batch_rows = 100000
 max_concurrent_flushes = 256
@@ -279,8 +279,6 @@ max_inflight_requests = 3000
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
 |            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
 |            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
-|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
-|            | experimental_enable_prometheus_native_histogram | 布尔值 | 实验性：启用 Prometheus remote write v2 native histogram 写入，默认为 false。 |
 |            | experimental_enable_explain_analyze_stream | 布尔值 | 实验性：启用 `POST /v1/sql/analyze/stream`，用于流式返回 `EXPLAIN ANALYZE VERBOSE` 指标，默认为 true。 |
 | grpc       |                    |        | gRPC 服务器选项                                              |
 |            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
@@ -306,6 +304,8 @@ max_inflight_requests = 3000
 | prom_store |                              |        | Prometheus 远程存储选项                                                                                                                                                                                         |
 |            | enable                       | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true                                                                                                                                                         |
 |            | with_metric_engine           | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true                                                                                                                                                     |
+|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
+|            | experimental_enable_prometheus_native_histogram | 布尔值 | 实验性：启用 Prometheus remote write v2 native histogram 写入，默认为 false。 |
 |            | pending_rows_flush_interval  | 字符串 | Prometheus Remote Write 批量刷写的时间间隔。设为非零值（如 `500ms`）以启用[批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式)，默认为 `0s`（禁用）                         |
 |            | max_batch_rows               | 整数   | 触发刷写的最大批量行数，默认为 100000                                                                                                                                                                           |
 |            | max_concurrent_flushes       | 整数   | 同时执行的最大刷写操作数量，默认为 256                                                                                                                                                                          |

@@ -206,8 +206,6 @@ timeout = "0s"
 body_limit = "64MB"
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
-prom_validation_mode = "strict"
-experimental_enable_prometheus_native_histogram = false
 experimental_enable_explain_analyze_stream = true
 [grpc]
 bind_addr = "127.0.0.1:4001"
@@ -263,6 +261,8 @@ trace_ingest_chunk_size = 512
 [prom_store]
 enable = true
 with_metric_engine = true
+prom_validation_mode = "strict"
+experimental_enable_prometheus_native_histogram = false
 pending_rows_flush_interval = "0s"
 max_batch_rows = 100000
 max_concurrent_flushes = 256
@@ -280,8 +280,6 @@ The following table describes the options in detail:
 |            | body_limit           | String  | HTTP max body size, "64MB" by default                                                                                                                                                                                                                                                                                                                                                      |
 |            | enable_cors          | Boolean | Whether to enable HTTP CORS support, true by default. |
 |            | cors_allowed_origins | Array   | Customized allowed origins for HTTP CORS. |
-|            | prom_validation_mode | String  | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with [UTF-8 REPLACEMENT CHARACTER U+FFFD, which looks like �](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)), `unchecked`(do not validate strings). |
-|            | experimental_enable_prometheus_native_histogram | Boolean | Experimental: enable Prometheus remote write v2 native histogram ingestion, false by default. |
 |            | experimental_enable_explain_analyze_stream | Boolean | Experimental: enable `POST /v1/sql/analyze/stream` for streaming `EXPLAIN ANALYZE VERBOSE` metrics, true by default. |
 | grpc       |                      |         | gRPC server options                                                                                                                                                                                                                                                                                                                                                                        |
 |            | bind_addr            | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                                                                                                                                                                                                                                                                           |
@@ -307,6 +305,8 @@ The following table describes the options in detail:
 | prom_store |                              |         | Prometheus remote storage options                                                                                                                                                                                                                                                                                                                                                          |
 |            | enable                       | Boolean | Whether to enable Prometheus Remote Write and read in HTTP API, true by default                                                                                                                                                                                                                                                                                                            |
 |            | with_metric_engine           | Boolean | Whether to use the metric engine on Prometheus Remote Write, true by default                                                                                                                                                                                                                                                                                                               |
+|            | prom_validation_mode         | String  | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with [UTF-8 REPLACEMENT CHARACTER U+FFFD, which looks like �](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)), `unchecked`(do not validate strings). |
+|            | experimental_enable_prometheus_native_histogram | Boolean | Experimental: enable Prometheus remote write v2 native histogram ingestion, false by default. |
 |            | pending_rows_flush_interval  | String  | Interval between batch flushes for Prometheus Remote Write. Set to a non-zero duration (e.g. `500ms`) to enable [batching mode](/user-guide/ingest-data/for-observability/prometheus.md#batching-mode). `0s` by default (disabled)                                                                                                                                                     |
 |            | max_batch_rows               | Integer | Maximum number of rows per batch before a flush is triggered, 100000 by default                                                                                                                                                                                                                                                                                                            |
 |            | max_concurrent_flushes       | Integer | Maximum number of concurrent flush operations, 256 by default                                                                                                                                                                                                                                                                                                                              |
