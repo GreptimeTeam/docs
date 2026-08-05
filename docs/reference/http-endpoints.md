@@ -12,7 +12,7 @@ GreptimeDB provides two HTTP servers:
 | **Main HTTP server** | `127.0.0.1:4000` | Internal / operational use. Serves all paths, including admin endpoints such as `/health`, `/metrics`, `/config`, and `/debug/*`, as well as all `/v1` and `/dashboard` paths. Keep this port private and accessible only by trusted operators. |
 | **Public HTTP API server** | `127.0.0.1:4006` | User-facing access. Serves only `/v1` APIs and `/dashboard`. Safe to expose to database end-users. Disabled by default; enable it with `http.enable_api_server = true` in your configuration file. |
 
-We recommend keeping the main HTTP server port for internal/operational use only. If you want to expose GreptimeDB as a service to end-users, enable the dedicated public API server and expose only its port.
+We recommend keeping the main HTTP server port for internal/operational use only. Alternatively, it can be safely exposed through an HTTP proxy, provided direct access is restricted and the proxy allows only the required protocols. But If you want to expose GreptimeDB as a service to end-users, enable the dedicated public API server and expose only its port.
 
 ```toml
 [http]

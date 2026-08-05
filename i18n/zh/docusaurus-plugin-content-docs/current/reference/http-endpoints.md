@@ -12,7 +12,7 @@ GreptimeDB 提供两个 HTTP Server：
 | **主 HTTP Server** | `127.0.0.1:4000` | 内部/运维使用。提供所有路径，包括 `/health`、`/metrics`、`/config`、`/debug/*` 等管理端点，以及全部 `/v1` 和 `/dashboard` 路径。该端口应保持私有，仅对可信运维人员开放。 |
 | **公共 HTTP API Server** | `127.0.0.1:4006` | 面向用户的访问。仅提供 `/v1` API 和 `/dashboard`，可安全地暴露给数据库终端用户。默认禁用；可在配置文件中设置 `http.enable_api_server = true` 来启用。 |
 
-建议仅在内部/运维场景下使用主 HTTP Server 端口。如需将 GreptimeDB 作为服务对外暴露给终端用户，请启用专用公共 API Server，并仅对外暴露该端口。
+建议仅在内部/运维场景下使用主 HTTP Server 端口。或者也可以通过 HTTP 代理安全地暴露该端口，前提是限制直接访问，并且代理仅允许所需的协议。但是如需将 GreptimeDB 作为服务对外暴露给终端用户，我们更推荐启用专用公共 API Server，并仅对外暴露该端口。
 
 ```toml
 [http]
