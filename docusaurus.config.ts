@@ -7,6 +7,7 @@ import versionNoindex from './src/plugins/version-noindex';
 import robotsTxtGenerator from './src/plugins/robots-txt-generator';
 import faqSchema from './src/plugins/faq-schema';
 import { resolveLastmod } from './src/plugins/sitemap-lastmod';
+import { resolveLastVersion } from './src/site-versions';
 import versions from './versions.json';
 
 // Prism theme: our light mode uses a dark code-block background.
@@ -51,9 +52,11 @@ const isVersioningCommand = process.argv.some(arg =>
 );
 const availableLocales = isVersioningCommand ? ['en', 'zh'] : [locale];
 
-// Get the latest version (first item in versions array)
-const latestVersion = versions[0];
-const latestVersionNumber = parseFloat(latestVersion);
+// The version served at the site root: the newest one whose GreptimeDB release
+// is GA, so a freshly cut pre-release version does not become the default.
+const lastVersion = resolveLastVersion(versions);
+// Every other version is served under a /<version>/ prefix.
+const prefixedVersions = versions.filter(version => version !== lastVersion);
 const linkCheckVersions = [
   'current',
   ...versions.filter(version => Number.parseInt(version, 10) >= 1),
@@ -246,6 +249,7 @@ const config: Config = {
           exclude: docsExcludePatterns,
           showLastUpdateTime: true,
           onlyIncludeVersions: isLinkCheck ? linkCheckVersions : undefined,
+          lastVersion,
           versions: {
             current: {
               label: 'Nightly',
@@ -278,16 +282,16 @@ const config: Config = {
         },
         sitemap: {
           priority: 0.8,
-          // Only index the latest stable version. Nightly and historical
-          // versions are noindex'd by src/plugins/version-noindex.ts and
-          // must also be excluded from the sitemap to avoid sending Google
-          // contradictory signals (sitemap "please index" vs meta "noindex").
+          // Only index the version served at the root. Nightly, pre-release
+          // and historical versions are noindex'd by
+          // src/plugins/version-noindex.ts and must also be excluded from the
+          // sitemap to avoid sending Google contradictory signals (sitemap
+          // "please index" vs meta "noindex").
           createSitemapItems: async (params) => {
             const { defaultCreateSitemapItems, ...rest } = params;
             const items = await defaultCreateSitemapItems(rest);
 
-            const historicalPrefixes = versions.slice(1).map(v => `/${v}/`);
-            const excludedPrefixes = ['/nightly/', ...historicalPrefixes];
+            const excludedPrefixes = ['/nightly/', ...prefixedVersions.map(v => `/${v}/`)];
             const sitemapLocale = (locale === 'zh' ? 'zh' : 'en') as 'en' | 'zh';
 
             return items
@@ -299,7 +303,7 @@ const config: Config = {
                 // Attach git mtime as <lastmod> so Google gets a real
                 // freshness signal. Release-notes and other non-doc URLs
                 // that can't be mapped keep the default (no lastmod).
-                const lastmod = resolveLastmod(item.url, sitemapLocale, latestVersion);
+                const lastmod = resolveLastmod(item.url, sitemapLocale, lastVersion);
                 return lastmod ? { ...item, lastmod } : item;
               });
           },
@@ -313,6 +317,7 @@ const config: Config = {
     // Only load docusaurus-biel plugin if biel_project_id is defined
     ...(biel_project_id ? [['docusaurus-biel', bielMetaMap[locale]]] : []),
     [llmsTxtGenerator, {
+      lastVersion,
       ignoreFiles: [
         ...docsExcludePatterns,
         '**/df-functions/*.md',
@@ -327,9 +332,9 @@ const config: Config = {
         'contributor-guide/**',
       ],
     }],
-    versionNoindex,
+    [versionNoindex, { lastVersion }],
     robotsTxtGenerator,
-    faqSchema,
+    [faqSchema, { lastVersion }],
     function injectLocaleSwitchScript() {
       return {
         name: 'inject-locale-switch-script',

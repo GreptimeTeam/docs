@@ -179,7 +179,15 @@ const FAQ_TARGETS: Array<{ srcRelPath: string; htmlRelPath: string; pageUrl: str
   },
 ];
 
-export default function faqSchema(context: LoadContext): Plugin {
+export interface FaqSchemaOptions {
+  /** Version served at the site root; defaults to the newest one. */
+  lastVersion?: string;
+}
+
+export default function faqSchema(
+  context: LoadContext,
+  options: FaqSchemaOptions = {},
+): Plugin {
   return {
     name: 'faq-schema',
 
@@ -188,11 +196,14 @@ export default function faqSchema(context: LoadContext): Plugin {
       const siteUrl = siteConfig.url.replace(/\/$/, '');
 
       const versionsPath = path.resolve(process.cwd(), 'versions.json');
-      const latestVersion: string = JSON.parse(fs.readFileSync(versionsPath, 'utf-8'))[0];
+      const lastVersion: string =
+        options.lastVersion ?? JSON.parse(fs.readFileSync(versionsPath, 'utf-8'))[0];
 
+      // The FAQ page is only patched at the site root, so read it from the
+      // version served there.
       const srcRoot = locale === 'zh'
-        ? path.resolve(process.cwd(), `i18n/zh/docusaurus-plugin-content-docs/version-${latestVersion}`)
-        : path.resolve(process.cwd(), `versioned_docs/version-${latestVersion}`);
+        ? path.resolve(process.cwd(), `i18n/zh/docusaurus-plugin-content-docs/version-${lastVersion}`)
+        : path.resolve(process.cwd(), `versioned_docs/version-${lastVersion}`);
 
       for (const target of FAQ_TARGETS) {
         const srcPath = path.join(srcRoot, target.srcRelPath);

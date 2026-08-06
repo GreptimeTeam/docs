@@ -95,7 +95,7 @@
     "message": "版本：{versionLabel}"
   },
   "theme.docs.versions.unreleasedVersionLabel": {
-    "message": "此为 {siteTitle} {versionLabel} 版尚未发行的文档。",
+    "message": "此为 {siteTitle} {versionLabel} 版尚未正式发行的文档。",
     "description": "The label used to tell the user that he's browsing an unreleased doc version"
   },
   "theme.docs.versions.unmaintainedVersionLabel": {
