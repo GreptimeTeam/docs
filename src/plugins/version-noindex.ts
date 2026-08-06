@@ -31,10 +31,18 @@ function walkHtml(dir: string, results: string[] = []): string[] {
   return results;
 }
 
-function injectNoindex(filePath: string): boolean {
+/**
+ * Detects a robots meta tag whatever the attribute order. Docusaurus emits its
+ * own directive for `unlisted: true` pages as `<meta data-rh="true"
+ * name="robots" ...>`, so anchoring on `<meta name=` would miss it and inject a
+ * second, conflicting tag.
+ */
+const ROBOTS_META_TAG = /<meta[^>]+name=["']robots["']/i;
+
+export function injectNoindex(filePath: string): boolean {
   const html = fs.readFileSync(filePath, 'utf-8');
-  // Idempotent: skip if the page already declares a robots directive.
-  if (/<meta\s+name=["']robots["']/i.test(html)) {
+  // Idempotent, and leaves an explicit per-page directive as the only one.
+  if (ROBOTS_META_TAG.test(html)) {
     return false;
   }
   const patched = html.replace('</head>', `${ROBOTS_META}</head>`);
