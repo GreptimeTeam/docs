@@ -61,6 +61,17 @@ changes must not touch lockfiles.
 
 `versions.json` lists released documentation versions with the newest first.
 
+The newest version is not automatically the one served at the site root: a
+documentation version is usually cut before its GreptimeDB release reaches GA.
+The root version is the newest one whose `variables/variables-<version>.ts`
+sets `greptimedbVersion` to a stable release, so a version pinned to a
+pre-release tag (for example `v1.2.0-beta.1`) is served under `/<version>/`,
+carries an "unreleased" banner and is excluded from the sitemap. Bumping that
+file to the GA release promotes the version to the root, with no other change
+needed. Set the real pre-release tag in `variables-<version>.ts` right after
+cutting a version whose release is not GA yet — the bump script writes
+`v<version>.0`, which would otherwise move the root to unreleased docs.
+
 ## Add or update documentation
 
 Use `docs/` and the Chinese `current/` tree for unreleased features. Update a

@@ -29,13 +29,25 @@ const staticRootSkill = resolve(staticDir, 'SKILL.md');
 if (existsSync(staticSkillsDir)) rmSync(staticSkillsDir, { recursive: true, force: true });
 if (existsSync(staticRootSkill)) rmSync(staticRootSkill, { force: true });
 
-// Load version variables from variables/variables-<latestStable>.ts and resolve
+// Load version variables from variables/variables-<lastVersion>.ts and resolve
 // VAR::name placeholders in each skill, mirroring what llms-txt-generator.ts
 // does for the .md endpoints. Without this, version-pinned commands in
 // SKILL.md (Docker tag, install.sh argument) would ship the literal
 // "VAR::greptimedbVersion" string to agents.
-const latestVersion = JSON.parse(readFileSync(resolve(repoRoot, 'versions.json'), 'utf8'))[0];
-const variables = loadVariables(latestVersion);
+//
+// The newest doc version may describe a pre-release (a version is cut before
+// its GreptimeDB release is GA), and agents must not be handed a beta Docker
+// tag, so pick the newest version describing a GA release. Same rule as
+// resolveLastVersion() in src/site-versions.ts, duplicated because this script
+// runs outside the TypeScript build.
+const PRE_RELEASE = /-(?:alpha|beta|rc|nightly)/i;
+const versions = JSON.parse(readFileSync(resolve(repoRoot, 'versions.json'), 'utf8'));
+const lastVersion =
+  versions.find(version => {
+    const greptimedbVersion = loadVariables(version).greptimedbVersion;
+    return greptimedbVersion && !PRE_RELEASE.test(greptimedbVersion);
+  }) ?? versions[0];
+const variables = loadVariables(lastVersion);
 
 function loadVariables(version) {
   const file = resolve(repoRoot, 'variables', `variables-${version}.ts`);

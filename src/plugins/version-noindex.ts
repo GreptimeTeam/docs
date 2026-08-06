@@ -2,14 +2,14 @@
  * Docusaurus plugin that injects <meta name="robots" content="noindex,follow">
  * into HTML pages for:
  *   - nightly (/nightly/**)
- *   - all historical versions (/<version>/**, derived from versions.slice(1))
+ *   - every version except the one served at the site root (/<version>/**)
  *
- * Rationale: we only want Google to index the latest stable version. nightly
- * is near-duplicate of stable; historical versions are for users on old
- * deployments but should not compete in SERP with current docs.
+ * Rationale: we only want Google to index the version served at the root.
+ * nightly is a near-duplicate of it; pre-release and historical versions are
+ * for users on other deployments but should not compete in SERP with it.
  *
- * The prefix list is dynamically derived from versions.json so that when a
- * new stable is cut (e.g. 1.1), the old 1.0 is automatically downgraded to
+ * The prefix list is derived from versions.json and the `lastVersion` option
+ * so that cutting a new version automatically downgrades the previous one to
  * noindex without any manual config change.
  */
 import * as fs from 'fs';
@@ -46,7 +46,15 @@ function injectNoindex(filePath: string): boolean {
   return true;
 }
 
-export default function versionNoindex(context: LoadContext): Plugin {
+export interface VersionNoindexOptions {
+  /** Version served at the site root; defaults to the newest one. */
+  lastVersion?: string;
+}
+
+export default function versionNoindex(
+  context: LoadContext,
+  options: VersionNoindexOptions = {},
+): Plugin {
   return {
     name: 'version-noindex',
 
@@ -55,9 +63,10 @@ export default function versionNoindex(context: LoadContext): Plugin {
       // truth without hardcoding version numbers.
       const versionsPath = path.resolve(process.cwd(), 'versions.json');
       const versions: string[] = JSON.parse(fs.readFileSync(versionsPath, 'utf-8'));
+      const lastVersion = options.lastVersion ?? versions[0];
 
-      // nightly + every version except the latest stable (versions[0]).
-      const noindexDirs = ['nightly', ...versions.slice(1)];
+      // nightly + every version that is not served at the root.
+      const noindexDirs = ['nightly', ...versions.filter(v => v !== lastVersion)];
 
       let totalPatched = 0;
       for (const dirName of noindexDirs) {
