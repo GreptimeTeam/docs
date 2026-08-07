@@ -195,7 +195,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
 - `sst_format`: 表的 SST 格式。值可以是 `flat` 或 `primary_key`。表支持双向格式转换：`primary_key` 转换为 `flat`，以及 `flat` 转换为 `primary_key`。
 - `write_buffer_size`: 表的单 region 写缓冲区阻塞阈值。设置为 `512MB` 等正值后，mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入。该表选项会覆盖 `region_engine.mito.default_region_write_buffer_size`。即使引擎默认值非零，显式设置为 `0` 也会禁用单 region 限制。取消设置会移除表级覆盖，并回退到引擎默认值。
 - `auto_flush_interval`: 该表的 region 最长多久没有 flush 就触发一次 flush。值是一个[时间范围字符串](/reference/time-durations.md)，必须大于 0。该表选项会覆盖引擎级的 `region_engine.mito.auto_flush_interval`。
-- `skip_wal`: 是否为该表禁用预写日志（WAL）。当设置为 `'true'` 时表的写入数据将不会持久化到预写日志，可以避免存储磨损同时提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。你可以将其从 `false` 更改为 `true`，但之后不能再改回 `false`，也不支持 `UNSET`。
+- `skip_wal`: 是否为该表禁用预写日志（WAL）。当设置为 `'true'` 时表的写入数据将不会持久化到预写日志，可以提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。你可以将其从 `false` 更改为 `true`，但之后不能再改回 `false`，也不支持 `UNSET`。
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
