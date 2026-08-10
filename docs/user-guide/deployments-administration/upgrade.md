@@ -16,15 +16,15 @@ For complete version history and feature additions, see the [Release Notes](/rel
 ### From v1.0 or v1.1 to v1.2
 
 If you are currently running v1.0 or v1.1, you can upgrade directly to v1.2.
-Review [v1.2.0-beta.1 breaking changes](#v120-beta1-breaking-changes) and
-complete the related checks in the [Upgrade Checklist](#upgrade-checklist)
+Review [Upgrading from v1.0 or v1.1 to v1.2](#upgrading-from-v10-or-v11-to-v12)
+and complete the related checks in the [Upgrade Checklist](#upgrade-checklist)
 before the rollout.
 
 ### From v0.17 or Earlier
 
 If you are upgrading to v1.2 from v0.17 or an earlier release, first review the
 relevant v1.0 upgrade path below and then apply the
-[v1.2.0-beta.1 breaking changes](#v120-beta1-breaking-changes).
+[v1.2 breaking changes](#upgrading-from-v10-or-v11-to-v12).
 
 ## Upgrade Paths to v1.0
 
@@ -46,56 +46,74 @@ If you are running a version earlier than v0.16, you must first upgrade to v0.16
 
 ### Upgrading from v1.0 or v1.1 to v1.2
 
-#### v1.2.0-beta.1 Breaking Changes
-
-##### Removed PromQL `holt_winters`
+#### Removed PromQL `holt_winters`
 
 **Impact:** PromQL query parsing
 
-GreptimeDB no longer accepts the obsolete PromQL `holt_winters()` function.
+The `holt_winters` name has been removed. It was an alias kept for backward
+compatibility; the function itself is unchanged and remains available as
+`double_exponential_smoothing`, which GreptimeDB supported before v1.2 as well.
 
 **Action Required:**
 
 - Search dashboards, recording rules, alert rules, and API callers for
   `holt_winters(`
-- Replace or remove each query before upgrading; after the upgrade it fails
-  validation instead of running
+- Rename each call to `double_exponential_smoothing(...)`. The arguments and
+  the results are identical:
+
+  ```promql
+  # Before v1.2
+  holt_winters(prom_series[10s], 0.5, 0.1)
+
+  # v1.2 and later
+  double_exponential_smoothing(prom_series[10s], 0.5, 0.1)
+  ```
+
 - Re-run the affected queries in a staging environment after the change
 
-##### Rejected `fill`, `fill_left`, and `fill_right` PromQL Modifiers
+#### Rejected `fill`, `fill_left`, and `fill_right` PromQL Modifiers
 
 **Impact:** PromQL compatibility tightening to avoid incorrect query plans
 
-GreptimeDB now rejects direct or nested uses of `fill`, `fill_left`, and
-`fill_right` until their required outer-join semantics are implemented.
+v1.2 upgrades the PromQL parser, which makes the binary-operator modifiers
+`fill`, `fill_left`, and `fill_right` syntactically valid for the first time,
+as in `metric_a + fill(0) metric_b`. GreptimeDB does not implement the
+outer-join semantics they require, so it rejects them, whether used directly or
+nested, rather than planning them as ordinary inner joins.
+
+Earlier releases could not parse these modifiers at all, so no query that
+worked before v1.2 is affected. This is also unrelated to the SQL
+`RANGE ... FILL` clause, which is unchanged.
 
 **Action Required:**
 
-- Search PromQL expressions for direct or nested uses of these modifiers
-- Rewrite the affected queries so they do not depend on `fill`, `fill_left`, or
-  `fill_right`
-- Validate the rewritten queries in staging, because queries that used to parse
-  may now return an error instead of a result
+- Search PromQL expressions for `fill(`, `fill_left(`, and `fill_right(`
+- Rewrite any affected query so it does not depend on these modifiers
 
-##### Pipeline Integer Narrowing Now Uses `on_failure`
+#### Pipeline Integer Narrowing Now Uses `on_failure`
 
 **Impact:** Pipeline type coercion correctness
 
-When a pipeline converts an integral input or numeric string into a narrower
-declared integer type, out-of-range values no longer wrap with modulo
-semantics. They now follow the transform's `on_failure` policy. Float-to-integer
-behavior is unchanged in this release.
+When a pipeline converts an integral input or a numeric string into a declared
+integer type that cannot represent it, the value no longer wraps with modulo
+semantics. It now follows the transform's `on_failure` policy. Previously `-1`
+written to `uint8` was stored as `255`, and `256` written to `int8` was stored
+as `0`.
+
+This applies to `int8`, `int16`, `int32`, `uint8`, `uint16`, and `uint32`, and
+to cross-sign conversions into `int64` and `uint64`. Float-to-integer behavior
+is unchanged in this release.
 
 **Action Required:**
 
-- Review pipelines that write into narrow integer targets such as `int8`,
-  `int16`, `uint8`, and `uint16`
+- Review pipelines that write into narrow integer targets, or that may write
+  negative values into unsigned targets
 - If those pipelines relied on wraparound behavior, widen the target type or
   configure an explicit `on_failure` policy before upgrading
 - Use `POST /v1/pipelines/_dryrun` or representative staging data to verify
   that boundary values now produce the expected error, default, or null outcome
 
-##### Local SQL File Access Is Now Sandboxed
+#### Local SQL File Access Is Now Sandboxed
 
 **Impact:** `COPY` and external-table workflows that read or write local files
 
@@ -114,21 +132,22 @@ local-file SQL access entirely.
 - Follow [Migrate Local SQL File Access](/user-guide/deployments-administration/migrate-local-sql-file-access.md)
   for the detailed migration procedure
 
-##### Removed `sparse_primary_key_encoding` Configuration
+#### Removed `sparse_primary_key_encoding` Configuration
 
 **Impact:** Metric engine configuration cleanup
 
-GreptimeDB now always uses sparse primary key encoding for metric tables. The
-`sparse_primary_key_encoding` and older
-`experimental_sparse_primary_key_encoding` settings are no longer needed.
+GreptimeDB now always uses sparse primary key encoding for metric tables, and
+the `sparse_primary_key_encoding` option has been removed. A configuration file
+that still sets the key loads without error; the key is ignored.
 
 **Action Required:**
 
-- Remove `sparse_primary_key_encoding` and
-  `experimental_sparse_primary_key_encoding` overrides from configuration
-  files, Helm values, and automation templates
-- If you previously set `sparse_primary_key_encoding = false`, plan for the
-  fact that v1.2 no longer provides an opt-out
+- Remove `sparse_primary_key_encoding` from the `[region_engine.metric]` block
+  in your configuration files, Helm values, and automation templates. Drop the
+  older `experimental_sparse_primary_key_encoding` key as well if it is still
+  present.
+- If you previously set `sparse_primary_key_encoding = false`, note that v1.2
+  no longer provides an opt-out
 - Restart a staging environment with the cleaned configuration to confirm your
   deployment no longer depends on the removed setting
 
@@ -162,7 +181,8 @@ Metric Engine now enables **sparse primary key encoding** by default to improve 
 - All metric tables will automatically use sparse encoding by default
 - If you want to continue using the old encoding method, explicitly set:
   ```toml
-  [metric_engine]
+  [[region_engine]]
+  [region_engine.metric]
   sparse_primary_key_encoding = false
   ```
 
@@ -357,9 +377,9 @@ Before upgrading to your target version, complete the following checklist:
 
 - [ ] Review all breaking changes relevant to your upgrade path
 - [ ] **Backup all data and configurations**
-- [ ] If upgrading to v1.2, search PromQL assets for `holt_winters(`, `fill`, `fill_left`, and `fill_right`
+- [ ] If upgrading to v1.2, search PromQL assets for `holt_winters(`, `fill(`, `fill_left(`, and `fill_right(`
 - [ ] If upgrading to v1.2, identify `COPY` workflows and external tables that reference local file paths
-- [ ] If upgrading to v1.2, review pipelines that narrow values into `int8`/`int16`/`uint8`/`uint16`
+- [ ] If upgrading to v1.2, review pipelines that narrow values into `int8`/`int16`/`int32`/`uint8`/`uint16`/`uint32`, or that write negative values into unsigned targets
 - [ ] Identify queries using ordered-set aggregate functions (if upgrading from v0.16 or earlier)
 - [ ] Identify pipelines using `greptime_identity` with JSON data
 - [ ] Check for usage of deprecated Jaeger HTTP header (if upgrading from v0.17 or earlier)
@@ -369,13 +389,13 @@ Before upgrading to your target version, complete the following checklist:
 
 - [ ] Update configuration files (remove deprecated cache settings)
 - [ ] If upgrading to v1.0, update metric engine configuration if needed (`sparse_primary_key_encoding`)
-- [ ] If upgrading to v1.2, remove `sparse_primary_key_encoding` and `experimental_sparse_primary_key_encoding` overrides
+- [ ] If upgrading to v1.2, remove the now-ignored `sparse_primary_key_encoding` and `experimental_sparse_primary_key_encoding` overrides
 - [ ] Update pipeline configurations (remove `flatten_json_object`, add `max_nested_levels` if needed)
 - [ ] If upgrading to v1.2 standalone deployments, set `storage.copy_root` if the default sandbox path does not fit your workflow
 
 ### Code Updates
 
-- [ ] If upgrading to v1.2, replace or remove PromQL queries that use `holt_winters`
+- [ ] If upgrading to v1.2, rename PromQL `holt_winters(...)` calls to `double_exponential_smoothing(...)`
 - [ ] If upgrading to v1.2, rewrite PromQL queries that use `fill`, `fill_left`, or `fill_right`
 - [ ] If upgrading to v1.2, update pipelines that relied on integer wraparound and set an explicit `on_failure` policy when needed
 - [ ] Update SQL queries with ordered-set aggregates to use `WITHIN GROUP (ORDER BY ...)`
