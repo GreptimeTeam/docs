@@ -5,27 +5,27 @@ description: 查看 GreptimeDB 中的 Procedure 生命周期事件。
 
 # Procedure 生命周期
 
-Procedure 事件通过 `procedure_id` 关联。使用该 ID 可以跟踪单个 Procedure，
-而不必依赖对象名称或事件发生时间。事件列和 JSON 字段说明请参阅
-[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
+Procedure 事件共享 `procedure_id`。有关事件表及其公共列的概览，请参阅[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
 
-## 获取 procedure ID
+## 获取 Procedure ID
 
-先查询目标操作的 `Submitted` 行。例如：
+对于创建表的 Procedure，可以根据 catalog、数据库、表和 `Submitted` 触发器定位提交行：
 
 ```sql
 SELECT procedure_id
 FROM greptime_private.events
 WHERE type = 'create_table'
   AND catalog_name = 'greptime'
-  AND schema_name = 'docs_ev2723_life_20260810'
-  AND table_name = 'lifecycle_probe'
+  AND schema_name = '<database_name>'
+  AND table_name = '<table_name>'
   AND json_path_match(procedure_trigger, '$.type == "Submitted"')
 ORDER BY timestamp DESC
 LIMIT 1;
 ```
 
-```text
+示例结果：
+
+```sql
 +--------------------------------------+
 | procedure_id                         |
 +--------------------------------------+
@@ -33,12 +33,12 @@ LIMIT 1;
 +--------------------------------------+
 ```
 
-请按实际排查对象替换数据库名、对象名和事件类型。查询返回的 UUID 就是后续
-查询使用的 `procedure_id`。
+在后续查询中使用返回的 ID 查看该 Procedure 的生命周期记录。定位条件可以避免
+选中名称相似但属于其他对象的 Procedure。
 
-## 查询单个 Procedure
+## 查询 Procedure 生命周期
 
-需要查看所有稀疏定位列或运维列时，使用以下可复用的完整查询：
+需要探索所有可用列时，使用完整记录查询：
 
 ```sql
 SELECT *
@@ -47,7 +47,7 @@ WHERE procedure_id = '<procedure_id>'
 ORDER BY timestamp ASC;
 ```
 
-日常监控更适合使用聚焦投影：
+日常排查时，使用只选择所需列的投影：
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -58,56 +58,61 @@ WHERE procedure_id = '<procedure_id>'
 ORDER BY timestamp;
 ```
 
-实际捕获的输出如下：
+以下是一次 MySQL 操作的示例输出：
 
-```text
-+-------------------------------+--------------+----------------------+----------------------+-----------------+------------------------------------------------------------+
-| timestamp                     | type         | procedure_state      | procedure_trigger    | procedure_error | payload                                                    |
-+-------------------------------+--------------+----------------------+----------------------+-----------------+------------------------------------------------------------+
-| 2026-08-10 11:23:14.388632208 | create_table  | Running              | {"type":"Submitted"} |                 | {"create_if_not_exists":false,"engine":"mito","version":1} |
-| 2026-08-10 11:23:14.463992155 | create_table  | Done                 | {"type":"Succeeded"} |                 | null                                                       |
-+-------------------------------+--------------+----------------------+----------------------+-----------------+------------------------------------------------------------+
+```sql
++-------------------------------+--------------+-----------------+----------------------+-----------------+------------------------------------------------------------+
+| timestamp                     | type         | procedure_state | procedure_trigger    | procedure_error | payload                                                    |
++-------------------------------+--------------+-----------------+----------------------+-----------------+------------------------------------------------------------+
+| 2026-08-10 11:23:14.388632208 | create_table | Running         | {"type":"Submitted"} |                 | {"create_if_not_exists":false,"engine":"mito","version":1} |
+| 2026-08-10 11:23:14.463992155 | create_table | Done            | {"type":"Succeeded"} |                 | null                                                       |
++-------------------------------+--------------+-----------------+----------------------+-----------------+------------------------------------------------------------+
 ```
 
-`Submitted` 是初始生命周期触发器，对应的 Procedure 状态为 `Running`。
-成功的终止事件对应 `procedure_state = 'Done'` 和 `Succeeded` 触发器。初始行
-通常包含操作 payload 和上下文；终止行的 payload 是 JSON `null`，不是 SQL
-`NULL`。
+`Submitted` 通常表示 `Running`；成功终态是 `Done` 和 `Succeeded`。Runner 会将
+`Done` 映射为 `Succeeded`，并再次调用存活 Procedure 的 `event()` hook。因此终态事件
+是重新生成的，不是提交事件的副本；记录仍然是异步、尽力而为的。
 
-## 解释其他生命周期触发器
+本例 `create_table` 的终态 `payload` 为 JSON `null`；DDL/repartition 生命周期事件也可能
+有这种情况，但这不是所有事件族的统一规则。
 
-运行时会根据实际情况记录以下触发器：
+## 生命周期触发器
 
-| 触发器 | 含义 |
+运行时只会记录适用的触发器，因此不一定会出现每一种触发器，也不保证固定顺序：
+
+| 触发器 | 含义和有用字段 |
 | --- | --- |
-| `Recovered` | 从持久化状态恢复了根 Procedure。 |
-| `ChildSubmitted` | 尝试提交子 Procedure；JSON 中包含子 ID 和提交结果。 |
-| `Retrying` | 正在重试执行或回滚；JSON 中包含阶段和尝试次数。 |
-| `RollingBack` | 失败后开始回滚。 |
-| `Failed` | Procedure 进入失败终止状态；检查 `procedure_error`。 |
-| `Poisoned` | Procedure 因中毒而无法继续；检查 `procedure_error`。 |
+| `Recovered` | 根 Procedure 从持久化状态恢复。 |
+| `ChildSubmitted` | 尝试提交子 Procedure。触发器包含子 Procedure 的 `procedure_id` 和提交 `outcome`（`Accepted`、`AlreadyAccepted`、`ManagerStopped` 或 `SpawnFailed`）。 |
+| `Retrying` | 正在重试 Procedure 的执行或回滚。触发器包含重试 `phase`（`Execute` 或 `Rollback`）和 `attempt`。 |
+| `RollingBack` | 开始回滚 Procedure。 |
+| `Failed` | Procedure 到达失败终态。请检查 `procedure_error` 中的失败详情。 |
+| `Poisoned` | Procedure 无法继续。请检查 `procedure_error` 中的失败详情。 |
 
-这些是框架支持的生命周期情况，并不是每个 Procedure 都必须经历的固定顺序。
-某个 Procedure 不一定会发出所有触发器或所有中间状态。`Retrying` 和
-`RollingBack` 可能在 `procedure_error` 中携带错误信息。
+## 事件族的终态字段
 
-## 不创建失败的情况下检查失败状态
+`procedure_id`、`procedure_state`、`procedure_trigger` 和 `procedure_error` 是公共封装
+字段。终态事件族字段由类型决定，可能被 hook 重新计算或省略。
 
-下面的只读查询用于查找某个数据库中的失败或中毒 Procedure：
+| 事件族 | 常见终态字段 |
+| --- | --- |
+| DDL | 对象定位列；Done 输出携带 ID 时才会新增 ID。 |
+| `repartition` | 父 Procedure 的表定位和关联信息；payload 可能是 JSON `null`。 |
+| `repartition_group` | 父/Group ID；每个目标的 Region 字段可能是 SQL `NULL`。 |
+| `region_migration` | Region、节点和超时字段。 |
+| `batch_gc` | 受影响的 Region 维度和 `gc_report`；`payload` 为 JSON `null`。空报告不会产生 `Done` 事件。 |
+| `wal_prune` | Topic、清理/最新 offset，以及清理 payload。 |
+
+只读查看失败事件：
 
 ```sql
 SELECT timestamp, type, procedure_id, procedure_state,
        json_to_string(procedure_trigger) AS procedure_trigger,
        procedure_error
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND schema_name = 'docs_ev2723_life_20260810'
-  AND procedure_state IN ('Failed', 'Poisoned')
-ORDER BY timestamp;
+WHERE procedure_state IN ('Failed', 'Poisoned')
+ORDER BY timestamp DESC
+LIMIT 20;
 ```
 
-本例使用的专用运行时数据库没有失败行，因此不展示伪造的失败或中毒输出。该
-查询已根据源码验证；不要从成功示例推断失败输出，也不要为了测试而人为制造
-失败。
-
-通用事件过滤和轮询方法请参阅[查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)。
+查看最近事件的查询方式，请参阅[查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)。

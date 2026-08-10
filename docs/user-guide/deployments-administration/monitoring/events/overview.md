@@ -13,7 +13,7 @@ GreptimeDB writes event records asynchronously on a best-effort basis. A recent 
 
 The lifecycle event recorder can be configured in standalone deployments or on Metasrv in distributed deployments. See [Lifecycle event recorder](/user-guide/deployments-administration/configuration.md#lifecycle-event-recorder) for configuration options and the supported type list.
 
-Standalone deployments expose events from local lifecycle and background work. Distributed deployments can also expose operational event families produced by Metasrv, such as region migration and maintenance procedures.
+Standalone deployments record supported local DDL Procedure events. Distributed deployments with Metasrv additionally record Region migration, Repartition, Batch GC, and WAL prune operational events.
 
 ## Query events
 

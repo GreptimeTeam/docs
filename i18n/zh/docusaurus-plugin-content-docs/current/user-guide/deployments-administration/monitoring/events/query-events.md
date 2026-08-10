@@ -11,7 +11,7 @@ description: 查询 GreptimeDB 生命周期和运维事件。
 
 ## 查看最近事件
 
-以下是 issue 要求的查询，会返回完整且较宽的事件记录：
+以下查询会返回完整的事件记录：
 
 ```sql
 SELECT *
@@ -45,41 +45,37 @@ GROUP BY type
 ORDER BY type;
 ```
 
-测试集群中观察到的类型包括 `alter_table`、`batch_gc`、`create_database`、
-`create_flow`、`create_logical_tables`、`create_table`、`create_view`、
-`drop_database`、`drop_table`、`region_migration`、`repartition`、
-`repartition_group` 和 `wal_prune`。这只是本次集群中观察到的集合，并不等于
-完整的配置列表或源码支持列表。完整的事件族请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
+查询结果是集群当前已有事件类型的时间点快照，会随工作负载变化，并不表示完整的
+配置项或源码支持范围。支持的事件族请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
 和[运维事件](/user-guide/deployments-administration/monitoring/events/operational-events.md)。
 
 将类型与 catalog、schema 以及对象定位列组合，可以避免混入无关事件：
 
 ```sql
 SELECT timestamp, type, procedure_state,
-       json_to_string(procedure_trigger) AS procedure_trigger,
-       schema_name, table_name
+       json_to_string(procedure_trigger) AS procedure_trigger
 FROM greptime_private.events
 WHERE type = 'create_table'
   AND catalog_name = 'greptime'
-  AND schema_name = 'docs_ev2723_query_20260810'
-  AND table_name = 'query_source'
+   AND schema_name = '<database_name>'
+  AND table_name = '<table_name>'
 ORDER BY timestamp;
 ```
 
-`query_source` 的紧凑结果：
+示例输出：
 
-```text
-+-------------------------------+--------------+-----------------+----------------------+----------------------------+--------------+
-| timestamp                     | type         | procedure_state | procedure_trigger    | schema_name                | table_name   |
-+-------------------------------+--------------+-----------------+----------------------+----------------------------+--------------+
-| 2026-08-10 11:28:40.590240203 | create_table | Running         | {"type":"Submitted"} | docs_ev2723_query_20260810 | query_source |
-| 2026-08-10 11:28:40.659064297 | create_table | Done            | {"type":"Succeeded"} | docs_ev2723_query_20260810 | query_source |
-+-------------------------------+--------------+-----------------+----------------------+----------------------------+--------------+
+```sql
++-------------------------------+--------------+-----------------+----------------------+
+| timestamp                     | type         | procedure_state | procedure_trigger    |
++-------------------------------+--------------+-----------------+----------------------+
+| 2026-08-10 11:28:40.590240203 | create_table | Running         | {"type":"Submitted"} |
+| 2026-08-10 11:28:40.659064297 | create_table | Done            | {"type":"Succeeded"} |
++-------------------------------+--------------+-----------------+----------------------+
 ```
 
 ## 查询对象的最新事件
 
-将示例数据库名和对象名替换为实际定位条件。每个查询只返回匹配结果中最新的一条事件。
+将占位符替换为实际定位条件。每个查询只返回匹配结果中最新的一条事件。
 
 ### 数据库
 
@@ -88,7 +84,7 @@ SELECT timestamp, type, schema_name, procedure_state,
        json_to_string(procedure_trigger) AS procedure_trigger
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND schema_name = 'docs_ev2723_query_20260810'
+   AND schema_name = '<database_name>'
   AND type IN ('create_database', 'alter_database', 'drop_database')
 ORDER BY timestamp DESC
 LIMIT 1;
@@ -100,23 +96,23 @@ LIMIT 1;
 SELECT timestamp, type, schema_name, table_name, table_id, procedure_state
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND schema_name = 'docs_ev2723_query_20260810'
-  AND table_name = 'query_source'
+  AND schema_name = '<database_name>'
+   AND table_name = '<table_name>'
 ORDER BY timestamp DESC
 LIMIT 1;
 ```
 
 ### Flow
 
-在测试集群中，生成的 Flow 行的 `schema_name` 是 SQL `NULL`。因此使用 catalog
-加唯一的 `flow_name` 定位；此查询有意不假装使用了 schema 筛选：
+Flow 行的 `schema_name` 可能是 SQL `NULL`。因此使用 `catalog_name` 加唯一的
+`flow_name` 定位。
 
 ```sql
 SELECT timestamp, type, catalog_name, schema_name,
        flow_name, flow_id, procedure_state
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND flow_name = 'query_flow'
+   AND flow_name = '<flow_name>'
 ORDER BY timestamp DESC
 LIMIT 1;
 ```
@@ -127,23 +123,27 @@ LIMIT 1;
 SELECT timestamp, type, schema_name, view_name, view_id, procedure_state
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND schema_name = 'docs_ev2723_query_20260810'
-  AND view_name = 'query_view'
+   AND schema_name = '<database_name>'
+   AND view_name = '<view_name>'
 ORDER BY timestamp DESC
 LIMIT 1;
 ```
 
 ### Region
 
-Region migration 事件是全局运维记录，不属于按数据库隔离的对象。以下只读查询
-返回最新的既有记录：
+带 Region 的运维事件是全局记录，不属于按数据库隔离的对象。以下查询返回某个
+Region 在相关事件族中的最新事件：
 
 ```sql
-SELECT timestamp, type, region_id, region_migration_trigger_reason,
-       region_migration_src_node_id, region_migration_dst_node_id,
-       procedure_state
+SELECT timestamp, type, procedure_state,
+       region_id, source_region_id, target_region_id,
+       region_migration_trigger_reason,
+       region_migration_src_node_id, region_migration_dst_node_id
 FROM greptime_private.events
-WHERE type = 'region_migration'
+WHERE type IN ('region_migration', 'batch_gc', 'repartition_group')
+  AND (region_id = <region_id>
+       OR source_region_id = <region_id>
+       OR target_region_id = <region_id>)
 ORDER BY timestamp DESC
 LIMIT 1;
 ```

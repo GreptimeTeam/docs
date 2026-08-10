@@ -5,27 +5,29 @@ description: Inspect procedure lifecycle events in GreptimeDB.
 
 # Procedure lifecycle
 
-Procedure events share a `procedure_id`. Use that ID to follow one procedure
-without relying on object names or event timing. For the event columns and JSON
-fields, see [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md).
+Procedure events share a `procedure_id`. For an overview of the event table and
+its common columns, see [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md).
 
 ## Get a procedure ID
 
-Select the `Submitted` row for the operation you want to inspect. For example:
+For a table-creation procedure, locate the `Submitted` row by its catalog,
+database, and table:
 
 ```sql
 SELECT procedure_id
 FROM greptime_private.events
 WHERE type = 'create_table'
   AND catalog_name = 'greptime'
-  AND schema_name = 'docs_ev2723_life_20260810'
-  AND table_name = 'lifecycle_probe'
+  AND schema_name = '<database_name>'
+  AND table_name = '<table_name>'
   AND json_path_match(procedure_trigger, '$.type == "Submitted"')
 ORDER BY timestamp DESC
 LIMIT 1;
 ```
 
-```text
+Example result:
+
+```sql
 +--------------------------------------+
 | procedure_id                         |
 +--------------------------------------+
@@ -33,13 +35,13 @@ LIMIT 1;
 +--------------------------------------+
 ```
 
-Replace the database, object, and event type with the operation you are
-investigating. The returned UUID is the value to use in the following queries.
+Use the returned ID to query the procedure's lifecycle rows. The locator
+filters help avoid selecting a procedure for another object with a similar
+name.
 
-## Query one procedure
+## Query a procedure lifecycle
 
-The reusable, full-row query is useful when you need every sparse locator or
-operational column:
+Use the full-row query when you need to explore every available column:
 
 ```sql
 SELECT *
@@ -48,7 +50,7 @@ WHERE procedure_id = '<procedure_id>'
 ORDER BY timestamp ASC;
 ```
 
-For routine monitoring, prefer this smaller projection:
+For routine checks, use a focused projection:
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -59,57 +61,64 @@ WHERE procedure_id = '<procedure_id>'
 ORDER BY timestamp;
 ```
 
-Captured output:
+Example output from a MySQL operation:
 
-```text
-+-------------------------------+--------------+----------------------+----------------------+-----------------+------------------------------------------------------------+
-| timestamp                     | type         | procedure_state      | procedure_trigger    | procedure_error | payload                                                    |
-+-------------------------------+--------------+----------------------+----------------------+-----------------+------------------------------------------------------------+
-| 2026-08-10 11:23:14.388632208 | create_table  | Running              | {"type":"Submitted"} |                 | {"create_if_not_exists":false,"engine":"mito","version":1} |
-| 2026-08-10 11:23:14.463992155 | create_table  | Done                 | {"type":"Succeeded"} |                 | null                                                       |
-+-------------------------------+--------------+----------------------+----------------------+-----------------+------------------------------------------------------------+
+```sql
++-------------------------------+--------------+-----------------+----------------------+-----------------+------------------------------------------------------------+
+| timestamp                     | type         | procedure_state | procedure_trigger    | procedure_error | payload                                                    |
++-------------------------------+--------------+-----------------+----------------------+-----------------+------------------------------------------------------------+
+| 2026-08-10 11:23:14.388632208 | create_table | Running         | {"type":"Submitted"} |                 | {"create_if_not_exists":false,"engine":"mito","version":1} |
+| 2026-08-10 11:23:14.463992155 | create_table | Done            | {"type":"Succeeded"} |                 | null                                                       |
++-------------------------------+--------------+-----------------+----------------------+-----------------+------------------------------------------------------------+
 ```
 
-`Submitted` is the initial lifecycle trigger, and its procedure state is
-`Running`. A successful terminal event has `procedure_state = 'Done'` and a
-`Succeeded` trigger. The initial row commonly carries the operation's payload
-and context; the terminal payload is JSON `null`, not SQL `NULL`.
+`Submitted` normally means `Running`; successful completion is `Done` with a
+`Succeeded` trigger. The runner maps `Done` to `Succeeded` and calls the live
+procedure's `event()` hook again. Thus a terminal event is regenerated, not a
+copy of the submitted event. Recording remains asynchronous and best effort.
 
-## Interpret other lifecycle triggers
+The JSON-null terminal `payload` in this `create_table` example also applies to
+DDL/repartition lifecycle events; it is not a rule for every event family.
 
-The runtime can record these triggers as applicable:
+## Lifecycle triggers
 
-| Trigger | Meaning |
+Only applicable triggers are recorded, so a procedure does not necessarily emit
+every trigger or follow this sequence:
+
+| Trigger | Meaning and useful fields |
 | --- | --- |
-| `Recovered` | A root procedure was recovered from persisted state. |
-| `ChildSubmitted` | A child submission was attempted; the JSON includes the child ID and outcome. |
-| `Retrying` | Execution or rollback is being retried; the JSON includes its phase and attempt. |
-| `RollingBack` | Rollback is starting after a failure. |
-| `Failed` | The procedure reached a failed terminal state. Inspect `procedure_error`. |
-| `Poisoned` | The procedure cannot proceed because it was poisoned. Inspect `procedure_error`. |
+| `Recovered` | The root procedure was recovered from persisted state. |
+| `ChildSubmitted` | A child submission was attempted. The trigger includes the child `procedure_id` and its `outcome` (`Accepted`, `AlreadyAccepted`, `ManagerStopped`, or `SpawnFailed`). |
+| `Retrying` | Procedure execution or rollback is being retried. The trigger includes the retry `phase` (`Execute` or `Rollback`) and `attempt`. |
+| `RollingBack` | Procedure rollback is starting. |
+| `Failed` | The procedure reached a failed terminal state. Inspect `procedure_error` for failure details. |
+| `Poisoned` | The procedure cannot proceed. Inspect `procedure_error` for the failure details. |
 
-These are framework lifecycle possibilities, not a required sequence. A
-procedure does not necessarily emit every trigger or every intermediate state.
-`Retrying` and `RollingBack` can carry an error in `procedure_error`.
+## Family-specific terminal fields
 
-## Inspect failures without creating one
+Envelope fields (`procedure_id`, `procedure_state`, `procedure_trigger`, and
+`procedure_error`) are common. Terminal family fields are type-specific and may
+be recomputed or omitted by the event hook.
 
-This read-only query finds failed or poisoned procedures in a database:
+| Family | Typical terminal fields |
+| --- | --- |
+| DDL | Object locators; IDs may be added when the Done output carries them. |
+| `repartition` | Parent table locator and procedure linkage; payload may be JSON `null`. |
+| `repartition_group` | Parent/group IDs; per-target region fields may be SQL `NULL`. |
+| `region_migration` | Region, node, and timeout fields. |
+| `batch_gc` | Affected Region dimensions and `gc_report`; `payload` is JSON `null`. An empty report emits no `Done` event. |
+| `wal_prune` | Topic, prune/latest offsets, and the prune payload. |
+
+To inspect failures without creating one:
 
 ```sql
 SELECT timestamp, type, procedure_id, procedure_state,
        json_to_string(procedure_trigger) AS procedure_trigger,
        procedure_error
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND schema_name = 'docs_ev2723_life_20260810'
-  AND procedure_state IN ('Failed', 'Poisoned')
-ORDER BY timestamp;
+WHERE procedure_state IN ('Failed', 'Poisoned')
+ORDER BY timestamp DESC
+LIMIT 20;
 ```
 
-The dedicated runtime database used for this example had no failure rows, so no
-failed or poisoned output is shown. The query is source-validated; do not infer
-failure output from the successful example or manufacture a failure to test it.
-
-For general event filters and polling guidance, see
-[Query events](/user-guide/deployments-administration/monitoring/events/query-events.md).
+For recent-event queries, see [Query events](/user-guide/deployments-administration/monitoring/events/query-events.md).

@@ -5,120 +5,91 @@ description: 了解 GreptimeDB events 表的数据模型。
 
 # 事件数据模型
 
-`greptime_private.events` 中的每一行都使用相同的基础封装。具体事件族
-只写入自己需要的列，因此大多数事件族专用列都是稀疏列（对无关事件为
-`NULL`）。
-
-如何定位事件行，请参阅[查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)。
-各事件族的含义请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
-和[运维事件](/user-guide/deployments-administration/monitoring/events/operational-events.md)。
-
-## 通用列
-
-每一行都包含以下基础列：
+`greptime_private.events` 使用公共封装。事件族专用列是稀疏列；事件族不填充时为
+SQL `NULL`。
 
 | 列 | 含义 |
 | --- | --- |
-| `type` | 小写下划线格式的事件类型，例如 `create_table` 或 `region_migration`。 |
-| `payload` | 事件的 JSON 载荷。`Submitted` 行通常包含操作意图。 |
-| `timestamp` | 记录事件行的时间。 |
-
-Procedure 封装用于标识操作及其生命周期：
-
-| 列 | 含义 |
-| --- | --- |
-| `procedure_id` | 同一个 Procedure 产生的事件行共享的标识符。 |
+| `type` | 事件类型，例如 `create_table` 或 `region_migration`。 |
+| `timestamp` | 记录该行的时间。 |
+| `procedure_id` | 同一 Procedure 的事件行共享的 ID。 |
 | `procedure_state` | Procedure 状态，例如 `Running` 或 `Done`。 |
-| `procedure_trigger` | Procedure 的 JSON 触发器，包括 `Submitted`、`Recovered`、`ChildSubmitted`、`Retrying`、`RollingBack`、`Succeeded`、`Failed` 和 `Poisoned`。 |
-| `procedure_error` | Procedure 失败时记录的错误文本（如果有）。 |
+| `procedure_trigger` | JSON 触发器，例如 `Submitted`、`ChildSubmitted`、`Succeeded` 或 `Failed`。 |
+| `procedure_error` | Procedure 失败时的错误文本。 |
+| `payload` | 类型相关的 JSON；提交行通常包含操作意图。 |
+| `event_context` | 有上下文时，用于描述事件触发原因的 JSON。 |
 
-在已捕获的成功运行中，`procedure_state = 'Done'` 对应 `Succeeded` 触发器。
-`Failed` 和 `Poisoned` 是终态失败触发器；应结合触发器和错误信息判断，
-不要根据某个稀疏事件族列单独推断失败。参阅 [Procedure 生命周期](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)。
+Runner 通过存活 Procedure 的 `event()` hook 重新生成终态事件。终态事件族字段由类型
+决定，不保证是提交字段的副本。记录是异步、尽力而为的。
 
-## 上下文和载荷语义
-
-`event_context` 是可选的 JSON，用于说明事件的触发原因。稳定的 `reason`
-值包括 `manual`、`auto_create`、`auto_alter`、`auto_repartition`、
-`auto_rebalance`、`region_failover`、`scheduled_gc` 和 `unknown`。例如，
-手动通过 MySQL 执行的 DDL 事件可以包含
+存在 `event_context` 时，其中的稳定 `reason` 值可以是
+`manual`、`auto_create`、`auto_alter`、`auto_repartition`、`auto_rebalance`、
+`region_failover`、`scheduled_gc` 或 `unknown`。例如，通过 MySQL 提交的事件可能包含
 `{"protocol":"mysql","reason":"manual"}`。
 
-不要混淆 SQL `NULL` 和 JSON `null`：
+如需查看针对性的示例，请参阅[查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)、
+[Procedure 生命周期](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)、
+[DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)和
+[运维事件](/user-guide/deployments-administration/monitoring/events/operational-events.md)。
 
-- 提交行可以携带对象载荷。
-- 后续生命周期行可以携带 JSON `null`。此时
-  `payload IS NULL = 0`，而 `json_is_null(payload) = 1`。
-- 相比之下，终态行中的 `event_context` 可以是 SQL `NULL`。
+## 查询 JSON 字段
 
-下面的投影同时展示这两种情况，并且不依赖动态生成的 ID：
+详细信息请参阅 [JSON 函数](/reference/sql/functions/json.md)。在事件查询中，
+`json_to_string` 将 JSON 值转换为可读文本，`json_get_string` 按路径提取值，
+`json_path_match` 计算 JSON 谓词，`json_is_null` 检查值是否为 JSON `null`。如需检查
+SQL `NULL`，应单独使用 `IS NULL`。
 
-```sql
-SELECT procedure_state,
-       json_to_string(payload) AS payload,
-       payload IS NULL AS payload_is_sql_null,
-       json_is_null(payload) AS payload_is_json_null,
-       json_to_string(event_context) AS event_context,
-       json_to_string(procedure_trigger) AS procedure_trigger
-FROM greptime_private.events
-WHERE type = 'create_table'
-  AND catalog_name = 'greptime'
-  AND schema_name = 'docs_ev2723_model_20260810'
-  AND table_name = 'model_probe'
-ORDER BY timestamp;
-```
-
-GreptimeDB 1.3.0 的精简输出：
-
-```text
-| procedure_state | payload                                                    | payload_is_sql_null | payload_is_json_null | event_context                          | procedure_trigger    |
-| Running         | {"create_if_not_exists":false,"engine":"mito","version":1} | 0                   | 0                    | {"protocol":"mysql","reason":"manual"} | {"type":"Submitted"} |
-| Done            | null                                                       | 0                   | 1                    | NULL                                    | {"type":"Succeeded"} |
-```
-
-## 稀疏的事件族专用列
-
-先使用通用定位列，再按事件族增加专用投影：
-
-- 数据库和表事件使用 `catalog_name`、`schema_name`、`table_name`、
-  `table_id`，有时还使用 `physical_table_id`。
-- Flow 和 View 事件使用 `flow_name`、`flow_id`、`view_name` 和 `view_id`。
-- Region 和迁移事件使用 `region_id`、`region_number`、源和目标节点或
-  peer 列，以及迁移触发原因。
-- Repartition 事件使用 `repartition_group_id`、源/目标 region 和编号列，
-  以及源/目标分区表达式。
-- WAL 和 GC 事件使用 `topic_name`、`prunable_entry_id`、`latest_offset`
-  或 `gc_report`。
-- 子 Procedure 可能包含 `parent_procedure_id`。
-
-这些列不会在每个生命周期行中统一填充。例如，已捕获的 `create_table`
-提交行的 `table_id = NULL`，而终态行已有 table ID；两行的 `region_id` 都
-保持 SQL `NULL`。有关各事件族的具体约定，请参阅对应页面，不要把缺少
-稀疏值直接视为错误。
-
-## 查询 JSON 列
-
-使用 `json_to_string` 显示 JSON，使用 `json_get_string` 提取标量，使用
-`json_path_match` 判断谓词，使用 `json_is_null` 检查 JSON `null`：
+例如，以下查询从包含 event context 的 `create_table` 行中提取相关字段：
 
 ```sql
 SELECT procedure_state,
        json_get_string(procedure_trigger, 'type') AS trigger_type,
-       json_path_match(procedure_trigger, '$.type == "Succeeded"') AS is_succeeded,
+       json_path_match(procedure_trigger, '$.type == "Submitted"') AS is_submitted,
        json_get_string(event_context, 'reason') AS reason
 FROM greptime_private.events
 WHERE type = 'create_table'
   AND catalog_name = 'greptime'
-  AND schema_name = 'docs_ev2723_model_20260810'
-  AND table_name = 'model_probe'
+  AND schema_name = '<database_name>'
+  AND table_name = '<table_name>'
+  AND event_context IS NOT NULL
 ORDER BY timestamp;
 ```
 
-```text
-| procedure_state | trigger_type | is_succeeded | reason |
-| Running         | Submitted    | 0            | manual |
-| Done            | Succeeded    | 1            | NULL   |
+```sql
++-----------------+--------------+--------------+--------+
+| procedure_state | trigger_type | is_submitted | reason |
++-----------------+--------------+--------------+--------+
+| Running         | Submitted    |            1 | manual |
++-----------------+--------------+--------------+--------+
 ```
 
-终态行的 `event_context` 是 SQL `NULL`，所以这里的 `json_get_string` 返回
-`NULL`。更多 JSON 函数说明请参阅 [JSON 函数](/reference/sql/functions/json.md)。
+## JSON `null` 和 SQL `NULL`
+
+在 `create_table` 示例以及 DDL/repartition 生命周期事件中，终态 `payload` 可能是
+JSON `null`，而不是 SQL `NULL`：
+
+```sql
+SELECT procedure_state, json_to_string(payload) AS payload,
+       payload IS NULL AS payload_is_sql_null,
+       json_is_null(payload) AS payload_is_json_null,
+       json_to_string(procedure_trigger) AS procedure_trigger
+FROM greptime_private.events
+WHERE type = 'create_table'
+  AND catalog_name = 'greptime'
+  AND schema_name = '<database_name>'
+  AND table_name = '<table_name>'
+ORDER BY timestamp;
+```
+
+```sql
++-----------------+------------------------------------------------------------+---------------------+----------------------+----------------------+
+| procedure_state | payload                                                    | payload_is_sql_null | payload_is_json_null | procedure_trigger    |
++-----------------+------------------------------------------------------------+---------------------+----------------------+----------------------+
+| Running         | {"create_if_not_exists":false,"engine":"mito","version":1} | 0                   | 0                    | {"type":"Submitted"} |
+| Done            | null                                                       | 0                   | 1                    | {"type":"Succeeded"} |
++-----------------+------------------------------------------------------------+---------------------+----------------------+----------------------+
+```
+
+常见事件族字段包括数据库/表定位和 ID、Flow/View 定位和 ID、Region/节点字段、
+repartition 源/目标字段、`parent_procedure_id`、`gc_report` 和 WAL offset。稀疏值缺失
+本身不表示错误；具体约定请参阅对应事件族页面。
