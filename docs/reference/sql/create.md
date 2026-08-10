@@ -163,7 +163,19 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `skip_wal`                                | Whether to disable Write-Ahead-Log for this table                               | String type. When set to `'true'`, the data written to the table will not be persisted to the write-ahead log, which can avoid storage wear and improve write throughput. However, when the process restarts, any unflushed data will be lost. Please use this feature only when the data source itself can ensure reliability. |
 | `write_buffer_size`                       | Per-region write buffer stall threshold for this table                          | String type, such as `'512MB'` or `'1GB'`. For a positive value, GreptimeDB schedules a flush when mutable memtable usage reaches half the value, stalls writes at the value, and rejects writes at twice the value. The table option overrides `region_engine.mito.default_region_write_buffer_size`. An explicit `'0'` disables the per-region limit even when the engine default is nonzero. Unset the option to remove the table override and fall back to the engine default. |
 | `auto_flush_interval`                     | How long a region of this table may go without a flush before one is triggered | String type, a time duration such as `'5m'` or `'1h'`. Must be greater than zero. The table option overrides the engine-wide `region_engine.mito.auto_flush_interval`. Set it to `NULL` with `ALTER TABLE` to drop the override and fall back to the engine setting. |
+| `max_row_group_row_count`                 | Maximum number of rows in a Parquet row group                                  | String type representing an integer from `1` through `10485760` (`10 * 1024 * 1024`). The default is `102400` (`100 * 1024`) when this option is not set. |
 | `index.type`                                | Index type                                                      | **Only for metric engine** String value, supports `none`, `skipping`.                                                                                                                                                                                       |
+
+#### Create a table with a custom row group size
+
+```sql
+CREATE TABLE IF NOT EXISTS temperatures(
+  ts TIMESTAMP TIME INDEX,
+  temperature DOUBLE DEFAULT 10
+) WITH ('max_row_group_row_count' = '1024');
+```
+
+The default row group size is recommended for most users. For advanced usage, benchmark different values against your workload to improve performance, or use a smaller value when a row group consumes too much memory. Smaller row groups may reduce memory usage and enable finer-grained pruning, but create more row groups and increase metadata overhead. Larger row groups make the opposite tradeoff.
 
 #### Create a table with TTL
 For example, to create a table with the storage data TTL(Time-To-Live) is seven days:
