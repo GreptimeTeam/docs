@@ -13,7 +13,7 @@ GreptimeDB 会以异步、尽力而为的方式写入事件记录。刚完成的
 
 单机部署可以在本地配置生命周期事件记录器，分布式部署则可以在 Metasrv 上配置。配置选项和支持的事件类型请参阅[生命周期事件记录器](/user-guide/deployments-administration/configuration.md#生命周期事件记录器)，本文不重复配置详情。
 
-单机部署会记录受支持的本地 DDL Procedure 事件。带有 Metasrv 的分布式部署还会记录由 Metasrv 产生的 Region 迁移、Repartition、Batch GC 和 WAL prune 运维事件。
+单机部署会记录受支持的本地 DDL Procedure 事件。带有 Metasrv 的分布式部署还可以记录运维事件族。
 
 ## 查询事件
 
@@ -32,4 +32,3 @@ LIMIT 20;
 - [Procedure 生命周期](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
 - [事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
 - [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
-- [运维事件](/user-guide/deployments-administration/monitoring/events/operational-events.md)

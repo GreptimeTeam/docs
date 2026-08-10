@@ -30,8 +30,7 @@ event can contain `{"protocol":"mysql","reason":"manual"}`.
 
 For focused examples, see [Query events](/user-guide/deployments-administration/monitoring/events/query-events.md),
 [Procedure lifecycle](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md),
-[DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md),
-and [Operational events](/user-guide/deployments-administration/monitoring/events/operational-events.md).
+and [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
 
 ## Query JSON fields
 

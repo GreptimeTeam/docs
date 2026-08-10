@@ -46,8 +46,7 @@ ORDER BY type;
 ```
 
 查询结果是集群当前已有事件类型的时间点快照，会随工作负载变化，并不表示完整的
-配置项或源码支持范围。支持的事件族请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
-和[运维事件](/user-guide/deployments-administration/monitoring/events/operational-events.md)。
+配置项或源码支持范围。支持的本地 DDL 事件族请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
 
 将类型与 catalog、schema 以及对象定位列组合，可以避免混入无关事件：
 

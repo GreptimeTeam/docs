@@ -50,8 +50,7 @@ ORDER BY type;
 The result is a point-in-time view of the event types currently present in the
 cluster. It varies with workload and does not define the configured or
 source-supported types. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
-and [Operational events](/user-guide/deployments-administration/monitoring/events/operational-events.md)
-for the supported event families.
+for the supported local DDL event families.
 
 Combine a type with catalog/schema and an object locator to avoid unrelated rows:
 

@@ -28,9 +28,8 @@ Runner 通过存活 Procedure 的 `event()` hook 重新生成终态事件。终�
 `{"protocol":"mysql","reason":"manual"}`。
 
 如需查看针对性的示例，请参阅[查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)、
-[Procedure 生命周期](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)、
-[DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)和
-[运维事件](/user-guide/deployments-administration/monitoring/events/operational-events.md)。
+[Procedure 生命周期](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)和
+[DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
 
 ## 查询 JSON 字段
 
