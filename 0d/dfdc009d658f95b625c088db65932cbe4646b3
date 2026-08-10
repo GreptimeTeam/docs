@@ -1,0 +1,97 @@
+docs/user-guide/deployments-administration/monitoring/events/operational-events.md
+  s_dfd7a28c532d12::t_5fae44d8ecac9c 76
+  s_c06172d634a168::t_9ab0c8aa778fd6 24-25,52-53,145-147
+  s_b33bd6330394a6::t_4f70402f4e795c 92,144
+  s_b33bd6330394a6::t_a716c3e4a52e63 42,93,120
+  s_79917636889740::t_2d0125d9a8f268 8-9,13,31,40,44,72,75,82-87,89-91,95-97,122,125-126,135-137,141
+  s_d474863dd27dd8::t_daf281d56444c7 26
+  s_b33bd6330394a6::t_23ec7905592d7e 119
+  s_d474863dd27dd8::t_d055d32322c094 54
+  s_99015b1cfa942e::t_531dc1a89955bf 10-11,15-16,20-22,32-38,41,47-50,56,60-66,69-70,88,98,108-114,117-118,138-140
+  s_31ad3852c815a2::t_841f2437f51bb4 39,59,67,105,107,115,124,134,142
+  s_421eab39b56def::t_56c48ca8a25c00 43,116,121,123
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/operational-events.md
+  s_c06172d634a168::t_9ab0c8aa778fd6 23-24,51-52,142-143
+  s_b33bd6330394a6::t_4f70402f4e795c 14-15,40,68,141
+  s_dfd7a28c532d12::t_5fae44d8ecac9c 75
+  s_b33bd6330394a6::t_a716c3e4a52e63 41,91,117
+  s_79917636889740::t_9bbfa4aac186c3 83-86,88-89,105,113,131-134,138-139
+  s_d474863dd27dd8::t_0770e52681cd7d 53
+  s_d474863dd27dd8::t_daf281d56444c7 25
+  s_79917636889740::t_cbf328bfd1abe6 12,30,38-39,43,71,74,81,93-95,103,118-123
+  s_99015b1cfa942e::t_1855fb4c451b06 8-10,19-21,31-37,46-49,55,59-65,69,87,96,106-112,114-116,135-137
+  s_31ad3852c815a2::t_56743d699fc609 58,66
+  s_421eab39b56def::t_e17d39080bd260 42,82,90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "0ddfdc009d658f95b625c088db65932cbe4646b3",
+  "prompts": {},
+  "sessions": {
+    "s_31ad3852c815a2": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013eddd7dffet9iGQ8fp92O1f2",
+        "model": "gpt-5.6-luna-fast"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_421eab39b56def": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec64-6d54-7df0-af38-fa801d6c553d",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_79917636889740": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013d6482fffeB0btBZVorxZRJx",
+        "model": "gpt-5.6-luna-fast"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_99015b1cfa942e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013cbd134ffePX1q4ZKr1AAKr1",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_b33bd6330394a6": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_014f2f054ffebxpJxrJFpZiOXR",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_c06172d634a168": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013b74bb3ffeuXjHTThLZ6elxg",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_d474863dd27dd8": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0140e2982ffeZGIebbWD31uw6q",
+        "model": "gpt-5.6-luna-fast"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_dfd7a28c532d12": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013e34c85ffeFNonUFH17ooIcM",
+        "model": "gpt-5.6-luna-fast"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
