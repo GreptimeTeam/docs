@@ -1,0 +1,175 @@
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/overview.md
+  s_d474863dd27dd8::t_b12629ab97c6bd 16
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md
+  s_8e50da4a75adaf::t_7715da476112c6 8,10,12,19-20,26-27,36-37,39,41,50,61,81-83,85-90,118
+  s_79917636889740::t_cbf328bfd1abe6 72-74,79,92,94-95,97-101,104-106
+  s_8e50da4a75adaf::t_61b5f1cc47bb9b 76-77
+  s_b33bd6330394a6::t_a716c3e4a52e63 64-69,102-103
+  s_d474863dd27dd8::t_b1f8a039941ec8 113-115
+  s_b33bd6330394a6::t_6097e817d3e4d7 28,63
+docs/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_b33bd6330394a6::t_4f70402f4e795c 10,14-15
+  s_b33bd6330394a6::t_a247219a1e6e1e 22,26-28,30-32
+  s_79917636889740::t_464bbf39c69734 61,180,200-203,212-214,221
+  s_79917636889740::t_2d0125d9a8f268 8-9,17-18,20,70
+  s_b33bd6330394a6::t_a716c3e4a52e63 12,33
+  s_68db94196e02e8::t_0da840bae2c646 23,25,83-85
+  s_68db94196e02e8::t_2c65738b0f7985 97,99-106,112-117,123-128,134-139
+  s_56665c95f84d29::t_acd0c7c1d9780e 11,24,74,87-89,98,144-146,150-152,160,162,164,171,184-185,187-197,199
+  s_d474863dd27dd8::t_84aa2dcd37dee1 78,198
+  s_68db94196e02e8::t_f72901f9bb59c1 34-35
+  s_68db94196e02e8::t_3c7586f463b33a 40-45,51-56,62-67
+  s_31ad3852c815a2::t_b3b8e303cf787f 29,37,39,48,50,57,59,68,73,75,79,86,93-96,107-111,118-122,131-133,140,149,154-156,172-173
+  s_b33bd6330394a6::t_23ec7905592d7e 90-92
+  s_68db94196e02e8::t_5423b8c3a77dd5 163,165-168,174-179,204-209,215-220
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_b33bd6330394a6::t_23ec7905592d7e 48-49
+  s_dfd7a28c532d12::t_1e861235920fff 138,141
+  s_d474863dd27dd8::t_b12629ab97c6bd 14,65,71-72,78,100,107-108,126-127,134-135
+  s_d737144b7d04e9::t_0cb84ca44cfb35 60,87,115
+  s_31ad3852c815a2::t_fcebd16c5273ce 67
+  s_d737144b7d04e9::t_0f8580b426f6c9 99,139-140,143-146
+  s_d474863dd27dd8::t_d060890d0b8994 56,61,68-70,73
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_b33bd6330394a6::t_a716c3e4a52e63 11,31
+  s_68db94196e02e8::t_f12426d9d53739 37-42,48-53,59-64
+  s_31ad3852c815a2::t_bd02c1a2e6e63a 16,27,30,34,36,45,47,54,56,58,65,70,72,76,82,89-91,102-104,127
+  s_b33bd6330394a6::t_23ec7905592d7e 85-87
+  s_68db94196e02e8::t_3c834f6605e7bc 92,94-101,107-112,118-123,129-134
+  s_79917636889740::t_cbf328bfd1abe6 8-9
+  s_b33bd6330394a6::t_4f70402f4e795c 10,13-14,18,67
+  s_68db94196e02e8::t_bce7e682ad17cc 21,23,80-81
+  s_56665c95f84d29::t_acd0c7c1d9780e 22,71,83-84,93,105-106,113-116,126,128,135,139-140,144-146,154,156,158,165-167,178-179,181-191,193
+  s_31ad3852c815a2::t_a10ba7f912e1c0 174
+  s_68db94196e02e8::t_8a828e2c1acd9b 157,159-162,168-173,198-203,209-214
+  s_31ad3852c815a2::t_e01171a0f825f3 143,148-150
+  s_b33bd6330394a6::t_a247219a1e6e1e 20,24-26,28-29
+  s_d474863dd27dd8::t_84aa2dcd37dee1 75
+  s_68db94196e02e8::t_f72901f9bb59c1 32
+  s_79917636889740::t_f4c1783ae0663f 117,192,194-197,206-208,215
+  s_421eab39b56def::t_62397b22bad363 88
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_79917636889740::t_2d0125d9a8f268 8-9,13-15,17-19,22-24,69,71,75,96-99
+  s_d474863dd27dd8::t_b1f8a039941ec8 82-83
+  s_29a475557a1b22::t_c09459b6cb728e 25,27-28,30-34,36,38-42,49,51,55-56,61-62,64,66
+  s_31ad3852c815a2::t_8e632e3093c9de 87
+  s_b33bd6330394a6::t_a716c3e4a52e63 20,26,29,44-45,50,57,63,65,72,88-93
+  s_421eab39b56def::t_22f836953098d0 21,76-78
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_29a475557a1b22::t_c09459b6cb728e 26-27,30-35,37-40,46,48,52-53,58-59,61,63
+  s_31ad3852c815a2::t_8e632e3093c9de 84
+  s_b33bd6330394a6::t_a716c3e4a52e63 20,25,42,47,54,60,62,69,85-90
+  s_79917636889740::t_cbf328bfd1abe6 8-9,13-15,17-19,22-23,66,68,72-75,79-80,93-95
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_d737144b7d04e9::t_0f8580b426f6c9 145-146,149-152
+  s_b33bd6330394a6::t_23ec7905592d7e 50-52,54
+  s_d474863dd27dd8::t_d060890d0b8994 60,72-74,77
+  s_d474863dd27dd8::t_b12629ab97c6bd 16,56,64-65,69,75-76,82,92,104-105,112-113,120,131-132,139-141
+  s_31ad3852c815a2::t_fcebd16c5273ce 71
+  s_dfd7a28c532d12::t_1e861235920fff 144,147
+docs/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md
+  s_79917636889740::t_2d0125d9a8f268 75-78,83,97,99-101,103-107,110-112
+  s_8e50da4a75adaf::t_61b5f1cc47bb9b 80-81
+  s_d474863dd27dd8::t_b1f8a039941ec8 119-121
+  s_8e50da4a75adaf::t_7715da476112c6 8-9,13-14,21-22,28-29,38-40,42,44,53,64,85-88,90-95,124
+  s_b33bd6330394a6::t_6097e817d3e4d7 30,66
+  s_b33bd6330394a6::t_a716c3e4a52e63 67-72,108-109
+docs/user-guide/deployments-administration/monitoring/events/overview.md
+  s_d474863dd27dd8::t_b12629ab97c6bd 16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "2538c716b5566983a17d8ad5ed90893a54bc2e19",
+  "prompts": {},
+  "sessions": {
+    "s_29a475557a1b22": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013b753bbffehR4gnmqEyKhFUT",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_31ad3852c815a2": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013eddd7dffet9iGQ8fp92O1f2",
+        "model": "gpt-5.6-luna-fast"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_421eab39b56def": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec64-6d54-7df0-af38-fa801d6c553d",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_56665c95f84d29": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013cbd542ffexPr69opjOcW4D5",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_68db94196e02e8": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013b74fb3ffe2DKZwIUaNsECP5",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_79917636889740": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013d6482fffeB0btBZVorxZRJx",
+        "model": "gpt-5.6-luna-fast"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_8e50da4a75adaf": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013b757bcffegNmxNp3rZi0M2S",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_b33bd6330394a6": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_014f2f054ffebxpJxrJFpZiOXR",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_d474863dd27dd8": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0140e2982ffeZGIebbWD31uw6q",
+        "model": "gpt-5.6-luna-fast"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_d737144b7d04e9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013b75bbfffe4fQuiDxcIXCvqR",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_dfd7a28c532d12": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_013e34c85ffeFNonUFH17ooIcM",
+        "model": "gpt-5.6-luna-fast"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}

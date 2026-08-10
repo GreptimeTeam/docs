@@ -1,0 +1,49 @@
+docs/reference/sql/greptime-private/overview.md
+  s_0d6f1ea5682a2e::t_f38e6570a267f4 14
+docs/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_0d6f1ea5682a2e::t_e42e4c2443ed3e 1-6
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_0d6f1ea5682a2e::t_0ad09b06b0b2cb 1-6
+docs/user-guide/deployments-administration/monitoring/events/operational-events.md
+  s_0d6f1ea5682a2e::t_434be4f23c1955 1-6
+docs/user-guide/deployments-administration/monitoring/events/overview.md
+  s_0d6f1ea5682a2e::t_be029e882216b0 1-35
+docs/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md
+  s_0d6f1ea5682a2e::t_07982f65897e43 1-6
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_0d6f1ea5682a2e::t_85873ea43c2485 1-6
+i18n/zh/docusaurus-plugin-content-docs/current.json
+  s_0d6f1ea5682a2e::t_833f109bb13f49 234-237
+i18n/zh/docusaurus-plugin-content-docs/current/reference/sql/greptime-private/overview.md
+  s_0d6f1ea5682a2e::t_66eb9140eb6bae 14
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_0d6f1ea5682a2e::t_85a53b755fba7e 1-6
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_0d6f1ea5682a2e::t_b6126e1ba98da6 1-6
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/operational-events.md
+  s_0d6f1ea5682a2e::t_9decd2ebb80e67 1-6
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/overview.md
+  s_0d6f1ea5682a2e::t_772062b9aa9cea 1-35
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md
+  s_0d6f1ea5682a2e::t_b44e952076236a 1-6
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_0d6f1ea5682a2e::t_5a9fd6a2676982 1-6
+sidebars.ts
+  s_0d6f1ea5682a2e::t_6911739deee202 355-370
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.17",
+  "base_commit_sha": "8178af919d62d2d242152a3fbfd1a7700493cee2",
+  "prompts": {},
+  "sessions": {
+    "s_0d6f1ea5682a2e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019feb02-a4f1-7522-93fb-ae8dd2c3f7a4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
