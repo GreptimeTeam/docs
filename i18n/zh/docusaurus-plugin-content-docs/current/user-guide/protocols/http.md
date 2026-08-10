@@ -395,7 +395,7 @@ curl -X POST \
 
 ### 使用 GreptimeDB 的 SQL 方言格式化 SQL
 
-使用 `/v1/sql/format` 接口，可以将 SQL 语句格式化（美化输出）为 GreptimeDB SQL 方言的规范形式。该接口会用 GreptimeDB 的解析器解析输入，再以标准的、易读的格式重新序列化输出。适用于在存储或展示 SQL 前进行统一规范化处理。
+使用 `/v1/sql/format` 接口，可以把 SQL 语句改写成 GreptimeDB SQL 方言的规范形式。该接口用 GreptimeDB 的解析器解析输入，再把语句序列化回文本，统一关键字大小写和空白，并在末尾补上分号。它不会重新缩进或换行，每条语句都在一行内返回。适用于在存储或比对 SQL 前做统一规范化。从 v0.17 起支持。
 
 ```shell
 curl -X POST \
@@ -413,13 +413,25 @@ curl -X POST \
 }
 ```
 
-也可以通过查询参数传入 SQL：
+也可以用 `GET` 通过查询参数传入 SQL：
 
 ```shell
-curl 'http://localhost:4000/v1/sql/format?sql=select%201%20as%20x'
+curl -X GET \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
+  'http://localhost:4000/v1/sql/format?sql=select%201%20as%20x'
 ```
 
-若缺少 `sql` 参数或 SQL 无效，接口将返回错误响应。
+`POST` 请求必须设置 `Content-Type: application/x-www-form-urlencoded`，否则请求会在到达该接口前被拒绝。查询字符串和表单体中都提供 SQL 时，以查询参数为准。
+
+如果输入包含多条语句，`formatted` 会把它们用换行符连接后一并返回：
+
+```json
+{
+  "formatted": "SELECT 1 AS x;\nSELECT 2 AS y;"
+}
+```
+
+若缺少 `sql` 参数，接口返回 HTTP 状态码 `400`，错误码为 `1004`，错误信息为 `sql parameter is required.`。若 SQL 无法解析，则返回解析器的报错。
 
 ### 使用 GreptimeDB 的 SQL 方言解析 SQL
 

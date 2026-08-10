@@ -401,7 +401,7 @@ curl -X POST \
 
 ### Format SQL with GreptimeDB's SQL dialect
 
-To format (pretty-print) an SQL statement using GreptimeDB's SQL dialect, use the `/v1/sql/format` endpoint. The endpoint parses the input with GreptimeDB's parser and re-serializes it in a canonical, human-readable form. This is useful for normalizing SQL before storing or displaying it.
+To rewrite an SQL statement into the canonical form of GreptimeDB's SQL dialect, use the `/v1/sql/format` endpoint. The endpoint parses the input with GreptimeDB's parser and serializes the statement back to text, which normalizes keyword casing and spacing and terminates the statement with a semicolon. It does not re-indent or wrap the statement: every statement is returned on a single line. This is useful for normalizing SQL before storing or comparing it. Available since v0.17.
 
 ```shell
 curl -X POST \
@@ -419,13 +419,25 @@ The response contains the formatted SQL string:
 }
 ```
 
-You can also pass the SQL as a query parameter:
+You can also pass the SQL as a query parameter with `GET`:
 
 ```shell
-curl 'http://localhost:4000/v1/sql/format?sql=select%201%20as%20x'
+curl -X GET \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
+  'http://localhost:4000/v1/sql/format?sql=select%201%20as%20x'
 ```
 
-If the `sql` parameter is missing or the SQL is invalid, the endpoint returns an error response.
+A `POST` request must set `Content-Type: application/x-www-form-urlencoded`, otherwise it is rejected before it reaches the endpoint. When the SQL is present in both the query string and the form body, the query parameter wins.
+
+If the input holds several statements, `formatted` contains all of them joined by newlines:
+
+```json
+{
+  "formatted": "SELECT 1 AS x;\nSELECT 2 AS y;"
+}
+```
+
+If the `sql` parameter is missing, the endpoint returns HTTP status `400` with error code `1004` and the message `sql parameter is required.`. If the SQL cannot be parsed, it returns the parser error.
 
 ### Parse SQL with GreptimeDB's SQL dialect
 

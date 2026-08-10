@@ -215,6 +215,15 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 
 有关 SQL API 的更多信息，请参阅用户指南中的 [HTTP API 文档](/user-guide/protocols/http.md#post-sql-statements)。
 
+### 格式化 SQL API
+
+- **路径**: `/v1/sql/format`
+- **方法**: `GET`, `POST`
+- **描述**: 把 SQL 语句改写成 GreptimeDB SQL 方言的规范形式。从 v0.17 起支持。
+- **用法**: 通过 `sql` 查询参数传入 SQL，或放在 `POST` 请求的表单体里（`POST` 请求必须设置 `Content-Type: application/x-www-form-urlencoded`）。返回的 JSON 对象 `{"formatted": "..."}` 中包含规范化后的 SQL 字符串。
+
+有关格式化 SQL API 的更多信息，请参阅用户指南中的 [HTTP API 文档](/user-guide/protocols/http.md#使用-greptimedb-的-sql-方言格式化-sql)。
+
 ### PromQL API
 
 - **路径**: `/v1/promql`
