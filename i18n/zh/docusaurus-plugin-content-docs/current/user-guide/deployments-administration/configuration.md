@@ -664,19 +664,11 @@ fork_dictionary_bytes = "1GiB"
 | `memtable.data_freeze_threshold`         | 整数   | `32768`       | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效                                            |
 | `memtable.fork_dictionary_bytes`         | 字符串 | `1GiB`        | 主键字典的大小<br/>只对 `partition_tree` memtable 生效                                                                 |
 
-`metric` 引擎针对包含大量小表的 metrics 数据进行了优化：
+`metric` 引擎针对包含大量小表的 metrics 数据进行了优化。
 
-```toml
-[[region_engine]]
-[region_engine.metric]
-sparse_primary_key_encoding = true
-```
-
-可用选项：
-
-| 键                                | 类型   | 默认值  | 描述                                                                                                              |
-| --------------------------------- | ------ | ------- | ----------------------------------------------------------------------------------------------------------------- |
-| `sparse_primary_key_encoding`     | 布尔值 | `true`  | 是否使用稀疏主键编码。此优化通过仅编码非空主键列来提高写入和查询性能。                                            |
+:::note
+从 v1.2 起，metric 引擎始终启用稀疏主键编码，无法禁用。该编码仅对非空主键列进行编码，可提升写入和查询性能。配置文件中已有的 `sparse_primary_key_encoding` 设置会被接受但不产生任何效果。
+:::
 
 ### 设定 meta client
 

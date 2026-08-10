@@ -661,19 +661,11 @@ Available options:
 | `memtable.data_freeze_threshold`         | Integer | `32768`       | The max rows of data inside the actively writing buffer in one shard.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                            |
 | `memtable.fork_dictionary_bytes`         | String  | `1GiB`        | Max dictionary bytes.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
-The `metric` engine is optimized for handling metrics data with a large number of small tables:
+The `metric` engine is optimized for handling metrics data with a large number of small tables.
 
-```toml
-[[region_engine]]
-[region_engine.metric]
-sparse_primary_key_encoding = true
-```
-
-Available options:
-
-| Key                           | Type    | Default | Descriptions                                                                                                                                      |
-| ----------------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sparse_primary_key_encoding` | Boolean | `true`  | Whether to use sparse primary key encoding. This optimization improves write and query performance by encoding only non-null primary key columns. |
+:::note
+Starting from v1.2, sparse primary key encoding is always enabled for the metric engine and cannot be disabled. It encodes only non-null primary key columns, improving write and query performance. Any `sparse_primary_key_encoding` setting in your configuration file is accepted but has no effect.
+:::
 
 ### Specify meta client
 
