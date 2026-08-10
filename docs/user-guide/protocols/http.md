@@ -399,6 +399,34 @@ curl -X POST \
 }
 ```
 
+### Format SQL with GreptimeDB's SQL dialect
+
+To format (pretty-print) an SQL statement using GreptimeDB's SQL dialect, use the `/v1/sql/format` endpoint. The endpoint parses the input with GreptimeDB's parser and re-serializes it in a canonical, human-readable form. This is useful for normalizing SQL before storing or displaying it.
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=select 1 as x" \
+  http://localhost:4000/v1/sql/format
+```
+
+The response contains the formatted SQL string:
+
+```json
+{
+  "formatted": "SELECT 1 AS x;"
+}
+```
+
+You can also pass the SQL as a query parameter:
+
+```shell
+curl 'http://localhost:4000/v1/sql/format?sql=select%201%20as%20x'
+```
+
+If the `sql` parameter is missing or the SQL is invalid, the endpoint returns an error response.
+
 ### Parse SQL with GreptimeDB's SQL dialect
 
 To parse and understand queries written in GreptimeDB's SQL dialect for tools like dashboards, etc., you can use the `/v1/sql/parse` endpoint to obtain the structured result of an SQL query:

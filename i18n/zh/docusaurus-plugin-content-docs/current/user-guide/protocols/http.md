@@ -393,6 +393,34 @@ curl -X POST \
 ```
 
 
+### 使用 GreptimeDB 的 SQL 方言格式化 SQL
+
+使用 `/v1/sql/format` 接口，可以将 SQL 语句格式化（美化输出）为 GreptimeDB SQL 方言的规范形式。该接口会用 GreptimeDB 的解析器解析输入，再以标准的、易读的格式重新序列化输出。适用于在存储或展示 SQL 前进行统一规范化处理。
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=select 1 as x" \
+  http://localhost:4000/v1/sql/format
+```
+
+响应中包含格式化后的 SQL 字符串：
+
+```json
+{
+  "formatted": "SELECT 1 AS x;"
+}
+```
+
+也可以通过查询参数传入 SQL：
+
+```shell
+curl 'http://localhost:4000/v1/sql/format?sql=select%201%20as%20x'
+```
+
+若缺少 `sql` 参数或 SQL 无效，接口将返回错误响应。
+
 ### 使用 GreptimeDB 的 SQL 方言解析 SQL
 
 为了解析和理解使用 GreptimeDB SQL 方言编写的查询（例如在仪表盘等工具里，为了更好的用户体验，提前解析 SQL 获取表名等），您可以使用 `/v1/sql/parse` 接口来获取 SQL 查询的结构化结果：
