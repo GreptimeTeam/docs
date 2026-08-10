@@ -1,0 +1,24 @@
+docs/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_9aab62c9780a73::t_3f1dbdde1fd007 7,13-22,24,27-118
+  s_9aab62c9780a73::t_bc31a3cd3aaae0 8-12,23,25-26,119
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_9aab62c9780a73::t_529bad71175c05 113
+  s_9aab62c9780a73::t_bc31a3cd3aaae0 8-10
+  s_9aab62c9780a73::t_3f1dbdde1fd007 7,11-112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "c0e336b338220fe92b3aaabaa1052e5bf3eb0dad",
+  "prompts": {},
+  "sessions": {
+    "s_9aab62c9780a73": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_01480e570ffeC7uJbawGbroEAE",
+        "model": "gpt-5.6-luna-fast"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
