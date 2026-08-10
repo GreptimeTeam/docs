@@ -1,0 +1,29 @@
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_b33bd6330394a6::t_73619e207b02e0 31-32
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_b33bd6330394a6::t_73619e207b02e0 53
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/overview.md
+  s_b33bd6330394a6::t_73619e207b02e0 16
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_b33bd6330394a6::t_73619e207b02e0 49
+docs/user-guide/deployments-administration/monitoring/events/overview.md
+  s_b33bd6330394a6::t_73619e207b02e0 16
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_b33bd6330394a6::t_73619e207b02e0 33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "ce59b94b2d10dba251a4b3c57907cf3a8a822973",
+  "prompts": {},
+  "sessions": {
+    "s_b33bd6330394a6": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_014f2f054ffebxpJxrJFpZiOXR",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
