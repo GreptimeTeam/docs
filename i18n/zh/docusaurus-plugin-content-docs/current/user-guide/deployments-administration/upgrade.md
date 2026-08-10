@@ -11,6 +11,67 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 
 完整的版本历史和功能新增，请参见[发行说明](/release-notes/)。
 
+## 升级到 v1.2
+
+### v1.2 的破坏性变更
+
+#### 移除 PromQL `holt_winters` 函数
+
+**影响：** 使用 `holt_winters` 的 PromQL 查询将返回错误。
+
+`holt_winters` 函数已从 PromQL 支持中移除，不再可用。
+
+**需要的操作：**
+
+- 在仪表盘、告警规则和客户端代码中搜索所有使用 `holt_winters(...)` 的查询。
+- 删除或替换这些查询。如需双指数平滑，请使用 `deriv()` 或在 GreptimeDB 外部进行后处理。
+
+#### 拒绝 Range 查询中的 `fill`、`fill_left` 和 `fill_right`
+
+**影响：** 在 PromQL range 查询中使用 `fill`、`fill_left` 或 `fill_right` 作为填充策略时，将返回错误而不是静默产生错误结果。
+
+这些填充策略需要尚未支持的外连接语义。此前此类查询会被接受，但可能产生意外结果。数据库现在会明确拒绝它们。
+
+**需要的操作：**
+
+- 搜索向任何 range 函数传递 `fill`、`fill_left` 或 `fill_right` 的 range 查询。
+- 将其替换为受支持的填充策略，如 `none`、`null`、`0` 或常量值，或移除填充参数。
+
+#### Pipeline 整数窄化：超出范围的值路由到 `on_failure`
+
+**影响：** 对整数进行窄化的 Pipeline 处理器（例如将值转换为 `int8`、`int16`、`int32`、`uint8`、`uint16` 或 `uint32`）现在会将超出范围的值通过 `on_failure` 处理器路由，而不是静默地进行模运算溢出截断。
+
+此前，将 `300` 转换为 `int8` 会静默截断为 `44`。现在，超出范围的值会触发该处理器步骤的 `on_failure` 路径，允许你丢弃、记录或替换它。
+
+浮点数到整数的转换行为不变。
+
+**需要的操作：**
+
+- 检查进行整数类型窄化的 pipeline 定义。
+- 如果依赖了溢出截断行为，请添加明确的 `on_failure` 处理器，或在窄化步骤之前添加范围检查转换。
+- 验证时，通过受影响的 pipeline 运行示例数据，确认类型边界附近的值按预期处理。
+
+#### 本地 SQL 文件访问现在受沙箱限制
+
+**影响：** 引用沙箱目录之外本地文件路径的 `COPY` 语句和外部表将被拒绝。
+
+单机部署现在将本地文件访问限制在沙箱目录（默认为 `<storage.data_home>/copy`）。分布式部署拒绝所有本地文件路径。
+
+**需要的操作：**
+
+按照[迁移本地 SQL 文件访问](./migrate-local-sql-file-access.md)指南，在升级前将文件移入沙箱或迁移到对象存储。
+
+#### 移除 `sparse_primary_key_encoding` 配置项
+
+**影响：** 任何在 `[metric_engine]` 配置块中设置 `sparse_primary_key_encoding` 的配置将导致启动错误。
+
+`sparse_primary_key_encoding` 选项已被移除。稀疏主键编码现在始终启用，不再可配置。
+
+**需要的操作：**
+
+- 在升级前从 `[metric_engine]` 配置块中移除 `sparse_primary_key_encoding`。
+- 如果之前显式设置了 `sparse_primary_key_encoding = false` 来禁用稀疏编码，请注意所有指标表现在都将使用稀疏编码。现有数据不受影响；只有新写入的数据行才会使用新的编码路径。
+
 ## 升级到 v1.0 的路径
 
 ### 从 v0.16 到 v1.0

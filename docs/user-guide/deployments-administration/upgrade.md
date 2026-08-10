@@ -11,6 +11,67 @@ This guide provides upgrade instructions for GreptimeDB, including compatibility
 
 For complete version history and feature additions, see the [Release Notes](/release-notes/).
 
+## Upgrading to v1.2
+
+### Breaking Changes in v1.2
+
+#### Removed PromQL `holt_winters` Function
+
+**Impact:** PromQL queries using `holt_winters` will return an error.
+
+The `holt_winters` function has been removed from PromQL support. It was previously available but is no longer supported.
+
+**Action Required:**
+
+- Search your dashboards, alert rules, and client code for any use of `holt_winters(...)`.
+- Remove or replace those queries. If you need double-exponential smoothing, implement it using `deriv()` or a post-processing step outside GreptimeDB.
+
+#### Rejected `fill`, `fill_left`, and `fill_right` in Range Queries
+
+**Impact:** PromQL range queries that use `fill`, `fill_left`, or `fill_right` as fill strategies will now return an error instead of silently producing incorrect results.
+
+These fill strategies require outer-join semantics that are not yet supported. Previously such queries were accepted but could produce unexpected results. The database now rejects them explicitly.
+
+**Action Required:**
+
+- Search for range queries that pass `fill`, `fill_left`, or `fill_right` to any range function.
+- Replace them with a supported fill strategy such as `none`, `null`, `0`, or a constant value, or remove the fill argument.
+
+#### Pipeline Integer Narrowing: Out-of-Range Values Route to `on_failure`
+
+**Impact:** Pipeline processors that narrow integers (e.g., cast a value to `int8`, `int16`, `int32`, `uint8`, `uint16`, or `uint32`) now route out-of-range values through the `on_failure` handler instead of silently wrapping them.
+
+Previously, a value like `300` cast to `int8` would silently wrap to `44`. Now an out-of-range value triggers the `on_failure` path for that processor step, allowing you to drop, log, or substitute it.
+
+Float-to-integer conversion behavior is unchanged.
+
+**Action Required:**
+
+- Review pipeline definitions that narrow integer types.
+- If you relied on wrapping behavior, add an explicit `on_failure` handler or add a range-check transform before the narrowing step.
+- To verify, run sample data through affected pipelines and confirm values near type boundaries are handled as expected.
+
+#### Local SQL File Access Is Now Sandboxed
+
+**Impact:** `COPY` statements and external tables that reference local file paths outside the configured sandbox directory will be rejected.
+
+Standalone deployments now restrict local file access to the sandbox directory (`<storage.data_home>/copy` by default). Distributed deployments reject all local file paths.
+
+**Action Required:**
+
+Follow the [Migrate Local SQL File Access](./migrate-local-sql-file-access.md) guide to move files into the sandbox or migrate to object storage before upgrading.
+
+#### Removed `sparse_primary_key_encoding` Configuration Option
+
+**Impact:** Any `[metric_engine]` configuration block that sets `sparse_primary_key_encoding` will cause a startup error.
+
+The `sparse_primary_key_encoding` option has been removed. Sparse primary key encoding is now always enabled and is no longer configurable.
+
+**Action Required:**
+
+- Remove `sparse_primary_key_encoding` from your `[metric_engine]` configuration block before upgrading.
+- If you had explicitly set `sparse_primary_key_encoding = false` to opt out of sparse encoding, note that all metric tables will now use sparse encoding. Existing data is unaffected; only newly written rows use the new encoding path.
+
 ## Upgrade Paths to v1.0
 
 ### From v0.16 to v1.0
