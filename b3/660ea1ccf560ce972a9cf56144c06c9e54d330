@@ -1,0 +1,25 @@
+docs/user-guide/deployments-administration/wal/remote-wal/configuration.md
+  s_63c0eb4e08823f::t_15e3ab77c13215 93
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/wal/remote-wal/configuration.md
+  s_63c0eb4e08823f::t_15e3ab77c13215 90
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/wal/remote-wal/configuration.md
+  s_63c0eb4e08823f::t_15e3ab77c13215 90
+versioned_docs/version-1.2/user-guide/deployments-administration/wal/remote-wal/configuration.md
+  s_63c0eb4e08823f::t_15e3ab77c13215 93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "b3660ea1ccf560ce972a9cf56144c06c9e54d330",
+  "prompts": {},
+  "sessions": {
+    "s_63c0eb4e08823f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019feb41-dd75-79a2-a516-5b586382c441",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
