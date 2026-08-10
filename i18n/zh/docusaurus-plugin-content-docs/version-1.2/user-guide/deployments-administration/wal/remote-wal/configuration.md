@@ -87,7 +87,7 @@ timeout = "3s"
 | `provider`                 | 设置为 `"kafka"` 以启用 Remote WAL。                                                         |
 | `broker_endpoints`         | Kafka broker 的地址列表。                                                                    |
 | `max_batch_bytes`          | 每个写入批次的最大大小，默认不能超过 Kafka 配置的单条消息上限（通常为 1MB）。                |
-| `create_index`             | 是否为各个 Region 创建 Kafka WAL 索引，默认值为 `false`，且仅在分布式模式下生效。当多个 Region 共享一个 Kafka topic 时，可以启用该配置，以减少 Kafka 读取量并加快恢复期间的 WAL 回放。 |
+| `create_index`             | 是否为各个 Region 创建 Kafka WAL 索引，默认值为 `false`，且仅在分布式模式下生效。索引可以减少恢复期间的 Kafka 读取量，但仅建议在确认单个 Region 恢复存在明显读取放大后启用。Datanode 每隔 `dump_index_interval`（默认值为 `"60s"`）将索引持久化到对象存储，这会产生持续的对象存储 I/O。 |
 | `overwrite_entry_start_id` | 若设为 `true`，在 WAL 回放时跳过缺失的 entry，避免 out-of-range 错误（但可能掩盖数据丢失）。 |
 | `connect_timeout`          | Kafka 客户端的连接超时时间，默认值为 `"3s"`。                                                 |
 | `timeout`                  | Kafka 客户端操作的超时时间，默认值为 `"3s"`。                                                 |
