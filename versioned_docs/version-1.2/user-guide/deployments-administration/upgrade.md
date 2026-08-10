@@ -42,26 +42,16 @@ The HTTP header `x-greptime-jaeger-time-range-for-operations` has been deprecate
 - If you configured this header in your Jaeger data source or proxy, remove it from your configuration
 - The header will no longer have any effect
 
-#### Metric Engine Default Sparse Primary Key Encoding
+#### Metric Engine Sparse Primary Key Encoding Always Enabled
 
-**Impact:** Default configuration change with performance improvements
+**Impact:** Configuration option removed
 
-Metric Engine now enables **sparse primary key encoding** by default to improve storage efficiency and query performance for metric scenarios.
+Starting from v1.2, sparse primary key encoding is always enabled for the Metric Engine and can no longer be disabled. This encoding improves storage efficiency and query performance by encoding only non-null primary key columns.
 
 **Configuration Changes:**
 
-- **NEW default:** `sparse_primary_key_encoding = true`
-- **DEPRECATED:** `experimental_sparse_primary_key_encoding` (use `sparse_primary_key_encoding` instead)
-
-**Action Required:**
-
-- This change does not cause data format compatibility issues
-- All metric tables will automatically use sparse encoding by default
-- If you want to continue using the old encoding method, explicitly set:
-  ```toml
-  [metric_engine]
-  sparse_primary_key_encoding = false
-  ```
+- The `sparse_primary_key_encoding` option is removed. Any existing `sparse_primary_key_encoding` or `experimental_sparse_primary_key_encoding` entry in your configuration file is silently ignored.
+- There is no action required: all metric tables already use sparse encoding.
 
 #### `greptime_identity` Pipeline JSON Behavior Change
 
@@ -262,7 +252,6 @@ Before upgrading to v1.0, complete the following checklist:
 ### Configuration Updates
 
 - [ ] Update configuration files (remove deprecated cache settings)
-- [ ] Update metric engine configuration if needed (`sparse_primary_key_encoding`)
 - [ ] Update pipeline configurations (remove `flatten_json_object`, add `max_nested_levels` if needed)
 
 ### Code Updates
