@@ -77,6 +77,7 @@ The Datanode side is mainly used to write the data to the Kafka topics and read 
 provider = "kafka"
 broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
 max_batch_bytes = "1MB"
+create_index = false
 overwrite_entry_start_id = true
 connect_timeout = "3s"
 timeout = "3s"
@@ -89,6 +90,7 @@ timeout = "3s"
 | `provider`                 | Set to "kafka" to enable Remote WAL via Kafka.                                                                                |
 | `broker_endpoints`         | List of Kafka broker addresses.                                                                                               |
 | `max_batch_bytes`          | Maximum size for each Kafka producer batch.                                                                                   |
+| `create_index`             | Whether to create per-region Kafka WAL indexes. The default is `false`, and the option only takes effect in distributed mode. Enable it when many regions share a Kafka topic to reduce Kafka reads and speed up WAL replay during recovery. |
 | `overwrite_entry_start_id` | If true, the Datanode will skip over missing entries during WAL replay. Prevents out-of-range errors, but may hide data loss. |
 | `connect_timeout`          | The connect timeout for Kafka client. Default is `"3s"`.                                                                      |
 | `timeout`                  | The timeout for Kafka client operations. Default is `"3s"`.                                                                   |
