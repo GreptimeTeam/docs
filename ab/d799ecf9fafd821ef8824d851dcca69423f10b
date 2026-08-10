@@ -1,0 +1,38 @@
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_0eb8bb049e8528::t_4b0a0ecb819a49 26-92
+  s_dc87d83a9296b9::t_a8c17d3ab143ac 7-25,93-124
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_de6bf5890b8965::t_5d4a8f96ee1ace 7-129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "abd799ecf9fafd821ef8824d851dcca69423f10b",
+  "prompts": {},
+  "sessions": {
+    "s_0eb8bb049e8528": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_01496db9bffeb0NKVIg8thR3OX",
+        "model": "gpt-5.6-luna-fast"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_dc87d83a9296b9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fea5d-1e7c-7e41-bc20-c2bc7c90599f",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_de6bf5890b8965": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_014a5ddf3ffeyohLg0TGg15Rjk",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}

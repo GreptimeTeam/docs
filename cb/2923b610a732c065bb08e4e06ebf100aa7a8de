@@ -1,0 +1,23 @@
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/operational-events.md
+  s_d0e74e238e50cd::t_4abb87ac8f674b 33-34,39,43,48,50-71,98-100,106-129
+  s_d0e74e238e50cd::t_1fa431d28c6360 7-32,35-38,40-42,44-47,49,72-97,101-105,130-132
+docs/user-guide/deployments-administration/monitoring/events/operational-events.md
+  s_d0e74e238e50cd::t_4abb87ac8f674b 35,41,45,50-51,53-75,102-104,110-133
+  s_d0e74e238e50cd::t_1fa431d28c6360 7-34,36-40,42-44,46-49,52,76-101,105-109,134-137
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "cb2923b610a732c065bb08e4e06ebf100aa7a8de",
+  "prompts": {},
+  "sessions": {
+    "s_d0e74e238e50cd": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0147a28bbffe0m13uRGg2U1OiA",
+        "model": "gpt-5.6-luna-fast"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
