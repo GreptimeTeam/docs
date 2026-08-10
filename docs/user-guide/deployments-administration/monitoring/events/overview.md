@@ -39,3 +39,4 @@ Use the following pages for focused queries and event details:
 - [Query events](/user-guide/deployments-administration/monitoring/events/query-events.md)
 - [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
 - [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
+- [Operational events](/user-guide/deployments-administration/monitoring/events/operational-events.md)

@@ -52,7 +52,9 @@ ORDER BY type;
 The result is a point-in-time view of the event types currently present in the
 cluster. It varies with workload and does not define the configured or
 source-supported types. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
-for the supported local DDL event types.
+for the supported local DDL event types and
+[Operational events](/user-guide/deployments-administration/monitoring/events/operational-events.md)
+for the supported Metasrv operational event types.
 
 Combine an event type with a database and object name to avoid unrelated rows:
 

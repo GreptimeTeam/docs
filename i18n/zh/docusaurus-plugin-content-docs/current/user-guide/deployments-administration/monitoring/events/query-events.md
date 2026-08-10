@@ -45,7 +45,8 @@ ORDER BY type;
 ```
 
 该结果仅反映最近一小时内实际出现的事件类型，不能作为已配置或受支持类型的完整清单。
-支持的本地 DDL 事件类型请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
+支持的本地 DDL 事件类型请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)；
+支持的 Metasrv 运维事件类型请参阅 [运维事件](/user-guide/deployments-administration/monitoring/events/operational-events.md)。
 
 将事件类型、数据库和对象名称组合，可以避免混入无关事件：
 

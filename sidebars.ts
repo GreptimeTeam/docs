@@ -364,6 +364,7 @@ const sidebars: SidebarsConfig = {
                     'user-guide/deployments-administration/monitoring/events/query-events',
                     'user-guide/deployments-administration/monitoring/events/event-data-model',
                     'user-guide/deployments-administration/monitoring/events/ddl-events',
+                    'user-guide/deployments-administration/monitoring/events/operational-events',
                   ],
                 },
                 'user-guide/deployments-administration/monitoring/runtime-info',

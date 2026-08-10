@@ -34,3 +34,4 @@ LIMIT 20;
 - [查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)
 - [事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
 - [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
+- [运维事件](/user-guide/deployments-administration/monitoring/events/operational-events.md)

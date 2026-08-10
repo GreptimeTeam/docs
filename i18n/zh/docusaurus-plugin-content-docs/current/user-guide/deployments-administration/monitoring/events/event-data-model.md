@@ -46,6 +46,10 @@ Procedure 事件还有以下列：
 | `Failed`         | Procedure 到达失败终态。请检查 `procedure_error` 中的失败详情。                                                                                                     |
 | `Poisoned`       | Procedure 无法继续。请检查 `procedure_error` 中的失败详情。                                                                                                         |
 
+如需查看针对性的示例，请参阅[查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)、
+[DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)和
+[运维事件](/user-guide/deployments-administration/monitoring/events/operational-events.md)。
+
 ## 查询 JSON 字段
 
 详细信息请参阅 [JSON 函数](/reference/sql/functions/json.md)。在事件查询中，

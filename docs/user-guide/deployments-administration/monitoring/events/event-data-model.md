@@ -50,6 +50,10 @@ not guaranteed to appear in the order shown:
 | `Failed`         | The Procedure reached a failed terminal state. Inspect `procedure_error` for failure details.                                                                                            |
 | `Poisoned`       | The Procedure cannot proceed. Inspect `procedure_error` for the failure details.                                                                                                         |
 
+For focused examples, see [Query events](/user-guide/deployments-administration/monitoring/events/query-events.md),
+[DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md), and
+[Operational events](/user-guide/deployments-administration/monitoring/events/operational-events.md).
+
 ## Query JSON fields
 
 See the [JSON functions](/reference/sql/functions/json.md) reference for
