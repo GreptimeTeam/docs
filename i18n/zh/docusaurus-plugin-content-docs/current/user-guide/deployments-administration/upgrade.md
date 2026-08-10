@@ -42,16 +42,26 @@ HTTP header `x-greptime-jaeger-time-range-for-operations` 已被废弃并移除�
 - 如果你在 Jaeger 数据源或代理中配置了此 header，请从配置中移除
 - 此 header 将不再有任何效果
 
-#### Metric Engine 稀疏主键编码始终启用
+#### Metric Engine 默认启用稀疏主键编码
 
-**影响：** 配置选项已移除
+**影响：** 默认配置变更，带来性能提升
 
-从 v1.2 起，Metric Engine 始终启用稀疏主键编码，无法禁用。该编码通过仅对非空主键列进行编码来提升存储效率和查询性能。
+Metric Engine 现在默认启用**稀疏主键编码**，以提高指标场景的存储效率和查询性能。
 
 **配置变更：**
 
-- `sparse_primary_key_encoding` 选项已移除。配置文件中已有的 `sparse_primary_key_encoding` 或 `experimental_sparse_primary_key_encoding` 条目会被静默忽略。
-- 无需任何操作：所有指标表已使用稀疏编码。
+- **新的默认值：** `sparse_primary_key_encoding = true`
+- **已废弃：** `experimental_sparse_primary_key_encoding`（请使用 `sparse_primary_key_encoding` 代替）
+
+**需要的操作：**
+
+- 此变更不会导致数据格式兼容性问题
+- 所有指标表将默认自动使用稀疏编码
+- 如果想继续使用旧的编码方法，请显式设置：
+  ```toml
+  [metric_engine]
+  sparse_primary_key_encoding = false
+  ```
 
 #### `greptime_identity` Pipeline JSON 行为变更
 
@@ -252,6 +262,7 @@ SELECT * FROM table;
 ### 配置更新
 
 - [ ] 更新配置文件（移除已废弃的缓存设置）
+- [ ] 如需要，更新 metric engine 配置（`sparse_primary_key_encoding`）
 - [ ] 更新 pipeline 配置（移除 `flatten_json_object`，如需要添加 `max_nested_levels`）
 
 ### 代码更新
