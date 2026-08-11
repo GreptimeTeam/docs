@@ -5,7 +5,7 @@ description: 查看 GreptimeDB 记录的 DDL 事件。
 
 # DDL 事件
 
-DDL 事件异步、尽力而为地记录。一个生命周期通常先产生
+DDL 事件异步、尽力而为地记录。一个 Procedure 的执行过程通常先产生
 `Running`/`Submitted` 行，再产生 `Done`/`Succeeded` 行。终态行由 Procedure
 的 `event()` hook 重新生成，而不是从提交行复制，因此事件族字段可能被省略或重新计算。
 DDL 终态行的 `payload` 使用 JSON `null`。
@@ -13,7 +13,7 @@ DDL 终态行的 `payload` 使用 JSON `null`。
 终态行会保留 Procedure 状态中的稳定对象名称。部分创建操作只有在终态输出提供
 新分配的 ID 时，才会在终态行中补充该 ID。
 
-公共字段和生命周期状态请参阅[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
+公共字段和 Procedure 状态请参阅[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
 
 ## 数据库事件
 

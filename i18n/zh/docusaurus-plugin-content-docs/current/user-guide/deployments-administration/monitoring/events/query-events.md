@@ -1,12 +1,12 @@
 ---
 keywords: [GreptimeDB 事件, 查询事件]
-description: 查询 GreptimeDB 生命周期和运维事件。
+description: 查询 GreptimeDB 事件记录。
 ---
 
 # 查询事件
 
 查询 `greptime_private.events` 系统表可以排查最近的 Procedure。事件异步写入，
-刚提交的操作可能不会立即出现。有关生命周期状态和列，请参阅[Procedure 生命周期](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
+刚提交的操作可能不会立即出现。有关 Procedure 状态和列，请参阅[Procedure 执行过程](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
 和[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
 
 ## 查看最近事件
@@ -31,7 +31,7 @@ ORDER BY timestamp DESC
 LIMIT 20;
 ```
 
-这样可以保留时间、生命周期状态、事件类型和主要对象定位列，而不必粘贴完整的
+这样可以保留时间、Procedure 状态、事件类型和主要对象定位列，而不必粘贴完整的
 宽表输出。
 
 ## 查看并筛选事件类型

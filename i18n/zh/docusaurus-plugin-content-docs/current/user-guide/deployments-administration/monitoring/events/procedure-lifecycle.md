@@ -1,9 +1,9 @@
 ---
-keywords: [GreptimeDB 事件, Procedure 生命周期]
-description: 查看 GreptimeDB 中的 Procedure 生命周期事件。
+keywords: [GreptimeDB 事件, Procedure 执行过程]
+description: 查看 GreptimeDB 中记录的 Procedure 执行过程中的事件。
 ---
 
-# Procedure 生命周期
+# Procedure 执行过程
 
 Procedure 事件共享 `procedure_id`。有关事件表及其公共列的概览，请参阅[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
 
@@ -33,10 +33,10 @@ LIMIT 1;
 +--------------------------------------+
 ```
 
-在后续查询中使用返回的 ID 查看该 Procedure 的生命周期记录。定位条件可以避免
+在后续查询中使用返回的 ID 查看该 Procedure 的事件记录。定位条件可以避免
 选中名称相似但属于其他对象的 Procedure。
 
-## 查询 Procedure 生命周期
+## 查询 Procedure 执行过程
 
 需要探索所有可用列时，使用完整记录查询：
 
@@ -73,10 +73,10 @@ ORDER BY timestamp;
 `Done` 映射为 `Succeeded`，并再次调用存活 Procedure 的 `event()` hook。因此终态事件
 是重新生成的，不是提交事件的副本；记录仍然是异步、尽力而为的。
 
-本例 `create_table` 的终态 `payload` 为 JSON `null`；DDL/repartition 生命周期事件也可能
+本例 `create_table` 的终态 `payload` 为 JSON `null`；DDL/repartition Procedure 完成后产生的事件也可能
 有这种情况，但这不是所有事件族的统一规则。
 
-## 生命周期触发器
+## Procedure 事件触发信息
 
 运行时只会记录适用的触发器，因此不一定会出现每一种触发器，也不保证固定顺序：
 

@@ -11,6 +11,6 @@ GreptimeDB stores some important internal information as system tables in the `g
 
 | Table Name                          | Description                                                                                   |
 | ----------------------------------- | --------------------------------------------------------------------------------------------- |
-| [`events`](/user-guide/deployments-administration/monitoring/events/event-data-model.md) | Contains lifecycle and operational events recorded by GreptimeDB. |
+| [`events`](/user-guide/deployments-administration/monitoring/events/event-data-model.md) | Stores event records generated during GreptimeDB operation. |
 | [`slow_queries`](./slow_queries.md) | Contains GreptimeDB slow query information, including query statements, execution times, etc. |
 | [`pipelines`](./pipelines.md)       | Contains GreptimeDB Pipeline information.                                                     |

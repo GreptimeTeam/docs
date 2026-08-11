@@ -12,11 +12,11 @@ sparse and are SQL `NULL` when a family does not populate them.
 | --- | --- |
 | `type` | Event type, such as `create_table` or `region_migration`. |
 | `timestamp` | Time at which the row was recorded. |
-| `procedure_id` | ID shared by rows from one procedure. |
-| `procedure_state` | Procedure state, such as `Running` or `Done`. |
-| `procedure_trigger` | JSON trigger, such as `Submitted`, `ChildSubmitted`, `Succeeded`, or `Failed`. |
-| `procedure_error` | Error text when a procedure fails. |
-| `payload` | Type-specific JSON; submitted rows often contain operation intent. |
+| `procedure_id` | Unique ID of the associated Procedure. |
+| `procedure_state` | State of the associated Procedure when the event was recorded: `Running`, `Done`, `Retrying`, `PrepareRollback`, `RollingBack`, `Failed`, or `Poisoned`. |
+| `procedure_trigger` | JSON information about the action that triggered the Procedure event. Its `type` is `Submitted`, `Recovered`, `ChildSubmitted`, `Retrying`, `RollingBack`, `Succeeded`, `Failed`, or `Poisoned`. |
+| `procedure_error` | Error message recorded when the associated Procedure encounters an error. |
+| `payload` | Event-type-specific JSON data. `Submitted` events usually contain request details for the operation. |
 | `event_context` | JSON describing why the event was triggered when context is available. |
 
 The runner regenerates terminal events through the live procedure's `event()`
@@ -29,7 +29,7 @@ When `event_context` is available, its stable `reason` value is one of
 event can contain `{"protocol":"mysql","reason":"manual"}`.
 
 For focused examples, see [Query events](/user-guide/deployments-administration/monitoring/events/query-events.md),
-[Procedure lifecycle](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md),
+[Procedure execution](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md),
 and [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
 
 ## Query JSON fields
@@ -67,7 +67,7 @@ ORDER BY timestamp;
 
 ## JSON `null` and SQL `NULL`
 
-In the `create_table` example and DDL/repartition lifecycle events, a terminal
+In the `create_table` example and DDL/repartition events after a Procedure completes, a terminal
 `payload` can be JSON `null` rather than SQL `NULL`:
 
 ```sql

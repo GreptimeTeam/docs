@@ -1,9 +1,9 @@
 ---
-keywords: [GreptimeDB events, procedure lifecycle]
-description: Inspect procedure lifecycle events in GreptimeDB.
+keywords: [GreptimeDB events, Procedure execution]
+description: Inspect Procedure execution events in GreptimeDB.
 ---
 
-# Procedure lifecycle
+# Procedure execution
 
 Procedure events share a `procedure_id`. For an overview of the event table and
 its common columns, see [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md).
@@ -35,11 +35,11 @@ Example result:
 +--------------------------------------+
 ```
 
-Use the returned ID to query the procedure's lifecycle rows. The locator
+Use the returned ID to query the Procedure's event rows. The locator
 filters help avoid selecting a procedure for another object with a similar
 name.
 
-## Query a procedure lifecycle
+## Query a Procedure execution
 
 Use the full-row query when you need to explore every available column:
 
@@ -78,9 +78,9 @@ procedure's `event()` hook again. Thus a terminal event is regenerated, not a
 copy of the submitted event. Recording remains asynchronous and best effort.
 
 The JSON-null terminal `payload` in this `create_table` example also applies to
-DDL/repartition lifecycle events; it is not a rule for every event family.
+DDL/repartition events after a Procedure completes; it is not a rule for every event family.
 
-## Lifecycle triggers
+## Procedure event trigger information
 
 Only applicable triggers are recorded, so a procedure does not necessarily emit
 every trigger or follow this sequence:

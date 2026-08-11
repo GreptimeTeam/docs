@@ -1,15 +1,15 @@
 ---
 keywords: [GreptimeDB events, query events]
-description: Query GreptimeDB lifecycle and operational events.
+description: Query GreptimeDB event records.
 ---
 
 # Query events
 
 Query the `greptime_private.events` system table to investigate recent
 procedures. Events are written asynchronously, so a newly submitted operation
-might not be visible immediately. See [Procedure lifecycle](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
+might not be visible immediately. See [Procedure execution](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
 and [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
-for lifecycle states and columns.
+for Procedure states and columns.
 
 ## Start with recent events
 
@@ -33,7 +33,7 @@ ORDER BY timestamp DESC
 LIMIT 20;
 ```
 
-The compact result keeps the time, lifecycle state, type, and the main object
+The compact result keeps the time, Procedure state, type, and the main object
 locators visible without pasting the full wide output.
 
 ## Discover and filter event types

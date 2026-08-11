@@ -11,6 +11,6 @@ GreptimeDB 将一些重要的内部信息以系统表的形式存储在 `greptim
 
 | 表名                                | 描述                                                     |
 | ----------------------------------- | -------------------------------------------------------- |
-| [`events`](/user-guide/deployments-administration/monitoring/events/event-data-model.md) | 包含 GreptimeDB 记录的生命周期和运维事件。 |
+| [`events`](/user-guide/deployments-administration/monitoring/events/event-data-model.md) | 保存 GreptimeDB 运行期间产生的事件记录。 |
 | [`slow_queries`](./slow_queries.md) | 包含 GreptimeDB 的慢查询信息，包括查询语句、执行时间等。 |
 | [`pipelines`](./pipelines.md)       | 包含 GreptimeDB 的 Pipeline 信息。                       |
