@@ -50,6 +50,7 @@ SELECT procedure_state,
        json_get_string(event_context, 'reason') AS reason
 FROM greptime_private.events
 WHERE type = 'create_table'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -74,9 +75,10 @@ In the `create_table` example and DDL/repartition events after a Procedure compl
 SELECT procedure_state, json_to_string(payload) AS payload,
        payload IS NULL AS payload_is_sql_null,
        json_is_null(payload) AS payload_is_json_null,
-       json_to_string(procedure_trigger) AS procedure_trigger
+       json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
 WHERE type = 'create_table'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -84,12 +86,12 @@ ORDER BY timestamp;
 ```
 
 ```sql
-+-----------------+------------------------------------------------------------+---------------------+----------------------+----------------------+
-| procedure_state | payload                                                    | payload_is_sql_null | payload_is_json_null | procedure_trigger    |
-+-----------------+------------------------------------------------------------+---------------------+----------------------+----------------------+
-| Running         | {"create_if_not_exists":false,"engine":"mito","version":1} | 0                   | 0                    | {"type":"Submitted"} |
-| Done            | null                                                       | 0                   | 1                    | {"type":"Succeeded"} |
-+-----------------+------------------------------------------------------------+---------------------+----------------------+----------------------+
++-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
+| procedure_state | payload                                                    | payload_is_sql_null | payload_is_json_null | trigger_type |
++-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
+| Running         | {"create_if_not_exists":false,"engine":"mito","version":1} | 0                   | 0                    | Submitted    |
+| Done            | null                                                       | 0                   | 1                    | Succeeded    |
++-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
 ```
 
 Typical family columns include database/table locators and IDs, flow/view

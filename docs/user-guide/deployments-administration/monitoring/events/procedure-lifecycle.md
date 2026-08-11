@@ -17,6 +17,7 @@ database, and table:
 SELECT procedure_id
 FROM greptime_private.events
 WHERE type = 'create_table'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -47,6 +48,7 @@ Use the full-row query when you need to explore every available column:
 SELECT *
 FROM greptime_private.events
 WHERE procedure_id = '<procedure_id>'
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp ASC;
 ```
 
@@ -54,22 +56,23 @@ For routine checks, use a focused projection:
 
 ```sql
 SELECT timestamp, type, procedure_state,
-       json_to_string(procedure_trigger) AS procedure_trigger,
+       json_get_string(procedure_trigger, 'type') AS trigger_type,
        procedure_error, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE procedure_id = '<procedure_id>'
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp;
 ```
 
 Example output from a MySQL operation:
 
 ```sql
-+-------------------------------+--------------+-----------------+----------------------+-----------------+------------------------------------------------------------+
-| timestamp                     | type         | procedure_state | procedure_trigger    | procedure_error | payload                                                    |
-+-------------------------------+--------------+-----------------+----------------------+-----------------+------------------------------------------------------------+
-| 2026-08-10 11:23:14.388632208 | create_table | Running         | {"type":"Submitted"} |                 | {"create_if_not_exists":false,"engine":"mito","version":1} |
-| 2026-08-10 11:23:14.463992155 | create_table | Done            | {"type":"Succeeded"} |                 | null                                                       |
-+-------------------------------+--------------+-----------------+----------------------+-----------------+------------------------------------------------------------+
++-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
+| timestamp                     | type         | procedure_state | trigger_type | procedure_error | payload                                                    |
++-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
+| 2026-08-10 11:23:14.388632208 | create_table | Running         | Submitted    |                 | {"create_if_not_exists":false,"engine":"mito","version":1} |
+| 2026-08-10 11:23:14.463992155 | create_table | Done            | Succeeded    |                 | null                                                       |
++-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
 ```
 
 `Submitted` normally means `Running`; successful completion is `Done` with a
@@ -78,7 +81,7 @@ procedure's `event()` hook again. Thus a terminal event is regenerated, not a
 copy of the submitted event. Recording remains asynchronous and best effort.
 
 The JSON-null terminal `payload` in this `create_table` example also applies to
-DDL/repartition events after a Procedure completes; it is not a rule for every event family.
+DDL/repartition events after a Procedure completes; it is not a rule for every event type.
 
 ## Procedure event triggers
 
@@ -94,10 +97,10 @@ Only applicable triggers are recorded, so query results might not include every
 | `Failed` | The procedure reached a failed terminal state. Inspect `procedure_error` for failure details. |
 | `Poisoned` | The procedure cannot proceed. Inspect `procedure_error` for the failure details. |
 
-## Family-specific terminal fields
+## Fields in completed events
 
 Envelope fields (`procedure_id`, `procedure_state`, `procedure_trigger`, and
-`procedure_error`) are common. Terminal family fields are type-specific and may
+`procedure_error`) are common. Other fields in completed events are type-specific and may
 be recomputed or omitted by the event hook.
 
 | Family | Typical terminal fields |
@@ -113,10 +116,11 @@ To inspect failures without creating one:
 
 ```sql
 SELECT timestamp, type, procedure_id, procedure_state,
-       json_to_string(procedure_trigger) AS procedure_trigger,
+       json_get_string(procedure_trigger, 'type') AS trigger_type,
        procedure_error
 FROM greptime_private.events
 WHERE procedure_state IN ('Failed', 'Poisoned')
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```

@@ -15,6 +15,7 @@ Procedure 事件共享 `procedure_id`。有关事件表及其公共列的概览�
 SELECT procedure_id
 FROM greptime_private.events
 WHERE type = 'create_table'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -44,6 +45,7 @@ LIMIT 1;
 SELECT *
 FROM greptime_private.events
 WHERE procedure_id = '<procedure_id>'
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp ASC;
 ```
 
@@ -51,22 +53,23 @@ ORDER BY timestamp ASC;
 
 ```sql
 SELECT timestamp, type, procedure_state,
-       json_to_string(procedure_trigger) AS procedure_trigger,
+       json_get_string(procedure_trigger, 'type') AS trigger_type,
        procedure_error, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE procedure_id = '<procedure_id>'
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp;
 ```
 
 以下是一次 MySQL 操作的示例输出：
 
 ```sql
-+-------------------------------+--------------+-----------------+----------------------+-----------------+------------------------------------------------------------+
-| timestamp                     | type         | procedure_state | procedure_trigger    | procedure_error | payload                                                    |
-+-------------------------------+--------------+-----------------+----------------------+-----------------+------------------------------------------------------------+
-| 2026-08-10 11:23:14.388632208 | create_table | Running         | {"type":"Submitted"} |                 | {"create_if_not_exists":false,"engine":"mito","version":1} |
-| 2026-08-10 11:23:14.463992155 | create_table | Done            | {"type":"Succeeded"} |                 | null                                                       |
-+-------------------------------+--------------+-----------------+----------------------+-----------------+------------------------------------------------------------+
++-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
+| timestamp                     | type         | procedure_state | trigger_type | procedure_error | payload                                                    |
++-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
+| 2026-08-10 11:23:14.388632208 | create_table | Running         | Submitted    |                 | {"create_if_not_exists":false,"engine":"mito","version":1} |
+| 2026-08-10 11:23:14.463992155 | create_table | Done            | Succeeded    |                 | null                                                       |
++-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
 ```
 
 `Submitted` 通常表示 `Running`；成功终态是 `Done` 和 `Succeeded`。Runner 会将
@@ -74,7 +77,7 @@ ORDER BY timestamp;
 是重新生成的，不是提交事件的副本；记录仍然是异步、尽力而为的。
 
 本例 `create_table` 的终态 `payload` 为 JSON `null`；DDL/repartition Procedure 完成后产生的事件也可能
-有这种情况，但这不是所有事件族的统一规则。
+有这种情况，但并非所有事件类型都如此。
 
 ## Procedure 事件触发信息
 
@@ -89,12 +92,12 @@ ORDER BY timestamp;
 | `Failed` | Procedure 到达失败终态。请检查 `procedure_error` 中的失败详情。 |
 | `Poisoned` | Procedure 无法继续。请检查 `procedure_error` 中的失败详情。 |
 
-## 事件族的终态字段
+## 不同事件类型的完成记录字段
 
 `procedure_id`、`procedure_state`、`procedure_trigger` 和 `procedure_error` 是公共封装
-字段。终态事件族字段由类型决定，可能被 hook 重新计算或省略。
+字段。完成记录中的其他字段取决于事件类型，可能由 hook 重新计算或省略。
 
-| 事件族 | 常见终态字段 |
+| 事件类型 | 完成记录中的常见字段 |
 | --- | --- |
 | DDL | 对象定位列；Done 输出携带 ID 时才会新增 ID。 |
 | `repartition` | 父 Procedure 的表定位和关联信息；payload 可能是 JSON `null`。 |
@@ -107,10 +110,11 @@ ORDER BY timestamp;
 
 ```sql
 SELECT timestamp, type, procedure_id, procedure_state,
-       json_to_string(procedure_trigger) AS procedure_trigger,
+       json_get_string(procedure_trigger, 'type') AS trigger_type,
        procedure_error
 FROM greptime_private.events
 WHERE procedure_state IN ('Failed', 'Poisoned')
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```

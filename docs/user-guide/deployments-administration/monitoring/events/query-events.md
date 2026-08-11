@@ -18,17 +18,19 @@ The following query returns the complete event record:
 ```sql
 SELECT *
 FROM greptime_private.events
+WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```
 
-This is useful for exploration, but it returns 36 columns. For routine checks,
-use a focused projection instead:
+This is useful for exploration, but it returns every column. For routine checks,
+select only the columns you need:
 
 ```sql
 SELECT timestamp, type, procedure_state,
        catalog_name, schema_name, table_name, view_name, flow_name, region_id
 FROM greptime_private.events
+WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```
@@ -43,6 +45,7 @@ List types actually present in the cluster before choosing a filter:
 ```sql
 SELECT type, COUNT(*) AS event_rows
 FROM greptime_private.events
+WHERE timestamp >= now() - INTERVAL '1' hour
 GROUP BY type
 ORDER BY type;
 ```
@@ -50,15 +53,16 @@ ORDER BY type;
 The result is a point-in-time view of the event types currently present in the
 cluster. It varies with workload and does not define the configured or
 source-supported types. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
-for the supported local DDL event families.
+for the supported local DDL event types.
 
 Combine a type with catalog/schema and an object locator to avoid unrelated rows:
 
 ```sql
 SELECT timestamp, type, procedure_state,
-       json_to_string(procedure_trigger) AS procedure_trigger
+       json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
 WHERE type = 'create_table'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -68,12 +72,12 @@ ORDER BY timestamp;
 Example output:
 
 ```sql
-+-------------------------------+--------------+-----------------+----------------------+
-| timestamp                     | type         | procedure_state | procedure_trigger    |
-+-------------------------------+--------------+-----------------+----------------------+
-| 2026-08-10 11:28:40.590240203 | create_table | Running         | {"type":"Submitted"} |
-| 2026-08-10 11:28:40.659064297 | create_table | Done            | {"type":"Succeeded"} |
-+-------------------------------+--------------+-----------------+----------------------+
++-------------------------------+--------------+-----------------+--------------+
+| timestamp                     | type         | procedure_state | trigger_type |
++-------------------------------+--------------+-----------------+--------------+
+| 2026-08-10 11:28:40.590240203 | create_table | Running         | Submitted    |
+| 2026-08-10 11:28:40.659064297 | create_table | Done            | Succeeded    |
++-------------------------------+--------------+-----------------+--------------+
 ```
 
 ## Find the latest event for an object
@@ -85,9 +89,10 @@ returns the newest matching event.
 
 ```sql
 SELECT timestamp, type, schema_name, procedure_state,
-       json_to_string(procedure_trigger) AS procedure_trigger
+       json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND type IN ('create_database', 'alter_database', 'drop_database')
 ORDER BY timestamp DESC
@@ -100,6 +105,7 @@ LIMIT 1;
 SELECT timestamp, type, schema_name, table_name, table_id, procedure_state
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
 ORDER BY timestamp DESC
@@ -116,6 +122,7 @@ SELECT timestamp, type, catalog_name, schema_name,
        flow_name, flow_id, procedure_state
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND flow_name = '<flow_name>'
 ORDER BY timestamp DESC
 LIMIT 1;
@@ -127,6 +134,7 @@ LIMIT 1;
 SELECT timestamp, type, schema_name, view_name, view_id, procedure_state
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND view_name = '<view_name>'
 ORDER BY timestamp DESC
@@ -137,7 +145,7 @@ LIMIT 1;
 
 Region-bearing operational events are global rows, not database-isolated objects.
 The following query finds the latest event for one Region across the applicable
-event families:
+event types:
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -146,6 +154,7 @@ SELECT timestamp, type, procedure_state,
        region_migration_src_node_id, region_migration_dst_node_id
 FROM greptime_private.events
 WHERE type IN ('region_migration', 'batch_gc', 'repartition_group')
+  AND timestamp >= now() - INTERVAL '1' hour
   AND (region_id = <region_id>
        OR source_region_id = <region_id>
        OR target_region_id = <region_id>)

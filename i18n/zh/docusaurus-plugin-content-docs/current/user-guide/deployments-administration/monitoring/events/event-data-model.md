@@ -5,7 +5,7 @@ description: 了解 GreptimeDB events 表的数据模型。
 
 # 事件数据模型
 
-`greptime_private.events` 使用公共封装。事件族专用列是稀疏列；事件族不填充时为
+`greptime_private.events` 有一组公共列。不同事件类型使用的专用列是稀疏列；未使用时为
 SQL `NULL`。
 
 | 列 | 含义 |
@@ -19,8 +19,8 @@ SQL `NULL`。
 | `payload` | 与事件类型相关的 JSON 数据。 |
 | `event_context` | 有上下文时，用于描述事件触发原因的 JSON。 |
 
-Runner 通过存活 Procedure 的 `event()` hook 重新生成终态事件。终态事件族字段由类型
-决定，不保证是提交字段的副本。记录是异步、尽力而为的。
+Runner 会调用正在运行的 Procedure 的 `event()` hook，生成完成后的事件。事件类型决定
+这条记录使用哪些字段；这些字段不保证与提交记录相同。记录会异步写入，不保证每次都成功。
 
 存在 `event_context` 时，其中的稳定 `reason` 值可以是
 `manual`、`auto_create`、`auto_alter`、`auto_repartition`、`auto_rebalance`、
@@ -47,6 +47,7 @@ SELECT procedure_state,
        json_get_string(event_context, 'reason') AS reason
 FROM greptime_private.events
 WHERE type = 'create_table'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -71,9 +72,10 @@ JSON `null`，而不是 SQL `NULL`：
 SELECT procedure_state, json_to_string(payload) AS payload,
        payload IS NULL AS payload_is_sql_null,
        json_is_null(payload) AS payload_is_json_null,
-       json_to_string(procedure_trigger) AS procedure_trigger
+       json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
 WHERE type = 'create_table'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -81,14 +83,14 @@ ORDER BY timestamp;
 ```
 
 ```sql
-+-----------------+------------------------------------------------------------+---------------------+----------------------+----------------------+
-| procedure_state | payload                                                    | payload_is_sql_null | payload_is_json_null | procedure_trigger    |
-+-----------------+------------------------------------------------------------+---------------------+----------------------+----------------------+
-| Running         | {"create_if_not_exists":false,"engine":"mito","version":1} | 0                   | 0                    | {"type":"Submitted"} |
-| Done            | null                                                       | 0                   | 1                    | {"type":"Succeeded"} |
-+-----------------+------------------------------------------------------------+---------------------+----------------------+----------------------+
++-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
+| procedure_state | payload                                                    | payload_is_sql_null | payload_is_json_null | trigger_type |
++-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
+| Running         | {"create_if_not_exists":false,"engine":"mito","version":1} | 0                   | 0                    | Submitted    |
+| Done            | null                                                       | 0                   | 1                    | Succeeded    |
++-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
 ```
 
-常见事件族字段包括数据库/表定位和 ID、Flow/View 定位和 ID、Region/节点字段、
-repartition 源/目标字段、`parent_procedure_id`、`gc_report` 和 WAL offset。稀疏值缺失
-本身不表示错误；具体约定请参阅对应事件族页面。
+不同事件类型会使用数据库/表定位和 ID、Flow/View 定位和 ID、Region/节点字段、
+repartition 源/目标字段、`parent_procedure_id`、`gc_report` 和 WAL offset。专用列为空
+不一定表示错误；具体约定请参阅对应事件类型页面。

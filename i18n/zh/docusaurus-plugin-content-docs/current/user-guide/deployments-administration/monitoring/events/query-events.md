@@ -16,17 +16,18 @@ description: 查询 GreptimeDB 事件记录。
 ```sql
 SELECT *
 FROM greptime_private.events
+WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```
 
-该查询适合初步探索，但会返回 36 列。日常排查时，建议使用只选择所需列的
-投影，输出更紧凑：
+该查询适合初步探索，但会返回所有列。日常排查时，建议只选择所需列：
 
 ```sql
 SELECT timestamp, type, procedure_state,
        catalog_name, schema_name, table_name, view_name, flow_name, region_id
 FROM greptime_private.events
+WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```
@@ -41,20 +42,22 @@ LIMIT 20;
 ```sql
 SELECT type, COUNT(*) AS event_rows
 FROM greptime_private.events
+WHERE timestamp >= now() - INTERVAL '1' hour
 GROUP BY type
 ORDER BY type;
 ```
 
 查询结果是集群当前已有事件类型的时间点快照，会随工作负载变化，并不表示完整的
-配置项或源码支持范围。支持的本地 DDL 事件族请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
+配置项或源码支持范围。支持的本地 DDL 事件类型请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
 
 将类型与 catalog、schema 以及对象定位列组合，可以避免混入无关事件：
 
 ```sql
 SELECT timestamp, type, procedure_state,
-       json_to_string(procedure_trigger) AS procedure_trigger
+       json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
 WHERE type = 'create_table'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND catalog_name = 'greptime'
    AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -64,12 +67,12 @@ ORDER BY timestamp;
 示例输出：
 
 ```sql
-+-------------------------------+--------------+-----------------+----------------------+
-| timestamp                     | type         | procedure_state | procedure_trigger    |
-+-------------------------------+--------------+-----------------+----------------------+
-| 2026-08-10 11:28:40.590240203 | create_table | Running         | {"type":"Submitted"} |
-| 2026-08-10 11:28:40.659064297 | create_table | Done            | {"type":"Succeeded"} |
-+-------------------------------+--------------+-----------------+----------------------+
++-------------------------------+--------------+-----------------+--------------+
+| timestamp                     | type         | procedure_state | trigger_type |
++-------------------------------+--------------+-----------------+--------------+
+| 2026-08-10 11:28:40.590240203 | create_table | Running         | Submitted    |
+| 2026-08-10 11:28:40.659064297 | create_table | Done            | Succeeded    |
++-------------------------------+--------------+-----------------+--------------+
 ```
 
 ## 查询对象的最新事件
@@ -80,9 +83,10 @@ ORDER BY timestamp;
 
 ```sql
 SELECT timestamp, type, schema_name, procedure_state,
-       json_to_string(procedure_trigger) AS procedure_trigger
+       json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
+  AND timestamp >= now() - INTERVAL '1' hour
    AND schema_name = '<database_name>'
   AND type IN ('create_database', 'alter_database', 'drop_database')
 ORDER BY timestamp DESC
@@ -95,6 +99,7 @@ LIMIT 1;
 SELECT timestamp, type, schema_name, table_name, table_id, procedure_state
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
    AND table_name = '<table_name>'
 ORDER BY timestamp DESC
@@ -111,6 +116,7 @@ SELECT timestamp, type, catalog_name, schema_name,
        flow_name, flow_id, procedure_state
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
+  AND timestamp >= now() - INTERVAL '1' hour
    AND flow_name = '<flow_name>'
 ORDER BY timestamp DESC
 LIMIT 1;
@@ -122,6 +128,7 @@ LIMIT 1;
 SELECT timestamp, type, schema_name, view_name, view_id, procedure_state
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
+  AND timestamp >= now() - INTERVAL '1' hour
    AND schema_name = '<database_name>'
    AND view_name = '<view_name>'
 ORDER BY timestamp DESC
@@ -131,7 +138,7 @@ LIMIT 1;
 ### Region
 
 带 Region 的运维事件是全局记录，不属于按数据库隔离的对象。以下查询返回某个
-Region 在相关事件族中的最新事件：
+Region 的相关事件类型中最新的事件：
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -140,6 +147,7 @@ SELECT timestamp, type, procedure_state,
        region_migration_src_node_id, region_migration_dst_node_id
 FROM greptime_private.events
 WHERE type IN ('region_migration', 'batch_gc', 'repartition_group')
+  AND timestamp >= now() - INTERVAL '1' hour
   AND (region_id = <region_id>
        OR source_region_id = <region_id>
        OR target_region_id = <region_id>)
