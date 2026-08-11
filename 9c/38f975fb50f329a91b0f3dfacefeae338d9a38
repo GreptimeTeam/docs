@@ -1,0 +1,58 @@
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_085d2ab57d3c8e::t_4f62a3404162cb 75,77-80
+  s_085d2ab57d3c8e::t_3d4e6ff57030b5 21,33,48,65,95,108,125,137,157
+  s_085d2ab57d3c8e::t_3b49b4ef5c61ec 26-27
+  s_085d2ab57d3c8e::t_61bfee4148e6e2 56,148
+  s_085d2ab57d3c8e::t_7e32fd0dbc37e7 62,92
+  s_085d2ab57d3c8e::t_a5e297b1830779 76
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md
+  s_085d2ab57d3c8e::t_4f62a3404162cb 67,69-72
+  s_085d2ab57d3c8e::t_3d4e6ff57030b5 18,48,60,117
+  s_085d2ab57d3c8e::t_7e32fd0dbc37e7 56,113
+  s_085d2ab57d3c8e::t_a5e297b1830779 68
+  s_085d2ab57d3c8e::t_61bfee4148e6e2 80,95,98,100
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/overview.md
+  s_085d2ab57d3c8e::t_61bfee4148e6e2 16
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_085d2ab57d3c8e::t_a5e297b1830779 87
+  s_085d2ab57d3c8e::t_3d4e6ff57030b5 50,78
+  s_085d2ab57d3c8e::t_4f62a3404162cb 86,88-91
+  s_085d2ab57d3c8e::t_7e32fd0dbc37e7 75
+  s_085d2ab57d3c8e::t_61bfee4148e6e2 8,22-23,94-96
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_085d2ab57d3c8e::t_3b49b4ef5c61ec 24
+  s_085d2ab57d3c8e::t_a5e297b1830779 71
+  s_085d2ab57d3c8e::t_4f62a3404162cb 70,72-75
+  s_085d2ab57d3c8e::t_3d4e6ff57030b5 19,30,45,60,89,102,119,131,150
+  s_085d2ab57d3c8e::t_61bfee4148e6e2 51,141
+  s_085d2ab57d3c8e::t_7e32fd0dbc37e7 57,86
+docs/user-guide/deployments-administration/monitoring/events/overview.md
+  s_085d2ab57d3c8e::t_61bfee4148e6e2 16
+docs/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md
+  s_085d2ab57d3c8e::t_a5e297b1830779 71
+  s_085d2ab57d3c8e::t_61bfee4148e6e2 84,100,103
+  s_085d2ab57d3c8e::t_3d4e6ff57030b5 20,51,63,123
+  s_085d2ab57d3c8e::t_4f62a3404162cb 70,72-75
+  s_085d2ab57d3c8e::t_7e32fd0dbc37e7 59,119
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_085d2ab57d3c8e::t_4f62a3404162cb 89,91-94
+  s_085d2ab57d3c8e::t_3d4e6ff57030b5 53,81
+  s_085d2ab57d3c8e::t_7e32fd0dbc37e7 78
+  s_085d2ab57d3c8e::t_a5e297b1830779 90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "9c38f975fb50f329a91b0f3dfacefeae338d9a38",
+  "prompts": {},
+  "sessions": {
+    "s_085d2ab57d3c8e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fef15-dfc9-7a02-83cf-27c3fa56da0c",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
