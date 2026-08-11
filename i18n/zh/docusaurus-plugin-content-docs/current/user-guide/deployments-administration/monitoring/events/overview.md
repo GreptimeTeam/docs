@@ -11,13 +11,13 @@ GreptimeDB 会以异步、尽力而为的方式写入事件记录。刚完成的
 
 ## 配置事件记录
 
-单机部署可以在本地配置事件记录器，分布式部署则可以在 Metasrv 上配置。配置选项和支持的事件类型请参阅[事件记录器](/user-guide/deployments-administration/configuration.md#生命周期事件记录器)，本文不重复配置详情。
+单机部署可以在本地配置事件记录器，分布式部署则可以在 Metasrv 上配置。配置选项和支持的事件类型请参阅[事件记录器](/user-guide/deployments-administration/configuration.md#生命周期事件记录器)。
 
 单机部署会记录受支持的本地 DDL Procedure 事件。带有 Metasrv 的分布式部署还可以记录更多运维事件。
 
 ## 查询事件
 
-排查最近的操作时，可以先执行一个有数量限制的查询：
+排查最近的操作时，可以先查询最近一小时的事件，并将结果限制为 20 条：
 
 ```sql
 SELECT type, procedure_id, procedure_state, timestamp

@@ -5,8 +5,8 @@ description: Understand the GreptimeDB events table data model.
 
 # Event data model
 
-`greptime_private.events` has a common envelope. Family-specific columns are
-sparse and are SQL `NULL` when a family does not populate them.
+`greptime_private.events` has the following common columns. Columns used only
+by particular event types are SQL `NULL` when they do not apply.
 
 | Column              | Meaning                                                                                                                                                     |
 | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -19,9 +19,11 @@ sparse and are SQL `NULL` when a family does not populate them.
 | `payload`           | JSON data for the event type.                                                                                                                               |
 | `event_context`     | JSON describing why the event was triggered when context is available.                                                                                      |
 
-The runner regenerates terminal events through the live procedure's `event()`
-hook. Terminal family fields are therefore type-specific, not guaranteed copies
-of submitted fields. Recording is asynchronous and best effort.
+`Submitted` events normally have state `Running`. When a Procedure succeeds,
+the completed event has state `Done` and trigger type `Succeeded`. The completed
+row is generated from the Procedure's final state, so its fields can differ from
+the submitted row. Events are recorded asynchronously; a recording failure does
+not change the Procedure result.
 
 When `event_context` is available, its stable `reason` value is one of
 `manual`, `auto_create`, `auto_alter`, `auto_repartition`, `auto_rebalance`,
@@ -40,8 +42,8 @@ text, `json_get_string` extracts a value by path, `json_path_match` evaluates a
 JSON predicate, and `json_is_null` checks whether a value is the JSON `null`
 value. Use `IS NULL` separately to check for SQL `NULL`.
 
-For example, this query extracts fields from a `create_table` row that has
-event context:
+For example, this query extracts fields from a `create_table` row that contains
+`event_context`:
 
 ```sql
 SELECT procedure_state,
@@ -94,7 +96,24 @@ ORDER BY timestamp;
 +-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
 ```
 
-Typical family columns include database/table locators and IDs, flow/view
-locators and IDs, region/node fields, repartition source/target fields,
-`parent_procedure_id`, `gc_report`, and WAL offsets. Missing sparse values are
-not by themselves errors; use the family pages for their contracts.
+## Type-specific columns
+
+The following columns are populated only by the listed event types. A `NULL`
+value in one of these columns is normal when it does not apply.
+
+- **Database, table, Flow, and view events:** `catalog_name`, `schema_name`,
+  `table_name`, `table_id`, `physical_table_id`, `flow_name`, `flow_id`,
+  `view_name`, and `view_id` identify the affected object. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
+- **Region migration:** `region_id` and `region_number` identify the Region.
+  `region_migration_trigger_reason`, `region_migration_src_node_id`,
+  `region_migration_src_peer_addr`, `region_migration_dst_node_id`, and
+  `region_migration_dst_peer_addr` describe why and where it moved.
+- **Repartition:** `parent_procedure_id` links a child procedure to its parent;
+  `repartition_group_id` identifies a group operation. `source_region_id`,
+  `source_region_number`, `source_partition_expr`, `target_region_id`,
+  `target_region_number`, and `target_partition_expr` describe the affected
+  Regions and partition expressions.
+- **Batch GC:** `region_id`, `region_number`, and `gc_report` describe the
+  Regions processed and their GC result.
+- **WAL pruning:** `topic_name`, `prunable_entry_id`, and `latest_offset`
+  identify the topic, requested prune boundary, and exclusive latest offset.

@@ -13,7 +13,8 @@ for Procedure states and columns.
 
 ## Start with recent events
 
-The following query returns the complete event record:
+The following query returns all columns for up to 20 events recorded during the
+last hour:
 
 ```sql
 SELECT *

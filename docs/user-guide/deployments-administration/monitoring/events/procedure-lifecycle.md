@@ -36,9 +36,9 @@ Example result:
 +--------------------------------------+
 ```
 
-Use the returned ID to query the Procedure's event rows. The locator
-filters help avoid selecting a procedure for another object with a similar
-name.
+Use the returned ID to query the Procedure's event rows. Filtering by
+`catalog_name`, `schema_name`, and `table_name` avoids selecting a procedure
+for another object with a similar name.
 
 ## Query Procedure events
 
@@ -75,18 +75,19 @@ Example output from a MySQL operation:
 +-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
 ```
 
-`Submitted` normally means `Running`; successful completion is `Done` with a
-`Succeeded` trigger. The runner maps `Done` to `Succeeded` and calls the live
-procedure's `event()` hook again. Thus a terminal event is regenerated, not a
-copy of the submitted event. Recording remains asynchronous and best effort.
+`Submitted` events normally have state `Running`. When a Procedure succeeds,
+the completed event has state `Done` and trigger type `Succeeded`. The completed
+row is generated from the Procedure's final state, so its fields can differ from
+the submitted row.
 
 The JSON-null terminal `payload` in this `create_table` example also applies to
 DDL/repartition events after a Procedure completes; it is not a rule for every event type.
 
 ## Procedure event triggers
 
-Only applicable triggers are recorded, so query results might not include every
-`type` and their order is not fixed:
+In addition to `Submitted` and `Succeeded`, a Procedure can emit the following
+triggers when applicable. Not every Procedure emits every trigger, and rows are
+not guaranteed to appear in the order shown:
 
 | `type`           | Meaning and fields                                                                                                                                                     |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -99,20 +100,19 @@ Only applicable triggers are recorded, so query results might not include every
 
 ## Fields in completed events
 
-Envelope fields (`procedure_id`, `procedure_state`, `procedure_trigger`, and
-`procedure_error`) are common. Other fields in completed events are type-specific and may
-be recomputed or omitted by the event hook.
+`procedure_id`, `procedure_state`, `procedure_trigger`, and `procedure_error`
+are common fields. Other fields in completed events depend on the event type.
 
-| Family              | Typical terminal fields                                                                                      |
+| Event type          | Typical completed-event fields                                                                               |
 | ------------------- | ------------------------------------------------------------------------------------------------------------ |
-| DDL                 | Object locators; IDs may be added when the Done output carries them.                                         |
+| DDL                 | Object names; IDs may be added when the Done output carries them.                                            |
 | `repartition`       | Parent table locator and procedure linkage; payload may be JSON `null`.                                      |
 | `repartition_group` | Parent/group IDs; per-target region fields may be SQL `NULL`.                                                |
 | `region_migration`  | Region, node, and timeout fields.                                                                            |
 | `batch_gc`          | Affected Region dimensions and `gc_report`; `payload` is JSON `null`. An empty report emits no `Done` event. |
 | `wal_prune`         | Topic, prune/latest offsets, and the prune payload.                                                          |
 
-To inspect failures without creating one:
+To list recent failed Procedures:
 
 ```sql
 SELECT timestamp, type, procedure_id, procedure_state,

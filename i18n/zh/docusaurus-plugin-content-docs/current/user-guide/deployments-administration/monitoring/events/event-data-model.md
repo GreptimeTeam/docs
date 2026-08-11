@@ -19,8 +19,9 @@ SQL `NULL`。
 | `payload`           | 与事件类型相关的 JSON 数据。                                                                                                                                     |
 | `event_context`     | 有上下文时，用于描述事件触发原因的 JSON。                                                                                                                        |
 
-Runner 会调用正在运行的 Procedure 的 `event()` hook，生成完成后的事件。事件类型决定
-这条记录使用哪些字段；这些字段不保证与提交记录相同。记录会异步写入，不保证每次都成功。
+`Submitted` 事件的状态通常为 `Running`。Procedure 成功完成后，完成记录的状态为
+`Done`，触发类型为 `Succeeded`。完成记录根据 Procedure 完成时的状态生成，因此字段可能
+与提交时的记录不同。事件会异步写入，写入失败不会影响 Procedure 的执行结果。
 
 存在 `event_context` 时，其中的稳定 `reason` 值可以是
 `manual`、`auto_create`、`auto_alter`、`auto_repartition`、`auto_rebalance`、
@@ -38,7 +39,7 @@ Runner 会调用正在运行的 Procedure 的 `event()` hook，生成完成后�
 `json_path_match` 计算 JSON 谓词，`json_is_null` 检查值是否为 JSON `null`。如需检查
 SQL `NULL`，应单独使用 `IS NULL`。
 
-例如，以下查询从包含 event context 的 `create_table` 行中提取相关字段：
+例如，以下查询从包含 `event_context` 的 `create_table` 行中提取相关字段：
 
 ```sql
 SELECT procedure_state,
@@ -91,6 +92,21 @@ ORDER BY timestamp;
 +-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
 ```
 
-不同事件类型会使用数据库/表定位和 ID、Flow/View 定位和 ID、Region/节点字段、
-repartition 源/目标字段、`parent_procedure_id`、`gc_report` 和 WAL offset。专用列为空
-不一定表示错误；具体约定请参阅对应事件类型页面。
+## 事件类型专用列
+
+以下列只会在对应事件类型中填充；不适用时为 SQL `NULL`。
+
+- **数据库、表、Flow 和视图事件：** `catalog_name`、`schema_name`、`table_name`、
+  `table_id`、`physical_table_id`、`flow_name`、`flow_id`、`view_name` 和 `view_id`
+  用于标识对象。详见 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
+- **Region 迁移：** `region_id`、`region_number` 标识 Region；
+  `region_migration_trigger_reason`、`region_migration_src_node_id`、
+  `region_migration_src_peer_addr`、`region_migration_dst_node_id` 和
+  `region_migration_dst_peer_addr` 记录迁移原因、源端和目标端。
+- **Repartition：** `parent_procedure_id` 关联父 Procedure，`repartition_group_id`
+  标识分组操作。`source_region_id`、`source_region_number`、`source_partition_expr`、
+  `target_region_id`、`target_region_number` 和 `target_partition_expr` 描述源和目标
+  Region 及其分区表达式。
+- **批量 GC：** `region_id`、`region_number` 和 `gc_report` 记录处理的 Region 及 GC 结果。
+- **WAL 清理：** `topic_name`、`prunable_entry_id` 和 `latest_offset` 分别表示 topic、
+  请求的清理边界和排他的最新 offset。

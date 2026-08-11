@@ -34,8 +34,8 @@ ORDER BY timestamp;
 ```
 
 Database event types are `create_database`, `alter_database`, and `drop_database`.
-Event rows retain the catalog and schema locator; the database name is used
-only as a filter and is not included in the output.
+Event rows retain `catalog_name` and `schema_name`. This query uses these
+columns as filters but does not include them in the result.
 
 **`create_database`**
 
@@ -199,7 +199,7 @@ WHERE catalog_name = 'greptime'
 ORDER BY timestamp;
 ```
 
-The database name is used only as a filter and is not included in the output.
+The query uses `schema_name` as a filter and does not include it in the result.
 
 **`create_view`**
 

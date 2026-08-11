@@ -72,16 +72,17 @@ ORDER BY timestamp;
 +-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
 ```
 
-`Submitted` 通常表示 `Running`；成功终态是 `Done` 和 `Succeeded`。Runner 会将
-`Done` 映射为 `Succeeded`，并再次调用存活 Procedure 的 `event()` hook。因此终态事件
-是重新生成的，不是提交事件的副本；记录仍然是异步、尽力而为的。
+`Submitted` 事件的状态通常为 `Running`。Procedure 成功完成后，完成记录的状态为
+`Done`，触发类型为 `Succeeded`。完成记录根据 Procedure 完成时的状态生成，因此字段可能
+与提交时的记录不同。
 
 本例 `create_table` 的终态 `payload` 为 JSON `null`；DDL/repartition Procedure 完成后产生的事件也可能
 有这种情况，但并非所有事件类型都如此。
 
 ## Procedure 事件触发信息
 
-运行时只记录适用的触发信息，因此查询结果不一定包含每一种 `type`，顺序也不固定：
+除 `Submitted` 和 `Succeeded` 外，Procedure 还可能在适用时产生以下触发类型。
+并非每个 Procedure 都会产生所有类型，记录顺序也不保证与下表一致：
 
 | `type`           | 含义和字段                                                                                                                                            |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -94,19 +95,19 @@ ORDER BY timestamp;
 
 ## 不同事件类型的完成记录字段
 
-`procedure_id`、`procedure_state`、`procedure_trigger` 和 `procedure_error` 是公共封装
-字段。完成记录中的其他字段取决于事件类型，可能由 hook 重新计算或省略。
+`procedure_id`、`procedure_state`、`procedure_trigger` 和 `procedure_error` 是公共字段。
+完成记录中的其他字段取决于事件类型。
 
 | 事件类型            | 完成记录中的常见字段                                                                       |
 | ------------------- | ------------------------------------------------------------------------------------------ |
-| DDL                 | 对象定位列；Done 输出携带 ID 时才会新增 ID。                                               |
+| DDL                 | 对象名称；Done 输出携带 ID 时才会新增 ID。                                                 |
 | `repartition`       | 父 Procedure 的表定位和关联信息；payload 可能是 JSON `null`。                              |
 | `repartition_group` | 父/Group ID；每个目标的 Region 字段可能是 SQL `NULL`。                                     |
 | `region_migration`  | Region、节点和超时字段。                                                                   |
 | `batch_gc`          | 受影响的 Region 维度和 `gc_report`；`payload` 为 JSON `null`。空报告不会产生 `Done` 事件。 |
 | `wal_prune`         | Topic、清理/最新 offset，以及清理 payload。                                                |
 
-只读查看失败事件：
+查询最近失败的 Procedure：
 
 ```sql
 SELECT timestamp, type, procedure_id, procedure_state,

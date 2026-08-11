@@ -32,7 +32,7 @@ ORDER BY timestamp;
 ```
 
 数据库事件类型包括 `create_database`、`alter_database` 和 `drop_database`。
-事件行会保留 catalog 和 schema 定位列；数据库名称仅用于过滤，不会包含在输出中。
+事件记录保留 `catalog_name` 和 `schema_name`。本查询用这两列筛选，但不在结果中显示它们。
 
 **`create_database`**
 
@@ -194,7 +194,7 @@ WHERE catalog_name = 'greptime'
 ORDER BY timestamp;
 ```
 
-数据库名称仅用于过滤，不会包含在输出中。
+本查询使用 `schema_name` 筛选，但不在结果中显示它。
 
 **`create_view`**
 
