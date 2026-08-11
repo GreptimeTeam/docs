@@ -1,0 +1,46 @@
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_085d2ab57d3c8e::t_f7f3c7621cdfc4 9
+docs/user-guide/deployments-administration/monitoring/events/overview.md
+  s_085d2ab57d3c8e::t_f7f3c7621cdfc4 33
+  s_085d2ab57d3c8e::t_27a057c6308dfb 8
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_085d2ab57d3c8e::t_a7ee2a223045e1 11-13
+  s_085d2ab57d3c8e::t_16cc5aab70096a 84-90,92-93
+  s_085d2ab57d3c8e::t_8be539be43b5bd 8-9,14-16
+  s_085d2ab57d3c8e::t_b3a697bfeabb25 28,78,151,190
+docs/reference/sql/greptime-private/overview.md
+  s_085d2ab57d3c8e::t_27a057c6308dfb 14
+docs/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_085d2ab57d3c8e::t_a7ee2a223045e1 11-13
+  s_085d2ab57d3c8e::t_8be539be43b5bd 8-9,14-17
+  s_085d2ab57d3c8e::t_b3a697bfeabb25 30,81,156,195
+  s_085d2ab57d3c8e::t_16cc5aab70096a 87-88,91-96
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_085d2ab57d3c8e::t_f7f3c7621cdfc4 15-19,32
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md
+  s_085d2ab57d3c8e::t_f7f3c7621cdfc4 2-3,6,39,81,83
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_085d2ab57d3c8e::t_f7f3c7621cdfc4 10
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/overview.md
+  s_085d2ab57d3c8e::t_f7f3c7621cdfc4 33
+docs/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md
+  s_085d2ab57d3c8e::t_f7f3c7621cdfc4 2-3,6,42,83,85-86,88
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_085d2ab57d3c8e::t_f7f3c7621cdfc4 15-19,31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "d9423dc28d124682fe240d102220a34c49cd2319",
+  "prompts": {},
+  "sessions": {
+    "s_085d2ab57d3c8e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fef15-dfc9-7a02-83cf-27c3fa56da0c",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
