@@ -20,7 +20,7 @@ GreptimeDB 会以异步、尽力而为的方式写入事件记录。刚完成的
 排查最近的操作时，可以先查询最近一小时的事件，并将结果限制为 20 条：
 
 ```sql
-SELECT type, procedure_id, procedure_state, timestamp
+SELECT timestamp, type
 FROM greptime_private.events
 WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
@@ -30,6 +30,5 @@ LIMIT 20;
 以下页面分别介绍查询方法和事件详情：
 
 - [查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)
-- [Procedure 事件](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
 - [事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
 - [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)

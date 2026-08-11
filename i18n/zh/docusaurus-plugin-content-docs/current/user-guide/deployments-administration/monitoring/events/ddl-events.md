@@ -5,16 +5,6 @@ description: 查看 GreptimeDB 记录的 DDL 事件。
 
 # DDL 事件
 
-系统会异步写入 DDL 事件。写入失败不会影响 Procedure 的执行结果。一次成功的 DDL Procedure
-通常会有两条记录：
-
-- 提交 Procedure 时，写入一条状态为 `Running`、触发类型为 `Submitted` 的记录。
-- Procedure 完成后，写入一条状态为 `Done`、触发类型为 `Succeeded` 的记录。
-
-Procedure 完成后，Runner 根据它当时的状态生成第二条事件，并交给记录器写入。该记录会保留已知的
-对象定位信息。以创建表为例，只有 Procedure 返回新表 ID 时，记录中才会包含 `table_id`。
-成功完成的 DDL 记录中，`payload` 为 JSON `null`。
-
 公共字段和 Procedure 状态请参阅[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
 
 ## 数据库事件

@@ -362,7 +362,6 @@ const sidebars: SidebarsConfig = {
                       label: 'Overview',
                     },
                     'user-guide/deployments-administration/monitoring/events/query-events',
-                    'user-guide/deployments-administration/monitoring/events/procedure-lifecycle',
                     'user-guide/deployments-administration/monitoring/events/event-data-model',
                     'user-guide/deployments-administration/monitoring/events/ddl-events',
                   ],

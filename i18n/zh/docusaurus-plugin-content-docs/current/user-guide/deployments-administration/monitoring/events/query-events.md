@@ -5,9 +5,8 @@ description: 查询 GreptimeDB 事件记录。
 
 # 查询事件
 
-查询 `greptime_private.events` 系统表可以排查最近的 Procedure。事件异步写入，
-刚提交的操作可能不会立即出现。有关 Procedure 状态和列，请参阅[Procedure 事件](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
-和[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
+查询 `greptime_private.events` 系统表可以排查最近事件。事件异步写入，刚提交的操作可能不会立即出现。
+有关事件列，请参阅[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
 
 ## 查看最近事件
 
@@ -24,15 +23,14 @@ LIMIT 20;
 该查询适合初步探索，但会返回所有列。日常排查时，建议只选择所需列：
 
 ```sql
-SELECT timestamp, type, procedure_state,
-       catalog_name, schema_name, table_name, view_name, flow_name, region_id
+SELECT timestamp, type, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```
 
-这样只返回排查所需的时间、Procedure 状态、事件类型和对象名称，结果会更容易阅读。
+这样只返回排查所需的时间、事件类型和 payload，结果会更容易阅读。
 
 ## 查看并筛选事件类型
 
@@ -152,4 +150,87 @@ WHERE type IN ('region_migration', 'batch_gc', 'repartition_group')
        OR target_region_id = <region_id>)
 ORDER BY timestamp DESC
 LIMIT 1;
+```
+
+## 查询 Procedure 事件
+
+Procedure 事件共享 `procedure_id`。
+
+### 获取 Procedure ID
+
+对于创建表的 Procedure，可以根据 catalog、数据库、表和 `Submitted` 触发器定位提交行：
+
+```sql
+SELECT procedure_id
+FROM greptime_private.events
+WHERE type = 'create_table'
+  AND timestamp >= now() - INTERVAL '1' hour
+  AND catalog_name = 'greptime'
+  AND schema_name = '<database_name>'
+  AND table_name = '<table_name>'
+  AND json_path_match(procedure_trigger, '$.type == "Submitted"')
+ORDER BY timestamp DESC
+LIMIT 1;
+```
+
+示例结果：
+
+```sql
++--------------------------------------+
+| procedure_id                         |
++--------------------------------------+
+| a5788f51-5726-4db7-a85e-e9afc36da557 |
++--------------------------------------+
+```
+
+在后续查询中使用返回的 ID 查看该 Procedure 的事件记录。定位条件可以避免选中名称相似但属于其他对象的 Procedure。
+
+### 查询一个 Procedure
+
+需要探索所有可用列时，使用完整记录查询：
+
+```sql
+SELECT *
+FROM greptime_private.events
+WHERE procedure_id = '<procedure_id>'
+  AND timestamp >= now() - INTERVAL '1' hour
+ORDER BY timestamp ASC;
+```
+
+日常排查时，使用只选择所需列的投影：
+
+```sql
+SELECT timestamp, type, procedure_state,
+       json_get_string(procedure_trigger, 'type') AS trigger_type,
+       procedure_error, json_to_string(payload) AS payload
+FROM greptime_private.events
+WHERE procedure_id = '<procedure_id>'
+  AND timestamp >= now() - INTERVAL '1' hour
+ORDER BY timestamp;
+```
+
+以下是一次 MySQL 操作的示例输出：
+
+```sql
++-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
+| timestamp                     | type         | procedure_state | trigger_type | procedure_error | payload                                                    |
++-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
+| 2026-08-10 11:23:14.388632208 | create_table | Running         | Submitted    |                 | {"create_if_not_exists":false,"engine":"mito","version":1} |
+| 2026-08-10 11:23:14.463992155 | create_table | Done            | Succeeded    |                 | null                                                       |
++-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
+```
+
+### 查询失败的 Procedure
+
+查询最近失败的 Procedure：
+
+```sql
+SELECT timestamp, type, procedure_id, procedure_state,
+       json_get_string(procedure_trigger, 'type') AS trigger_type,
+       procedure_error
+FROM greptime_private.events
+WHERE procedure_state IN ('Failed', 'Poisoned')
+  AND timestamp >= now() - INTERVAL '1' hour
+ORDER BY timestamp DESC
+LIMIT 20;
 ```

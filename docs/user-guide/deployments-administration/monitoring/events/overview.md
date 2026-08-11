@@ -20,7 +20,7 @@ Standalone deployments record supported local DDL Procedure events. Distributed 
 Start with a bounded query while investigating a recent operation:
 
 ```sql
-SELECT type, procedure_id, procedure_state, timestamp
+SELECT timestamp, type
 FROM greptime_private.events
 WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
@@ -30,6 +30,5 @@ LIMIT 20;
 Use the following pages for focused queries and event details:
 
 - [Query events](/user-guide/deployments-administration/monitoring/events/query-events.md)
-- [Procedure events](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
 - [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
 - [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md)

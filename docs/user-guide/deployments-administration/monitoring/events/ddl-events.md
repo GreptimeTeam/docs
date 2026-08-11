@@ -5,17 +5,6 @@ description: Inspect DDL events recorded by GreptimeDB.
 
 # DDL events
 
-GreptimeDB records DDL events asynchronously. A recording failure does not affect
-Procedure execution. A successful DDL Procedure normally has two rows:
-
-- `Running` with the `Submitted` trigger when the Procedure is submitted.
-- `Done` with the `Succeeded` trigger after the Procedure completes.
-
-When the Procedure completes, the runner builds the second event from its current
-state and sends it to the recorder. The row keeps known object locators. For example,
-a successful table-creation row includes `table_id` only when the Procedure returns
-the new ID. The `payload` of a successful DDL terminal row is JSON `null`.
-
 See [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
 for shared columns and Procedure states.
 

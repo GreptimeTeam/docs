@@ -5,19 +5,25 @@ description: Understand the GreptimeDB events table data model.
 
 # Event data model
 
-`greptime_private.events` has the following common columns. Columns used only
-by particular event types are SQL `NULL` when they do not apply.
+`greptime_private.events` has the following common columns.
+
+| Column          | Meaning                                                     |
+| --------------- | ----------------------------------------------------------- |
+| `type`          | Event type, such as `create_table` or `region_migration`.   |
+| `timestamp`     | Time at which the row was recorded.                         |
+| `payload`       | JSON data for the event type.                               |
+| `event_context` | JSON describing why the event was triggered when available. |
+
+## Procedure event columns
+
+Procedure events also have the following columns:
 
 | Column              | Meaning                                                                                                                                                     |
 | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`              | Event type, such as `create_table` or `region_migration`.                                                                                                   |
-| `timestamp`         | Time at which the row was recorded.                                                                                                                         |
 | `procedure_id`      | Unique Procedure ID.                                                                                                                                        |
 | `procedure_state`   | Procedure state when the event was recorded. Values are `Running`, `Done`, `Retrying`, `PrepareRollback`, `RollingBack`, `Failed`, and `Poisoned`.          |
 | `procedure_trigger` | Procedure event trigger in JSON. Its `type` is `Submitted`, `Recovered`, `ChildSubmitted`, `Retrying`, `RollingBack`, `Succeeded`, `Failed`, or `Poisoned`. |
 | `procedure_error`   | Error message when the Procedure fails.                                                                                                                     |
-| `payload`           | JSON data for the event type.                                                                                                                               |
-| `event_context`     | JSON describing why the event was triggered when context is available.                                                                                      |
 
 `Submitted` events normally have state `Running`. When a Procedure succeeds,
 the completed event has state `Done` and trigger type `Succeeded`. The completed
@@ -30,9 +36,18 @@ When `event_context` is available, its stable `reason` value is one of
 `region_failover`, `scheduled_gc`, or `unknown`. For example, a MySQL-submitted
 event can contain `{"protocol":"mysql","reason":"manual"}`.
 
-For focused examples, see [Query events](/user-guide/deployments-administration/monitoring/events/query-events.md),
-[Procedure events](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md),
-and [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
+In addition to `Submitted` and `Succeeded`, a Procedure can emit the following
+triggers when applicable. Not every Procedure emits every trigger, and rows are
+not guaranteed to appear in the order shown:
+
+| `type`           | Meaning and fields                                                                                                                                                     |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Recovered`      | The root procedure was recovered from persisted state.                                                                                                                 |
+| `ChildSubmitted` | A child submission was attempted. The trigger includes the child `procedure_id` and its `outcome` (`Accepted`, `AlreadyAccepted`, `ManagerStopped`, or `SpawnFailed`). |
+| `Retrying`       | Procedure execution or rollback is being retried. The trigger includes the retry `phase` (`Execute` or `Rollback`) and `attempt`.                                      |
+| `RollingBack`    | Procedure rollback is starting.                                                                                                                                        |
+| `Failed`         | The procedure reached a failed terminal state. Inspect `procedure_error` for failure details.                                                                          |
+| `Poisoned`       | The procedure cannot proceed. Inspect `procedure_error` for the failure details.                                                                                       |
 
 ## Query JSON fields
 
@@ -96,7 +111,7 @@ ORDER BY timestamp;
 +-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
 ```
 
-## Type-specific columns
+## Procedure event type-specific columns
 
 The following columns are populated only by the listed event types. A `NULL`
 value in one of these columns is normal when it does not apply.

@@ -5,19 +5,25 @@ description: 了解 GreptimeDB events 表的数据模型。
 
 # 事件数据模型
 
-`greptime_private.events` 有一组公共列。不同事件类型使用的专用列是稀疏列；未使用时为
-SQL `NULL`。
+`greptime_private.events` 有以下公共列。
+
+| 列              | 含义                                                  |
+| --------------- | ----------------------------------------------------- |
+| `type`          | 事件类型，例如 `create_table` 或 `region_migration`。 |
+| `timestamp`     | 记录该行的时间。                                      |
+| `payload`       | 与事件类型相关的 JSON 数据。                          |
+| `event_context` | 有上下文时，用于描述事件触发原因的 JSON。             |
+
+## Procedure 事件列
+
+Procedure 事件还有以下列：
 
 | 列                  | 含义                                                                                                                                                             |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`              | 事件类型，例如 `create_table` 或 `region_migration`。                                                                                                            |
-| `timestamp`         | 记录该行的时间。                                                                                                                                                 |
 | `procedure_id`      | Procedure 的唯一 ID。                                                                                                                                            |
 | `procedure_state`   | 记录事件时的 Procedure 状态。取值为 `Running`、`Done`、`Retrying`、`PrepareRollback`、`RollingBack`、`Failed` 和 `Poisoned`。                                    |
 | `procedure_trigger` | Procedure 事件触发信息，采用 JSON 格式。`type` 可为 `Submitted`、`Recovered`、`ChildSubmitted`、`Retrying`、`RollingBack`、`Succeeded`、`Failed` 或 `Poisoned`。 |
 | `procedure_error`   | Procedure 出错时的错误信息。                                                                                                                                     |
-| `payload`           | 与事件类型相关的 JSON 数据。                                                                                                                                     |
-| `event_context`     | 有上下文时，用于描述事件触发原因的 JSON。                                                                                                                        |
 
 `Submitted` 事件的状态通常为 `Running`。Procedure 成功完成后，完成记录的状态为
 `Done`，触发类型为 `Succeeded`。完成记录根据 Procedure 完成时的状态生成，因此字段可能
@@ -28,9 +34,17 @@ SQL `NULL`。
 `region_failover`、`scheduled_gc` 或 `unknown`。例如，通过 MySQL 提交的事件可能包含
 `{"protocol":"mysql","reason":"manual"}`。
 
-如需查看针对性的示例，请参阅[查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)、
-[Procedure 事件](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)和
-[DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
+除 `Submitted` 和 `Succeeded` 外，Procedure 还可能在适用时产生以下触发类型。
+并非每个 Procedure 都会产生所有类型，记录顺序也不保证与下表一致：
+
+| `type`           | 含义和字段                                                                                                                                            |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Recovered`      | 根 Procedure 从持久化状态恢复。                                                                                                                       |
+| `ChildSubmitted` | 尝试提交子 Procedure。触发器包含子 Procedure 的 `procedure_id` 和提交 `outcome`（`Accepted`、`AlreadyAccepted`、`ManagerStopped` 或 `SpawnFailed`）。 |
+| `Retrying`       | 正在重试 Procedure 的执行或回滚。触发器包含重试 `phase`（`Execute` 或 `Rollback`）和 `attempt`。                                                      |
+| `RollingBack`    | 开始回滚 Procedure。                                                                                                                                  |
+| `Failed`         | Procedure 到达失败终态。请检查 `procedure_error` 中的失败详情。                                                                                       |
+| `Poisoned`       | Procedure 无法继续。请检查 `procedure_error` 中的失败详情。                                                                                           |
 
 ## 查询 JSON 字段
 
@@ -92,7 +106,7 @@ ORDER BY timestamp;
 +-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
 ```
 
-## 事件类型专用列
+## Procedure 事件的专用列
 
 以下列只会在对应事件类型中填充；不适用时为 SQL `NULL`。
 

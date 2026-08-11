@@ -5,11 +5,10 @@ description: Query GreptimeDB event records.
 
 # Query events
 
-Query the `greptime_private.events` system table to investigate recent
-procedures. Events are written asynchronously, so a newly submitted operation
-might not be visible immediately. See [Procedure events](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
-and [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
-for Procedure states and columns.
+Query the `greptime_private.events` system table to investigate recent events.
+Events are written asynchronously, so a newly submitted operation might not be
+visible immediately. See [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
+for event columns.
 
 ## Start with recent events
 
@@ -28,16 +27,15 @@ This is useful for exploration, but it returns every column. For routine checks,
 select only the columns you need:
 
 ```sql
-SELECT timestamp, type, procedure_state,
-       catalog_name, schema_name, table_name, view_name, flow_name, region_id
+SELECT timestamp, type, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```
 
-The compact result keeps the time, Procedure state, type, and the main object
-locators visible without pasting the full wide output.
+The compact result keeps the time, type, and payload visible without pasting the
+full output.
 
 ## Discover and filter event types
 
@@ -161,4 +159,90 @@ WHERE type IN ('region_migration', 'batch_gc', 'repartition_group')
        OR target_region_id = <region_id>)
 ORDER BY timestamp DESC
 LIMIT 1;
+```
+
+## Query Procedure events
+
+Procedure events share a `procedure_id`.
+
+### Get a procedure ID
+
+For a table-creation procedure, locate the `Submitted` row by its catalog,
+database, and table:
+
+```sql
+SELECT procedure_id
+FROM greptime_private.events
+WHERE type = 'create_table'
+  AND timestamp >= now() - INTERVAL '1' hour
+  AND catalog_name = 'greptime'
+  AND schema_name = '<database_name>'
+  AND table_name = '<table_name>'
+  AND json_path_match(procedure_trigger, '$.type == "Submitted"')
+ORDER BY timestamp DESC
+LIMIT 1;
+```
+
+Example result:
+
+```sql
++--------------------------------------+
+| procedure_id                         |
++--------------------------------------+
+| a5788f51-5726-4db7-a85e-e9afc36da557 |
++--------------------------------------+
+```
+
+Use the returned ID to query the Procedure's event rows. Filtering by
+`catalog_name`, `schema_name`, and `table_name` avoids selecting a procedure
+for another object with a similar name.
+
+### Query a Procedure
+
+Use the full-row query when you need to explore every available column:
+
+```sql
+SELECT *
+FROM greptime_private.events
+WHERE procedure_id = '<procedure_id>'
+  AND timestamp >= now() - INTERVAL '1' hour
+ORDER BY timestamp ASC;
+```
+
+For routine checks, use a focused projection:
+
+```sql
+SELECT timestamp, type, procedure_state,
+       json_get_string(procedure_trigger, 'type') AS trigger_type,
+       procedure_error, json_to_string(payload) AS payload
+FROM greptime_private.events
+WHERE procedure_id = '<procedure_id>'
+  AND timestamp >= now() - INTERVAL '1' hour
+ORDER BY timestamp;
+```
+
+Example output from a MySQL operation:
+
+```sql
++-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
+| timestamp                     | type         | procedure_state | trigger_type | procedure_error | payload                                                    |
++-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
+| 2026-08-10 11:23:14.388632208 | create_table | Running         | Submitted    |                 | {"create_if_not_exists":false,"engine":"mito","version":1} |
+| 2026-08-10 11:23:14.463992155 | create_table | Done            | Succeeded    |                 | null                                                       |
++-------------------------------+--------------+-----------------+--------------+-----------------+------------------------------------------------------------+
+```
+
+### Find failed Procedures
+
+To list recent failed Procedures:
+
+```sql
+SELECT timestamp, type, procedure_id, procedure_state,
+       json_get_string(procedure_trigger, 'type') AS trigger_type,
+       procedure_error
+FROM greptime_private.events
+WHERE procedure_state IN ('Failed', 'Poisoned')
+  AND timestamp >= now() - INTERVAL '1' hour
+ORDER BY timestamp DESC
+LIMIT 20;
 ```
