@@ -8,16 +8,16 @@ description: 了解 GreptimeDB events 表的数据模型。
 `greptime_private.events` 有一组公共列。不同事件类型使用的专用列是稀疏列；未使用时为
 SQL `NULL`。
 
-| 列 | 含义 |
-| --- | --- |
-| `type` | 事件类型，例如 `create_table` 或 `region_migration`。 |
-| `timestamp` | 记录该行的时间。 |
-| `procedure_id` | Procedure 的唯一 ID。 |
-| `procedure_state` | 记录事件时的 Procedure 状态。取值为 `Running`、`Done`、`Retrying`、`PrepareRollback`、`RollingBack`、`Failed` 和 `Poisoned`。 |
+| 列                  | 含义                                                                                                                                                             |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`              | 事件类型，例如 `create_table` 或 `region_migration`。                                                                                                            |
+| `timestamp`         | 记录该行的时间。                                                                                                                                                 |
+| `procedure_id`      | Procedure 的唯一 ID。                                                                                                                                            |
+| `procedure_state`   | 记录事件时的 Procedure 状态。取值为 `Running`、`Done`、`Retrying`、`PrepareRollback`、`RollingBack`、`Failed` 和 `Poisoned`。                                    |
 | `procedure_trigger` | Procedure 事件触发信息，采用 JSON 格式。`type` 可为 `Submitted`、`Recovered`、`ChildSubmitted`、`Retrying`、`RollingBack`、`Succeeded`、`Failed` 或 `Poisoned`。 |
-| `procedure_error` | Procedure 出错时的错误信息。 |
-| `payload` | 与事件类型相关的 JSON 数据。 |
-| `event_context` | 有上下文时，用于描述事件触发原因的 JSON。 |
+| `procedure_error`   | Procedure 出错时的错误信息。                                                                                                                                     |
+| `payload`           | 与事件类型相关的 JSON 数据。                                                                                                                                     |
+| `event_context`     | 有上下文时，用于描述事件触发原因的 JSON。                                                                                                                        |
 
 Runner 会调用正在运行的 Procedure 的 `event()` hook，生成完成后的事件。事件类型决定
 这条记录使用哪些字段；这些字段不保证与提交记录相同。记录会异步写入，不保证每次都成功。

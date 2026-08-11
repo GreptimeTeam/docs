@@ -83,28 +83,28 @@ ORDER BY timestamp;
 
 运行时只记录适用的触发信息，因此查询结果不一定包含每一种 `type`，顺序也不固定：
 
-| `type` | 含义和字段 |
-| --- | --- |
-| `Recovered` | 根 Procedure 从持久化状态恢复。 |
+| `type`           | 含义和字段                                                                                                                                            |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Recovered`      | 根 Procedure 从持久化状态恢复。                                                                                                                       |
 | `ChildSubmitted` | 尝试提交子 Procedure。触发器包含子 Procedure 的 `procedure_id` 和提交 `outcome`（`Accepted`、`AlreadyAccepted`、`ManagerStopped` 或 `SpawnFailed`）。 |
-| `Retrying` | 正在重试 Procedure 的执行或回滚。触发器包含重试 `phase`（`Execute` 或 `Rollback`）和 `attempt`。 |
-| `RollingBack` | 开始回滚 Procedure。 |
-| `Failed` | Procedure 到达失败终态。请检查 `procedure_error` 中的失败详情。 |
-| `Poisoned` | Procedure 无法继续。请检查 `procedure_error` 中的失败详情。 |
+| `Retrying`       | 正在重试 Procedure 的执行或回滚。触发器包含重试 `phase`（`Execute` 或 `Rollback`）和 `attempt`。                                                      |
+| `RollingBack`    | 开始回滚 Procedure。                                                                                                                                  |
+| `Failed`         | Procedure 到达失败终态。请检查 `procedure_error` 中的失败详情。                                                                                       |
+| `Poisoned`       | Procedure 无法继续。请检查 `procedure_error` 中的失败详情。                                                                                           |
 
 ## 不同事件类型的完成记录字段
 
 `procedure_id`、`procedure_state`、`procedure_trigger` 和 `procedure_error` 是公共封装
 字段。完成记录中的其他字段取决于事件类型，可能由 hook 重新计算或省略。
 
-| 事件类型 | 完成记录中的常见字段 |
-| --- | --- |
-| DDL | 对象定位列；Done 输出携带 ID 时才会新增 ID。 |
-| `repartition` | 父 Procedure 的表定位和关联信息；payload 可能是 JSON `null`。 |
-| `repartition_group` | 父/Group ID；每个目标的 Region 字段可能是 SQL `NULL`。 |
-| `region_migration` | Region、节点和超时字段。 |
-| `batch_gc` | 受影响的 Region 维度和 `gc_report`；`payload` 为 JSON `null`。空报告不会产生 `Done` 事件。 |
-| `wal_prune` | Topic、清理/最新 offset，以及清理 payload。 |
+| 事件类型            | 完成记录中的常见字段                                                                       |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| DDL                 | 对象定位列；Done 输出携带 ID 时才会新增 ID。                                               |
+| `repartition`       | 父 Procedure 的表定位和关联信息；payload 可能是 JSON `null`。                              |
+| `repartition_group` | 父/Group ID；每个目标的 Region 字段可能是 SQL `NULL`。                                     |
+| `region_migration`  | Region、节点和超时字段。                                                                   |
+| `batch_gc`          | 受影响的 Region 维度和 `gc_report`；`payload` 为 JSON `null`。空报告不会产生 `Done` 事件。 |
+| `wal_prune`         | Topic、清理/最新 offset，以及清理 payload。                                                |
 
 只读查看失败事件：
 

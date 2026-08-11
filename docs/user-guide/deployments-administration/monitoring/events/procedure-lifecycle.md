@@ -88,14 +88,14 @@ DDL/repartition events after a Procedure completes; it is not a rule for every e
 Only applicable triggers are recorded, so query results might not include every
 `type` and their order is not fixed:
 
-| `type` | Meaning and fields |
-| --- | --- |
-| `Recovered` | The root procedure was recovered from persisted state. |
+| `type`           | Meaning and fields                                                                                                                                                     |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Recovered`      | The root procedure was recovered from persisted state.                                                                                                                 |
 | `ChildSubmitted` | A child submission was attempted. The trigger includes the child `procedure_id` and its `outcome` (`Accepted`, `AlreadyAccepted`, `ManagerStopped`, or `SpawnFailed`). |
-| `Retrying` | Procedure execution or rollback is being retried. The trigger includes the retry `phase` (`Execute` or `Rollback`) and `attempt`. |
-| `RollingBack` | Procedure rollback is starting. |
-| `Failed` | The procedure reached a failed terminal state. Inspect `procedure_error` for failure details. |
-| `Poisoned` | The procedure cannot proceed. Inspect `procedure_error` for the failure details. |
+| `Retrying`       | Procedure execution or rollback is being retried. The trigger includes the retry `phase` (`Execute` or `Rollback`) and `attempt`.                                      |
+| `RollingBack`    | Procedure rollback is starting.                                                                                                                                        |
+| `Failed`         | The procedure reached a failed terminal state. Inspect `procedure_error` for failure details.                                                                          |
+| `Poisoned`       | The procedure cannot proceed. Inspect `procedure_error` for the failure details.                                                                                       |
 
 ## Fields in completed events
 
@@ -103,14 +103,14 @@ Envelope fields (`procedure_id`, `procedure_state`, `procedure_trigger`, and
 `procedure_error`) are common. Other fields in completed events are type-specific and may
 be recomputed or omitted by the event hook.
 
-| Family | Typical terminal fields |
-| --- | --- |
-| DDL | Object locators; IDs may be added when the Done output carries them. |
-| `repartition` | Parent table locator and procedure linkage; payload may be JSON `null`. |
-| `repartition_group` | Parent/group IDs; per-target region fields may be SQL `NULL`. |
-| `region_migration` | Region, node, and timeout fields. |
-| `batch_gc` | Affected Region dimensions and `gc_report`; `payload` is JSON `null`. An empty report emits no `Done` event. |
-| `wal_prune` | Topic, prune/latest offsets, and the prune payload. |
+| Family              | Typical terminal fields                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------ |
+| DDL                 | Object locators; IDs may be added when the Done output carries them.                                         |
+| `repartition`       | Parent table locator and procedure linkage; payload may be JSON `null`.                                      |
+| `repartition_group` | Parent/group IDs; per-target region fields may be SQL `NULL`.                                                |
+| `region_migration`  | Region, node, and timeout fields.                                                                            |
+| `batch_gc`          | Affected Region dimensions and `gc_report`; `payload` is JSON `null`. An empty report emits no `Done` event. |
+| `wal_prune`         | Topic, prune/latest offsets, and the prune payload.                                                          |
 
 To inspect failures without creating one:
 
