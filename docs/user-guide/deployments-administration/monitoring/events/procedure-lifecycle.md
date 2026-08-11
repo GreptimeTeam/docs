@@ -1,9 +1,9 @@
 ---
-keywords: [GreptimeDB events, Procedure execution]
-description: Inspect Procedure execution events in GreptimeDB.
+keywords: [GreptimeDB events, Procedure events]
+description: Inspect Procedure events in GreptimeDB.
 ---
 
-# Procedure execution
+# Procedure events
 
 Procedure events share a `procedure_id`. For an overview of the event table and
 its common columns, see [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md).
@@ -39,7 +39,7 @@ Use the returned ID to query the Procedure's event rows. The locator
 filters help avoid selecting a procedure for another object with a similar
 name.
 
-## Query a Procedure execution
+## Query Procedure events
 
 Use the full-row query when you need to explore every available column:
 
@@ -80,12 +80,12 @@ copy of the submitted event. Recording remains asynchronous and best effort.
 The JSON-null terminal `payload` in this `create_table` example also applies to
 DDL/repartition events after a Procedure completes; it is not a rule for every event family.
 
-## Procedure event trigger information
+## Procedure event triggers
 
-Only applicable triggers are recorded, so a procedure does not necessarily emit
-every trigger or follow this sequence:
+Only applicable triggers are recorded, so query results might not include every
+`type` and their order is not fixed:
 
-| Trigger | Meaning and useful fields |
+| `type` | Meaning and fields |
 | --- | --- |
 | `Recovered` | The root procedure was recovered from persisted state. |
 | `ChildSubmitted` | A child submission was attempted. The trigger includes the child `procedure_id` and its `outcome` (`Accepted`, `AlreadyAccepted`, `ManagerStopped`, or `SpawnFailed`). |

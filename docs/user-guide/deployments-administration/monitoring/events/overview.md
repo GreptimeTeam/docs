@@ -5,7 +5,7 @@ description: Query event records in greptime_private.events.
 
 # Events
 
-The `greptime_private.events` table stores event records generated during GreptimeDB operation. It helps operators inspect DDL changes and background procedures without searching service logs.
+The `greptime_private.events` table stores events recorded while GreptimeDB runs. It helps operators inspect DDL changes and background procedures without searching service logs.
 
 GreptimeDB writes event records asynchronously on a best-effort basis. A recent operation might not be visible immediately, and event recording should not be treated as the operation's success acknowledgement.
 
@@ -30,6 +30,6 @@ LIMIT 20;
 Use the following pages for focused queries and event details:
 
 - [Query events](/user-guide/deployments-administration/monitoring/events/query-events.md)
-- [Procedure execution](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
+- [Procedure events](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
 - [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
 - [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md)

@@ -12,11 +12,11 @@ SQL `NULL`。
 | --- | --- |
 | `type` | 事件类型，例如 `create_table` 或 `region_migration`。 |
 | `timestamp` | 记录该行的时间。 |
-| `procedure_id` | 关联 Procedure 的唯一 ID。 |
-| `procedure_state` | 记录事件时关联 Procedure 的状态：`Running`、`Done`、`Retrying`、`PrepareRollback`、`RollingBack`、`Failed` 或 `Poisoned`。 |
-| `procedure_trigger` | 触发 Procedure 事件的操作信息，以 JSON 存储。其 `type` 可以是 `Submitted`、`Recovered`、`ChildSubmitted`、`Retrying`、`RollingBack`、`Succeeded`、`Failed` 或 `Poisoned`。 |
-| `procedure_error` | 关联 Procedure 出错时记录的错误信息。 |
-| `payload` | 与事件类型相关的 JSON 数据；`Submitted` 事件通常包含该操作的请求详情。 |
+| `procedure_id` | Procedure 的唯一 ID。 |
+| `procedure_state` | 记录事件时的 Procedure 状态。取值为 `Running`、`Done`、`Retrying`、`PrepareRollback`、`RollingBack`、`Failed` 和 `Poisoned`。 |
+| `procedure_trigger` | Procedure 事件触发信息，采用 JSON 格式。`type` 可为 `Submitted`、`Recovered`、`ChildSubmitted`、`Retrying`、`RollingBack`、`Succeeded`、`Failed` 或 `Poisoned`。 |
+| `procedure_error` | Procedure 出错时的错误信息。 |
+| `payload` | 与事件类型相关的 JSON 数据。 |
 | `event_context` | 有上下文时，用于描述事件触发原因的 JSON。 |
 
 Runner 通过存活 Procedure 的 `event()` hook 重新生成终态事件。终态事件族字段由类型
@@ -28,7 +28,7 @@ Runner 通过存活 Procedure 的 `event()` hook 重新生成终态事件。终�
 `{"protocol":"mysql","reason":"manual"}`。
 
 如需查看针对性的示例，请参阅[查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)、
-[Procedure 执行过程](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)和
+[Procedure 事件](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)和
 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
 
 ## 查询 JSON 字段

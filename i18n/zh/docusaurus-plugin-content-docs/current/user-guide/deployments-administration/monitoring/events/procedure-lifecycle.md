@@ -1,9 +1,9 @@
 ---
-keywords: [GreptimeDB 事件, Procedure 执行过程]
-description: 查看 GreptimeDB 中记录的 Procedure 执行过程中的事件。
+keywords: [GreptimeDB 事件, Procedure 事件]
+description: 查看 GreptimeDB 中记录的 Procedure 事件。
 ---
 
-# Procedure 执行过程
+# Procedure 事件
 
 Procedure 事件共享 `procedure_id`。有关事件表及其公共列的概览，请参阅[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
 
@@ -36,7 +36,7 @@ LIMIT 1;
 在后续查询中使用返回的 ID 查看该 Procedure 的事件记录。定位条件可以避免
 选中名称相似但属于其他对象的 Procedure。
 
-## 查询 Procedure 执行过程
+## 查询 Procedure 事件
 
 需要探索所有可用列时，使用完整记录查询：
 
@@ -78,9 +78,9 @@ ORDER BY timestamp;
 
 ## Procedure 事件触发信息
 
-运行时只会记录适用的触发器，因此不一定会出现每一种触发器，也不保证固定顺序：
+运行时只记录适用的触发信息，因此查询结果不一定包含每一种 `type`，顺序也不固定：
 
-| 触发器 | 含义和有用字段 |
+| `type` | 含义和字段 |
 | --- | --- |
 | `Recovered` | 根 Procedure 从持久化状态恢复。 |
 | `ChildSubmitted` | 尝试提交子 Procedure。触发器包含子 Procedure 的 `procedure_id` 和提交 `outcome`（`Accepted`、`AlreadyAccepted`、`ManagerStopped` 或 `SpawnFailed`）。 |

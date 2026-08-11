@@ -12,11 +12,11 @@ sparse and are SQL `NULL` when a family does not populate them.
 | --- | --- |
 | `type` | Event type, such as `create_table` or `region_migration`. |
 | `timestamp` | Time at which the row was recorded. |
-| `procedure_id` | Unique ID of the associated Procedure. |
-| `procedure_state` | State of the associated Procedure when the event was recorded: `Running`, `Done`, `Retrying`, `PrepareRollback`, `RollingBack`, `Failed`, or `Poisoned`. |
-| `procedure_trigger` | JSON information about the action that triggered the Procedure event. Its `type` is `Submitted`, `Recovered`, `ChildSubmitted`, `Retrying`, `RollingBack`, `Succeeded`, `Failed`, or `Poisoned`. |
-| `procedure_error` | Error message recorded when the associated Procedure encounters an error. |
-| `payload` | Event-type-specific JSON data. `Submitted` events usually contain request details for the operation. |
+| `procedure_id` | Unique Procedure ID. |
+| `procedure_state` | Procedure state when the event was recorded. Values are `Running`, `Done`, `Retrying`, `PrepareRollback`, `RollingBack`, `Failed`, and `Poisoned`. |
+| `procedure_trigger` | Procedure event trigger in JSON. Its `type` is `Submitted`, `Recovered`, `ChildSubmitted`, `Retrying`, `RollingBack`, `Succeeded`, `Failed`, or `Poisoned`. |
+| `procedure_error` | Error message when the Procedure fails. |
+| `payload` | JSON data for the event type. |
 | `event_context` | JSON describing why the event was triggered when context is available. |
 
 The runner regenerates terminal events through the live procedure's `event()`
@@ -29,7 +29,7 @@ When `event_context` is available, its stable `reason` value is one of
 event can contain `{"protocol":"mysql","reason":"manual"}`.
 
 For focused examples, see [Query events](/user-guide/deployments-administration/monitoring/events/query-events.md),
-[Procedure execution](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md),
+[Procedure events](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md),
 and [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
 
 ## Query JSON fields

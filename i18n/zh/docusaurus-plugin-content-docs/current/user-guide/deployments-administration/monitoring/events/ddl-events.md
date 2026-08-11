@@ -5,13 +5,15 @@ description: 查看 GreptimeDB 记录的 DDL 事件。
 
 # DDL 事件
 
-DDL 事件异步、尽力而为地记录。一个 Procedure 的执行过程通常先产生
-`Running`/`Submitted` 行，再产生 `Done`/`Succeeded` 行。终态行由 Procedure
-的 `event()` hook 重新生成，而不是从提交行复制，因此事件族字段可能被省略或重新计算。
-DDL 终态行的 `payload` 使用 JSON `null`。
+系统会异步写入 DDL 事件。写入失败不会影响 Procedure 的执行结果。一次成功的 DDL Procedure
+通常会有两条记录：
 
-终态行会保留 Procedure 状态中的稳定对象名称。部分创建操作只有在终态输出提供
-新分配的 ID 时，才会在终态行中补充该 ID。
+- 提交 Procedure 时，写入一条状态为 `Running`、触发类型为 `Submitted` 的记录。
+- Procedure 完成后，写入一条状态为 `Done`、触发类型为 `Succeeded` 的记录。
+
+Procedure 完成后，Runner 根据它当时的状态生成第二条事件，并交给记录器写入。该记录会保留已知的
+对象定位信息。以创建表为例，只有 Procedure 返回新表 ID 时，记录中才会包含 `table_id`。
+成功完成的 DDL 记录中，`payload` 为 JSON `null`。
 
 公共字段和 Procedure 状态请参阅[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
 
@@ -23,6 +25,7 @@ SELECT timestamp, type, procedure_state AS state,
        json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND type = '<event_type>'
 ORDER BY timestamp;
@@ -72,19 +75,22 @@ SELECT timestamp, type, procedure_state,
        table_name, table_id, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND type = '<event_type>'
 ORDER BY timestamp;
 ```
 
-此可复用查询会返回数据库中所选事件类型的全部对象。若要缩小到单个对象，
-可在 `WHERE` 子句中按需添加 `AND table_name = '<table_name>'`。
+该查询返回过去一小时内、指定数据库中指定类型的表事件。若只查询某张表，
+请在 `WHERE` 子句中添加 `AND table_name = '<table_name>'`。
 
-终态行保留稳定的 `table_name`。`create_table` 和 `create_logical_tables` 只有在
-`Done` 输出提供 `table_id` 时才新增该 ID。`alter_table`、`truncate_table` 和
-`drop_table` 保留 Procedure 已知的 ID。源码支持 `create_logical_tables` 和
-`alter_logical_tables` 逻辑表事件；`undrop_table` 和 `purge_dropped_table`
-仅企业版支持。
+同一张表的事件记录会保留 `table_name`。`create_table` 和
+`create_logical_tables` 成功后，只有 Procedure 返回分配的 ID，记录中才会包含
+`table_id`。`alter_table`、`truncate_table` 和 `drop_table` 在提交时已经知道
+表 ID，因此它们的事件记录会包含 `table_id`。
+
+GreptimeDB 还会记录 `create_logical_tables` 和 `alter_logical_tables` 事件。
+`undrop_table` 和 `purge_dropped_table` 仅企业版支持。
 
 **`create_table`**
 
@@ -94,10 +100,6 @@ ORDER BY timestamp;
 +-------------------------------+--------------+-----------------+--------------+----------------+----------+------------------------------------------------------------+
 | 2026-08-10 11:39:53.544351589 | create_table | Running         | Submitted    | ddl_source     |     NULL | {"create_if_not_exists":false,"engine":"mito","version":1} |
 | 2026-08-10 11:39:53.620080844 | create_table | Done            | Succeeded    | ddl_source     |     1449 | null                                                       |
-| 2026-08-10 11:39:53.624114800 | create_table | Running         | Submitted    | ddl_sink       |     NULL | {"create_if_not_exists":false,"engine":"mito","version":1} |
-| 2026-08-10 11:39:53.700691057 | create_table | Done            | Succeeded    | ddl_sink       |     1450 | null                                                       |
-| 2026-08-10 11:39:53.706348575 | create_table | Running         | Submitted    | ddl_drop_probe |     NULL | {"create_if_not_exists":false,"engine":"mito","version":1} |
-| 2026-08-10 11:39:53.776861370 | create_table | Done            | Succeeded    | ddl_drop_probe |     1451 | null                                                       |
 +-------------------------------+--------------+-----------------+--------------+----------------+----------+------------------------------------------------------------+
 ```
 
@@ -146,6 +148,7 @@ SELECT timestamp, type, procedure_state,
        json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND flow_name = '<flow_name>'
   AND type = '<event_type>'
 ORDER BY timestamp;
@@ -184,6 +187,7 @@ SELECT timestamp, type, procedure_state,
        view_name, view_id, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND view_name = '<view_name>'
   AND type = '<event_type>'

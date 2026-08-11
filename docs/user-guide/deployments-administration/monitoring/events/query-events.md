@@ -7,7 +7,7 @@ description: Query GreptimeDB event records.
 
 Query the `greptime_private.events` system table to investigate recent
 procedures. Events are written asynchronously, so a newly submitted operation
-might not be visible immediately. See [Procedure execution](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
+might not be visible immediately. See [Procedure events](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
 and [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
 for Procedure states and columns.
 

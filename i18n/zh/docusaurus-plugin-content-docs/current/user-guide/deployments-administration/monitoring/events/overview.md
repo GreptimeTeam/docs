@@ -30,6 +30,6 @@ LIMIT 20;
 以下页面分别介绍查询方法和事件详情：
 
 - [查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)
-- [Procedure 执行过程](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
+- [Procedure 事件](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
 - [事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
 - [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)

@@ -6,7 +6,7 @@ description: 查询 GreptimeDB 事件记录。
 # 查询事件
 
 查询 `greptime_private.events` 系统表可以排查最近的 Procedure。事件异步写入，
-刚提交的操作可能不会立即出现。有关 Procedure 状态和列，请参阅[Procedure 执行过程](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
+刚提交的操作可能不会立即出现。有关 Procedure 状态和列，请参阅[Procedure 事件](/user-guide/deployments-administration/monitoring/events/procedure-lifecycle.md)
 和[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
 
 ## 查看最近事件
