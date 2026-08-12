@@ -1,0 +1,27 @@
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_0e581794860da3::t_7b81b787ee8cf4 129
+  s_0e581794860da3::t_5ad36692084eb7 106,130,153
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_0e581794860da3::t_5ad36692084eb7 114,141,164-165
+  s_0e581794860da3::t_7b81b787ee8cf4 139-140
+i18n/zh/docusaurus-plugin-content-docs/current/reference/sql/greptime-private/events.md
+  s_0e581794860da3::t_5ad36692084eb7 22
+docs/reference/sql/greptime-private/events.md
+  s_0e581794860da3::t_5ad36692084eb7 29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "458059298e2db523b71f3f3e89c94c083e27cc7d",
+  "prompts": {},
+  "sessions": {
+    "s_0e581794860da3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff3f4-9ad7-72f2-bf7f-1bb754d367bd",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
