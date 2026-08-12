@@ -215,6 +215,15 @@ Various query APIs for sending query to GreptimeDB.
   
 For more information on the SQL API, refer to the [HTTP API documentation](/user-guide/protocols/http.md#post-sql-statements) in the user guide.
 
+### Format SQL API
+
+- **Path**: `/v1/sql/format`
+- **Methods**: `GET`, `POST`
+- **Description**: Rewrites an SQL statement into the canonical form of GreptimeDB's SQL dialect. Available since v0.17.
+- **Usage**: Pass the SQL in the `sql` query parameter, or in the form body of a `POST` request, which must set `Content-Type: application/x-www-form-urlencoded`. Returns a JSON object `{"formatted": "..."}` holding the normalized SQL string.
+
+For more information on the Format SQL API, refer to the [HTTP API documentation](/user-guide/protocols/http.md#format-sql-with-greptimedbs-sql-dialect) in the user guide.
+
 ### PromQL API
 
 - **Path**: `/v1/promql`
