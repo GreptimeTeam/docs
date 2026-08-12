@@ -1,22 +1,24 @@
 ---
-keywords: [GreptimeDB events, Procedure events, operational events, greptime_private]
+keywords: [GreptimeDB events, Procedure events, Region events, maintenance events, greptime_private]
 description: Query event records in greptime_private.events.
 ---
 
 # Events
 
-The `greptime_private.events` table stores events recorded while GreptimeDB runs. It helps operators inspect DDL changes and background procedures without searching service logs.
+The `greptime_private.events` table stores events recorded while GreptimeDB runs.
+Use it to inspect DDL changes and background Procedures without searching service
+logs.
 
-GreptimeDB writes event records asynchronously on a best-effort basis. Records are
-normally flushed every five seconds, so a recent operation might not be visible
-immediately. Event recording should not be treated as the operation's success
-acknowledgement.
+GreptimeDB writes event records asynchronously on a best-effort basis. Records
+are normally flushed every five seconds, so a recent operation might not appear
+immediately. An event row does not confirm that the operation succeeded.
 
 ## Configure event recording
 
 The event recorder can be configured in standalone deployments or on Metasrv in distributed deployments. See [Lifecycle event recorder](/user-guide/deployments-administration/configuration.md#lifecycle-event-recorder) for configuration options and the supported type list.
 
-Standalone deployments record supported local DDL Procedure events. Distributed deployments with Metasrv can additionally record operational event types.
+Standalone deployments record supported local DDL Procedure events. In distributed
+deployments, Metasrv can also record Region and maintenance events.
 
 ## Query events
 
@@ -24,7 +26,7 @@ The table is created when the first event is recorded. If no event has been
 recorded yet, or event recording is disabled, this query returns a table-not-found
 error.
 
-Start with a bounded query while investigating a recent operation:
+When investigating a recent operation, start with a bounded query:
 
 ```sql
 SELECT timestamp, type

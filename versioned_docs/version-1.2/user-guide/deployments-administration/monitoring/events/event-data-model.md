@@ -5,7 +5,8 @@ description: Understand the GreptimeDB events table data model.
 
 # Event data model
 
-`greptime_private.events` has the following common columns.
+`greptime_private.events` has the following common columns. Event-type-specific
+columns are SQL `NULL` when the recorded event does not populate them.
 
 | Column          | Meaning                                                     |
 | --------------- | ----------------------------------------------------------- |
@@ -110,27 +111,36 @@ ORDER BY timestamp;
 +-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
 ```
 
-## Procedure event type-specific columns
+## Event type-specific columns
 
 The following columns are populated only by the listed event types. An SQL `NULL`
-value in one of these columns is normal when it does not apply.
+value in one of these columns is normal when it does not apply to a row.
 
-- **Database, table, and view events:** `catalog_name`, `schema_name`, and the
-  applicable table or view name and ID columns identify the affected object.
-  Flow events use `catalog_name` and `flow_name`; their `schema_name` is SQL
-  `NULL`. `physical_table_id` applies only to `create_logical_tables` and
-  `alter_logical_tables`. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
-- **Region migration:** `region_id` and `region_number` identify the Region.
+- **Database events** (`create_database`, `alter_database`, `drop_database`):
+  `catalog_name` and `schema_name` identify the affected database.
+- **Table events** (`create_table`, `create_logical_tables`, `alter_table`,
+  `alter_logical_tables`, `drop_table`, `undrop_table`, `purge_dropped_table`,
+  `truncate_table`): `catalog_name`, `schema_name`, `table_name`, and the
+  applicable table ID columns identify the affected table. `physical_table_id`
+  applies only to `create_logical_tables` and `alter_logical_tables`.
+- **Flow events** (`create_flow`, `drop_flow`): `catalog_name` and `flow_name`
+  identify the Flow; `schema_name` is SQL `NULL`.
+- **View events** (`create_view`, `drop_view`): `catalog_name`, `schema_name`,
+  `view_name`, and `view_id` identify the affected view. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
+- **Region migration** (`region_migration`): `region_id`, `table_id`, and
+  `region_number` identify the Region.
   `region_migration_trigger_reason`, `region_migration_src_node_id`,
   `region_migration_src_peer_addr`, `region_migration_dst_node_id`, and
   `region_migration_dst_peer_addr` describe why and where it moved.
-- **Repartition:** `catalog_name`, `schema_name`, `table_name`, and `table_id`
-  identify the affected table. `parent_procedure_id` links a child procedure to
-  its parent; `repartition_group_id` identifies a group operation. `source_region_id`,
-  `source_region_number`, `source_partition_expr`, `target_region_id`,
-  `target_region_number`, and `target_partition_expr` describe the affected
-  Regions and partition expressions.
-- **Batch GC:** `region_id`, `region_number`, and `gc_report` describe the
-  Regions processed and their GC result.
-- **WAL pruning:** `topic_name`, `prunable_entry_id`, and `latest_offset`
-  identify the topic, requested prune boundary, and exclusive latest offset.
+- **Repartition** (`repartition`, `repartition_group`): `catalog_name`,
+  `schema_name`, `table_name`, and `table_id` identify the affected table. On a
+  `repartition_group` `Submitted` row, `parent_procedure_id`,
+  `repartition_group_id`, `source_region_id`, `source_region_number`,
+  `source_partition_expr`, `target_region_id`, `target_region_number`, and
+  `target_partition_expr` describe the parent, group, and Region topology.
+  These fields are SQL `NULL` on later lifecycle rows.
+- **Batch GC** (`batch_gc`): `region_id`, `table_id`, `region_number`, and
+  `gc_report` describe a recorded Region cleanup result.
+- **WAL pruning** (`wal_prune`): `topic_name`, `prunable_entry_id`, and
+  `latest_offset` identify the topic, requested prune boundary, and exclusive
+  latest offset.

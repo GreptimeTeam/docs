@@ -5,7 +5,7 @@ description: 了解 GreptimeDB events 表的数据模型。
 
 # 事件数据模型
 
-`greptime_private.events` 有以下公共列。
+`greptime_private.events` 有以下公共列。事件类型专用列在对应事件未填充时为 SQL `NULL`。
 
 | 列              | 含义                                                  |
 | --------------- | ----------------------------------------------------- |
@@ -104,23 +104,33 @@ ORDER BY timestamp;
 +-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
 ```
 
-## Procedure 事件的专用列
+## 事件类型专用列
 
 以下列只会在对应事件类型中填充；不适用时为 SQL `NULL`。
 
-- **数据库、表和视图事件：** `catalog_name`、`schema_name` 以及适用的表或视图名称和
-  ID 列用于标识对象。Flow 事件使用 `catalog_name` 和 `flow_name`；其 `schema_name` 为
-  SQL `NULL`。`physical_table_id` 仅适用于 `create_logical_tables` 和
-  `alter_logical_tables`。详见 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
-- **Region 迁移：** `region_id`、`region_number` 标识 Region；
-  `region_migration_trigger_reason`、`region_migration_src_node_id`、
-  `region_migration_src_peer_addr`、`region_migration_dst_node_id` 和
-  `region_migration_dst_peer_addr` 记录迁移原因、源端和目标端。
-- **Repartition：** `catalog_name`、`schema_name`、`table_name` 和 `table_id` 标识受影响的表。
-  `parent_procedure_id` 关联父 Procedure，`repartition_group_id` 标识分组操作。
+- **数据库事件**（`create_database`、`alter_database`、`drop_database`）：
+  `catalog_name` 和 `schema_name` 标识受影响的数据库。
+- **表事件**（`create_table`、`create_logical_tables`、`alter_table`、
+  `alter_logical_tables`、`drop_table`、`undrop_table`、`purge_dropped_table`、
+  `truncate_table`）：`catalog_name`、`schema_name`、`table_name` 和适用的表 ID
+  列标识受影响的表。`physical_table_id` 仅适用于 `create_logical_tables` 和
+  `alter_logical_tables`。
+- **Flow 事件**（`create_flow`、`drop_flow`）：`catalog_name` 和 `flow_name`
+  标识 Flow；`schema_name` 为 SQL `NULL`。
+- **视图事件**（`create_view`、`drop_view`）：`catalog_name`、`schema_name`、
+  `view_name` 和 `view_id` 标识受影响的视图。详见 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
+- **Region 迁移**（`region_migration`）：`region_id`、`table_id` 和
+  `region_number` 标识 Region；`region_migration_trigger_reason`、
+  `region_migration_src_node_id`、`region_migration_src_peer_addr`、
+  `region_migration_dst_node_id` 和 `region_migration_dst_peer_addr` 记录迁移的
+  原因、源端和目标端。
+- **重分区**（`repartition`、`repartition_group`）：`catalog_name`、
+  `schema_name`、`table_name` 和 `table_id` 标识受影响的表。`repartition_group`
+  的 `Submitted` 行还包含 `parent_procedure_id`、`repartition_group_id`、
   `source_region_id`、`source_region_number`、`source_partition_expr`、
-  `target_region_id`、`target_region_number` 和 `target_partition_expr` 描述源和目标
-  Region 及其分区表达式。
-- **批量 GC：** `region_id`、`region_number` 和 `gc_report` 记录处理的 Region 及 GC 结果。
-- **WAL 清理：** `topic_name`、`prunable_entry_id` 和 `latest_offset` 分别表示 topic、
-  请求的清理边界和排他的最新 offset。
+  `target_region_id`、`target_region_number` 和 `target_partition_expr`，用于描述
+  父 Procedure、组和 Region 拓扑。后续生命周期行中，这些列为 SQL `NULL`。
+- **批量 GC**（`batch_gc`）：`region_id`、`table_id`、`region_number` 和
+  `gc_report` 描述已记录的 Region 清理结果。
+- **WAL 清理**（`wal_prune`）：`topic_name`、`prunable_entry_id` 和
+  `latest_offset` 分别表示 topic、请求的清理边界和排他的最新 offset。
