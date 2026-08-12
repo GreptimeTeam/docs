@@ -25,8 +25,8 @@ Procedure events also have the following columns:
 | `procedure_trigger` | Procedure event trigger in JSON. Its `type` is `Submitted`, `Recovered`, `ChildSubmitted`, `Retrying`, `RollingBack`, `Succeeded`, `Failed`, or `Poisoned`. |
 | `procedure_error`   | Debug-formatted error when the Procedure fails; an empty string otherwise.                                                                                  |
 
-`Submitted` events normally have state `Running`. When a Procedure succeeds,
-the completed event has state `Done` and trigger type `Succeeded`. The completed
+Rows with trigger type `Submitted` normally have state `Running`. When a Procedure
+succeeds, the completed event has state `Done` and trigger type `Succeeded`. The completed
 row is generated from the Procedure's final state, so its fields can differ from
 the submitted row. Events are recorded asynchronously; a recording failure does
 not change the Procedure result.
@@ -41,14 +41,14 @@ In addition to `Submitted` and `Succeeded`, a Procedure can emit the following
 trigger types when applicable. Not every Procedure emits every trigger type, and rows are
 not guaranteed to appear in the order shown:
 
-| `type`           | Meaning and fields                                                                                                                                                             |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Recovered`      | The root procedure was recovered from persisted state.                                                                                                                         |
-| `ChildSubmitted` | A child submission was attempted. `procedure_trigger` includes the child `procedure_id` and its `outcome` (`Accepted`, `AlreadyAccepted`, `ManagerStopped`, or `SpawnFailed`). |
-| `Retrying`       | Procedure execution or rollback is being retried. `procedure_trigger` includes the retry `phase` (`Execute` or `Rollback`) and `attempt`.                                      |
-| `RollingBack`    | Procedure rollback is starting.                                                                                                                                                |
-| `Failed`         | The procedure reached a failed terminal state. Inspect `procedure_error` for failure details.                                                                                  |
-| `Poisoned`       | The procedure cannot proceed. Inspect `procedure_error` for the failure details.                                                                                               |
+| `type`           | Meaning and fields                                                                                                                                                                       |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Recovered`      | The root Procedure was recovered from persisted state.                                                                                                                                   |
+| `ChildSubmitted` | A child Procedure submission was attempted. `procedure_trigger` includes the child `procedure_id` and its `outcome` (`Accepted`, `AlreadyAccepted`, `ManagerStopped`, or `SpawnFailed`). |
+| `Retrying`       | Procedure execution or rollback is being retried. `procedure_trigger` includes the retry `phase` (`Execute` or `Rollback`) and `attempt`.                                                |
+| `RollingBack`    | Procedure rollback is starting.                                                                                                                                                          |
+| `Failed`         | The Procedure reached a failed terminal state. Inspect `procedure_error` for failure details.                                                                                            |
+| `Poisoned`       | The Procedure cannot proceed. Inspect `procedure_error` for the failure details.                                                                                                         |
 
 ## Query JSON fields
 
@@ -115,10 +115,11 @@ ORDER BY timestamp;
 The following columns are populated only by the listed event types. An SQL `NULL`
 value in one of these columns is normal when it does not apply.
 
-- **Database, table, Flow, and view events:** `catalog_name`, `schema_name`,
-  `table_name`, `table_id`, `flow_name`, `flow_id`, `view_name`, and `view_id`
-  identify the affected object. `physical_table_id` applies only to
-  `create_logical_tables` and `alter_logical_tables`. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
+- **Database, table, and view events:** `catalog_name`, `schema_name`, and the
+  applicable table or view name and ID columns identify the affected object.
+  Flow events use `catalog_name` and `flow_name`; their `schema_name` is SQL
+  `NULL`. `physical_table_id` applies only to `create_logical_tables` and
+  `alter_logical_tables`. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
 - **Region migration:** `region_id` and `region_number` identify the Region.
   `region_migration_trigger_reason`, `region_migration_src_node_id`,
   `region_migration_src_peer_addr`, `region_migration_dst_node_id`, and

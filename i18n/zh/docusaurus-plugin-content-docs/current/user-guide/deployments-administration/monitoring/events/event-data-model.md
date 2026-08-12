@@ -25,7 +25,7 @@ Procedure 事件还有以下列：
 | `procedure_trigger` | Procedure 事件触发信息，采用 JSON 格式。`type` 可为 `Submitted`、`Recovered`、`ChildSubmitted`、`Retrying`、`RollingBack`、`Succeeded`、`Failed` 或 `Poisoned`。 |
 | `procedure_error`   | Procedure 出错时的 Debug 格式错误信息；其他情况为空字符串。                                                                                                      |
 
-`Submitted` 事件的状态通常为 `Running`。Procedure 成功完成后，完成记录的状态为
+触发类型为 `Submitted` 的事件状态通常为 `Running`。Procedure 成功完成后，完成记录的状态为
 `Done`，触发类型为 `Succeeded`。完成记录根据 Procedure 完成时的状态生成，因此字段可能
 与提交时的记录不同。事件会异步写入，写入失败不会影响 Procedure 的执行结果。
 
@@ -108,10 +108,10 @@ ORDER BY timestamp;
 
 以下列只会在对应事件类型中填充；不适用时为 SQL `NULL`。
 
-- **数据库、表、Flow 和视图事件：** `catalog_name`、`schema_name`、`table_name`、
-  `table_id`、`flow_name`、`flow_id`、`view_name` 和 `view_id` 用于标识对象。
-  `physical_table_id` 仅适用于 `create_logical_tables` 和 `alter_logical_tables`。
-  详见 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
+- **数据库、表和视图事件：** `catalog_name`、`schema_name` 以及适用的表或视图名称和
+  ID 列用于标识对象。Flow 事件使用 `catalog_name` 和 `flow_name`；其 `schema_name` 为
+  SQL `NULL`。`physical_table_id` 仅适用于 `create_logical_tables` 和
+  `alter_logical_tables`。详见 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
 - **Region 迁移：** `region_id`、`region_number` 标识 Region；
   `region_migration_trigger_reason`、`region_migration_src_node_id`、
   `region_migration_src_peer_addr`、`region_migration_dst_node_id` 和
