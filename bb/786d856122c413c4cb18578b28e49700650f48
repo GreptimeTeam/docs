@@ -1,0 +1,65 @@
+docs/user-guide/deployments-administration/monitoring/events/maintenance-events.md
+  s_785d19b59ebb8a::t_b4a3c213a5817a 2-3,6,8-9,19,35-37,39,47,62-65
+versioned_docs/version-1.2/reference/sql/greptime-private/events.md
+  s_785d19b59ebb8a::t_820ea16a496be7 9-12
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_785d19b59ebb8a::t_7faf63d27d5088 13,22,44-46,126-130,182,191
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/reference/sql/greptime-private/events.md
+  s_785d19b59ebb8a::t_820ea16a496be7 8-10,24-25
+sidebars.ts
+  s_785d19b59ebb8a::t_4f589e3f77a5e0 367-368
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_785d19b59ebb8a::t_cdea29b2825bb2 55-57,119,122-136,140-151
+  s_785d19b59ebb8a::t_7b9c27127396db 8-9
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/overview.md
+  s_785d19b59ebb8a::t_820ea16a496be7 2,8-9,11-12,18-19,40-41
+  s_785d19b59ebb8a::t_7b9c27127396db 35
+docs/reference/sql/greptime-private/events.md
+  s_785d19b59ebb8a::t_820ea16a496be7 9-12,29-31
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/region-events.md
+  s_785d19b59ebb8a::t_cfba340e0a289b 76-77
+  s_785d19b59ebb8a::t_b4a3c213a5817a 1-75,78-102
+docs/user-guide/deployments-administration/monitoring/events/overview.md
+  s_785d19b59ebb8a::t_7b9c27127396db 12-14,29
+  s_785d19b59ebb8a::t_820ea16a496be7 2,8-10,20-21,44-45
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_785d19b59ebb8a::t_cdea29b2825bb2 50-52,112,116-134,136-141
+  s_785d19b59ebb8a::t_7b9c27127396db 8
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_785d19b59ebb8a::t_7faf63d27d5088 15,24-25,47-52,133-139,193,202
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/monitoring/events/overview.md
+  s_785d19b59ebb8a::t_820ea16a496be7 2,8-9,11-12,18-19,35
+versioned_docs/version-1.2/user-guide/deployments-administration/monitoring/events/overview.md
+  s_785d19b59ebb8a::t_820ea16a496be7 2,8-10,12-14,20-21,29
+versioned_docs/version-1.2/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_785d19b59ebb8a::t_7faf63d27d5088 15,24-25,47-51,132-138,192,201
+docs/user-guide/deployments-administration/monitoring/events/region-events.md
+  s_785d19b59ebb8a::t_cfba340e0a289b 78-80
+  s_785d19b59ebb8a::t_b4a3c213a5817a 1-77,81-108
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/maintenance-events.md
+  s_785d19b59ebb8a::t_b4a3c213a5817a 2-3,6,8,10,18,33-35,37,45,60-62
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_785d19b59ebb8a::t_7faf63d27d5088 13,22,44-48,128-132,184,193
+i18n/zh/docusaurus-plugin-content-docs/current/reference/sql/greptime-private/events.md
+  s_785d19b59ebb8a::t_820ea16a496be7 8-10,24-27
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_785d19b59ebb8a::t_cdea29b2825bb2 8,107,111-129,131-136
+versioned_docs/version-1.2/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_785d19b59ebb8a::t_cdea29b2825bb2 8-9,114,117-131,135-146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "bb786d856122c413c4cb18578b28e49700650f48",
+  "prompts": {},
+  "sessions": {
+    "s_785d19b59ebb8a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff4db-02c7-7c10-bd4c-ad3d65c69c14",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
