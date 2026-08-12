@@ -21,7 +21,10 @@
     "typecheck": "tsc",
     "backport": "node scripts/backport-docs.js",
     "backport:dry": "node scripts/backport-docs.js --dry-run --verbose",
-    "pdf": "node scripts/generate-pdf.js"
+    "pdf": "node scripts/generate-pdf.js",
+    "lint:md": "markdownlint \"**/*.md\" --config .markdownlint.yaml",
+    "format:md": "prettier --write",
+    "format:md:check": "prettier --check"
   },
   "dependencies": {
     "@actions/core": "^1.11.1",
@@ -53,8 +56,10 @@
     "eslint": "8.56.0",
     "eslint-mdx": "^3.1.5",
     "eslint-plugin-mdx": "^3.1.5",
+    "markdownlint-cli": "0.42.0",
     "marked": "^15.0.12",
     "pdf-merger-js": "^5.1.2",
+    "prettier": "3.5.3",
     "puppeteer": "^24.10.2",
     "remark": "^15.0.1",
     "strip-markdown": "^6.0.0",
