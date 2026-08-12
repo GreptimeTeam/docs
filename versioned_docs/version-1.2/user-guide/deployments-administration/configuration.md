@@ -533,6 +533,8 @@ drop_table, undrop_table, purge_dropped_table, truncate_table,
 create_view, drop_view
 ```
 
+`undrop_table` and `purge_dropped_table` require GreptimeDB Enterprise.
+
 Metasrv supports the following event types:
 
 ```text
@@ -545,6 +547,8 @@ create_view, drop_view,
 repartition, repartition_group,
 batch_gc, wal_prune
 ```
+
+`undrop_table` and `purge_dropped_table` require GreptimeDB Enterprise.
 
 ### Region engine options
 
