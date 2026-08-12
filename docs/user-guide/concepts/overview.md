@@ -14,7 +14,7 @@ GreptimeDB is an observability database that unifies metrics, logs, and traces i
 - [Architecture](./architecture.md) — Compute-storage separation, stateless frontends, and how GreptimeDB scales
 
 **Deep dives:**
-- [Observability 2.0](./observability-2.md) — Wide events, unified data model, and the evolution beyond three pillars
+- [Unified observability data model](./observability-2.md) — The role and trade-offs of wide events alongside native signals
 - [Table Semantic Layer](./semantic-layer.md) — Semantic metadata that tells AI agents and tools what observability concept each table represents
 - [Storage Location](./storage-location.md) — Object storage, local disk, and multi-engine storage options
 - [Key Concepts](./key-concepts.md) — Tables, regions, time index, data types, views, and flows
@@ -22,6 +22,6 @@ GreptimeDB is an observability database that unifies metrics, logs, and traces i
 
 ## Further Reading
 
-- [Observability 2.0 and the Database for It](https://greptime.com/blogs/2025-04-25-greptimedb-observability2-new-database) — Our vision for the next generation of observability
+- [Observability 2.0 and the Database for It](https://greptime.com/blogs/2025-04-25-greptimedb-observability2-new-database) — An earlier description of the wide-event approach
 - [Unifying Logs and Metrics](https://greptime.com/blogs/2024-06-25-logs-and-metrics)
 - [GreptimeDB Storage Engine Design](https://greptime.com/blogs/2022-12-21-storage-engine-design)

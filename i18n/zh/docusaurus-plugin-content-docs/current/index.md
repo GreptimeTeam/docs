@@ -20,7 +20,7 @@ description: 介绍了 GreptimeDB，一个开源的统一可观测性数据库�
 
 **即插即用兼容。** [PromQL](/user-guide/query-data/promql.md)、[Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md)、[Jaeger](/user-guide/query-data/jaeger.md)、[MySQL](/user-guide/protocols/mysql.md)、[PostgreSQL](/user-guide/protocols/postgresql.md) 协议——无需重写查询即可迁移。[SQL](/user-guide/query-data/sql.md) + [PromQL](/user-guide/query-data/promql.md) 双查询能力意味着一个数据库就能替代指标存储 + 数据仓库的组合。
 
-了解更多信息请阅读[为什么选择 GreptimeDB](/user-guide/concepts/why-greptimedb.md) 和 [Observability 2.0](/user-guide/concepts/observability-2.md)。
+了解更多信息请阅读[为什么选择 GreptimeDB](/user-guide/concepts/why-greptimedb.md)和[统一的可观测数据模型](/user-guide/concepts/observability-2.md)。
 
 在开始上手之前，请阅读以下文档，其包含了设置说明、基本概念、架构设计和教程：
 

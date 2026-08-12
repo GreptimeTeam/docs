@@ -1,42 +1,35 @@
 ---
 keywords: [observability 2.0, wide events, unified observability, three pillars, high cardinality, AI agents]
-description: Explains the Observability 2.0 paradigm and how GreptimeDB is designed as the native database for wide events.
+description: Explains Observability 2.0 as a unified observability data model, its trade-offs, and how the approach maps to GreptimeDB.
 ---
 
 # Observability 2.0
 
-Observability 2.0 represents an evolution from the foundational "three pillars" (metrics, logs, and traces) toward a unified data foundation based on high-cardinality, wide-event datasets. Instead of maintaining separate systems for each signal type, this approach emphasizes a single source of truth that enables retroactive analysis rather than pre-aggregation.
+Observability 2.0 is an industry term for an approach to telemetry, not a product category. It usually refers to retaining context-rich events and analyzing them without deciding every question in advance.
 
-Despite its contested naming, the core concept is clear: breaking down the silos between metrics, logs, and traces to provide a more comprehensive view of modern distributed systems.
+GreptimeDB supports this approach, but does not require it. Metrics, logs, and traces remain first-class capabilities. GreptimeDB provides ingestion paths for each signal, SQL queries across all signal types, PromQL for metrics, and an experimental Jaeger-compatible query API for traces. You can keep these signals in their existing forms, introduce wide events for selected workloads, or use both models together.
 
 ## The Limits of Three Pillars
 
-For years, observability has relied on the three pillars of metrics, logs, and traces. While these pillars spawned countless successful tools (including [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md)), their limitations become evident as systems grow in complexity:
+Metrics, logs, and traces remain useful abstractions. The problem is not the signals themselves, but the operational boundary that often forms around each one:
 
-1. **Data silos**: Metrics, logs, and traces are stored separately, leading to uncorrelated datasets. Correlating a spike in error metrics with log patterns requires manual context-switching between systems.
+1. **Separate context**: When signals are stored and queried in separate systems, correlating an alert with the relevant logs and traces takes extra work.
+2. **Questions fixed at collection time**: Pre-aggregated metrics answer known questions efficiently, but cannot recover dimensions that were not recorded.
+3. **Lost structure**: Plain-text logs often contain useful fields that are expensive to parse and index later.
 
-2. **Granularity vs. cost**: Traditional metrics sacrifice detail through pre-aggregation. But retaining full granularity creates millions of time-series with redundant metadata across systems, driving costs up instead of down.
-
-3. **Unstructured logs**: While logs inherently contain structured data, extracting meaning requires intensive parsing, indexing, and computational effort.
-
-These limitations become even more pronounced in modern scenarios like AI agents and microservices, where high-dimensional, semi-structured data is the norm rather than the exception.
+A unified model reduces these boundaries by using consistent schemas and query tools. Wide events are one way to retain more context, not a replacement for every metric, log, or trace.
 
 ## Wide Events: A Unified Data Model
 
-Observability 2.0 addresses these issues by adopting **wide events** as its foundational data structure. A wide event is a context-rich, high-dimensional, and high-cardinality record that captures complete application state in a single event.
+A wide event is a structured record with many fields describing one operation or business event. It can include high-cardinality values such as user IDs, session IDs, trace IDs, and request attributes.
 
 ### What is a Wide Event?
 
-Instead of precomputing metrics or structuring logs upfront, wide events preserve raw, high-fidelity event data as the single source of truth. For example, a single wide event for a POST request might include:
-
-- User information and subscription data
-- Database queries with parameters
-- Cache operations
-- HTTP headers
-- Total: 2KB+ of contextual data in one record
+For example, an event for a POST request might include user and subscription data, database and cache operations, HTTP attributes, outcome, and duration:
 
 ```json
 {
+  "timestamp": "2026-08-12T08:15:30Z",
   "method": "POST",
   "path": "/articles",
   "service": "articles",
@@ -48,99 +41,98 @@ Instead of precomputing metrics or structuring logs upfront, wide events preserv
     "subscription": { "plan": "free", "trial": true }
   },
   "db": {
-    "query": "INSERT INTO articles (...)",
-    "parameters": { "$1": "f8d4d21c-..." }
+    "query": "INSERT INTO articles (...)"
   },
-  "cache": { "operation": "write", "key": "..." },
-  "headers": { "user-agent": "...", "cf-connecting-ip": "..." }
+  "cache": { "operation": "write" },
+  "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736"
 }
 ```
 
-### Metrics, Logs, and Traces as Projections
+Capture only the context that is useful and safe to retain. Credentials, personal data, query parameters, prompts, and request bodies may require filtering or redaction before ingestion.
 
-Wide events fundamentally change how we think about observability data. Metrics, logs, and traces are not separate data types—they are different projections of the same underlying events:
+<AnchorAlias id="metrics-logs-and-traces-as-projections" />
 
-- **Metrics**: `SELECT COUNT(*) GROUP BY status, date_bin(INTERVAL '1' minute, timestamp)` — aggregated projection
-- **Logs**: `SELECT message, timestamp WHERE message @@ 'error'` — text projection
-- **Traces**: `SELECT span_id, duration WHERE trace_id = '...'` — relational projection
+### Views Derived from Context-Rich Events
 
-This allows teams to perform exploratory analysis retroactively, deriving any metric, log query, or trace view from the original dataset—without pre-aggregation or code changes.
+In this approach, a context-rich event can produce several views:
+
+- a metric aggregated by status and time window;
+- a searchable log record containing the event details;
+- a trace or span view linked by trace and span IDs.
+
+This is a useful mental model, not a requirement that every signal must be reconstructed from raw events. Native metrics are often the better representation for fixed aggregations, and standard trace data remains useful for call graphs and latency analysis.
 
 ## AI and the Need for Fine-Grained Observability
 
-AI agents introduce a new level of observability complexity due to their non-deterministic behavior. Unlike traditional applications with predictable code paths, agents make dynamic decisions—choosing tools, reasoning through multi-step plans, and adapting responses based on context. Debugging "why did the agent do X?" requires preserving complete execution state: the full prompt, reasoning chain, tool calls with parameters, memory state, and quality scores—all in a single queryable record.
+AI applications often need to relate model requests, responses, tool calls, latency, token use, evaluations, and application state. A structured event can keep this context queryable when the instrumentation captures it.
 
-This is where wide events become essential. Traditional three-pillar approaches fail here: stuffing prompts into logs loses structure and makes analysis impossible, forcing tool calls into traces is too rigid for dynamic behavior, and pre-aggregating token metrics loses the critical context needed for debugging. AI agents produce high-cardinality (millions of unique sessions), high-dimensional (dozens of fields per execution), context-rich events—exactly what wide events are designed to handle. This isn't "observability for the AI age" as a marketing slogan; it's a direct technical consequence: non-deterministic systems require fine-grained, structured, retroactive analysis that only wide events can provide.
+The same trade-offs apply as in other workloads: prompts and responses can be large or sensitive, session identifiers create high cardinality, and incomplete instrumentation produces incomplete context. Teams should choose fields, retention periods, and redaction rules based on the questions they need to answer.
 
-The relationship runs both ways: AI agents also *query* observability data, and to do that well they need to know what each table represents. The [table semantic layer](./semantic-layer.md) gives agents and tools that metadata directly — signal type, source, metric type, and more — instead of forcing them to guess from column names.
+The [table semantic layer](./semantic-layer.md) can describe what each table represents so that agents and tools do not have to infer signal type, source, or metric type from column names.
 
-## Why GreptimeDB is Built for This
+<AnchorAlias id="why-greptimedb-is-built-for-this" />
 
-GreptimeDB's [architecture](/user-guide/concepts/architecture.md) naturally aligns with the Observability 2.0 paradigm. Its columnar engine efficiently compresses wide events (achieving 50% storage reduction compared to Loki and ~90% compared to Elasticsearch in production), and [native object storage](/user-guide/concepts/storage-location.md) (S3, Azure Blob, GCS) keeps costs low as wide event volumes grow. Below are the capabilities that matter most for wide events.
+## How GreptimeDB Maps to This Model
 
-### Unified Tag + Timestamp + Field Model
+GreptimeDB uses a common [data model](/user-guide/concepts/data-model.md) and query layer across observability workloads. The mapping is:
 
-All observability data—metrics, logs, traces—share the same [schema model](/user-guide/concepts/data-model.md) in GreptimeDB:
-- **Tags**: Entity identifiers (pod_name, service, region, trace_id, session_id)
-- **Timestamp**: Temporal tracking
-- **Fields**: Multi-dimensional values (message, duration, status_code, prompts, responses)
+| Pattern | GreptimeDB capability | How to use it |
+| --- | --- | --- |
+| Native metrics | Prometheus remote write and PromQL | Keep metrics and existing dashboards in their native form. |
+| Logs and traces | Loki Push API, OpenTelemetry, Elasticsearch Bulk API, and the experimental Jaeger-compatible query API | Ingest with the supported protocols; query all signal types with SQL, and traces with the experimental Jaeger-compatible API. |
+| Shared schema concepts | Tag, timestamp, and field columns | Apply a consistent table model across different telemetry tables. |
+| Context-rich events | Wide tables, SQL, and object-storage-backed storage | Keep selected raw events for detailed or retrospective analysis. |
+| Derived metrics | [Flow](/user-guide/flow-computation/overview.md) | Continuously aggregate raw events into a separate metrics table. |
+| Cross-signal analysis | SQL across tables and shared correlation identifiers | Relate signals when their schemas and instrumentation provide common keys. |
 
-This unified model enables cross-signal correlation in a single SQL query.
+**A unified table model does not mean writing all data into one physical table.** Metrics, logs, traces, and raw events can use separate tables with different schemas, retention policies, and indexes. The unification is at the schema concepts, storage system, and query layer.
 
-### SQL + PromQL for Cross-Signal Correlation
-
-Use one [SQL query](/user-guide/query-data/sql.md) to correlate metrics spikes, log patterns, and trace latency:
-
-```sql
-SELECT
-  date_bin(INTERVAL '1' minute, timestamp) AS minute,
-  COUNT(CASE WHEN status >= 500 THEN 1 END) AS errors,
-  AVG(duration) AS avg_latency
-FROM access_logs
-WHERE timestamp >= NOW() - INTERVAL '1' hour
-  AND message @@ 'timeout'
-GROUP BY date_bin(INTERVAL '1' minute, timestamp);
-```
-
-No context-switching between systems—all signals in one database. GreptimeDB also supports [PromQL](/user-guide/query-data/promql.md) for metrics queries, maintaining compatibility with existing dashboards.
-
-### Flow Engine for Real-Time Derivation
-
-GreptimeDB's [Flow Engine](/user-guide/flow-computation/overview.md) derives metrics from raw events in real-time without preprocessing pipelines:
+For example, Flow can derive a status metric from an event table:
 
 ```sql
 CREATE FLOW http_status_count
 SINK TO status_metrics
 AS
 SELECT
-  status,
+  status_code,
   COUNT(*) AS count,
   date_bin('1 minute'::INTERVAL, timestamp) AS time_window
 FROM access_logs
-GROUP BY status, time_window;
+GROUP BY status_code, time_window;
 ```
 
-Metrics are computed continuously from raw wide events, enabling both pre-aggregated dashboards and ad-hoc exploratory queries on the same dataset.
+The raw events remain available for detailed SQL queries, while the sink table serves fixed dashboards and alerts efficiently.
 
-## Wide Events in Production
+## Trade-offs
 
-Wide events are proven in production at scale:
+The unified-event approach changes where you pay for flexibility:
 
-- **Poizon (得物)**: One of the early production deployments of Wide Events. Flow Engine with multi-level continuous aggregation reduced P99 latency from seconds to milliseconds. [Read more →](https://greptime.com/blogs/2025-05-06-poizon-observability-greptimedb-monitoring-use-case)
+- **Wider events increase data volume.** More fields and repeated context consume ingestion bandwidth and storage, even with columnar compression.
+- **High cardinality and long retention increase cost.** Keep only useful dimensions, and set retention independently for raw and derived data.
+- **Complete context depends on instrumentation quality.** Missing identifiers, inconsistent schemas, or poor propagation cannot be repaired by the database.
+- **Native metrics still fit fixed aggregations.** Counters, gauges, histograms, recording rules, dashboards, and alerts usually do not need a raw event behind every sample.
 
-- **OceanBase Cloud**: One year after migrating from Loki, running 80+ GreptimeDB clusters with 300TB of multi-cloud logs and SQL audit data, with overall log storage cost down by more than 60%. [Read more →](https://greptime.com/blogs/2025-07-22-user-case-obcloud-log-management-greptimedb)
+Schema governance, sampling, redaction, and retention are part of the design. A wide event should be as wide as the investigation requires, not as wide as the application can produce.
 
-- **Trace Storage**: Replaced [Elasticsearch](/user-guide/protocols/elasticsearch.md) as [Jaeger](/user-guide/query-data/jaeger.md) backend. 45x storage cost reduction, 3x faster cold queries, enabled full-volume tracing at 400B rows/day. [Read more →](https://greptime.com/blogs/2025-04-24-elasticsearch-greptimedb-comparison-performance)
+<AnchorAlias id="getting-started" />
 
-## Getting Started
+## Adoption Paths
 
-Transitioning to Observability 2.0 doesn't require ripping out your entire stack. Start from any pillar—[logs](/user-guide/logs/overview.md), [metrics](/user-guide/ingest-data/for-observability/prometheus.md), or [traces](/user-guide/traces/overview.md)—and extend naturally. GreptimeDB supports [PromQL](/user-guide/query-data/promql.md), [Jaeger](/user-guide/query-data/jaeger.md), [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md), and [Grafana](/user-guide/integrations/grafana.md) out of the box, so existing dashboards and alerts keep working. See [Why GreptimeDB](./why-greptimedb.md) for detailed migration paths.
+### Keep Native Signals and Unify Storage and Query
+
+Continue using existing ingestion protocols. Query metrics with PromQL, query all signal types with SQL, and use the experimental Jaeger-compatible API for traces. Store each signal in separate GreptimeDB tables, and use shared identifiers and SQL when cross-signal analysis is needed. This path minimizes instrumentation and dashboard changes.
+
+Start with [Prometheus](/user-guide/ingest-data/for-observability/prometheus.md), [logs](/user-guide/logs/overview.md), [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md), or [traces](/user-guide/traces/overview.md).
+
+### Add Raw Events Where Full Context Matters
+
+Instrument selected business operations or AI workflows as structured events. Keep the raw event table for retrospective analysis, and use [Flow](/user-guide/flow-computation/overview.md) to derive metrics for known dashboards and alerts. This path provides more context at the cost of higher data volume and stricter schema and retention management.
+
+The two paths can coexist. Adopt raw events only where the additional context justifies their cost.
 
 ## Further Reading
 
-- [Observability 2.0 and the Database for It](https://greptime.com/blogs/2025-04-25-greptimedb-observability2-new-database) — Full vision and technical deep dive
-- [Unified Storage for Observability - GreptimeDB's Approach](https://greptime.com/blogs/2024-12-24-observability) — GreptimeDB's unified model philosophy
-- [Agent Observability: Can the Old Playbook Handle the New Game?](https://greptime.com/blogs/2025-12-11-agent-observability) — Why AI agents need wide events
-- [Scaling Observability at Poizon - Building a Cost-Effective and Real-Time Monitoring Architecture with GreptimeDB](https://greptime.com/blogs/2025-05-06-poizon-observability-greptimedb-monitoring-use-case) — First production-grade validation
-- [Beyond Loki! GreptimeDB Log Scenario Performance Report Released](https://greptime.com/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report) — Logs pillar migration
-- [Beyond ELK: Lightweight and Scalable Cloud-Native Log Monitoring](https://greptime.com/blogs/2025-04-24-elasticsearch-greptimedb-comparison-performance) — Traces pillar migration
+- [Observability 2.0 and the Database for It](https://greptime.com/blogs/2025-04-25-greptimedb-observability2-new-database) — An earlier description of the wide-event approach
+- [Unified Storage for Observability - GreptimeDB's Approach](https://greptime.com/blogs/2024-12-24-observability) — GreptimeDB's unified storage model
+- [Agent Observability: Can the Old Playbook Handle the New Game?](https://greptime.com/blogs/2025-12-11-agent-observability) — Context needed for AI application debugging
+- [Scaling Observability at Poizon](https://greptime.com/blogs/2025-05-06-poizon-observability-greptimedb-monitoring-use-case) — Raw events and continuous aggregation in production

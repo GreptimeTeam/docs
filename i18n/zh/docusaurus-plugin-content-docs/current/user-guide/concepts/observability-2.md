@@ -1,42 +1,35 @@
 ---
 keywords: [observability 2.0, 宽事件, 统一可观测性, 三支柱, 高基数, AI agent]
-description: 解释 Observability 2.0 范式以及 GreptimeDB 如何被设计为宽事件的原生数据库。
+description: 介绍 Observability 2.0 所指的统一可观测数据模型、工程取舍，以及它与 GreptimeDB 的对应关系。
 ---
 
 # Observability 2.0
 
-Observability 2.0 是可观测性领域从"三支柱"（metrics、logs、traces）向统一数据模型的演进。核心思路是：不再为每种信号维护独立系统，而是用高基数的宽事件（wide events）作为单一数据源，支持事后分析，而非依赖预聚合。
+Observability 2.0 是业内对一种遥测数据思路的称呼，不是产品分类。它通常指保留上下文完整的事件，让使用者不必在采集数据时就预先确定所有分析问题。
 
-这个术语本身有争议，但背后的问题是真实的：metrics、logs、traces 之间的壁垒，让排障和分析变得越来越痛苦。
+GreptimeDB 支持这种实践，但不要求用户采用。Metrics、logs、traces 仍然是一等能力。GreptimeDB 为每类信号提供写入方式；所有信号都能使用 SQL 查询，metrics 还可以使用 PromQL，traces 还可以使用实验性的 Jaeger 兼容查询接口。用户可以保留原有信号，只在部分场景引入宽事件，也可以同时使用两种模型。
 
 ## 三支柱的局限
 
-可观测性长期依赖 metrics、logs、traces 三大支柱，也催生了大量优秀工具（包括 [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md)）。但随着系统复杂度增长，三支柱架构的问题越来越明显：
+Metrics、logs、traces 仍然是有效的抽象。问题不在三类信号本身，而在它们经常被不同系统隔开：
 
-1. **数据孤岛**：metrics、logs、traces 分开存储，互不关联。一个错误率飙升的告警，要手动在三个系统间切换才能定位到对应的日志和链路——这个过程既慢又容易遗漏。
+1. **上下文分散**：信号分开存储和查询时，需要额外操作才能把告警、日志和 trace 对应起来。
+2. **采集时就要确定问题**：预聚合 metrics 能高效回答已知问题，但无法找回没有记录的维度。
+3. **结构丢失**：纯文本日志里往往包含有用字段，事后解析和索引的成本较高。
 
-2. **粒度和成本两难**：传统 metrics 靠预聚合压缩数据量。但为了保留排障所需的细节，团队不得不创建百万级时间序列，各系统还有大量冗余元数据，成本反而比省下的更高。
-
-3. **日志的结构化困境**：日志天然包含结构化信息，但从非结构化文本中提取价值需要大量的解析、索引和计算。
-
-在 AI agent 和微服务场景下，这些问题更加突出——高维、半结构化数据已经是常态。
+统一数据模型通过一致的 schema 和查询方式减少这些边界。宽事件是保留更多上下文的一种做法，不是所有 metrics、logs、traces 的替代品。
 
 ## 宽事件：统一数据模型
 
-Observability 2.0 用**宽事件（wide events）** 来解决这些问题。宽事件是一条上下文丰富、高维度、高基数的记录，在单个事件中捕获完整的应用状态。
+宽事件（wide event）是一条包含较多字段的结构化记录，用于描述一次操作或业务事件。它可以带有用户 ID、session ID、trace ID、请求属性等高基数字段。
 
 ### 什么是宽事件？
 
-不预计算 metrics，不预处理日志，直接保存原始的高保真事件数据。比如一个 POST 请求的宽事件可能包含：
-
-- 用户信息和订阅数据
-- 带参数的数据库查询
-- 缓存操作
-- HTTP headers
-- 总计：单条记录 2KB+ 的上下文
+例如，一次 POST 请求对应的事件可以包含用户与订阅信息、数据库与缓存操作、HTTP 属性、执行结果和耗时：
 
 ```json
 {
+  "timestamp": "2026-08-12T08:15:30Z",
   "method": "POST",
   "path": "/articles",
   "service": "articles",
@@ -48,101 +41,100 @@ Observability 2.0 用**宽事件（wide events）** 来解决这些问题。宽�
     "subscription": { "plan": "free", "trial": true }
   },
   "db": {
-    "query": "INSERT INTO articles (...)",
-    "parameters": { "$1": "f8d4d21c-..." }
+    "query": "INSERT INTO articles (...)"
   },
-  "cache": { "operation": "write", "key": "..." },
-  "headers": { "user-agent": "...", "cf-connecting-ip": "..." }
+  "cache": { "operation": "write" },
+  "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736"
 }
 ```
 
-### Metrics、Logs、Traces 只是投影
+只采集确实有用、适合留存的上下文。凭证、个人数据、查询参数、prompt 和请求正文可能需要在写入前过滤或脱敏。
 
-宽事件的关键洞察：metrics、logs、traces 不是三种独立的数据类型，而是同一组底层事件的不同投影：
+<AnchorAlias id="metricslogstraces-只是投影" />
 
-- **Metrics**：`SELECT COUNT(*) GROUP BY status, date_bin(INTERVAL '1' minute, timestamp)` — 聚合投影
-- **Logs**：`SELECT message, timestamp WHERE message @@ 'error'` — 文本投影
-- **Traces**：`SELECT span_id, duration WHERE trace_id = '...'` — 关系投影
+### 从上下文事件派生不同视图
 
-有了原始宽事件，任何 metrics、日志查询、trace 视图都可以事后从同一份数据派生出来——不需要预聚合，不需要改代码。
+在这种思路下，一条上下文完整的事件可以形成多种视图：
 
-## AI Agent 为什么需要宽事件
+- 按状态和时间窗口聚合成 metric；
+- 作为包含事件详情的日志检索；
+- 通过 trace ID 和 span ID 展示为 trace 或 span。
 
-AI agent 的非确定性行为给可观测性带来了全新的挑战。传统应用有可预测的代码路径，但 agent 是动态决策的——选工具、多步推理、根据上下文调整响应。调试"agent 为什么这么做"需要保留完整的执行状态：prompt、推理链、工具调用参数、memory 状态、质量评分——全部在一条可查询的记录里。
+这是一种分析模型，并不要求所有信号都从原始事件还原。固定聚合通常更适合原生 metrics；调用关系和延迟分析仍然适合标准 trace 数据。
 
-三支柱架构在这里完全不适用：prompt 塞进日志会丢失结构，工具调用硬套进 trace 对动态行为太僵硬，token 用量做成 metrics 会丢失调试所需的上下文。AI agent 天然产生高基数（百万级独立 session）、高维度（每次执行几十个字段）、上下文丰富的事件——这恰恰是宽事件要解决的问题。
+<AnchorAlias id="ai-agent-为什么需要宽事件" />
 
-这不是"AI 时代的可观测性"这种营销话术，而是技术上的必然：非确定性系统需要细粒度、结构化、可追溯的分析能力。
+## AI Agent 为什么需要细粒度上下文
 
-这种关系是双向的：AI agent 也会*查询*可观测性数据，而要查得好，它得知道每张表代表什么。[表语义层](./semantic-layer.md)把这层元数据——signal type、source、metric type 等——直接交给 agent 和工具，省去它们从列名去猜。
+观测 AI 应用时，往往需要关联模型请求、响应、工具调用、延迟、token 用量、评估结果和应用状态。如果 instrumentation 采集了这些内容，结构化事件可以把上下文保留下来，供后续查询。
 
-## GreptimeDB 的 Observability 2.0 支撑
+代价也同样直接：prompt 和响应可能很大或包含敏感信息，session ID 会带来高基数，不完整的 instrumentation 只能得到不完整的上下文。字段、留存周期和脱敏规则应由实际分析需求决定。
 
-GreptimeDB 的[架构](/user-guide/concepts/architecture.md)天然适配 Observability 2.0。列式引擎高效压缩宽事件（生产环境实测比 Loki 节省 50%、比 Elasticsearch 节省约 90% 存储），[原生对象存储](/user-guide/concepts/storage-location.md)（S3、Azure Blob、GCS）让存储成本随数据量线性增长而非指数增长。以下是和宽事件最相关的核心能力。
+[表语义层](./semantic-layer.md)可以说明每张表代表的内容，让 agent 和工具不必根据列名猜测 signal type、source 或 metric type。
 
-### 统一的 Tag + Timestamp + Field 模型
+<AnchorAlias id="greptimedb-的-observability-20-支撑" />
 
-所有可观测数据——metrics、logs、traces——在 GreptimeDB 中共享同一套 [schema 模型](/user-guide/concepts/data-model.md)：
-- **Tag**：实体标识（pod_name、service、region、trace_id、session_id）
-- **Timestamp**：时间戳
-- **Field**：多维度值（message、duration、status_code、prompt、response）
+## GreptimeDB 与这种模型的对应关系
 
-一个模型统一三种信号，在单条 SQL 里就能做跨信号关联。
+GreptimeDB 在不同可观测场景中使用共同的[数据模型](/user-guide/concepts/data-model.md)和查询层。具体对应关系如下：
 
-### SQL + PromQL 跨信号关联
+| 数据模式 | GreptimeDB 能力 | 使用方式 |
+| --- | --- | --- |
+| 原生 metrics | Prometheus remote write 和 PromQL | 保留 metrics 及现有仪表板。 |
+| Logs 和 traces | Loki Push API、OpenTelemetry、Elasticsearch Bulk API 和实验性的 Jaeger 兼容查询接口 | 使用支持的协议写入；所有信号均可使用 SQL 查询，traces 还可使用实验性的 Jaeger 兼容接口。 |
+| 共同的 schema 概念 | Tag、Timestamp 和 Field 列 | 在不同遥测表中使用一致的表模型。 |
+| 上下文完整的事件 | 宽表、SQL 和基于对象存储的存储引擎 | 为需要事后分析的场景保留原始事件。 |
+| 派生 metrics | [Flow](/user-guide/flow-computation/overview.md) | 持续聚合原始事件，写入单独的 metrics 表。 |
+| 跨信号分析 | SQL 和共同的关联标识 | 在 schema 和 instrumentation 提供关联键时连接不同信号。 |
 
-用一条 [SQL](/user-guide/query-data/sql.md) 同时查 metrics 异常、日志模式和 trace 延迟：
+**“统一表模型”不等于“所有数据写入同一张物理表”。** Metrics、logs、traces 和原始事件可以使用不同的表、schema、留存策略和索引。统一的是 schema 概念、存储系统和查询层。
 
-```sql
-SELECT
-  date_bin(INTERVAL '1' minute, timestamp) AS minute,
-  COUNT(CASE WHEN status >= 500 THEN 1 END) AS errors,
-  AVG(duration) AS avg_latency
-FROM access_logs
-WHERE timestamp >= NOW() - INTERVAL '1' hour
-  AND message @@ 'timeout'
-GROUP BY date_bin(INTERVAL '1' minute, timestamp);
-```
-
-不用在系统间切换，所有信号在同一个数据库里。同时支持 [PromQL](/user-guide/query-data/promql.md)，现有 Grafana 仪表板可以直接复用。
-
-### Flow 引擎：从宽事件实时派生 Metrics
-
-GreptimeDB 的 [Flow 引擎](/user-guide/flow-computation/overview.md)直接从原始事件实时计算 metrics，不需要额外的预处理管道：
+例如，Flow 可以从事件表派生状态指标：
 
 ```sql
 CREATE FLOW http_status_count
 SINK TO status_metrics
 AS
 SELECT
-  status,
+  status_code,
   COUNT(*) AS count,
   date_bin('1 minute'::INTERVAL, timestamp) AS time_window
 FROM access_logs
-GROUP BY status, time_window;
+GROUP BY status_code, time_window;
 ```
 
-同一份宽事件数据，既能驱动预聚合仪表板，也能支持 ad-hoc 的探索式查询。
+原始事件仍可用于详细的 SQL 分析，sink 表则高效支持固定的仪表板和告警。
 
-## 生产验证
+## 工程取舍
 
-宽事件不是概念，已经在大规模生产环境中得到验证：
+统一事件模型把灵活性带来的成本放在了另外几个地方：
 
-- **得物（Poizon）**：宽事件的早期生产级落地。Flow 引擎 + 多级持续聚合，P99 延迟从秒级降到毫秒级。[详情 →](https://greptime.cn/blogs/2025-05-06-poizon-greptimedb-observability)
+- **更宽的事件会增加数据量。** 更多字段和重复上下文会消耗写入带宽与存储空间，列式压缩也无法消除这部分成本。
+- **高基数和长期留存会推高成本。** 只保留有用的维度，并分别设置原始数据与派生数据的留存周期。
+- **完整上下文依赖 instrumentation 质量。** 标识缺失、schema 不一致或上下文传播不完整，无法靠数据库事后补齐。
+- **固定聚合仍然适合原生 metrics。** Counter、gauge、histogram、recording rule、仪表板和告警通常不需要每个样本都有对应的原始事件。
 
-- **OceanBase Cloud**：从 Loki 迁移到 GreptimeDB 一年后，已部署 80+ 集群、300TB 多云日志和 SQL 审计数据，整体存储成本下降 60%+。[详情 →](https://greptime.cn/blogs/2025-07-22-user-case-obcloud-log-storage-greptimedb)
+Schema 管理、采样、脱敏和留存策略都是设计的一部分。宽事件应当覆盖排障所需的信息，而不是把应用能产生的字段全部写入。
 
-- **Traces 存储**：某出海物流电商企业用 GreptimeDB 替换 [Elasticsearch](/user-guide/protocols/elasticsearch.md) 存储 [Jaeger](/user-guide/query-data/jaeger.md) Trace 数据。存储成本降低 45 倍，冷数据查询快 3 倍。[详情 →](https://greptime.cn/blogs/2026-01-27-logistics-trace-case)
+<AnchorAlias id="开始使用" />
 
-## 开始使用
+## 两种采用路径
 
-迁移到 Observability 2.0 不需要一步到位。从任意一个支柱切入——[Logs](/user-guide/logs/overview.md)、[Metrics](/user-guide/ingest-data/for-observability/prometheus.md)、[Traces](/user-guide/traces/overview.md)——然后逐步扩展。GreptimeDB 开箱支持 [PromQL](/user-guide/query-data/promql.md)、[Jaeger](/user-guide/query-data/jaeger.md)、[OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md)、[Grafana](/user-guide/integrations/grafana.md)，现有仪表板和告警直接可用。详细迁移路径参见[为什么选择 GreptimeDB](./why-greptimedb.md)。
+### 保留原生信号，只统一存储和查询
+
+继续沿用现有写入协议。指标可使用 PromQL 查询，所有信号均可使用 SQL 查询；链路数据还可通过实验性的 Jaeger 兼容接口查询。各类信号分别存入 GreptimeDB 的不同表，需要跨信号分析时，再通过共同标识和 SQL 关联。这条路径对 instrumentation 和仪表板的改动较小。
+
+可以从 [Prometheus](/user-guide/ingest-data/for-observability/prometheus.md)、[日志](/user-guide/logs/overview.md)、[OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md)或 [traces](/user-guide/traces/overview.md) 开始。
+
+### 对需要完整上下文的业务引入原始事件
+
+把选定的业务操作或 AI 工作流记录为结构化事件。原始事件表用于事后分析，再通过 [Flow](/user-guide/flow-computation/overview.md) 派生 metrics，供固定的仪表板和告警使用。这条路径能提供更多上下文，但数据量更大，对 schema 和留存管理的要求也更高。
+
+两条路径可以同时使用。只有在额外上下文值得相应成本时，才需要引入原始事件。
 
 ## 延伸阅读
 
-- [什么是可观测性 2.0？什么是可观测性 2.0 原生数据库？](https://greptime.cn/blogs/2025-04-24-observability2.0-greptimedb.html) — 完整愿景和技术深入
-- [让 Observability 更简单 —— GreptimeDB 统一存储架构](https://greptime.cn/blogs/2024-12-24-observability) — GreptimeDB 统一模型的设计哲学
-- [Agent 可观测性：旧瓶装新酒，还是需要新瓶？](https://greptime.cn/blogs/2025-12-11-agent-observability) — AI agent 为什么需要宽事件
-- [得物可观测平台架构升级：基于 GreptimeDB 的全新监控体系实践](https://greptime.cn/blogs/2025-05-06-poizon-greptimedb-observability) — 生产级验证
-- [替换 Loki！GreptimeDB 在 OB Cloud 的大规模日志存储实践](https://greptime.cn/blogs/2025-07-22-user-case-obcloud-log-storage-greptimedb) — Logs 迁移
-- [存储成本降低 45 倍！某出海物流电商企业用 GreptimeDB 替换 ES 存储 Trace 数据](https://greptime.cn/blogs/2026-01-27-logistics-trace-case) — Traces 迁移
+- [什么是可观测性 2.0？什么是可观测性 2.0 原生数据库？](https://greptime.cn/blogs/2025-04-24-observability2.0-greptimedb.html) — 对宽事件思路的早期介绍
+- [让 Observability 更简单——GreptimeDB 统一存储架构](https://greptime.cn/blogs/2024-12-24-observability) — GreptimeDB 的统一存储模型
+- [Agent 可观测性：旧瓶装新酒，还是需要新瓶？](https://greptime.cn/blogs/2025-12-11-agent-observability) — AI 应用调试需要的上下文
+- [得物可观测平台架构升级：基于 GreptimeDB 的全新监控体系实践](https://greptime.cn/blogs/2025-05-06-poizon-greptimedb-observability) — 原始事件和持续聚合的生产实践
