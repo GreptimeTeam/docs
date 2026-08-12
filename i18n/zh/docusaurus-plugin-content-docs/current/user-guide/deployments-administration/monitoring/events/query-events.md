@@ -103,8 +103,7 @@ LIMIT 1;
 ### Flow
 
 ```sql
-SELECT timestamp, type, catalog_name, schema_name,
-       flow_name, flow_id, procedure_state
+SELECT timestamp, type, flow_name, flow_id, procedure_state
 FROM greptime_private.events
 WHERE timestamp >= now() - INTERVAL '1' hour
   AND flow_name = '<flow_name>'
@@ -127,7 +126,8 @@ LIMIT 1;
 ### Region
 
 带 Region 的运维事件是全局记录，不属于按数据库隔离的对象。以下查询返回某个
-Region 的相关事件类型中最新的事件。每个列出的事件类型都必须已经产生过记录，因为该类型的列会在首次记录时加入表 schema：
+Region 的相关事件类型中最新的事件。每个列出的事件类型都必须已经产生过记录，因为该类型的列会在首次记录时加入表 schema。
+每种事件类型只会填充适用的列，其他选出的列为 SQL `NULL`。
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -150,7 +150,7 @@ Procedure 事件共享 `procedure_id`。
 
 ### 获取 Procedure ID
 
-对于创建表的 Procedure，可以根据 catalog、数据库、表和 `Submitted` 触发器定位提交行：
+对于创建表的 Procedure，可以根据数据库、表和 `Submitted` 触发器定位提交行：
 
 ```sql
 SELECT procedure_id

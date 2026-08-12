@@ -19,4 +19,4 @@ ORDER BY timestamp DESC
 LIMIT 20;
 ```
 
-字段定义请参阅[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。DDL Procedure 查询示例请参阅[事件](/user-guide/deployments-administration/monitoring/events/overview.md)。
+字段定义请参阅[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。DDL Procedure 查询示例请参阅[DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。

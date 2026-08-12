@@ -111,8 +111,7 @@ LIMIT 1;
 ### Flow
 
 ```sql
-SELECT timestamp, type, catalog_name, schema_name,
-       flow_name, flow_id, procedure_state
+SELECT timestamp, type, flow_name, flow_id, procedure_state
 FROM greptime_private.events
 WHERE timestamp >= now() - INTERVAL '1' hour
   AND flow_name = '<flow_name>'
@@ -137,7 +136,9 @@ LIMIT 1;
 Region-bearing operational events are global rows, not database-isolated objects.
 The following query finds the latest event for one Region across the applicable
 event types. It requires each listed event type to have been recorded, because
-its columns are added to the table schema when that event type is first recorded:
+its columns are added to the table schema when that event type is first recorded.
+Each event type populates only the columns that apply to it; other selected
+columns are SQL `NULL`.
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -160,8 +161,8 @@ Procedure events share a `procedure_id`.
 
 ### Get a procedure ID
 
-For a table-creation procedure, locate the `Submitted` row by its catalog,
-database, and table:
+For a table-creation procedure, locate the `Submitted` row by its database and
+table:
 
 ```sql
 SELECT procedure_id

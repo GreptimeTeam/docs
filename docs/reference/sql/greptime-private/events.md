@@ -26,4 +26,4 @@ LIMIT 20;
 ```
 
 For column definitions, see [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md).
-For DDL Procedure query examples, see [Events](/user-guide/deployments-administration/monitoring/events/overview.md).
+For DDL Procedure query examples, see [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
