@@ -246,5 +246,9 @@
   "sidebar.docs.category.Management Console": {
     "message": "管理控制台",
     "description": "The label for category Management Console in sidebar docs"
+  },
+  "sidebar.docs.category.Events": {
+    "message": "事件",
+    "description": "The label for category Events in sidebar docs"
   }
 }

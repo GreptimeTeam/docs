@@ -535,6 +535,8 @@ drop_table, undrop_table, purge_dropped_table, truncate_table,
 create_view, drop_view
 ```
 
+`undrop_table` 和 `purge_dropped_table` 仅 GreptimeDB 企业版支持。
+
 Metasrv 支持以下事件类型：
 
 ```text
@@ -547,6 +549,8 @@ create_view, drop_view,
 repartition, repartition_group,
 batch_gc, wal_prune
 ```
+
+`undrop_table` 和 `purge_dropped_table` 仅 GreptimeDB 企业版支持。
 
 <AnchorAlias id="region-engine-options" />
 
