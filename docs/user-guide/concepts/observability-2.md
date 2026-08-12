@@ -74,6 +74,11 @@ The [table semantic layer](./semantic-layer.md) can describe what each table rep
 
 ## How GreptimeDB Maps to This Model
 
+<AnchorAlias id="unified-tag--timestamp--field-model" />
+<AnchorAlias id="sql--promql-for-cross-signal-correlation" />
+<AnchorAlias id="flow-engine-for-real-time-derivation" />
+<AnchorAlias id="wide-events-in-production" />
+
 GreptimeDB uses a common [data model](/user-guide/concepts/data-model.md) and query layer across observability workloads. The mapping is:
 
 | Pattern | GreptimeDB capability | How to use it |

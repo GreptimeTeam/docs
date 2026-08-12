@@ -76,6 +76,11 @@ Metrics、logs、traces 仍然是有效的抽象。问题不在三类信号本�
 
 ## GreptimeDB 与这种模型的对应关系
 
+<AnchorAlias id="统一的-tag--timestamp--field-模型" />
+<AnchorAlias id="sql--promql-跨信号关联" />
+<AnchorAlias id="flow-引擎从宽事件实时派生-metrics" />
+<AnchorAlias id="生产验证" />
+
 GreptimeDB 在不同可观测场景中使用共同的[数据模型](/user-guide/concepts/data-model.md)和查询层。具体对应关系如下：
 
 | 数据模式 | GreptimeDB 能力 | 使用方式 |
