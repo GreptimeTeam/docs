@@ -5,7 +5,7 @@ description: 查看 GreptimeDB 记录的维护事件。
 
 # 维护事件
 
-在带 Metasrv 的分布式部署中，GreptimeDB 回收不再使用的数据或清理 WAL 时会记录维护事件。
+在分布式部署中，GreptimeDB 回收不再使用的数据或清理 WAL 时，Metasrv 会记录维护事件。
 
 ## 批量 GC
 
@@ -30,9 +30,9 @@ LIMIT 3;
 +-------------------------------+----------+---------------+---------------+-------------------------+-----------------+
 ```
 
-定时任务的 `Submitted` 行会被省略；手动 `Submitted` 行记录配置信息。没有 Region 需要清理或
-重试时，不会记录 `Done` 行。`Done` 行包含受影响的 Region 维度和 `gc_report`，其 `payload`
-为 JSON `null`。
+记录器会省略定时任务的 `Submitted` 行。手动 `Submitted` 行记录配置信息。没有 Region 需要
+清理或重试时，不会记录 `Done` 行。`Done` 行包含受影响的 Region 维度和 `gc_report`，其
+`payload` 为 JSON `null`。
 
 ## WAL 清理
 
@@ -57,6 +57,6 @@ LIMIT 3;
 +-------------------------------+-----------+-------------------------+-------------------+---------------+-----------------+----------------------+--------------------------------------+
 ```
 
-`Submitted` 和 `Recovered` 行会有意省略。成功执行后会记录 `Done`；`Retrying` 不是终态，
+记录器会省略 `Submitted` 和 `Recovered` 行。成功执行后会记录 `Done`；`Retrying` 不是终态，
 也可能记录 `Failed` 和 `Poisoned` 行。WAL 清理事件保留 topic、可清理 entry、latest offset
 和 payload。

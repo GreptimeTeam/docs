@@ -27,20 +27,20 @@ Procedure events also have the following columns:
 | `procedure_error`   | Debug-formatted error when the Procedure fails; an empty string otherwise.                                                                                  |
 
 Rows with trigger type `Submitted` normally have state `Running`. When a Procedure
-succeeds, the completed event has state `Done` and trigger type `Succeeded`. The completed
-row is generated from the Procedure's final state, so its fields can differ from
-the submitted row. Events are recorded asynchronously; a recording failure does
-not change the Procedure result.
+succeeds, its completed event has state `Done` and trigger type `Succeeded`.
+GreptimeDB generates the completed row from the Procedure's final state, so its
+fields can differ from the submitted row. Events are recorded asynchronously; a
+recording failure does not change the Procedure result.
 
-`event_context` is written only on `Submitted` rows. When it is available, its
-stable `reason` value is one of
+`event_context` is written only on `Submitted` rows. When the context includes a
+reason, its stable value is one of
 `manual`, `auto_create`, `auto_alter`, `auto_repartition`, `auto_rebalance`,
 `region_failover`, `scheduled_gc`, or `unknown`. For example, a MySQL-submitted
 event can contain `{"protocol":"mysql","reason":"manual"}`.
 
-In addition to `Submitted` and `Succeeded`, a Procedure can emit the following
-trigger types when applicable. Not every Procedure emits every trigger type, and rows are
-not guaranteed to appear in the order shown:
+In addition to `Submitted` and `Succeeded`, a Procedure can emit these trigger
+types. Not every Procedure emits every type, and the rows might not appear in
+this order:
 
 | `type`           | Meaning and fields                                                                                                                                                                       |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -51,7 +51,7 @@ not guaranteed to appear in the order shown:
 | `Failed`         | The Procedure reached a failed terminal state. Inspect `procedure_error` for failure details.                                                                                            |
 | `Poisoned`       | The Procedure cannot proceed. Inspect `procedure_error` for the failure details.                                                                                                         |
 
-For focused examples, see [Query events](/user-guide/deployments-administration/monitoring/events/query-events.md),
+For examples, see [Query events](/user-guide/deployments-administration/monitoring/events/query-events.md),
 [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md),
 [Region events](/user-guide/deployments-administration/monitoring/events/region-events.md), and
 [Maintenance events](/user-guide/deployments-administration/monitoring/events/maintenance-events.md).
@@ -91,8 +91,9 @@ ORDER BY timestamp;
 
 ## JSON `null` and SQL `NULL`
 
-In the `create_table` example and DDL/repartition events after a Procedure completes, a terminal
-`payload` can be JSON `null` rather than SQL `NULL`:
+In the `create_table` example, and in DDL or repartition events after a
+Procedure completes, a terminal `payload` can be JSON `null` rather than SQL
+`NULL`:
 
 ```sql
 SELECT procedure_state, json_to_string(payload) AS payload,

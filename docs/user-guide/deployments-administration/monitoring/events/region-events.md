@@ -5,7 +5,7 @@ description: Inspect Region events recorded by GreptimeDB.
 
 # Region events
 
-In distributed deployments with Metasrv, Region events are recorded when a table's
+In distributed deployments, Metasrv records Region events when a table's
 partition layout changes or a Region moves between Datanodes.
 
 ## Repartition
@@ -46,9 +46,9 @@ ORDER BY timestamp;
 +-------------------------------+-------------+--------------------------------------+-----------------+----------------+--------------------------------------+
 ```
 
-The table locator and repartition-intent columns are populated on the `Submitted`
-row. Later lifecycle rows for the parent Procedure have SQL `NULL` in those
-columns, so query them by `procedure_id` rather than by a table locator.
+The `Submitted` row contains the table locator and repartition details. Later
+lifecycle rows for the parent Procedure have SQL `NULL` in those columns, so
+query them by `procedure_id` instead of by table locator.
 
 ## Repartition groups
 
@@ -82,8 +82,8 @@ to inspect its full lifecycle.
 
 ## Region migration
 
-A Region migration can be initiated manually, by auto-rebalancing, or during
-failover. Query the latest migration as follows:
+A user can start a Region migration manually. Auto-rebalancing and failover can
+also start one. To find the latest migration:
 
 ```sql
 SELECT timestamp, type, region_id, region_migration_trigger_reason,

@@ -5,7 +5,8 @@ description: 查看 GreptimeDB 记录的 Region 事件。
 
 # Region 事件
 
-在带 Metasrv 的分布式部署中，调整表的分区布局或迁移 Region 时会记录 Region 事件。
+在分布式部署中，调整表的分区布局或在 Datanode 之间迁移 Region 时，Metasrv 会记录 Region
+事件。
 
 ## 重分区
 
@@ -45,8 +46,8 @@ ORDER BY timestamp;
 +-------------------------------+-------------+--------------------------------------+-----------------+----------------+--------------------------------------+
 ```
 
-表定位列和重分区意图列只在 `Submitted` 行中填充。父 Procedure 后续的生命周期行中，这些列为
-SQL `NULL`，因此应按 `procedure_id` 而不是表定位列查询。
+`Submitted` 行包含表定位列和重分区详情。父 Procedure 后续的生命周期行中，这些列为 SQL
+`NULL`，因此应按 `procedure_id` 而不是表定位列查询。
 
 ## 重分区组
 
@@ -78,7 +79,7 @@ ORDER BY timestamp, target_region_id;
 
 ## Region 迁移
 
-Region 迁移可以手动发起，也可以由自动均衡或故障转移触发。按以下方式查询最近一次迁移：
+用户可以手动发起 Region 迁移，自动均衡和故障转移也会触发迁移。查询最近一次迁移：
 
 ```sql
 SELECT timestamp, type, region_id, region_migration_trigger_reason,

@@ -5,8 +5,8 @@ description: Inspect maintenance events recorded by GreptimeDB.
 
 # Maintenance events
 
-In distributed deployments with Metasrv, maintenance events are recorded while
-GreptimeDB reclaims obsolete data or prunes WAL entries.
+In distributed deployments, Metasrv records maintenance events when GreptimeDB
+reclaims obsolete data or prunes WAL entries.
 
 ## Batch GC
 
@@ -31,10 +31,10 @@ LIMIT 3;
 +-------------------------------+----------+---------------+---------------+-------------------------+-----------------+
 ```
 
-Scheduled `Submitted` rows are omitted. A manual `Submitted` row records the
-configuration. If no Region needs cleanup or retry, no `Done` row is recorded.
-A `Done` row includes the affected Region dimensions and `gc_report`; its
-`payload` is JSON `null`.
+The recorder omits scheduled `Submitted` rows. A manual `Submitted` row records
+the configuration. If no Region needs cleanup or retry, it does not record a
+`Done` row. A `Done` row includes the affected Region dimensions and
+`gc_report`; its `payload` is JSON `null`.
 
 ## WAL pruning
 
@@ -59,7 +59,7 @@ LIMIT 3;
 +-------------------------------+-----------+-------------------------+-------------------+---------------+-----------------+----------------------+--------------------------------------+
 ```
 
-`Submitted` and `Recovered` rows are intentionally omitted. A successful run
-records `Done`; `Retrying` is not terminal, and `Failed` and `Poisoned` rows may
-also be recorded. WAL pruning events retain the topic, prunable entry, latest
+The recorder omits `Submitted` and `Recovered` rows. A successful run records
+`Done`; `Retrying` is not terminal, and it may also record `Failed` and
+`Poisoned` rows. WAL pruning events retain the topic, prunable entry, latest
 offset, and payload.

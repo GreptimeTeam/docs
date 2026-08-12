@@ -5,10 +5,9 @@ description: Query GreptimeDB event records.
 
 # Query events
 
-Query the `greptime_private.events` system table to investigate recent events.
-Events are written asynchronously, so a newly submitted operation might not be
-visible immediately. See [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
-for event columns.
+Use the `greptime_private.events` system table to investigate recent events.
+GreptimeDB writes events asynchronously, so a newly submitted operation might
+not appear right away. For event columns, see [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md).
 
 ## Start with recent events
 
@@ -34,7 +33,7 @@ LIMIT 20;
 
 ## Discover and filter event types
 
-List types actually present in the cluster before choosing a filter:
+Before filtering by type, see which event types the cluster has recorded:
 
 ```sql
 SELECT type, COUNT(*) AS event_rows
@@ -44,8 +43,8 @@ GROUP BY type
 ORDER BY type;
 ```
 
-The result reflects only event types recorded in the selected time range. It is
-not a complete list of types configured or supported by GreptimeDB. See
+The result covers only the selected time range. It is not a complete list of
+types configured or supported by GreptimeDB. See
 [Lifecycle event recorder](/user-guide/deployments-administration/configuration.md#lifecycle-event-recorder)
 for the configured type lists. For examples, see [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md),
 [Region events](/user-guide/deployments-administration/monitoring/events/region-events.md), and
@@ -130,13 +129,13 @@ LIMIT 1;
 
 ### Region
 
-Events with Region dimensions are global rather than database-scoped. Use this
-query to find the latest event for a Region across `region_migration`,
-`batch_gc`, and `repartition_group`.
+Region events are global, not scoped to a database. Use this query to find the
+latest matching event across `region_migration`, `batch_gc`, and
+`repartition_group`.
 
-Each selected type must have been recorded at least once. The table adds
-an event type's columns when it first records that type, and a column is SQL
-`NULL` when it does not apply to a row.
+Before running this query, the table must have recorded each selected type at
+least once. It adds an event type's columns when it first records that type. A
+column is SQL `NULL` when it does not apply to a row.
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -184,9 +183,9 @@ Example result:
 +--------------------------------------+
 ```
 
-Use the returned ID to query the Procedure's event rows. Filtering by
-`schema_name` and `table_name` avoids selecting a procedure for another object
-with a similar name.
+Use the returned ID to query the Procedure's event rows. Include `schema_name`
+and `table_name` to avoid selecting a Procedure for another object with a
+similar name.
 
 ### Query a Procedure
 

@@ -26,16 +26,16 @@ Procedure 事件还有以下列：
 | `procedure_error`   | Procedure 出错时的 Debug 格式错误信息；其他情况为空字符串。                                                                                                      |
 
 触发类型为 `Submitted` 的事件状态通常为 `Running`。Procedure 成功完成后，完成记录的状态为
-`Done`，触发类型为 `Succeeded`。完成记录根据 Procedure 完成时的状态生成，因此字段可能
-与提交时的记录不同。事件会异步写入，写入失败不会影响 Procedure 的执行结果。
+`Done`，触发类型为 `Succeeded`。GreptimeDB 根据 Procedure 完成时的状态生成完成记录，因此
+字段可能与提交时的记录不同。事件会异步写入，写入失败不会影响 Procedure 的执行结果。
 
-`event_context` 只写入 `Submitted` 记录。存在该字段时，其中稳定的 `reason` 值可以是
+`event_context` 只写入 `Submitted` 记录。其中有 `reason` 时，其稳定值可以是
 `manual`、`auto_create`、`auto_alter`、`auto_repartition`、`auto_rebalance`、
 `region_failover`、`scheduled_gc` 或 `unknown`。例如，通过 MySQL 提交的事件可能包含
 `{"protocol":"mysql","reason":"manual"}`。
 
-除 `Submitted` 和 `Succeeded` 外，Procedure 还可能在适用时产生以下触发类型。
-并非每个 Procedure 都会产生所有触发类型，记录顺序也不保证与下表一致：
+除 `Submitted` 和 `Succeeded` 外，Procedure 还可能产生以下触发类型。并非每个 Procedure
+都会产生所有触发类型，记录顺序也不保证与下表一致：
 
 | `type`           | 含义和字段                                                                                                                                                          |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -46,7 +46,7 @@ Procedure 事件还有以下列：
 | `Failed`         | Procedure 到达失败终态。请检查 `procedure_error` 中的失败详情。                                                                                                     |
 | `Poisoned`       | Procedure 无法继续。请检查 `procedure_error` 中的失败详情。                                                                                                         |
 
-如需查看针对性的示例，请参阅[查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)、
+如需查看示例，请参阅[查询事件](/user-guide/deployments-administration/monitoring/events/query-events.md)、
 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)、
 [Region 事件](/user-guide/deployments-administration/monitoring/events/region-events.md)和
 [维护事件](/user-guide/deployments-administration/monitoring/events/maintenance-events.md)。
@@ -84,8 +84,8 @@ ORDER BY timestamp;
 
 ## JSON `null` 和 SQL `NULL`
 
-在 `create_table` 示例以及 DDL/repartition Procedure 完成后产生的事件中，终态 `payload` 可能是
-JSON `null`，而不是 SQL `NULL`：
+在 `create_table` 示例中，以及 DDL 或重分区 Procedure 完成后产生的事件中，终态 `payload`
+可能是 JSON `null`，而不是 SQL `NULL`：
 
 ```sql
 SELECT procedure_state, json_to_string(payload) AS payload,
