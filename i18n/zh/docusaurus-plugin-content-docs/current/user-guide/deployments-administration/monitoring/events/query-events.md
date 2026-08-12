@@ -125,9 +125,10 @@ LIMIT 1;
 
 ### Region
 
-带 Region 的运维事件是全局记录，不属于按数据库隔离的对象。以下查询返回某个
-Region 的相关事件类型中最新的事件。每个列出的事件类型都必须已经产生过记录，因为该类型的列会在首次记录时加入表 schema。
-每种事件类型只会填充适用的列，其他选出的列为 SQL `NULL`。
+涉及 Region 的运维事件是全局事件，不按数据库隔离。下面的查询返回某个
+Region 最近的一条事件。`region_migration`、`batch_gc` 和
+`repartition_group` 都至少需要有一条记录：events 表会在首次记录某类事件时，
+加入该类事件的列。每条记录只填写该事件类型适用的列，其余选出的列为 SQL `NULL`。
 
 ```sql
 SELECT timestamp, type, procedure_state,

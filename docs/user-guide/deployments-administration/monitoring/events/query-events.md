@@ -133,12 +133,12 @@ LIMIT 1;
 
 ### Region
 
-Region-bearing operational events are global rows, not database-isolated objects.
-The following query finds the latest event for one Region across the applicable
-event types. It requires each listed event type to have been recorded, because
-its columns are added to the table schema when that event type is first recorded.
-Each event type populates only the columns that apply to it; other selected
-columns are SQL `NULL`.
+Operational events that reference a Region are global, not tied to a database.
+Use this query to find the latest event for a Region. It requires
+`region_migration`, `batch_gc`, and `repartition_group` to have each recorded at
+least one event: the table adds an event type's columns when it first records
+that type. A row fills only the fields for its event type; the other selected
+fields are SQL `NULL`.
 
 ```sql
 SELECT timestamp, type, procedure_state,
