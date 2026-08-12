@@ -1,0 +1,78 @@
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/overview.md
+  s_0e581794860da3::t_0d722f875a30ff 14,22
+  s_0e581794860da3::t_a44f5a43fc71e8 10
+  s_0e581794860da3::t_8a3fbb6e490f33 27
+  s_0e581794860da3::t_418112afd1d629 23
+sidebars.ts
+  s_0e581794860da3::t_9a925959507683 666
+docs/reference/sql/greptime-private/overview.md
+  s_0e581794860da3::t_9a925959507683 14
+i18n/zh/docusaurus-plugin-content-docs/current/reference/sql/greptime-private/overview.md
+  s_0e581794860da3::t_9a925959507683 14
+docs/user-guide/deployments-administration/monitoring/events/overview.md
+  s_0e581794860da3::t_0d722f875a30ff 10-13,17,25-27
+  s_0e581794860da3::t_8a3fbb6e490f33 32
+  s_0e581794860da3::t_e9a1c2eb7b991d 28
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_0e581794860da3::t_8a3fbb6e490f33 71,99
+  s_0e581794860da3::t_c54b765c45fccc 26
+  s_0e581794860da3::t_0d722f875a30ff 34-35,121-122,129-131
+  s_0e581794860da3::t_6ae5bebb611160 123-124
+docs/user-guide/deployments-administration/configuration.md
+  s_0e581794860da3::t_9a925959507683 536-537,551
+  s_f9f42fa04e4dc7::t_c871581342dfa2 552
+docs/reference/sql/greptime-private/events.md
+  s_0e581794860da3::t_047ec22041c130 1-20,22-26
+  s_0e581794860da3::t_8a3fbb6e490f33 21
+i18n/zh/docusaurus-plugin-content-docs/current/reference/sql/greptime-private/events.md
+  s_0e581794860da3::t_047ec22041c130 1-7,9,11-16,18-21
+  s_0e581794860da3::t_a44f5a43fc71e8 8,10,22
+  s_0e581794860da3::t_8a3fbb6e490f33 17
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/configuration.md
+  s_0e581794860da3::t_9a925959507683 538-539,553
+  s_f9f42fa04e4dc7::t_5c459eb7cd4656 554
+docs/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_0e581794860da3::t_d09af348a6add3 87-88
+  s_0e581794860da3::t_8a3fbb6e490f33 19,70,147,186
+  s_0e581794860da3::t_0d722f875a30ff 86
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_0e581794860da3::t_e03a4952841217 147-148
+  s_0e581794860da3::t_8a3fbb6e490f33 21,32,47,64,94,107,124,136,157,178,209,221,246
+  s_0e581794860da3::t_6ae5bebb611160 116-117
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_0e581794860da3::t_8a3fbb6e490f33 65,93
+  s_0e581794860da3::t_6ae5bebb611160 116
+  s_0e581794860da3::t_c54b765c45fccc 26
+  s_0e581794860da3::t_0d722f875a30ff 32,114-115,121-123
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_0e581794860da3::t_8a3fbb6e490f33 18,28,42,57,86,99,116,128,147,167,196,208,233
+  s_0e581794860da3::t_6ae5bebb611160 108-109
+  s_0e581794860da3::t_e03a4952841217 138
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_0e581794860da3::t_d09af348a6add3 82
+  s_0e581794860da3::t_8a3fbb6e490f33 18,68,140,179
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "0322bbae6c48f9946cf4c7bcd30d378af63516cd",
+  "prompts": {},
+  "sessions": {
+    "s_0e581794860da3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff3f4-9ad7-72f2-bf7f-1bb754d367bd",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_f9f42fa04e4dc7": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff18c-729f-7dd2-9ff0-4d84b144a51a",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
