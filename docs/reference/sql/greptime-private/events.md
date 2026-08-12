@@ -18,7 +18,7 @@ USE greptime_private;
 
 SELECT timestamp, type
 FROM events
-WHERE timestamp >= now() - INTERVAL '1 hour'
+WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```

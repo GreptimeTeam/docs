@@ -18,7 +18,7 @@ last hour:
 ```sql
 SELECT *
 FROM greptime_private.events
-WHERE timestamp >= now() - INTERVAL '1 hour'
+WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```
@@ -29,7 +29,7 @@ select only the columns you need:
 ```sql
 SELECT timestamp, type, json_to_string(payload) AS payload
 FROM greptime_private.events
-WHERE timestamp >= now() - INTERVAL '1 hour'
+WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```
@@ -44,7 +44,7 @@ List types actually present in the cluster before choosing a filter:
 ```sql
 SELECT type, COUNT(*) AS event_rows
 FROM greptime_private.events
-WHERE timestamp >= now() - INTERVAL '1 hour'
+WHERE timestamp >= now() - INTERVAL '1' hour
 GROUP BY type
 ORDER BY type;
 ```
@@ -61,7 +61,7 @@ SELECT timestamp, type, procedure_state,
        json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
 WHERE type = 'create_table'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -91,7 +91,7 @@ SELECT timestamp, type, schema_name, procedure_state,
        json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND type IN ('create_database', 'alter_database', 'drop_database')
 ORDER BY timestamp DESC
@@ -104,7 +104,7 @@ LIMIT 1;
 SELECT timestamp, type, schema_name, table_name, table_id, procedure_state
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
 ORDER BY timestamp DESC
@@ -121,7 +121,7 @@ SELECT timestamp, type, catalog_name, schema_name,
        flow_name, flow_id, procedure_state
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND flow_name = '<flow_name>'
 ORDER BY timestamp DESC
 LIMIT 1;
@@ -133,7 +133,7 @@ LIMIT 1;
 SELECT timestamp, type, schema_name, view_name, view_id, procedure_state
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND view_name = '<view_name>'
 ORDER BY timestamp DESC
@@ -154,7 +154,7 @@ SELECT timestamp, type, procedure_state,
        region_migration_src_node_id, region_migration_dst_node_id
 FROM greptime_private.events
 WHERE type IN ('region_migration', 'batch_gc', 'repartition_group')
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND (region_id = <region_id>
        OR source_region_id = <region_id>
        OR target_region_id = <region_id>)
@@ -175,7 +175,7 @@ database, and table:
 SELECT procedure_id
 FROM greptime_private.events
 WHERE type = 'create_table'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -206,7 +206,7 @@ Use the full-row query when you need to explore every available column:
 SELECT *
 FROM greptime_private.events
 WHERE procedure_id = '<procedure_id>'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp ASC;
 ```
 
@@ -218,7 +218,7 @@ SELECT timestamp, type, procedure_state,
        procedure_error, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE procedure_id = '<procedure_id>'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp;
 ```
 
@@ -243,7 +243,7 @@ SELECT timestamp, type, procedure_id, procedure_state,
        procedure_error
 FROM greptime_private.events
 WHERE procedure_state IN ('Failed', 'Poisoned')
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```

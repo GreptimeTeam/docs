@@ -62,7 +62,7 @@ SELECT procedure_state,
        json_get_string(event_context, 'reason') AS reason
 FROM greptime_private.events
 WHERE type = 'create_table'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -90,7 +90,7 @@ SELECT procedure_state, json_to_string(payload) AS payload,
        json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
 WHERE type = 'create_table'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'

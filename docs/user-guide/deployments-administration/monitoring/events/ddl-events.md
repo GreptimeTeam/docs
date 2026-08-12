@@ -16,7 +16,7 @@ SELECT timestamp, type, procedure_state AS state,
        json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND type = '<event_type>'
 ORDER BY timestamp;
@@ -67,7 +67,7 @@ SELECT timestamp, type, procedure_state,
        table_name, table_id, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND type = '<event_type>'
 ORDER BY timestamp;
@@ -144,7 +144,7 @@ SELECT timestamp, type, procedure_state,
        json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND flow_name = '<flow_name>'
   AND type = '<event_type>'
 ORDER BY timestamp;
@@ -183,7 +183,7 @@ SELECT timestamp, type, procedure_state,
        view_name, view_id, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1 hour'
+  AND timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND view_name = '<view_name>'
   AND type = '<event_type>'

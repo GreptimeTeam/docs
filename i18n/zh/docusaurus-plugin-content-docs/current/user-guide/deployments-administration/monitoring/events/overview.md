@@ -24,7 +24,7 @@ GreptimeDB 会异步写入事件记录，通常每 5 秒刷新一次。刚完成
 ```sql
 SELECT timestamp, type
 FROM greptime_private.events
-WHERE timestamp >= now() - INTERVAL '1 hour'
+WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```
