@@ -1,0 +1,21 @@
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_0e581794860da3::t_5e2c5c0ca198b7 128-131
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_0e581794860da3::t_5e2c5c0ca198b7 136-141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "9def8fe0f1ac8717e677121239071a9f469b6673",
+  "prompts": {},
+  "sessions": {
+    "s_0e581794860da3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff3f4-9ad7-72f2-bf7f-1bb754d367bd",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
