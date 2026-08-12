@@ -1,0 +1,51 @@
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/configuration.md
+  s_0e581794860da3::t_14254180449233 538-539,553
+  s_0e581794860da3::t_221de0d58fb4b7 554
+versioned_docs/version-1.2/user-guide/deployments-administration/configuration.md
+  s_0e581794860da3::t_14254180449233 536-537,551
+  s_0e581794860da3::t_0ffcc5837b7856 552
+versioned_sidebars/version-1.2-sidebars.json
+  s_0e581794860da3::t_14254180449233 355-368,664
+i18n/zh/docusaurus-plugin-content-docs/version-1.2.json
+  s_0e581794860da3::t_0fed5d477ae720 249-252
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/reference/sql/greptime-private/events.md
+  s_0e581794860da3::t_7306f4d3780aa4 1-22
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/reference/sql/greptime-private/overview.md
+  s_0e581794860da3::t_678e43f72eb06c 14
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_0e581794860da3::t_1fa1564fcd888b 1-204
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_0e581794860da3::t_0d92954bb3a33a 1-126
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/monitoring/events/overview.md
+  s_0e581794860da3::t_e9f59e6885bb85 1-36
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_0e581794860da3::t_69e2249f8b486b 1-229
+versioned_docs/version-1.2/reference/sql/greptime-private/events.md
+  s_0e581794860da3::t_d5c9c9e417116a 1-29
+versioned_docs/version-1.2/reference/sql/greptime-private/overview.md
+  s_0e581794860da3::t_921094e81bb6b4 14
+versioned_docs/version-1.2/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_0e581794860da3::t_47165c3874bd3c 1-211
+versioned_docs/version-1.2/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_0e581794860da3::t_74ce78cd1852ae 1-136
+versioned_docs/version-1.2/user-guide/deployments-administration/monitoring/events/overview.md
+  s_0e581794860da3::t_d11dfd8718864a 1-41
+versioned_docs/version-1.2/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_0e581794860da3::t_262a8fac931a0a 1-241
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "813e0a2022d2f5f49b102e05f889887b11c1dc85",
+  "prompts": {},
+  "sessions": {
+    "s_0e581794860da3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff3f4-9ad7-72f2-bf7f-1bb754d367bd",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
