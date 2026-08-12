@@ -195,6 +195,7 @@ Currently following options are supported:
 - `sst_format`: the SST format of the table. The value can be `flat` or `primary_key`. A table supports changing the format in both directions: `primary_key` to `flat` and `flat` to `primary_key`.
 - `write_buffer_size`: the per-region write buffer stall threshold of the table. For a positive value such as `512MB`, GreptimeDB schedules a flush when mutable memtable usage reaches half the value, stalls writes at the value, and rejects writes at twice the value. The table option overrides `region_engine.mito.default_region_write_buffer_size`. Setting it to `0` explicitly disables the per-region limit even when the engine default is nonzero. Unsetting it removes the table override and falls back to the engine default.
 - `auto_flush_interval`: how long a region of this table may go without a flush before one is triggered. The value is a [time duration string](/reference/time-durations.md) and must be greater than zero. The table option overrides the engine-wide `region_engine.mito.auto_flush_interval`.
+- `max_row_group_row_count`: the maximum number of rows in a Parquet row group. The value must be from `1` through `10485760` (`10 * 1024 * 1024`); zero is rejected. Changing or unsetting this option flushes pending rows using the old row group size before applying the new value. The new value, or the default of `102400` (`100 * 1024`) after unsetting, applies to subsequently produced SSTs. The ALTER operation does not immediately rewrite existing SSTs; later compactions may rewrite them using the current row group size.
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
@@ -214,6 +215,8 @@ ALTER TABLE monitor SET 'sst_format'='primary_key';
 ALTER TABLE monitor SET 'write_buffer_size'='512MB';
 
 ALTER TABLE monitor SET 'auto_flush_interval'='5m';
+
+ALTER TABLE monitor SET 'max_row_group_row_count'='2048';
 ```
 
 To drop the `auto_flush_interval` override and fall back to the engine-wide setting, set it
@@ -234,6 +237,8 @@ returns an error; use `SET ... = NULL` as shown above.
 ALTER TABLE monitor UNSET 'ttl';
 
 ALTER TABLE monitor UNSET 'write_buffer_size';
+
+ALTER TABLE monitor UNSET 'max_row_group_row_count';
 ```
 
 ### Set repartition column hint
