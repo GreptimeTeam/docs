@@ -20,11 +20,11 @@ Standalone deployments record supported local DDL Procedure events. Distributed 
 
 ## Query events
 
-Start with a bounded query while investigating a recent operation:
-
 The table is created when the first event is recorded. If no event has been
 recorded yet, or event recording is disabled, this query returns a table-not-found
 error.
+
+Start with a bounded query while investigating a recent operation:
 
 ```sql
 SELECT timestamp, type
