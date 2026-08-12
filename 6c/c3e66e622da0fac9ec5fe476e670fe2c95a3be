@@ -1,0 +1,33 @@
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_0e581794860da3::t_a762fd11025617 84,96,109,120
+  s_0e581794860da3::t_e499b6e25b7c3a 50
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_0e581794860da3::t_9d00b9638a10bc 114
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_0e581794860da3::t_9d00b9638a10bc 121
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_0e581794860da3::t_e499b6e25b7c3a 24
+  s_0e581794860da3::t_a762fd11025617 17,66,137,175
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_0e581794860da3::t_e499b6e25b7c3a 57,189-190
+  s_0e581794860da3::t_a762fd11025617 92,104,117,128
+docs/user-guide/deployments-administration/monitoring/events/ddl-events.md
+  s_0e581794860da3::t_a762fd11025617 18,68,144,182
+  s_0e581794860da3::t_e499b6e25b7c3a 25-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "6cc3e66e622da0fac9ec5fe476e670fe2c95a3be",
+  "prompts": {},
+  "sessions": {
+    "s_0e581794860da3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff3f4-9ad7-72f2-bf7f-1bb754d367bd",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
