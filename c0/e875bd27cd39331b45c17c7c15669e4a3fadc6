@@ -1,0 +1,33 @@
+.github/workflows/node-build.yml
+  s_be2d7ed1b265cc::t_74d5b78841951a 21-22,33
+pnpm-lock.yaml
+  s_be2d7ed1b265cc::t_2e4a98ff9a1fb9 1702,5691
+package.json
+  s_cd02b5bc074106::t_43a5c37315ecf9 25-26
+scripts/format-markdown.mjs
+  s_cd02b5bc074106::t_7f49334f502605 1-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "c0e875bd27cd39331b45c17c7c15669e4a3fadc6",
+  "prompts": {},
+  "sessions": {
+    "s_be2d7ed1b265cc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff4e4-7ace-7b22-8042-86a4a14dd4a4",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_cd02b5bc074106": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff4e4-7afe-7603-84fb-5840f6d48bb9",
+        "model": "unknown"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
