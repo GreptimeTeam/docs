@@ -352,6 +352,20 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/monitoring/key-logs',
                 'user-guide/deployments-administration/monitoring/tracing',
                 'user-guide/deployments-administration/monitoring/slow-query',
+                {
+                  type: 'category',
+                  label: 'Events',
+                  items: [
+                    {
+                      type: 'doc',
+                      id: 'user-guide/deployments-administration/monitoring/events/overview',
+                      label: 'Overview',
+                    },
+                    'user-guide/deployments-administration/monitoring/events/query-events',
+                    'user-guide/deployments-administration/monitoring/events/event-data-model',
+                    'user-guide/deployments-administration/monitoring/events/ddl-events',
+                  ],
+                },
                 'user-guide/deployments-administration/monitoring/runtime-info',
               ],
             },
@@ -649,6 +663,7 @@ const sidebars: SidebarsConfig = {
                   id: 'reference/sql/greptime-private/overview',
                   label: 'Overview',
                 },
+                'reference/sql/greptime-private/events',
                 'reference/sql/greptime-private/slow_queries',
                 'reference/sql/greptime-private/pipelines',
               ],
