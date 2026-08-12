@@ -1,0 +1,68 @@
+i18n/zh/docusaurus-plugin-content-docs/current/reference/sql/greptime-private/events.md
+  s_785d19b59ebb8a::t_da55d00317823f 8,22
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/region-events.md
+  s_785d19b59ebb8a::t_df5ad73627c5e5 21,34,40
+  s_785d19b59ebb8a::t_3c012e8a613a91 8-10,14,65,69,94
+  s_785d19b59ebb8a::t_9808da6dd477de 33,35-37,87-91
+  s_785d19b59ebb8a::t_f26696e68b6f63 16,19-20,43-47,52,72-78
+  s_785d19b59ebb8a::t_2960b0176c18c7 56-60,62
+  s_785d19b59ebb8a::t_5f1f3bb53e1650 61
+  s_785d19b59ebb8a::t_2596bbdc11a1f7 15
+docs/reference/sql/greptime-private/events.md
+  s_785d19b59ebb8a::t_da55d00317823f 9-12,29
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/overview.md
+  s_785d19b59ebb8a::t_da55d00317823f 2,8,10,14,16,32
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_785d19b59ebb8a::t_855855459141ed 128
+  s_785d19b59ebb8a::t_da55d00317823f 8-9,23,33-34,37,47-48,129-131,179,183,193
+  s_785d19b59ebb8a::t_833e14ef79a0c2 13,18,189,201
+docs/user-guide/deployments-administration/monitoring/events/overview.md
+  s_785d19b59ebb8a::t_da55d00317823f 2,8,10-13,17,19,27,37
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/maintenance-events.md
+  s_785d19b59ebb8a::t_3894291cc6fd92 15-17,20,27,30-37
+  s_785d19b59ebb8a::t_3c012e8a613a91 12,26,66
+  s_785d19b59ebb8a::t_f26696e68b6f63 28-29,40
+  s_785d19b59ebb8a::t_b5d219411547fa 2-3,8,10,42
+  s_785d19b59ebb8a::t_a9b3793f24c5c1 68
+  s_785d19b59ebb8a::t_fdaf53c88bbbd9 46-47,57-63,67,69-70
+  s_785d19b59ebb8a::t_38688d8f169dd9 11
+docs/user-guide/deployments-administration/monitoring/events/maintenance-events.md
+  s_785d19b59ebb8a::t_3c012e8a613a91 12,26,66
+  s_785d19b59ebb8a::t_fdaf53c88bbbd9 46-47,57-63,67,69-70
+  s_785d19b59ebb8a::t_a9b3793f24c5c1 68
+  s_785d19b59ebb8a::t_3894291cc6fd92 15-17,20,27,30-37
+  s_785d19b59ebb8a::t_f26696e68b6f63 8,28-29,40
+  s_785d19b59ebb8a::t_b5d219411547fa 2-3,10,42
+  s_785d19b59ebb8a::t_80d37b9ae6a495 11
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_785d19b59ebb8a::t_855855459141ed 136
+  s_785d19b59ebb8a::t_da55d00317823f 8-11,26-27,37-39,42,52-55,137-141,189-191,195,205
+  s_785d19b59ebb8a::t_833e14ef79a0c2 15-16,21,201,213
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_785d19b59ebb8a::t_da55d00317823f 8,29-32,34-35,40-42,88-89,113,116-123,127-136
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_785d19b59ebb8a::t_da55d00317823f 8,29-30,32,37-38,82-83,107,111-120,122-126
+docs/user-guide/deployments-administration/monitoring/events/region-events.md
+  s_785d19b59ebb8a::t_3c012e8a613a91 8-10,14,65,69,94
+  s_785d19b59ebb8a::t_2960b0176c18c7 56-62
+  s_785d19b59ebb8a::t_f26696e68b6f63 16,19-20,43-47,52,72-78
+  s_785d19b59ebb8a::t_9808da6dd477de 33,35-37,87-91
+  s_785d19b59ebb8a::t_df5ad73627c5e5 21,34,40
+  s_785d19b59ebb8a::t_e04df405c4a44c 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "6d535fab2c15a473e828c40eed883bd2461f600a",
+  "prompts": {},
+  "sessions": {
+    "s_785d19b59ebb8a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff4db-02c7-7c10-bd4c-ad3d65c69c14",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
