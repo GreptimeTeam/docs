@@ -54,7 +54,7 @@ cluster. It varies with workload and does not define the configured or
 source-supported types. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
 for the supported local DDL event types.
 
-Combine a type with a schema and object locator to avoid unrelated rows:
+Combine an event type with a database and object name to avoid unrelated rows:
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -80,8 +80,8 @@ Example output:
 
 ## Find the latest event for an object
 
-Replace the placeholders with your locators. Each query
-returns the newest matching event.
+Replace the placeholders with the object name and, where needed, the database.
+Each query returns the newest matching event.
 
 ### Database
 
@@ -161,8 +161,8 @@ Procedure events share a `procedure_id`.
 
 ### Get a procedure ID
 
-For a table-creation procedure, locate the `Submitted` row by its database and
-table:
+For a table-creation procedure, find the row whose trigger type is `Submitted`
+for the given database and table:
 
 ```sql
 SELECT procedure_id

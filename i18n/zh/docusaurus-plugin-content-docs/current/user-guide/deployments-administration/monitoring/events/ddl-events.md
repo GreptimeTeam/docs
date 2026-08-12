@@ -77,7 +77,7 @@ ORDER BY timestamp;
 `table_id`。`alter_table`、`truncate_table` 和 `drop_table` 在提交时已经知道
 表 ID，因此它们的事件记录会包含 `table_id`。
 
-GreptimeDB 还会记录 `create_logical_tables` 和 `alter_logical_tables` 事件。两者会为每张逻辑表的每个生命周期触发器各写入一行，因此按 `procedure_id` 查询时，同一触发器可能返回多行。`undrop_table` 和 `purge_dropped_table` 仅企业版支持。
+GreptimeDB 还会记录 `create_logical_tables` 和 `alter_logical_tables` 事件。两者会为每张逻辑表的每个生命周期触发类型各写入一行，因此按 `procedure_id` 查询时，同一触发类型可能返回多行。`undrop_table` 和 `purge_dropped_table` 仅企业版支持。
 
 **`create_table`**
 

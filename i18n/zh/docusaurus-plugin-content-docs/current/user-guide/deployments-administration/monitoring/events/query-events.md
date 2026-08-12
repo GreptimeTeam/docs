@@ -47,7 +47,7 @@ ORDER BY type;
 该结果仅反映最近一小时内实际出现的事件类型，不能作为已配置或受支持类型的完整清单。
 支持的本地 DDL 事件类型请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
 
-将 `type` 与 `schema_name` 和对象名称组合，可以避免混入无关事件：
+将事件类型、数据库和对象名称组合，可以避免混入无关事件：
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -73,7 +73,7 @@ ORDER BY timestamp;
 
 ## 查询对象的最新事件
 
-将占位符替换为实际定位条件。每个查询只返回匹配结果中最新的一条事件。
+将占位符替换为对象名称；需要时再填入数据库。每个查询只返回匹配结果中最新的一条事件。
 
 ### 数据库
 
@@ -151,7 +151,8 @@ Procedure 事件共享 `procedure_id`。
 
 ### 获取 Procedure ID
 
-对于创建表的 Procedure，可以根据数据库、表和 `Submitted` 触发器定位提交行：
+对于创建表的 Procedure，按数据库和表筛选，再将 `procedure_trigger` 的类型筛为
+`Submitted`，即可找到提交行：
 
 ```sql
 SELECT procedure_id

@@ -38,17 +38,17 @@ stable `reason` value is one of
 event can contain `{"protocol":"mysql","reason":"manual"}`.
 
 In addition to `Submitted` and `Succeeded`, a Procedure can emit the following
-triggers when applicable. Not every Procedure emits every trigger, and rows are
+trigger types when applicable. Not every Procedure emits every trigger type, and rows are
 not guaranteed to appear in the order shown:
 
-| `type`           | Meaning and fields                                                                                                                                                     |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Recovered`      | The root procedure was recovered from persisted state.                                                                                                                 |
-| `ChildSubmitted` | A child submission was attempted. The trigger includes the child `procedure_id` and its `outcome` (`Accepted`, `AlreadyAccepted`, `ManagerStopped`, or `SpawnFailed`). |
-| `Retrying`       | Procedure execution or rollback is being retried. The trigger includes the retry `phase` (`Execute` or `Rollback`) and `attempt`.                                      |
-| `RollingBack`    | Procedure rollback is starting.                                                                                                                                        |
-| `Failed`         | The procedure reached a failed terminal state. Inspect `procedure_error` for failure details.                                                                          |
-| `Poisoned`       | The procedure cannot proceed. Inspect `procedure_error` for the failure details.                                                                                       |
+| `type`           | Meaning and fields                                                                                                                                                             |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Recovered`      | The root procedure was recovered from persisted state.                                                                                                                         |
+| `ChildSubmitted` | A child submission was attempted. `procedure_trigger` includes the child `procedure_id` and its `outcome` (`Accepted`, `AlreadyAccepted`, `ManagerStopped`, or `SpawnFailed`). |
+| `Retrying`       | Procedure execution or rollback is being retried. `procedure_trigger` includes the retry `phase` (`Execute` or `Rollback`) and `attempt`.                                      |
+| `RollingBack`    | Procedure rollback is starting.                                                                                                                                                |
+| `Failed`         | The procedure reached a failed terminal state. Inspect `procedure_error` for failure details.                                                                                  |
+| `Poisoned`       | The procedure cannot proceed. Inspect `procedure_error` for the failure details.                                                                                               |
 
 ## Query JSON fields
 
@@ -112,7 +112,7 @@ ORDER BY timestamp;
 
 ## Procedure event type-specific columns
 
-The following columns are populated only by the listed event types. A `NULL`
+The following columns are populated only by the listed event types. An SQL `NULL`
 value in one of these columns is normal when it does not apply.
 
 - **Database, table, Flow, and view events:** `catalog_name`, `schema_name`,

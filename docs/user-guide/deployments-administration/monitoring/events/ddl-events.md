@@ -81,8 +81,8 @@ the allocated ID. `alter_table`, `truncate_table`, and `drop_table` already know
 the table ID when they are submitted, so their event rows include it.
 
 GreptimeDB also records `create_logical_tables` and `alter_logical_tables` events.
-Each emits one row per logical table for each lifecycle trigger, so a query by
-`procedure_id` can return multiple rows for the same trigger. `undrop_table`
+Each emits one row per logical table for each lifecycle trigger type, so a query
+by `procedure_id` can return multiple rows for the same trigger type. `undrop_table`
 and `purge_dropped_table` are Enterprise-only.
 
 **`create_table`**

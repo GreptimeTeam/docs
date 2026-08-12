@@ -35,16 +35,16 @@ Procedure 事件还有以下列：
 `{"protocol":"mysql","reason":"manual"}`。
 
 除 `Submitted` 和 `Succeeded` 外，Procedure 还可能在适用时产生以下触发类型。
-并非每个 Procedure 都会产生所有类型，记录顺序也不保证与下表一致：
+并非每个 Procedure 都会产生所有触发类型，记录顺序也不保证与下表一致：
 
-| `type`           | 含义和字段                                                                                                                                            |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Recovered`      | 根 Procedure 从持久化状态恢复。                                                                                                                       |
-| `ChildSubmitted` | 尝试提交子 Procedure。触发器包含子 Procedure 的 `procedure_id` 和提交 `outcome`（`Accepted`、`AlreadyAccepted`、`ManagerStopped` 或 `SpawnFailed`）。 |
-| `Retrying`       | 正在重试 Procedure 的执行或回滚。触发器包含重试 `phase`（`Execute` 或 `Rollback`）和 `attempt`。                                                      |
-| `RollingBack`    | 开始回滚 Procedure。                                                                                                                                  |
-| `Failed`         | Procedure 到达失败终态。请检查 `procedure_error` 中的失败详情。                                                                                       |
-| `Poisoned`       | Procedure 无法继续。请检查 `procedure_error` 中的失败详情。                                                                                           |
+| `type`           | 含义和字段                                                                                                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Recovered`      | 根 Procedure 从持久化状态恢复。                                                                                                                                     |
+| `ChildSubmitted` | 尝试提交子 Procedure。`procedure_trigger` 包含子 Procedure 的 `procedure_id` 和提交 `outcome`（`Accepted`、`AlreadyAccepted`、`ManagerStopped` 或 `SpawnFailed`）。 |
+| `Retrying`       | 正在重试 Procedure 的执行或回滚。`procedure_trigger` 包含重试 `phase`（`Execute` 或 `Rollback`）和 `attempt`。                                                      |
+| `RollingBack`    | 开始回滚 Procedure。                                                                                                                                                |
+| `Failed`         | Procedure 到达失败终态。请检查 `procedure_error` 中的失败详情。                                                                                                     |
+| `Poisoned`       | Procedure 无法继续。请检查 `procedure_error` 中的失败详情。                                                                                                         |
 
 ## 查询 JSON 字段
 
