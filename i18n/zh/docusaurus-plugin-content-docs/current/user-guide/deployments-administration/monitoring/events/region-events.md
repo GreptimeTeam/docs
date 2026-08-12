@@ -5,16 +5,20 @@ description: 查看 GreptimeDB 记录的 Region 事件。
 
 # Region 事件
 
-在分布式部署中，调整表的分区布局或在 Datanode 之间迁移 Region 时，Metasrv 会记录 Region
-事件。
+在分布式部署中，Metasrv 会记录重分区和 Region 迁移事件。
+
+`region_id` 由高 32 位的 `table_id` 和低 32 位的 `region_number` 组成。下面的查询将这三个字段一起显示。
 
 ## 重分区
 
-`repartition` Procedure 会提交一个或多个 `repartition_group` 子 Procedure。先找到父
-Procedure 的 `Submitted` 行：
+每次重分区包含一个根 `repartition` Procedure 和一个或多个 `repartition_group` 子 Procedure。根 Procedure 的 `Submitted` 行记录表和请求的分区规则，子 Procedure 的 `Submitted` 行记录每个源 Region 如何拆分或合并。
+
+先查询根 Procedure：
 
 ```sql
-SELECT procedure_id
+SELECT timestamp, procedure_id, procedure_state,
+       catalog_name, schema_name, table_name, table_id,
+       json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE type = 'repartition'
   AND timestamp >= now() - INTERVAL '1' hour
@@ -25,66 +29,53 @@ ORDER BY timestamp DESC
 LIMIT 1;
 ```
 
-根据返回的 ID 查询父 Procedure 的所有事件记录：
-
 ```sql
-SELECT timestamp, type, procedure_id, procedure_state,
-       json_get_string(procedure_trigger, 'type') AS trigger_type,
-       json_get_string(procedure_trigger, 'procedure_id') AS child_procedure_id
-FROM greptime_private.events
-WHERE procedure_id = '<repartition_procedure_id>'
-ORDER BY timestamp;
++-------------------------------+--------------------------------------+-----------------+--------------+-------------------+-------------------------+----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| timestamp                     | procedure_id                         | procedure_state | catalog_name | schema_name       | table_name              | table_id | payload                                                                                                                                                                                                                                          |
++-------------------------------+--------------------------------------+-----------------+--------------+-------------------+-------------------------+----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| 2026-08-09 08:29:30.771436255 | 95bb4e53-e73e-40b1-b878-208b0ae2b812 | Running         | greptime     | repartitiondebug1 | greptime_physical_table |     1332 | {"source_partition_exprs":["namespace >= app-2"],"source_type":"partitioned","target_partition_exprs":["namespace >= app-2 AND namespace < app-26","namespace >= app-26 AND namespace < app-5","namespace >= app-5"],"timeout":"2m","version":2} |
++-------------------------------+--------------------------------------+-----------------+--------------+-------------------+-------------------------+----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 ```
 
-```sql
-+-------------------------------+-------------+--------------------------------------+-----------------+----------------+--------------------------------------+
-| timestamp                     | type        | procedure_id                         | procedure_state | trigger_type   | child_procedure_id                   |
-+-------------------------------+-------------+--------------------------------------+-----------------+----------------+--------------------------------------+
-| 2026-08-10 11:48:29.492950260 | repartition | 4d7a1f1d-d290-4849-a5da-5a7bf8d1e3a2 | Running         | Submitted      | NULL                                 |
-| 2026-08-10 11:48:29.598868367 | repartition | 4d7a1f1d-d290-4849-a5da-5a7bf8d1e3a2 | Running         | ChildSubmitted | 9ee0ac83-a4bb-45f8-b5bc-d3b1aad4edfe |
-| 2026-08-10 11:48:29.917708631 | repartition | 4d7a1f1d-d290-4849-a5da-5a7bf8d1e3a2 | Done            | Succeeded      | NULL                                 |
-+-------------------------------+-------------+--------------------------------------+-----------------+----------------+--------------------------------------+
-```
-
-`Submitted` 行包含表定位列和重分区详情。父 Procedure 后续的生命周期行中，这些列为 SQL
-`NULL`，因此应按 `procedure_id` 而不是表定位列查询。
-
-## 重分区组
-
-`repartition_group` Procedure 的 `Submitted` 行描述从源 Region 到目标 Region 的映射。
-使用父 Procedure ID 查找这些行：
+`payload` 包含 `source_type` 和 `target_partition_exprs`。源表已分区时，它还包含 `source_partition_exprs`。使用返回的 `procedure_id` 查询 Region 映射：
 
 ```sql
-SELECT timestamp, procedure_id, parent_procedure_id, repartition_group_id,
-       source_region_id, target_region_id, target_partition_expr
+SELECT timestamp,
+       parent_procedure_id AS repartition_procedure_id,
+       procedure_id AS repartition_group_procedure_id,
+       source_region_id, table_id AS source_table_id, source_region_number, source_partition_expr,
+       target_region_id, table_id AS target_table_id, target_region_number, target_partition_expr
 FROM greptime_private.events
 WHERE type = 'repartition_group'
-  AND timestamp >= now() - INTERVAL '1' hour
   AND parent_procedure_id = '<repartition_procedure_id>'
   AND json_path_match(procedure_trigger, '$.type == "Submitted"')
-ORDER BY timestamp, target_region_id;
+ORDER BY source_region_id, target_region_id;
 ```
 
 ```sql
-+-------------------------------+--------------------------------------+--------------------------------------+--------------------------------------+------------------+------------------+-----------------------+
-| timestamp                     | procedure_id                         | parent_procedure_id                  | repartition_group_id                 | source_region_id | target_region_id | target_partition_expr |
-+-------------------------------+--------------------------------------+--------------------------------------+--------------------------------------+------------------+------------------+-----------------------+
-| 2026-08-10 11:48:29.598852207 | 9ee0ac83-a4bb-45f8-b5bc-d3b1aad4edfe | 4d7a1f1d-d290-4849-a5da-5a7bf8d1e3a2 | d8fdedbf-7e5c-496e-9620-afba27081cfa |    6240587481088 |    6240587481088 | host < 10             |
-| 2026-08-10 11:48:29.598852207 | 9ee0ac83-a4bb-45f8-b5bc-d3b1aad4edfe | 4d7a1f1d-d290-4849-a5da-5a7bf8d1e3a2 | d8fdedbf-7e5c-496e-9620-afba27081cfa |    6240587481088 |    6240587481089 | host >= 10            |
-+-------------------------------+--------------------------------------+--------------------------------------+--------------------------------------+------------------+------------------+-----------------------+
++-------------------------------+--------------------------------------+--------------------------------------+------------------+-----------------+----------------------+-----------------------+------------------+-----------------+----------------------+-------------------------------------------+
+| timestamp                     | repartition_procedure_id             | repartition_group_procedure_id       | source_region_id | source_table_id | source_region_number | source_partition_expr | target_region_id | target_table_id | target_region_number | target_partition_expr                     |
++-------------------------------+--------------------------------------+--------------------------------------+------------------+-----------------+----------------------+-----------------------+------------------+-----------------+----------------------+-------------------------------------------+
+| 2026-08-09 08:29:30.968778963 | 95bb4e53-e73e-40b1-b878-208b0ae2b812 | 4f132d57-c402-4c9f-b707-3b9d53b32cfa |    5720896438274 |            1332 |                    2 | namespace >= app-2    |    5720896438274 |            1332 |                    2 | namespace >= app-2 AND namespace < app-26 |
+| 2026-08-09 08:29:30.968778963 | 95bb4e53-e73e-40b1-b878-208b0ae2b812 | 4f132d57-c402-4c9f-b707-3b9d53b32cfa |    5720896438274 |            1332 |                    2 | namespace >= app-2    |    5720896438275 |            1332 |                    3 | namespace >= app-26 AND namespace < app-5 |
+| 2026-08-09 08:29:30.968778963 | 95bb4e53-e73e-40b1-b878-208b0ae2b812 | 4f132d57-c402-4c9f-b707-3b9d53b32cfa |    5720896438274 |            1332 |                    2 | namespace >= app-2    |    5720896438276 |            1332 |                    4 | namespace >= app-5                        |
++-------------------------------+--------------------------------------+--------------------------------------+------------------+-----------------+----------------------+-----------------------+------------------+-----------------+----------------------+-------------------------------------------+
 ```
 
-只有 `repartition_group` Procedure 的 `Submitted` 行包含父 Procedure、组和拓扑字段。
-要查看子 Procedure 的完整生命周期，请使用它的 `procedure_id` 参阅[查询 Procedure 事件](/user-guide/deployments-administration/monitoring/events/query-events.md)。
+未分区表的 `source_partition_expr` 为 SQL `NULL`。源和目标的 table ID 相同，因为每条映射都属于同一张表。要查看子 Procedure 的生命周期，请用其 `procedure_id` 查询[Procedure 事件](/user-guide/deployments-administration/monitoring/events/query-events.md)。
 
 ## Region 迁移
 
-用户可以手动发起 Region 迁移，自动均衡和故障转移也会触发迁移。查询最近一次迁移：
+Region 迁移可以手动发起，也可以由 Region Balancer 或 Region Failover 触发。下面的查询显示最近一次迁移：
 
 ```sql
-SELECT timestamp, type, region_id, region_migration_trigger_reason,
-       region_migration_src_node_id, region_migration_dst_node_id,
-       procedure_state
+SELECT timestamp, procedure_id, procedure_state,
+       region_id, table_id, region_number,
+       region_migration_trigger_reason,
+       region_migration_src_node_id AS source_datanode_id,
+       region_migration_src_peer_addr AS source_datanode_addr,
+       region_migration_dst_node_id AS target_datanode_id,
+       region_migration_dst_peer_addr AS target_datanode_addr
 FROM greptime_private.events
 WHERE type = 'region_migration'
   AND timestamp >= now() - INTERVAL '1' hour
@@ -93,11 +84,11 @@ LIMIT 1;
 ```
 
 ```sql
-+-------------------------------+------------------+---------------+---------------------------------+------------------------------+------------------------------+-----------------+
-| timestamp                     | type             | region_id     | region_migration_trigger_reason | region_migration_src_node_id | region_migration_dst_node_id | procedure_state |
-+-------------------------------+------------------+---------------+---------------------------------+------------------------------+------------------------------+-----------------+
-| 2026-08-10 02:52:50.078350103 | region_migration | 5162550689808 | AutoRebalance                   |                            1 |                            2 | Done            |
-+-------------------------------+------------------+---------------+---------------------------------+------------------------------+------------------------------+-----------------+
++-------------------------------+--------------------------------------+-----------------+---------------+----------+---------------+---------------------------------+--------------------+----------------------+--------------------+----------------------+
+| timestamp                     | procedure_id                         | procedure_state | region_id     | table_id | region_number | region_migration_trigger_reason | source_datanode_id | source_datanode_addr | target_datanode_id | target_datanode_addr |
++-------------------------------+--------------------------------------+-----------------+---------------+----------+---------------+---------------------------------+--------------------+----------------------+--------------------+----------------------+
+| 2026-08-10 02:52:50.078350103 | 63167e21-0165-4964-afef-02271baa126b | Done            | 5162550689808 |     1202 |            16 | AutoRebalance                   |                  1 | 172.16.62.49:4001    |                  2 | 172.16.232.158:4001  |
++-------------------------------+--------------------------------------+-----------------+---------------+----------+---------------+---------------------------------+--------------------+----------------------+--------------------+----------------------+
 ```
 
-`region_migration_trigger_reason` 记录迁移的触发原因。本示例省略 peer 地址。
+`region_migration_trigger_reason` 表示迁移的触发原因。源和目标字段分别给出参与迁移的 Datanode。

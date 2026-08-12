@@ -5,23 +5,26 @@ description: Query GreptimeDB event records.
 
 # Query events
 
-Use the `greptime_private.events` system table to investigate recent events.
-GreptimeDB writes events asynchronously, so a newly submitted operation might
-not appear right away. For event columns, see [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md).
+Query the `greptime_private.events` system table to investigate recent events.
+Events are written asynchronously, so a newly submitted operation might not be
+visible immediately. See [Event data model](/user-guide/deployments-administration/monitoring/events/event-data-model.md)
+for event columns.
 
 ## Start with recent events
 
-To view the most recently recorded events:
+The following query returns all columns for up to 20 events recorded during the
+last hour:
 
 ```sql
 SELECT *
 FROM greptime_private.events
+WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```
 
-To focus on a recent operation and select only the columns you need, add a time
-range:
+This is useful for exploration, but it returns every column. For routine checks,
+select only the columns you need:
 
 ```sql
 SELECT timestamp, type, json_to_string(payload) AS payload
@@ -31,9 +34,12 @@ ORDER BY timestamp DESC
 LIMIT 20;
 ```
 
+The compact result keeps the time, type, and payload visible without pasting the
+full output.
+
 ## Discover and filter event types
 
-Before filtering by type, see which event types the cluster has recorded:
+List types actually present in the cluster before choosing a filter:
 
 ```sql
 SELECT type, COUNT(*) AS event_rows
@@ -43,12 +49,10 @@ GROUP BY type
 ORDER BY type;
 ```
 
-The result covers only the selected time range. It is not a complete list of
-types configured or supported by GreptimeDB. See
-[Lifecycle event recorder](/user-guide/deployments-administration/configuration.md#lifecycle-event-recorder)
-for the configured type lists. For examples, see [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md),
-[Region events](/user-guide/deployments-administration/monitoring/events/region-events.md), and
-[Maintenance events](/user-guide/deployments-administration/monitoring/events/maintenance-events.md).
+The result is a point-in-time view of the event types currently present in the
+cluster. It varies with workload and does not define the configured or
+source-supported types. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
+for the supported local DDL event types.
 
 Combine an event type with a database and object name to avoid unrelated rows:
 
@@ -129,13 +133,12 @@ LIMIT 1;
 
 ### Region
 
-Region events are global, not scoped to a database. Use this query to find the
-latest matching event across `region_migration`, `batch_gc`, and
-`repartition_group`.
-
-Before running this query, the table must have recorded each selected type at
-least once. It adds an event type's columns when it first records that type. A
-column is SQL `NULL` when it does not apply to a row.
+Operational events that reference a Region are global, not tied to a database.
+Use this query to find the latest event for a Region. It requires
+`region_migration`, `batch_gc`, and `repartition_group` to have each recorded at
+least one event: the table adds an event type's columns when it first records
+that type. A row fills only the fields for its event type; the other selected
+fields are SQL `NULL`.
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -183,22 +186,23 @@ Example result:
 +--------------------------------------+
 ```
 
-Use the returned ID to query the Procedure's event rows. Include `schema_name`
-and `table_name` to avoid selecting a Procedure for another object with a
-similar name.
+Use the returned ID to query the Procedure's event rows. Filtering by
+`schema_name` and `table_name` avoids selecting a procedure for another object
+with a similar name.
 
 ### Query a Procedure
 
-To retrieve every recorded row for a Procedure, query by its ID:
+Use the full-row query when you need to explore every available column:
 
 ```sql
 SELECT *
 FROM greptime_private.events
 WHERE procedure_id = '<procedure_id>'
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp ASC;
 ```
 
-For a smaller result, select only the columns you need:
+For routine checks, use a focused projection:
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -206,6 +210,7 @@ SELECT timestamp, type, procedure_state,
        procedure_error, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE procedure_id = '<procedure_id>'
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp;
 ```
 

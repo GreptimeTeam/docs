@@ -1,44 +1,50 @@
 ---
-keywords: [GreptimeDB 事件, 维护事件, 批量 GC, WAL 清理]
-description: 查看 GreptimeDB 记录的维护事件。
+keywords: [GreptimeDB 事件, 维护事件, GC 事件, Remote WAL 裁剪]
+description: 查看 GreptimeDB 记录的 GC 和 Remote WAL 裁剪事件。
 ---
 
 # 维护事件
 
-在分布式部署中，GreptimeDB 回收不再使用的数据或清理 WAL 时，Metasrv 会记录维护事件。
+在分布式部署中，Metasrv 会记录 GC 和 Remote WAL 裁剪事件。
 
-## 批量 GC
+## GC 事件
+
+带有非 `NULL` `gc_report` 的记录显示一个 Region 的 GC 结果：
 
 ```sql
-SELECT timestamp, type, region_id, region_number,
-       json_path_match(gc_report, '$.need_retry == false') AS completed_without_retry,
-       procedure_state
+SELECT timestamp, procedure_id, procedure_state,
+       region_id, table_id, region_number,
+       json_to_string(gc_report) AS gc_report
 FROM greptime_private.events
 WHERE type = 'batch_gc'
+  AND gc_report IS NOT NULL
   AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 3;
 ```
 
-```sql
-+-------------------------------+----------+---------------+---------------+-------------------------+-----------------+
-| timestamp                     | type     | region_id     | region_number | completed_without_retry | procedure_state |
-+-------------------------------+----------+---------------+---------------+-------------------------+-----------------+
-| 2026-08-10 10:03:28.491703601 | batch_gc | 5162550689807 |            15 |                       1 | Done            |
-| 2026-08-10 09:58:28.932408689 | batch_gc | 5162550689809 |            17 |                       1 | Done            |
-| 2026-08-10 09:58:28.932408689 | batch_gc | 5162550689810 |            18 |                       1 | Done            |
-+-------------------------------+----------+---------------+---------------+-------------------------+-----------------+
+`deleted_files` 列出已删除的 SST/Parquet 文件 ID；`deleted_indexes` 列出已删除索引文件的 ID 及其 `index_version`；`need_retry` 为 `true` 时，该 Region 需要在下一轮 GC 中重试。
+
+例如：
+
+```json
+{
+  "deleted_files": ["580653aa-252b-415b-aaf9-ce65e9d78249"],
+  "deleted_indexes": [
+    {"file_id":"580653aa-252b-415b-aaf9-ce65e9d78249","index_version":0}
+  ],
+  "need_retry": false
+}
 ```
 
-记录器会省略定时任务的 `Submitted` 行。手动 `Submitted` 行记录配置信息。没有 Region 需要
-清理或重试时，不会记录 `Done` 行。`Done` 行包含受影响的 Region 维度和 `gc_report`，其
-`payload` 为 JSON `null`。
+定时 GC 不记录 `Submitted` 行；手动执行时，`Submitted` 行记录配置。没有 Region 需要清理或重试时，不会记录 `Done` 行。报告行的 `payload` 为 JSON `null`。
 
-## WAL 清理
+## Remote WAL 裁剪
 
 ```sql
 SELECT timestamp, type, topic_name, prunable_entry_id, latest_offset,
-       procedure_state, json_to_string(procedure_trigger) AS procedure_trigger,
+       procedure_state,
+       json_get_string(procedure_trigger, 'type') AS trigger_type,
        json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE type = 'wal_prune'
@@ -48,15 +54,17 @@ LIMIT 3;
 ```
 
 ```sql
-+-------------------------------+-----------+-------------------------+-------------------+---------------+-----------------+----------------------+--------------------------------------+
-| timestamp                     | type      | topic_name              | prunable_entry_id | latest_offset | procedure_state | procedure_trigger    | payload                              |
-+-------------------------------+-----------+-------------------------+-------------------+---------------+-----------------+----------------------+--------------------------------------+
-| 2026-08-10 11:23:28.495676149 | wal_prune | greptimedb_wal_topic_20 |            248376 |        248381 | Done            | {"type":"Succeeded"} | {"logical_delete":false,"version":1} |
-| 2026-08-10 10:53:28.478381545 | wal_prune | greptimedb_wal_topic_20 |            248375 |        248376 | Done            | {"type":"Succeeded"} | {"logical_delete":false,"version":1} |
-| 2026-08-10 10:23:28.486761751 | wal_prune | greptimedb_wal_topic_20 |            248371 |        248375 | Done            | {"type":"Succeeded"} | {"logical_delete":false,"version":1} |
-+-------------------------------+-----------+-------------------------+-------------------+---------------+-----------------+----------------------+--------------------------------------+
++-------------------------------+-----------+-------------------------+-------------------+---------------+-----------------+--------------+--------------------------------------+
+| timestamp                     | type      | topic_name              | prunable_entry_id | latest_offset | procedure_state | trigger_type | payload                              |
++-------------------------------+-----------+-------------------------+-------------------+---------------+-----------------+--------------+--------------------------------------+
+| 2026-08-10 11:23:28.495676149 | wal_prune | greptimedb_wal_topic_20 |            248376 |        248381 | Done            | Succeeded    | {"logical_delete":false,"version":1} |
+| 2026-08-10 10:53:28.478381545 | wal_prune | greptimedb_wal_topic_20 |            248375 |        248376 | Done            | Succeeded    | {"logical_delete":false,"version":1} |
+| 2026-08-10 10:23:28.486761751 | wal_prune | greptimedb_wal_topic_20 |            248371 |        248375 | Done            | Succeeded    | {"logical_delete":false,"version":1} |
++-------------------------------+-----------+-------------------------+-------------------+---------------+-----------------+--------------+--------------------------------------+
 ```
 
-记录器会省略 `Submitted` 和 `Recovered` 行。成功执行后会记录 `Done`；`Retrying` 不是终态，
-也可能记录 `Failed` 和 `Poisoned` 行。WAL 清理事件保留 topic、可清理 entry、latest offset
-和 payload。
+`prunable_entry_id` 是 `topic_name` 的裁剪边界。它取使用该 topic 的各个 Region 报告值中的最小值，因此这些 Region 都不再使用该值之前的条目。非 `Succeeded` 行中的值只是本次尝试的边界。
+
+`latest_offset` 不为 `NULL` 时，表示本次尝试读取到的 Kafka latest offset。它是排他的上界，即最后一条记录之后的 offset，而不是最后一条记录的 offset。
+
+记录器不记录 `Submitted` 和 `Recovered` 行。成功执行时记录 `Done`；`Retrying` 不是终态，也可能记录 `Failed` 或 `Poisoned`。

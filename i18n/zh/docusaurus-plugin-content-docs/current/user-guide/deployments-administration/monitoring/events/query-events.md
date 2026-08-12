@@ -5,21 +5,22 @@ description: 查询 GreptimeDB 事件记录。
 
 # 查询事件
 
-可以查询 `greptime_private.events` 系统表来排查最近事件。事件异步写入，刚提交的操作可能
-不会马上出现。事件列说明请参阅[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
+查询 `greptime_private.events` 系统表可以排查最近事件。事件异步写入，刚提交的操作可能不会立即出现。
+有关事件列，请参阅[事件数据模型](/user-guide/deployments-administration/monitoring/events/event-data-model.md)。
 
 ## 查看最近事件
 
-查看最近记录的事件：
+以下查询会返回完整的事件记录：
 
 ```sql
 SELECT *
 FROM greptime_private.events
+WHERE timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp DESC
 LIMIT 20;
 ```
 
-若需聚焦近期操作并只选择所需列，可以加上时间范围：
+该查询适合初步探索，但会返回所有列。日常排查时，建议只选择所需列：
 
 ```sql
 SELECT timestamp, type, json_to_string(payload) AS payload
@@ -29,9 +30,11 @@ ORDER BY timestamp DESC
 LIMIT 20;
 ```
 
+这样只返回排查所需的时间、事件类型和 payload，结果会更容易阅读。
+
 ## 查看并筛选事件类型
 
-按类型筛选前，先查看集群已记录的事件类型：
+先列出集群中实际存在的类型，再选择筛选条件：
 
 ```sql
 SELECT type, COUNT(*) AS event_rows
@@ -41,11 +44,8 @@ GROUP BY type
 ORDER BY type;
 ```
 
-该结果只涵盖所选时间范围，不能作为已配置或 GreptimeDB 支持类型的完整清单。
-已配置的类型列表请参阅[生命周期事件记录器](/user-guide/deployments-administration/configuration.md#生命周期事件记录器)。
-查询示例请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)、
-[Region 事件](/user-guide/deployments-administration/monitoring/events/region-events.md)和
-[维护事件](/user-guide/deployments-administration/monitoring/events/maintenance-events.md)。
+该结果仅反映最近一小时内实际出现的事件类型，不能作为已配置或受支持类型的完整清单。
+支持的本地 DDL 事件类型请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
 
 将事件类型、数据库和对象名称组合，可以避免混入无关事件：
 
@@ -125,11 +125,10 @@ LIMIT 1;
 
 ### Region
 
-Region 事件是全局事件，不按数据库隔离。下面的查询返回某个 Region 在
-`region_migration`、`batch_gc` 和 `repartition_group` 中最新的一条匹配事件。
-
-运行该查询前，events 表必须至少记录过这三类事件各一次。它会在首次记录某类事件时加入
-该类事件的列；某列不适用于当前行时，其值为 SQL `NULL`。
+涉及 Region 的运维事件是全局事件，不按数据库隔离。下面的查询返回某个
+Region 最近的一条事件。`region_migration`、`batch_gc` 和
+`repartition_group` 都至少需要有一条记录：events 表会在首次记录某类事件时，
+加入该类事件的列。每条记录只填写该事件类型适用的列，其余选出的列为 SQL `NULL`。
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -177,21 +176,21 @@ LIMIT 1;
 +--------------------------------------+
 ```
 
-在后续查询中使用返回的 ID 查看该 Procedure 的事件记录。加上 `schema_name` 和
-`table_name` 可以避免选中名称相似但属于其他对象的 Procedure。
+在后续查询中使用返回的 ID 查看该 Procedure 的事件记录。定位条件可以避免选中名称相似但属于其他对象的 Procedure。
 
 ### 查询一个 Procedure
 
-要查询某个 Procedure 的所有事件记录，请按其 ID 查询：
+需要探索所有可用列时，使用完整记录查询：
 
 ```sql
 SELECT *
 FROM greptime_private.events
 WHERE procedure_id = '<procedure_id>'
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp ASC;
 ```
 
-若只需查看部分列，可以使用更小的投影：
+日常排查时，使用只选择所需列的投影：
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -199,6 +198,7 @@ SELECT timestamp, type, procedure_state,
        procedure_error, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE procedure_id = '<procedure_id>'
+  AND timestamp >= now() - INTERVAL '1' hour
 ORDER BY timestamp;
 ```
 
