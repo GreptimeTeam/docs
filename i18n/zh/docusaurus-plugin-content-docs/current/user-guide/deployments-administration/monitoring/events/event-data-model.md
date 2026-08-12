@@ -23,13 +23,13 @@ Procedure 事件还有以下列：
 | `procedure_id`      | Procedure 的唯一 ID。                                                                                                                                            |
 | `procedure_state`   | 记录事件时的 Procedure 状态。取值为 `Running`、`Done`、`Retrying`、`PrepareRollback`、`RollingBack`、`Failed` 和 `Poisoned`。                                    |
 | `procedure_trigger` | Procedure 事件触发信息，采用 JSON 格式。`type` 可为 `Submitted`、`Recovered`、`ChildSubmitted`、`Retrying`、`RollingBack`、`Succeeded`、`Failed` 或 `Poisoned`。 |
-| `procedure_error`   | Procedure 出错时的错误信息。                                                                                                                                     |
+| `procedure_error`   | Procedure 出错时的 Debug 格式错误信息；其他情况为空字符串。                                                                                                      |
 
 `Submitted` 事件的状态通常为 `Running`。Procedure 成功完成后，完成记录的状态为
 `Done`，触发类型为 `Succeeded`。完成记录根据 Procedure 完成时的状态生成，因此字段可能
 与提交时的记录不同。事件会异步写入，写入失败不会影响 Procedure 的执行结果。
 
-存在 `event_context` 时，其中的稳定 `reason` 值可以是
+`event_context` 只写入 `Submitted` 记录。存在该字段时，其中稳定的 `reason` 值可以是
 `manual`、`auto_create`、`auto_alter`、`auto_repartition`、`auto_rebalance`、
 `region_failover`、`scheduled_gc` 或 `unknown`。例如，通过 MySQL 提交的事件可能包含
 `{"protocol":"mysql","reason":"manual"}`。
@@ -62,7 +62,7 @@ SELECT procedure_state,
        json_get_string(event_context, 'reason') AS reason
 FROM greptime_private.events
 WHERE type = 'create_table'
-  AND timestamp >= now() - INTERVAL '1' hour
+  AND timestamp >= now() - INTERVAL '1 hour'
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -90,7 +90,7 @@ SELECT procedure_state, json_to_string(payload) AS payload,
        json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
 WHERE type = 'create_table'
-  AND timestamp >= now() - INTERVAL '1' hour
+  AND timestamp >= now() - INTERVAL '1 hour'
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -111,14 +111,16 @@ ORDER BY timestamp;
 以下列只会在对应事件类型中填充；不适用时为 SQL `NULL`。
 
 - **数据库、表、Flow 和视图事件：** `catalog_name`、`schema_name`、`table_name`、
-  `table_id`、`physical_table_id`、`flow_name`、`flow_id`、`view_name` 和 `view_id`
-  用于标识对象。详见 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
+  `table_id`、`flow_name`、`flow_id`、`view_name` 和 `view_id` 用于标识对象。
+  `physical_table_id` 仅适用于 `create_logical_tables` 和 `alter_logical_tables`。
+  Flow 没有 schema，因此其 `schema_name` 为 SQL `NULL`。详见 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
 - **Region 迁移：** `region_id`、`region_number` 标识 Region；
   `region_migration_trigger_reason`、`region_migration_src_node_id`、
   `region_migration_src_peer_addr`、`region_migration_dst_node_id` 和
   `region_migration_dst_peer_addr` 记录迁移原因、源端和目标端。
-- **Repartition：** `parent_procedure_id` 关联父 Procedure，`repartition_group_id`
-  标识分组操作。`source_region_id`、`source_region_number`、`source_partition_expr`、
+- **Repartition：** `catalog_name`、`schema_name`、`table_name` 和 `table_id` 标识受影响的表。
+  `parent_procedure_id` 关联父 Procedure，`repartition_group_id` 标识分组操作。
+  `source_region_id`、`source_region_number`、`source_partition_expr`、
   `target_region_id`、`target_region_number` 和 `target_partition_expr` 描述源和目标
   Region 及其分区表达式。
 - **批量 GC：** `region_id`、`region_number` 和 `gc_report` 记录处理的 Region 及 GC 结果。

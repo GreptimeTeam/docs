@@ -23,7 +23,7 @@ Procedure events also have the following columns:
 | `procedure_id`      | Unique Procedure ID.                                                                                                                                        |
 | `procedure_state`   | Procedure state when the event was recorded. Values are `Running`, `Done`, `Retrying`, `PrepareRollback`, `RollingBack`, `Failed`, and `Poisoned`.          |
 | `procedure_trigger` | Procedure event trigger in JSON. Its `type` is `Submitted`, `Recovered`, `ChildSubmitted`, `Retrying`, `RollingBack`, `Succeeded`, `Failed`, or `Poisoned`. |
-| `procedure_error`   | Error message when the Procedure fails.                                                                                                                     |
+| `procedure_error`   | Debug-formatted error when the Procedure fails; an empty string otherwise.                                                                                  |
 
 `Submitted` events normally have state `Running`. When a Procedure succeeds,
 the completed event has state `Done` and trigger type `Succeeded`. The completed
@@ -31,7 +31,8 @@ row is generated from the Procedure's final state, so its fields can differ from
 the submitted row. Events are recorded asynchronously; a recording failure does
 not change the Procedure result.
 
-When `event_context` is available, its stable `reason` value is one of
+`event_context` is written only on `Submitted` rows. When it is available, its
+stable `reason` value is one of
 `manual`, `auto_create`, `auto_alter`, `auto_repartition`, `auto_rebalance`,
 `region_failover`, `scheduled_gc`, or `unknown`. For example, a MySQL-submitted
 event can contain `{"protocol":"mysql","reason":"manual"}`.
@@ -67,7 +68,7 @@ SELECT procedure_state,
        json_get_string(event_context, 'reason') AS reason
 FROM greptime_private.events
 WHERE type = 'create_table'
-  AND timestamp >= now() - INTERVAL '1' hour
+  AND timestamp >= now() - INTERVAL '1 hour'
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -95,7 +96,7 @@ SELECT procedure_state, json_to_string(payload) AS payload,
        json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
 WHERE type = 'create_table'
-  AND timestamp >= now() - INTERVAL '1' hour
+  AND timestamp >= now() - INTERVAL '1 hour'
   AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
@@ -117,14 +118,17 @@ The following columns are populated only by the listed event types. A `NULL`
 value in one of these columns is normal when it does not apply.
 
 - **Database, table, Flow, and view events:** `catalog_name`, `schema_name`,
-  `table_name`, `table_id`, `physical_table_id`, `flow_name`, `flow_id`,
-  `view_name`, and `view_id` identify the affected object. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
+  `table_name`, `table_id`, `flow_name`, `flow_id`, `view_name`, and `view_id`
+  identify the affected object. `physical_table_id` applies only to
+  `create_logical_tables` and `alter_logical_tables`. Flows do not have a
+  schema, so their `schema_name` is SQL `NULL`. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
 - **Region migration:** `region_id` and `region_number` identify the Region.
   `region_migration_trigger_reason`, `region_migration_src_node_id`,
   `region_migration_src_peer_addr`, `region_migration_dst_node_id`, and
   `region_migration_dst_peer_addr` describe why and where it moved.
-- **Repartition:** `parent_procedure_id` links a child procedure to its parent;
-  `repartition_group_id` identifies a group operation. `source_region_id`,
+- **Repartition:** `catalog_name`, `schema_name`, `table_name`, and `table_id`
+  identify the affected table. `parent_procedure_id` links a child procedure to
+  its parent; `repartition_group_id` identifies a group operation. `source_region_id`,
   `source_region_number`, `source_partition_expr`, `target_region_id`,
   `target_region_number`, and `target_partition_expr` describe the affected
   Regions and partition expressions.

@@ -663,6 +663,7 @@ const sidebars: SidebarsConfig = {
                   id: 'reference/sql/greptime-private/overview',
                   label: 'Overview',
                 },
+                'reference/sql/greptime-private/events',
                 'reference/sql/greptime-private/slow_queries',
                 'reference/sql/greptime-private/pipelines',
               ],

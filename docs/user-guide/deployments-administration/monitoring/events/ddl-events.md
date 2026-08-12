@@ -16,7 +16,7 @@ SELECT timestamp, type, procedure_state AS state,
        json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+  AND timestamp >= now() - INTERVAL '1 hour'
   AND schema_name = '<database_name>'
   AND type = '<event_type>'
 ORDER BY timestamp;
@@ -67,7 +67,7 @@ SELECT timestamp, type, procedure_state,
        table_name, table_id, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+  AND timestamp >= now() - INTERVAL '1 hour'
   AND schema_name = '<database_name>'
   AND type = '<event_type>'
 ORDER BY timestamp;
@@ -83,7 +83,9 @@ the allocated ID. `alter_table`, `truncate_table`, and `drop_table` already know
 the table ID when they are submitted, so their event rows include it.
 
 GreptimeDB also records `create_logical_tables` and `alter_logical_tables` events.
-`undrop_table` and `purge_dropped_table` are Enterprise-only.
+Each emits one row per logical table for each lifecycle trigger, so a query by
+`procedure_id` can return multiple rows for the same trigger. `undrop_table`
+and `purge_dropped_table` are Enterprise-only.
 
 **`create_table`**
 
@@ -142,7 +144,7 @@ SELECT timestamp, type, procedure_state,
        json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+  AND timestamp >= now() - INTERVAL '1 hour'
   AND flow_name = '<flow_name>'
   AND type = '<event_type>'
 ORDER BY timestamp;
@@ -181,7 +183,7 @@ SELECT timestamp, type, procedure_state,
        view_name, view_id, json_to_string(payload) AS payload
 FROM greptime_private.events
 WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+  AND timestamp >= now() - INTERVAL '1 hour'
   AND schema_name = '<database_name>'
   AND view_name = '<view_name>'
   AND type = '<event_type>'
