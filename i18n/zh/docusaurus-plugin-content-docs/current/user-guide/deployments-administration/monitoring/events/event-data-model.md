@@ -63,7 +63,6 @@ SELECT procedure_state,
 FROM greptime_private.events
 WHERE type = 'create_table'
   AND timestamp >= now() - INTERVAL '1' hour
-  AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
   AND event_context IS NOT NULL
@@ -91,7 +90,6 @@ SELECT procedure_state, json_to_string(payload) AS payload,
 FROM greptime_private.events
 WHERE type = 'create_table'
   AND timestamp >= now() - INTERVAL '1' hour
-  AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
 ORDER BY timestamp;
@@ -113,7 +111,7 @@ ORDER BY timestamp;
 - **数据库、表、Flow 和视图事件：** `catalog_name`、`schema_name`、`table_name`、
   `table_id`、`flow_name`、`flow_id`、`view_name` 和 `view_id` 用于标识对象。
   `physical_table_id` 仅适用于 `create_logical_tables` 和 `alter_logical_tables`。
-  Flow 没有 schema，因此其 `schema_name` 为 SQL `NULL`。详见 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
+  详见 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
 - **Region 迁移：** `region_id`、`region_number` 标识 Region；
   `region_migration_trigger_reason`、`region_migration_src_node_id`、
   `region_migration_src_peer_addr`、`region_migration_dst_node_id` 和

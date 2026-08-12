@@ -54,7 +54,7 @@ cluster. It varies with workload and does not define the configured or
 source-supported types. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
 for the supported local DDL event types.
 
-Combine a type with catalog/schema and an object locator to avoid unrelated rows:
+Combine a type with a schema and object locator to avoid unrelated rows:
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -62,7 +62,6 @@ SELECT timestamp, type, procedure_state,
 FROM greptime_private.events
 WHERE type = 'create_table'
   AND timestamp >= now() - INTERVAL '1' hour
-  AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
 ORDER BY timestamp;
@@ -90,8 +89,7 @@ returns the newest matching event.
 SELECT timestamp, type, schema_name, procedure_state,
        json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+WHERE timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND type IN ('create_database', 'alter_database', 'drop_database')
 ORDER BY timestamp DESC
@@ -103,8 +101,7 @@ LIMIT 1;
 ```sql
 SELECT timestamp, type, schema_name, table_name, table_id, procedure_state
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+WHERE timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
 ORDER BY timestamp DESC
@@ -113,15 +110,11 @@ LIMIT 1;
 
 ### Flow
 
-Flows do not have a schema. Use `catalog_name` plus a unique `flow_name`; the
-`schema_name` column is therefore SQL `NULL` for Flow rows.
-
 ```sql
 SELECT timestamp, type, catalog_name, schema_name,
        flow_name, flow_id, procedure_state
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+WHERE timestamp >= now() - INTERVAL '1' hour
   AND flow_name = '<flow_name>'
 ORDER BY timestamp DESC
 LIMIT 1;
@@ -132,8 +125,7 @@ LIMIT 1;
 ```sql
 SELECT timestamp, type, schema_name, view_name, view_id, procedure_state
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+WHERE timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND view_name = '<view_name>'
 ORDER BY timestamp DESC
@@ -176,7 +168,6 @@ SELECT procedure_id
 FROM greptime_private.events
 WHERE type = 'create_table'
   AND timestamp >= now() - INTERVAL '1' hour
-  AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
   AND json_path_match(procedure_trigger, '$.type == "Submitted"')
@@ -195,8 +186,8 @@ Example result:
 ```
 
 Use the returned ID to query the Procedure's event rows. Filtering by
-`catalog_name`, `schema_name`, and `table_name` avoids selecting a procedure
-for another object with a similar name.
+`schema_name` and `table_name` avoids selecting a procedure for another object
+with a similar name.
 
 ### Query a Procedure
 

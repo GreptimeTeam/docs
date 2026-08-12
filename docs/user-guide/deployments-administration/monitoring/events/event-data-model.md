@@ -69,7 +69,6 @@ SELECT procedure_state,
 FROM greptime_private.events
 WHERE type = 'create_table'
   AND timestamp >= now() - INTERVAL '1' hour
-  AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
   AND event_context IS NOT NULL
@@ -97,7 +96,6 @@ SELECT procedure_state, json_to_string(payload) AS payload,
 FROM greptime_private.events
 WHERE type = 'create_table'
   AND timestamp >= now() - INTERVAL '1' hour
-  AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
 ORDER BY timestamp;
@@ -120,8 +118,7 @@ value in one of these columns is normal when it does not apply.
 - **Database, table, Flow, and view events:** `catalog_name`, `schema_name`,
   `table_name`, `table_id`, `flow_name`, `flow_id`, `view_name`, and `view_id`
   identify the affected object. `physical_table_id` applies only to
-  `create_logical_tables` and `alter_logical_tables`. Flows do not have a
-  schema, so their `schema_name` is SQL `NULL`. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
+  `create_logical_tables` and `alter_logical_tables`. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
 - **Region migration:** `region_id` and `region_number` identify the Region.
   `region_migration_trigger_reason`, `region_migration_src_node_id`,
   `region_migration_src_peer_addr`, `region_migration_dst_node_id`, and

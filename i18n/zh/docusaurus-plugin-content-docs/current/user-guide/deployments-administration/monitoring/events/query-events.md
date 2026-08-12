@@ -47,7 +47,7 @@ ORDER BY type;
 该结果仅反映最近一小时内实际出现的事件类型，不能作为已配置或受支持类型的完整清单。
 支持的本地 DDL 事件类型请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
 
-将 `type` 与 `catalog_name`、`schema_name` 和对象名称组合，可以避免混入无关事件：
+将 `type` 与 `schema_name` 和对象名称组合，可以避免混入无关事件：
 
 ```sql
 SELECT timestamp, type, procedure_state,
@@ -55,7 +55,6 @@ SELECT timestamp, type, procedure_state,
 FROM greptime_private.events
 WHERE type = 'create_table'
   AND timestamp >= now() - INTERVAL '1' hour
-  AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
 ORDER BY timestamp;
@@ -82,8 +81,7 @@ ORDER BY timestamp;
 SELECT timestamp, type, schema_name, procedure_state,
        json_get_string(procedure_trigger, 'type') AS trigger_type
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+WHERE timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND type IN ('create_database', 'alter_database', 'drop_database')
 ORDER BY timestamp DESC
@@ -95,8 +93,7 @@ LIMIT 1;
 ```sql
 SELECT timestamp, type, schema_name, table_name, table_id, procedure_state
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+WHERE timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
 ORDER BY timestamp DESC
@@ -105,15 +102,11 @@ LIMIT 1;
 
 ### Flow
 
-Flow 没有 schema。请使用 `catalog_name` 加唯一的 `flow_name` 定位；因此 Flow 行的
-`schema_name` 为 SQL `NULL`。
-
 ```sql
 SELECT timestamp, type, catalog_name, schema_name,
        flow_name, flow_id, procedure_state
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+WHERE timestamp >= now() - INTERVAL '1' hour
   AND flow_name = '<flow_name>'
 ORDER BY timestamp DESC
 LIMIT 1;
@@ -124,8 +117,7 @@ LIMIT 1;
 ```sql
 SELECT timestamp, type, schema_name, view_name, view_id, procedure_state
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+WHERE timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND view_name = '<view_name>'
 ORDER BY timestamp DESC
@@ -165,7 +157,6 @@ SELECT procedure_id
 FROM greptime_private.events
 WHERE type = 'create_table'
   AND timestamp >= now() - INTERVAL '1' hour
-  AND catalog_name = 'greptime'
   AND schema_name = '<database_name>'
   AND table_name = '<table_name>'
   AND json_path_match(procedure_trigger, '$.type == "Submitted"')

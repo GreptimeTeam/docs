@@ -14,15 +14,14 @@ SELECT timestamp, type, procedure_state AS state,
        json_get_string(procedure_trigger, 'type') AS trigger_type,
        json_to_string(payload) AS payload
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+WHERE timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND type = '<event_type>'
 ORDER BY timestamp;
 ```
 
 数据库事件类型包括 `create_database`、`alter_database` 和 `drop_database`。
-事件记录保留 `catalog_name` 和 `schema_name`。本查询用这两列筛选，但不在结果中显示它们。
+事件记录保留 `schema_name`。本查询用该列筛选，但不在结果中显示它。
 
 **`create_database`**
 
@@ -64,8 +63,7 @@ SELECT timestamp, type, procedure_state,
        json_get_string(procedure_trigger, 'type') AS trigger_type,
        table_name, table_id, json_to_string(payload) AS payload
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+WHERE timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND type = '<event_type>'
 ORDER BY timestamp;
@@ -136,8 +134,7 @@ SELECT timestamp, type, procedure_state,
        catalog_name, schema_name, flow_name, flow_id,
        json_to_string(payload) AS payload
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+WHERE timestamp >= now() - INTERVAL '1' hour
   AND flow_name = '<flow_name>'
   AND type = '<event_type>'
 ORDER BY timestamp;
@@ -175,8 +172,7 @@ SELECT timestamp, type, procedure_state,
        json_get_string(procedure_trigger, 'type') AS trigger_type,
        view_name, view_id, json_to_string(payload) AS payload
 FROM greptime_private.events
-WHERE catalog_name = 'greptime'
-  AND timestamp >= now() - INTERVAL '1' hour
+WHERE timestamp >= now() - INTERVAL '1' hour
   AND schema_name = '<database_name>'
   AND view_name = '<view_name>'
   AND type = '<event_type>'
