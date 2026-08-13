@@ -96,7 +96,7 @@ GreptimeDB uses a common [data model](/user-guide/concepts/data-model.md) and qu
 
 Pipeline and Flow handle different stages. Pipeline parses, transforms, and enriches logs during ingestion. Its output is structured, multi-column data; when those fields retain the context of an operation or business event, each row can serve as a wide event. Flow can then continuously aggregate the stored events into metrics tables for dashboards and alerts.
 
-![Pipeline optionally processes logs during ingestion, while Flow aggregates stored events into a derived metrics table.](/optional-pipeline-flow.svg)
+![Pipeline can process logs during ingestion, while Flow can aggregate stored events into a derived metrics table.](/optional-pipeline-flow.svg)
 
 For example, Flow can derive a status metric from an event table:
 

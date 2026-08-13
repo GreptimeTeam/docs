@@ -19,7 +19,7 @@ Metrics、logs、traces 仍然是有效的抽象。问题不在三类信号本�
 
 统一数据模型通过一致的 schema 和查询方式减少这些边界。宽事件是保留更多上下文的一种做法，不是所有 metrics、logs、traces 的替代品。
 
-![Metrics、logs 和 traces 仍然使用独立的表，同时共享数据模型概念、存储系统和查询层。](/unified-observability-model.svg)
+![Metrics、logs 和 traces 仍然使用独立的表，同时共享数据模型概念、存储系统和查询层。](/unified-observability-model.zh.svg)
 
 ## 宽事件：统一数据模型
 
@@ -98,7 +98,7 @@ GreptimeDB 在不同可观测场景中使用共同的[数据模型](/user-guide/
 
 Pipeline 和 Flow 处理不同阶段。Pipeline 在写入时解析、转换和补充日志，输出结构化的多列数据；如果这些字段保留了一次操作或业务事件的上下文，每一行就可以作为宽事件。Flow 再对已存储的事件做持续聚合，生成供仪表板和告警使用的 metrics 表。
 
-![Pipeline 可以在写入阶段处理日志，Flow 则把已存储的事件聚合到派生 metrics 表。](/optional-pipeline-flow.svg)
+![Pipeline 可以在写入阶段处理日志，Flow 可以把已存储的事件聚合到派生 metrics 表。](/optional-pipeline-flow.zh.svg)
 
 例如，Flow 可以从事件表派生状态指标：
 
