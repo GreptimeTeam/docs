@@ -82,10 +82,7 @@ it contains an `error`:
 | root  | unknown_function     | Failed                 | {"error":"..."} |
 ```
 
-The `actor` value comes from the current protocol session user. It can differ
-between protocol connections, for example when clients use different database
-usernames. For an asynchronous function, query its returned Procedure ID in
-the Procedure event rows to inspect the final state.
+The `actor` value comes from the current protocol session user.
 
 Combine an event type with a database and object name to avoid unrelated rows:
 
