@@ -11,6 +11,10 @@
     "message": "核心函数",
     "description": "The ZH label for Core Functions"
   },
+  "sidebar.docs.doc.Unified observability data model": {
+    "message": "统一的可观测数据模型",
+    "description": "The ZH label for Unified observability data model"
+  },
   "sidebar.docs.doc.Migrate from Loki": {
     "message": "从 Loki 迁移",
     "description": "The ZH label for Migrate from Loki"

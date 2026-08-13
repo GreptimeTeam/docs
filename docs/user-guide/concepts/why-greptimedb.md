@@ -95,6 +95,6 @@ The following comparison is based on general architectural characteristics and t
 | Management | Standard SQL (DDL, TTL, indexes) | YAML config + relabeling rules | YAML config + LogQL | REST API + JSON mappings |
 
 For more details, explore:
-- [Observability 2.0](./observability-2.md) — Wide events, unified data model, and GreptimeDB's architecture for the next generation of observability
+- [Unified observability data model](./observability-2.md) — How native signals and wide events map to GreptimeDB
 - [Unified Storage for Observability - GreptimeDB's Approach](https://greptime.com/blogs/2024-12-24-observability) — GreptimeDB's approach to unified storage
 - [Beyond Loki: Lightweight and Scalable Cloud-Native Log Monitoring](https://greptime.com/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report)

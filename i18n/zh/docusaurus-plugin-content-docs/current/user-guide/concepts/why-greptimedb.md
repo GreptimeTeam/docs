@@ -93,6 +93,6 @@ SQL 不只是查询语言，也是 GreptimeDB 的管理入口——[建表](/use
 | 管理方式 | 标准 SQL（DDL、TTL、索引） | YAML 配置 + relabeling rules | YAML 配置 + LogQL | REST API + JSON mappings |
 
 了解更多：
-- [Observability 2.0](./observability-2.md) — 宽事件、统一数据模型，GreptimeDB 面向下一代可观测性的架构
+- [统一的可观测数据模型](./observability-2.md) — 原生信号和宽事件如何对应 GreptimeDB 的能力
 - [可观测性统一存储](https://greptime.cn/blogs/2024-12-24-observability) — GreptimeDB 的统一存储设计
 - [替换 Loki！GreptimeDB 在 OB Cloud 的大规模日志存储实践](https://greptime.cn/blogs/2025-07-22-user-case-obcloud-log-storage-greptimedb)

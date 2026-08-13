@@ -226,7 +226,7 @@ A database architecture approach that consolidates metrics, logs, and traces int
 A logging mechanism used by GreptimeDB to ensure data durability and consistency. WAL records all data changes before they are applied to the main storage, enabling recovery in case of system failures. GreptimeDB supports flexible WAL options including local disk storage or distributed services like Kafka.
 
 ### Wide Events
-A foundational concept in Observability 2.0 that represents context-rich, high-dimensional telemetry data combining metrics, logs, and traces into single comprehensive events. Wide Events capture extensive contextual information per service interaction, including high-cardinality fields (user IDs, session IDs), business logic data, infrastructure details, and request metadata. GreptimeDB natively supports Wide Events as timestamped observability data, enabling complex multi-dimensional querying and solving "unknown unknowns" in system behavior analysis.
+A structured telemetry record with many fields describing one operation or business event. A wide event can include high-cardinality values such as user IDs, session IDs, trace IDs, business attributes, and request metadata. It is commonly associated with the Observability 2.0 approach, but does not replace native metrics, logs, or traces. GreptimeDB can store wide events as timestamped data alongside those signals.
 
 ---
 
