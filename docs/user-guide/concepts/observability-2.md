@@ -7,7 +7,7 @@ description: Explains Observability 2.0 as a unified observability data model, i
 
 Observability 2.0 is an industry term for an approach to telemetry, not a product category. It usually refers to retaining context-rich events and analyzing them without deciding every question in advance.
 
-GreptimeDB supports this approach, but does not require it. Metrics, logs, and traces remain first-class capabilities. GreptimeDB provides ingestion paths for each signal, SQL queries across all signal types, PromQL for metrics, and an experimental Jaeger-compatible query API for traces. You can keep these signals in their existing forms, introduce wide events for selected workloads, or use both models together.
+GreptimeDB supports this approach, but does not require it. Metrics, logs, and traces remain first-class capabilities. GreptimeDB provides ingestion paths for each signal, SQL queries across all signal types, PromQL for metrics, and a Jaeger-compatible query API for traces. You can keep these signals in their existing forms, introduce wide events for selected workloads, or use both models together.
 
 ## The Limits of Three Pillars
 
@@ -83,14 +83,16 @@ GreptimeDB uses a common [data model](/user-guide/concepts/data-model.md) and qu
 
 | Pattern | GreptimeDB capability | How to use it |
 | --- | --- | --- |
-| Native metrics | Prometheus remote write and PromQL | Keep metrics and existing dashboards in their native form. |
-| Logs and traces | Loki Push API, OpenTelemetry, Elasticsearch Bulk API, and the experimental Jaeger-compatible query API | Ingest with the supported protocols; query all signal types with SQL, and traces with the experimental Jaeger-compatible API. |
+| Native metrics | Prometheus Remote Write, OpenTelemetry OTLP/HTTP, PromQL, and SQL | Ingest Prometheus or OTLP metrics; keep existing metrics and dashboards in their native form. |
+| Logs and traces | Loki Push API, OpenTelemetry OTLP/HTTP, Elasticsearch Bulk API, SQL, and the Jaeger-compatible query API | Ingest with the supported protocols; query all signal types with SQL, and traces with the Jaeger-compatible API. |
 | Shared schema concepts | Tag, timestamp, and field columns | Apply a consistent table model across different telemetry tables. |
-| Context-rich events | Wide tables, SQL, and object-storage-backed storage | Keep selected raw events for detailed or retrospective analysis. |
-| Derived metrics | [Flow](/user-guide/flow-computation/overview.md) | Continuously aggregate raw events into a separate metrics table. |
+| Structured logs and context-rich events | [Pipeline](/user-guide/logs/use-custom-pipelines.md), wide tables, and SQL | Parse and transform logs into structured events before storage, then keep selected events for detailed or retrospective analysis. |
+| Derived metrics | [Flow](/user-guide/flow-computation/overview.md) | Continuously aggregate stored context-rich events into a separate metrics table. |
 | Cross-signal analysis | SQL across tables and shared correlation identifiers | Relate signals when their schemas and instrumentation provide common keys. |
 
-**A unified table model does not mean writing all data into one physical table.** Metrics, logs, traces, and raw events can use separate tables with different schemas, retention policies, and indexes. The unification is at the schema concepts, storage system, and query layer.
+**A unified table model does not mean writing all data into one table.** Metrics, logs, traces, and raw events can use separate tables with different schemas, retention policies, and indexes. The unification is at the schema concepts, storage system, and query layer.
+
+Pipeline and Flow handle different stages. Pipeline parses, transforms, and enriches logs during ingestion. Its output is structured, multi-column data; when those fields retain the context of an operation or business event, each row can serve as a wide event. Flow can then continuously aggregate the stored events into metrics tables for dashboards and alerts.
 
 For example, Flow can derive a status metric from an event table:
 
@@ -125,13 +127,13 @@ Schema governance, sampling, redaction, and retention are part of the design. A 
 
 ### Keep Native Signals and Unify Storage and Query
 
-Continue using existing ingestion protocols. Query metrics with PromQL, query all signal types with SQL, and use the experimental Jaeger-compatible API for traces. Store each signal in separate GreptimeDB tables, and use shared identifiers and SQL when cross-signal analysis is needed. This path minimizes instrumentation and dashboard changes.
+Continue using existing ingestion protocols. Query metrics with PromQL, query all signal types with SQL, and use the Jaeger-compatible API for traces. Store each signal in separate GreptimeDB tables, and use shared identifiers and SQL when cross-signal analysis is needed. This path minimizes instrumentation and dashboard changes.
 
 Start with [Prometheus](/user-guide/ingest-data/for-observability/prometheus.md), [logs](/user-guide/logs/overview.md), [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md), or [traces](/user-guide/traces/overview.md).
 
 ### Add Raw Events Where Full Context Matters
 
-Instrument selected business operations or AI workflows as structured events. Keep the raw event table for retrospective analysis, and use [Flow](/user-guide/flow-computation/overview.md) to derive metrics for known dashboards and alerts. This path provides more context at the cost of higher data volume and stricter schema and retention management.
+Instrument selected business operations or AI workflows as structured events. If the context starts in logs, use [Pipeline](/user-guide/logs/use-custom-pipelines.md) to extract and transform it into structured columns during ingestion. Keep the event table for retrospective analysis, and use [Flow](/user-guide/flow-computation/overview.md) to derive metrics for known dashboards and alerts. This path provides more context at the cost of higher data volume and stricter schema and retention management.
 
 The two paths can coexist. Adopt raw events only where the additional context justifies their cost.
 

@@ -87,7 +87,7 @@ GreptimeDB 为什么选择表模型：
 - Schema 提供类型、长度等信息，存储和计算引擎可以做针对性优化。
 - 有了表模型，自然引入 SQL，用 SQL 做跨表关联分析和聚合查询，降低用户的学习成本。
 - GreptimeDB 采用多值模型，单行可以有多个 Field 列，相比需要把数据拆成多条记录的单值模型，省传输流量、查询也更简洁。详见[博客](https://greptime.cn/blogs/2024-05-09-prometheus)。
-- GreptimeDB 对 metrics、logs、traces 和宽事件采用共同的 Tag + Timestamp + Field 概念。这些信号可以使用不同的物理表。所有信号都能使用 SQL 查询，metrics 还支持 PromQL，traces 还提供实验性的 Jaeger 兼容查询接口。具体对应关系和工程取舍参见[统一的可观测数据模型](./observability-2.md)。
+- GreptimeDB 对 metrics、logs、traces 和宽事件采用共同的 Tag + Timestamp + Field 概念。这些信号可以使用不同的表。所有信号都能使用 SQL 查询，metrics 还支持 PromQL，traces 还提供 Jaeger 兼容查询接口。具体对应关系和工程取舍参见[统一的可观测数据模型](./observability-2.md)。
 
 GreptimeDB 用 SQL 管理表 schema，参见[表管理](/user-guide/deployments-administration/manage-data/basic-table-operations.md)。不过 schema 定义不是强制的，更偏向 **Schemaless** 的方式——写入时自动建表、自动加列。详见[自动生成表结构](../ingest-data/overview.md#自动生成表结构)。
 

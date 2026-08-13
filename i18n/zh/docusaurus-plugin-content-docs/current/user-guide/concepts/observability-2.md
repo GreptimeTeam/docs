@@ -7,7 +7,7 @@ description: 介绍 Observability 2.0 所指的统一可观测数据模型、工
 
 Observability 2.0 是业内对一种遥测数据思路的称呼，不是产品分类。它通常指保留上下文完整的事件，让使用者不必在采集数据时就预先确定所有分析问题。
 
-GreptimeDB 支持这种实践，但不要求用户采用。Metrics、logs、traces 仍然是一等能力。GreptimeDB 为每类信号提供写入方式；所有信号都能使用 SQL 查询，metrics 还可以使用 PromQL，traces 还可以使用实验性的 Jaeger 兼容查询接口。用户可以保留原有信号，只在部分场景引入宽事件，也可以同时使用两种模型。
+GreptimeDB 支持这种实践，但不要求用户采用。Metrics、logs、traces 仍然是一等能力。GreptimeDB 为每类信号提供写入方式；所有信号都能使用 SQL 查询，metrics 还可以使用 PromQL，traces 还可以使用 Jaeger 兼容查询接口。用户可以保留原有信号，只在部分场景引入宽事件，也可以同时使用两种模型。
 
 ## 三支柱的局限
 
@@ -85,14 +85,16 @@ GreptimeDB 在不同可观测场景中使用共同的[数据模型](/user-guide/
 
 | 数据模式 | GreptimeDB 能力 | 使用方式 |
 | --- | --- | --- |
-| 原生 metrics | Prometheus remote write 和 PromQL | 保留 metrics 及现有仪表板。 |
-| Logs 和 traces | Loki Push API、OpenTelemetry、Elasticsearch Bulk API 和实验性的 Jaeger 兼容查询接口 | 使用支持的协议写入；所有信号均可使用 SQL 查询，traces 还可使用实验性的 Jaeger 兼容接口。 |
+| 原生 metrics | Prometheus Remote Write、OpenTelemetry OTLP/HTTP、PromQL 和 SQL | 通过 Prometheus 或 OTLP 写入 metrics，保留现有 metrics 和仪表板。 |
+| Logs 和 traces | Loki Push API、OpenTelemetry OTLP/HTTP、Elasticsearch Bulk API、SQL 和 Jaeger 兼容查询接口 | 使用支持的协议写入；所有信号均可使用 SQL 查询，traces 还可使用 Jaeger 兼容接口。 |
 | 共同的 schema 概念 | Tag、Timestamp 和 Field 列 | 在不同遥测表中使用一致的表模型。 |
-| 上下文完整的事件 | 宽表、SQL 和基于对象存储的存储引擎 | 为需要事后分析的场景保留原始事件。 |
-| 派生 metrics | [Flow](/user-guide/flow-computation/overview.md) | 持续聚合原始事件，写入单独的 metrics 表。 |
+| 结构化日志与上下文事件 | [Pipeline](/user-guide/logs/use-custom-pipelines.md)、宽表和 SQL | 在写入时解析和转换日志，再为需要事后分析的场景保留其中的上下文事件。 |
+| 派生 metrics | [Flow](/user-guide/flow-computation/overview.md) | 持续聚合已存储的上下文事件，写入单独的 metrics 表。 |
 | 跨信号分析 | SQL 和共同的关联标识 | 在 schema 和 instrumentation 提供关联键时连接不同信号。 |
 
-**“统一表模型”不等于“所有数据写入同一张物理表”。** Metrics、logs、traces 和原始事件可以使用不同的表、schema、留存策略和索引。统一的是 schema 概念、存储系统和查询层。
+**“统一表模型”不等于“所有数据写入同一张表”。** Metrics、logs、traces 和原始事件可以使用不同的表、schema、留存策略和索引。统一的是 schema 概念、存储系统和查询层。
+
+Pipeline 和 Flow 处理不同阶段。Pipeline 在写入时解析、转换和补充日志，输出结构化的多列数据；如果这些字段保留了一次操作或业务事件的上下文，每一行就可以作为宽事件。Flow 再对已存储的事件做持续聚合，生成供仪表板和告警使用的 metrics 表。
 
 例如，Flow 可以从事件表派生状态指标：
 
@@ -127,13 +129,13 @@ Schema 管理、采样、脱敏和留存策略都是设计的一部分。宽事�
 
 ### 保留原生信号，只统一存储和查询
 
-继续沿用现有写入协议。指标可使用 PromQL 查询，所有信号均可使用 SQL 查询；链路数据还可通过实验性的 Jaeger 兼容接口查询。各类信号分别存入 GreptimeDB 的不同表，需要跨信号分析时，再通过共同标识和 SQL 关联。这条路径对 instrumentation 和仪表板的改动较小。
+继续沿用现有写入协议。指标可使用 PromQL 查询，所有信号均可使用 SQL 查询；链路数据还可通过 Jaeger 兼容接口查询。各类信号分别存入 GreptimeDB 的不同表，需要跨信号分析时，再通过共同标识和 SQL 关联。这条路径对 instrumentation 和仪表板的改动较小。
 
 可以从 [Prometheus](/user-guide/ingest-data/for-observability/prometheus.md)、[日志](/user-guide/logs/overview.md)、[OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md)或 [traces](/user-guide/traces/overview.md) 开始。
 
 ### 对需要完整上下文的业务引入原始事件
 
-把选定的业务操作或 AI 工作流记录为结构化事件。原始事件表用于事后分析，再通过 [Flow](/user-guide/flow-computation/overview.md) 派生 metrics，供固定的仪表板和告警使用。这条路径能提供更多上下文，但数据量更大，对 schema 和留存管理的要求也更高。
+把选定的业务操作或 AI 工作流记录为结构化事件。如果上下文来自日志，可以用 [Pipeline](/user-guide/logs/use-custom-pipelines.md)在写入时提取字段并转换为结构化数据。事件表用于事后分析，再通过 [Flow](/user-guide/flow-computation/overview.md) 派生 metrics，供固定的仪表板和告警使用。这条路径能提供更多上下文，但数据量更大，对 schema 和留存管理的要求也更高。
 
 两条路径可以同时使用。只有在额外上下文值得相应成本时，才需要引入原始事件。
 
