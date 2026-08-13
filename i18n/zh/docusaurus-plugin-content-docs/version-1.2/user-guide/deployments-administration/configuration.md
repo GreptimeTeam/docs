@@ -508,9 +508,9 @@ default_ratio = 1.0
 
 如何使用分布式追踪，请参考 [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
 
-### 生命周期事件记录器
+### 事件记录配置
 
-生命周期事件记录器会将 Procedure 的生命周期事件持久化到 `greptime_private.events` 系统表。在单机模式下使用 `standalone` 配置；在分布式部署中，在 Metasrv 上配置：
+记录的事件保存在 `greptime_private.events` 系统表中。
 
 ```toml
 [event_recorder]

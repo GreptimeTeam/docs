@@ -506,9 +506,9 @@ default_ratio = 1.0
 
 How to use distributed tracing, please reference [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#tutorial-use-jaeger-to-trace-greptimedb)
 
-### Lifecycle event recorder
+### Event recording
 
-The lifecycle event recorder persists procedure lifecycle events in the `greptime_private.events` system table. Configure it in `standalone` mode or on Metasrv in a distributed deployment:
+Recorded events are stored in the `greptime_private.events` system table.
 
 ```toml
 [event_recorder]

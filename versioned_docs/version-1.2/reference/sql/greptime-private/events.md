@@ -13,7 +13,7 @@ operation succeeded.
 
 The table is created when the first event is recorded. If no event has been
 recorded, or event recording is disabled, querying it returns a table-not-found
-error. Configure recording in [Lifecycle event recorder](/user-guide/deployments-administration/configuration.md#lifecycle-event-recorder).
+error. Configure recording in [Event recording](/user-guide/deployments-administration/configuration.md#event-recording).
 
 ```sql
 USE greptime_private;
