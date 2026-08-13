@@ -1,0 +1,21 @@
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/region-events.md
+  s_785d19b59ebb8a::t_ef84dd5c951324 69,72-92
+docs/user-guide/deployments-administration/monitoring/events/region-events.md
+  s_785d19b59ebb8a::t_ef84dd5c951324 69,72-92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "145453f4081ee3fdb3228ec723f0b1fbede151b7",
+  "prompts": {},
+  "sessions": {
+    "s_785d19b59ebb8a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff4db-02c7-7c10-bd4c-ad3d65c69c14",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
