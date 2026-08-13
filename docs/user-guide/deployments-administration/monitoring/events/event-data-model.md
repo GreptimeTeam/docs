@@ -50,6 +50,20 @@ not guaranteed to appear in the order shown:
 | `Failed`         | The Procedure reached a failed terminal state. Inspect `procedure_error` for failure details.                                                                                            |
 | `Poisoned`       | The Procedure cannot proceed. Inspect `procedure_error` for the failure details.                                                                                                         |
 
+## ADMIN function event columns
+
+An `admin_function` event records the result returned by an `ADMIN` statement.
+
+| Column                   | Meaning                                                                                                                                |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `actor`                  | The current database user that executed the `ADMIN` function.                                                                        |
+| `admin_function_name`    | The name of the executed ADMIN function.                                                                                              |
+| `admin_function_status`  | The execution status: `Succeeded` or `Failed`.                                                                                        |
+| `admin_function_output`  | JSON containing `result` when the function succeeds or `error` when it fails.                                                         |
+
+The event `payload` contains the function arguments. If the result is a
+Procedure ID, query the Procedure events for that ID to track its progress.
+
 ## Query JSON fields
 
 See the [JSON functions](/reference/sql/functions/json.md) reference for

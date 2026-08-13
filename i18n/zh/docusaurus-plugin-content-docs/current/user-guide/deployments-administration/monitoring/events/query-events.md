@@ -47,6 +47,35 @@ ORDER BY type;
 该结果仅反映最近一小时内实际出现的事件类型，不能作为已配置或受支持类型的完整清单。
 支持的本地 DDL 事件类型请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
 
+## 查询管理函数事件
+
+`admin_function` 事件记录管理函数名称、当前数据库用户、立即执行状态、输入参数
+和立即返回结果：
+
+```sql
+SELECT timestamp,
+       actor,
+       admin_function_name,
+       admin_function_status,
+       json_to_string(payload) AS payload,
+       json_to_string(admin_function_output) AS output
+FROM greptime_private.events
+WHERE type = 'admin_function'
+  AND timestamp >= now() - INTERVAL '1' hour
+ORDER BY timestamp DESC
+LIMIT 20;
+```
+
+管理函数执行成功时，`output` 包含 `result`；执行失败时，包含 `error`：
+
+```text
+| actor | admin_function_name | admin_function_status | output        |
+| root  | flush_table         | Succeeded              | {"result":0} |
+| root  | unknown_function     | Failed                 | {"error":"..."} |
+```
+
+`actor` 的值来自当前协议会话用户。
+
 将事件类型、数据库和对象名称组合，可以避免混入无关事件：
 
 ```sql

@@ -54,6 +54,36 @@ cluster. It varies with workload and does not define the configured or
 source-supported types. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
 for the supported local DDL event types.
 
+## Query ADMIN function events
+
+An `admin_function` event records the function name, the current database user,
+the immediate status, the input arguments, and the immediate output:
+
+```sql
+SELECT timestamp,
+       actor,
+       admin_function_name,
+       admin_function_status,
+       json_to_string(payload) AS payload,
+       json_to_string(admin_function_output) AS output
+FROM greptime_private.events
+WHERE type = 'admin_function'
+  AND timestamp >= now() - INTERVAL '1' hour
+ORDER BY timestamp DESC
+LIMIT 20;
+```
+
+For a successful function, `output` contains a `result`. For a failed function,
+it contains an `error`:
+
+```text
+| actor | admin_function_name | admin_function_status | output        |
+| root  | flush_table         | Succeeded              | {"result":0} |
+| root  | unknown_function     | Failed                 | {"error":"..."} |
+```
+
+The `actor` value comes from the current protocol session user.
+
 Combine an event type with a database and object name to avoid unrelated rows:
 
 ```sql

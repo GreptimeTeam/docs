@@ -46,6 +46,20 @@ Procedure 事件还有以下列：
 | `Failed`         | Procedure 到达失败终态。请检查 `procedure_error` 中的失败详情。                                                                                                     |
 | `Poisoned`       | Procedure 无法继续。请检查 `procedure_error` 中的失败详情。                                                                                                         |
 
+## 管理函数事件列
+
+`admin_function` 事件记录 `ADMIN` 语句返回的结果。
+
+| 列                      | 含义                                                                                                            |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `actor`                 | 执行 `ADMIN` 语句的当前数据库用户。                                                                              |
+| `admin_function_name`   | 执行的管理函数名称。                                                                                             |
+| `admin_function_status` | 执行状态：`Succeeded` 或 `Failed`。                                                                             |
+| `admin_function_output` | JSON 数据。函数成功时包含 `result`，函数失败时包含 `error`。                                                     |
+
+事件的 `payload` 包含函数参数。如果返回结果是 Procedure ID，可使用该 ID 查询
+Procedure 事件以查看执行进度。
+
 ## 查询 JSON 字段
 
 详细信息请参阅 [JSON 函数](/reference/sql/functions/json.md)。在事件查询中，

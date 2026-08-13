@@ -14,9 +14,7 @@ acknowledgement.
 
 ## Configure event recording
 
-The event recorder can be configured in standalone deployments or on Metasrv in distributed deployments. See [Lifecycle event recorder](/user-guide/deployments-administration/configuration.md#lifecycle-event-recorder) for configuration options and the supported type list.
-
-Standalone deployments record supported local DDL Procedure events. Distributed deployments with Metasrv can additionally record operational event types.
+See [Event recording](/user-guide/deployments-administration/configuration.md#event-recording) for configuration options and the event types supported by standalone, Frontend, and Metasrv.
 
 ## Query events
 
