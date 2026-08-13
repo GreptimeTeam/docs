@@ -1,100 +1,119 @@
 ---
-keywords: [cloud-native, observability database, high performance, cost-effective, unified design]
-description: Explains the motivations and benefits of using GreptimeDB, including its unified design for metrics, logs, and traces, cloud-native architecture, cost-effectiveness, high performance, and ease of use. It highlights key features and deployment strategies.
+keywords: [open-source observability database, metrics, logs, traces, object storage, compute-storage separation]
+description: Explains why teams evaluate GreptimeDB, how it handles metrics, logs, and traces, and where open-source and Enterprise capabilities differ.
 ---
 
 # Why GreptimeDB
 
-## The Problem: Three Systems for Three Signals
+Teams usually evaluate a new observability backend when separate signal stores, storage expansion, or long-term analysis have become too expensive to operate. GreptimeDB addresses these problems with one columnar engine for metrics, logs, and traces, while keeping the data model and deployment choices explicit.
 
-Most observability stacks today look like this: [Prometheus](/user-guide/ingest-data/for-observability/prometheus.md) (or Thanos/Mimir) for metrics, [Grafana Loki](/user-guide/ingest-data/for-observability/loki.md) (or ELK) for logs, and [Elasticsearch](/user-guide/protocols/elasticsearch.md) (or Tempo) for traces. Each system has its own query language, storage backend, scaling model, and operational overhead.
+## What GreptimeDB Is
 
-This "three pillars" architecture made sense when these were separate concerns. But in practice, it means:
+GreptimeDB is an open-source observability database. It stores and queries metrics, logs, and traces with one columnar engine and a shared SQL layer. It can run as a standalone process on local storage or as a distributed cluster backed by object storage.
 
-- **3x operational complexity** — three systems to deploy, monitor, upgrade, and debug
-- **Data silos** — correlating a spike in error logs with a metrics anomaly requires manual context-switching between systems
-- **Cost escalation** — each system stores redundant metadata, and scaling each independently leads to over-provisioning
+GreptimeDB is not a general-purpose transactional database. Its storage, indexing, retention, and query paths are designed for append-heavy, time-indexed workloads such as observability and IoT data.
 
-GreptimeDB takes a different approach: one database engine for all three signal types, built on object storage with compute-storage separation.
+<AnchorAlias id="the-problem-three-systems-for-three-signals" />
+<AnchorAlias id="unified-processing-for-observability-data" />
 
-## Unified Processing for Observability Data
+## Why One Engine for Three Signals
 
-GreptimeDB unifies the processing of metrics, logs, and traces through:
-- A consistent [data model](./data-model.md) that treats all observability data as timestamped wide events with context
-- Native support for both [SQL](/user-guide/query-data/sql.md) and [PromQL](/user-guide/query-data/promql.md) queries
-- Built-in continuous aggregation capabilities ([Flow](/user-guide/flow-computation/overview.md)) for real-time aggregation and analytics
-- Seamless correlation analysis across different types of observability data (read the [SQL example](/getting-started/quick-start.md#correlate-metrics-logs-and-traces) for detailed info)
+When metrics, logs, and traces live in separate databases, each store brings its own capacity model, lifecycle policy, query path, and failure modes. Correlation also depends on moving data between systems or coordinating several queries during an incident.
 
-It replaces complex legacy data stacks with a high-performance single solution.
+GreptimeDB uses the same columnar engine and [Tag, Timestamp, and Field semantics](./data-model.md) across the three signal types. This gives teams:
 
-This means you can replace the [Prometheus](/user-guide/ingest-data/for-observability/prometheus.md) + [Loki](/user-guide/ingest-data/for-observability/loki.md) + [Elasticsearch](/user-guide/protocols/elasticsearch.md) stack with a single database, and use SQL to correlate metrics spikes with log patterns and trace latency — in one query, without context-switching between systems.
+- one storage and lifecycle-management system for metrics, logs, and traces;
+- SQL across all signal tables and PromQL for metrics;
+- [Flow](/user-guide/flow-computation/overview.md) for continuous aggregation and materialized derived data;
+- SQL correlation through common identifiers when instrumentation records them.
 
-<p align='center'><img src="/unify-processing.png" alt="Replaces complex legacy data stacks with a high-performance single solution" width="400"/></p>
+Unification happens at the engine, storage, and query layers. It does not require metrics, logs, and traces to use one table, one schema, or the [wide-event model](./observability-2.md).
 
-## Cost-Effective with Object Storage
+![Metrics, logs, and traces remain in separate tables while sharing schema concepts, storage, and query layers.](/unified-observability-model.svg)
 
-GreptimeDB leverages [cloud object storage](/user-guide/concepts/storage-location.md) (like AWS S3 and Azure Blob Storage etc.) as its storage layer, dramatically reducing costs compared to traditional storage solutions. Its optimized columnar storage and advanced compression algorithms achieve up to 50x cost efficiency. Scale flexibly across cloud storage systems (e.g., S3, Azure Blob Storage) for simplified management, dramatic cost efficiency, and **no vendor lock-in**.
+## One Columnar Engine, Separate Tables
 
-In production deployments, teams have achieved:
-- **Logs**: 60%+ storage cost reduction in production at OceanBase Cloud (migrated from [Loki](/user-guide/ingest-data/for-observability/loki.md) — 80+ GreptimeDB clusters, 300TB of multi-cloud logs and SQL audit data)
-- **Traces**: 45x storage cost reduction, 3x faster queries (replaced [Elasticsearch](/user-guide/protocols/elasticsearch.md) as [Jaeger](/user-guide/query-data/jaeger.md) backend — one-week migration)
-- **Metrics**: Replaced Thanos with native compute-storage separation, significantly reducing operational complexity
+Reducing the number of systems should not force unlike signals into the same schema. Metric samples, log records, spans, and wide events have different access patterns and retention needs.
 
-## High Performance
+GreptimeDB lets each workload use tables suited to its data:
 
-As for performance optimization, GreptimeDB utilizes different techniques such as LSM Tree, data sharding, and flexible WAL options (local disk or distributed services like Kafka), to handle large workloads of observability data ingestion.
+- metrics commonly use primary-key columns for labels and PromQL for queries;
+- logs often use append-only tables and text or inverted indexes selected for the workload;
+- traces retain trace and span identifiers and can be queried with SQL or the Jaeger-compatible API;
+- wide events can retain more context where retrospective analysis justifies the added storage cost.
 
-GreptimeDB is written in pure Rust for superior performance and reliability. The powerful and fast query engine is powered by vectorized execution and distributed parallel processing (thanks to [Apache DataFusion](https://datafusion.apache.org/)), and combined with [indexing capabilities](/user-guide/manage-data/data-index.md) such as inverted index, skipping index, and full-text index. GreptimeDB combines smart indexing and Massively Parallel Processing (MPP) to boost pruning and filtering.
+These tables can have different schemas, indexes, TTL settings, compaction options, and storage providers. See [Data Model](./data-model.md) and [Storage Location](./storage-location.md) for the underlying mechanisms.
 
-[GreptimeDB achieves 1 billion cold runs #1 in JSONBench!](https://greptime.com/blogs/2025-03-18-jsonbench-greptimedb-performance) Read more [benchmark reports](https://www.greptime.com/blogs/2024-09-09-report-summary).
+## One System for Real-Time Monitoring and Historical Analysis
 
-## Elastic Scaling with Kubernetes
+Incident response needs fast queries over recent data. Trend analysis, capacity work, and investigations may scan weeks or months. Splitting these workloads between a monitoring backend and an analytics database adds another ingestion path, another copy of the data, and another system to operate.
 
-Built from the ground up for [Kubernetes](/user-guide/deployments-administration/deploy-on-kubernetes/overview.md), GreptimeDB features a disaggregated storage and compute [architecture](/user-guide/concepts/architecture.md) that enables true elastic scaling:
-- Independent scaling of storage and compute resources
-- Unlimited horizontal scalability through Kubernetes
-- Resource isolation between different workloads (ingestion, querying, compaction)
-- Automatic failover and high availability
+GreptimeDB handles both workloads with the same engine, storage system, and query layer. Recent data can be served from memory and local caches, while persistent data remains in object storage for longer-range queries. Historical analysis does not require a separate analytics database and data-copy pipeline.
 
-Unlike Thanos or Mimir, which require multiple stateful components (ingesters with persistent disks, store-gateways, compactors) to achieve scalability, GreptimeDB's architecture separates compute from storage at the core — data persists in object storage, compute nodes scale independently, with local disk serving as buffer/cache. WAL can be configured flexibly (local or distributed via Kafka). Scaling up means adding nodes; scaling down loses no data.
+![Real-time monitoring and historical analysis have different workload profiles but share GreptimeDB's engine, storage system, and query layer.](/shared-system-realtime-historical.svg)
 
-![Storage/Compute Disaggregation, Compute/Compute separation](/storage-compute-disaggregation-compute-compute-separation.png)
+<AnchorAlias id="cost-effective-with-object-storage" />
+<AnchorAlias id="elastic-scaling-with-kubernetes" />
 
-## Flexible Architecture: From Edge to Cloud
+## Object Storage and Independent Scaling
 
-![The architecture of GreptimeDB](/architecture-2.png)
+When persistent files are tied to compute nodes, adding capacity can require moving data, rebalancing local disks, or provisioning storage and compute together. That makes a storage-heavy observability cluster harder to change as retention grows.
 
-GreptimeDB's modularized [architecture](/user-guide/concepts/architecture.md) allows different components to operate independently or in unison as needed. Its flexible design supports a wide variety of deployment scenarios, from edge devices to cloud environments, while still using consistent APIs for operations. For example:
-- Frontend, datanode, and metasrv can be merged into a standalone binary
-- Components like WAL or indexing can be enabled or disabled per table
+In distributed GreptimeDB deployments configured with shared object storage, persistent data files are kept in services such as Amazon S3, Google Cloud Storage, or Azure Blob Storage. Datanodes perform writes, compaction, and queries, while local disks can cache remote data. Compute and object-storage capacity can be adjusted separately without copying every persistent data file between Datanodes. See [Architecture](./architecture.md) and [Storage Location](./storage-location.md).
 
-This flexibility ensures that GreptimeDB meets deployment requirements for edge-to-cloud solutions, like the [Edge-Cloud Integrated Solution](https://greptime.com/product/carcloud).
+<AnchorAlias id="easy-to-integrate" />
+<AnchorAlias id="flexible-architecture-from-edge-to-cloud" />
 
-From embedded and standalone deployments to cloud-native clusters, GreptimeDB adapts to various environments easily.
+## Protocols and Query Boundaries
 
-## Easy to Integrate
+Replacing collection agents, dashboards, and client code can cost more than deploying a new database. GreptimeDB therefore accepts data through several established protocols:
 
-GreptimeDB supports [PromQL](/user-guide/query-data/promql.md), [Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md), [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md), [Jaeger](/user-guide/query-data/jaeger.md), [Loki](/user-guide/ingest-data/for-observability/loki.md), [Elasticsearch](/user-guide/protocols/elasticsearch.md), [MySQL](/user-guide/protocols/mysql.md), and [PostgreSQL](/user-guide/protocols/postgresql.md) protocols — migrate from your existing stack without rewriting queries or pipelines. Query with [SQL](/user-guide/query-data/sql.md) or PromQL, visualize with [Grafana](/user-guide/integrations/grafana.md).
+- Prometheus Remote Write for metrics;
+- OpenTelemetry OTLP/HTTP for metrics, logs, and traces;
+- Loki Push API for logs;
+- Elasticsearch Bulk API for document ingestion;
+- InfluxDB Line Protocol, MySQL, PostgreSQL, and the GreptimeDB gRPC and HTTP APIs.
 
-The combination of SQL and PromQL means GreptimeDB can replace the classic "Prometheus + data warehouse" combo — use PromQL for real-time monitoring and alerting, SQL for deep analytics, joins, and aggregations, all in one system. GreptimeDB also supports a [multi-value model](/user-guide/concepts/data-model.md), where a single row can contain multiple field columns, reducing transfer traffic and simplifying queries compared to single-value models.
+These integrations cover specific ingestion or client interfaces, not every feature of the source system. Loki ingestion does not provide LogQL, and the open-source Elasticsearch integration covers the Bulk API rather than the full Query DSL. Use [SQL](/user-guide/query-data/sql.md) across signal types, [PromQL](/user-guide/query-data/promql.md) for metrics, and the Jaeger-compatible query API for traces. Review each protocol page before planning a migration.
 
-Beyond querying, SQL is also GreptimeDB's management interface — [create tables](/user-guide/deployments-administration/manage-data/basic-table-operations.md), [manage schemas](/reference/sql/alter.md), set [TTL policies](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies), and configure [indexes](/user-guide/manage-data/data-index.md), all through standard SQL. No proprietary config files, no custom APIs, no YAML-driven control planes. This is a key operational difference from systems like Prometheus (configured via YAML + relabeling rules), Loki (LogQL + config files), or Elasticsearch (REST API + JSON mappings). Teams with SQL skills can manage GreptimeDB without learning new tooling.
+## Open-Source and Enterprise Scope
 
-## How GreptimeDB Compares
+Edition boundaries matter when evaluating scale, availability, and operating effort. The open-source project includes standalone and cluster deployment, object-storage support, SQL and PromQL, Flow, indexing, and the ingestion interfaces listed above.
 
-The following comparison is based on general architectural characteristics and typical deployment scenarios:
+[GreptimeDB Enterprise](/enterprise/overview.md) adds separately documented capabilities such as read replicas, workload isolation through Datanode groups, automatic Region balancing and repartitioning, RBAC, LDAP integration, audit logging, and enterprise disaster-recovery options. These capabilities are not implied when this guide describes the open-source cluster.
 
-| | GreptimeDB | Prometheus / Thanos / Mimir | Grafana Loki | Elasticsearch |
-|---|---|---|---|---|
-| Data types | Metrics, logs, traces | Metrics only | Logs only | Logs, traces |
-| Query language | SQL + PromQL | PromQL | LogQL | Query DSL |
-| Storage | Native object storage (S3, etc.) | Local disk + object storage (Thanos/Mimir), ingester requires persistent disk | Object storage (chunks) | Local disk |
-| Scaling | Compute-storage separation, compute nodes scale independently | Federation / Thanos / Mimir — multi-component, ops heavy | Stateless + object storage | Shard-based, ops heavy |
-| Cost efficiency | Up to 50x lower storage | High at scale | Moderate | High (inverted index overhead) |
-| OpenTelemetry | Native (metrics + logs + traces) | Partial (metrics only) | Partial (logs only) | Via instrumentation |
-| Management | Standard SQL (DDL, TTL, indexes) | YAML config + relabeling rules | YAML config + LogQL | REST API + JSON mappings |
+## Configuration Choices
 
-For more details, explore:
-- [Unified observability data model](./observability-2.md) — How native signals and wide events map to GreptimeDB
-- [Unified Storage for Observability - GreptimeDB's Approach](https://greptime.com/blogs/2024-12-24-observability) — GreptimeDB's approach to unified storage
-- [Beyond Loki: Lightweight and Scalable Cloud-Native Log Monitoring](https://greptime.com/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report)
+Using one system changes the controls you operate; it does not make the workloads identical. You can tune each workload through these controls:
+
+- [Table design](/user-guide/deployments-administration/performance-tuning/design-table.md): choose schemas, primary keys, indexes, append-only behavior, and partitioning. Set retention with [TTL policies](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) and tune [compaction](/user-guide/deployments-administration/manage-data/compaction.md) when the workload needs it.
+- [Capacity planning](/user-guide/deployments-administration/capacity-plan.md): size compute, memory, and local cache for the expected ingestion rate and mix of recent and historical queries. Use the [performance tuning guide](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md) to adjust cache and query behavior from runtime evidence.
+- [Durability and recovery](/user-guide/deployments-administration/disaster-recovery/overview.md): select a [WAL mode](/user-guide/deployments-administration/wal/overview.md), metadata storage, object-storage policy, and backup and restore process that meet the deployment's RPO and RTO.
+- [Region operations](/user-guide/deployments-administration/manage-data/overview.md): plan table sharding, manual Region migration, and failover for distributed deployments. Enterprise deployments can also use [Datanode groups](/enterprise/deployments-administration/deploy-on-kubernetes/configure-datanode-groups.md) for workload isolation and [Region Balancer](/enterprise/autopilot/region-balancer.md) for automatic balancing.
+
+The right settings depend on the workload and deployment mode; they are not a single preset shared by every signal.
+
+<AnchorAlias id="high-performance" />
+
+## What Production Users Report
+
+Published case studies give results for specific workloads and configurations:
+
+- [OceanBase Cloud](https://greptime.com/blogs/2025-07-22-user-case-obcloud-log-management-greptimedb) runs 80+ GreptimeDB clusters with 300 TB of log and SQL audit data under a seven-day retention period. The case study reports around 1 GB/s of sustained writes and 60%+ lower overall log storage cost after moving from Loki.
+- [Poizon](https://greptime.com/blogs/2025-05-06-poizon-observability-greptimedb-monitoring-use-case) uses Flow to maintain 10-second, 1-minute, and 10-minute rollups from detailed events. Its case study reports that pre-aggregation reduced P99 query latency from seconds to milliseconds.
+
+Results depend on schema, indexes, retention, hardware, object-storage pricing, cache configuration, and query workload. Use published [benchmark reports](https://greptime.com/blogs/2024-09-09-report-summary) with their test conditions when sizing a deployment.
+
+<AnchorAlias id="how-greptimedb-compares" />
+
+## Compare Against Your Current Stack
+
+The useful comparison is usually against the systems already carrying the workload: Prometheus, Mimir, or Thanos for metrics; Loki or Tempo for logs and traces; Elasticsearch; VictoriaMetrics; or ClickHouse and ClickStack.
+
+The [GreptimeDB comparison hub](https://greptime.com/compare/) links to product-specific pages covering architecture, protocol and query differences, migration paths, and benchmark conditions. Use the page for the system you run today rather than a context-free feature matrix.
+
+## Choose a Next Step
+
+- Run the [Quick Start](/getting-started/quick-start.md) to test ingestion and queries locally.
+- Review the [product comparisons](https://greptime.com/compare/) against your current stack.
+- Use the [migration guides](/user-guide/migrate-to-greptimedb/overview.md) to check protocol, query, dashboard, and historical-data changes before a production cutover.

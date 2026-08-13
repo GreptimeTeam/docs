@@ -8,6 +8,7 @@ const { minimatch } = require('minimatch')
 const exceptionPatterns = [
   '**/grpc-sdks/template.md',
   '**/db-cloud-shared/**',
+  '**/AGENTS.md',
   '**/CONTRIBUTING.md',
   'skills/**'
 ];

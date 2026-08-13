@@ -70,6 +70,10 @@ must not touch lockfiles.
   Docusaurus's broken-link collector. Place the alias immediately before the
   exact heading it represents, and never move one merely to silence the
   checker.
+- Use `AnchorAlias` to preserve fragments that have already been published.
+  Do not add an alias for a heading introduced and renamed within the same
+  unmerged pull request; that intermediate fragment has no published
+  compatibility contract.
 - Edit `skills/<name>/SKILL.md`, not generated files under `static/skills/` or
   `static/SKILL.md`. Do not edit `build/`, `.docusaurus/`, or JavaScript
   transpiled from tracked TypeScript.
