@@ -1,0 +1,29 @@
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/configuration.md
+  s_614b2a0e1f1cc3::t_57102577aac2ea 511,513
+versioned_docs/version-1.2/reference/sql/greptime-private/events.md
+  s_614b2a0e1f1cc3::t_57102577aac2ea 16
+versioned_docs/version-1.2/user-guide/deployments-administration/monitoring/events/overview.md
+  s_614b2a0e1f1cc3::t_57102577aac2ea 17
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/monitoring/events/overview.md
+  s_614b2a0e1f1cc3::t_57102577aac2ea 14
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/reference/sql/greptime-private/events.md
+  s_614b2a0e1f1cc3::t_57102577aac2ea 10
+versioned_docs/version-1.2/user-guide/deployments-administration/configuration.md
+  s_614b2a0e1f1cc3::t_57102577aac2ea 509,511
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "599bfae1c91c9f92bcfaa7e9e131d525c9d7ff9b",
+  "prompts": {},
+  "sessions": {
+    "s_614b2a0e1f1cc3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ffa44-3777-78e2-b99e-9c038fdd03e3",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
