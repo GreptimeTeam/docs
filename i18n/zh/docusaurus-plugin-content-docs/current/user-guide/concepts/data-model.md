@@ -88,4 +88,4 @@ Trace 写入、存储和 SQL 查询都是一等能力。GreptimeDB 还提供 Jae
 
 GreptimeDB 使用 SQL 管理表 schema，详见[表管理](/user-guide/deployments-administration/manage-data/basic-table-operations.md)和[自动生成表结构](/user-guide/ingest-data/overview.md#自动生成表结构)。
 
-表还可以携带可选的[表语义层](./semantic-layer.md)，向机器消费者说明信号身份和写入元数据。[统一的可观测数据模型](./observability-2.md)进一步解释了原生信号和上下文事件如何共用表模型，但不共用同一张表。
+表还可以携带可选的[表语义层](./semantic-layer.md)，向机器消费者说明信号身份和写入元数据。[统一的可观测数据模型](./observability-2.md)进一步解释了原生信号和宽事件如何共用表模型，但不共用同一张表。
