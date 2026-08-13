@@ -1,24 +1,24 @@
 ---
 title: "GreptimeDB Concepts Overview"
 keywords: [GreptimeDB, features, data model, architecture, storage locations, key concepts]
-description: Provides an overview of GreptimeDB, including its features, data model, architecture, storage locations, key concepts, and notable features.
+description: Provides an overview of GreptimeDB, including its data model, architecture, storage locations, and core concepts.
 ---
 
 # Concepts
 
-GreptimeDB is an observability database that unifies metrics, logs, and traces in a single engine. This section covers the core concepts you need to understand how GreptimeDB works and why it's designed this way.
+GreptimeDB is the open-source observability database. It uses one columnar engine to process metrics, logs, and traces, and supports scalable deployments backed by object storage. The signals share Tag, Timestamp, and Field column semantics, but can remain in separate tables with different schemas and retention policies.
 
 **Start here:**
-- [Why GreptimeDB](./why-greptimedb.md) — The problem with three-pillar observability stacks, and how GreptimeDB solves it
-- [Data Model](./data-model.md) — How metrics, logs, and traces are represented as timestamped events with tags and fields
-- [Architecture](./architecture.md) — Compute-storage separation, stateless frontends, and how GreptimeDB scales
+- [Why GreptimeDB](./why-greptimedb.md) — Product scope, unified processing, scaling, protocol boundaries, and deployment options
+- [Data Model](./data-model.md) — Shared Tag, Timestamp, and Field semantics for metrics, logs, traces, and event data
+- [Architecture](./architecture.md) — Standalone and distributed deployments, compute-storage separation, and component responsibilities
 
 **Deep dives:**
 - [Unified observability data model](./observability-2.md) — The role and trade-offs of wide events alongside native signals
-- [Table Semantic Layer](./semantic-layer.md) — Semantic metadata that tells AI agents and tools what observability concept each table represents
-- [Storage Location](./storage-location.md) — Object storage, local disk, and multi-engine storage options
-- [Key Concepts](./key-concepts.md) — Tables, regions, time index, data types, views, and flows
-- [Common Questions](./features-that-you-concern.md) — FAQ on updates, deletions, TTL, compression, high cardinality, and more
+- [Table Semantic Layer](./semantic-layer.md) — Optional metadata that tells machine consumers what observability concept each table represents
+- [Storage Location](./storage-location.md) — Local storage, object storage, and per-table storage providers
+- [Key Concepts](./key-concepts.md) — Tables, Regions, time index, data types, views, and Flow
+- [Common Questions](./features-that-you-concern.md) — FAQ on updates, deletion, TTL, compression, high cardinality, and other technical boundaries
 
 ## Further Reading
 
