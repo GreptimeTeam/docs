@@ -33,14 +33,14 @@ GreptimeDB 用同一个列式引擎处理三类信号，并采用共同的 [Tag�
 
 ## 一个列式引擎，不同的表
 
-减少系统数量，不等于把不同信号硬塞进同一种 schema。指标点、日志、span 和包含完整上下文的事件，其访问方式和留存要求并不相同。
+减少系统数量，不等于把不同信号硬塞进同一种 schema。指标点、日志、span 和宽事件，其访问方式和留存要求并不相同。
 
 GreptimeDB 允许每类 workload 使用适合自己的表：
 
 - metrics 通常用主键列保存 labels，并使用 PromQL 查询；
 - logs 常用 append-only 表，并根据查询方式选择全文索引或倒排索引；
 - traces 保留 trace 和 span 标识，可以使用 SQL 或 Jaeger 兼容接口查询；
-- 只有在事后分析确实需要完整上下文时，才需要使用更宽的事件表，并承担相应的存储成本。
+- 事后分析需要更多上下文时，可以采用宽事件，并承担相应的存储成本。
 
 这些表可以分别配置 schema、索引、TTL、compaction 选项和存储后端。具体机制参见[数据模型](./data-model.md)和[存储位置](./storage-location.md)。
 
@@ -82,16 +82,16 @@ GreptimeDB 用同一个引擎、同一套存储与查询基础处理这两类 wo
 
 [GreptimeDB Enterprise](/enterprise/overview.md) 另行提供读副本、通过 Datanode group 隔离 workload、自动 Region 均衡与重分区、RBAC、LDAP 集成、审计日志和企业灾备方案等能力。概念文档提到开源集群时，不默认包含这些功能。
 
-## 仍然需要配置什么
+## 可以按需调整的配置
 
-共用一套系统改变的是运维对象，不会让不同 workload 变得完全相同。生产部署仍要明确配置：
+共用一套系统改变的是运维对象，不会让不同 workload 变得完全相同。可以通过下面几类配置分别调整：
 
-- 按 workload 设置 schema、索引、TTL 和 compaction；
-- 根据近期查询与历史查询的比例，规划 cache、查询并发和计算容量；
-- 根据持久性和恢复目标配置 WAL、metadata、对象存储、备份和恢复；
-- 按需规划 Region 放置、failover 和资源隔离。
+- [表设计](/user-guide/deployments-administration/performance-tuning/design-table.md)：选择 schema、主键、索引、append-only 模式和分区方式；通过 [TTL](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)控制留存周期，并按 workload 调整 [compaction](/user-guide/deployments-administration/manage-data/compaction.md)。
+- [容量规划](/user-guide/deployments-administration/capacity-plan.md)：根据写入量以及近期查询与历史查询的比例，规划计算资源、内存和本地 cache；再结合[性能调优指南](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md)中的运行指标调整 cache 和查询配置。
+- [持久性与恢复](/user-guide/deployments-administration/disaster-recovery/overview.md)：根据 RPO 和 RTO 选择 [WAL 模式](/user-guide/deployments-administration/wal/overview.md)、metadata 存储、对象存储策略以及备份恢复流程。
+- [Region 运维](/user-guide/deployments-administration/manage-data/overview.md)：为分布式部署规划分片、手动 Region 迁移和 failover。Enterprise 还可以使用 [Datanode group](/enterprise/deployments-administration/deploy-on-kubernetes/configure-datanode-groups.md)隔离 workload，并通过 [Region Balancer](/enterprise/autopilot/region-balancer.md)自动均衡 Region。
 
-确定 RPO、RTO 或可用性目标前，请先阅读[存储位置](./storage-location.md)和[灾备](/user-guide/deployments-administration/disaster-recovery/overview.md)。
+具体配置取决于 workload 和部署方式，不存在适用于所有信号的统一预设。
 
 <AnchorAlias id="高性能" />
 
@@ -99,7 +99,7 @@ GreptimeDB 用同一个引擎、同一套存储与查询基础处理这两类 wo
 
 下面的数据来自特定 workload 和配置下的公开案例：
 
-- [OceanBase Cloud](https://greptime.cn/blogs/2025-07-22-user-case-obcloud-log-storage-greptimedb) 运行着 80 多个 GreptimeDB 集群，保存 300 TB 日志与 SQL 审计数据，留存周期为 7 天，持续写入吞吐约 1 GB/s。从 Loki 迁移后，整体日志存储成本下降 60% 以上。
+- [OceanBase Cloud](https://greptime.cn/blogs/2025-07-22-user-case-obcloud-log-storage-greptimedb) 运行着 80+ GreptimeDB 集群，保存 300 TB 日志与 SQL 审计数据，留存周期为 7 天，持续写入吞吐约 1 GB/s。从 Loki 迁移后，整体日志存储成本下降 60%+。
 - [得物](https://greptime.cn/blogs/2025-05-06-poizon-greptimedb-observability)使用 Flow 从明细事件持续维护 10 秒、1 分钟和 10 分钟粒度的聚合结果。公开案例显示，预聚合将 P99 查询延迟从秒级降到毫秒级。
 
 实际结果取决于 schema、索引、留存周期、硬件、对象存储价格、cache 配置和查询 workload。规划容量时，应结合带测试条件的[性能报告](https://greptime.cn/blogs/2024-09-09-report-summary)。

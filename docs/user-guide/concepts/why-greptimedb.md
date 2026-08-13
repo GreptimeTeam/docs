@@ -33,14 +33,14 @@ Unification happens at the engine, storage, and query layers. It does not requir
 
 ## One Columnar Engine, Separate Tables
 
-Reducing the number of systems should not force unlike signals into the same schema. Metric samples, log records, spans, and context-rich events have different access patterns and retention needs.
+Reducing the number of systems should not force unlike signals into the same schema. Metric samples, log records, spans, and wide events have different access patterns and retention needs.
 
 GreptimeDB lets each workload use tables suited to its data:
 
 - metrics commonly use primary-key columns for labels and PromQL for queries;
 - logs often use append-only tables and text or inverted indexes selected for the workload;
 - traces retain trace and span identifiers and can be queried with SQL or the Jaeger-compatible API;
-- context-rich events can use wider schemas where retrospective analysis justifies the added storage cost.
+- wide events can retain more context where retrospective analysis justifies the added storage cost.
 
 These tables can have different schemas, indexes, TTL settings, compaction options, and storage providers. See [Data Model](./data-model.md) and [Storage Location](./storage-location.md) for the underlying mechanisms.
 
@@ -82,16 +82,16 @@ Edition boundaries matter when evaluating scale, availability, and operating eff
 
 [GreptimeDB Enterprise](/enterprise/overview.md) adds separately documented capabilities such as read replicas, workload isolation through Datanode groups, automatic Region balancing and repartitioning, RBAC, LDAP integration, audit logging, and enterprise disaster-recovery options. These capabilities are not implied when this guide describes the open-source cluster.
 
-## What You Still Configure
+## Configuration Choices
 
-Using one system changes the controls you operate; it does not make the workloads identical. A production deployment still needs explicit choices:
+Using one system changes the controls you operate; it does not make the workloads identical. You can tune each workload through these controls:
 
-- set schemas, indexes, TTLs, and compaction options for each workload;
-- size caches, query concurrency, and compute capacity for the expected mix of recent and historical queries;
-- choose WAL, metadata, object-storage, backup, and restore settings that meet durability and recovery targets;
-- plan Region placement, failover, and resource isolation where the workload requires them.
+- [Table design](/user-guide/deployments-administration/performance-tuning/design-table.md): choose schemas, primary keys, indexes, append-only behavior, and partitioning. Set retention with [TTL policies](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) and tune [compaction](/user-guide/deployments-administration/manage-data/compaction.md) when the workload needs it.
+- [Capacity planning](/user-guide/deployments-administration/capacity-plan.md): size compute, memory, and local cache for the expected ingestion rate and mix of recent and historical queries. Use the [performance tuning guide](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md) to adjust cache and query behavior from runtime evidence.
+- [Durability and recovery](/user-guide/deployments-administration/disaster-recovery/overview.md): select a [WAL mode](/user-guide/deployments-administration/wal/overview.md), metadata storage, object-storage policy, and backup and restore process that meet the deployment's RPO and RTO.
+- [Region operations](/user-guide/deployments-administration/manage-data/overview.md): plan table sharding, manual Region migration, and failover for distributed deployments. Enterprise deployments can also use [Datanode groups](/enterprise/deployments-administration/deploy-on-kubernetes/configure-datanode-groups.md) for workload isolation and [Region Balancer](/enterprise/autopilot/region-balancer.md) for automatic balancing.
 
-See [Storage Location](./storage-location.md) and [Disaster Recovery](/user-guide/deployments-administration/disaster-recovery/overview.md) before assigning RPO, RTO, or availability targets.
+The right settings depend on the workload and deployment mode; they are not a single preset shared by every signal.
 
 <AnchorAlias id="high-performance" />
 
@@ -99,7 +99,7 @@ See [Storage Location](./storage-location.md) and [Disaster Recovery](/user-guid
 
 Published case studies give results for specific workloads and configurations:
 
-- [OceanBase Cloud](https://greptime.com/blogs/2025-07-22-user-case-obcloud-log-management-greptimedb) runs more than 80 GreptimeDB clusters with 300 TB of log and SQL audit data under a seven-day retention period. It reports around 1 GB/s of sustained writes and more than 60% lower overall log-storage cost after moving from Loki.
+- [OceanBase Cloud](https://greptime.com/blogs/2025-07-22-user-case-obcloud-log-management-greptimedb) runs 80+ GreptimeDB clusters with 300 TB of log and SQL audit data under a seven-day retention period. The case study reports around 1 GB/s of sustained writes and 60%+ lower overall log storage cost after moving from Loki.
 - [Poizon](https://greptime.com/blogs/2025-05-06-poizon-observability-greptimedb-monitoring-use-case) uses Flow to maintain 10-second, 1-minute, and 10-minute rollups from detailed events. Its case study reports that pre-aggregation reduced P99 query latency from seconds to milliseconds.
 
 Results depend on schema, indexes, retention, hardware, object-storage pricing, cache configuration, and query workload. Use published [benchmark reports](https://greptime.com/blogs/2024-09-09-report-summary) with their test conditions when sizing a deployment.

@@ -88,4 +88,4 @@ The table model provides several practical properties:
 
 GreptimeDB manages table schemas with SQL. See [Table Management](/user-guide/deployments-administration/manage-data/basic-table-operations.md) and [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
 
-Tables can also carry an optional [table semantic layer](./semantic-layer.md) describing signal identity and ingestion metadata for machine consumers. Read [Unified observability data model](./observability-2.md) for how native signals and context-rich events use the shared table model without sharing one table.
+Tables can also carry an optional [table semantic layer](./semantic-layer.md) describing signal identity and ingestion metadata for machine consumers. Read [Unified observability data model](./observability-2.md) for how native signals and wide events use the shared table model without sharing one table.
