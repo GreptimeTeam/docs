@@ -1,60 +1,47 @@
 ---
-keywords: [key concepts, databases, time-series tables, table regions, data types]
-description: Introduces the key concepts of GreptimeDB, including databases, time-series tables, table regions, data types, indexes, views, and flows. It explains how these components work together to manage and serve data in GreptimeDB.
+keywords: [key concepts, database, table, time index, table engine, Region, index, view, Flow]
+description: Defines GreptimeDB databases, tables, time index, table engines, Regions, data types, indexes, views, and Flow.
 ---
 
 # Key Concepts
 
-To understand how GreptimeDB manages and serves its data, you need to know about
-these building blocks of GreptimeDB.
-
 ## Database
 
-Similar to *database* in relational databases, a database is the minimal unit of
-data container, within which data can be managed and computed. Users can use the database to achieve data isolation, creating a tenant-like effect.
+A database is a namespace for tables and other objects. It groups data for management and access, but is not by itself a complete tenant-isolation boundary.
 
 ## Time-Series Table
 
-GreptimeDB designed time-series table to be the basic unit of data storage.
-It is similar to a table in a traditional relational database, but requires a timestamp column(We call it **time index**).
-The table holds a set of data that shares a common schema, it's a collection of rows and columns:
+A GreptimeDB table follows a relational schema and has exactly one time index. Columns use Tag, Timestamp, and Field semantics. Time-series tables are a natural fit for metrics and IoT workloads, while logs, traces, and event data use the same table model with schemas and options suited to those signals.
 
-* Column: a vertical set of values in a table, GreptimeDB distinguishes columns into time index, tag and field.
-* Row: a horizontal set of values in a table.
-
-It can be created using SQL `CREATE TABLE`, or inferred from the input data structure using the auto-schema feature.
-In a distributed deployment, a table can be split into multiple partitions that sit on different datanodes.
-
-For more information about the data model of the time-series table, please refer to [Data Model](./data-model.md).
+Tables can be created with SQL or automatically from supported ingestion protocols. In distributed deployments, a table can be partitioned into Regions placed on different Datanodes. See [Data Model](./data-model.md).
 
 ## Table Engine
 
-Table engines (also called storage engines) determine how data is stored, managed, and processed within the database. Each engine offers different features, performance characteristics, and trade-offs. GreptimeDB supports `mito` and `metric` engines etc., see [Table Engines](/reference/about-greptimedb-engines.md) for more information.
+A table engine controls how table data is written, organized, compacted, and read. The main engines are:
 
-## Table Region
+- **Mito Engine**: The general-purpose engine for time-indexed tables, including logs, traces, and event data.
+- **Metric Engine**: Built on Mito Engine and optimized for large numbers of Prometheus-style metric tables by sharing physical storage and metadata.
 
-Each partition of distributed table is called a region. A region may contain a
-sequence of continuous data, depending on the partition algorithm. Region
-information is managed by Metasrv. It's completely transparent to users who send
-write requests or queries.
+Table engines are separate from storage providers such as local files, Amazon S3, or Google Cloud Storage. See [Table Engines](/reference/about-greptimedb-engines.md) and [Storage Location](./storage-location.md).
+
+<AnchorAlias id="table-region" />
+
+## Region
+
+A Region is a physical partition of a table and the basic unit of storage, scheduling, and migration. A Region is hosted by a Datanode, while Metasrv maintains its route and placement metadata. Clients normally access tables through Frontend without addressing Regions directly.
 
 ## Data Types
 
-Data in GreptimeDB is strongly typed. Auto-schema feature provides some
-flexibility when creating a table. Once the table is created, data of the same
-column must share common data type.
-
-Find all the supported data types in [Data Types](/reference/sql/data-types.md).
+GreptimeDB columns are strongly typed. Automatic schema generation can create tables and add compatible columns, but values written to an existing column must match or be cast to its data type. See [Data Types](/reference/sql/data-types.md).
 
 ## Index
 
-The `index` is a performance-tuning method that allows faster retrieval of records. GreptimeDB provides various kinds of [indexes](/user-guide/manage-data/data-index.md) to accelerate queries.
+An index is an optional data structure used to accelerate selected query patterns. GreptimeDB provides inverted, full-text, and skipping indexes with different selectivity, storage, and write-cost trade-offs. See [Data Indexes](/user-guide/manage-data/data-index.md).
 
 ## View
 
-The `view` is a virtual table that is derived from the result set of a SQL query. It contains rows and columns just like a real table, but it doesn’t store any data itself.
-The data displayed in a view is retrieved dynamically from the underlying tables each time the view is queried.
+A view is a named SQL query presented as a virtual table. It stores the query definition, not a materialized copy of its result; querying the view reads the underlying tables.
 
 ## Flow
 
-A `flow` in GreptimeDB refers to a [continuous aggregation](/user-guide/flow-computation/overview.md) process that continuously updates and materializes aggregated data based on incoming data.
+A Flow is a continuous computation over source-table changes. It updates and materializes its result in a sink table, which can be queried and managed like other tables. See [Flow Computation](/user-guide/flow-computation/overview.md).

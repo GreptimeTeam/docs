@@ -88,7 +88,7 @@ GreptimeDB uses a common [data model](/user-guide/concepts/data-model.md) and qu
 | Native metrics | Prometheus Remote Write, OpenTelemetry OTLP/HTTP, PromQL, and SQL | Ingest Prometheus or OTLP metrics; keep existing metrics and dashboards in their native form. |
 | Logs and traces | Loki Push API, OpenTelemetry OTLP/HTTP, Elasticsearch Bulk API, SQL, and the Jaeger-compatible query API | Ingest with the supported protocols; query all signal types with SQL, and traces with the Jaeger-compatible API. |
 | Shared schema concepts | Tag, timestamp, and field columns | Apply a consistent table model across different telemetry tables. |
-| Structured logs and context-rich events | [Pipeline](/user-guide/logs/use-custom-pipelines.md), wide tables, and SQL | Parse and transform logs into structured events before storage, then keep selected events for detailed or retrospective analysis. |
+| Structured logs and context-rich events | [Pipeline](/user-guide/logs/use-custom-pipelines.md), wide tables, SQL, and configurable local or object-storage providers | Parse and transform logs into structured events before storage, then keep selected events for detailed or retrospective analysis. |
 | Derived metrics | [Flow](/user-guide/flow-computation/overview.md) | Continuously aggregate stored context-rich events into a separate metrics table. |
 | Cross-signal analysis | SQL across tables and shared correlation identifiers | Relate signals when their schemas and instrumentation provide common keys. |
 
