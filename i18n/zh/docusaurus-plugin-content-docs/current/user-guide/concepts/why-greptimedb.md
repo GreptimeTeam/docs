@@ -29,6 +29,8 @@ GreptimeDB 用同一个列式引擎处理三类信号，并采用共同的 [Tag�
 
 这里的“统一”指引擎、存储和查询层，不要求 metrics、logs、traces 使用同一张表、同一套 schema，也不要求采用[宽事件模型](./observability-2.md)。
 
+![Metrics、logs 和 traces 仍然使用独立的表，同时共享 schema 概念、存储系统和查询层。](/unified-observability-model.zh.svg)
+
 ## 一个列式引擎，不同的表
 
 减少系统数量，不等于把不同信号硬塞进同一种 schema。指标点、日志、span 和包含完整上下文的事件，其访问方式和留存要求并不相同。
@@ -47,6 +49,8 @@ GreptimeDB 允许每类 workload 使用适合自己的表：
 故障处置需要快速查询近期数据，趋势分析、容量评估和事后排查则可能扫描几周甚至几个月的数据。如果分别使用监控后端和分析数据库，就要多维护一条写入链路、一份数据副本和一套系统。
 
 GreptimeDB 用同一个引擎、同一套存储与查询基础处理这两类 workload。近期数据可以通过内存和本地 cache 加速，持久化数据则保存在对象存储中，供更长时间范围的查询使用。长期分析不需要另建分析数据库和数据复制链路。
+
+![实时监控与历史分析的 workload 特征不同，但共用 GreptimeDB 的引擎、存储系统和查询层。](/shared-system-realtime-historical.zh.svg)
 
 <AnchorAlias id="对象存储成本低一个数量级" />
 <AnchorAlias id="基于-kubernetes-的弹性扩展" />

@@ -29,6 +29,8 @@ GreptimeDB uses the same columnar engine and [Tag, Timestamp, and Field semantic
 
 Unification happens at the engine, storage, and query layers. It does not require metrics, logs, and traces to use one table, one schema, or the [wide-event model](./observability-2.md).
 
+![Metrics, logs, and traces remain in separate tables while sharing schema concepts, storage, and query layers.](/unified-observability-model.svg)
+
 ## One Columnar Engine, Separate Tables
 
 Reducing the number of systems should not force unlike signals into the same schema. Metric samples, log records, spans, and context-rich events have different access patterns and retention needs.
@@ -47,6 +49,8 @@ These tables can have different schemas, indexes, TTL settings, compaction optio
 Incident response needs fast queries over recent data. Trend analysis, capacity work, and investigations may scan weeks or months. Splitting these workloads between a monitoring backend and an analytics database adds another ingestion path, another copy of the data, and another system to operate.
 
 GreptimeDB handles both workloads with the same engine, storage system, and query layer. Recent data can be served from memory and local caches, while persistent data remains in object storage for longer-range queries. Historical analysis does not require a separate analytics database and data-copy pipeline.
+
+![Real-time monitoring and historical analysis have different workload profiles but share GreptimeDB's engine, storage system, and query layer.](/shared-system-realtime-historical.svg)
 
 <AnchorAlias id="cost-effective-with-object-storage" />
 <AnchorAlias id="elastic-scaling-with-kubernetes" />
