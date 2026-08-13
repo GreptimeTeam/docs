@@ -1,0 +1,44 @@
+i18n/zh/docusaurus-plugin-content-docs/current/reference/sql/greptime-private/events.md
+  s_614b2a0e1f1cc3::t_c3441b6eaf07d7 10
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_614b2a0e1f1cc3::t_880b0551bd0cbc 53-69
+docs/user-guide/deployments-administration/monitoring/events/overview.md
+  s_614b2a0e1f1cc3::t_ec352a85de86f5 17
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_614b2a0e1f1cc3::t_e623210cdf0371 51-52,56-57
+  s_614b2a0e1f1cc3::t_880b0551bd0cbc 49-50,53-55,58-63
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_614b2a0e1f1cc3::t_85367ff886bf88 57-89
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/configuration.md
+  s_614b2a0e1f1cc3::t_c3441b6eaf07d7 511
+  s_614b2a0e1f1cc3::t_85367ff886bf88 535
+  s_614b2a0e1f1cc3::t_1a7350dd9fecc5 513,540-544
+  s_614b2a0e1f1cc3::t_e799b46aab0e63 545
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_614b2a0e1f1cc3::t_85367ff886bf88 50-80
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/overview.md
+  s_614b2a0e1f1cc3::t_ec352a85de86f5 14
+docs/reference/sql/greptime-private/events.md
+  s_614b2a0e1f1cc3::t_c3441b6eaf07d7 16
+docs/user-guide/deployments-administration/configuration.md
+  s_614b2a0e1f1cc3::t_c3441b6eaf07d7 509
+  s_614b2a0e1f1cc3::t_85367ff886bf88 533
+  s_614b2a0e1f1cc3::t_1a7350dd9fecc5 511,538-542
+  s_614b2a0e1f1cc3::t_2263e669743c71 543
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "5a7fbd28ec9dc9901cc7f64c904e890ea963d71a",
+  "prompts": {},
+  "sessions": {
+    "s_614b2a0e1f1cc3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ffa44-3777-78e2-b99e-9c038fdd03e3",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
