@@ -108,7 +108,7 @@ FROM access_logs
 GROUP BY status_code, time_window;
 ```
 
-The raw events remain available for detailed SQL queries, while the sink table serves fixed dashboards and alerts efficiently.
+The stored events remain available for detailed SQL queries, while the sink table serves fixed dashboards and alerts efficiently.
 
 ## Trade-offs
 

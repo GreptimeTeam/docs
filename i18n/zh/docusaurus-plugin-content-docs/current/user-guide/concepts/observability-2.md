@@ -110,7 +110,7 @@ FROM access_logs
 GROUP BY status_code, time_window;
 ```
 
-原始事件仍可用于详细的 SQL 分析，sink 表则高效支持固定的仪表板和告警。
+已存储的事件仍可用于详细的 SQL 分析，sink 表则高效支持固定的仪表板和告警。
 
 ## 工程取舍
 
