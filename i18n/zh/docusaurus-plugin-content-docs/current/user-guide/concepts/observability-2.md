@@ -5,7 +5,7 @@ description: 介绍 Observability 2.0 所指的统一可观测数据模型、工
 
 # Observability 2.0
 
-Observability 2.0 是业内对一种遥测数据思路的称呼，不是产品分类。它通常指保留上下文完整的事件，让使用者不必在采集数据时就预先确定所有分析问题。
+Observability 2.0 是业内对一种遥测数据思路的称呼，不是产品分类。它通常指保留宽事件，让使用者不必在采集数据时就预先确定所有分析问题。
 
 GreptimeDB 支持这种实践，但不要求用户采用。Metrics、logs、traces 仍然是一等能力。GreptimeDB 为每类信号提供写入方式；所有信号都能使用 SQL 查询，metrics 还可以使用 PromQL，traces 还可以使用 Jaeger 兼容查询接口。用户可以保留原有信号，只在部分场景引入宽事件，也可以同时使用两种模型。
 
@@ -53,10 +53,11 @@ Metrics、logs、traces 仍然是有效的抽象。问题不在三类信号本�
 只采集确实有用、适合留存的上下文。凭证、个人数据、查询参数、prompt 和请求正文可能需要在写入前过滤或脱敏。
 
 <AnchorAlias id="metricslogstraces-只是投影" />
+<AnchorAlias id="从上下文事件派生不同视图" />
 
-### 从上下文事件派生不同视图
+### 从宽事件派生不同视图
 
-在这种思路下，一条上下文完整的事件可以形成多种视图：
+在这种思路下，一条宽事件可以形成多种视图：
 
 - 按状态和时间窗口聚合成 metric；
 - 作为包含事件详情的日志检索；
@@ -90,8 +91,8 @@ GreptimeDB 在不同可观测场景中使用共同的[数据模型](/user-guide/
 | 原生 metrics | Prometheus Remote Write、OpenTelemetry OTLP/HTTP、PromQL 和 SQL | 通过 Prometheus 或 OTLP 写入 metrics，保留现有 metrics 和仪表板。 |
 | Logs 和 traces | Loki Push API、OpenTelemetry OTLP/HTTP、Elasticsearch Bulk API、SQL 和 Jaeger 兼容查询接口 | 使用支持的协议写入；所有信号均可使用 SQL 查询，traces 还可使用 Jaeger 兼容接口。 |
 | 共同的 schema 概念 | Tag、Timestamp 和 Field 列 | 在不同遥测表中使用一致的表模型。 |
-| 结构化日志与上下文事件 | [Pipeline](/user-guide/logs/use-custom-pipelines.md)、宽表、SQL，以及可配置的本地或对象存储后端 | 在写入时解析和转换日志，再为需要事后分析的场景保留其中的上下文事件。 |
-| 派生 metrics | [Flow](/user-guide/flow-computation/overview.md) | 持续聚合已存储的上下文事件，写入单独的 metrics 表。 |
+| 结构化日志与宽事件 | [Pipeline](/user-guide/logs/use-custom-pipelines.md)、宽表、SQL，以及可配置的本地或对象存储后端 | 在写入时解析和转换日志，再为需要事后分析的场景保留宽事件。 |
+| 派生 metrics | [Flow](/user-guide/flow-computation/overview.md) | 持续聚合已存储的宽事件，写入单独的 metrics 表。 |
 | 跨信号分析 | SQL 和共同的关联标识 | 在 schema 和 instrumentation 提供关联键时连接不同信号。 |
 
 **“统一表模型”不等于“所有数据写入同一张表”。** Metrics、logs、traces 和原始事件可以使用不同的表、schema、留存策略和索引。统一的是 schema 概念、存储系统和查询层。
