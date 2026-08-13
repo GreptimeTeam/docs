@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">From isolated signals to a unified observability model</title>
+  <desc id="desc">Metrics, logs, and traces can each remain in independent tables. In a unified observability model, they share common data model concepts, one storage system, and a query layer offering SQL, PromQL, and Trace API access.</desc>
+  <defs>
+    <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/></marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#5B4BB7"/></marker>
+    <style>
+      .kicker { font: 600 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: .08em; text-transform: uppercase; fill: #64748B; }
+      .title { font: 650 27px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .subtitle { font: 400 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748B; }
+      .small { font: 500 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .pill { font: 600 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #6D28D9; }
+      .teal { font: 600 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0F766E; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#FFFFFF"/>
+
+  <!-- Left: isolated operational boundaries -->
+  <rect x="70" y="85" width="490" height="720" rx="18" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2"/>
+  <text x="110" y="135" class="kicker">Separate operational boundaries</text>
+  <text x="110" y="170" class="subtitle">Signals are stored and queried apart.</text>
+
+  <rect x="115" y="230" width="400" height="110" rx="13" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="150" y="275" class="title">Metrics</text>
+  <text x="150" y="308" class="subtitle">separate storage · query</text>
+  <circle cx="464" cy="285" r="18" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
+  <path d="M456 285 L463 292 L475 277" fill="none" stroke="#64748B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <line x1="315" y1="340" x2="315" y2="390" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="7 7"/>
+  <circle cx="315" cy="365" r="4" fill="#CBD5E1"/>
+
+  <rect x="115" y="390" width="400" height="110" rx="13" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="150" y="435" class="title">Logs</text>
+  <text x="150" y="468" class="subtitle">separate storage · query</text>
+  <circle cx="464" cy="445" r="18" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
+  <path d="M456 445 L463 452 L475 437" fill="none" stroke="#64748B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <line x1="315" y1="500" x2="315" y2="550" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="7 7"/>
+  <circle cx="315" cy="525" r="4" fill="#CBD5E1"/>
+
+  <rect x="115" y="550" width="400" height="110" rx="13" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="150" y="595" class="title">Traces</text>
+  <text x="150" y="628" class="subtitle">separate storage · query</text>
+  <circle cx="464" cy="605" r="18" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
+  <path d="M456 605 L463 612 L475 597" fill="none" stroke="#64748B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Transition -->
+  <path d="M560 445 L678 445" fill="none" stroke="#94A3B8" stroke-width="3" marker-end="url(#arrow-slate)"/>
+  <polygon points="705,405 764,425 780,485 705,505 646,485 630,425" fill="#5B4BB7"/>
+  <text x="705" y="463" text-anchor="middle" style="font:650 24px Inter,ui-sans-serif,system-ui,sans-serif;fill:#FFFFFF">Unify</text>
+  <path d="M780 445 L850 445" fill="none" stroke="#94A3B8" stroke-width="3" marker-end="url(#arrow-slate)"/>
+
+  <!-- Right: unified storage and query -->
+  <rect x="850" y="85" width="680" height="720" rx="18" fill="#FAFAFF" stroke="#DDD6FE" stroke-width="2"/>
+  <text x="890" y="135" class="kicker">Unified storage and query</text>
+  <text x="890" y="170" class="subtitle">Signals keep independent tables in one storage system.</text>
+
+  <text x="890" y="245" class="small">INDEPENDENT TABLES · SHARED STORAGE SYSTEM</text>
+  <rect x="890" y="270" width="175" height="110" rx="13" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="2"/>
+  <text x="977.5" y="317" text-anchor="middle" class="title">Metrics</text>
+  <text x="977.5" y="348" text-anchor="middle" class="subtitle">table</text>
+
+  <rect x="1105" y="270" width="175" height="110" rx="13" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="2"/>
+  <text x="1192.5" y="317" text-anchor="middle" class="title">Logs</text>
+  <text x="1192.5" y="348" text-anchor="middle" class="subtitle">table</text>
+
+  <rect x="1320" y="270" width="175" height="110" rx="13" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="2"/>
+  <text x="1407.5" y="317" text-anchor="middle" class="title">Traces</text>
+  <text x="1407.5" y="348" text-anchor="middle" class="subtitle">table</text>
+
+  <path d="M977 380 C977 425, 1038 447, 1105 480" fill="none" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#arrow-slate)"/>
+  <path d="M1192 380 L1192 480" fill="none" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#arrow-slate)"/>
+  <path d="M1408 380 C1408 425, 1347 447, 1280 480" fill="none" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#arrow-slate)"/>
+
+  <rect x="1015" y="485" width="355" height="135" rx="15" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="3"/>
+  <text x="1192.5" y="535" text-anchor="middle" class="title">Shared schema concepts</text>
+  <g fill="#EDE9FE" stroke="#C4B5FD" stroke-width="1.5">
+    <rect x="1060" y="560" width="75" height="31" rx="15"/>
+    <rect x="1148" y="560" width="100" height="31" rx="15"/>
+    <rect x="1260" y="560" width="70" height="31" rx="15"/>
+  </g>
+  <text x="1097.5" y="582" text-anchor="middle" class="pill">Tag</text>
+  <text x="1198" y="582" text-anchor="middle" class="pill">Timestamp</text>
+  <text x="1295" y="582" text-anchor="middle" class="pill">Field</text>
+
+  <path d="M1192 620 L1192 675" fill="none" stroke="#2DD4BF" stroke-width="3" marker-end="url(#arrow-slate)"/>
+  <rect x="980" y="680" width="425" height="85" rx="14" fill="#ECFDF5" stroke="#2DD4BF" stroke-width="3"/>
+  <text x="1192.5" y="716" text-anchor="middle" class="title">Shared query layer</text>
+  <text x="1192.5" y="746" text-anchor="middle" class="teal">SQL · PromQL · Trace API</text>
+
+  <!-- Footer rule and takeaway -->
+  <line x1="70" y1="842" x2="1530" y2="842" stroke="#E2E8F0" stroke-width="2"/>
+  <text x="70" y="878" class="small">Unification happens at the data-model, storage, and query layers; it does not require all signals in one table.</text>
+</svg>

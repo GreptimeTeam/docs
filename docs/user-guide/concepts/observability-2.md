@@ -19,6 +19,8 @@ Metrics, logs, and traces remain useful abstractions. The problem is not the sig
 
 A unified model reduces these boundaries by using consistent schemas and query tools. Wide events are one way to retain more context, not a replacement for every metric, log, or trace.
 
+![Metrics, logs, and traces remain in independent tables while sharing common data-model concepts, storage, and query layers.](/unified-observability-model.svg)
+
 ## Wide Events: A Unified Data Model
 
 A wide event is a structured record with many fields describing one operation or business event. It can include high-cardinality values such as user IDs, session IDs, trace IDs, and request attributes.
@@ -93,6 +95,8 @@ GreptimeDB uses a common [data model](/user-guide/concepts/data-model.md) and qu
 **A unified table model does not mean writing all data into one table.** Metrics, logs, traces, and raw events can use separate tables with different schemas, retention policies, and indexes. The unification is at the schema concepts, storage system, and query layer.
 
 Pipeline and Flow handle different stages. Pipeline parses, transforms, and enriches logs during ingestion. Its output is structured, multi-column data; when those fields retain the context of an operation or business event, each row can serve as a wide event. Flow can then continuously aggregate the stored events into metrics tables for dashboards and alerts.
+
+![Pipeline can process logs during ingestion, while Flow can aggregate stored events into a derived metrics table.](/optional-pipeline-flow.svg)
 
 For example, Flow can derive a status metric from an event table:
 
