@@ -44,4 +44,4 @@ View 是以虚拟表形式呈现的命名 SQL 查询。它保存查询定义，�
 
 ## Flow
 
-Flow 是基于源表变化执行的持续计算。它持续更新结果，并将结果物化到 sink table；sink table 可以像其他表一样查询和管理。详见 [Flow 计算](/user-guide/flow-computation/overview.md)。
+Flow 是针对持续写入源表的数据执行的连续计算。它持续更新结果，并将结果物化到 sink table；sink table 可以像其他表一样查询和管理。详见 [Flow 计算](/user-guide/flow-computation/overview.md)。

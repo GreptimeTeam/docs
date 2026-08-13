@@ -41,17 +41,17 @@ The following paths describe distributed mode. Standalone mode runs the same dat
 3. Frontend splits the request and forwards rows to the Datanodes that host the target Regions.
 4. A Datanode writes to memory and the configured [WAL](/user-guide/deployments-administration/wal/overview.md), then flushes immutable data files to the table's configured [storage provider](./storage-location.md).
 
-Noop WAL can be configured for selected use cases, but unflushed data can be lost after a process failure. Durability therefore depends on WAL and deployment configuration, not only on the data-file location.
+[Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) is available only in cluster mode for emergencies when the configured WAL provider is temporarily unavailable. It does not retain WAL records, so a failure or restart can lose accepted writes that have not reached persistent data files. Durability therefore depends on WAL and deployment configuration, not only on the data-file location.
 
 ### Query Path
 
 1. A client submits SQL, PromQL, or an explicitly supported query API such as the Jaeger-compatible API.
 2. Frontend plans the query and dispatches work to Datanodes that host the relevant Regions.
-3. Datanodes read local cache and persistent files, apply pruning and indexes, and return partial results.
+3. Datanodes read in-memory data and persistent files, use local caches when applicable, apply pruning and indexes, and return partial results.
 4. Frontend combines the results and returns the response.
 
 ### Flow Path (Optional)
 
-When Flow is enabled, Flownode processes changes from source tables, maintains continuous computations, and writes materialized results to sink tables. Source and sink tables keep their own schema, TTL, indexes, and storage settings. See [Flow Computation](/user-guide/flow-computation/overview.md).
+When Flow is enabled, Flownode processes incoming rows from source tables, maintains continuous computations, and writes materialized results to sink tables. Source and sink tables keep their own schema, TTL, indexes, and storage settings. See [Flow Computation](/user-guide/flow-computation/overview.md).
 
 For storage responsibilities, see [Storage Location](./storage-location.md). For implementation details, see the [Contributor Guide](/contributor-guide/overview.md).

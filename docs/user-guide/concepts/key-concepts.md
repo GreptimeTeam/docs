@@ -44,4 +44,4 @@ A view is a named SQL query presented as a virtual table. It stores the query de
 
 ## Flow
 
-A Flow is a continuous computation over source-table changes. It updates and materializes its result in a sink table, which can be queried and managed like other tables. See [Flow Computation](/user-guide/flow-computation/overview.md).
+A Flow is a continuous computation over incoming rows from source tables. It updates and materializes its result in a sink table, which can be queried and managed like other tables. See [Flow Computation](/user-guide/flow-computation/overview.md).

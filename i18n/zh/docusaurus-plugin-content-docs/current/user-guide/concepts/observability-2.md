@@ -91,7 +91,7 @@ GreptimeDB 在不同可观测场景中使用共同的[数据模型](/user-guide/
 | 原生 metrics | Prometheus Remote Write、OpenTelemetry OTLP/HTTP、PromQL 和 SQL | 通过 Prometheus 或 OTLP 写入 metrics，保留现有 metrics 和仪表板。 |
 | Logs 和 traces | Loki Push API、OpenTelemetry OTLP/HTTP、Elasticsearch Bulk API、SQL 和 Jaeger 兼容查询接口 | 使用支持的协议写入；所有信号均可使用 SQL 查询，traces 还可使用 Jaeger 兼容接口。 |
 | 共同的 schema 概念 | Tag、Timestamp 和 Field 列 | 在不同遥测表中使用一致的表模型。 |
-| 结构化日志与宽事件 | [Pipeline](/user-guide/logs/use-custom-pipelines.md)、宽表、SQL，以及可配置的本地或对象存储后端 | 在写入时解析和转换日志，再为需要事后分析的场景保留宽事件。 |
+| 结构化日志与宽事件 | [Pipeline](/user-guide/logs/use-custom-pipelines.md)、宽表和 SQL | 在写入时解析和转换日志，再为需要事后分析的场景保留宽事件。 |
 | 派生 metrics | [Flow](/user-guide/flow-computation/overview.md) | 持续聚合已存储的宽事件，写入单独的 metrics 表。 |
 | 跨信号分析 | SQL 和共同的关联标识 | 在 schema 和 instrumentation 提供关联键时连接不同信号。 |
 

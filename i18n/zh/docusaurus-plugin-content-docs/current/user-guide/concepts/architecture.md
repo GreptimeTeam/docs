@@ -41,17 +41,17 @@ Standalone 模式由一个 GreptimeDB 进程提供这些数据库能力，不需
 3. Frontend 拆分请求，把数据行转发到承载目标 Region 的 Datanode。
 4. Datanode 写入内存和配置的 [WAL](/user-guide/deployments-administration/wal/overview.md)，再把不可变数据文件 flush 到表指定的[存储后端](./storage-location.md)。
 
-特定场景可以配置 Noop WAL，但进程故障后可能丢失尚未 flush 的数据。因此，持久性取决于 WAL 和部署配置，不能只看数据文件放在哪里。
+[Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) 仅支持 cluster mode，用于配置的 WAL provider 暂时不可用时的紧急情况。它不会保存 WAL 记录，因此发生故障或重启后，已接收但尚未形成持久化数据文件的写入可能丢失。持久性取决于 WAL 和部署配置，不能只看数据文件放在哪里。
 
 ### 查询路径
 
 1. 客户端提交 SQL、PromQL，或明确支持的查询 API，例如 Jaeger 兼容接口。
 2. Frontend 规划查询，并把任务下发到承载相关 Region 的 Datanode。
-3. Datanode 读取本地 cache 和持久化文件，使用裁剪与索引执行查询，返回部分结果。
+3. Datanode 读取内存数据和持久化文件，在适用时使用本地 cache 加速，并通过数据裁剪和索引执行查询，返回部分结果。
 4. Frontend 合并结果并返回客户端。
 
 ### Flow 路径（可选）
 
-启用 Flow 后，Flownode 处理源表变化，维护持续计算，并把结果物化到 sink table。源表和 sink table 分别使用自己的 schema、TTL、索引和存储设置。详见 [Flow 计算](/user-guide/flow-computation/overview.md)。
+启用 Flow 后，Flownode 持续处理写入源表的数据，维护计算结果，并把结果物化到 sink table。源表和 sink table 分别使用自己的 schema、TTL、索引和存储设置。详见 [Flow 计算](/user-guide/flow-computation/overview.md)。
 
 各类存储的职责参见[存储位置](./storage-location.md)，实现细节参见 [Contributor Guide](/contributor-guide/overview.md)。

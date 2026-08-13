@@ -47,7 +47,7 @@ Append-only 表关闭去重，同一主键和时间戳的写入会新增数据�
 
 ## 支持持续聚合或降采样吗？
 
-支持。[Flow](/user-guide/flow-computation/overview.md)会根据源表变化持续计算，并把结果物化到 sink table。它可以用于固定窗口聚合和降采样，源数据则按自己的 TTL 保留。
+支持。[Flow](/user-guide/flow-computation/overview.md)会在新数据行写入源表时持续计算，并把结果物化到 sink table。它可以用于固定窗口聚合和降采样，源数据则按自己的 TTL 保留。
 
 ## 可以把数据存到云上的对象存储吗？
 

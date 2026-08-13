@@ -47,7 +47,7 @@ There is no universal cardinality limit that applies to every schema and deploym
 
 ## Does GreptimeDB support continuous aggregate or downsampling?
 
-Yes. [Flow](/user-guide/flow-computation/overview.md) continuously computes query results from source-table changes and materializes them in a sink table. It can implement fixed-window aggregation and downsampling while retaining the source data under its own TTL.
+Yes. [Flow](/user-guide/flow-computation/overview.md) continuously computes over source-table data as new rows arrive and materializes the results in a sink table. It can implement fixed-window aggregation and downsampling while retaining the source data under its own TTL.
 
 ## Can I store data in object storage in the cloud?
 
