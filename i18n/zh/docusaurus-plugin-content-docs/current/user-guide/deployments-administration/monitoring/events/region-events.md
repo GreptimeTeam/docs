@@ -66,21 +66,30 @@ ORDER BY source_region_id, target_region_id;
 
 ## Region 迁移
 
-Region 迁移可以手动发起，也可以由 Region Balancer 或 Region Failover 触发。下面的查询显示最近一次迁移：
+Region 迁移可以手动发起，也可以由 Region Balancer 或 Region Failover 触发。下面的查询返回最近一次迁移事件的所有 Region 记录：
 
 ```sql
-SELECT timestamp, procedure_id, procedure_state,
-       region_id, table_id, region_number,
-       region_migration_trigger_reason,
-       region_migration_src_node_id AS source_datanode_id,
-       region_migration_src_peer_addr AS source_datanode_addr,
-       region_migration_dst_node_id AS target_datanode_id,
-       region_migration_dst_peer_addr AS target_datanode_addr
-FROM greptime_private.events
-WHERE type = 'region_migration'
-  AND timestamp >= now() - INTERVAL '1' hour
-ORDER BY timestamp DESC
-LIMIT 1;
+WITH latest_migration AS (
+  SELECT procedure_id, timestamp
+  FROM greptime_private.events
+  WHERE type = 'region_migration'
+    AND timestamp >= now() - INTERVAL '1' hour
+  ORDER BY timestamp DESC
+  LIMIT 1
+)
+SELECT e.timestamp, e.procedure_id, e.procedure_state,
+       e.region_id, e.table_id, e.region_number,
+       e.region_migration_trigger_reason,
+       e.region_migration_src_node_id AS source_datanode_id,
+       e.region_migration_src_peer_addr AS source_datanode_addr,
+       e.region_migration_dst_node_id AS target_datanode_id,
+       e.region_migration_dst_peer_addr AS target_datanode_addr
+FROM greptime_private.events AS e
+JOIN latest_migration AS latest
+  ON e.procedure_id = latest.procedure_id
+ AND e.timestamp = latest.timestamp
+WHERE e.type = 'region_migration'
+ORDER BY e.region_id;
 ```
 
 ```sql
