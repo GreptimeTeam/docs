@@ -506,9 +506,9 @@ default_ratio = 1.0
 
 How to use distributed tracing, please reference [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#tutorial-use-jaeger-to-trace-greptimedb)
 
-### Lifecycle event recorder
+### Event recording
 
-The lifecycle event recorder persists procedure lifecycle events in the `greptime_private.events` system table. Configure it in `standalone` mode or on Metasrv in a distributed deployment:
+Recorded events are stored in the `greptime_private.events` system table.
 
 ```toml
 [event_recorder]
@@ -530,10 +530,16 @@ create_database, alter_database, drop_database,
 create_flow, drop_flow,
 create_table, create_logical_tables, alter_table, alter_logical_tables,
 drop_table, undrop_table, purge_dropped_table, truncate_table,
-create_view, drop_view
+create_view, drop_view, admin_function
 ```
 
 `undrop_table` and `purge_dropped_table` require GreptimeDB Enterprise.
+
+In distributed deployments, the Frontend supports the following event type:
+
+```text
+admin_function
+```
 
 Metasrv supports the following event types:
 
