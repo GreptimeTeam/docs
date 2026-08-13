@@ -1,13 +1,13 @@
 ---
 keywords: [observability 2.0, 宽事件, 统一可观测性, 三支柱, 高基数, AI agent]
-description: 介绍 Observability 2.0 所指的统一可观测数据模型、工程取舍，以及它与 GreptimeDB 的对应关系。
+description: 介绍 Observability 2.0 与宽事件、相关工程取舍，以及 GreptimeDB 如何支持这种可选做法。
 ---
 
 # Observability 2.0
 
 Observability 2.0 是业内对一种遥测数据思路的称呼，不是产品分类。它通常指保留宽事件，让使用者不必在采集数据时就预先确定所有分析问题。
 
-GreptimeDB 支持这种实践，但不要求用户采用。Metrics、logs、traces 仍然是一等能力。GreptimeDB 为每类信号提供写入方式；所有信号都能使用 SQL 查询，metrics 还可以使用 PromQL，traces 还可以使用 Jaeger 兼容查询接口。用户可以保留原有信号，只在部分场景引入宽事件，也可以同时使用两种模型。
+GreptimeDB 的[数据模型](./data-model.md)同时支持原生 metrics、logs、traces 和宽事件。本页只讨论通常与 Observability 2.0 相关的宽事件做法。GreptimeDB 支持这种实践，但不要求用户采用；metrics、logs、traces 仍然是一等能力。
 
 ## 三支柱的局限
 
@@ -17,11 +17,9 @@ Metrics、logs、traces 仍然是有效的抽象。问题不在三类信号本�
 2. **采集时就要确定问题**：预聚合 metrics 能高效回答已知问题，但无法找回没有记录的维度。
 3. **结构丢失**：纯文本日志里往往包含有用字段，事后解析和索引的成本较高。
 
-统一数据模型通过一致的 schema 和查询方式减少这些边界。宽事件是保留更多上下文的一种做法，不是所有 metrics、logs、traces 的替代品。
+共同的 schema 概念、存储基础和查询工具可以减少这些边界。宽事件是保留更多上下文的一种做法，不是所有 metrics、logs、traces 的替代品。
 
-![Metrics、logs 和 traces 仍然使用独立的表，同时共享数据模型概念、存储系统和查询层。](/unified-observability-model.zh.svg)
-
-## 宽事件：统一数据模型
+## 宽事件
 
 宽事件（wide event）是一条包含较多字段的结构化记录，用于描述一次操作或业务事件。它可以带有用户 ID、session ID、trace ID、请求属性等高基数字段。
 
@@ -77,29 +75,26 @@ Metrics、logs、traces 仍然是有效的抽象。问题不在三类信号本�
 
 <AnchorAlias id="greptimedb-的-observability-20-支撑" />
 
-## GreptimeDB 与这种模型的对应关系
+## GreptimeDB 如何支持宽事件
 
 <AnchorAlias id="统一的-tag--timestamp--field-模型" />
 <AnchorAlias id="sql--promql-跨信号关联" />
 <AnchorAlias id="flow-引擎从宽事件实时派生-metrics" />
 <AnchorAlias id="生产验证" />
 
-GreptimeDB 在不同可观测场景中使用共同的[数据模型](/user-guide/concepts/data-model.md)和查询层。具体对应关系如下：
+GreptimeDB 使用普通的时间索引表保存宽事件。Pipeline、SQL 和 Flow 分别处理这条路径中的不同阶段：
 
-| 数据模式 | GreptimeDB 能力 | 使用方式 |
+| 阶段 | GreptimeDB 能力 | 作用 |
 | --- | --- | --- |
-| 原生 metrics | Prometheus Remote Write、OpenTelemetry OTLP/HTTP、PromQL 和 SQL | 通过 Prometheus 或 OTLP 写入 metrics，保留现有 metrics 和仪表板。 |
-| Logs 和 traces | Loki Push API、OpenTelemetry OTLP/HTTP、Elasticsearch Bulk API、SQL 和 Jaeger 兼容查询接口 | 使用支持的协议写入；所有信号均可使用 SQL 查询，traces 还可使用 Jaeger 兼容接口。 |
-| 共同的 schema 概念 | Tag、Timestamp 和 Field 列 | 在不同遥测表中使用一致的表模型。 |
-| 结构化日志与宽事件 | [Pipeline](/user-guide/logs/use-custom-pipelines.md)、宽表和 SQL | 在写入时解析和转换日志，再为需要事后分析的场景保留宽事件。 |
-| 派生 metrics | [Flow](/user-guide/flow-computation/overview.md) | 持续聚合已存储的宽事件，写入单独的 metrics 表。 |
-| 跨信号分析 | SQL 和共同的关联标识 | 在 schema 和 instrumentation 提供关联键时连接不同信号。 |
+| 按需处理写入数据 | [Pipeline](/user-guide/logs/use-custom-pipelines.md) | 在存储前解析、转换和补充日志。 |
+| 存储与分析 | 时间索引表和 SQL | 保留宽事件，用于明细查询和事后分析。 |
+| 派生数据 | [Flow](/user-guide/flow-computation/overview.md) | 持续聚合写入的数据行，生成单独的 metrics 表。 |
 
-**“统一表模型”不等于“所有数据写入同一张表”。** Metrics、logs、traces 和原始事件可以使用不同的表、schema、留存策略和索引。统一的是 schema 概念、存储系统和查询层。
+采用宽事件不要求原生 metrics、logs、traces 和原始事件共用一张表。它们可以使用不同的表、schema、留存策略和索引。
 
-Pipeline 和 Flow 处理不同阶段。Pipeline 在写入时解析、转换和补充日志，输出结构化的多列数据；如果这些字段保留了一次操作或业务事件的上下文，每一行就可以作为宽事件。Flow 再对已存储的事件做持续聚合，生成供仪表板和告警使用的 metrics 表。
+Pipeline 和 Flow 处理不同阶段。Pipeline 在写入时解析、转换和补充日志，输出结构化的多列数据；如果这些字段保留了一次操作或业务事件的上下文，每一行就可以作为宽事件。Flow 可以在这些事件行持续写入时进行聚合，生成供仪表板和告警使用的 metrics 表。
 
-![Pipeline 可以在写入阶段处理日志，Flow 可以把已存储的事件聚合到派生 metrics 表。](/optional-pipeline-flow.zh.svg)
+![Pipeline 可以在写入阶段处理日志，Flow 可以把持续写入的事件行聚合到派生 metrics 表。](/optional-pipeline-flow.zh.svg)
 
 例如，Flow 可以从事件表派生状态指标：
 
@@ -119,7 +114,7 @@ GROUP BY status_code, time_window;
 
 ## 工程取舍
 
-统一事件模型把灵活性带来的成本放在了另外几个地方：
+宽事件做法把灵活性带来的成本放在了另外几个地方：
 
 - **更宽的事件会增加数据量。** 更多字段和重复上下文会消耗写入带宽与存储空间，列式压缩也无法消除这部分成本。
 - **高基数和长期留存会推高成本。** 只保留有用的维度，并分别设置原始数据与派生数据的留存周期。

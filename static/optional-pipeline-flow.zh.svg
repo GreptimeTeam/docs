@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
   <title id="title">可选的 Pipeline 与 Flow 数据路径</title>
-  <desc id="desc">日志可以直接写入结构化事件表，也可以先经过 Pipeline 解析、转换或补充字段。字段保留了一次操作或业务事件的上下文时，每一行可以作为宽事件。数据存储后，可以使用 Flow 将事件聚合到派生 metrics 表，供仪表板和告警使用。事件表也支持 SQL 分析；存在关联标识时，还可以关联 trace 或 span。</desc>
+  <desc id="desc">日志可以直接写入结构化事件表，也可以先经过 Pipeline 解析、转换或补充字段。字段保留了一次操作或业务事件的上下文时，每一行可以作为宽事件。事件行持续写入时，Flow 可以将其聚合到派生 metrics 表，供仪表板和告警使用。事件表也支持 SQL 分析；存在关联标识时，还可以关联 trace 或 span。</desc>
   <defs>
     <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/></marker>
     <marker id="arrow-amber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#D97706"/></marker>
@@ -71,7 +71,7 @@
   <text x="1101" y="308" text-anchor="middle" class="tealText">可选</text>
   <text x="1150" y="340" text-anchor="middle" class="title">Flow</text>
   <text x="1150" y="368" text-anchor="middle" class="sub">持续聚合</text>
-  <text x="1150" y="393" text-anchor="middle" class="small">存储事件 → metrics</text>
+  <text x="1150" y="393" text-anchor="middle" class="small">持续写入事件 → metrics</text>
 
   <!-- 派生表 -->
   <path d="M1265 340 L1315 340" fill="none" stroke="#2DD4BF" stroke-width="3" marker-end="url(#arrow-slate)"/>

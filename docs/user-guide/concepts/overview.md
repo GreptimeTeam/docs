@@ -14,7 +14,7 @@ GreptimeDB is the open-source observability database. It uses one columnar engin
 - [Architecture](./architecture.md) — Standalone and distributed deployments, compute-storage separation, and component responsibilities
 
 **Deep dives:**
-- [Unified observability data model](./observability-2.md) — The role and trade-offs of wide events alongside native signals
+- [Observability 2.0 and wide events](./observability-2.md) — The role and trade-offs of wide events alongside native signals
 - [Table Semantic Layer](./semantic-layer.md) — Optional metadata that tells machine consumers what observability concept each table represents
 - [Storage Location](./storage-location.md) — Local storage, object storage, and per-table storage providers
 - [Key Concepts](./key-concepts.md) — Tables, Regions, time index, data types, views, and Flow

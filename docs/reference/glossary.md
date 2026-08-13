@@ -216,7 +216,7 @@ An enterprise-grade monitoring and alerting feature in GreptimeDB that enables a
 The integration of various data types and sources into a single platform for analysis. GreptimeDB provides unified analysis by allowing users to query metrics, logs, and events using SQL and PromQL, simplifying data analytics workflows.
 
 ### Unified Observability
-A database architecture approach that consolidates metrics, logs, and traces into a single system, eliminating data silos and reducing operational complexity. GreptimeDB implements unified observability by treating all telemetry data types as wide events with timestamps, enabling cross-signal correlation, simplified data pipelines, and cost-effective observability infrastructure.
+A database architecture that handles metrics, logs, traces, and events through shared data-model concepts, storage infrastructure, and query tools. GreptimeDB applies common Tag, Timestamp, and Field semantics across these signals while allowing them to remain in separate tables. Wide events are an optional modeling approach within this foundation.
 
 ---
 

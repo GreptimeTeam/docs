@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
   <title id="title">Optional Pipeline and Flow data paths</title>
-  <desc id="desc">Log input can write directly into a structured event table or optionally pass through Pipeline for parsing, transformation, or enrichment. Rows can serve as wide events when their fields retain the context of an operation or business event. After storage, Flow can aggregate events into a derived metrics table for dashboards and alerts. The event table also supports SQL investigation and optional trace correlation when identifiers are present.</desc>
+  <desc id="desc">Log input can write directly into a structured event table or optionally pass through Pipeline for parsing, transformation, or enrichment. Rows can serve as wide events when their fields retain the context of an operation or business event. As event rows arrive, Flow can aggregate them into a derived metrics table for dashboards and alerts. The event table also supports SQL investigation and optional trace correlation when identifiers are present.</desc>
   <defs>
     <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/></marker>
     <marker id="arrow-amber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#D97706"/></marker>
@@ -71,7 +71,7 @@
   <text x="1101" y="308" text-anchor="middle" class="tealText">OPTIONAL</text>
   <text x="1150" y="340" text-anchor="middle" class="title">Flow</text>
   <text x="1150" y="368" text-anchor="middle" class="sub">Continuous aggregation</text>
-  <text x="1150" y="393" text-anchor="middle" class="small">stored events → metrics</text>
+  <text x="1150" y="393" text-anchor="middle" class="small">incoming events → metrics</text>
 
   <!-- Derived table -->
   <path d="M1265 340 L1315 340" fill="none" stroke="#2DD4BF" stroke-width="3" marker-end="url(#arrow-slate)"/>
