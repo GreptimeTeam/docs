@@ -5,7 +5,7 @@ description: Explains Observability 2.0 as a unified observability data model, i
 
 # Observability 2.0
 
-Observability 2.0 is an industry term for an approach to telemetry, not a product category. It usually refers to retaining context-rich events and analyzing them without deciding every question in advance.
+Observability 2.0 is an industry term for an approach to telemetry, not a product category. It usually refers to retaining wide events and analyzing them without deciding every question in advance.
 
 GreptimeDB supports this approach, but does not require it. Metrics, logs, and traces remain first-class capabilities. GreptimeDB provides ingestion paths for each signal, SQL queries across all signal types, PromQL for metrics, and a Jaeger-compatible query API for traces. You can keep these signals in their existing forms, introduce wide events for selected workloads, or use both models together.
 
@@ -53,10 +53,11 @@ For example, an event for a POST request might include user and subscription dat
 Capture only the context that is useful and safe to retain. Credentials, personal data, query parameters, prompts, and request bodies may require filtering or redaction before ingestion.
 
 <AnchorAlias id="metrics-logs-and-traces-as-projections" />
+<AnchorAlias id="views-derived-from-context-rich-events" />
 
-### Views Derived from Context-Rich Events
+### Views Derived from Wide Events
 
-In this approach, a context-rich event can produce several views:
+In this approach, a wide event can produce several views:
 
 - a metric aggregated by status and time window;
 - a searchable log record containing the event details;
@@ -88,8 +89,8 @@ GreptimeDB uses a common [data model](/user-guide/concepts/data-model.md) and qu
 | Native metrics | Prometheus Remote Write, OpenTelemetry OTLP/HTTP, PromQL, and SQL | Ingest Prometheus or OTLP metrics; keep existing metrics and dashboards in their native form. |
 | Logs and traces | Loki Push API, OpenTelemetry OTLP/HTTP, Elasticsearch Bulk API, SQL, and the Jaeger-compatible query API | Ingest with the supported protocols; query all signal types with SQL, and traces with the Jaeger-compatible API. |
 | Shared schema concepts | Tag, timestamp, and field columns | Apply a consistent table model across different telemetry tables. |
-| Structured logs and context-rich events | [Pipeline](/user-guide/logs/use-custom-pipelines.md), wide tables, SQL, and configurable local or object-storage providers | Parse and transform logs into structured events before storage, then keep selected events for detailed or retrospective analysis. |
-| Derived metrics | [Flow](/user-guide/flow-computation/overview.md) | Continuously aggregate stored context-rich events into a separate metrics table. |
+| Structured logs and wide events | [Pipeline](/user-guide/logs/use-custom-pipelines.md), wide tables, SQL, and configurable local or object-storage providers | Parse and transform logs into structured events before storage, then keep selected events for detailed or retrospective analysis. |
+| Derived metrics | [Flow](/user-guide/flow-computation/overview.md) | Continuously aggregate stored wide events into a separate metrics table. |
 | Cross-signal analysis | SQL across tables and shared correlation identifiers | Relate signals when their schemas and instrumentation provide common keys. |
 
 **A unified table model does not mean writing all data into one table.** Metrics, logs, traces, and raw events can use separate tables with different schemas, retention policies, and indexes. The unification is at the schema concepts, storage system, and query layer.
