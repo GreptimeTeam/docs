@@ -48,18 +48,17 @@ Procedure 事件还有以下列：
 
 ## 管理函数事件列
 
-`admin_function` 事件记录一次 `ADMIN` 语句的立即执行结果。它不表示该语句启动的
-Procedure 后续生命周期，因此其中的 Procedure 列为 SQL `NULL`。
+`admin_function` 事件记录 `ADMIN` 语句返回的结果。
 
 | 列                      | 含义                                                                                                            |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `actor`                 | 执行 `ADMIN` 语句的当前数据库用户。                                                                              |
 | `admin_function_name`   | 执行的管理函数名称。                                                                                             |
-| `admin_function_status` | 立即执行状态：`Succeeded` 或 `Failed`。                                                                         |
+| `admin_function_status` | 执行状态：`Succeeded` 或 `Failed`。                                                                             |
 | `admin_function_output` | JSON 数据。函数成功时包含 `result`，函数失败时包含 `error`。                                                     |
 
-事件的 `payload` 包含 payload 版本和函数参数。对于异步管理函数，立即返回的结果
-可能是 Procedure ID；如需查看该 Procedure 后续进度，请查询对应的 Procedure 事件。
+事件的 `payload` 包含函数参数。如果返回结果是 Procedure ID，可使用该 ID 查询
+Procedure 事件以查看执行进度。
 
 ## 查询 JSON 字段
 

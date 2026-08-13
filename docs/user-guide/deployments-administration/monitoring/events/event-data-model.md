@@ -52,20 +52,17 @@ not guaranteed to appear in the order shown:
 
 ## ADMIN function event columns
 
-An `admin_function` event records the immediate result of an `ADMIN` function
-execution. It does not represent the later lifecycle of a Procedure started by
-that function, so its Procedure columns are SQL `NULL`.
+An `admin_function` event records the result returned by an `ADMIN` statement.
 
 | Column                   | Meaning                                                                                                                                |
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
 | `actor`                  | The current database user that executed the `ADMIN` function.                                                                        |
 | `admin_function_name`    | The name of the executed ADMIN function.                                                                                              |
-| `admin_function_status`  | The immediate execution status: `Succeeded` or `Failed`.                                                                              |
+| `admin_function_status`  | The execution status: `Succeeded` or `Failed`.                                                                                        |
 | `admin_function_output`  | JSON containing `result` when the function succeeds or `error` when it fails.                                                         |
 
-The event `payload` contains the payload version and the function arguments.
-For an asynchronous function, the immediate result can be a Procedure ID; use
-the Procedure events for that ID to inspect the Procedure's later progress.
+The event `payload` contains the function arguments. If the result is a
+Procedure ID, query the Procedure events for that ID to track its progress.
 
 ## Query JSON fields
 
