@@ -450,11 +450,11 @@ This section continues from the layout discussion above and helps you decide whe
 
 ### Two misunderstandings about distributed tables
 
-As a time-series database, GreptimeDB automatically partitions data based on the TIME INDEX column at the storage layer.
+At the storage layer, GreptimeDB automatically partitions data based on the TIME INDEX column.
 Therefore, it is unnecessary and not recommended for you to partition data by time
 (e.g., one partition per day or one table per week).
 
-Additionally, GreptimeDB is a columnar storage database,
+GreptimeDB uses columnar storage,
 so partitioning a table refers to horizontal partitioning by rows,
 with each partition containing all columns.
 
