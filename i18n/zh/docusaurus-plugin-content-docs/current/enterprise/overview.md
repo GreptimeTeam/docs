@@ -38,6 +38,7 @@ GreptimeDB Enterprise 包括以下高级功能，
 - [Trigger](./trigger.md)：定时查询和检测预配置的规则，可触发外部 webhook，兼容 Prometheus AlertManager。
 - [内置用户管理](./user.md)：内置 RBAC 和细粒度 ACL，确保数据安全和隔离。
 - Flow 的可靠性功能。
+- [Iceberg 元数据](./iceberg.md)：通过 Apache Iceberg REST catalog 暴露 GreptimeDB 表，使 pyiceberg、Spark、Trino、DuckDB 等引擎可以直接从对象存储读取数据。
 
 ## 发布说明
 

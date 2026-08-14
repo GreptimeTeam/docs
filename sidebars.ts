@@ -547,6 +547,7 @@ const sidebars: SidebarsConfig = {
             'enterprise/read-replicas/query-read-replicas',
           ],
         },
+        'enterprise/iceberg',
         'enterprise/trigger',
         'enterprise/soft-drop',
         'enterprise/user',
