@@ -50,8 +50,8 @@ GreptimeDB column types map to Iceberg types as follows:
 | GreptimeDB type | Iceberg type |
 | --------------- | ------------ |
 | `boolean` | `boolean` |
-| `int8`, `int16`, `int32`, `uint8`, `uint16` | `int` |
-| `uint32`, `int64`, `uint64` | `long` |
+| `int8`, `int16`, `int32` | `int` |
+| `int64` | `long` |
 | `float32` | `float` |
 | `float64` | `double` |
 | `string` | `string` |
@@ -59,6 +59,7 @@ GreptimeDB column types map to Iceberg types as follows:
 | `date` | `date` |
 | `timestamp` (any precision) | `timestamptz` |
 | Prometheus native histogram (struct) | `struct` (with `list` sub-fields) |
+| `uint8`, `uint16`, `uint32`, `uint64` | `long` — **not readable in Spark** (see below) |
 | `list`, `dictionary`, `json`, `interval`, `duration`, `time`, arbitrary `struct` | `string` (lossy fallback) |
 
 ## Configuration
@@ -139,7 +140,7 @@ catalog = RestCatalog(
 )
 
 # List namespaces (= GreptimeDB schemas) and tables.
-print(catalog.list_namespaces())        # e.g. [('greptime', 'public')]
+print(catalog.list_namespaces())        # e.g. [('public',)]
 print(catalog.list_tables("public"))    # e.g. [('public', 'my_table')]
 
 # Load a table and scan it with pyarrow.
@@ -244,8 +245,8 @@ with any other Iceberg table in Spark.
 
 ### Data types and Spark
 
-GreptimeDB types map cleanly to Iceberg for the common cases (booleans, integers, floats, strings, binary, date,
-timestamp). A few things to be aware of, especially in Spark:
+GreptimeDB types map cleanly to Iceberg for the common cases (booleans, signed integers, floats, strings, binary,
+date, timestamp). A few things to be aware of, especially in Spark:
 
 - **Declare the time index as `TIMESTAMP(6)`.** GreptimeDB's default `TIMESTAMP` is millisecond precision, but the
   Iceberg schema declares the column as `timestamptz` (microsecond). With a millisecond column, Spark's Parquet
@@ -256,10 +257,10 @@ timestamp). A few things to be aware of, especially in Spark:
 - **Lossy type fallbacks.** `list`, `dictionary`, `json`, `interval`, `duration`, `time`, and arbitrary user
   `struct` types are exported as Iceberg `string` rather than a structured type, so their internal structure is not
   queryable through Iceberg.
-- **Unsigned integers.** GreptimeDB `uint32` / `uint64` map to Iceberg `long` (signed 64-bit). Values are
-  non-negative and fit, so this is value-safe; Spark, Trino, and DuckDB read them correctly. Readers based on
-  iceberg-rust that reject unsigned Parquet physical types outright cannot read columns whose on-disk physical type
-  is unsigned 64-bit (see the metric-engine notes below).
+- **Unsigned integers are not readable in Spark.** GreptimeDB unsigned integer columns (`uint8`, `uint16`,
+  `uint32`, `uint64`) are declared as Iceberg `long`, but the underlying Parquet files store them with unsigned
+  physical types, which Spark cannot read. Any scan that touches an unsigned-integer column fails in Spark. If you
+  intend to query a table through Iceberg, avoid unsigned types or store the values as signed types instead.
 
 ### Metric engine tables
 
@@ -270,10 +271,8 @@ timestamp). A few things to be aware of, especially in Spark:
   decode that blob according to the metric-engine sparse codec — Iceberg exposes it as opaque `binary`. The
   metric-internal `__table_id` and `__tsid` columns are **not** exported, so you cannot resolve a metric name to its
   physical table id through Iceberg.
-- **Prometheus native histograms** are exported as an Iceberg `struct` with list sub-fields. Two count sub-fields
-  (`count_u64`, `zero_count_u64`) are physically stored as unsigned 64-bit integers; Spark, Trino, and DuckDB read
-  them as signed long (value-safe), but iceberg-rust-based readers reject the unsigned physical type and fail on
-  scans that include the histogram column.
+- **Prometheus native histograms** are exported as an Iceberg `struct` with list sub-fields, so each histogram
+  value is read as a nested struct rather than a scalar.
 
 ### Operational notes
 

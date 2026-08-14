@@ -38,8 +38,8 @@ GreptimeDB 列类型到 Iceberg 类型的映射如下：
 | GreptimeDB 类型 | Iceberg 类型 |
 | --------------- | ------------ |
 | `boolean` | `boolean` |
-| `int8`、`int16`、`int32`、`uint8`、`uint16` | `int` |
-| `uint32`、`int64`、`uint64` | `long` |
+| `int8`、`int16`、`int32` | `int` |
+| `int64` | `long` |
 | `float32` | `float` |
 | `float64` | `double` |
 | `string` | `string` |
@@ -47,6 +47,7 @@ GreptimeDB 列类型到 Iceberg 类型的映射如下：
 | `date` | `date` |
 | `timestamp`（任意精度） | `timestamptz` |
 | Prometheus native histogram（struct） | `struct`（包含 `list` 子字段） |
+| `uint8`、`uint16`、`uint32`、`uint64` | `long` — **在 Spark 中不可读**（见下文） |
 | `list`、`dictionary`、`json`、`interval`、`duration`、`time`、任意用户 `struct` | `string`（有损降级） |
 
 ## 配置
@@ -120,7 +121,7 @@ catalog = RestCatalog(
 )
 
 # 列出 namespace（= GreptimeDB schema）和表。
-print(catalog.list_namespaces())        # 例如 [('greptime', 'public')]
+print(catalog.list_namespaces())        # 例如 [('public',)]
 print(catalog.list_tables("public"))    # 例如 [('public', 'my_table')]
 
 # 加载表并用 pyarrow 扫描。
@@ -215,17 +216,17 @@ ORDER BY host;
 
 ### 数据类型与 Spark
 
-对于常见类型（boolean、整数、浮点数、string、binary、date、timestamp），GreptimeDB 类型可以干净地映射到 Iceberg。需要注意以下几点，尤其是在 Spark 中：
+对于常见类型（boolean、有符号整数、浮点数、string、binary、date、timestamp），GreptimeDB 类型可以干净地映射到 Iceberg。需要注意以下几点，尤其是在 Spark 中：
 
 - **将时间索引声明为 `TIMESTAMP(6)`。** GreptimeDB 默认的 `TIMESTAMP` 是毫秒精度，但 Iceberg schema 将该列声明为 `timestamptz`（微秒）。若列是毫秒精度，Spark 的 Parquet row-group 统计信息过滤会用微秒谓词去比较毫秒的文件统计，可能错误地丢弃 row-group，导致 `>`、`=` 和范围查询出错。将时间索引声明为 `TIMESTAMP(6)` 可使磁盘上的 Parquet 微秒精度与 schema 一致，所有比较运算符即可正确工作。（秒/毫秒值本身仍被正确存储；该问题纯粹出在基于文件统计的谓词下推。）
 - **有损的类型降级。** `list`、`dictionary`、`json`、`interval`、`duration`、`time` 以及任意用户 `struct` 类型会被导出为 Iceberg `string`，而非结构化类型，因此它们的内部结构无法通过 Iceberg 查询。
-- **无符号整数。** GreptimeDB 的 `uint32` / `uint64` 映射到 Iceberg `long`（有符号 64 位）。值都是非负的且在范围内，因此是值安全的；Spark、Trino 和 DuckDB 都能正确读取。但基于 iceberg-rust、会拒绝无符号 Parquet 物理类型的读取器，无法读取物理类型为无符号 64 位的列（见下文 metric 引擎说明）。
+- **无符号整数在 Spark 中不可读。** GreptimeDB 的无符号整数列（`uint8`、`uint16`、`uint32`、`uint64`）虽然声明为 Iceberg `long`，但底层 Parquet 文件以无符号物理类型存储，Spark 无法读取。任何触及无符号整数列的扫描在 Spark 中都会失败。如果你打算通过 Iceberg 查询某张表，请避免使用无符号类型，或将这些值以有符号类型存储。
 
 ### Metric 引擎表
 
 - **仅导出物理 metric 表。** 逻辑 metric 表不会通过 Iceberg 暴露；请直接查询物理表。
 - **稀疏主键编码（metric 引擎默认）。** 所有 tag 列被折叠进单一的 `__primary_key` binary 列。要还原各个 tag 值（逻辑 table id、tsid 和 label），你必须按 metric 引擎的稀疏编解码器解码该 blob——Iceberg 将其暴露为不透明的 `binary`。metric 内部的 `__table_id` 和 `__tsid` 列**不会**被导出，因此你无法通过 Iceberg 将 metric 名称解析为物理 table id。
-- **Prometheus native histogram** 被导出为带 list 子字段的 Iceberg `struct`。其中两个计数子字段（`count_u64`、`zero_count_u64`）在物理上以无符号 64 位整数存储；Spark、Trino 和 DuckDB 将其作为有符号 long 读取（值安全），但基于 iceberg-rust 的读取器会拒绝这种无符号物理类型，在扫描包含该 histogram 列时会失败。
+- **Prometheus native histogram** 被导出为带 list 子字段的 Iceberg `struct`，因此每个 histogram 值会以嵌套 struct 的形式读取，而非标量。
 
 ### 运维说明
 
