@@ -36,11 +36,11 @@ description: 本文档解释 GreptimeDB 在可观测数据、存储、查询和�
 
 ## D
 
-### Decoupled Compute and Storage Architecture (存算分离架构)
-分别管理计算资源和持久化数据存储的架构。在使用共享对象存储的 GreptimeDB 分布式部署中，增减 Datanode 不需要在节点间搬迁所有持久化数据文件。
-
 ### Datanode (数据节点)
 GreptimeDB 分布式架构中负责数据存储和处理的核心组件。Datanode 处理数据摄入、存储管理、本地数据查询执行，并维护包含实际表数据的 region。可在集群中部署多个 datanode 以提供水平可扩展性、容错能力和分布式数据处理能力。
+
+### Decoupled Compute and Storage Architecture (存算分离架构)
+分别管理计算资源和持久化数据存储的架构。在使用共享对象存储的 GreptimeDB 分布式部署中，增减 Datanode 不需要在节点间搬迁所有持久化数据文件。
 
 ---
 
@@ -102,11 +102,11 @@ GreptimeDB 的全托管数据库服务，提供托管的 GreptimeDB 实例，并
 
 ## L
 
-### Logical and Physical Tables (逻辑表与物理表)
-Logical table 是用户创建和查询的表，physical table 是内部实际保存数据的表。Mito Engine 通常为 logical table 使用独立的物理存储；Metric Engine 可以把多张 logical metrics table 映射到共享的 physical table。共享 physical table 不会合并各张逻辑表的 schema 和查询接口。
-
 ### Log Aggregation (日志聚合)
 对一组日志执行计算以生成单个摘要统计数据，以供分析和故障排除，例如 SUM，COUNT 等。
+
+### Logical and Physical Tables (逻辑表与物理表)
+Logical table 是用户创建和查询的表，physical table 是内部实际保存数据的表。Mito Engine 通常为 logical table 使用独立的物理存储；Metric Engine 可以把多张 logical metrics table 映射到共享的 physical table。共享 physical table 不会合并各张逻辑表的 schema 和查询接口。
 
 ### Log Management (日志管理)
 涵盖日志采集、存储、分析与可视化的全生命周期管理方案，是保障系统性能与安全的重要基础。

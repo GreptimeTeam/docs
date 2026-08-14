@@ -34,11 +34,11 @@ A data layout that stores values by column rather than by row. Queries can read 
 
 ## D
 
-### Decoupled Compute and Storage Architecture
-An architecture in which compute and persistent data storage are managed separately. In distributed GreptimeDB deployments backed by shared object storage, Datanodes can be added or removed without moving every persistent data file between them.
-
 ### Datanode
 A core component in GreptimeDB's distributed architecture responsible for data storage and processing. Datanodes handle data ingestion, storage management, query execution on local data, and maintain regions containing actual table data. Multiple datanodes can be deployed across a cluster to provide horizontal scalability, fault tolerance, and distributed data processing capabilities.
+
+### Decoupled Compute and Storage Architecture
+An architecture in which compute and persistent data storage are managed separately. In distributed GreptimeDB deployments backed by shared object storage, Datanodes can be added or removed without moving every persistent data file between them.
 
 ---
 
@@ -102,11 +102,11 @@ The ability of systems to exchange data through compatible interfaces. GreptimeD
 
 ## L
 
-### Logical and Physical Tables
-A logical table is the table users create and query. A physical table is the internal storage table that holds its data. Mito Engine normally maps a logical table to its own physical storage, while Metric Engine can map many logical metric tables to shared physical tables. Sharing a physical table does not merge their logical schemas or query interfaces.
-
 ### Log Aggregation
 Perform calculations on a set of logs to generate a single summary statistic for analysis and troubleshooting. For example, SUM, COUNT, etc.
+
+### Logical and Physical Tables
+A logical table is the table users create and query. A physical table is the internal storage table that holds its data. Mito Engine normally maps a logical table to its own physical storage, while Metric Engine can map many logical metric tables to shared physical tables. Sharing a physical table does not merge their logical schemas or query interfaces.
 
 ### Log Management
 The overall process of handling log data, including collection, storage, analysis, and visualization, to ensure system performance and security.

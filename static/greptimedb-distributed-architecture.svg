@@ -90,7 +90,8 @@
   <text x="1430" y="510" text-anchor="middle" class="title">Flownode</text>
   <text x="1430" y="545" text-anchor="middle" class="subtitle">continuous computation</text>
   <text x="1430" y="577" text-anchor="middle" class="small">streaming: mirrored writes</text>
-  <text x="1430" y="605" text-anchor="middle" class="small">batching: queries · sink writes</text>
+  <text x="1430" y="601" text-anchor="middle" class="small">batching: queries</text>
+  <text x="1430" y="625" text-anchor="middle" class="small">sink writes</text>
   <path d="M800 285 C980 350, 1140 350, 1245 365 Q1275 370, 1275 400 L1275 450 Q1275 475, 1305 475" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
   <path d="M1320 570 L1290 570 Q1275 570, 1275 555 L1275 405 Q1275 385, 1255 385 C1050 385, 920 350, 815 305" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
   <path d="M1240 250 C1405 270, 1460 325, 1430 405" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-slate)"/>
