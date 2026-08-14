@@ -17,7 +17,7 @@ GreptimeDB 可以作为一个 standalone 进程运行，也可以组成分布式
 
 ## 高层架构
 
-![GreptimeDB 高层架构](/architecture-4.png)
+![GreptimeDB 分布式架构，包括数据路径、控制路径和各类存储的职责。](/greptimedb-distributed-architecture.zh.svg)
 
 ## 组件
 
@@ -39,9 +39,7 @@ Standalone 模式由一个 GreptimeDB 进程提供这些数据库能力，不需
 1. 客户端通过支持的写入协议发送数据。
 2. Frontend 从 Metasrv metadata 中解析 table 和 Region 路由。
 3. Frontend 拆分请求，把数据行转发到承载目标 Region 的 Datanode。
-4. Datanode 写入内存和配置的 [WAL](/user-guide/deployments-administration/wal/overview.md)，再把不可变数据文件 flush 到表指定的[存储后端](./storage-location.md)。
-
-[Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) 仅支持 cluster mode，用于配置的 WAL provider 暂时不可用时的紧急情况。它不会保存 WAL 记录，因此发生故障或重启后，已接收但尚未形成持久化数据文件的写入可能丢失。持久性取决于 WAL 和部署配置，不能只看数据文件放在哪里。
+4. Datanode 写入内存和配置的 [WAL](/user-guide/deployments-administration/wal/overview.md)，之后在达到 flush 条件时，最终将不可变数据文件写入表指定的[存储后端](./storage-location.md)。
 
 ### 查询路径
 

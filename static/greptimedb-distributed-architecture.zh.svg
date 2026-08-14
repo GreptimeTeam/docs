@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">GreptimeDB 分布式架构</title>
+  <desc id="desc">客户端通过 Frontend 把写入和查询发送给 Datanode 承载的 Region。Metasrv 提供 catalog、路由、procedure 和调度 metadata。Datanode 使用 Mito Engine 和 Metric Engine，在 memtable 与节点本地 cache 中保存活跃数据，把写入记录到配置的 WAL，并最终把持久化数据文件写入本地存储或共享对象存储。可选的 Flownode 处理持续写入源表的数据，并把物化结果写入 sink table。WAL、持久化数据文件和 Metasrv 状态分别承担不同的持久性与恢复职责。</desc>
+  <defs>
+    <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/></marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#7C3AED"/></marker>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#0F766E"/></marker>
+    <marker id="arrow-amber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#D97706"/></marker>
+    <style>
+      .kicker { font: 650 17px Inter, "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; fill: #64748B; }
+      .headline { font: 650 32px Inter, "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif; fill: #1F2937; }
+      .title { font: 650 27px Inter, "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif; fill: #1F2937; }
+      .subtitle { font: 400 18px Inter, "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif; fill: #64748B; }
+      .small { font: 500 16px Inter, "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif; fill: #475569; }
+      .label { font: 600 16px Inter, "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif; fill: #475569; }
+      .purple { font: 600 16px Inter, "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif; fill: #6D28D9; }
+      .teal { font: 600 16px Inter, "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif; fill: #0F766E; }
+      .amber { font: 600 16px Inter, "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif; fill: #B45309; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1000" fill="#FFFFFF"/>
+
+  <text x="80" y="62" class="kicker">分布式部署</text>
+  <text x="80" y="105" class="headline">数据路径、控制路径和存储状态</text>
+  <line x1="80" y1="130" x2="1520" y2="130" stroke="#E2E8F0" stroke-width="2"/>
+
+  <!-- 客户端 -->
+  <rect x="80" y="175" width="300" height="145" rx="16" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="230" y="220" text-anchor="middle" class="title">客户端与协议</text>
+  <text x="230" y="255" text-anchor="middle" class="subtitle">Prometheus · OTLP · Loki</text>
+  <text x="230" y="286" text-anchor="middle" class="subtitle">SQL · PromQL · 已支持的 API</text>
+
+  <!-- Frontend -->
+  <rect x="470" y="175" width="330" height="145" rx="16" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="3"/>
+  <text x="635" y="220" text-anchor="middle" class="title">Frontend</text>
+  <text x="635" y="255" text-anchor="middle" class="subtitle">接入 · 路由 · 查询规划</text>
+  <text x="635" y="286" text-anchor="middle" class="subtitle">合并查询结果</text>
+  <path d="M380 248 L455 248" fill="none" stroke="#7C3AED" stroke-width="3" marker-end="url(#arrow-purple)"/>
+
+  <!-- Metasrv -->
+  <rect x="900" y="175" width="340" height="145" rx="16" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2.5"/>
+  <text x="1070" y="220" text-anchor="middle" class="title">Metasrv</text>
+  <text x="1070" y="255" text-anchor="middle" class="subtitle">catalog · schema · Region 路由</text>
+  <text x="1070" y="286" text-anchor="middle" class="subtitle">procedure · 调度</text>
+  <path d="M900 248 L815 248" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-slate)"/>
+  <text x="858" y="230" text-anchor="middle" class="label">metadata</text>
+
+  <!-- Datanode 集群 -->
+  <rect x="250" y="405" width="1010" height="285" rx="20" fill="#FAFAFF" stroke="#C4B5FD" stroke-width="2.5"/>
+  <text x="290" y="450" class="title">Datanode 集群</text>
+  <text x="490" y="450" class="subtitle">承载 Region，执行读写</text>
+
+  <rect x="290" y="485" width="280" height="165" rx="14" fill="#FFFFFF" stroke="#A78BFA" stroke-width="2.5"/>
+  <text x="430" y="530" text-anchor="middle" class="title">Region Server</text>
+  <text x="430" y="566" text-anchor="middle" class="subtitle">Region 路由目标</text>
+  <text x="430" y="596" text-anchor="middle" class="subtitle">执行读写</text>
+  <rect x="344" y="614" width="172" height="26" rx="13" fill="#EDE9FE"/>
+  <text x="430" y="633" text-anchor="middle" class="purple">存储 · 查询</text>
+
+  <rect x="615" y="485" width="315" height="165" rx="14" fill="#FFFFFF" stroke="#A78BFA" stroke-width="2.5"/>
+  <text x="772.5" y="522" text-anchor="middle" class="label">TABLE ENGINES</text>
+  <rect x="650" y="534" width="245" height="40" rx="12" fill="#EDE9FE" stroke="#C4B5FD" stroke-width="1.5"/>
+  <text x="772.5" y="561" text-anchor="middle" class="label">Metric Engine</text>
+  <path d="M772.5 578 L772.5 599" fill="none" stroke="#8B5CF6" stroke-width="2.8" marker-end="url(#arrow-purple)"/>
+  <text x="805" y="596" class="purple">基于</text>
+  <rect x="650" y="606" width="245" height="38" rx="12" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.5"/>
+  <text x="772.5" y="632" text-anchor="middle" class="title">Mito Engine</text>
+
+  <rect x="975" y="485" width="245" height="165" rx="14" fill="#FFFFFF" stroke="#93C5FD" stroke-width="2.5"/>
+  <text x="1097.5" y="530" text-anchor="middle" class="title">活跃状态</text>
+  <rect x="1007" y="551" width="181" height="34" rx="11" fill="#EFF6FF"/>
+  <text x="1097.5" y="574" text-anchor="middle" class="label">Memtable</text>
+  <rect x="1007" y="596" width="181" height="34" rx="11" fill="#EFF6FF"/>
+  <text x="1097.5" y="619" text-anchor="middle" class="label">节点本地 cache</text>
+  <text x="1097.5" y="644" text-anchor="middle" class="small">cache 可以重建</text>
+
+  <path d="M635 320 C635 355, 520 365, 445 392" fill="none" stroke="#7C3AED" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <path d="M430 405 C475 370, 570 350, 635 320" fill="none" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#arrow-slate)"/>
+  <rect x="500" y="336" width="188" height="28" rx="14" fill="#FFFFFF"/>
+  <text x="594" y="356" text-anchor="middle" class="label">写入 · 查询 · 结果</text>
+  <path d="M570 568 L600 568" fill="none" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#arrow-slate)"/>
+  <path d="M930 568 L960 568" fill="none" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#arrow-slate)"/>
+  <path d="M1070 320 C1070 360, 925 360, 850 402" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-slate)"/>
+
+  <!-- 可选 Flow runtime -->
+  <rect x="1320" y="420" width="220" height="220" rx="16" fill="#ECFDF5" stroke="#2DD4BF" stroke-width="2.5" stroke-dasharray="9 7"/>
+  <rect x="1343" y="440" width="92" height="28" rx="14" fill="#CCFBF1"/>
+  <text x="1389" y="460" text-anchor="middle" class="teal">可选</text>
+  <text x="1430" y="510" text-anchor="middle" class="title">Flownode</text>
+  <text x="1430" y="545" text-anchor="middle" class="subtitle">连续计算</text>
+  <text x="1430" y="577" text-anchor="middle" class="small">持续写入源表的数据行</text>
+  <text x="1430" y="605" text-anchor="middle" class="small">物化 sink table 写入</text>
+  <path d="M1260 515 L1305 515" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <path d="M1320 585 L1275 585" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <path d="M1240 250 C1405 270, 1460 325, 1430 405" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-slate)"/>
+
+  <!-- 存储状态 -->
+  <text x="80" y="750" class="kicker">不同的状态与恢复职责</text>
+  <line x1="80" y1="770" x2="1520" y2="770" stroke="#E2E8F0" stroke-width="2"/>
+
+  <rect x="110" y="805" width="350" height="120" rx="16" fill="#FFFBEB" stroke="#F59E0B" stroke-width="2.5"/>
+  <text x="285" y="850" text-anchor="middle" class="title">配置的 WAL</text>
+  <text x="285" y="883" text-anchor="middle" class="subtitle">已接收写入 · 恢复</text>
+  <path d="M405 650 C405 720, 330 745, 300 790" fill="none" stroke="#D97706" stroke-width="3" marker-end="url(#arrow-amber)"/>
+
+  <rect x="540" y="805" width="540" height="120" rx="16" fill="#ECFDF5" stroke="#2DD4BF" stroke-width="3"/>
+  <text x="810" y="850" text-anchor="middle" class="title">持久化数据文件</text>
+  <text x="810" y="883" text-anchor="middle" class="subtitle">本地文件系统或共享对象存储</text>
+  <path d="M780 650 C780 715, 800 750, 810 790" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <path d="M770 790 C750 750, 750 710, 758 665" fill="none" stroke="#0F766E" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+  <text x="875" y="730" class="teal">最终 flush · 读取</text>
+
+  <rect x="1160" y="805" width="350" height="120" rx="16" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2.5"/>
+  <text x="1335" y="850" text-anchor="middle" class="title">Metasrv 状态</text>
+  <text x="1335" y="883" text-anchor="middle" class="subtitle">catalog · routes · procedure state</text>
+  <path d="M1130 320 C1270 365, 1305 640, 1335 790" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-slate)"/>
+
+  <!-- 图例 -->
+  <line x1="80" y1="965" x2="130" y2="965" stroke="#7C3AED" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <text x="145" y="971" class="small">数据路径</text>
+  <line x1="285" y1="965" x2="335" y2="965" stroke="#60A5FA" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-slate)"/>
+  <text x="350" y="971" class="small">metadata / 控制路径</text>
+  <text x="1520" y="971" text-anchor="end" class="small">Standalone 在一个进程中提供相同的数据库功能。</text>
+</svg>

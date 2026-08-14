@@ -79,7 +79,12 @@ Yes. GreptimeDB provides SQL functions for WKT values, Geohash, H3, S2, spatial 
 
 ## Any JSON support?
 
-GreptimeDB has an experimental `JSON` column type and [JSON functions](/reference/sql/functions/json.md) for extracting and inspecting values. The JSON type may change in future releases. GreptimeDB does not currently expose a dedicated JSON-path index; put frequently filtered attributes in typed columns when they need the documented inverted, full-text, or skipping indexes. See [JSON Type](/reference/sql/data-types.md#json-type-experimental) and [Data Indexes](/user-guide/manage-data/data-index.md).
+GreptimeDB provides two JSON column types:
+
+- The experimental [`JSON`](/reference/sql/data-types.md#json-type-experimental) type stores general JSON values and works with [JSON functions](/reference/sql/functions/json.md).
+- [`JSON2`](/user-guide/logs/json2.md), available since v1.2 and currently Beta, stores subpaths in a structured columnar form for logs and other semi-structured data. It supports dot-path access, `json_get`, and optional type hints. JSON2 currently requires an append-only table.
+
+Neither type currently provides index options for JSON subpaths. Put stable, frequently filtered attributes in typed columns when they need inverted, full-text, or skipping indexes. See [Data Indexes](/user-guide/manage-data/data-index.md).
 
 ## More Questions?
 

@@ -17,7 +17,7 @@ The access patterns and resource demands are still different. Cache sizing, rete
 
 ## High-level Architecture
 
-![GreptimeDB high-level architecture](/architecture-4.png)
+![GreptimeDB distributed architecture, showing data paths, control paths, and storage responsibilities.](/greptimedb-distributed-architecture.svg)
 
 ## Components
 
@@ -39,9 +39,7 @@ The following paths describe distributed mode. Standalone mode runs the same dat
 1. A client sends data through a supported ingestion protocol.
 2. Frontend resolves table and Region routes from Metasrv metadata.
 3. Frontend splits the request and forwards rows to the Datanodes that host the target Regions.
-4. A Datanode writes to memory and the configured [WAL](/user-guide/deployments-administration/wal/overview.md), then flushes immutable data files to the table's configured [storage provider](./storage-location.md).
-
-[Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) is available only in cluster mode for emergencies when the configured WAL provider is temporarily unavailable. It does not retain WAL records, so a failure or restart can lose accepted writes that have not reached persistent data files. Durability therefore depends on WAL and deployment configuration, not only on the data-file location.
+4. A Datanode writes to memory and the configured [WAL](/user-guide/deployments-administration/wal/overview.md), then eventually flushes immutable data files to the table's configured [storage provider](./storage-location.md).
 
 ### Query Path
 

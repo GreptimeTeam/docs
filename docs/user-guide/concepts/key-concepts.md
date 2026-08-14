@@ -1,6 +1,6 @@
 ---
-keywords: [key concepts, database, table, time index, table engine, Region, index, view, Flow]
-description: Defines GreptimeDB databases, tables, time index, table engines, Regions, data types, indexes, views, and Flow.
+keywords: [key concepts, database, table, time index, primary key, table engine, logical table, physical table, Region, index, Pipeline, Flow]
+description: Defines GreptimeDB databases, tables, time indexes, primary keys, table engines, Regions, data types, indexes, Pipeline, views, and Flow.
 ---
 
 # Key Concepts
@@ -15,12 +15,18 @@ A GreptimeDB table follows a relational schema and has exactly one time index. C
 
 Tables can be created with SQL or automatically from supported ingestion protocols. In distributed deployments, a table can be partitioned into Regions placed on different Datanodes. See [Data Model](./data-model.md).
 
+## Time Index and Primary Key
+
+Every GreptimeDB table has exactly one time index. It records sample or event time and lets the storage engine organize and prune data by time.
+
+Primary-key columns use Tag semantics and identify a series or record group. In tables that use deduplication, the primary key and time index identify rows that are merged according to the table's [`merge_mode`](/reference/sql/create.md#create-a-table-with-merge-mode). This is not a general relational uniqueness constraint: append-only tables can omit the primary key, and append-only mode keeps repeated keys and timestamps as separate rows.
+
 ## Table Engine
 
 A table engine controls how table data is written, organized, compacted, and read. The main engines are:
 
 - **Mito Engine**: The general-purpose engine for time-indexed tables, including logs, traces, and event data.
-- **Metric Engine**: Built on Mito Engine and optimized for large numbers of Prometheus-style metric tables by sharing physical storage and metadata.
+- **Metric Engine**: Built on Mito Engine and optimized for large numbers of Prometheus-style metric tables. User-facing metric tables remain logical tables and can share physical tables and metadata internally.
 
 Table engines are separate from storage providers such as local files, Amazon S3, or Google Cloud Storage. See [Table Engines](/reference/about-greptimedb-engines.md) and [Storage Location](./storage-location.md).
 
@@ -42,6 +48,10 @@ An index is an optional data structure used to accelerate selected query pattern
 
 A view is a named SQL query presented as a virtual table. It stores the query definition, not a materialized copy of its result; querying the view reads the underlying tables.
 
+## Pipeline
+
+Pipeline processes data during ingestion. It can parse, transform, enrich, and route incoming records before storing them in tables. See [Pipeline](/user-guide/logs/use-custom-pipelines.md).
+
 ## Flow
 
-A Flow is a continuous computation over incoming rows from source tables. It updates and materializes its result in a sink table, which can be queried and managed like other tables. See [Flow Computation](/user-guide/flow-computation/overview.md).
+A Flow is a continuous computation over incoming rows after they reach source tables. It updates and materializes its result in a sink table, which can be queried and managed like other tables. See [Flow Computation](/user-guide/flow-computation/overview.md).
