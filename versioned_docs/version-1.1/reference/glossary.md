@@ -1,11 +1,11 @@
 ---
 keywords: [cloud-native, observability, open-source, time-series database, connected vehicles, IoT, log, metrics, events, rust]
-description: The GreptimeDB Glossary provides clear definitions and explanations of core terms and concepts related to GreptimeDB, the cloud-native open source temporal database, covering the areas of metrics, logging, and events processing. Explore the Glossary to gain insight into the innovative features and technical architecture that underpin GreptimeDB.
+description: Definitions of GreptimeDB concepts and terms for observability data, storage, querying, and operations.
 ---
 
 # GreptimeDB Glossary
 
-Welcome to the GreptimeDB Glossary! This resource provides clear definitions and explanations of key terms and concepts associated with GreptimeDB, a cloud-native, open-source time-series database designed for metrics, logs, and events. Explore the glossary to better understand the innovative features and technologies behind GreptimeDB.
+This glossary defines GreptimeDB terms for observability data, storage, querying, and operations.
 
 ---
 
@@ -196,7 +196,7 @@ A column type in GreptimeDB's data model that uniquely identifies time-series da
 A special timestamp column in GreptimeDB tables that serves as the primary time dimension for time-series data. Every GreptimeDB table requires exactly one Time Index column to organize data chronologically, enable time-based queries, and support efficient time-series operations like downsampling and time-window aggregations.
 
 ### Time Series Database
-A specialized database designed to handle time-series data, which consists of sequences of data points indexed by timestamps. GreptimeDB is a cloud-native time-series database optimized for analyzing and querying metrics, logs, and events.
+A specialized database designed to handle time-series data, which consists of sequences of data points indexed by timestamps. GreptimeDB supports time-series workloads as part of a broader model for metrics, logs, traces, and event data.
 
 ### Table Sharding
 The technique of splitting a large table into multiple smaller partitions. In GreptimeDB, table sharding helps distribute load across regions and improve throughput for hot or large tables.
