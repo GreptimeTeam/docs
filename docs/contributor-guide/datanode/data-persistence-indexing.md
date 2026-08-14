@@ -47,7 +47,7 @@ GreptimeDB stores several index structures in the Puffin file as Blobs, includin
 
 In version 0.7, GreptimeDB introduced the inverted index to accelerate queries.
 
-The inverted index is a common index structure used for full-text searches, mapping each word in the document to a list of documents containing that word. Greptime has adopted this technology, which originates from search engines, for use in the time series databases.
+The inverted index is a common index structure used for full-text searches, mapping each word in the document to a list of documents containing that word. GreptimeDB applies this search-engine technique to indexes over time-series data.
 
 Search engines and time series databases operate in separate domains, yet the principle behind the applied inverted index technology is similar. This similarity requires some conceptual adjustments:
 1. Term: In GreptimeDB, it refers to the column value of the time series.
