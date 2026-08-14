@@ -28,8 +28,9 @@ which are described in detail in the documentation in this section:
 - [LDAP Authentication](./deployments-administration/authentication.md): Secure your system with LDAP-based authentication for access management.
 - [Audit Logging](./deployments-administration/monitoring/audit-logging.md): Track and monitor
   user activity with detailed audit logs.
-- [Query Guard](./deployments-administration/query-guard.md): Ban `DROP TABLE` / `DROP DATABASE`
-  statements for all users and reject cross-catalog access.
+- [Query Guard](./deployments-administration/query-guard.md): Ban destructive
+  operations such as `DROP TABLE`, `DELETE`, and `ALTER TABLE DROP COLUMN` for
+  all users and reject cross-catalog access.
 - [Soft-Drop Tables](./soft-drop.md): Protect tables from accidental `DROP TABLE`
   operations and restore them from the recycle bin within the retention period.
 - [Automatic region load balance](./autopilot/region-balancer.md): Auto balance

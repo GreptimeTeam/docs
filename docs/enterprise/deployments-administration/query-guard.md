@@ -1,6 +1,6 @@
 ---
-keywords: [query guard, ban drop table, ban drop database, ban truncate table, data protection, security, configuration]
-description: Guide to configuring the Query Guard plugin in GreptimeDB Enterprise to ban DROP TABLE, DROP DATABASE, and TRUNCATE TABLE operations for all users and disallow cross-catalog queries.
+keywords: [query guard, ban drop table, ban drop database, ban truncate table, ban delete, ban drop column, data protection, security, configuration]
+description: Guide to configuring the Query Guard plugin in GreptimeDB Enterprise to ban destructive operations such as DROP TABLE, DROP DATABASE, TRUNCATE TABLE, DELETE, and ALTER TABLE DROP COLUMN for all users and disallow cross-catalog queries.
 ---
 
 # Query Guard
@@ -12,6 +12,11 @@ It provides the following protections:
 - **Ban `DROP TABLE`**: reject all `DROP TABLE` statements.
 - **Ban `DROP DATABASE`**: reject all `DROP DATABASE` statements.
 - **Ban `TRUNCATE TABLE`**: reject all `TRUNCATE TABLE` statements.
+- **Ban `DELETE`**: reject all `DELETE` statements and native gRPC delete
+  requests.
+- **Ban `ALTER TABLE DROP COLUMN`**: reject `ALTER TABLE ... DROP COLUMN`
+  statements and native gRPC `DropColumns` requests, while allowing other
+  `ALTER TABLE` operations such as `ADD COLUMN`.
 - **Reject `COPY` statements**: reject all `COPY` statements.
 - **Disallow cross-catalog access**: reject queries that reference tables across
   different catalogs, cross-catalog gRPC DDL requests, and Flight bulk inserts
@@ -27,12 +32,16 @@ frontend until the configuration is changed and the frontend is restarted.
 The bans cover both the SQL protocols (MySQL, PostgreSQL, and HTTP) and the gRPC
 protocol:
 
-- SQL path: configured `DROP TABLE`, `DROP DATABASE`, and `TRUNCATE TABLE`
-  statements are rejected with a `NotSupported` error.
-- gRPC path: configured structured `DROP TABLE` and `TRUNCATE TABLE` DDL requests
-  are rejected. The structured gRPC DDL request has no drop-database variant;
-  however, SQL statements sent over gRPC go through the same SQL interceptors, so
-  the `DROP DATABASE` ban applies to SQL over gRPC as well.
+- SQL path: configured `DROP TABLE`, `DROP DATABASE`, `TRUNCATE TABLE`,
+  `DELETE`, and `ALTER TABLE ... DROP COLUMN` statements are rejected with a
+  `NotSupported` error. The `DELETE` ban also rejects `DELETE` statements
+  wrapped in `EXPLAIN ANALYZE` and prepared `DELETE` statements.
+- gRPC path: configured structured `DROP TABLE` and `TRUNCATE TABLE` DDL
+  requests, batched `DropColumns` alter-table requests, and both native delete
+  request encodings (`Deletes` and `RowDeletes`) are rejected. The structured
+  gRPC DDL request has no drop-database variant; however, SQL statements sent
+  over gRPC go through the same SQL interceptors, so the `DROP DATABASE` and
+  `DELETE` bans apply to SQL over gRPC as well.
 
 Internal operations such as TTL-based data expiration and automatic cleanup bypass
 the frontend protocol-layer interceptors and are **not** affected by these bans.
@@ -49,12 +58,12 @@ the following TOML to your GreptimeDB config file:
 # Whether to enable the query guard plugin, defaults to false.
 enable = true
 # Operations to ban for all users. The list is empty by default.
-banned_ops = ["drop_table", "drop_database", "truncate_table"]
+banned_ops = ["drop_table", "drop_database", "truncate_table", "delete", "drop_column"]
 ```
 
-The supported operation names are `drop_table`, `drop_database`, and
-`truncate_table`. To ban only a subset of these operations, include only their
-names in `banned_ops`.
+The supported operation names are `drop_table`, `drop_database`,
+`truncate_table`, `delete`, and `drop_column`. To ban only a subset of these
+operations, include only their names in `banned_ops`.
 
 The former `ban_drop_table`, `ban_drop_database`, and `ban_truncate_table` options
 are no longer supported. Using any of them causes configuration parsing to fail.
