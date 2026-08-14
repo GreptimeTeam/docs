@@ -509,6 +509,6 @@ SELECT * FROM grpc_latencies;
 
 **Go deeper:**
 - [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) — architecture, cost comparison, and how GreptimeDB compares
-- [Unified observability data model](/user-guide/concepts/observability-2.md) — where wide events fit, and what they cost
+- [Observability 2.0 and wide events](/user-guide/concepts/observability-2.md) — where wide events fit, and what they cost
 - [Demo scene](https://github.com/GreptimeTeam/demo-scene/) — more hands-on examples
 - [User Guide](/user-guide/overview.md) — complete reference

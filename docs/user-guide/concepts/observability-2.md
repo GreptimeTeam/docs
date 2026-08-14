@@ -1,13 +1,13 @@
 ---
 keywords: [observability 2.0, wide events, unified observability, three pillars, high cardinality, AI agents]
-description: Explains Observability 2.0 as a unified observability data model, its trade-offs, and how the approach maps to GreptimeDB.
+description: Explains Observability 2.0 and wide events, their engineering trade-offs, and how GreptimeDB supports this optional approach.
 ---
 
 # Observability 2.0
 
-Observability 2.0 is an industry term for an approach to telemetry, not a product category. It usually refers to retaining context-rich events and analyzing them without deciding every question in advance.
+Observability 2.0 is an industry term for an approach to telemetry, not a product category. It usually refers to retaining wide events and analyzing them without deciding every question in advance.
 
-GreptimeDB supports this approach, but does not require it. Metrics, logs, and traces remain first-class capabilities. GreptimeDB provides ingestion paths for each signal, SQL queries across all signal types, PromQL for metrics, and a Jaeger-compatible query API for traces. You can keep these signals in their existing forms, introduce wide events for selected workloads, or use both models together.
+GreptimeDB's [data model](./data-model.md) supports native metrics, logs, and traces alongside wide events. This page focuses on the wide-event approach associated with Observability 2.0. GreptimeDB supports this practice but does not require it; metrics, logs, and traces remain first-class capabilities.
 
 ## The Limits of Three Pillars
 
@@ -17,11 +17,9 @@ Metrics, logs, and traces remain useful abstractions. The problem is not the sig
 2. **Questions fixed at collection time**: Pre-aggregated metrics answer known questions efficiently, but cannot recover dimensions that were not recorded.
 3. **Lost structure**: Plain-text logs often contain useful fields that are expensive to parse and index later.
 
-A unified model reduces these boundaries by using consistent schemas and query tools. Wide events are one way to retain more context, not a replacement for every metric, log, or trace.
+Shared schema concepts, storage infrastructure, and query tools reduce these boundaries. Wide events are one way to retain more context, not a replacement for every metric, log, or trace.
 
-![Metrics, logs, and traces remain in independent tables while sharing common data-model concepts, storage, and query layers.](/unified-observability-model.svg)
-
-## Wide Events: A Unified Data Model
+## Wide Events
 
 A wide event is a structured record with many fields describing one operation or business event. It can include high-cardinality values such as user IDs, session IDs, trace IDs, and request attributes.
 
@@ -53,10 +51,11 @@ For example, an event for a POST request might include user and subscription dat
 Capture only the context that is useful and safe to retain. Credentials, personal data, query parameters, prompts, and request bodies may require filtering or redaction before ingestion.
 
 <AnchorAlias id="metrics-logs-and-traces-as-projections" />
+<AnchorAlias id="views-derived-from-context-rich-events" />
 
-### Views Derived from Context-Rich Events
+### Views Derived from Wide Events
 
-In this approach, a context-rich event can produce several views:
+In this approach, a wide event can produce several views:
 
 - a metric aggregated by status and time window;
 - a searchable log record containing the event details;
@@ -74,29 +73,26 @@ The [table semantic layer](./semantic-layer.md) can describe what each table rep
 
 <AnchorAlias id="why-greptimedb-is-built-for-this" />
 
-## How GreptimeDB Maps to This Model
+## How GreptimeDB Supports Wide Events
 
 <AnchorAlias id="unified-tag--timestamp--field-model" />
 <AnchorAlias id="sql--promql-for-cross-signal-correlation" />
 <AnchorAlias id="flow-engine-for-real-time-derivation" />
 <AnchorAlias id="wide-events-in-production" />
 
-GreptimeDB uses a common [data model](/user-guide/concepts/data-model.md) and query layer across observability workloads. The mapping is:
+GreptimeDB stores wide events in regular time-indexed tables. Pipeline, SQL, and Flow support different stages of the approach:
 
-| Pattern | GreptimeDB capability | How to use it |
+| Stage | GreptimeDB capability | Role |
 | --- | --- | --- |
-| Native metrics | Prometheus Remote Write, OpenTelemetry OTLP/HTTP, PromQL, and SQL | Ingest Prometheus or OTLP metrics; keep existing metrics and dashboards in their native form. |
-| Logs and traces | Loki Push API, OpenTelemetry OTLP/HTTP, Elasticsearch Bulk API, SQL, and the Jaeger-compatible query API | Ingest with the supported protocols; query all signal types with SQL, and traces with the Jaeger-compatible API. |
-| Shared schema concepts | Tag, timestamp, and field columns | Apply a consistent table model across different telemetry tables. |
-| Structured logs and context-rich events | [Pipeline](/user-guide/logs/use-custom-pipelines.md), wide tables, and SQL | Parse and transform logs into structured events before storage, then keep selected events for detailed or retrospective analysis. |
-| Derived metrics | [Flow](/user-guide/flow-computation/overview.md) | Continuously aggregate stored context-rich events into a separate metrics table. |
-| Cross-signal analysis | SQL across tables and shared correlation identifiers | Relate signals when their schemas and instrumentation provide common keys. |
+| Ingest, when needed | [Pipeline](/user-guide/logs/use-custom-pipelines.md) | Parse, transform, and enrich incoming logs before storage. |
+| Store and analyze | Time-indexed tables and SQL | Retain wide events for detailed and retrospective analysis. |
+| Derive | [Flow](/user-guide/flow-computation/overview.md) | Continuously aggregate incoming rows into separate metrics tables. |
 
-**A unified table model does not mean writing all data into one table.** Metrics, logs, traces, and raw events can use separate tables with different schemas, retention policies, and indexes. The unification is at the schema concepts, storage system, and query layer.
+Wide events do not require native metrics, logs, traces, and raw events to share one table. Each can use separate tables with different schemas, retention policies, and indexes.
 
-Pipeline and Flow handle different stages. Pipeline parses, transforms, and enriches logs during ingestion. Its output is structured, multi-column data; when those fields retain the context of an operation or business event, each row can serve as a wide event. Flow can then continuously aggregate the stored events into metrics tables for dashboards and alerts.
+Pipeline and Flow handle different stages. Pipeline parses, transforms, and enriches logs during ingestion. Its output is structured, multi-column data; when those fields retain the context of an operation or business event, each row can serve as a wide event. Flow can continuously aggregate the same event rows as they arrive into metrics tables for dashboards and alerts.
 
-![Pipeline can process logs during ingestion, while Flow can aggregate stored events into a derived metrics table.](/optional-pipeline-flow.svg)
+![Pipeline can process logs during ingestion, while Flow can aggregate incoming event rows into a derived metrics table.](/optional-pipeline-flow.svg)
 
 For example, Flow can derive a status metric from an event table:
 
@@ -116,7 +112,7 @@ The stored events remain available for detailed SQL queries, while the sink tabl
 
 ## Trade-offs
 
-The unified-event approach changes where you pay for flexibility:
+The wide-event approach changes where you pay for flexibility:
 
 - **Wider events increase data volume.** More fields and repeated context consume ingestion bandwidth and storage, even with columnar compression.
 - **High cardinality and long retention increase cost.** Keep only useful dimensions, and set retention independently for raw and derived data.

@@ -1,13 +1,15 @@
 ---
-keywords: [数据模型, 时间索引, Tag, Timestamp, Field, Metrics, Logs, Traces]
-description: 介绍 GreptimeDB 的关系表模型、时间索引和 Tag、Timestamp、Field 列语义，并给出 metrics、logs、traces 示例。
+keywords: [数据模型, 统一可观测数据模型, 时间索引, Tag, Timestamp, Field, Metrics, Logs, Traces]
+description: 介绍 GreptimeDB 的统一可观测数据模型，包括关系表、时间索引以及 Tag、Timestamp、Field 列语义。
 ---
 
 # 数据模型
 
 ## 模型
 
-GreptimeDB 使用关系表模型，并增加时间索引以及 `Tag`、`Timestamp`、`Field` 三类列语义。Metrics、logs、traces 和事件数据都使用这套模型，但可以保存在不同的表中。
+GreptimeDB 的统一可观测数据模型以关系表为基础，并增加时间索引以及 `Tag`、`Timestamp`、`Field` 三类列语义。Metrics、logs、traces 和事件数据共用这套模型，同时保存在针对各自 workload 设计的不同表中。
+
+![Metrics、logs 和 traces 仍然使用独立的表，同时共享 schema 概念、存储系统和查询层。](/unified-observability-model.zh.svg)
 
 每张表都有表名和唯一的时间索引。各类列的含义如下：
 
@@ -88,4 +90,4 @@ Trace 写入、存储和 SQL 查询都是一等能力。GreptimeDB 还提供 Jae
 
 GreptimeDB 使用 SQL 管理表 schema，详见[表管理](/user-guide/deployments-administration/manage-data/basic-table-operations.md)和[自动生成表结构](/user-guide/ingest-data/overview.md#自动生成表结构)。
 
-表还可以携带可选的[表语义层](./semantic-layer.md)，向机器消费者说明信号身份和写入元数据。[统一的可观测数据模型](./observability-2.md)进一步解释了原生信号和宽事件如何共用表模型，但不共用同一张表。
+表还可以携带可选的[表语义层](./semantic-layer.md)，向机器消费者说明信号身份和写入元数据。[Observability 2.0 与宽事件](./observability-2.md)介绍了在这套模型中保留更多上下文的一种可选做法。
