@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
   <title id="title">实时监控与历史分析共用一套系统</title>
-  <desc id="desc">在使用对象存储的分布式部署中，实时监控与历史分析共用同一个引擎、存储系统和查询层。内存与节点本地缓存加速近期数据和高频访问数据，对象存储保存持久数据并支持长时间范围查询。容量和查询并发需要按工作负载规划，工作负载隔离属于 Enterprise 能力。</desc>
+  <desc id="desc">在使用对象存储的分布式部署中，实时监控与历史分析共用同一个引擎、存储系统和查询层。内存与节点本地缓存加速近期数据和高频访问数据，对象存储保存持久数据并支持长时间范围查询。容量和查询并发需要按 workload 规划，Datanode 级 workload 隔离属于 Enterprise 能力。</desc>
   <defs>
     <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/></marker>
     <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#7C3AED"/></marker>
@@ -41,7 +41,7 @@
   <!-- Independent settings, deliberately outside the data path -->
   <rect x="520" y="350" width="560" height="68" rx="14" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="7 5"/>
   <text x="800" y="378" text-anchor="middle" class="small">工作负载规划与控制</text>
-  <text x="800" y="403" text-anchor="middle" class="small">容量 · 查询并发 · 隔离（Enterprise）</text>
+  <text x="800" y="403" text-anchor="middle" class="small">容量 · 查询并发 · Datanode 级隔离（Enterprise）</text>
   <path d="M520 370 C430 350, 370 325, 330 310" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 5"/>
   <path d="M1080 370 C1170 350, 1230 325, 1270 310" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 5"/>
 

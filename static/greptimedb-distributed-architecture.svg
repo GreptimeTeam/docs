@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
   <title id="title">GreptimeDB distributed architecture</title>
-  <desc id="desc">Clients send writes and queries through Frontend to Regions hosted by Datanodes. Metasrv supplies catalog, routing, procedure, and scheduling metadata. Datanodes use Mito Engine and Metric Engine, keep active data in memtables and node-local cache, record writes in the configured WAL, and eventually flush persistent data files to local storage or shared object storage. Optional Flownodes process incoming source rows and write materialized results to sink tables. WAL, persistent data files, and Metasrv state have separate durability and recovery roles.</desc>
+  <desc id="desc">Clients send writes and queries through Frontend to Regions hosted by Datanodes. Metasrv supplies catalog, routing, procedure, and scheduling metadata. Datanodes use Mito Engine and Metric Engine, keep active data in memtables and node-local cache, record writes in the configured WAL, and eventually flush persistent data files to local storage or shared object storage. Frontend mirrors streaming writes to optional Flownodes; in batching mode, Flownodes query source tables and write sink tables through Frontend. WAL, persistent data files, and Metasrv state have separate durability and recovery roles.</desc>
   <defs>
     <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/></marker>
     <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#7C3AED"/></marker>
@@ -52,8 +52,8 @@
   <text x="460" y="450" class="subtitle">host Regions and execute reads and writes</text>
 
   <rect x="290" y="485" width="280" height="165" rx="14" fill="#FFFFFF" stroke="#A78BFA" stroke-width="2.5"/>
-  <text x="430" y="530" text-anchor="middle" class="title">Region Server</text>
-  <text x="430" y="566" text-anchor="middle" class="subtitle">Region routing target</text>
+  <text x="430" y="530" text-anchor="middle" class="title">Regions</text>
+  <text x="430" y="566" text-anchor="middle" class="subtitle">table partitions</text>
   <text x="430" y="596" text-anchor="middle" class="subtitle">read / write execution</text>
   <rect x="344" y="614" width="172" height="26" rx="13" fill="#EDE9FE"/>
   <text x="430" y="633" text-anchor="middle" class="purple">storage · query</text>
@@ -89,10 +89,10 @@
   <text x="1389" y="460" text-anchor="middle" class="teal">OPTIONAL</text>
   <text x="1430" y="510" text-anchor="middle" class="title">Flownode</text>
   <text x="1430" y="545" text-anchor="middle" class="subtitle">continuous computation</text>
-  <text x="1430" y="577" text-anchor="middle" class="small">incoming source rows</text>
-  <text x="1430" y="605" text-anchor="middle" class="small">materialized sink writes</text>
-  <path d="M1260 515 L1305 515" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
-  <path d="M1320 585 L1275 585" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <text x="1430" y="577" text-anchor="middle" class="small">streaming: mirrored writes</text>
+  <text x="1430" y="605" text-anchor="middle" class="small">batching: queries · sink writes</text>
+  <path d="M800 285 C980 350, 1140 350, 1245 365 Q1275 370, 1275 400 L1275 450 Q1275 475, 1305 475" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <path d="M1320 570 L1290 570 Q1275 570, 1275 555 L1275 405 Q1275 385, 1255 385 C1050 385, 920 350, 815 305" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
   <path d="M1240 250 C1405 270, 1460 325, 1430 405" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-slate)"/>
 
   <!-- Storage state -->

@@ -9,11 +9,7 @@ GreptimeDB 可以作为一个 standalone 进程运行，也可以组成分布式
 
 对象存储不是系统中唯一的状态。WAL 记录已接收的写入，Metasrv 管理集群 metadata 和 Region 路由，本地磁盘可以缓存远端数据。可用性和 failover 取决于 WAL 模式、Metasrv 部署、Region 放置、共享存储和可用 Datanode 等配置。
 
-## 实时监控与历史分析，共用一套系统
-
-分布式部署使用对象存储时，近期数据可以直接从内存读取，也可以由本地 cache 加速；长期数据保存在对象存储中，并通过同一个存储引擎和查询路径读取。实时监控和历史分析因此可以共用存储与查询基础，不需要分别维护一套在线系统和一套分析系统。
-
-两类访问模式的资源需求仍然不同。Cache 大小、留存周期、compaction、查询并发、计算容量和资源隔离，都要根据近期查询和历史查询的实际比例规划。
+关于实时监控与历史分析为什么可以共用这套存储和查询基础，参见[为什么选择 GreptimeDB](./why-greptimedb.md#实时监控与历史分析共用一套系统)。
 
 ## 高层架构
 
@@ -50,6 +46,6 @@ Standalone 模式由一个 GreptimeDB 进程提供这些数据库能力，不需
 
 ### Flow 路径（可选）
 
-启用 Flow 后，Flownode 持续处理写入源表的数据，维护计算结果，并把结果物化到 sink table。源表和 sink table 分别使用自己的 schema、TTL、索引和存储设置。详见 [Flow 计算](/user-guide/flow-computation/overview.md)。
+启用 Flow 后，数据路径由 Frontend 中转。Streaming mode 下，Frontend 把写入镜像给 Flownode；batching mode 下，Flownode 通过 Frontend 查询源表，并把物化结果写入 sink table。源表和 sink table 分别使用自己的 schema、TTL、索引和存储设置。详见 [Flow 计算](/user-guide/flow-computation/overview.md)。
 
 各类存储的职责参见[存储位置](./storage-location.md)，实现细节参见 [Contributor Guide](/contributor-guide/overview.md)。

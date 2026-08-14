@@ -9,11 +9,7 @@ GreptimeDB can run as one standalone process or as a distributed cluster. Standa
 
 Object storage is not the only state in the system. WAL records accepted writes, Metasrv manages cluster metadata and Region routes, and local disks can cache remote data. Availability and failover depend on the selected WAL mode, Metasrv deployment, Region placement, shared storage, and available Datanodes.
 
-## One System for Real-Time Monitoring and Historical Analysis
-
-In distributed deployments backed by object storage, recent reads can be served from memory or accelerated by local caches. Long-term data remains in object storage and is read through the same storage engine and query paths. This lets real-time monitoring and historical analysis share one storage and query foundation instead of using separate operational and analytics stacks.
-
-The access patterns and resource demands are still different. Cache sizing, retention, compaction, query concurrency, compute capacity, and resource isolation must be planned for the expected mix of recent and historical queries.
+For why real-time monitoring and historical analysis can share this storage and query foundation, see [Why GreptimeDB](./why-greptimedb.md#one-system-for-real-time-monitoring-and-historical-analysis).
 
 ## High-level Architecture
 
@@ -50,6 +46,6 @@ The following paths describe distributed mode. Standalone mode runs the same dat
 
 ### Flow Path (Optional)
 
-When Flow is enabled, Flownode processes incoming rows from source tables, maintains continuous computations, and writes materialized results to sink tables. Source and sink tables keep their own schema, TTL, indexes, and storage settings. See [Flow Computation](/user-guide/flow-computation/overview.md).
+When Flow is enabled, Frontend mediates its data path. In streaming mode, Frontend mirrors writes to Flownode. In batching mode, Flownode queries source tables and writes materialized results to sink tables through Frontend. Source and sink tables keep their own schema, TTL, indexes, and storage settings. See [Flow Computation](/user-guide/flow-computation/overview.md).
 
 For storage responsibilities, see [Storage Location](./storage-location.md). For implementation details, see the [Contributor Guide](/contributor-guide/overview.md).

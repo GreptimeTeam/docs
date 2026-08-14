@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
   <title id="title">GreptimeDB 分布式架构</title>
-  <desc id="desc">客户端通过 Frontend 把写入和查询发送给 Datanode 承载的 Region。Metasrv 提供 catalog、路由、procedure 和调度 metadata。Datanode 使用 Mito Engine 和 Metric Engine，在 memtable 与节点本地 cache 中保存活跃数据，把写入记录到配置的 WAL，并最终把持久化数据文件写入本地存储或共享对象存储。可选的 Flownode 处理持续写入源表的数据，并把物化结果写入 sink table。WAL、持久化数据文件和 Metasrv 状态分别承担不同的持久性与恢复职责。</desc>
+  <desc id="desc">客户端通过 Frontend 把写入和查询发送给 Datanode 承载的 Region。Metasrv 提供 catalog、路由、procedure 和调度 metadata。Datanode 使用 Mito Engine 和 Metric Engine，在 memtable 与节点本地 cache 中保存活跃数据，把写入记录到配置的 WAL，并最终把持久化数据文件写入本地存储或共享对象存储。Frontend 将 streaming mode 的写入镜像到可选的 Flownode；batching mode 下，Flownode 通过 Frontend 查询源表并写入 sink table。WAL、持久化数据文件和 Metasrv 状态分别承担不同的持久性与恢复职责。</desc>
   <defs>
     <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/></marker>
     <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#7C3AED"/></marker>
@@ -52,8 +52,8 @@
   <text x="490" y="450" class="subtitle">承载 Region，执行读写</text>
 
   <rect x="290" y="485" width="280" height="165" rx="14" fill="#FFFFFF" stroke="#A78BFA" stroke-width="2.5"/>
-  <text x="430" y="530" text-anchor="middle" class="title">Region Server</text>
-  <text x="430" y="566" text-anchor="middle" class="subtitle">Region 路由目标</text>
+  <text x="430" y="530" text-anchor="middle" class="title">Regions</text>
+  <text x="430" y="566" text-anchor="middle" class="subtitle">表的数据分区</text>
   <text x="430" y="596" text-anchor="middle" class="subtitle">执行读写</text>
   <rect x="344" y="614" width="172" height="26" rx="13" fill="#EDE9FE"/>
   <text x="430" y="633" text-anchor="middle" class="purple">存储 · 查询</text>
@@ -89,10 +89,10 @@
   <text x="1389" y="460" text-anchor="middle" class="teal">可选</text>
   <text x="1430" y="510" text-anchor="middle" class="title">Flownode</text>
   <text x="1430" y="545" text-anchor="middle" class="subtitle">连续计算</text>
-  <text x="1430" y="577" text-anchor="middle" class="small">持续写入源表的数据行</text>
-  <text x="1430" y="605" text-anchor="middle" class="small">物化 sink table 写入</text>
-  <path d="M1260 515 L1305 515" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
-  <path d="M1320 585 L1275 585" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <text x="1430" y="577" text-anchor="middle" class="small">streaming：镜像写入</text>
+  <text x="1430" y="605" text-anchor="middle" class="small">batching：查询 · sink 写入</text>
+  <path d="M800 285 C980 350, 1140 350, 1245 365 Q1275 370, 1275 400 L1275 450 Q1275 475, 1305 475" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <path d="M1320 570 L1290 570 Q1275 570, 1275 555 L1275 405 Q1275 385, 1255 385 C1050 385, 920 350, 815 305" fill="none" stroke="#0F766E" stroke-width="3" marker-end="url(#arrow-teal)"/>
   <path d="M1240 250 C1405 270, 1460 325, 1430 405" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-slate)"/>
 
   <!-- 存储状态 -->

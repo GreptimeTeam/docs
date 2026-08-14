@@ -15,7 +15,7 @@ All three signal types can be queried with SQL. Metrics also support PromQL, whi
 
 Partially. For a table that uses deduplication, writing another row with the same primary key and time index updates Field values according to the table's `merge_mode`. The primary key and time index identify the row and are not updated in place.
 
-For tables created with SQL, the default `last_row` mode keeps the latest row. The `last_non_null` mode keeps the latest non-null value for each Field. Auto-created tables can use protocol-specific defaults. Deduplication applies within a Region, so partition columns for a deduplicating table must be a subset of its primary-key columns.
+For tables created with SQL, the default `last_row` mode keeps the latest row. The `last_non_null` mode keeps the latest non-null value for each Field. Auto-created tables can use protocol-specific defaults. Deduplication applies within a Region. GreptimeDB accepts any table column as a partition column, but for a deduplicating table, partition columns should be chosen from the primary key so rows with the same primary key remain in one Region and can be merged correctly. See [Table Sharding](/user-guide/deployments-administration/manage-data/table-sharding.md#partition).
 
 Append-only tables disable deduplication, so repeated keys and timestamps create additional rows rather than updates. See [Update Data](/user-guide/manage-data/overview.md#update-data) and the [`merge_mode` reference](/reference/sql/create.md#create-a-table-with-merge-mode).
 
@@ -31,13 +31,15 @@ Yes. TTL can be set at database or table level, and a table-level setting takes 
 
 There is no single compression ratio. Results depend on schema width, value distribution, primary-key cardinality, repetition, SST format, indexes, and workload. Indexes can improve filtering while increasing storage and write cost. Measure with representative data and retention settings rather than applying a general ratio.
 
+One published edge benchmark provides a concrete but workload-specific result: after writing 10 million TSBS rows on a Qualcomm SA8155P, GreptimeDB Edge used 87 MB and SQLite used 1,686 MB. This result applies to the tested Edge edition, schema, and configuration; it is not a general compression ratio for GreptimeDB deployments. See the [GreptimeDB Edge and SQLite report](https://greptime.com/blogs/2024-08-30-sqlite).
+
 For schema and index trade-offs, see the [Schema Design Guide](/user-guide/deployments-administration/performance-tuning/design-table.md) and [Data Indexes](/user-guide/manage-data/data-index.md).
 
 ## How does GreptimeDB address the high cardinality issue?
 
 High cardinality still has a cost: more distinct primary-key values can increase metadata, index, memory, and query work. GreptimeDB provides several controls:
 
-- The `flat` SST format reduces per-series overhead and is the default for new tables. It is recommended for high-cardinality primary keys.
+- The `flat` SST format reduces per-series overhead and is the default for new tables. It is recommended for high-cardinality primary keys. The [Flat Format engineering article](https://greptime.com/blogs/2025-12-22-flat-format) explains its memtable and merge-path design and includes benchmark conditions.
 - Inverted, full-text, and skipping indexes can be added where their selectivity and storage cost fit the query workload. Indexing every column is usually unnecessary.
 - Append-only tables skip deduplication work when records are immutable and do not need updates or deletes.
 - Table partitioning distributes Regions across Datanodes in a cluster, but partition design and load distribution still matter.
@@ -62,8 +64,10 @@ Published reports include:
 - [GreptimeDB vs. InfluxDB](https://greptime.com/blogs/2024-08-07-performance-benchmark)
 - [GreptimeDB vs. TimescaleDB](https://greptime.com/blogs/2025-12-09-greptimedb-vs-timescaledb-benchmark)
 - [GreptimeDB vs. Grafana Mimir](https://greptime.com/blogs/2024-08-02-datanode-benchmark)
+- [JSONBench: one billion JSON documents](https://greptime.com/blogs/2025-03-18-jsonbench-greptimedb-performance) — records the third-party benchmark result and reproduction steps
 - [Log workload: GreptimeDB, ClickHouse, and Elasticsearch](https://greptime.com/blogs/2025-03-10-log-benchmark-greptimedb)
 - [GreptimeDB vs. Loki](https://greptime.com/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report)
+- [GreptimeDB Edge vs. SQLite on Qualcomm SA8155P](https://greptime.com/blogs/2024-08-30-sqlite)
 
 ## Does GreptimeDB have disaster recovery solutions?
 
