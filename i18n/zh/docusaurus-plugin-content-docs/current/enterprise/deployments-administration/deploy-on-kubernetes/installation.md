@@ -59,7 +59,7 @@ GreptimeDB 企业版部署包括以下组件：
 
 ## 部署 Kafka (可选)
 
-参考 [部署 Kafka 集群](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-kafka.md)获取详细的安装步骤。
+参考[部署和管理 Kafka](/user-guide/deployments-administration/wal/remote-wal/manage-kafka.md)获取详细的安装步骤。
 
 ## 部署 MinIO (可选)
 

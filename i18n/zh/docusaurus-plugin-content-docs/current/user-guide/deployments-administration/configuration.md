@@ -391,12 +391,12 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 |         | account_name      | 字符串 | Azure Blob 存储的账户名                             |
 |         | account_key       | 字符串 | 访问密钥                                            |
 |         | sas_token         | 字符串 | 共享访问签名                                        |
-| Gsc     |                   |        | Google Cloud Storage 存储选项，当 type="Gsc" 时有效 |
-|         | name            | 字符串 |  存储提供商名字，默认为 `Gsc`               |
-|         | root              | 字符串 | Gsc 桶中的根路径                                    |
-|         | bucket            | 字符串 | Gsc 桶名称                                          |
-|         | scope             | 字符串 | Gsc 权限                                            |
-|         | credential_path   | 字符串 | Gsc 访问证书                                        |
+| Gcs     |                   |        | Google Cloud Storage 存储选项，当 type="Gcs" 时有效 |
+|         | name            | 字符串 |  存储提供商名字，默认为 `Gcs`               |
+|         | root              | 字符串 | GCS 桶中的根路径                                    |
+|         | bucket            | 字符串 | GCS 桶名称                                          |
+|         | scope             | 字符串 | GCS 权限                                            |
+|         | credential_path   | 字符串 | GCS 访问证书                                        |
 |         | endpoint          | 字符串 | GSC 的 API 端点                                     |
 
 文件存储配置范例：
@@ -997,8 +997,10 @@ timeout = "3s"
 | wal.provider                                  | String  | `raft_engine` | --                                                                                                                                   |
 | wal.broker_endpoints                          | Array   | --                   | Kafka 集群的端点                                                                                                                     |
 | `wal.auto_create_topics`                      | Bool    | `true`               | 自动为 WAL 创建 topics <br/>设置为 `true` 则自动为 WAL 创建 topics <br/>否则，使用名为 `topic_name_prefix_[0..num_topics)` 的 topics |
-| `wal.auto_prune_interval`                     | String  | `0s`                 | 定期自动裁剪远程 WAL 的时间间隔 <br/>设置为 `0s` 表示禁止自动裁剪 |
-| `wal.trigger_flush_threshold`                 | Integer | `0`                  | 自动 WAL 裁剪中触发 region flush 操作的阈值 <br/>当满足以下条件时，metasrv 会对 region 发送 flush 请求：<br/>`trigger_flush_threshold` + `prunable_entry_id` < `max_prunable_entry_id`<br/>其中：<br/>- `prunable_entry_id` 是该 region 可裁剪的最大日志条目 ID，在该 ID 之前的日志都不被该 region 使用<br/>- `max_prunable_entry_id` 是使用与该 region 同一 kafka topic 的所有 region 可裁剪的最大日志条目 ID，在该 ID 之前的日志都不再被任一 region 使用 <br/>设置为 `0` 以禁止在自动 WAL 裁剪中触发 region flush 操作 |
+| `wal.auto_prune_interval`                     | String  | `30m`                | 自动裁剪不再使用的 Remote WAL entry 的时间间隔。设置为 `0s` 可禁用自动裁剪。<br/>**仅在 provider 为 `kafka` 时使用。** |
+| `wal.auto_prune_logical_delete`               | Bool    | `false`              | 是否仅更新 WAL 元数据标记而不调用 Kafka `DeleteRecords`。Kafka 不支持 `DeleteRecords` 时设为 `true`。<br/>**仅在 provider 为 `kafka` 时使用。** |
+| `wal.flush_trigger_size`                      | String  | `512MB`              | 触发 region flush 的预估 WAL 大小，计算方式为 `(latest_entry_id - flushed_entry_id) * avg_record_size`。设置为 `0` 由系统确定阈值。<br/>**仅在 provider 为 `kafka` 时使用。** |
+| `wal.checkpoint_trigger_size`                 | String  | `128MB`              | 触发 region checkpoint 的预估 WAL 大小，计算方式为 `(latest_entry_id - last_checkpoint_entry_id) * avg_record_size`。设置为 `0` 由系统确定阈值。<br/>**仅在 provider 为 `kafka` 时使用。** |
 | `wal.auto_prune_parallelism`                  | Integer | `10` | 自动 WAL 裁剪的最大并行任务限制，其中每个任务负责一个 kafka topic 的 WAL 裁剪 |
 | `wal.num_topics`                              | Integer | `64`                 | Topic 数量                                                                                                                           |
 | wal.selector_type                             | String  | `round_robin` | topic selector 类型 <br/>可用 selector 类型：<br/>- round_robin（默认）                                                              |

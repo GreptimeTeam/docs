@@ -8,4 +8,7 @@
 /en/* https://docs.greptime.com/:splat 301
 /en https://docs.greptime.com 301
 
+# Consolidated Kafka deployment guide
+/nightly/user-guide/deployments-administration/deploy-on-kubernetes/deploy-kafka /nightly/user-guide/deployments-administration/wal/remote-wal/manage-kafka 301
+/user-guide/deployments-administration/deploy-on-kubernetes/deploy-kafka /user-guide/deployments-administration/wal/remote-wal/manage-kafka 301
 

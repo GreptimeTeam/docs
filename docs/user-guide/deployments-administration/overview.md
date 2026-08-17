@@ -27,7 +27,7 @@ This section outlines the key aspects of deploying and administering GreptimeDB 
 ### Component Management
 
 - **Cluster Failover:** Set up [Remote WAL](./wal/remote-wal/configuration.md) for high availability.
-- **Manage Metadata:** Set up [Metadata Storage](./manage-data/overview.md) for GreptimeDB.
+- **Manage Metadata:** Set up [Metadata Storage](./manage-metadata/overview.md) for GreptimeDB.
 
 ### Monitoring
 

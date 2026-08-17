@@ -119,13 +119,13 @@ monitoring:
   enabled: true
 ```
 
-这将部署一个名为 `${cluster-name}-monitoring` 的 GreptimeDB Standalone 实例来收集指标和日志。你可以使用以下命令验证部署：
+这将部署一个名为 `${cluster-name}-monitor` 的 GreptimeDB Standalone 实例来收集指标和日志。你可以使用以下命令验证部署：
 
 ```bash
-kubectl get greptimedbstandalones.greptime.io ${cluster-name}-monitoring -n ${namespace}
+kubectl get greptimedbstandalones.greptime.io ${cluster-name}-monitor -n ${namespace}
 ```
 
-GreptimeDB Standalone 实例使用 `${cluster-name}-monitoring-standalone` 作为 Kubernetes Service 名称来暴露服务。你可以使用以下地址访问监控数据：
+GreptimeDB Standalone 实例使用 `${cluster-name}-monitor-standalone` 作为 Kubernetes Service 名称来暴露服务。你可以使用以下地址访问监控数据：
 
 - **Prometheus 指标**：`http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus`
 - **SQL 日志**：`${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4002`。默认情况下，集群日志存储在 `public._gt_logs` 表中。
@@ -292,7 +292,7 @@ kubectl -n ${namespace} port-forward svc/${cluster-name}-grafana 18080:80
 ## 清理 PVC
 
 :::danger
-清理操作将移除 GreptimeDB 集群的元数据和数据，请确保在操作前已备份数据。
+清理操作会删除 GreptimeDB Standalone 监控实例中存储的监控数据，但不会删除被监控 GreptimeDB 集群的数据。如需保留监控数据，请先完成备份。
 :::
 
 请参考[清理 GreptimeDB 集群](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md#cleanup)文档
@@ -301,5 +301,5 @@ kubectl -n ${namespace} port-forward svc/${cluster-name}-grafana 18080:80
 要清理 GreptimeDB 用于监控的单机数据库的 PVC，请使用以下命令：
 
 ```bash
-kubectl -n default delete pvc -l app.greptime.io/component=${cluster-name}-monitor-standalone
+kubectl -n ${namespace} delete pvc -l app.greptime.io/component=${cluster-name}-monitor-standalone
 ```

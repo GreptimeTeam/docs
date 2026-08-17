@@ -28,8 +28,8 @@ image:
   tag: 2025.4.22-debian-12-r1
 
 auth:
-  rootUser: greptimedbadmin
-  rootPassword: "greptimedbadmin"  
+  rootUser: "<MINIO_ROOT_USER>"
+  rootPassword: "<MINIO_ROOT_PASSWORD>"
 
 resources:
   requests:
@@ -87,7 +87,7 @@ Did you know there are enterprise versions of the Bitnami catalog? For enhanced 
 
 ** Please be patient while the chart is being deployed **
 
-MinIO&reg; can be accessed via port  on the following DNS name from within your cluster:
+MinIO&reg; 可以通过集群内以下 DNS 名称的 9000 端口访问：
 
 minio.minio.svc.cluster.local
 
@@ -151,9 +151,7 @@ kubectl port-forward -n minio svc/minio 9001:9001
 
 2. 打开浏览器访问 http://localhost:9001/login
 
-3. 使用配置文件中设置的账号密码登录：
-- username: `greptimedbadmin`
-- password: `greptimedbadmin`
+3. 使用 `auth.rootUser` 和 `auth.rootPassword` 中设置的凭据登录。
 
 ![MinIO login](/minio-login-page.png)
 
@@ -209,7 +207,7 @@ objectStorage:
 # 监控
 
 - 安装 Prometheus Operator (例如: [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack))。
-- 安装 podmonitor CRD。
+- 安装 `ServiceMonitor` CRD。
 
 要监控 MinIO 集群，你需要提前部署好监控系统（如 Prometheus 和 Grafana）。然后在 `minio-values.yaml` 中增加以下内容，并重新执行更新 MinIO 配置：
 
@@ -244,7 +242,15 @@ helm -n minio uninstall minio
 
 ## 删除 PVCs
 
-删除 PVCs 操作将会删除 MinIO 集群的持久化数据。请确保在继续操作之前已经备份了数据。
+删除前先列出目标 PVC：
+
+```bash
+kubectl -n minio get pvc -l app.kubernetes.io/instance=minio
+```
+
+:::danger
+删除这些 PVC 会永久删除该 MinIO 集群存储的对象。执行前请核对 namespace 和 label selector，并备份需要保留的数据。
+:::
 
 ```bash
 kubectl -n minio delete pvc -l app.kubernetes.io/instance=minio

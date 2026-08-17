@@ -325,9 +325,9 @@ objectStorage:
     endpoint: ""
 ```
 
-#### 使用 AWS EKS Pod Identity 访问 S3
+#### 使用 IAM Roles for Service Accounts（IRSA）访问 S3
 
-除了提供静态访问密钥外，你还可以使用 [AWS EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html)（IAM Roles for Service Accounts）来授予 GreptimeDB 访问 S3 的权限。这种方式更加安全，因为无需管理长期有效的凭证。
+除了提供静态访问密钥外，你还可以使用 [IAM Roles for Service Accounts（IRSA）](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html)授予 GreptimeDB 访问 S3 的权限，无需管理长期有效的凭证。
 
 首先，为 datanode 的 Service Account 配置 IAM 角色注解。只有 datanode 会读写 S3：
 
@@ -357,7 +357,7 @@ objectStorage:
 ```
 
 :::note
-使用 EKS Pod Identity 时，请完全省略 `objectStorage.credentials` 部分。datanode Pod 将通过与 Service Account 关联的 IAM 角色自动获取临时凭证。
+使用 IRSA 时，请完全省略 `objectStorage.credentials` 部分。Datanode Pod 将通过 Service Account 注解中指定的 IAM 角色获取临时凭证。
 :::
 
 #### Google Cloud Storage
@@ -558,8 +558,8 @@ meta:
 - `postgresql.electionLockID`: PostgreSQL 中用于选举的锁 ID。
 - `postgresql.credentials.secretName`: PostgreSQL 凭证 secret 名称。
 - `postgresql.credentials.existingSecretName`: PostgreSQL 凭证 secret 名称。如果你希望使用已有的 secret，你需要确保该 secret 包含 `username` 和 `password` 两个 key。
-- `postgresql.credentials.username`: PostgreSQL 凭证用户名。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。`username` 将会被存储在 `username` key 中，该 key 的值为 `mysql.credentials.secretName`。
-- `postgresql.credentials.password`: PostgreSQL 凭证密码。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。`password` 将会被存储在 `password` key 中，该 key 的值为 `mysql.credentials.secretName`。
+- `postgresql.credentials.username`: PostgreSQL 凭证用户名。如果设置了 `postgresql.credentials.existingSecretName`，该字段将被忽略。`username` 将存储在名称为 `postgresql.credentials.secretName` 的 Secret 的 `username` key 中。
+- `postgresql.credentials.password`: PostgreSQL 凭证密码。如果设置了 `postgresql.credentials.existingSecretName`，该字段将被忽略。`password` 将存储在名称为 `postgresql.credentials.secretName` 的 Secret 的 `password` key 中。
 
 #### 使用 etcd 作为后端存储
 
@@ -673,11 +673,12 @@ meta:
   configData: |
     [wal]
     provider = "kafka"
-    replication_factor = 1
+    replication_factor = 3
     auto_prune_interval = "30m"
 datanode:
   configData: |
     [wal]
     provider = "kafka"
-    overwrite_entry_start_id = true
 ```
+
+该示例使用三个副本。请根据数据持久性要求调整 `replication_factor`，且不要超过可用 Kafka broker 的数量。

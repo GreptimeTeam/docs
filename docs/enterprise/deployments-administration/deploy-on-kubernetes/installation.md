@@ -59,7 +59,7 @@ Refer to [Manage ETCD](/user-guide/deployments-administration/manage-metadata/ma
 
 ## Deploy Kafka (Option)
 
-Refer to [Deploy Kafka Cluster](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-kafka.md) for detailed installation steps.
+Refer to [Deploy and Manage Kafka](/user-guide/deployments-administration/wal/remote-wal/manage-kafka.md) for detailed installation steps.
 
 ## Deploy MinIO (Option)
 

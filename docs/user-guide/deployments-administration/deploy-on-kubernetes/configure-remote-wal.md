@@ -41,19 +41,20 @@ meta:
   configData: |
     [wal]
     provider = "kafka"
-    replication_factor = 1
+    replication_factor = 3
     topic_name_prefix = "gtp_greptimedb_wal_topic"
     auto_prune_interval = "30m"
 datanode:
   configData: |
     [wal]
     provider = "kafka"
-    overwrite_entry_start_id = true
 remoteWal:
   enabled: true
   kafka:
     brokerEndpoints: ["kafka.kafka-cluster.svc.cluster.local:9092"]
 ```
+
+The example uses a replication factor of three to match the Kafka cluster created in [Manage Kafka](/user-guide/deployments-administration/wal/remote-wal/manage-kafka.md). Set this value to the number of replicas required by your durability policy, without exceeding the number of available Kafka brokers.
 
 ## Deploy GreptimeDB Cluster
 
@@ -80,4 +81,3 @@ helm upgrade --install mycluster  \
 - Follow the [Deploy GreptimeDB Cluster](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md) guide to access your GreptimeDB cluster.
 - Follow the [Quick Start](/getting-started/quick-start.md) guide to create tables and insert data.
 - For more information about Remote WAL configuration, see [Remote WAL Configuration](/user-guide/deployments-administration/wal/remote-wal/configuration.md).
-

@@ -42,19 +42,20 @@ meta:
   configData: |
     [wal]
     provider = "kafka"
-    replication_factor = 1
+    replication_factor = 3
     topic_name_prefix = "gtp_greptimedb_wal_topic"
     auto_prune_interval = "30m"
 datanode:
   configData: |
     [wal]
     provider = "kafka"
-    overwrite_entry_start_id = true
 remoteWal:
   enabled: true
   kafka:
     brokerEndpoints: ["kafka.kafka-cluster.svc.cluster.local:9092"]
 ```
+
+示例使用三个副本，与[管理 Kafka](/user-guide/deployments-administration/wal/remote-wal/manage-kafka.md)中创建的 Kafka 集群一致。请根据数据持久性要求设置该值，且不要超过可用 Kafka broker 的数量。
 
 ## 部署 GreptimeDB 集群
 
@@ -80,4 +81,3 @@ helm upgrade --install mycluster  \
 - 请参考 [部署 GreptimeDB 集群](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md) 指南访问你的 GreptimeDB 集群。
 - 请参考 [快速开始](/getting-started/quick-start.md) 指南创建表并写入数据。
 - 请参考 [Remote WAL 配置](/user-guide/deployments-administration/wal/remote-wal/configuration.md) 了解更多关于 Remote WAL 配置的信息。
-

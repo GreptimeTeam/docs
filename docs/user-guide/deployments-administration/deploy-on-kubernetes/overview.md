@@ -40,8 +40,7 @@ After familiarizing yourself with [the architecture and components of GreptimeDB
 
 - [Deploy GreptimeDB Infrastructure test](deploy-greptimedb-infra-test.md): Prerequisite infrastructure testing for installing GreptimeDB.
 - [Deploy MinIO cluster](deploy-minio.md): Learn how to deploy, configure, and monitor a MinIO cluster.
-- [Deploy Kafka cluster](deploy-kafka.md): Learn how to deploy, configure, and monitor a Kafka cluster.
+- [Deploy and manage Kafka](/user-guide/deployments-administration/wal/remote-wal/manage-kafka.md): Learn how to deploy Kafka for Remote WAL.
 - [Deploy GreptimeDB Cluster with Remote WAL](configure-remote-wal.md): Configure Kafka as a remote write-ahead log (WAL) for your GreptimeDB cluster to persistently record every data modification and ensure no loss of memory-cached data.
 - [Use MySQL/PostgreSQL as Metadata Store](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#configuring-metasrv-backend-storage): Integrate MySQL/PostgreSQL databases to provide robust metadata storage capabilities for enhanced reliability and performance.
 - [Deploy Multi-Frontend GreptimeDB Cluster](configure-frontend-groups.md): Set up a GreptimeDB cluster on Kubernetes with a frontend group consisting of multiple frontend instances for improved load distribution and availability.
-

@@ -28,8 +28,8 @@ image:
   tag: 2025.4.22-debian-12-r1
 
 auth:
-  rootUser: greptimedbadmin
-  rootPassword: "greptimedbadmin"  
+  rootUser: "<MINIO_ROOT_USER>"
+  rootPassword: "<MINIO_ROOT_PASSWORD>"
 
 resources:
   requests:
@@ -87,7 +87,7 @@ Did you know there are enterprise versions of the Bitnami catalog? For enhanced 
 
 ** Please be patient while the chart is being deployed **
 
-MinIO&reg; can be accessed via port  on the following DNS name from within your cluster:
+MinIO&reg; can be accessed via port 9000 on the following DNS name from within your cluster:
 
 minio.minio.svc.cluster.local
 
@@ -151,9 +151,7 @@ kubectl port-forward -n minio svc/minio 9001:9001
 
 2. Open your browser: http://localhost:9001/login
 
-3. Log in using the credentials set in the configuration file:
-- username: `greptimedbadmin`
-- password: `greptimedbadmin`
+3. Log in using the credentials set in `auth.rootUser` and `auth.rootPassword`.
 
 ![MinIO login](/minio-login-page.png)
 
@@ -209,7 +207,7 @@ objectStorage:
 # Monitoring
 
 - Install Prometheus Operator (e.g: [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack))。
-- Install podmonitor CRD。
+- Install the `ServiceMonitor` CRD.
 
 To monitor the MinIO cluster, you need to have a monitoring system (such as Prometheus and Grafana) deployed in advance. Then add the following content to minio-values.yaml and re-run the command to update the MinIO configuration:
 
@@ -244,7 +242,15 @@ helm -n minio uninstall minio
 
 ## Deleting PVCs
 
-Deleting PVCs will remove persistent data from the MinIO cluster. Please ensure you have backed up your data before proceeding.
+List the PVCs before deleting them:
+
+```bash
+kubectl -n minio get pvc -l app.kubernetes.io/instance=minio
+```
+
+:::danger
+Deleting these PVCs permanently removes the objects stored by this MinIO cluster. Verify the namespace and label selector, and back up any required data before proceeding.
+:::
 
 ```bash
 kubectl -n minio delete pvc -l app.kubernetes.io/instance=minio

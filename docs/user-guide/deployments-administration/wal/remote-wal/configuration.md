@@ -78,7 +78,6 @@ provider = "kafka"
 broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
 max_batch_bytes = "1MB"
 create_index = false
-overwrite_entry_start_id = true
 connect_timeout = "3s"
 timeout = "3s"
 ```
