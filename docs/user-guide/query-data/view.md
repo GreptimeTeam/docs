@@ -1,6 +1,6 @@
 ---
 keywords: [SQL views, create view, query view, update view, manage views, data security, complex queries]
-description: Explanation of SQL views in GreptimeDB, including how to create, query, update, and manage views for simplifying complex queries and ensuring data security.
+description: Explanation of SQL views in GreptimeDB, including how to create, query, update, and manage views for simplifying complex queries.
 ---
 
 # View
@@ -12,7 +12,6 @@ The query of a view is run every time the view is referenced in a query.
 In the following situations, you can use views:
 
 * Simplifying complex queries, avoiding the need to repeatedly write and send complex statements for every query.
-* Granting read permissions to specific users while restricting access to certain columns and rows to ensure data security and isolation.
 
 A view is created with the `CREATE VIEW` statement.
 
@@ -144,4 +143,3 @@ To be quiet if it does not exist:
 ```sql
 DROP VIEW IF EXISTS test;
 ```
-

@@ -422,11 +422,14 @@ transform:
 
 First, upload the pipeline to the database using the following command:
 ```bash
-curl -X "POST" "http://localhost:4000/v1/pipelines/pp" -F "file=@pipeline.yaml"
+curl -X "POST" "http://localhost:4000/v1/pipelines/pp" \
+  -H "Authorization: Basic <base64-encoded-credentials>" \
+  -F "file=@pipeline.yaml"
 ```
 Then, query the table DDL using the following command:
 ```bash
-curl -X "GET" "http://localhost:4000/v1/pipelines/pp/ddl?table=test_table"
+curl -X "GET" "http://localhost:4000/v1/pipelines/pp/ddl?table=test_table" \
+  -H "Authorization: Basic <base64-encoded-credentials>"
 ```
 The API returns the following output in JSON format:
 ```JSON

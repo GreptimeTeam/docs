@@ -45,7 +45,7 @@ instance, which will listen on ports `4317` (gRPC) and `4318` (HTTP):
 
 ```shell
 docker run --rm \
-  --network host \
+  --add-host=host.docker.internal:host-gateway \
   -p 4317:4317 \
   -p 4318:4318 \
   -v $(pwd)/config.yaml:/etc/otelcol-contrib/config.yaml \
@@ -65,7 +65,7 @@ receivers:
 
 exporters:
   otlphttp:
-    endpoint: "http://greptimedb:4000/v1/otlp" # Replace greptimedb with your setup
+    endpoint: "http://host.docker.internal:4000/v1/otlp"
     headers:
       x-greptime-pipeline-name: "greptime_trace_v1"
       #authorization: "Basic <base64(username:password)>"
@@ -86,7 +86,7 @@ OpenTelemetry Collector. For example, you can use the environment variable
 `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` to configure the endpoint of the exporter:
 
 ```shell
-export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="http://localhost:4318/v1/otlp/v1/traces"
+export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="http://localhost:4318/v1/traces"
 ```
 
 For convenience, you can use the tool

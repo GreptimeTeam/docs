@@ -41,7 +41,7 @@ OpenTelemetry Collector 将 traces 数据写入到 GreptimeDB。
 
 ```shell
 docker run --rm \
-  --network host \
+  --add-host=host.docker.internal:host-gateway \
   -p 4317:4317 \
   -p 4318:4318 \
   -v $(pwd)/config.yaml:/etc/otelcol-contrib/config.yaml \
@@ -61,7 +61,7 @@ receivers:
 
 exporters:
   otlphttp:
-    endpoint: "http://greptimedb:4000/v1/otlp" # GreptimeDB 的 OTLP 路径
+    endpoint: "http://host.docker.internal:4000/v1/otlp"
     headers:
       x-greptime-pipeline-name: "greptime_trace_v1"
       #authorization: "Basic <base64(username:password)>"
@@ -82,7 +82,7 @@ service:
 endpoint：
 
 ```shell
-export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="http://localhost:4318/v1/otlp/v1/traces"
+export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="http://localhost:4318/v1/traces"
 ```
 
 此处为了方便，我们可使用工具

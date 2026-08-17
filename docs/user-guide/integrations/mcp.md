@@ -9,7 +9,7 @@ description: Learn how to integrate GreptimeDB with Model Context Protocol (MCP)
 The GreptimeDB MCP Server is currently in experimental stage and under active development. APIs and features may change without notice. Please use with caution in production environments.
 :::
 
-The [GreptimeDB MCP Server](https://github.com/GreptimeTeam/greptimedb-mcp-server) provides a Model Context Protocol implementation that enables AI assistants like Claude to securely query and analyze your GreptimeDB databases using SQL, TQL (PromQL-compatible), and RANGE queries — with read-only enforcement and data masking built in.
+The [GreptimeDB MCP Server](https://github.com/GreptimeTeam/greptimedb-mcp-server) provides a Model Context Protocol implementation that enables AI assistants like Claude to query and analyze your GreptimeDB databases using SQL, TQL (PromQL-compatible), and RANGE queries. SQL execution is read-only by default, and query results can be masked based on column names. Pipeline and dashboard management tools can modify GreptimeDB through its HTTP APIs.
 
 Watch our [demo video on YouTube](https://www.youtube.com/watch?v=EBTc46yamFI) to see the MCP Server in action.
 
@@ -119,13 +119,13 @@ DNS rebinding protection is disabled by default for compatibility with proxies a
 
 ## Security
 
-The server is **read-only by default** and applies several safeguards.
+The `execute_sql` tool is **read-only by default** and the server applies several safeguards.
 
 - **Security gate**: blocks `DROP`, `DELETE`, `TRUNCATE`, `UPDATE`, `INSERT`, `ALTER`, `CREATE`, `GRANT`, `REVOKE`, and encoded bypass attempts; allows `SELECT`, `SHOW`, `DESCRIBE`, `TQL`, `EXPLAIN`, `UNION`.
 - **Data masking**: columns whose names match patterns such as `password`, `token`, `api_key`, `ssn`, or `credit_card` are masked as `******`. Add patterns with `--mask-patterns`.
 - **Audit logging**: every tool invocation is logged. Disable with `--audit-enabled false`.
 
-For the strongest setup, also create a read-only database user with the [static user provider](/user-guide/deployments-administration/authentication/static.md) and connect the server with it.
+The SQL security gate does not restrict pipeline and dashboard management tools. These tools use the configured HTTP credentials and can create, update, or delete resources. Use credentials with only the permissions required for the tools you enable. For a query-only setup, create a read-only database user with the [static user provider](/user-guide/deployments-administration/authentication/static.md) and connect the server with it.
 
 ### Write mode
 
@@ -138,7 +138,7 @@ greptimedb-mcp-server --allow-write true
 When enabled, the security gate is bypassed for `execute_sql` and the server logs a warning on startup.
 
 :::danger
-Write mode lets an AI assistant run destructive statements against your database. Never enable it against production data.
+Write mode lets an AI assistant run destructive statements against your database. Pipeline and dashboard management tools can also make changes without this option. Never grant the server write access to production resources unless those operations are explicitly required.
 :::
 
 ## Learn More

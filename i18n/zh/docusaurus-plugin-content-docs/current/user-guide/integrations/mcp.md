@@ -9,7 +9,7 @@ description: 了解如何将 GreptimeDB 与模型上下文协议（MCP）集成�
 GreptimeDB MCP Server 目前处于实验阶段并在积极开发中。API 和功能可能会在没有通知的情况下发生变化。请在生产环境中谨慎使用。
 :::
 
-[GreptimeDB MCP Server](https://github.com/GreptimeTeam/greptimedb-mcp-server) 提供了模型上下文协议的实现，使 Claude 等 AI 助手能够安全地用 SQL、TQL（兼容 PromQL）和 RANGE 查询来查询与分析您的 GreptimeDB 数据库——并内置只读保护和数据脱敏。
+[GreptimeDB MCP Server](https://github.com/GreptimeTeam/greptimedb-mcp-server) 提供了模型上下文协议的实现，使 Claude 等 AI 助手能够用 SQL、TQL（兼容 PromQL）和 RANGE 查询来查询与分析 GreptimeDB 数据库。SQL 默认只读，查询结果可以根据列名进行脱敏。Pipeline 和仪表盘管理工具可以通过 GreptimeDB HTTP API 修改资源。
 
 查看我们的[演示视频和文章](https://mp.weixin.qq.com/s/gbTuMLoG4b151Hs8KCSGxg)，了解 MCP Server 的实际应用效果。
 
@@ -119,13 +119,13 @@ greptimedb-mcp-server --transport sse --listen-port 3000
 
 ## 安全
 
-server **默认只读**，并提供多重保护。
+`execute_sql` 工具**默认只读**，server 还提供以下保护：
 
 - **安全闸门**：拦截 `DROP`、`DELETE`、`TRUNCATE`、`UPDATE`、`INSERT`、`ALTER`、`CREATE`、`GRANT`、`REVOKE` 以及编码绕过尝试；放行 `SELECT`、`SHOW`、`DESCRIBE`、`TQL`、`EXPLAIN`、`UNION`。
 - **数据脱敏**：列名匹配 `password`、`token`、`api_key`、`ssn`、`credit_card` 等模式的列会被脱敏为 `******`。用 `--mask-patterns` 增加模式。
 - **审计日志**：记录每次工具调用。用 `--audit-enabled false` 关闭。
 
-为了获得最强的安全配置，还可以用[静态用户 provider](/user-guide/deployments-administration/authentication/static.md) 创建一个只读数据库用户，并用它来连接 server。
+SQL 安全闸门不限制 Pipeline 和仪表盘管理工具。这些工具使用配置的 HTTP 凭据，可以创建、更新或删除资源。请使用仅具备所需权限的凭据。如果只需要查询，可以用[静态用户 provider](/user-guide/deployments-administration/authentication/static.md) 创建只读数据库用户，并用它连接 server。
 
 ### 写模式
 
@@ -138,7 +138,7 @@ greptimedb-mcp-server --allow-write true
 开启后，`execute_sql` 的安全闸门会被绕过，server 启动时会打印警告。
 
 :::danger
-写模式会让 AI 助手对你的数据库执行破坏性语句。切勿在生产数据上开启。
+写模式会让 AI 助手对数据库执行破坏性语句。Pipeline 和仪表盘管理工具不需要该选项也能修改资源。除非明确需要这些操作，否则不要授予 server 修改生产资源的权限。
 :::
 
 ## 了解更多

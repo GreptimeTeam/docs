@@ -422,11 +422,14 @@ transform:
 
 首先，使用以下命令将 Pipeline 上传到数据库：
 ```bash
-curl -X "POST" "http://localhost:4000/v1/pipelines/pp" -F "file=@pipeline.yaml"
+curl -X "POST" "http://localhost:4000/v1/pipelines/pp" \
+  -H "Authorization: Basic <base64-encoded-credentials>" \
+  -F "file=@pipeline.yaml"
 ```
 然后，使用以下命令查询表的建表语句：
 ```bash
-curl -X "GET" "http://localhost:4000/v1/pipelines/pp/ddl?table=test_table"
+curl -X "GET" "http://localhost:4000/v1/pipelines/pp/ddl?table=test_table" \
+  -H "Authorization: Basic <base64-encoded-credentials>"
 ```
 API 返回以下 JSON 格式的输出：
 ```JSON
