@@ -1,0 +1,21 @@
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_2e172a2fffe71e::t_f6ef33ad4be573 23-26,31
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_2e172a2fffe71e::t_f6ef33ad4be573 23-25,29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "6662cdc93646ee4bb080b58b38fb2f74f28371a9",
+  "prompts": {},
+  "sessions": {
+    "s_2e172a2fffe71e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a00e67-3312-75b0-97bb-55f944118d10",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
