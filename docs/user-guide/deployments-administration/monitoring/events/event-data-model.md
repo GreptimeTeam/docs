@@ -20,14 +20,15 @@ description: Understand the GreptimeDB events table data model.
 The `actor` is the database user recorded as the initiator of an operation. Use
 it to identify who ran an `ADMIN` statement or submitted a Procedure.
 
-For a Procedure, `actor` comes from the request that submitted it. Every
-lifecycle event for the Procedure records the same `actor`. Events that are not
-associated with a user request have a SQL `NULL` actor.
+When an operation starts a Procedure, GreptimeDB records the database user as
+its `actor`. The Procedure and any child Procedures it starts keep the same
+`actor` throughout their lifecycle. Events that are not associated with a user
+request have a SQL `NULL` actor.
 
 When [authentication](/user-guide/deployments-administration/authentication/overview.md)
 is enabled, `actor` is the authenticated database user. Without authentication,
 `actor` does not verify who sent the request. MySQL and PostgreSQL record the
-username supplied by the client, while HTTP SQL and gRPC record the default user
+username supplied by the client, while HTTP and gRPC record the default user
 `greptime`.
 
 ## Procedure event columns

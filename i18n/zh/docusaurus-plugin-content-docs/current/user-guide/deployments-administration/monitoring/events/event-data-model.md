@@ -20,12 +20,13 @@ description: 了解 GreptimeDB events 表的数据模型。
 `actor` 表示 GreptimeDB 记录的操作发起用户，可用于查找谁执行了 `ADMIN` 语句，
 或谁提交了 Procedure。
 
-对于 Procedure，`actor` 来自提交该 Procedure 的请求，后续每条生命周期事件都会
-记录相同的 `actor`。没有关联用户请求的事件，其 `actor` 为 SQL `NULL`。
+当一次操作触发 Procedure 时，GreptimeDB 会将数据库用户记录为 `actor`。该
+Procedure 及其启动的子 Procedure 会在整个生命周期内沿用这个值。没有关联用户
+请求的事件，其 `actor` 为 SQL `NULL`。
 
 启用[鉴权](/user-guide/deployments-administration/authentication/overview.md)后，
 `actor` 是通过身份验证的数据库用户。未启用鉴权时，`actor` 不能用于确认实际
-调用者：MySQL 和 PostgreSQL 记录客户端提供的用户名，HTTP SQL 和 gRPC 则记录
+调用者：MySQL 和 PostgreSQL 记录客户端提供的用户名，HTTP 和 gRPC 则记录
 默认用户 `greptime`。
 
 ## Procedure 事件列
