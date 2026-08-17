@@ -5,7 +5,7 @@
 
 # 备份、恢复和迁移
 
-GreptimeDB 通过其 CLI 工具提供元数据备份和恢复功能。该功能支持所有主要的元数据存储后端，包括 etcd、MySQL 和 PostgreSQL。有关使用这些功能的详细说明，请参阅[备份和恢复](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data.md)指南。
+GreptimeDB 通过其 CLI 工具提供元数据备份和恢复功能。该功能支持所有主要的元数据存储后端，包括 etcd、MySQL 和 PostgreSQL。有关详细命令，请参阅[元数据备份和恢复](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md)指南。
 
 ## 备份
 

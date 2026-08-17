@@ -34,10 +34,12 @@ description: 介绍如何维护和更新 GreptimeDB 集群中的资源标识（I
 
 要安全地更新`待分配的表 ID`，请按照以下步骤操作：
 
-1. **启用集群恢复模式** - 这可以防止在更新过程中创建新表。详情请参阅[集群恢复模式](/user-guide/deployments-administration/maintenance/recovery-mode.md)。
-2. **设置待分配的表 ID** - 通过 HTTP 接口设置`待分配的表 ID`。
-3. **重启 metasrv 节点** - 这确保新的`待分配的表 ID`被正确设置。
-4. **禁用集群恢复模式** - 恢复正常的集群操作。
+1. **暂停 Procedure Manager** - 拒绝新的 DDL procedure，并允许正在执行的 procedure 完成。详情请参阅[阻止元数据变更](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md)。
+2. **启用集群恢复模式** - `set-next-id` 接口仅在恢复模式下接受变更。详情请参阅[集群恢复模式](/user-guide/deployments-administration/maintenance/recovery-mode.md)。
+3. **设置待分配的表 ID** - 通过 HTTP 接口设置`待分配的表 ID`。
+4. **重启 Metasrv 节点** - 这确保新的`待分配的表 ID`被正确设置。
+5. **禁用集群恢复模式**。
+6. **恢复 Procedure Manager**，重新允许元数据变更。
 
 通过发送 POST 请求到 `/admin/sequence/table/set-next-id` 端点设置`待分配的表 ID`：
 
