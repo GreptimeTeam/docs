@@ -83,7 +83,7 @@ greptime cli data export --addr localhost:4000 \
 greptime cli data export \
     --addr localhost:4000 \
     --output-dir /tmp/backup/greptimedb \
-    --database '{my_database_name}'
+    --database <DATABASE_NAME>
 ```
 
 ## Import Operations
@@ -122,7 +122,7 @@ greptime cli data import \
 greptime cli data import \
     --addr localhost:4000 \
     --input-dir /tmp/backup/greptimedb \
-    --database '{my_database_name}'
+    --database <DATABASE_NAME>
 ```
 
 ## Best Practices

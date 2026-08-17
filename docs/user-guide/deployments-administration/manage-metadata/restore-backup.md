@@ -5,7 +5,7 @@ description: Guide for backing up, restoring, and migrating GreptimeDB metadata 
 
 # Backup and Restore, Migrate
 
-GreptimeDB provides metadata backup and restore capabilities through its CLI tool. This functionality supports all major metadata storage backends including etcd, MySQL, and PostgreSQL. For detailed instructions on using these features, refer to the [Backup and Restore](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data.md) guide.
+GreptimeDB provides metadata backup and restore capabilities through its CLI tool. This functionality supports all major metadata storage backends including etcd, MySQL, and PostgreSQL. For detailed command instructions, refer to the [Metadata Backup and Restore](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md) guide.
 
 ## Backup
 
@@ -35,4 +35,3 @@ Migrate metadata from one metadata storage to another.
 1. Backup the metadata from the source storage.
 2. Restore the metadata to the target storage.
 3. Restart the whole GreptimeDB cluster(all components) to apply the restored metadata.
-

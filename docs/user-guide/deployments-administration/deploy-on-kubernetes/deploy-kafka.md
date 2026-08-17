@@ -81,9 +81,7 @@ extraConfig: |
   log.dirs=/bitnami/kafka/data
   log.flush.interval.messages=10000
   log.flush.interval.ms=1000
-  log.retention.hours=4
   log.roll.hours=3
-  log.retention.bytes=250000000
   log.segment.bytes=1073741824
 ```
 

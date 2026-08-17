@@ -34,10 +34,12 @@ You can get or set the `next table ID` using Metasrv's HTTP interface at the fol
 
 To safely update the `next table ID`, follow this step-by-step process:
 
-1. **Enable cluster recovery mode** - This prevents new table creation during the update process. See [Cluster Recovery Mode](/user-guide/deployments-administration/maintenance/recovery-mode.md) for more details.
-2. **Set the next table ID** - Use the HTTP interface to set the `next table ID`.
-3. **Restart metasrv nodes** - This ensures the new `next table ID` is properly applied.
-4. **Disable cluster recovery mode** - Resume normal cluster operations.
+1. **Pause the Procedure Manager** - This rejects new DDL procedures while allowing running procedures to finish. See [Prevent Metadata Changes](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md).
+2. **Enable cluster recovery mode** - The `set-next-id` endpoint only accepts changes while recovery mode is enabled. See [Cluster Recovery Mode](/user-guide/deployments-administration/maintenance/recovery-mode.md).
+3. **Set the next table ID** - Use the HTTP interface to set the `next table ID`.
+4. **Restart Metasrv nodes** - This ensures the new `next table ID` is properly applied.
+5. **Disable cluster recovery mode**.
+6. **Resume the Procedure Manager** to allow metadata changes again.
 
 Set the `next table ID` by sending a POST request to the `/admin/sequence/table/set-next-id` endpoint:
 
