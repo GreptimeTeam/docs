@@ -1,6 +1,6 @@
 ---
 keywords: [快速开始, 写入日志, 查询日志, pipeline, 结构化数据, 日志写入, 日志收集, 日志管理工具]
-description: 在 GreptimeDB 中快速写入和查询日志的全面指南，包括直接日志写入和使用 pipeline 处理结构化数据。
+description: 创建自定义 Pipeline，将 Nginx 日志解析为带类型和索引的列，然后写入并查询结果。
 ---
 
 # 使用自定义 Pipeline
@@ -93,13 +93,13 @@ transform:
 - **数据提取**：`dissect` 处理器使用 pattern 匹配来解析 `message` 字段并提取结构化数据，包括 `ip_address`、`timestamp`、`http_method`、`request_line`、`status_code`、`response_size` 和 `user_agent`。
 - **时间戳处理**：`date` 处理器使用格式 `%d/%b/%Y:%H:%M:%S %z` 解析提取的 `timestamp` 字段并将其转换为适当的时间戳数据类型。
 - **字段选择**：`select` 处理器从最终输出中排除原始 `message` 字段，同时保留所有其他字段。
-- **表选项**：`vrl` 处理器根据提取的字段设置表选项，例如向表名添加后缀和设置 TTL。`greptime_ttl = "7d"` 配置表数据的保存时间为 7 天。
+- **表选项**：`vrl` 处理器通过 `greptime_ttl = "7d"` 将表的 TTL 设置为七天。
 
 **Transform**：定义如何转换和索引提取的字段：
 - **字段转换**：每个提取的字段都转换为适当的数据类型并根据需要配置相应的索引。像 `http_method` 这样的字段在没有提供显式配置时保留其默认数据类型。
 - **索引策略**：
   - `ip_address` 和 `status_code` 使用倒排索引作为标签进行快速过滤
-  - `request_line` 和 `user_agent` 使用全文索引以获得最佳文本搜索能力
+  - `request_line` 和 `user_agent` 使用全文索引加速 `matches_term` 查询
   - `timestamp` 是必需的时间索引列
 
 有关 pipeline 配置选项的详细信息，
@@ -121,7 +121,7 @@ curl -X "POST" \
 成功执行后，将创建一个名为 `nginx_pipeline` 的 pipeline 并返回以下结果：
 
 ```json
-{"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}.
+{"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}
 ```
 
 你可以为同一个 pipeline 名称创建多个版本。
@@ -205,7 +205,7 @@ SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GE
 
 对于文本字段 `request_line` 和 `user_agent`，你可以使用 `matches_term` 函数来搜索日志。
 还记得我们在[创建 pipeline](#create-a-pipeline) 时为这两列创建了全文索引。
-这带来了高性能的全文搜索。
+全文索引使这些 predicate 能够按 term 裁剪数据。
 
 例如，查询 `request_line` 列包含 `/index.html` 或 `/api/login` 的日志。
 
@@ -228,11 +228,7 @@ SELECT * FROM custom_pipeline_logs WHERE matches_term(request_line, '/index.html
 
 ## 使用 Pipeline 的好处
 
-使用 pipeline 处理日志带来了结构化的数据和自动的字段提取，
-这使得查询和分析更加高效。
-
-你也可以在没有 pipeline 的情况下直接将日志写入数据库，
-但这种方法限制了高性能分析能力。
+Pipeline 在存储前提取字段，因此查询可以过滤 typed column，并为不同列使用对应的索引。也可以直接写入日志；但保留在单个 `message` 值中的字段只能作为文本查询，或者在查询时重新解析。
 
 ### 直接插入日志（不使用 Pipeline）
 
@@ -308,17 +304,16 @@ DESC origin_logs;
 
 ### 为什么使用 Pipeline？
 
-建议使用 pipeline 方法将日志消息拆分为多列，
-这具有明确查询特定列中特定值的优势。
-有几个关键原因使得基于列的匹配查询比全文搜索更优越：
+当查询需要将状态码、client address 或 request method 作为独立字段时，应使用 Pipeline。结构化后可以选择不同的 predicate 和索引：
 
-- **性能**：基于列的查询通常比全文搜索更快
-- **存储效率**：GreptimeDB 的列式存储能更好地压缩结构化数据；标签的倒排索引比全文索引消耗更少的存储空间
-- **查询简单性**：基于标签的查询更容易编写、理解和调试
+- 数值和等值 predicate 可以直接作用于 typed value，而不是解析文本。
+- 每列可以选择适合其查询模式的索引。
+- 查询可以直接引用字段，不必重复日志解析规则。
+
+存储和查询性能取决于数据分布、索引和 workload；如果该取舍重要，应使用实际数据对结构化和原始 schema 进行测试。
 
 ## 下一步
 
 - **全文搜索**：阅读[全文搜索](fulltext-search.md) 指南，了解 GreptimeDB 中的高级文本搜索功能和查询技术
 - **Pipeline 配置**：阅读 [Pipeline 配置](/reference/pipeline/pipeline-config.md) 文档，了解更多关于为各种日志格式和处理需求创建和自定义 pipeline 的信息
-
 

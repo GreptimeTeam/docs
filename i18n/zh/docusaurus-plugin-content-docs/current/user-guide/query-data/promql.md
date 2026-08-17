@@ -5,14 +5,11 @@ description: 介绍 GreptimeDB 对 Prometheus 查询语言（PromQL）的支持�
 
 # Prometheus Query Language
 
-GreptimeDB 可以作为 Grafana 中 Prometheus 的替代品，因为 GreptimeDB 支持 PromQL（Prometheus Query Language）。GreptimeDB 在 Rust 中重新实现了 PromQL，并通过接口将能力开放，包括 Prometheus 的 HTTP API、GreptimeDB 的 HTTP API 和 SQL 接口。
+GreptimeDB 通过兼容 Prometheus 的 HTTP API 和 SQL 的 `TQL` 扩展支持 PromQL（Prometheus Query Language）。在 Grafana 中，可以使用 Prometheus data source 查询 GreptimeDB。
 
 <AnchorAlias id="prometheus-http-api" />
 
 ## Prometheus 的 HTTP API
-
-<!-- Maybe add a section to introduce the simulated interfaces, when there is -->
-<!-- more than one supported -->
 
 GreptimeDB 实现了兼容 Prometheus 的一系列 API，通过 `/v1/prometheus` 路径对外提
 供服务：
@@ -23,9 +20,8 @@ GreptimeDB 实现了兼容 Prometheus 的一系列 API，通过 `/v1/prometheus`
 - Label names `/api/v1/labels`
 - Label values `/api/v1/label/<label_name>/values`
 
-这些接口的输入和输出与原生的 Prometheus HTTP API 相同，用户可以把 GreptimeDB 当
-作 Prometheus 的直接替换。例如，在 Grafana 中我们可以设置
-`http://localhost:4000/v1/prometheus/` 作为其 Prometheus 数据源的地址。
+这些接口使用 Prometheus 的请求和响应格式。在 Grafana 的 Prometheus data source 中，
+将 URL 设置为 `http://localhost:4000/v1/prometheus/`。
 
 访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/api)
 获得更详细的说明。
@@ -126,8 +122,7 @@ metric{__field__!~"field_1|field_2"}
 
 ### 指定数据库
 
-不同于 Prometheus，GreptimeDB 包含数据库概念。如果要进行跨数据库的 PromQL 查询，
-可以使用 `__database__` 来指定数据库名称。
+如果需要查询请求所指定数据库之外的数据，可以使用 `__database__` matcher 指定数据库名称。
 
 ```promql
 metric{__database__="mydatabase"}
@@ -143,19 +138,19 @@ metric{__database__="mydatabase"}
 - tag: `String`
 - value: `Double`
 
-GreptimeDB 目前已实现了大部分（超过 90%）的 PromQL 功能。您可以在下方查看详细的兼容性列表，或者通过此 [issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) 了解我们最新的功能支持情况。
+以下表格列出 GreptimeDB 已实现的常用运算符和函数。当前仍存在的兼容性差异见 [PromQL tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/1042)。
 
-选择器引用不存在的列时，其行为与 Prometheus 一致：不报错且选择器会被静默忽略。但若 `__name__` 选择器引用了不存在的指标（或等效形式），GreptimeDB 则会报告错误。
+### 字面量
 
 支持字符串和浮点数，与 PromQL 的[规则](https://prometheus.io/docs/prometheus/latest/querying/basics/#literals)相同。
 
 ### 选择器
 
-Instant 选择器和 Range 选择器均已支持。需要注意的是，在 Prometheus 和 GreptimeDB 中，指标名称的标签匹配有一个特殊限制：不支持反向匹配（例如 `{__name__!="request_count"}`）。但其他匹配方式，如等值匹配和正则匹配都是完全支持的。
+Instant 选择器和 Range 选择器均已支持。与 Prometheus 一样，选择器必须指定 metric 名称，或者至少包含一个不会匹配空字符串的 matcher。例如，`{__name__!="request_count"}` 也会匹配空 metric 名称，因此不是合法的选择器。
 
 时间区间和时间偏移修饰符均已支持，但目前尚未支持 `@` 修饰符。
 
-当选择不存在的列时，它们将被视为一个所有值都为 `""` 的列。该行为与 Prometheus 和 VictoriaMetrics 一致。
+如果 label matcher 引用不存在的列，GreptimeDB 会按该列的值均为空字符串（`""`）来计算 matcher。若 `__name__` 选择器引用不存在的 metric，则会报告错误。
 
 ### 时间精度
 
@@ -166,26 +161,22 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
 - 支持：
     | Operator |
     | :------- |
-    | add      |
-    | sub      |
-    | mul      |
-    | div      |
-    | mod      |
-    | eqlc     |
-    | neq      |
-    | gtr      |
-    | lss      |
-    | gte      |
-    | lte      |
-    | power    |
+    | `+`      |
+    | `-`      |
+    | `*`      |
+    | `/`      |
+    | `%`      |
+    | `==`     |
+    | `!=`     |
+    | `>`      |
+    | `<`      |
+    | `>=`     |
+    | `<=`     |
+    | `^`      |
     | atan2    |
     | and      |
     | or       |
     | unless   |
-
-- 不支持：
-
-无
 
 ### Aggregators
 
@@ -203,12 +194,6 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | count_values | `count_values("version", build_version)`     |
     | count        | `count (metric)`                             |
     | quantile     | `quantile(0.9, cpu_usage)`                   |
-
-- 不支持：
-    | Aggregator | Progress |
-    | :--------- | :------- |
-    | count      | TBD      |
-    | grouping   | TBD      |
 
 ### Instant Functions
 
@@ -235,11 +220,11 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | cosh               | `cosh(metric)`                    |
     | scalar             | `scalar(metric)`                  |
     | tanh               | `tanh(metric)`                    |
-    | timestamp          | `timestamp()`                     |
+    | timestamp          | `timestamp(metric)`               |
     | sort               | `sort(http_requests_total)`       |
     | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
-    | predicate_linear   | `predict_linear(metric, 120)`     |
+    | predict_linear     | `predict_linear(metric[5m], 120)` |
     | absent             | `absent(nonexistent{job="myjob"})`|
     | sgn                | `sgn(metric)`                     |
     | pi                 | `pi()`                            |
@@ -249,11 +234,6 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | clamp              | `clamp(metric, 0, 12)`            |
     | clamp_max          | `clamp_max(metric, 12)`           |
     | clamp_min          | `clamp_min(metric, 0)`            |
-
-- 不支持：
-    | Function                   | Progress |
-    | :------------------------- | :------- |
-    | *other multiple input fns* | TBD      |
 
 ### Range Functions
 
@@ -270,11 +250,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | deriv              | `deriv(metric[5m])`            |
     | increase           | `increase(metric[5m])`         |
     | irate              | `irate(metric[5m])`            |
-    | reset              | `reset(metric[5m])`            |
-
-- 不支持：
-
-无
+    | resets             | `resets(metric[5m])`           |
 
 ### Label 及其他函数
 
@@ -285,7 +261,3 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`            |
     | sort_by_label | `sort_by_label(metric, "foo", "bar")`            |
     | sort_by_label_desc | `sort_by_label_desc(metric, "foo", "bar")`            |
-
-- 不支持：
-
-无

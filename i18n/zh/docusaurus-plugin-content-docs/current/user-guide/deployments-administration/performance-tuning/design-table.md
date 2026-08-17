@@ -1,6 +1,6 @@
 ---
 keywords: [数据模型, 表结构, 标签, tag 列, 时间线, 高基数, 主键, 主键排序, 扫描, 查询裁剪, 倒排索引, 全文索引, 跳数索引, append-only 表, 数据更新, 合并模式, 宽表, 分布式表, 分区, 分区列, metric engine]
-description: 详细介绍了 GreptimeDB 的数据模型使用指南，以及常见场景的表结构设计方式。
+description: 根据写入方式、常用查询条件和数据规模设计 GreptimeDB 表。
 ---
 
 # 数据建模指南
@@ -24,10 +24,9 @@ description: 详细介绍了 GreptimeDB 的数据模型使用指南，以及常�
 
 ### 基数
 
-**基数（Cardinality）**：指数据集中唯一值的数量。可以分为"高基数"和"低基数"：
+**基数（Cardinality）**是列中不同值的数量。高基数和低基数需要结合总行数和 workload 判断，不存在适用于所有表的固定阈值。
 
-- **低基数（Low Cardinality）**：低基数列通常具有固定值。
-  唯一值的总数通常不超过1万个。
+- **低基数（Low Cardinality）**：较少的一组值在大量行中重复出现。
   例如，`namespace`、`cluster`、`http_method` 通常是低基数的。
 - **高基数（High Cardinality）**：高基数列包含大量的唯一值。
   例如，`trace_id`、`span_id`、`user_id`、`uri`、`ip`、`uuid`、`request_id`、表的自增 ID，时间戳通常是高基数的。
@@ -158,7 +157,7 @@ CREATE TABLE http_logs (
 例如，如果你总是只查询特定应用程序的日志，可以将 `application` 列设为主键（tag）。
 
 ```sql
-SELECT message FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 应用程序的数量通常是有限的。表 `http_logs_v2` 使用 `application` 作为主键。
@@ -179,7 +178,7 @@ CREATE TABLE http_logs_v2 (
 ) with ('append_mode'='true');
 ```
 
-过长的主键将对插入性能产生负面影响并增加内存占用。主键最好不超过 5 个列。
+更长的主键会增加写入和内存开销。只应加入存储排序、time-series identity 或去重确实需要的列。
 
 你可以将 `trace_id`、`span_id` 或 `user_id` 等高基数列放入主键，但这通常不是过滤它们的最佳方式。
 
@@ -205,7 +204,7 @@ CREATE TABLE http_logs_v2 (
 
 接下来，需要决定表如何处理具有相同主键和时间戳的行：
 
-- **Append-only**（`append_mode = 'true'`）：保留每一行，不执行去重或删除。这是最快的选项。
+- **Append-only**（`append_mode = 'true'`）：保留每一行，不执行去重或删除，因此避免了去重所需的写入和扫描工作。
 - **去重表**（默认）：每个 `(primary key, timestamp)` 只保留一行，并通过**合并模式**（`last_row` 或 `last_non_null`）控制更新如何合并。
 
 当不需要更新或删除时（例如日志），请选择 append-only。
@@ -312,7 +311,7 @@ CREATE TABLE http_logs_v3 (
 以下查询可以使用 `http_method` 列上的倒排索引。
 
 ```sql
-SELECT message FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = `GET` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = 'GET' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 倒排索引支持以下运算符：
@@ -350,11 +349,11 @@ CREATE TABLE http_logs_v4 (
 以下查询可以使用跳数索引过滤 `request_id` 列。
 
 ```sql
-SELECT message FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = `25b6f398-41cf-4965-aa19-e1c63a88a7a9` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = '25b6f398-41cf-4965-aa19-e1c63a88a7a9' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 然而，请注意跳数索引的查询功能通常不如倒排索引丰富。
-跳数索引无法处理复杂的过滤条件，在低基数列上可能有较低的过滤性能。它只支持等于运算符。
+跳数索引适用于等值和 `IN` predicate，其他 predicate 不会使用该索引。
 
 ### 全文索引
 

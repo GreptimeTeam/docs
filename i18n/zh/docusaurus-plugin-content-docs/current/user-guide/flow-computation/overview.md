@@ -1,21 +1,17 @@
 ---
-keywords: [Flow 引擎, 实时计算, ETL 过程, 持续聚合, 程序模型, 使用案例, 快速入门]
-description: 了解 GreptimeDB 的 Flow 引擎如何对持续写入的数据进行实时持续聚合，如何用于 ETL 过程和分析。了解其 batching 执行模型、使用案例以及从 nginx 日志计算 user_agent 统计信息的快速入门示例。
+keywords: [Flow 引擎, 持续计算, ETL 过程, 持续聚合, 程序模型, 使用案例, 快速入门]
+description: 了解 GreptimeDB 的 Flow 引擎如何随 source 数据变化维护查询结果，并创建一个从 nginx 日志计算 user_agent 统计信息的 Flow。
 ---
 
 # 流计算
 
-GreptimeDB 的 Flow 引擎可以对持续写入的数据进行实时计算。
-它特别适用于提取 - 转换 - 加载 (ETL) 过程，或执行持续聚合，例如求和、平均值和其他时间窗口计算。
-Flow 引擎确保数据被增量和连续地处理，
-根据到达的新数据更新最终结果。
-你可以将其视为一个聪明的物化视图，
-它知道何时更新结果视图表以及如何以最小的努力更新它。
+GreptimeDB 的 Flow 引擎会随 source 数据变化维护 sink 表中的查询结果。
+它适用于提取 - 转换 - 加载（ETL）任务，以及求和、平均值和时间窗口计算等持续聚合。
 
 使用案例包括：
 
-- 降采样数据点，使用如平均池化等方法减少存储和分析的数据量
-- 提供近实时分析、可操作的信息
+- 为仪表盘和告警维护聚合结果
+- 将高频数据降采样到更粗的时间窗口
 
 :::note
 Flow 对聚合和 TQL workload 使用 batching mode。简单的非聚合 Flow 查询当前会使用已废弃的 streaming mode，不推荐新 workload 使用。
@@ -23,14 +19,9 @@ Flow 对聚合和 TQL workload 使用 batching mode。简单的非聚合 Flow �
 
 ## 程序模型
 
-在将数据插入 source 表后，
-数据会同时被写入到 Flow 引擎中。
-在每个触发间隔（一秒）时，
-Flow 引擎执行指定的计算并将结果更新到 sink 表中。
-source 表和 sink 表都是 GreptimeDB 中的时间序列表。
-在创建 Flow 之前，
-定义这些表的 schema 并设计 Flow 以指定计算逻辑是至关重要的。
-此过程在下图中直观地表示：
+对于聚合和 TQL 查询，Flow 使用 batching 引擎。写入会标记受影响的 source 数据范围，引擎重新计算这些范围并将结果 upsert 到 sink 表。设置 `EVAL INTERVAL` 后，Flow 会按指定周期执行完整查询。简单的 projection/filter 查询使用已废弃的 streaming 引擎。
+
+source 和 sink 都是 GreptimeDB 表。如果 sink 表不存在，Flow 会根据查询结果的 schema 自动创建；如果需要控制主键、索引、分区、TTL 或列定义，应提前创建 sink 表。
 
 ![连续聚合](/flow-ani.svg)
 
@@ -38,10 +29,10 @@ source 表和 sink 表都是 GreptimeDB 中的时间序列表。
 
 为了说明 GreptimeDB 的 Flow 引擎的功能，
 考虑从 nginx 日志计算 user_agent 统计信息的任务。
-source 表是 `nginx_access_log`，
+source 表是 `ngx_http_log`，
 sink 表是 `user_agent_statistics`。
 
-首先，创建 source 表 `nginx_access_log`。
+首先，创建 source 表 `ngx_http_log`。
 为了优化计算 `user_agent` 字段的性能，
 使用 `PRIMARY KEY` 关键字将其指定为 `TAG` 列类型。
 
@@ -79,6 +70,7 @@ CREATE TABLE user_agent_statistics (
 ```sql
 CREATE FLOW user_agent_flow
 SINK TO user_agent_statistics
+EVAL INTERVAL '1m'
 AS
 SELECT
   user_agent,
@@ -89,11 +81,10 @@ GROUP BY
   user_agent;
 ```
 
-一旦创建了 Flow，
-Flow 引擎将持续处理 `nginx_access_log` 表中的数据，并使用计算结果更新 `user_agent_statistics` 表。
+创建 Flow 后，引擎每分钟执行一次查询并更新 `user_agent_statistics`。
 
 要观察 Flow 的结果，
-将示例数据插入 `nginx_access_log` 表。
+将示例数据插入 `ngx_http_log` 表。
 
 ```sql
 INSERT INTO ngx_http_log

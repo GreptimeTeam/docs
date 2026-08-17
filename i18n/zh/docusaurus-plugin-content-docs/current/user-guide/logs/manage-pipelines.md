@@ -41,7 +41,7 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/test" \
 成功上传 pipeline 后，响应将包含版本信息：
 
 ```json
-{"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}
+{"name":"test","version":"2024-06-27 12:02:34.257312110Z"}
 ```
 
 版本是 UTC 格式的时间戳，表示 pipeline 的创建时间。
@@ -190,19 +190,25 @@ SELECT name, pipeline, created_at::bigint FROM greptime_private.pipelines;
 (1 row)
 ```
 
-然后可以使用程序将 SQL 结果中的 bigint 类型的时间戳转换为时间字符串。
+下面的 Python 示例将 SQL 返回的纳秒 Unix timestamp 转换为 UTC，并保留纳秒精度：
 
 ```shell
-timestamp_ns="1719489754257312110"; readable_timestamp=$(TZ=UTC date -d @$((${timestamp_ns:0:10}+0)) +"%Y-%m-%d %H:%M:%S").${timestamp_ns:10}Z; echo "Readable timestamp (UTC): $readable_timestamp"
+python3 - <<'PY'
+from datetime import datetime, timezone
+
+timestamp_ns = 1719489754257312110
+seconds, nanoseconds = divmod(timestamp_ns, 1_000_000_000)
+print(f"{datetime.fromtimestamp(seconds, timezone.utc):%Y-%m-%d %H:%M:%S}.{nanoseconds:09d}Z")
+PY
 ```
 
 输出：
 
 ```shell
-Readable timestamp (UTC): 2024-06-27 12:02:34.257312110Z
+2024-06-27 12:02:34.257312110Z
 ```
 
-输出的 `Readable timestamp (UTC)` 即为 Pipeline 的创建时间同时也是版本号。
+输出即 Pipeline 的创建时间和版本号。
 
 ## 问题调试
 

@@ -1,24 +1,11 @@
 ---
 keywords: [continuous aggregation, real-time analytics, time-series data, Flow engine, log analysis, sensor monitoring]
-description: Learn how to use GreptimeDB's continuous aggregation for real-time analytics. Master Flow engine basics, time-window calculations, and SQL queries through practical examples of log analysis and sensor monitoring.
+description: Use Flow to maintain time-windowed aggregates for log analysis, sensor monitoring, and dashboards.
 ---
 
 # Continuous Aggregation
 
-Continuous aggregation is a crucial aspect of processing time-series data to deliver real-time insights.
-The Flow engine empowers developers to perform continuous aggregations,
-such as calculating sums, averages, and other metrics, seamlessly.
-It efficiently updates the aggregated data within specified time windows, making it an invaluable tool for analytics.
-
-Following are three major usecase examples for continuous aggregation:
-
-1. **Real-time Analytics**: A real-time analytics platform that continuously aggregates data from a stream of events, delivering immediate insights while optionally downsampling the data to a lower resolution. For instance, this system can compile data from a high-frequency stream of log events (e.g., occurring every millisecond) to provide up-to-the-minute insights such as the number of requests per minute, average response times, and error rates per minute.
-
-2. **Real-time Monitoring**: A real-time monitoring system that continuously aggregates data from a stream of events and provides real-time alerts based on the aggregated data. For example, a system that aggregates data from a stream of sensor events and provides real-time alerts when the temperature exceeds a certain threshold.
-
-3. **Real-time Dashboard**: A real-time dashboard that shows the number of requests per minute, the average response time, and the number of errors per minute. This dashboard can be used to monitor the health of the system and to detect any anomalies in the system.
-
-In all these usecases, the continuous aggregation system continuously aggregates data from a stream of events and provides real-time insights and alerts based on the aggregated data. The system can also downsample the data to a lower resolution to reduce the amount of data stored and processed. This allows the system to provide real-time insights and alerts while keeping the data storage and processing costs low.
+Flow maintains aggregate results as source data changes. Typical uses include downsampling high-frequency data, maintaining threshold results for monitoring, and precomputing dashboard queries. The examples below cover each pattern.
 
 
 ## Real-time Analytics Example
@@ -62,7 +49,7 @@ CREATE TABLE `ngx_statistics` (
 );
 ```
 
-Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. So you can be made aware in real time the information about packet size and action upon it, i.e. if the `high_size_count` became too high at a certain point, you can further examine if anything goes wrong, or if the `max_size` column suddenly spike in a 1 minute time window, you can then trying to locate that packet and further inspect it.
+Then create `ngx_aggregation`. It calculates the count and size statistics for each status code in one-minute windows. `high_size_count` counts rows whose `size` exceeds 550.
 
 The `EXPIRE AFTER '6h'` in the following SQL ensures that the flow computation only uses source data from the last 6 hours. Data older than 6 hours in the sink table will not be modified by this flow. For more details, see [manage-flow](manage-flow.md#expire-after).
 
@@ -97,7 +84,7 @@ VALUES
     ('ios', 'iOS', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 404, 700, 'agent', now());
 ```
 
-Then the sink table `ngx_statistics` will be incremental updated and contain the following data:
+The sink table `ngx_statistics` is updated with the following data:
 
 ```sql
 SELECT * FROM ngx_statistics;
@@ -123,7 +110,7 @@ VALUES
     ('ios', 'iOS', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 404, 800, 'agent', now());
 ```
 
-The sink table `ngx_statistics` now have corresponding rows updated, notes how `max_size`, `avg_size` and `high_size_count` are updated:
+The corresponding rows in `ngx_statistics` are updated. In particular, `max_size`, `avg_size`, and `high_size_count` change:
 
 ```sql
 SELECT * FROM ngx_statistics;
@@ -194,8 +181,7 @@ GROUP BY
 The above query puts the data from the `ngx_access_log` table into the `ngx_country` table.
 It calculates the distinct country for each time window.
 The `date_bin` function is used to group the data into one-hour intervals.
-The `ngx_country` table will be continuously updated with the aggregated data,
-providing real-time insights into the distinct countries that are accessing the system. The `EXPIRE AFTER` make flow ignore data with `access_time` older than 7 days and no longer calculate them anymore, see more explain in [manage-flow](manage-flow.md#expire-after).
+The `ngx_country` table is updated with the distinct countries for each window. `EXPIRE AFTER` excludes source rows whose `access_time` is more than seven days old; see [Manage Flows](manage-flow.md#expire-after).
 
 You can insert some data into the source table `ngx_access_log`:
 
@@ -235,7 +221,7 @@ select * from ngx_country;
 
 ## Real-Time Monitoring Example
 
-Consider a usecase where you have a stream of sensor events from a network of temperature sensors that you want to monitor in real-time. The sensor events contain information such as the sensor ID, the temperature reading, the timestamp of the reading, and the location of the sensor. You want to continuously aggregate this data to provide real-time alerts when the temperature exceeds a certain threshold. Then the query for continuous aggregation would be:
+This example maintains the maximum temperature for each sensor and location in ten-second windows, and keeps only windows whose maximum exceeds 100:
 
 ```sql
 /* create input table */
@@ -279,9 +265,9 @@ HAVING max_temp > 100;
 
 The above query continuously aggregates data from the `temp_sensor_data` table into the `temp_alerts` table.
 It calculates the maximum temperature reading for each sensor and location,
-filtering out data where the maximum temperature exceeds 100 degrees.
+and retains results where the maximum temperature exceeds 100 degrees.
 The `temp_alerts` table will be continuously updated with the aggregated data,
-providing real-time alerts (in the form of new rows in the `temp_alerts` table) when the temperature exceeds the threshold. The `EXPIRE AFTER '1h'` makes flow only calculate source data with `ts` in `(now - 1h, now)` range, see more explain in [manage-flow](manage-flow.md#expire-after).
+providing alert rows in `temp_alerts` when the temperature exceeds the threshold. `EXPIRE AFTER '1h'` limits the source data considered by Flow to timestamps within the last hour; see [Manage Flows](manage-flow.md#expire-after).
 
 Now that we have created the flow task, we can insert some data into the source table `temp_sensor_data`:
 

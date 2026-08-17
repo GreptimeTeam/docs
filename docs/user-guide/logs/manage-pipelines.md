@@ -38,7 +38,7 @@ The last uploaded version is used by default if no version is specified.
 After successfully uploading a pipeline, the response will include version information:
 
 ```json
-{"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}
+{"name":"test","version":"2024-06-27 12:02:34.257312110Z"}
 ```
 
 The version is a timestamp in UTC format that indicates when the pipeline was created.
@@ -187,19 +187,25 @@ The query result is as follows:
 (1 row)
 ```
 
-Then, you can use a program to convert the bigint type timestamp from the SQL result into a time string.
+The following Python example converts the nanosecond Unix timestamp returned by SQL to UTC without losing nanosecond precision:
 
 ```shell
-timestamp_ns="1719489754257312110"; readable_timestamp=$(TZ=UTC date -d @$((${timestamp_ns:0:10}+0)) +"%Y-%m-%d %H:%M:%S").${timestamp_ns:10}Z; echo "Readable timestamp (UTC): $readable_timestamp"
+python3 - <<'PY'
+from datetime import datetime, timezone
+
+timestamp_ns = 1719489754257312110
+seconds, nanoseconds = divmod(timestamp_ns, 1_000_000_000)
+print(f"{datetime.fromtimestamp(seconds, timezone.utc):%Y-%m-%d %H:%M:%S}.{nanoseconds:09d}Z")
+PY
 ```
 
 Output:
 
 ```shell
-Readable timestamp (UTC): 2024-06-27 12:02:34.257312110Z
+2024-06-27 12:02:34.257312110Z
 ```
 
-The output `Readable timestamp (UTC)` represents the creation time of the pipeline and also serves as the version number.
+The output is the pipeline creation time and version number.
 
 ## Debug
 
@@ -245,7 +251,7 @@ The pipeline configuration contains an error. The `gsub` Processor expects the `
 {"error":"Failed to parse pipeline: 'replacement' must be a string"}
 ```
 
-Therefore, We need to modify the configuration of the `gsub` Processor and change the value of the `replacement` field to a string type.
+Change `replacement` to a string:
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/pipelines/test" \

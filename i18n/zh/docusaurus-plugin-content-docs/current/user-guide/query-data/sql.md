@@ -5,7 +5,7 @@ description: 介绍 GreptimeDB 支持的 SQL 查询功能，包括基础查询�
 
 # SQL
 
-GreptimeDB 在查询数据时支持完整的 `SQL` 语法。
+GreptimeDB 通过 MySQL、PostgreSQL 和 HTTP 接口支持 SQL 查询。具体支持的语法和扩展见 [SQL 参考文档](/reference/sql/overview.md)。
 
 在这篇文档中，我们将使用 `monitor` 表中的数据作为示例来演示如何查询数据。关于如何创建 `monitor` 表格并向其中插入数据，请参考[表管理](/user-guide/deployments-administration/manage-data/basic-table-operations.md#创建表)和[写入数据](/user-guide/ingest-data/for-iot/sql.md)。
 
@@ -204,7 +204,7 @@ SELECT * FROM monitor WHERE ts > '2022-07-25 10:32:16.408+08:00';
 
 ### 函数
 
-GreptimeDB 提供了丰富的内置函数和聚合函数，为数据分析应用开发。其特点包括：
+GreptimeDB 提供内置的标量函数、聚合函数和全文检索函数，包括：
 
 + Apache Datafusion 查询引擎中继承的函数，包括一组符合 Postgres 命名方式和行为的日期/时间函数。
 + JSON、位置信息等特殊数据类型的操作函数。
@@ -293,7 +293,7 @@ FROM monitor;
 
 ## 按标签聚合数据
 
-你可以使用 `GROUP BY` 语句将具有相同值的行进行分组汇总，例如查询 `idc` 列中的所有不同值的内存均值：
+你可以使用 `GROUP BY` 语句分组汇总数据。下面的查询计算每个 host 的平均 CPU 使用率：
 
 ```sql
 SELECT host, avg(cpu) FROM monitor GROUP BY host;
@@ -360,7 +360,7 @@ ALIGN '5s' TO '2023-12-01T00:00:00' BY (host) ORDER BY ts ASC;
 
 1. `avg(cpu) RANGE '10s' FILL LINEAR` 是一个 Range 表达式。`RANGE '10s'` 指定了聚合的时间范围为 10s，`FILL LINEAR` 指定了如果某个点没有数据，使用 `LINEAR` 方法来填充。
 2. `ALIGN '5s'` 指定了查询的步频为 5s。
-3. `TO '2023-12-01T00:00:00` 指定了原始对齐时间。默认值为 Unix 时间 0。
+3. `TO '2023-12-01T00:00:00'` 指定初始对齐时间。如果省略 `TO`，则使用按 SQL session 时区调整后的 Unix epoch 作为对齐原点。
 4. `BY (host)` 指定了聚合的键。如果省略 `BY` 关键字，那么默认使用数据表的主键作为聚合键。
 5. `ORDER BY ts ASC` 指定了结果集的排序方法。如果不指定排序方法，结果集的顺序是不确定的。
 
@@ -384,7 +384,7 @@ ALIGN '5s' TO '2023-12-01T00:00:00' BY (host) ORDER BY ts ASC;
 ### 时间范围窗口
 
 将初始时间范围窗口在时间序列中向前和向后移动，就生成了所有时间范围窗口。
-在上面的例子中，初始对齐时间被设置为 `2023-12-01T00:00:00`，这也是初始时间窗口的结束时间。
+在上面的例子中，初始对齐时间被设置为 `2023-12-01T00:00:00`，这也是初始时间窗口的开始时间。
 
 `RANGE` 选项和初始对齐时间定义了初始时间范围窗口，它从 `初始对齐时间` 开始，到 `初始对齐时间 + RANGE` 结束。
 `ALIGN` 选项定义了查询的步频，决定了从初始时间窗口到其他时间窗口的计算步频。

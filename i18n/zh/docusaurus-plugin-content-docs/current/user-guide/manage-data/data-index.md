@@ -1,21 +1,21 @@
 ---
 keywords: [索引, 倒排索引, 跳数索引, 全文索引, 查询性能]
-description: 了解 GreptimeDB 支持的各类索引，包括倒排索引、跳数索引和全文索引，以及如何合理使用这些索引来提升查询效率。
+description: 了解 GreptimeDB 的倒排索引、跳数索引和全文索引分别适用于哪些查询，以及如何配置。
 ---
 
 # 数据索引
 
-GreptimeDB 提供了多种索引机制来提升查询性能。作为数据库中的核心组件，索引通过建立高效的数据检索路径，显著优化了数据的查询操作。
+GreptimeDB 针对不同的 predicate 和数据分布提供了多种二级索引。
 
 ## 概述
 
-在 GreptimeDB 中，索引是在表创建时定义的，其设计目的是针对不同的数据类型和查询模式来优化查询性能。目前支持的索引类型包括：
+索引既可以在建表时定义，也可以之后通过 `ALTER TABLE` 修改。GreptimeDB 支持：
 
 - 倒排索引（Inverted Index）
 - 跳数索引（Skipping Index）
 - 全文索引（Fulltext Index）
 
-需要说明的是，本章节重点讨论数据值索引。虽然主键（PRIMARY KEY）和 TIME INDEX 也在某种程度上具有索引的特性，但不在本章讨论范围内。
+本页只介绍列值上的索引，不包括主键和 time index。
 
 ## 索引类型
 
@@ -45,7 +45,7 @@ CREATE TABLE monitoring_data (
 
 ### 跳数索引
 
-跳数索引是专为列式存储系统（如 GreptimeDB）优化设计的索引类型。它通过维护数据块内值域范围的元数据，使查询引擎能够在进行范围查询时快速跳过不相关的数据块。与其他索引相比，跳数索引的存储开销相对较小。
+跳数索引为每组数据行保存一个 Bloom filter。对于受支持的 predicate，如果过滤器能够确认目标值不存在，GreptimeDB 就可以跳过该数据组。Bloom filter 可能产生 false positive，因此未被跳过的数据仍需执行普通 predicate 计算。
 
 **适用场景：**
 - 数据分布稀疏的场景，例如日志中的 MAC 地址
@@ -77,11 +77,11 @@ CREATE TABLE sensor_data (
 );
 ```
 
-然而，跳数索引无法处理复杂的过滤条件，并且其过滤性能通常不如倒排索引或全文索引。
+跳数索引只适用于能够转换为 membership test 的 predicate。可以使用 [`EXPLAIN ANALYZE`](/reference/sql/explain.md) 检查重要查询是否进行了索引裁剪。
 
 ### 全文索引
 
-全文索引专门用于优化字符串列的文本搜索操作。它支持基于词的匹配和文本搜索功能，能够实现对文本内容的高效检索。你可以使用灵活的关键词、短语或模式匹配来查询文本数据。
+全文索引会对 `STRING` 列分词，使 `matches_term` 和 `@@` predicate 能够跳过不可能包含目标 term 的数据。查询语义见[全文检索](/user-guide/logs/fulltext-search.md)。
 
 **适用场景：**
 - 文本内容搜索
@@ -104,12 +104,11 @@ CREATE TABLE logs (
 - `analyzer`：设置全文索引的语言分析器
   - 支持的值：`English`、`Chinese`
   - 默认值：`English`
-  - 注意：由于中文文本分词的复杂性，中文分析器构建索引需要的时间显著更长。建议仅在中文文本搜索是主要需求时使用。
 
 - `case_sensitive`：决定全文索引是否区分大小写
   - 支持的值：`true`、`false`
   - 默认值：`false`
-  - 注意：设置为 `true` 可能会略微提高区分大小写查询的性能，但会降低不区分大小写查询的性能。此设置不会影响 `matches_term` 查询的结果。
+  - 设为 `false` 时，index analyzer 会将 token 规范化为小写。
 
 - `backend`：设置全文索引的后端实现
   - 支持的值：`bloom`、`tantivy`
@@ -125,54 +124,20 @@ CREATE TABLE logs (
 
 #### 后端选择
 
-GreptimeDB 提供两种全文索引后端用于高效日志搜索：
+GreptimeDB 提供两种全文索引后端：
 
-1. **Bloom 后端**
-   - 最适合：通用日志搜索
-   - 特点：
-     - 使用 Bloom 过滤器进行高效过滤
-     - 存储开销较低
-     - 在不同查询模式下性能稳定
-   - 限制：
-     - 对于高选择性查询稍慢
-   - 存储成本示例：
-     - 原始数据：约 10GB
-     - Bloom 索引：约 1GB
+- `bloom` 按 segment 保存 token Bloom filter。它可能读取 false-positive segment，索引大小和裁剪精度取决于 `granularity` 和 `false_positive_rate`。
+- `tantivy` 保存能够直接定位匹配 document 的 term index。它通常比 `bloom` 使用更多索引存储和构建资源。
 
-2. **Tantivy 后端**
-   - 最适合：高选择性查询（如 TraceID 等唯一值）
-   - 特点：
-     - 使用倒排索引实现快速精确匹配
-     - 对高选择性查询性能优异
-   - 限制：
-     - 存储开销较高（接近原始数据大小）
-     - 对低选择性查询性能较慢
-   - 存储成本示例：
-     - 原始数据：约 10GB
-     - Tantivy 索引：约 10GB
-
-#### 性能对比
-
-下表显示了不同查询方法之间的性能对比（以 Bloom 为基准）：
-
-| 查询类型 | 高选择性（如 TraceID） | 低选择性（如 "HTTP"） |
-|------------|----------------------------------|--------------------------------|
-| LIKE       | 慢 50 倍                      | 1 倍                            |
-| Tantivy    | 快 5 倍                       | 慢 5 倍                     |
-| Bloom      | 1 倍（基准）                   | 1 倍（基准）                 |
-
-主要观察结果：
-- 对于高选择性查询（如唯一值），Tantivy 提供最佳性能
-- 对于低选择性查询，Bloom 提供更稳定的性能
-- Bloom 在存储方面比 Tantivy 有明显优势（测试案例中为 1GB vs 10GB）
+具体哪种后端更快，取决于 term 频率、查询结构、segment 布局和 cache。在大规模部署前，应使用有代表性的数据对两种后端进行测试。
 
 #### 配置示例
 
 **创建带全文索引的表**
 
 ```sql
--- 使用 Bloom 后端（大多数情况推荐）
-CREATE TABLE logs (
+-- 使用 Bloom 后端
+CREATE TABLE logs_bloom (
     timestamp TIMESTAMP(9) TIME INDEX,
     `message` STRING FULLTEXT INDEX WITH (
         backend = 'bloom',
@@ -181,8 +146,8 @@ CREATE TABLE logs (
     )
 );
 
--- 使用 Tantivy 后端（用于高选择性查询）
-CREATE TABLE logs (
+-- 使用 Tantivy 后端
+CREATE TABLE logs_tantivy (
     timestamp TIMESTAMP(9) TIME INDEX,
     `message` STRING FULLTEXT INDEX WITH (
         backend = 'tantivy',
@@ -196,8 +161,8 @@ CREATE TABLE logs (
 
 ```sql
 -- 在现有列上启用全文索引
-ALTER TABLE monitor 
-MODIFY COLUMN load_15 
+ALTER TABLE logs
+MODIFY COLUMN message
 SET FULLTEXT INDEX WITH (
     analyzer = 'English',
     case_sensitive = 'false',

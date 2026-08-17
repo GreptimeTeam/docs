@@ -181,8 +181,8 @@ VALUES ("127.0.0.1", "2024-07-11 20:00:01", NULL);
 在创建表时，GreptimeDB 支持 `append_mode` 选项，该选项始终将新数据插入表中。
 当你想要保留所有历史数据（例如日志）时十分有用。
 
-你只能使用 SQL 创建带有 `append_mode` 选项的表。
-成功创建表后，所有[写入数据的协议](/user-guide/ingest-data/overview.md)都将在表中始终插入新数据。
+可以在 `CREATE TABLE` 中设置 `append_mode`，也可以在受支持的写入协议自动建表时传入 [`append_mode` HTTP hint](/user-guide/protocols/http.md#hints)。
+表以 append mode 创建后，通过任何[写入协议](/user-guide/ingest-data/overview.md)写入时，都会追加新行，而不是替换具有相同主键和时间戳的行。
 
 例如，你可以创建一个带有 `append_mode` 选项的 `app_logs` 表，如下所示。
 `host` 和 `log_level` 列表示 tag，`ts` 列表示 time index。

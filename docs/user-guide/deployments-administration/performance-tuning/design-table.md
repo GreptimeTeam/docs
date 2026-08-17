@@ -1,6 +1,6 @@
 ---
 keywords: [table schema, data model, cardinality, tag columns, field columns, time index, primary key, primary key ordering, scan, query pruning, inverted index, full-text index, skipping index, append-only tables, data updating, merge mode, wide table, distributed tables, partitioning, partition columns, metric engine]
-description: Learn how to design your table schema in GreptimeDB for optimal performance and query efficiency
+description: Design GreptimeDB tables for the expected write pattern, query filters, and data volume.
 ---
 
 # Design Your Table Schema
@@ -25,10 +25,9 @@ Before proceeding, please review the GreptimeDB [Data Model Documentation](/user
 
 ### Cardinality
 
-**Cardinality**: Refers to the number of unique values in a dataset. It can be classified as "high cardinality" or "low cardinality":
+**Cardinality** is the number of distinct values in a column. "High" and "low" are relative to the row count and workload; there is no fixed threshold that applies to every table.
 
-- **Low Cardinality**: Low cardinality columns usually have constant values.
-  The total number of unique values usually no more than 10 thousand.
+- **Low Cardinality**: A relatively small set of values is repeated across many rows.
   For example, `namespace`, `cluster`, `http_method` are usually low cardinality.
 - **High Cardinality**: High cardinality columns contain a large number of unique values.
   For example, `trace_id`, `span_id`, `user_id`, `uri`, `ip`, `uuid`, `request_id`, table auto increment id, timestamps are usually high cardinality.
@@ -160,7 +159,7 @@ You can use primary key when there are suitable columns and one of the following
 For example, if you always only query logs of a specific application, you may set the `application` column as primary key (tag).
 
 ```sql
-SELECT message FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 The number of applications is usually limited. Table `http_logs_v2` uses `application` as the primary key.
@@ -181,7 +180,7 @@ CREATE TABLE http_logs_v2 (
 ) with ('append_mode'='true');
 ```
 
-A long primary key will negatively affect the insert performance and enlarge the memory footprint. It's recommended to define a primary key with no more than 5 columns.
+A longer primary key increases write and memory costs. Include only columns needed for storage ordering, time-series identity, or deduplication.
 
 You can put high cardinality columns such as `trace_id`, `span_id`, or `user_id` into the primary key, but it is often not the best way to filter on them.
 
@@ -208,7 +207,7 @@ Recommendations for tags:
 
 Next, decide how the table handles rows that share the same primary key and timestamp:
 
-- **Append-only** (`append_mode = 'true'`): keep every row, with no deduplication or deletes. This is the fastest option.
+- **Append-only** (`append_mode = 'true'`): keep every row, with no deduplication or deletes. This avoids the write and scan work required for deduplication.
 - **Deduplicating** (the default): keep a single row per `(primary key, timestamp)`, with a **merge mode** (`last_row` or `last_non_null`) controlling how updates combine.
 
 Choose append-only when you don't need updates or deletes (for example, logs).
@@ -317,7 +316,7 @@ CREATE TABLE http_logs_v3 (
 The following query can use the inverted index on the `http_method` column.
 
 ```sql
-SELECT message FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = `GET` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = 'GET' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 Inverted index supports the following operators:
@@ -356,11 +355,11 @@ CREATE TABLE http_logs_v4 (
 The following query can use the skipping index to filter the `request_id` column.
 
 ```sql
-SELECT message FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = `25b6f398-41cf-4965-aa19-e1c63a88a7a9` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = '25b6f398-41cf-4965-aa19-e1c63a88a7a9' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 However, note that the query capabilities of the skipping index are generally inferior to those of the inverted index.
-Skipping index can't handle complex filter conditions and may have a lower filtering performance on low cardinality columns. It only supports the equal operator.
+Skipping indexes are applied to equality and `IN` predicates. Other predicates are evaluated without this index.
 
 
 ### Full-Text Index

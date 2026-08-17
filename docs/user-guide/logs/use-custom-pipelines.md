@@ -1,6 +1,6 @@
 ---
 keywords: [quick start, write logs, query logs, pipeline, structured data, log ingestion, log collection, log management tools]
-description: A comprehensive guide to quickly writing and querying logs in GreptimeDB, including direct log writing and using pipelines for structured data.
+description: Create a custom Pipeline to parse Nginx logs into typed, indexed columns, then ingest and query the result.
 ---
 
 # Using Custom Pipelines
@@ -21,7 +21,7 @@ there are two ways to examine your logs:
   The `greptime_identity` pipeline treats the entire text log as a single `message` field,
   which makes it very convenient to see the raw log content directly.
 
-Once understand the log format you want to process,
+Once you understand the log format you want to process,
 you can create a custom pipeline.
 This document uses the following Nginx access log entry as an example:
 
@@ -92,13 +92,13 @@ contains `processors` and `transform` sections that work together to structure y
 - **Data Extraction**: The `dissect` processor uses pattern matching to parse the `message` field and extract structured data including `ip_address`, `timestamp`, `http_method`, `request_line`, `status_code`, `response_size`, and `user_agent`.
 - **Timestamp Processing**: The `date` processor parses the extracted `timestamp` field using the format `%d/%b/%Y:%H:%M:%S %z` and converts it to a proper timestamp data type.
 - **Field Selection**: The `select` processor excludes the original `message` field from the final output while retaining all other fields.
-- **Table Options**: The `vrl` processor sets the table options based on the extracted fields, such as adding a suffix to the table name and setting the TTL. The `greptime_ttl = "7d"` line configures the table data to have a time-to-live of 7 days.
+- **Table Options**: The `vrl` processor sets a seven-day table TTL through `greptime_ttl = "7d"`.
 
 **Transform**: Defines how to convert and index the extracted fields:
 - **Field Transformation**: Each extracted field is converted to its appropriate data type with specific indexing configurations. Fields like `http_method` retain their default data types when no explicit configuration is provided.
 - **Indexing Strategy**:
   - `ip_address` and `status_code` use inverted indexing as tags for fast filtering
-  - `request_line` and `user_agent` use full-text indexing for optimal text search capabilities
+  - `request_line` and `user_agent` use full-text indexes for `matches_term` queries
   - `timestamp` serves as the required time index column
 
 For detailed information about pipeline configuration options,
@@ -118,7 +118,7 @@ curl -X "POST" \
 After successful execution, a pipeline named `nginx_pipeline` will be created and return the following result:
 
 ```json
-{"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}.
+{"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}
 ```
 
 You can create multiple versions for the same pipeline name.
@@ -199,7 +199,7 @@ SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GE
 
 For the text fields `request_line` and `user_agent`, you can use `matches_term` function to search logs.
 Remember, we created the full-text index for these two columns when [creating a pipeline](#create-a-custom-pipeline).
-This allows for high-performance full-text searches.
+The full-text indexes allow these predicates to prune data by term.
 
 For example, query the logs with `request_line` containing `/index.html` or `/api/login`.
 
@@ -222,11 +222,7 @@ You can refer to the [Full-Text Search](fulltext-search.md) document for detaile
 
 ## Benefits of Using Pipelines
 
-Using pipelines to process logs provides structured data and automatic field extraction,
-enabling more efficient querying and analysis.
-
-You can also write logs directly to the database without pipelines,
-but this approach limits high-performance analysis capabilities.
+A pipeline extracts fields before storage, so queries can filter typed columns and use column-specific indexes. Direct insertion is also supported, but fields left inside one `message` value can only be queried as text unless they are parsed at query time.
 
 ### Direct Log Insertion (Without Pipeline)
 
@@ -302,16 +298,15 @@ The `origin_logs` table (direct insertion) stores everything in a single `messag
 
 ### Why Use Pipelines?
 
-It is recommended to use the pipeline method to split the log message into multiple columns,
-which offers the advantage of explicitly querying specific values within certain columns.
-Column matching query proves superior to full-text searching for several key reasons:
+Use a pipeline when queries need fields such as status code, client address, or request method as separate columns. This changes the available predicates and index choices:
 
-- **Performance**: Column-based queries are typically faster than full-text searches
-- **Storage Efficiency**: GreptimeDB's columnar storage compresses structured data better; inverted indexes for tags consume less storage than full-text indexes
-- **Query Simplicity**: Tag-based queries are easier to write, understand, and debug
+- Numeric and equality predicates can operate on typed values rather than parsed text.
+- Each column can use an index suited to its query pattern.
+- Queries can address fields directly instead of repeating log parsing rules.
+
+Storage and query performance depend on the data distribution, indexes, and workload; benchmark the structured and raw schemas when this trade-off matters.
 
 ## Next Steps
 
 - **Full-Text Search**: Explore the [Full-Text Search](fulltext-search.md) guide to learn advanced text search capabilities and query techniques in GreptimeDB
 - **Pipeline Configuration**: Explore the [Pipeline Configuration](/reference/pipeline/pipeline-config.md) documentation to learn more about creating and customizing pipelines for various log formats and processing needs
-

@@ -1,20 +1,17 @@
 ---
-keywords: [Flow engine, real-time computation, ETL, continuous aggregation, user agent statistics, nginx logs]
-description: Discover how GreptimeDB's Flow engine enables real-time continuous aggregations on incoming data for ETL processes and analytics. Learn about its batching execution model, use cases, and a quick start example for calculating user agent statistics from nginx logs.
+keywords: [Flow engine, continuous computation, ETL, continuous aggregation, user agent statistics, nginx logs]
+description: Learn how GreptimeDB's Flow engine maintains query results as source data changes, and create a Flow that calculates user agent statistics from nginx logs.
 ---
 
 # Flow Computation
 
-GreptimeDB's Flow engine enables real-time computation on incoming data.
-It is particularly beneficial for Extract-Transform-Load (ETL) processes or for performing continuous aggregations such as sum, average, and other time-window calculations.
-The Flow engine ensures that data is processed incrementally and continuously,
-updating the final results as new data arrives.
-You can think of it as a clever materialized views that know when to update result view table and how to update it with minimal effort.
+GreptimeDB's Flow engine maintains query results in a sink table as source data changes.
+It is useful for extract-transform-load (ETL) jobs and continuous aggregations such as sums, averages, and time-window calculations.
 
 Use cases include:
 
-- Real-time analytics that deliver actionable insights almost instantaneously.
-- Downsampling data points, such as using average pooling, to reduce the volume of data for storage and analysis.
+- Maintaining aggregates for dashboards and alerts.
+- Downsampling high-frequency data into coarser time windows.
 
 ## Programming Model
 
@@ -22,14 +19,9 @@ Use cases include:
 Flow uses batching mode for aggregation and TQL workloads. Simple non-aggregation Flow queries currently use the deprecated streaming mode and are not recommended for new workloads.
 :::
 
-Upon data insertion into the source table,
-the data is concurrently ingested to the Flow engine.
-At each trigger interval (one second),
-the Flow engine executes the specified computations and updates the sink table with the results.
-Both the source and sink tables are time-series tables within GreptimeDB.
-Before creating a Flow,
-it is crucial to define the schemas for these tables and design the Flow to specify the computation logic.
-This process is visually represented in the following image:
+For aggregation and TQL queries, Flow uses the batching engine. Inserts mark the affected source ranges, and the engine recomputes them before upserting the results into the sink table. A Flow with `EVAL INTERVAL` instead runs the full query on the specified schedule. Simple projection and filter queries use the deprecated streaming engine.
+
+The source and sink are GreptimeDB tables. A missing sink table is created from the query result schema; create it beforehand when you need to control its primary key, indexes, partitions, TTL, or column definitions.
 
 ![Continuous Aggregation](/flow-ani.svg)
 
@@ -37,10 +29,10 @@ This process is visually represented in the following image:
 
 To illustrate the capabilities of GreptimeDB's Flow engine,
 consider the task of calculating user agent statistics from nginx logs.
-The source table is `nginx_access_log`,
+The source table is `ngx_http_log`,
 and the sink table is `user_agent_statistics`.
 
-First, create the source table `nginx_access_log`.
+First, create the source table `ngx_http_log`.
 To optimize performance for counting the `user_agent` field,
 specify it as a `TAG` column type using the `PRIMARY KEY` keyword.
 
@@ -78,6 +70,7 @@ Finally, create the Flow `user_agent_flow` to count the occurrences of each user
 ```sql
 CREATE FLOW user_agent_flow
 SINK TO user_agent_statistics
+EVAL INTERVAL '1m'
 AS
 SELECT
   user_agent,
@@ -88,8 +81,7 @@ GROUP BY
   user_agent;
 ```
 
-Once the Flow is created,
-the Flow engine will continuously process data from the `ngx_http_log` table and update the `user_agent_statistics` table with the computed results.
+Once the Flow is created, the engine runs the query every minute and updates `user_agent_statistics`.
 
 To observe the results,
 insert sample data into the `ngx_http_log` table.

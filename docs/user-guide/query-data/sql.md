@@ -5,11 +5,11 @@ description: Comprehensive guide on querying data in GreptimeDB using SQL, cover
 
 # SQL
 
-GreptimeDB supports full SQL for querying data from a database.
+GreptimeDB supports SQL queries through the MySQL, PostgreSQL, and HTTP interfaces. The supported syntax and extensions are documented in the [SQL reference](/reference/sql/overview.md).
 
 In this document, we will use the `monitor` table to demonstrate how to query data.
 For instructions on creating the `monitor` table and inserting data into it,
-Please refer to [table management](/user-guide/deployments-administration/manage-data/basic-table-operations.md#create-a-table) and [Ingest Data](/user-guide/ingest-data/for-iot/sql.md).
+please refer to [table management](/user-guide/deployments-administration/manage-data/basic-table-operations.md#create-a-table) and [Ingest Data](/user-guide/ingest-data/for-iot/sql.md).
 
 ## Basic query
 
@@ -135,7 +135,7 @@ When working with Unix time values, the database treats them based on the type o
 For instance, if the `ts` column in the `monitor` table has a value type of `TimestampMillisecond`,
 you can use the following query to filter the data:
 
-The Unix time value `1667446797000` corresponds to the `TimestampMillisecond` type。
+The Unix time value `1667446797000` corresponds to the `TimestampMillisecond` type.
 
 ```sql
 SELECT * FROM monitor WHERE ts > 1667446797000;
@@ -214,9 +214,7 @@ For example, the following code shows the same `ts` value formatted in the clien
 
 ### Functions
 
-GreptimeDB offers an extensive suite of built-in functions and aggregation
-capabilities tailored to meet the demands of data analytics. Its features
-include:
+GreptimeDB provides built-in scalar, aggregate, and text-search functions, including:
 
 - A comprehensive set of functions inherited from Apache Datafusion query
   engine, featuring a selection of date/time functions that adhere to Postgres
@@ -306,7 +304,7 @@ For more information, please refer to [CASE](/reference/sql/case.md).
 ## Aggregate data by tag
 
 You can use the `GROUP BY` clause to group rows that have the same values into summary rows.
-The average memory usage grouped by idc:
+The following query calculates average CPU usage for each host:
 
 ```sql
 SELECT host, avg(cpu) FROM monitor GROUP BY host;
@@ -374,7 +372,7 @@ ALIGN '5s' TO '2023-12-01T00:00:00' BY (host) ORDER BY ts ASC;
 
 1. `avg(cpu) RANGE '10s' FILL LINEAR` is a Range expression. `RANGE '10s'` specifies that the time range of the aggregation is 10s, and `FILL LINEAR` specifies that if there is no data within a certain aggregation time, use the `LINEAR` method to fill it.
 2. `ALIGN '5s'` specifies the that data statistics should be performed in steps of 5s.
-3. `TO '2023-12-01T00:00:00` specifies the origin alignment time. The default value is Unix time 0.
+3. `TO '2023-12-01T00:00:00'` specifies the origin alignment time. If `TO` is omitted, the origin is the Unix epoch adjusted to the SQL session time zone.
 4. `BY (host)` specifies the aggregate key. If the `BY` keyword is omitted, the primary key of the data table is used as the aggregate key by default.
 5. `ORDER BY ts ASC` specifies the sorting method of the result set. If you do not specify the sorting method, the order of the results is not guaranteed.
 
@@ -398,7 +396,7 @@ The Response is shown below:
 ### Time range window
 
 The origin time range window steps forward and backward in the time series to generate all time range windows.
-In the example above, the origin alignment time is set to `2023-12-01T00:00:00`, which is also the end time of the origin time window.
+In the example above, the origin alignment time is set to `2023-12-01T00:00:00`, which is the start of the origin time window.
 
 The `RANGE` option, along with the origin alignment time, defines the origin time range window that starts from `origin alignment timestamp` and ends at `origin alignment timestamp + range`.
 

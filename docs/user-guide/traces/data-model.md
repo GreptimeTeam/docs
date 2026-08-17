@@ -7,7 +7,7 @@ description: Covers internals of how trace data is stored in GreptimeDB.
 
 :::warning
 
-This section currently in the experimental stage and may be adjusted in future versions.
+This feature is experimental and may change in future versions.
 
 :::
 
@@ -35,8 +35,8 @@ recommended to use it in a new table.
 
 ## Data Model
 
-The `greptime_trace_v1` data model is pretty straight-forward. By default,
-trace data is stored in a table named `opentelemetry_traces`. You can customize
+By default, the `greptime_trace_v1` model stores
+trace data in a table named `opentelemetry_traces`. You can customize
 the table name by specifying the `x-greptime-trace-table-name` header in your
 OTLP/HTTP requests.
 
@@ -140,7 +140,7 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
              |   "resource_attributes.telemetry.sdk.version" STRING NULL,                              +
              |   "span_events" JSON NULL,                                                              +
              |   "span_links" JSON NULL,                                                               +
-             |   "parent_span_id" STRING NULL,                                                         +
+             |   "parent_span_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),+
              |   "span_attributes.db.system" STRING NULL,                                              +
              |   "span_attributes.db.name" STRING NULL,                                                +
              |   "span_attributes.db.statement" STRING NULL,                                           +
@@ -182,11 +182,10 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
 
 We included default [partition
 rules](/user-guide/deployments-administration/manage-data/table-sharding.md#partition) for
-trace table on the `trace_id` column based on the first character of it. This is
-optimised for retrieve trace spans by the trace id.
+trace table on the `trace_id` column based on its hexadecimal prefix. This
+distributes trace IDs across regions and supports routing queries by trace ID.
 
-The partition rule introduces 16 partitions for the table. It is suitable for a
-3-5 datanode setup.
+The default is 16 partitions. The appropriate count depends on data volume, write throughput, query concurrency, and the number of datanodes.
 
 To customize the partition rule, you can:
 
@@ -195,7 +194,7 @@ To customize the partition rule, you can:
    own rules.
 2. Use `x-greptime-hints` [HTTP header](/user-guide/protocols/http#hints) in
    your OTLP ingestion request, include a hint `trace_table_partitions=n` where
-   `n` is the partition number. Set `n` to `0` or `1` to disable partitioning.
+   `n` is the partition number. Valid partitioned values are powers of two from `2` through `65536`; set `n` to `0` or `1` to disable partitioning.
 
 ### Index
 
@@ -207,8 +206,7 @@ In real-world, you may want to speed up queries on other fields like an attribut
 field. It's possible by apply additional index on these fields using [alter
 table](/reference/sql/alter.md#create-an-index-for-a-column) statement.
 
-Unlike partition rules, index can be created on existing table and be affective
-on new data.
+Unlike partition rules, an index can be added to an existing table and applies to newly written data.
 
 ### Partial Success
 
@@ -220,7 +218,7 @@ are rejected, GreptimeDB returns `400 Bad Request`.
 
 ### Append-only Mode
 
-By default, trace table created by OpenTelemetry API are in [append only
+By default, trace tables created by the OpenTelemetry API are in [append-only
 mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
 
 ### TTL

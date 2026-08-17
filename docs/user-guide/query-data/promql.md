@@ -5,11 +5,9 @@ description: Guide on using Prometheus Query Language (PromQL) in GreptimeDB, in
 
 # Prometheus Query Language
 
-GreptimeDB can be used as a drop-in replacement for Prometheus in Grafana, because GreptimeDB supports PromQL (Prometheus Query Language). GreptimeDB has reimplemented PromQL natively in Rust and exposes the ability to several interfaces, including the HTTP API of Prometheus, the HTTP API of GreptimeDB, and the SQL interface.
+GreptimeDB supports PromQL (Prometheus Query Language) through its Prometheus-compatible HTTP API and the `TQL` SQL extension. In Grafana, you can query GreptimeDB with a Prometheus data source.
 
 ## Prometheus' HTTP API
-
-<!-- Maybe add a section to introduce the simulated interfaces, when there is more than one supported -->
 
 GreptimeDB has implemented a set of Prometheus compatible APIs under HTTP
 context `/v1/prometheus/`:
@@ -20,10 +18,8 @@ context `/v1/prometheus/`:
 - Label names `/api/v1/labels`
 - Label values `/api/v1/label/<label_name>/values`
 
-It shares same input and output format with original Prometheus HTTP API. You
-can also use GreptimeDB as an in-place replacement of Prometheus. For example in
-Grafana Prometheus data source, set `http://localhost:4000/v1/prometheus/` as
-context root of Prometheus URL.
+These endpoints use the Prometheus request and response formats. For a Grafana
+Prometheus data source, set the URL to `http://localhost:4000/v1/prometheus/`.
 
 Consult [Prometheus
 documents](https://prometheus.io/docs/prometheus/latest/querying/api) for usage
@@ -125,8 +121,8 @@ metric{__field__!~"field_1|field_2"}
 
 ### Cross-database query
 
-Greptime has its own database concept. In order to run cross-database query, you
-can use `__database__` matcher to specify the database name.
+To select data from a database other than the one specified by the request, use
+the `__database__` matcher.
 
 ```promql
 metric{__database__="mydatabase"}
@@ -142,7 +138,7 @@ Though GreptimeDB supports a rich set of data types, the PromQL implementation i
 - tag: `String`
 - value: `Double`
 
-We have over 90% promql supported in GreptimeDB. Here attaches the compatibility list. You can also check our latest compliance report in this [tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/1042).
+The following tables list commonly used operators and functions implemented by GreptimeDB. For current compatibility gaps, see the [PromQL tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/1042).
 
 ### Literal
 
@@ -150,13 +146,11 @@ Both string and float literals are supported, with the same [rule](https://prome
 
 ### Selector
 
-Both instant and range selector are supported. But notice that in both Prometheus and GreptimeDB, the label matching on metric name is an exception. Negative matching (e.g. `{__name__!="request_count}"`) is not allowed. Others like equal-matching or regex-matching are supported.
+Both instant and range selectors are supported. As in Prometheus, a selector must specify a metric name or contain at least one matcher that does not match an empty string. For example, `{__name__!="request_count"}` is invalid because the matcher also matches an empty metric name.
 
 Time duration and offset are supported, but `@` modifier is not supported yet.
 
-When selecting non-existent columns, they will be treated as columns filled with empty string values (`""`). This behavior aligns with both Prometheus and VictoriaMetrics.
-
-For selectors referencing non-existent columns, the behavior aligns with Prometheus: no error is raised, and the selector is silently ignored. However, for `__name__` selectors referencing non-existent metrics (or equivalent forms), GreptimeDB will report an error.
+For a label matcher on a column that does not exist, GreptimeDB evaluates the matcher as if the column contained empty strings (`""`). A `__name__` selector that refers to a metric that does not exist reports an error.
 
 ### Timestamp precision
 
@@ -167,26 +161,22 @@ The timestamp precision in PromQL is limited by its query syntax, only supportin
 - Supported:
     | Operator |
     | :------- |
-    | add      |
-    | sub      |
-    | mul      |
-    | div      |
-    | mod      |
-    | eqlc     |
-    | neq      |
-    | gtr      |
-    | lss      |
-    | gte      |
-    | lte      |
-    | power    |
+    | `+`      |
+    | `-`      |
+    | `*`      |
+    | `/`      |
+    | `%`      |
+    | `==`     |
+    | `!=`     |
+    | `>`      |
+    | `<`      |
+    | `>=`     |
+    | `<=`     |
+    | `^`      |
     | atan2    |
     | and      |
     | or       |
     | unless   |
-
-- Unsupported:
-
-None
 
 ### Aggregators
 
@@ -204,11 +194,6 @@ None
     | count_values | `count_values("version", build_version)`     |
     | count        | `count (metric)`                             |
     | quantile     | `quantile(0.9, cpu_usage)`                   |
-
-- Unsupported:
-    | Aggregator | Progress |
-    | :--------- | :------- |
-    | grouping   | TBD      |
 
 ### Instant Functions
 
@@ -235,11 +220,11 @@ None
     | cosh               | `cosh(metric)`                    |
     | scalar             | `scalar(metric)`                  |
     | tanh               | `tanh(metric)`                    |
-    | timestamp          | `timestamp()`                     |
+    | timestamp          | `timestamp(metric)`               |
     | sort               | `sort(http_requests_total)`       |
     | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
-    | predicate_linear   | `predict_linear(metric, 120)`     |
+    | predict_linear     | `predict_linear(metric[5m], 120)` |
     | absent             | `absent(nonexistent{job="myjob"})`|
     | sgn                | `sgn(metric)`                     |
     | pi                 | `pi()`                            |
@@ -249,12 +234,6 @@ None
     | clamp              | `clamp(metric, 0, 12)`            |
     | clamp_max          | `clamp_max(metric, 12)`           |
     | clamp_min          | `clamp_min(metric, 0)`            |
-
-
-- Unsupported:
-    | Function                   | Progress / Example |
-    | :------------------------- | :----------------- |
-    | *other multiple input fns* | TBD                |
 
 ### Range Functions
 
@@ -271,11 +250,7 @@ None
     | deriv              | `deriv(metric[5m])`            |
     | increase           | `increase(metric[5m])`         |
     | irate              | `irate(metric[5m])`            |
-    | reset              | `reset(metric[5m])`            |
-
-- Unsupported:
-
-None
+    | resets             | `resets(metric[5m])`           |
 
 ### Label & Other Functions
 
@@ -286,7 +261,3 @@ None
     | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`            |
     | sort_by_label | `sort_by_label(metric, "foo", "bar")`            |
     | sort_by_label_desc | `sort_by_label_desc(metric, "foo", "bar")`            |
-
-- Unsupported:
-
-None

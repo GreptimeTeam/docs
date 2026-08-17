@@ -7,7 +7,7 @@ description: 介绍 Trace 数据如何存入 GreptimeDB.
 
 :::warning
 
-本章内容目前仍处于实验阶段，在未来的版本中可能会有所调整。
+该功能处于实验阶段，后续版本可能发生变化。
 
 :::
 
@@ -29,9 +29,9 @@ Pipeline 的名称来作为数据模型的版本。目前可用的内置 Pipelin
 
 ## 数据模型
 
-`greptime_trace_v1` 数据模型是非常直观的。默认情况下，Trace 数据存储在名为 `opentelemetry_traces` 的表中。你可以通过在 OTLP/HTTP 请求中指定 `x-greptime-trace-table-name` 请求头来自定义表名。
+默认情况下，`greptime_trace_v1` 将 Trace 数据存储在 `opentelemetry_traces` 表中。可以通过 OTLP/HTTP 请求的 `x-greptime-trace-table-name` header 自定义表名。
 
-- 所有常见的 [OpenTelemetry
+- 大多数常见的 [OpenTelemetry
   Trace](https://opentelemetry.io/docs/concepts/signals/traces/) 数据字段都被映射为 GreptimeDB 的列。
 - `service_name` 从 `resource_attributes["service.name"]` 中提取，并用作 **Tag**（**主键**的一部分）。
 - `timestamp` 是 Span 的开始时间，用作 **时间索引**（Time Index）。
@@ -118,7 +118,7 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
              |   "resource_attributes.telemetry.sdk.version" STRING NULL,                              +
              |   "span_events" JSON NULL,                                                              +
              |   "span_links" JSON NULL,                                                               +
-             |   "parent_span_id" STRING NULL,                                                         +
+             |   "parent_span_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),+
              |   "span_attributes.db.system" STRING NULL,                                              +
              |   "span_attributes.db.name" STRING NULL,                                                +
              |   "span_attributes.db.statement" STRING NULL,                                           +
@@ -160,9 +160,9 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
 
 Trace 表包含了默认的 [分区规
 则](/user-guide/deployments-administration/manage-data/table-sharding.md#partition)，在
-`trace_id` 列上根据首个字符的取值划分区间。
+`trace_id` 列上根据十六进制前缀划分区间。这样可以将 trace ID 分布到不同 region，并按 trace ID 路由查询。
 
-这个规则默认将引入 16 个分区，适合在 3-5 个 datanode 的部署规模下使用。
+默认创建 16 个分区。合适的分区数取决于数据量、写入吞吐、查询并发和 datanode 数量。
 
 如果数据量和部署规模更大，需要自定义分区规则，可以：
 
@@ -170,7 +170,7 @@ Trace 表包含了默认的 [分区规
    入数据之前创建这个表。
 2. 通过设置 OTLP 写入请求的 `x-greptime-hints` [HTTP
    头](/user-guide/protocols/http#hints)，加入 `trace_table_partitions=n`，其中
-   `n` 是要设置的分区数。将 `n` 设置为 `0` 或 `1` 可以取消分区。
+   `n` 是分区数。启用分区时，合法值为 `2` 到 `65536` 之间的 2 的幂；设置为 `0` 或 `1` 时禁用分区。
 
 ### 索引
 

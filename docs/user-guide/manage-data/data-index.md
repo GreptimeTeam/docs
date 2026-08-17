@@ -1,21 +1,21 @@
 ---
 keywords: [index, inverted index, skipping index, full-text index, query performance]
-description: Learn about different types of indexes in GreptimeDB, including inverted index, skipping index, and full-text index, and how to use them effectively to optimize query performance.
+description: Learn when to use inverted, skipping, and full-text indexes in GreptimeDB and how to configure them.
 ---
 
 # Data Index
 
-GreptimeDB provides various indexing mechanisms to accelerate query performance. Indexes are essential database structures that help optimize data retrieval operations by creating efficient lookup paths to specific data.
+GreptimeDB provides several secondary index types for different predicates and data distributions.
 
 ## Overview
 
-Indexes in GreptimeDB are specified during table creation and are designed to improve query performance for different types of data and query patterns. The database currently supports these types of indexes:
+Indexes can be defined when a table is created or changed later with `ALTER TABLE`. GreptimeDB supports:
 
 - Inverted Index
 - Skipping Index
 - Fulltext Index
 
-Notice that in this chapter we are narrowing the word "index" to those related to data value indexing. PRIMARY KEY and TIME INDEX can also be treated as index in some scenarios, but they are not covered here.
+This page covers indexes on column values. It does not cover the primary key or time index.
 
 ## Index Types
 
@@ -43,7 +43,7 @@ However, when a column has very high cardinality, the inverted index may not be 
 
 ### Skipping Index
 
-Skipping index suits for columnar data systems like GreptimeDB. It maintains metadata about value ranges within data blocks, allowing the query engine to skip irrelevant data blocks during range queries efficiently. This index also has smaller size compare to others.
+A skipping index stores a Bloom filter for each configured group of rows. For supported predicates, GreptimeDB can skip groups whose filter proves that the requested value is absent. Bloom filters can return false positives, so matching groups still require normal predicate evaluation.
 
 **Use Cases:**
 - When certain values are sparse, such as MAC address codes in logs.
@@ -75,11 +75,11 @@ CREATE TABLE sensor_data (
 );
 ```
 
-Skipping index can't handle complex filter conditions, and usually has a lower filtering performance compared to inverted index or full-text index.
+Skipping indexes apply only to predicates that can be converted to membership tests. Verify index pruning for important queries with [`EXPLAIN ANALYZE`](/reference/sql/explain.md).
 
 ### Full-Text Index
 
-Full-text index is designed for text search operations on string columns. It enables efficient searching of text content using word-based matching and text search capabilities. You can query text data with flexible keywords, phrases, or pattern matching queries.
+A full-text index tokenizes a `STRING` column so that `matches_term` and `@@` predicates can skip data that cannot contain the requested terms. See [Full-Text Search](/user-guide/logs/fulltext-search.md) for query semantics.
 
 **Use Cases:**
 - Text search operations
@@ -102,12 +102,11 @@ When creating or modifying a full-text index, you can specify the following opti
 - `analyzer`: Sets the language analyzer for the full-text index
   - Supported values: `English`, `Chinese`
   - Default: `English`
-  - Note: The Chinese analyzer requires significantly more time to build the index due to the complexity of Chinese text segmentation. Consider using it only when Chinese text search is a primary requirement.
 
 - `case_sensitive`: Determines whether the full-text index is case-sensitive
   - Supported values: `true`, `false`
   - Default: `false`
-  - Note: Setting to `true` may slightly improve performance for case-sensitive queries, but will degrade performance for case-insensitive queries. This setting does not affect the results of `matches_term` queries.
+  - When `false`, the index analyzer normalizes tokens to lowercase.
 
 - `backend`: Sets the backend for the full-text index
   - Supported values: `bloom`, `tantivy`
@@ -123,54 +122,20 @@ When creating or modifying a full-text index, you can specify the following opti
 
 #### Backend Selection
 
-GreptimeDB provides two full-text index backends for efficient log searching:
+GreptimeDB provides two full-text index backends:
 
-1. **Bloom Backend**
-   - Best for: General-purpose log searching
-   - Features:
-     - Uses Bloom filter for efficient filtering
-     - Lower storage overhead
-     - Consistent performance across different query patterns
-   - Limitations:
-     - Slightly slower for high-selectivity queries
-   - Storage Cost Example:
-     - Original data: ~10GB
-     - Bloom index: ~1GB
+- `bloom` stores token Bloom filters by segment. It may read false-positive segments, and its size and pruning precision depend on `granularity` and `false_positive_rate`.
+- `tantivy` stores a term index that can locate matching documents directly. It generally uses more index storage and build resources than `bloom`.
 
-2. **Tantivy Backend**
-   - Best for: High-selectivity queries (e.g., unique values like TraceID)
-   - Features:
-     - Uses inverted index for fast exact matching
-     - Excellent performance for high-selectivity queries
-   - Limitations:
-     - Higher storage overhead (close to original data size)
-     - Slower performance for low-selectivity queries
-   - Storage Cost Example:
-     - Original data: ~10GB
-     - Tantivy index: ~10GB
-
-#### Performance Comparison
-
-The following table shows the performance comparison between different query methods (using Bloom as baseline):
-
-| Query Type | High Selectivity (e.g., TraceID) | Low Selectivity (e.g., "HTTP") |
-|------------|----------------------------------|--------------------------------|
-| LIKE       | 50x slower                      | 1x                            |
-| Tantivy    | 5x faster                       | 5x slower                     |
-| Bloom      | 1x (baseline)                   | 1x (baseline)                 |
-
-Key observations:
-- For high-selectivity queries (e.g., unique values), Tantivy provides the best performance
-- For low-selectivity queries, Bloom offers more consistent performance
-- Bloom has significant storage advantage over Tantivy (1GB vs 10GB in test case)
+The faster backend depends on term frequency, query shape, segment layout, and available cache. Benchmark both backends with representative data before choosing one for a large deployment.
 
 #### Examples
 
 **Creating a Table with Full-Text Index**
 
 ```sql
--- Using Bloom backend (recommended for most cases)
-CREATE TABLE logs (
+-- Using the Bloom backend
+CREATE TABLE logs_bloom (
     timestamp TIMESTAMP(9) TIME INDEX,
     `message` STRING FULLTEXT INDEX WITH (
         backend = 'bloom',
@@ -179,8 +144,8 @@ CREATE TABLE logs (
     )
 );
 
--- Using Tantivy backend (for high-selectivity queries)
-CREATE TABLE logs (
+-- Using the Tantivy backend
+CREATE TABLE logs_tantivy (
     timestamp TIMESTAMP(9) TIME INDEX,
     `message` STRING FULLTEXT INDEX WITH (
         backend = 'tantivy',
@@ -194,8 +159,8 @@ CREATE TABLE logs (
 
 ```sql
 -- Enable full-text index on an existing column
-ALTER TABLE monitor 
-MODIFY COLUMN load_15 
+ALTER TABLE logs
+MODIFY COLUMN message
 SET FULLTEXT INDEX WITH (
     analyzer = 'English',
     case_sensitive = 'false',
@@ -212,13 +177,13 @@ SET FULLTEXT INDEX WITH (
 );
 ```
 
-Fulltext index usually comes with following drawbacks:
+Full-text indexes have the following costs:
 
-- Higher storage overhead compared to regular indexes due to storing word tokens and positions
+- Additional storage for token index data
 - Increased flush and compaction latency as each text document needs to be tokenized and indexed
-- May not be optimal for simple prefix or suffix matching operations
+- They accelerate term predicates, not arbitrary prefix or suffix matching.
 
-Consider using full-text index only when you need advanced text search capabilities and flexible query patterns.
+Use a full-text index when the workload contains `matches_term` or `@@` predicates on text columns.
 
 ## Modify indexes
 

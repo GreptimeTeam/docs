@@ -9,7 +9,7 @@ description: GreptimeDB 实验性日志查询接口的说明文档，该接口�
 日志查询接口目前仍处于实验阶段，在未来的版本中可能会有所调整。
 :::
 
-GreptimeDB 提供了一个专门用于查询日志数据的 HTTP 接口。通过这个功能，你可以使用简单的查询界面来搜索和处理日志记录。这是对 GreptimeDB 现有功能（如 SQL 查询和 Flow 计算）的补充。你仍然可以像之前一样使用已有的工具和工作流程来查询日志数据。
+GreptimeDB 提供专门用于过滤和处理日志数据的 HTTP 接口。同一张表仍然可以使用 SQL 查询。
 
 ## 接口地址
 
@@ -23,7 +23,7 @@ POST /v1/logs
 
 ## 请求格式
 
-请求体应为 JSON 格式（在实验阶段可能会随补丁版本有所变化）。关于最新的请求格式，请参考[源代码实现](https://github.com/GreptimeTeam/greptimedb/blob/main/src/log-query/src/log_query.rs)：
+请求体为 JSON object。该 API 仍处于实验阶段，不同版本之间 JSON schema 可能变化。Nightly schema 由 [`LogQuery`](https://github.com/GreptimeTeam/greptimedb/blob/main/src/log-query/src/log_query.rs) 定义。
 
 ## 响应格式
 
@@ -31,12 +31,12 @@ POST /v1/logs
 
 ## 使用限制
 
-- 最大结果数量：1000 条记录
+- 省略 `limit.fetch` 时，默认最多返回 1000 条记录；显式设置 `fetch` 会覆盖该默认值。
 - 需要时间索引列。字符串搜索过滤器适用于字符串/文本表达式，类型化比较过滤器可用于兼容的数字、布尔值和字符串表达式。
 
 ## 使用示例
 
-以下示例展示了如何使用日志查询接口来查询日志数据（请注意，在实验性阶段这个例子可能会失效）：
+以下示例使用当前 Nightly 的请求 schema：
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/logs" \

@@ -9,7 +9,7 @@ description: Documentation for GreptimeDB's experimental log query endpoint, whi
 The log query endpoint feature is currently experimental and may change in future releases.
 :::
 
-GreptimeDB provides a dedicated HTTP endpoint to query log data. This feature allows you to search and process log entries using a simple query interface. This is an add-on feature to existing GreptimeDB capabilities like SQL queries and Flow computations. You can still use your existing tools and workflows to query log data like before.
+GreptimeDB provides a dedicated HTTP endpoint for filtering and processing log data. SQL remains available for the same tables.
 
 ## Endpoint
 
@@ -23,7 +23,7 @@ POST /v1/logs
 
 ## Request Format
 
-The request body should be a JSON object (this is subject to change in patch version within the experimental phase). For the latest request format, please refer to the [implementation](https://github.com/GreptimeTeam/greptimedb/blob/main/src/log-query/src/log_query.rs):
+The request body is a JSON object. Because this API is experimental, its JSON schema can change between releases. The Nightly schema is defined by [`LogQuery`](https://github.com/GreptimeTeam/greptimedb/blob/main/src/log-query/src/log_query.rs).
 
 ## Response
 
@@ -31,12 +31,12 @@ This endpoint has the same response format as the SQL query endpoint. Please ref
 
 ## Limitations
 
-- Maximum result limit: 1000 entries
+- If `limit.fetch` is omitted, the endpoint returns at most 1000 entries by default. An explicit `fetch` value overrides this default.
 - Requires a time index column. String search filters apply to string/text expressions, while typed comparison filters can be applied to compatible numeric, boolean, and string expressions.
 
 ## Example
 
-The following example demonstrates how to query log data using the log query endpoint (notice that in this experimental phase the following example might be outdated).
+The following example uses the current Nightly request schema:
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/logs" \

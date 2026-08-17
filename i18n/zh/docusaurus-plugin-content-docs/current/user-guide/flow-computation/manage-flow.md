@@ -42,8 +42,9 @@ CREATE TABLE temp_sensor_data (
 
 ## 创建 sink 表
 
-在创建 flow 之前，你需要有一个 sink 表来存储 flow 生成的聚合数据。
-虽然它与常规的时间序列表相同，但有一些重要的注意事项：
+如果 sink 表不存在，Flow 会根据查询结果 schema 创建该表，并添加 `update_at` 列。如果查询结果中没有时间戳列，自动创建的表还会包含 `__ts_placeholder` time index。
+
+如果需要控制主键、索引、分区、TTL 或列定义，应提前创建 sink 表。已有 sink 表必须能够接收 Flow 的输出：
 
 - **列的顺序和类型**：确保 sink 表中列的顺序和类型与 flow 查询结果匹配。
 - **时间索引**：为 sink 表指定 `TIME INDEX`，通常使用时间窗口函数生成的时间列。
@@ -95,6 +96,7 @@ sink 表包含列 `sensor_id`、`loc`、`max_temp`、`time_window` 和 `update_a
 CREATE [ OR REPLACE ] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
+[ EVAL INTERVAL <expr> ]
 [ COMMENT '<string>' ]
 [ WITH (<flow-option> = <value> [, ...]) ]
 AS 
@@ -110,11 +112,11 @@ AS
 - `EXPIRE AFTER` 是一个可选的时间间隔，用于从 Flow 引擎中过期数据。
   有关更多详细信息，请参考 [`EXPIRE AFTER`](#expire-after) 部分。
 - `COMMENT` 是 flow 的描述。
+- `EVAL INTERVAL` 按固定周期执行完整查询。TQL flow 必须设置该选项；没有受支持时间窗口表达式的 SQL batching flow 也必须设置。
 - `WITH` 指定 flow 选项。
   例如，实验性的 `experimental_enable_incremental_read` 选项可以为符合条件的 batching flow 启用增量读取 source 表。
 - `SQL` 部分定义了用于持续聚合的查询。
-  它定义了为 flow 提供数据的源表。
-  每个 flow 可以有多个源表。
+  它定义了为 flow 提供数据的 source 表。
   有关详细信息，请参考[编写查询](#编写-sql-查询) 部分。
 
 一个创建 flow 的简单示例：
@@ -202,24 +204,16 @@ GROUP BY
 
 ### 编写 SQL 查询
 
-flow 的 `SQL` 部分类似于标准的 `SELECT` 子句，但有一些不同之处。查询的语法如下：
+`AS` 后的查询由 GreptimeDB SQL 查询引擎规划。查询可以使用 scalar 和 aggregate 表达式、`WHERE`、`HAVING`、`GROUP BY` 和 `DISTINCT`；Flow 执行支持的函数见 [Flow 表达式](./expressions.md)。
 
-```sql
-SELECT AGGR_FUNCTION(column1, column2,..) [, TIME_WINDOW_FUNCTION() as time_window] FROM <source_table> GROUP BY {time_window | column1, column2,.. };
-```
+不同执行方式还有以下要求：
 
-在 `SELECT` 关键字之后只允许以下类型的表达式：
-- 聚合函数：有关详细信息，请参阅[表达式](./expressions.md)文档。
-- 时间窗口函数：有关详细信息，请参阅[定义时间窗口](#define-time-window)部分。
-- 标量函数：例如 `col`、`to_lowercase(col)`、`col + 1` 等。这部分与 GreptimeDB 中的标准 `SELECT` 子句相同。
+- 未设置 `EVAL INTERVAL` 的 SQL batching 聚合必须包含受支持的时间窗口表达式。source 数据变化后，Flow 只重新计算受影响的窗口。
+- 设置 `EVAL INTERVAL` 后，Flow 按指定周期执行完整查询。只要 SQL planner 支持，这类查询可以包含 join、subquery 和 CTE 等 plan。
+- TQL 查询必须设置 `EVAL INTERVAL`。
+- 不含聚合的简单 SQL projection/filter 会使用已废弃的 streaming mode。
 
-查询语法中的其他部分需要注意以下几点：
-- 必须包含一个 `FROM` 子句以指定 source 表。由于目前不支持 join 子句，因此只能聚合来自单个表的列。
-- 支持 `WHERE` 和 `HAVING` 子句。`WHERE` 子句在聚合之前过滤数据，而 `HAVING` 子句在聚合之后过滤数据。
-- `DISTINCT` 目前仅适用于 `SELECT DISTINCT column1 ..` 语法。它用于从结果集中删除重复行。`SELECT count(DISTINCT column1) ...` 尚不可用，但将来会添加。
-- `GROUP BY` 子句的工作方式与标准查询相同，即按指定列对数据进行分组，在其中指定时间窗口列对于持续聚合场景至关重要。
-  `GROUP BY` 中的其他表达式可以是 literal、列名或 scalar 表达式。
-- 不支持`ORDER BY`、`LIMIT` 和 `OFFSET`。
+如果 query plan 或 sink schema 不受支持，创建 Flow 时会返回错误。
 
 有关如何在实时分析、监控和仪表板中使用持续聚合的更多示例，请参阅[持续聚合](./continuous-aggregation.md)。
 
@@ -252,14 +246,13 @@ GROUP BY time_window;
 有关该函数行为的更多详细信息，
 请参阅 [`date_bin`](/reference/sql/functions/df-functions.md#date_bin)。
 
-:::tip 提示
-目前，flow 依赖时间窗口表达式来确定如何增量更新结果。因此，建议尽可能使用相对较小的时间窗口。
+:::tip
+未设置 `EVAL INTERVAL` 时，SQL batching 聚合使用时间窗口表达式确定需要重新计算的结果。窗口大小应根据输出粒度和预期的迟到数据范围选择。
 :::
 
 ## 刷新 flow
 
-当 source 表中有新数据到达时，flow 引擎会在短时间内（比如数秒）自动处理聚合操作。
-但你依然可以使用 `ADMIN FLUSH_FLOW` 命令手动触发 flow 引擎立即执行聚合操作。
+source 数据写入后，batching 引擎会处理受影响的窗口。如果需要立即查询最新结果，可以使用 `ADMIN FLUSH_FLOW` 触发处理。
 
 ```sql
 ADMIN FLUSH_FLOW('<flow-name>')

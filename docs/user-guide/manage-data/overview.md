@@ -185,9 +185,8 @@ GreptimeDB supports an `append_mode` option when creating a table,
 which always inserts new data to the table.
 This is especially useful when you want to keep all historical data, such as logs.
 
-You can only create a table with the `append_mode` option using SQL.
-After successfully creating the table,
-all protocols [ingest data](/user-guide/ingest-data/overview.md) to the table will always insert new data.
+Set `append_mode` in `CREATE TABLE`, or pass the [`append_mode` HTTP hint](/user-guide/protocols/http.md#hints) when a supported ingestion protocol automatically creates the table.
+After the table is created in append mode, writes through any [ingestion protocol](/user-guide/ingest-data/overview.md) append rows instead of replacing rows with the same primary key and timestamp.
 
 For example, you can create an `app_logs` table with the `append_mode` option as follows.
 The `host` and `log_level` columns represent tags, and the `ts` column represents the time index.
@@ -347,4 +346,3 @@ For more information about TTL policies, please refer to the [CREATE](/reference
 ## More data management operations
 
 For more advanced data management operations, such as basic table operations, table sharding and region migration, please refer to the [Data Management](/user-guide/deployments-administration/manage-data/overview.md) in the administration section.
-
