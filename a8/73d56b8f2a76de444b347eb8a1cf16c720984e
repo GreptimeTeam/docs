@@ -1,0 +1,27 @@
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_2e172a2fffe71e::t_dfc578cb49c783 50-64
+docs/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_2e172a2fffe71e::t_a1a501b48814aa 32
+  s_2e172a2fffe71e::t_dfc578cb49c783 15,18-31
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/event-data-model.md
+  s_2e172a2fffe71e::t_a1a501b48814aa 19,22,25,30
+  s_2e172a2fffe71e::t_dfc578cb49c783 15,18,20-21,23-24,26-29
+docs/user-guide/deployments-administration/monitoring/events/query-events.md
+  s_2e172a2fffe71e::t_dfc578cb49c783 57-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "a873d56b8f2a76de444b347eb8a1cf16c720984e",
+  "prompts": {},
+  "sessions": {
+    "s_2e172a2fffe71e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a00e67-3312-75b0-97bb-55f944118d10",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
