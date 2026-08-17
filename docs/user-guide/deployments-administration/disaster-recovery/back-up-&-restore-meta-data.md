@@ -1,147 +1,122 @@
 ---
-keywords: [backup, restore, export tool, import tool, database metadata backup, medata restoration, command line tool, disaster recovery]
-description: Learn how to use GreptimeDB's metadata export and import tools for backing up and restoring database metadata, including comprehensive examples and best practices
+keywords: [backup, restore, metadata snapshot, etcd, MySQL, PostgreSQL, RaftEngine, disaster recovery]
+description: Back up, inspect, and restore the GreptimeDB metadata backend with the greptime CLI.
 ---
 
-# Metadata Export & Import
+# Back Up and Restore Metadata
 
-This guide describes how to use GreptimeDB's metadata export and import tools for metadata backup and restoration operations.
+The metadata snapshot command exports key-value records from the GreptimeDB metadata backend. It does **not** export table data, SST files, or WAL entries. Use [Export/Import V2](./export-import-v2.md) when the recovery plan also requires table data.
 
-For detailed command-line options and advanced configurations, please refer to [Metadata Export & Import](/reference/command-lines/utilities/metadata.md).
+The CLI supports etcd, PostgreSQL, MySQL, and RaftEngine metadata backends. The source and target backends may differ.
 
-## Overview
+## Before taking a snapshot
 
-## Export Operations
+A metadata snapshot is collected separately from a data export. To avoid capturing metadata while DDL or Region procedures are changing it:
 
-### Export to S3 Cloud Storage
+1. Stop schema changes and automated placement operations.
+2. [Pause the Procedure Manager](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md).
+3. Wait for existing procedures to finish.
+4. Save the metadata snapshot, then resume the Procedure Manager.
 
-Export metadata from PostgreSQL to S3 for cloud-based backup storage:
+Store the snapshot as sensitive data. It can contain catalog definitions, connection configuration, and other operational metadata.
 
-```bash
-greptime cli meta snapshot save \
-    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
-    --backend postgres-store \
-    --s3 \
-    --s3-bucket your-bucket-name \
-    --s3-region ap-southeast-1 \
-    --s3-access-key-id <your-s3-access-key-id> \
-    --s3-secret-access-key <your-s3-secret-access-key>
-```
+## Save a local snapshot
 
-**Output**: Creates `metadata_snapshot.metadata.fb` file in the specified S3 bucket.
+The default output file is `metadata_snapshot.metadata.fb` in the current directory. Use `--file-path` to choose another path.
 
-### Export to Local Directory
-
-#### From PostgreSQL Backend
-
-Export metadata from PostgreSQL to local directory:
+PostgreSQL:
 
 ```bash
 greptime cli meta snapshot save \
-    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
-    --backend postgres-store
+  --backend postgres-store \
+  --store-addrs 'password=PASSWORD dbname=greptime user=greptime host=127.0.0.1 port=5432' \
+  --file-path /backup/prod-metadata.metadata.fb
 ```
 
-#### From MySQL Backend
-
-Export metadata from MySQL to local directory:
+MySQL:
 
 ```bash
 greptime cli meta snapshot save \
-    --store-addrs 'mysql://user:password@127.0.0.1:3306/database' \
-    --backend mysql-store
+  --backend mysql-store \
+  --store-addrs 'mysql://greptime:PASSWORD@127.0.0.1:3306/greptime' \
+  --file-path /backup/prod-metadata.metadata.fb
 ```
 
-#### From etcd Backend
-
-Export metadata from etcd to local directory:
+etcd:
 
 ```bash
 greptime cli meta snapshot save \
-    --store-addrs 127.0.0.1:2379 \
-    --backend etcd-store
+  --backend etcd-store \
+  --store-addrs 127.0.0.1:2379 \
+  --file-path /backup/prod-metadata.metadata.fb
 ```
 
-**Output**: Creates `metadata_snapshot.metadata.fb` file in the current working directory.
-
-#### From RaftEngine Backend
-
-:::note
-RaftEngine locks the metadata directory while the standalone instance is running. Stop the standalone instance before exporting.
-:::
-
-Export metadata from RaftEngine to local directory:
+RaftEngine locks its metadata directory while a standalone instance is running. Stop the standalone instance before saving or restoring its RaftEngine metadata:
 
 ```bash
 greptime cli meta snapshot save \
-    --store-addrs "raftengine:///path/to/metadata" \
-    --backend raft-engine-store
+  --backend raft-engine-store \
+  --store-addrs 'raftengine:///var/lib/greptimedb/metadata' \
+  --file-path /backup/prod-metadata.metadata.fb
 ```
 
-**Output**: Creates `metadata_snapshot.metadata.fb` file in the current working directory.
+Use the same `--store-key-prefix` and, for MySQL or PostgreSQL, `--meta-table-name` values as the source deployment when they are customized.
 
-## Import Operations
+## Save to S3-compatible storage
+
+Enable one object-storage backend explicitly. This example writes the snapshot object `snapshots/prod-metadata.metadata.fb` to S3:
+
+```bash
+greptime cli meta snapshot save \
+  --backend postgres-store \
+  --store-addrs 'password=PASSWORD dbname=greptime user=greptime host=127.0.0.1 port=5432' \
+  --file-path snapshots/prod-metadata.metadata.fb \
+  --s3 \
+  --s3-bucket greptime-backups \
+  --s3-region us-west-2
+```
+
+For MinIO or another S3-compatible service, also set `--s3-endpoint` and the required credentials. OSS, GCS, and Azure Blob Storage are available through the corresponding CLI backend flags. See the [command reference](/reference/command-lines/utilities/metadata.md) for the complete option list.
+
+## Inspect a snapshot
+
+Inspect the file before scheduling a restore:
+
+```bash
+greptime cli meta snapshot info \
+  --file-path /backup/prod-metadata.metadata.fb \
+  --limit 20
+```
+
+The command parses and prints metadata records; it does not prove that the snapshot matches a separate data export. Restrict access to its output because records may contain sensitive values.
+
+## Restore a snapshot
 
 :::warning
-**Important**: Before importing metadata, ensure the target backend is in a **clean state** (contains no existing data). Importing to a non-empty backend may result in data corruption or conflicts. 
 
-If you need to import to a backend with existing data, use the `--force` flag to bypass this safety check. However, exercise extreme caution as this can lead to data loss or inconsistencies.
+Restore into an empty metadata backend while no GreptimeDB component is writing to it. `--force` only bypasses the non-empty-backend check: it writes keys from the snapshot but does not remove extra keys already in the target. It is not a substitute for cleaning or recreating the target backend.
 
 :::
 
-### Import from S3 Cloud Storage
-
-Restore metadata from S3 backup to PostgreSQL storage backend:
+Restore a local snapshot to PostgreSQL:
 
 ```bash
 greptime cli meta snapshot restore \
-    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
-    --backend postgres-store \
-    --s3 \
-    --s3-bucket your-bucket-name \
-    --s3-region ap-southeast-1 \
-    --s3-access-key-id <your-s3-access-key-id> \
-    --s3-secret-access-key <your-s3-secret-access-key>
+  --backend postgres-store \
+  --store-addrs 'password=PASSWORD dbname=greptime user=greptime host=127.0.0.1 port=5432' \
+  --file-path /backup/prod-metadata.metadata.fb
 ```
 
-### Import from Local File
-
-#### To PostgreSQL Backend
-
-Restore metadata from local backup file to PostgreSQL:
+To restore from S3, use the same `--file-path` and object-storage options used for the save command:
 
 ```bash
 greptime cli meta snapshot restore \
-    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
-    --backend postgres-store
+  --backend postgres-store \
+  --store-addrs 'password=PASSWORD dbname=greptime user=greptime host=127.0.0.1 port=5432' \
+  --file-path snapshots/prod-metadata.metadata.fb \
+  --s3 \
+  --s3-bucket greptime-backups \
+  --s3-region us-west-2
 ```
 
-#### To MySQL Backend
-
-Restore metadata from local backup file to MySQL:
-
-```bash
-greptime cli meta snapshot restore \
-    --store-addrs 'mysql://user:password@127.0.0.1:3306/database' \
-    --backend mysql-store
-```
-
-#### To etcd Backend
-
-Restore metadata from local backup file to etcd:
-
-```bash
-greptime cli meta snapshot restore \
-    --store-addrs 127.0.0.1:2379 \
-    --backend etcd-store
-```
-
-#### To RaftEngine Backend
-
-Restore metadata from local backup file to RaftEngine:
-
-```bash
-greptime cli meta snapshot restore \
-    --store-addrs "raftengine:///path/to/metadata" \
-    --backend raft-engine-store
-```
+After restore, restart all GreptimeDB components that use the target metadata backend. Follow [metadata restore and migration](/user-guide/deployments-administration/manage-metadata/restore-backup.md) to validate the next table ID and reconcile table metadata with the restored data.

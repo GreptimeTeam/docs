@@ -1,125 +1,75 @@
 ---
-keywords: [跨区域部署, 单集群, 灾难恢复, DR 解决方案, 数据中心, 高可用性, 网络延迟, 元数据, 数据分区]
-description: 介绍 GreptimeDB 基于单集群跨区域部署的灾难恢复（DR）解决方案，包括不同区域和数据中心的部署架构及其比较。
+keywords: [跨区域部署, 单集群, 灾难恢复, 数据中心, 高可用性, 元数据, Region Failover]
+description: 设计和验证跨可用区或 Region 的 GreptimeDB 集群，并明确各层实际提供的故障域保证。
 ---
 
-# 基于单集群跨区域部署的 DR 解决方案
+# 单集群跨 Region 部署
 
-## GreptimeDB DR 的工作原理
-GreptimeDB 非常适合跨区域灾难恢复。GreptimeDB 提供了量身定制的解决方案，以满足不同区域特征和业务需求的多样化要求。
+GreptimeDB 集群可以跨可用区或 Region 部署，但 GreptimeDB 本身不会自动让所有依赖都具备跨 Region 能力。只有覆盖下面列出的故障边界后，才能把这种部署作为容灾方案。
 
-GreptimeDB 资源管理涉及 Availability Zones（AZ）的概念。一个 AZ 是一个逻辑上的灾难恢复单元。
-它可以是数据中心（DC），也可以是 DC 的一个分区，这取决于你具体的 DC 条件和部署设计。
+## 恢复模型
 
-在跨区域灾难恢复解决方案中，一个 GreptimeDB 区域是一个城市。当两个 DC 在同一区域且其中一个 DC 不可用时，另一个 DC 可以接管不可用 DC 的服务。这是一种本地化策略。
+一张表被划分成多个 Region，每个 Region 在一台 Datanode 上打开。GreptimeDB 社区版不会为每个已打开的 Region 维护一个同步 Datanode 副本。启用 Region Failover 后，Metasrv 检测到 Region 不可用，选择健康的 Datanode，更新路由并在目标节点打开 Region。目标 Datanode 从共享存储和 Remote WAL 恢复持久化数据。
 
-在了解每个 DR 解决方案的细节之前，有必要先了解以下知识：
-1. Remote wal 组件的 DR 解决方案也非常重要。本质上，它构成了整个 DR 解决方案的基础。因此，对于每个 GreptimeDB 的 DR 解决方案，我们将在图中展示 remote wal 组件。目前，GreptimeDB 默认使用基于 Kafka 实现的 remote wal 组件，将来会提供其他实现；然而，在部署上不会有显著差异。
-2. GreptimeDB 表：每张表可以根据一定范围划分为多个分区，每个分区可能分布在不同的数据节点上。在写入或查询时，会根据相应的路由规则调用到指定的数据节点。一张表的分区可能如下所示：
+这意味着：
 
-```
-Table name: T1
-Table partition count: 4
-    T1-1
-    T1-2
-    T1-3
-    T1-4
- 
-Table name: T2
-Table partition count: 3
-    T2-1
-    T2-2
-    T2-3
-```
+- 目标 Datanode 必须能够访问故障 Datanode 使用的同一份数据存储和 WAL。
+- 如果共享依赖与故障站点一起丢失，Region Failover 无法完成恢复。
 
+Region Failover 默认关闭。启用前阅读 [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md)，并按文档处理初始化等待时间和维护模式。
 
-### 元数据跨两个区域，数据在同一区域
+## 定义故障域
 
-![DR-across-2dc-1region](/DR-across-2dc-1region.png)
+可用区、数据中心和地理 Region 都是基础设施概念。先确定部署需要容忍哪类故障，再把每个组件映射到相应故障域。GreptimeDB 不会推断某台 Datanode 属于哪个城市或数据中心。
 
-在此解决方案中，数据位于一个区域（2 个 DC），而元数据跨越两个区域。
+在 Kubernetes 中，使用节点 Label、Affinity、Topology Spread Constraint 和 PodDisruptionBudget 放置副本，并在每次部署变更后检查实际分布。GreptimeDB 社区版内置 Selector 根据轮询、Lease 或负载从可用 Datanode 中选择目标，不会强制跨可用区放置。
 
-DC1 和 DC2 一起用于处理读写服务，而位于第二区域的 DC3 是用来满足多数派协议的副本。这种架构也被称为“2-2-1”解决方案。
+## 必要依赖
 
-在极端情况下，DC1 和 DC2 都必须能够处理所有请求，因此请确保分配足够的资源。
+### 数据存储
 
-网络延迟：
-- 同一区域内延迟为 2ms
-- 两个区域间延迟为 30ms
+使用在目标故障域失效后仍可读写的共享对象存储。根据存储服务的规则配置复制、版本控制、凭证、Endpoint 和故障切换。即使 Datanode 分布在多个 Region，只位于一个 Region 的 Bucket 仍然是单 Region 依赖。
 
-支持高可用性级别：
-- 单个 AZ 不可用时性能相同
-- 单个 DC 不可用时性能几乎相同
+### Remote WAL
 
-如果您想要一个区域级别的灾难恢复解决方案，可以更进一步，在 DC3 上提供读写服务。因此，下一个解决方案是：
+安全执行 Region Failover 需要使用 Kafka Remote WAL。存活的 Datanode 必须能够访问 Kafka，Kafka 也必须保留 GreptimeDB 仍可能引用的全部 WAL Entry。Kafka 的复制和跨 Region 恢复能力应覆盖与 GreptimeDB 集群相同的故障边界。
 
-### 数据跨两个区域
+`overwrite_entry_start_id = true` 时不要使用基于大小的 Kafka 保留策略，否则可能删除 GreptimeDB 仍需要的 Entry。参见 [Remote WAL 配置](/user-guide/deployments-administration/wal/remote-wal/configuration.md)和 [Remote WAL 的 Kafka 管理](/user-guide/deployments-administration/wal/remote-wal/manage-kafka.md)。
 
-![DR-across-3dc-2region](/DR-across-3dc-2region.png)
+### 元数据
 
-在此解决方案中，数据跨越两个区域。
+Metasrv 使用 etcd、MySQL 或 PostgreSQL 等元数据后端。Metasrv 和元数据后端都必须按照目标故障边界部署。增加 Metasrv 副本不会自动为元数据后端建立 Quorum 或跨 Region 复制。
 
-每个数据中心必须能够在极端情况下处理所有请求，因此请确保分配足够的资源。
+跨 Region 共识会增加元数据操作的写入延迟。应遵循元数据后端自身的 Quorum 和故障切换规则，而不是简单按照 GreptimeDB 站点数量放置成员。
 
-网络延迟：
-- 同一区域内延迟为 2 毫秒
-- 两个区域间延迟为 30 毫秒
+### 请求路由
 
-支持高可用性级别：
-- 单个可用区不可用时性能不变
-- 单个数据中心不可用时性能下降
+应用需要存活的 Frontend Endpoint。在 GreptimeDB 外部配置带健康检查的负载均衡或 DNS 故障切换，并让客户端重试策略符合可接受的最长中断时间。
 
-如果无法容忍单个数据中心故障导致的性能下降，请考虑升级到五个数据中心和三个区域的解决方案。
+### 备用容量
 
-### 元数据跨三个区域，数据跨两个区域
+存活的 Datanode 在承载原有流量的同时，还要接收故障域中的 Region。容量规划必须测试计划容忍的最大故障，而不只是稳态负载。参见[容量规划](/user-guide/deployments-administration/capacity-plan.md)。
 
-![DR-across-5dc-2region](/DR-across-5dc-2region.png)
+## 选择拓扑
 
-在此解决方案中，数据跨越两个区域，而元数据跨越三个区域。
+使用能够覆盖已声明故障的最小拓扑：
 
-Region1 和 Region2 一起用于处理读写服务，而 Region3 是一个副本，用于满足多数派协议。这种架构也被称为“2-2-1”解决方案。
+- 如果目标是容忍可用区故障，应按照各依赖自身的 Quorum 和复制策略，把 GreptimeDB 组件和所有有状态依赖分布到足够多的可用区。
+- 如果目标是容忍整个 Region 故障，每个必要依赖都必须跨 Region 部署，或者具备经过验证的 Region 故障切换能力，包括对象存储、Kafka、元数据、Frontend 路由、凭证和可观测系统。
+- 如果跨 Region 延迟使单集群不可行，应使用独立集群以及明确的数据复制或备份恢复方案，而不是声明未经测量的单集群 RTO。
 
-两个相邻的区域中的每一个都必须能够在极端情况下处理所有请求，因此请确保分配足够的资源。
+拓扑图中的网络数字不是产品属性。应测量实际站点之间的延迟、带宽和丢包，并在确定拓扑前测试它们对 Kafka ACK、元数据操作、查询和恢复过程的影响。
 
-网络延迟：
-- 同一区域内延迟为 2ms
-- 两个相邻区域之间延迟为 7ms
-- 两个远距离区域之间延迟为 30ms
+## 验证恢复能力
 
-支持高可用性级别：
-- 单一 AZ 不可用时性能不变
-- 单一 DC 不可用时性能不变
-- 单一区域（城市）不可用时性能略有下降
+生产上线前以及基础设施发生重大变更后执行故障演练：
 
-您可以更进一步，在三个区域上提供读写服务。因此，下一个解决方案是：
-（此解决方案可能具有更高的延迟，如果无法接受，则不推荐。）
+1. 停止一台 Datanode，确认其 Region 在预期节点上重新打开。
+2. 隔离整个可用区或 Region，包括对应网络路径。
+3. 从存活站点验证 Kafka、对象存储和元数据后端。
+4. 确认 Frontend 路由和客户端重试恢复访问。
+5. 对比最后一批已确认写入和恢复后的查询结果。
+6. 测量故障检测、Region 恢复、积压追平和服务完全恢复的耗时。
+7. 恢复故障站点且不触发非预期 Failover；计划内重启期间使用维护模式。
 
-## 数据跨三个区域
-
-![DR-across-5dc-3region](/DR-across-5dc-3region.png)
-
-在此解决方案中，数据跨越三个区域。
-
-如果一个区域发生故障，其他两个区域必须能够处理所有请求，因此请确保分配足够的资源。
-
-网络延迟：
-- 同一区域内延迟为 2 毫秒
-- 相邻两个区域之间的延迟为 7 毫秒
-- 两个远距离区域之间的延迟为 30 毫秒
-
-支持高可用性级别：
-- 单个 AZ 不可用时性能不变
-- 单个 DC 不可用时性能不变
-- 单个区域（城市）不可用时性能下降
-
-## 解决方案比较
-上述解决方案的目标是在中大型场景中满足高可用性和可靠性的要求。然而，在具体实施过程中，每种解决方案的成本和效果可能会有所不同。下表对每种解决方案进行了比较，以帮助你根据具体场景、需求和成本进行最终选择。
-
-以下是内容格式化为表格：
-
-| 解决方案 | 延迟 | 高可用性 |
-| --- | --- | --- |
-| 元数据跨两个区域，数据在同一区域 | - 同一区域内延迟 2 毫秒<br/>- 两个区域间延迟 30 毫秒 | - 单个 AZ 不可用时性能不变<br/>- 单个 DC 不可用时性能几乎不变 |
-| 数据跨两个区域 | - 同一区域内延迟 2 毫秒<br/>- 两个区域间延迟 30 毫秒 | - 单个 AZ 不可用时性能不变<br/>- 单个 DC 不可用时性能下降 |
-| 元数据跨三个区域，数据跨两个区域 | - 同一区域内延迟 2 毫秒<br/>- 相邻两个区域间延迟 7 毫秒<br/>- 两个远距离的区域间延迟 30 毫秒 | - 单个 AZ 不可用时性能不变<br/>- 单个 DC 不可用时性能不变<br/>- 单一区域（城市）不可用时，性能略有下降 |
-| 数据跨三个区域 | - 同一区域内延迟 2 毫秒<br/>- 相邻两个区域间延迟 7 毫秒<br/>- 两个远距离的区域间延迟 30 毫秒 | - 单个 AZ 不可用时性能不变<br/>- 单个 DC 不可用时性能不变 <br/>- 单一区域（城市）不可用时，性能下降 |
+用实测的数据丢失窗口和恢复时间作为部署的 RPO、RTO 依据。只有完整故障演练在目标负载下证明结果后，才能声明零 RPO 或分钟级 RTO。

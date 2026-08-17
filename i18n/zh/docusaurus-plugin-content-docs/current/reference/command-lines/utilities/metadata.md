@@ -22,17 +22,24 @@ greptime cli meta snapshot save [OPTIONS]
 | 选项               | 是否必需 | 默认值            | 描述                                                                                                   |
 | ------------------ | -------- | ----------------- | ------------------------------------------------------------------------------------------------------ |
 | --store-addrs      | 是       | -                 | 要连接的元数据存储服务地址（支持 etcd、MySQL、PostgreSQL 和 RaftEngine），格式与 Metasrv 配置中的 store-addrs 一致。RaftEngine 使用 `raftengine:///path/to/metadata` 格式 |
-| --backend          | 是       | -                 | 元数据存储后端类型，支持 `etcd-store`、`postgres-store`、`mysql-store`、`raft-engine-store`                                                         |
+| --backend          | 否       | etcd-store        | 元数据存储后端类型，支持 `etcd-store`、`postgres-store`、`mysql-store`、`raft-engine-store`                                                         |
 | --store-key-prefix | 否       | ""                | 元数据存储前缀，参考 Metasrv 配置                                                                                                                    |
 | --meta-table-name  | 否       | greptime_metakv   | 当后端为 `postgres-store` 或 `mysql-store` 时，元数据存储的表名                                                                                      |
-| --max-txn-ops      | 否       | 128               | 最大事务操作数                                                                                                                                       |
+| --max-txn-ops      | 否       | 128               | etcd 单个事务的最大操作数；仅用于 `etcd-store`                                                                                                      |
+| --meta-schema-name | 否       | -                 | PostgreSQL 元数据表所在的 Schema；未设置时使用当前 `search_path`                                                                                    |
+| --auto-create-schema | 否     | true              | PostgreSQL 元数据 Schema 不存在时自动创建                                                                                                           |
+| --backend-tls-mode | 否       | disable           | etcd、PostgreSQL 或 MySQL 连接的 TLS 模式                                                                                                           |
+| --backend-tls-cert-path | 否  | ""                | 元数据后端连接使用的客户端证书路径                                                                                                                   |
+| --backend-tls-key-path | 否   | ""                | 元数据后端连接使用的客户端私钥路径                                                                                                                   |
+| --backend-tls-ca-cert-path | 否 | ""              | 元数据后端连接使用的 CA 证书路径                                                                                                                     |
+| --backend-tls-watch | 否      | false             | 监听后端 TLS 证书文件变更                                                                                                                            |
 
 #### 文件选项
 
 | 选项        | 是否必需 | 默认值            | 描述                                               |
 | ----------- | -------- | ----------------- | -------------------------------------------------- |
-| --file-name | 否       | metadata_snapshot | 元数据导出的文件名，会自动添加 `.metadata.fb` 后缀 |
-| --dir       | 否       | ""                | 存储导出数据的目录                                 |
+| --file-path | 否       | metadata_snapshot.metadata.fb | 快照路径。本地相对路径以当前工作目录为基准。 |
+| --dir       | 否       | /                             | 本地快照 I/O 使用的文件系统根目录。           |
 
 #### 对象存储选项
 
@@ -50,6 +57,7 @@ greptime cli meta snapshot save [OPTIONS]
 | --s3-region                    | 否       | -      | S3 区域名称                                 |
 | --s3-endpoint                  | 否       | -      | S3 端点 URL（可选，默认根据桶区域确定）     |
 | --s3-enable-virtual-host-style | 否       | false  | 为 S3 API 请求启用虚拟主机样式              |
+| --s3-disable-ec2-metadata      | 否       | false  | 禁用 EC2 Metadata Service 凭证查询           |
 
 ##### OSS（阿里云）
 
@@ -100,18 +108,25 @@ greptime cli meta snapshot restore [OPTIONS]
 | 选项               | 是否必需 | 默认值          | 描述                                                                                                   |
 | ------------------ | -------- | --------------- | ------------------------------------------------------------------------------------------------------ |
 | --store-addrs      | 是       | -               | 要连接的元数据存储服务地址（支持 etcd、MySQL、PostgreSQL 和 RaftEngine），格式与 Metasrv 配置中的 store-addrs 一致。RaftEngine 使用 `raftengine:///path/to/metadata` 格式 |
-| --backend          | 是       | -               | 元数据存储后端类型，支持 `etcd-store`、`postgres-store`、`mysql-store`、`raft-engine-store`                                                          |
+| --backend          | 否       | etcd-store      | 元数据存储后端类型，支持 `etcd-store`、`postgres-store`、`mysql-store`、`raft-engine-store`                                                          |
 | --store-key-prefix | 否       | ""              | 元数据存储的 key 前缀，参考 Metasrv 配置                                                                                                             |
 | --meta-table-name  | 否       | greptime_metakv | 当后端为 `postgres-store` 或 `mysql-store` 时，元数据存储的表名                                                                                      |
-| --max-txn-ops      | 否       | 128             | 最大事务操作数                                                                                                                                       |
+| --max-txn-ops      | 否       | 128             | etcd 单个事务的最大操作数；仅用于 `etcd-store`                                                                                                      |
+| --meta-schema-name | 否       | -               | PostgreSQL 元数据表所在的 Schema；未设置时使用当前 `search_path`                                                                                    |
+| --auto-create-schema | 否     | true            | PostgreSQL 元数据 Schema 不存在时自动创建                                                                                                           |
+| --backend-tls-mode | 否       | disable         | etcd、PostgreSQL 或 MySQL 连接的 TLS 模式                                                                                                           |
+| --backend-tls-cert-path | 否  | ""              | 元数据后端连接使用的客户端证书路径                                                                                                                   |
+| --backend-tls-key-path | 否   | ""              | 元数据后端连接使用的客户端私钥路径                                                                                                                   |
+| --backend-tls-ca-cert-path | 否 | ""            | 元数据后端连接使用的 CA 证书路径                                                                                                                     |
+| --backend-tls-watch | 否      | false           | 监听后端 TLS 证书文件变更                                                                                                                            |
 
 #### 文件选项
 
 | 选项        | 是否必需 | 默认值                        | 描述                                                                                   |
 | ----------- | -------- | ----------------------------- | -------------------------------------------------------------------------------------- |
-| --file-name | 否       | metadata_snapshot.metadata.fb | 元数据导出的文件名                                                                     |
-| --dir       | 否       | "."                           | 存储导出数据的目录                                                                     |
-| --force     | 否       | false                         | 是否强制导入，当目标后端检测包含旧数据时，默认无法导入数据，若想强制导入则可开启此标志 |
+| --file-path | 否       | metadata_snapshot.metadata.fb | 快照路径。本地相对路径以当前工作目录为基准。                                            |
+| --dir       | 否       | /                             | 本地快照 I/O 使用的文件系统根目录。                                                     |
+| --force     | 否       | false                         | 跳过目标非空检查。该参数会写入快照中的 Key，但不会删除目标中已有的多余 Key。            |
 
 #### 对象存储选项
 
@@ -129,6 +144,7 @@ greptime cli meta snapshot restore [OPTIONS]
 | --s3-region                    | 否       | -      | S3 区域名称                                 |
 | --s3-endpoint                  | 否       | -      | S3 端点 URL（可选，默认根据桶区域确定）     |
 | --s3-enable-virtual-host-style | 否       | false  | 为 S3 API 请求启用虚拟主机样式              |
+| --s3-disable-ec2-metadata      | 否       | false  | 禁用 EC2 Metadata Service 凭证查询           |
 
 ##### OSS（阿里云）
 
@@ -180,8 +196,8 @@ greptime cli meta snapshot info [OPTIONS]
 
 | 选项          | 是否必需 | 默认值            | 描述                   |
 | ------------- | -------- | ----------------- | ---------------------- |
-| --file-name   | 否       | metadata_snapshot | 要查看的元数据快照文件名 |
-| --dir         | 否       | "."               | 快照文件存储的目录     |
+| --file-path   | 否       | metadata_snapshot.metadata.fb | 要检查的快照路径。               |
+| --dir         | 否       | /                             | 本地快照 I/O 使用的文件系统根目录。 |
 | --inspect-key | 否       | "*"               | 过滤元数据键的查询模式 |
 | --limit       | 否       | -                 | 显示的最大条目数       |
 
@@ -201,6 +217,7 @@ greptime cli meta snapshot info [OPTIONS]
 | --s3-region                    | 否       | -      | S3 区域名称                             |
 | --s3-endpoint                  | 否       | -      | S3 端点 URL（可选，默认根据桶区域确定） |
 | --s3-enable-virtual-host-style | 否       | false  | 为 S3 API 请求启用虚拟主机样式          |
+| --s3-disable-ec2-metadata      | 否       | false  | 禁用 EC2 Metadata Service 凭证查询       |
 
 ##### OSS（阿里云）
 

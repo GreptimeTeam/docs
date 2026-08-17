@@ -1,146 +1,122 @@
 ---
-keywords: [备份, 恢复, 导出工具, 导入工具, 数据库元信息备份, 数据恢复, 命令行工具]
-description: 介绍 GreptimeDB 的元数据导出和导入工具，用于数据库元信息的备份和恢复，包括命令语法、选项、常见使用场景
+keywords: [备份, 恢复, 元数据快照, etcd, MySQL, PostgreSQL, RaftEngine, 灾难恢复]
+description: 使用 greptime CLI 备份、检查和恢复 GreptimeDB 元数据后端。
 ---
 
-# GreptimeDB 元信息导出和导入工具
+# 备份和恢复元数据
 
-本指南描述了如何使用 GreptimeDB 的元信息导出和导入工具进行元数据库备份和恢复。
+元数据快照命令从 GreptimeDB 元数据后端导出 Key-Value 记录。它**不会**导出表数据、SST 文件或 WAL Entry。如果恢复方案还需要表数据，请使用 [Export/Import V2](./export-import-v2.md)。
 
-有关详细的命令行选项和高级配置，请参阅 [元数据导出和导入](/reference/command-lines/utilities/metadata.md)。
+CLI 支持 etcd、PostgreSQL、MySQL 和 RaftEngine 元数据后端，源端和目标端可以使用不同的后端。
 
-## 概述
+## 创建快照前
 
-## 导出操作
+元数据快照与数据导出相互独立。为避免在 DDL 或 Region Procedure 变更元数据时创建快照：
 
-### 导出到 S3 云存储
+1. 停止 Schema 变更和自动放置操作。
+2. [暂停 Procedure Manager](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md)。
+3. 等待已有 Procedure 执行完毕。
+4. 保存元数据快照，然后恢复 Procedure Manager。
 
-将元数据从 PostgreSQL 导出到 S3 云存储，用于云备份存储：
+元数据快照可能包含 Catalog 定义、连接配置和其他运维元数据，应按敏感数据管理。
 
-```bash
-greptime cli meta snapshot save \
-    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
-    --backend postgres-store \
-    --s3 \
-    --s3-bucket your-bucket-name \
-    --s3-region ap-southeast-1 \
-    --s3-access-key-id <your-s3-access-key-id> \
-    --s3-secret-access-key <your-s3-secret-access-key>
-```
+## 保存到本地文件
 
-**输出**: 在指定的 S3 桶中创建 `metadata_snapshot.metadata.fb` 文件。
+默认输出文件是当前目录中的 `metadata_snapshot.metadata.fb`。使用 `--file-path` 指定其他路径。
 
-### 导出到本地目录
-
-#### 从 PostgreSQL 后端导出
-
-将元数据从 PostgreSQL 导出到本地目录：
+PostgreSQL：
 
 ```bash
 greptime cli meta snapshot save \
-    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
-    --backend postgres-store
+  --backend postgres-store \
+  --store-addrs 'password=PASSWORD dbname=greptime user=greptime host=127.0.0.1 port=5432' \
+  --file-path /backup/prod-metadata.metadata.fb
 ```
 
-#### 从 MySQL 后端导出
-
-将元数据从 MySQL 导出到本地目录：
+MySQL：
 
 ```bash
 greptime cli meta snapshot save \
-    --store-addrs 'mysql://user:password@127.0.0.1:3306/database' \
-    --backend mysql-store
+  --backend mysql-store \
+  --store-addrs 'mysql://greptime:PASSWORD@127.0.0.1:3306/greptime' \
+  --file-path /backup/prod-metadata.metadata.fb
 ```
 
-#### 从 etcd 后端导出
-
-将元数据从 etcd 导出到本地目录：
+etcd：
 
 ```bash
 greptime cli meta snapshot save \
-    --store-addrs 127.0.0.1:2379 \
-    --backend etcd-store
+  --backend etcd-store \
+  --store-addrs 127.0.0.1:2379 \
+  --file-path /backup/prod-metadata.metadata.fb
 ```
 
-**输出**: 在当前工作目录中创建 `metadata_snapshot.metadata.fb` 文件。
-
-#### 从 RaftEngine 后端导出
-
-:::note
-RaftEngine 在 standalone 实例运行期间会锁定元数据目录，请在导出前停止 standalone 实例。
-:::
-
-将元数据从 RaftEngine 导出到本地目录：
+Standalone 运行时，RaftEngine 会锁定元数据目录。保存或恢复 RaftEngine 元数据前先停止 Standalone 实例：
 
 ```bash
 greptime cli meta snapshot save \
-    --store-addrs "raftengine:///path/to/metadata" \
-    --backend raft-engine-store
+  --backend raft-engine-store \
+  --store-addrs 'raftengine:///var/lib/greptimedb/metadata' \
+  --file-path /backup/prod-metadata.metadata.fb
 ```
 
-**输出**: 在当前工作目录中创建 `metadata_snapshot.metadata.fb` 文件。
+如果源部署自定义了 `--store-key-prefix`，以及 MySQL 或 PostgreSQL 的 `--meta-table-name`，创建快照时应使用相同的值。
 
-## 导入操作
+## 保存到 S3 兼容存储
+
+必须显式启用一个对象存储后端。下面的命令将快照对象 `snapshots/prod-metadata.metadata.fb` 写入 S3：
+
+```bash
+greptime cli meta snapshot save \
+  --backend postgres-store \
+  --store-addrs 'password=PASSWORD dbname=greptime user=greptime host=127.0.0.1 port=5432' \
+  --file-path snapshots/prod-metadata.metadata.fb \
+  --s3 \
+  --s3-bucket greptime-backups \
+  --s3-region us-west-2
+```
+
+使用 MinIO 或其他 S3 兼容服务时，还要设置 `--s3-endpoint` 和所需凭证。OSS、GCS 和 Azure Blob Storage 使用对应的 CLI 后端参数。完整参数参见[命令行参考](/reference/command-lines/utilities/metadata.md)。
+
+## 检查快照
+
+安排恢复任务前先检查文件：
+
+```bash
+greptime cli meta snapshot info \
+  --file-path /backup/prod-metadata.metadata.fb \
+  --limit 20
+```
+
+该命令会解析并打印元数据记录，但不能证明快照与另一份数据导出一致。记录中可能包含敏感值，应限制命令输出的访问权限。
+
+## 恢复快照
 
 :::warning
-**重要**: 在导入元数据之前，请确保目标存储后端的对应表中没有**任何数据**，否则可能会导致元数据损坏。
 
-如果你需要导入到具有现有数据的后端，请使用 `--force` 标志绕过此安全检查。但是，请谨慎操作，因为这可能导致数据损坏。
+恢复目标必须是空的元数据后端，恢复期间不能有 GreptimeDB 组件向其中写入。`--force` 只会跳过非空后端检查：它写入快照中的 Key，但不会删除目标端已有的多余 Key。因此不能用 `--force` 代替清理或重建目标后端。
+
 :::
 
-### 从 S3 云存储导入
-
-从 S3 备份恢复元数据到 PostgreSQL 存储后端：
+将本地快照恢复到 PostgreSQL：
 
 ```bash
 greptime cli meta snapshot restore \
-    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
-    --backend postgres-store \
-    --s3 \
-    --s3-bucket your-bucket-name \
-    --s3-region ap-southeast-1 \
-    --s3-access-key-id <your-s3-access-key-id> \
-    --s3-secret-access-key <your-s3-secret-access-key>
+  --backend postgres-store \
+  --store-addrs 'password=PASSWORD dbname=greptime user=greptime host=127.0.0.1 port=5432' \
+  --file-path /backup/prod-metadata.metadata.fb
 ```
 
-### 从本地文件导入
-
-#### 导入到 PostgreSQL 后端
-
-从本地备份文件恢复元数据到 PostgreSQL：
+从 S3 恢复时，使用与保存命令相同的 `--file-path` 和对象存储参数：
 
 ```bash
 greptime cli meta snapshot restore \
-    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
-    --backend postgres-store
+  --backend postgres-store \
+  --store-addrs 'password=PASSWORD dbname=greptime user=greptime host=127.0.0.1 port=5432' \
+  --file-path snapshots/prod-metadata.metadata.fb \
+  --s3 \
+  --s3-bucket greptime-backups \
+  --s3-region us-west-2
 ```
 
-#### 导入到 MySQL 后端
-
-从本地备份文件恢复元数据到 MySQL:
-
-```bash
-greptime cli meta snapshot restore \
-    --store-addrs 'mysql://user:password@127.0.0.1:3306/database' \
-    --backend mysql-store
-```
-
-#### 导入到 etcd 后端
-
-从本地备份文件恢复元数据到 etcd：
-
-```bash
-greptime cli meta snapshot restore \
-    --store-addrs 127.0.0.1:2379 \
-    --backend etcd-store
-```
-
-#### 导入到 RaftEngine 后端
-
-从本地备份文件恢复元数据到 RaftEngine：
-
-```bash
-greptime cli meta snapshot restore \
-    --store-addrs "raftengine:///path/to/metadata" \
-    --backend raft-engine-store
-```
+恢复完成后，重启使用目标元数据后端的全部 GreptimeDB 组件。按照[元数据备份、恢复和迁移](/user-guide/deployments-administration/manage-metadata/restore-backup.md)检查 Next Table ID，并根据恢复后的数据对账表元数据。

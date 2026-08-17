@@ -22,17 +22,24 @@ greptime cli meta snapshot save [OPTIONS]
 | Option             | Required | Default           | Description                                                                                                                                        |
 | ------------------ | -------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | --store-addrs      | Yes      | -                 | Metadata storage service addresses to connect to (supports etcd, MySQL, PostgreSQL, and RaftEngine). Format consistent with store-addrs in metasrv configuration. For RaftEngine, use `raftengine:///path/to/metadata` |
-| --backend          | Yes      | -                 | Type of metadata storage backend, one of `etcd-store`, `postgres-store`, `mysql-store`, `raft-engine-store`                                        |
+| --backend          | No       | etcd-store        | Type of metadata storage backend, one of `etcd-store`, `postgres-store`, `mysql-store`, `raft-engine-store`                                        |
 | --store-key-prefix | No       | ""                | Unified prefix for data in metasrv, refer to metasrv configuration                                                                                 |
 | --meta-table-name  | No       | greptime_metakv   | When backend is one of `postgres-store`, `mysql-store`, the table name storing metadata                                                            |
-| --max-txn-ops      | No       | 128               | Maximum number of txn operations                                                                                                                   |
+| --max-txn-ops      | No       | 128               | Maximum number of operations in an etcd transaction; only used with `etcd-store`                                                                   |
+| --meta-schema-name | No       | -                 | PostgreSQL schema containing the metadata table; uses the current `search_path` when unset                                                          |
+| --auto-create-schema | No     | true              | Create the PostgreSQL metadata schema when it does not exist                                                                                       |
+| --backend-tls-mode | No       | disable           | TLS mode for the etcd, PostgreSQL, or MySQL connection                                                                                             |
+| --backend-tls-cert-path | No  | ""                | Client certificate path for the metadata-backend connection                                                                                        |
+| --backend-tls-key-path | No   | ""                | Client private-key path for the metadata-backend connection                                                                                        |
+| --backend-tls-ca-cert-path | No | ""              | CA certificate path for the metadata-backend connection                                                                                            |
+| --backend-tls-watch | No      | false             | Watch the backend TLS certificate files for changes                                                                                                |
 
 #### File Options
 
 | Option       | Required | Default           | Description                                                                 |
 | ------------ | -------- | ----------------- | --------------------------------------------------------------------------- |
-| --file-name  | No       | metadata_snapshot | File name for metadata export, will automatically add `.metadata.fb` suffix |
-| --dir        | No       | ""                | Directory to store exported data                                            |
+| --file-path  | No       | metadata_snapshot.metadata.fb | Snapshot path. A relative local path is resolved from the current directory. |
+| --dir        | No       | /                   | Filesystem root used for local snapshot I/O.                                 |
 
 #### Object Storage Options
 
@@ -50,6 +57,7 @@ To use object storage for storing exported metadata, enable one of the following
 | --s3-region                  | No       | -       | S3 region name                                                   |
 | --s3-endpoint                | No       | -       | S3 endpoint URL (optional, defaults based on bucket region)      |
 | --s3-enable-virtual-host-style | No       | false   | Enable virtual host style for S3 API requests                    |
+| --s3-disable-ec2-metadata      | No       | false   | Disable EC2 metadata service credential lookup                   |
 
 ##### OSS (Alibaba Cloud)
 
@@ -102,18 +110,25 @@ greptime cli meta snapshot restore [OPTIONS]
 | Option             | Required | Default         | Description                                                                                                                                          |
 | ------------------ | -------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | --store-addrs      | Yes      | -               | Metadata storage service addresses to connect to (supports etcd, MySQL, PostgreSQL, and RaftEngine). Format consistent with store-addrs in metasrv configuration. For RaftEngine, use `raftengine:///path/to/metadata` |
-| --backend          | Yes      | -               | Type of metadata storage backend, one of `etcd-store`, `postgres-store`, `mysql-store`, `raft-engine-store`                                         |
+| --backend          | No       | etcd-store      | Type of metadata storage backend, one of `etcd-store`, `postgres-store`, `mysql-store`, `raft-engine-store`                                         |
 | --store-key-prefix | No       | ""              | Unified prefix for data in metasrv, refer to metasrv configuration                                                                                   |
 | --meta-table-name  | No       | greptime_metakv | When backend is `postgres-store`, `mysql-store`, the table name storing metadata                                                                     |
-| --max-txn-ops      | No       | 128             | Maximum number of txn operations                                                                                                                     |
+| --max-txn-ops      | No       | 128             | Maximum number of operations in an etcd transaction; only used with `etcd-store`                                                                     |
+| --meta-schema-name | No       | -               | PostgreSQL schema containing the metadata table; uses the current `search_path` when unset                                                            |
+| --auto-create-schema | No     | true            | Create the PostgreSQL metadata schema when it does not exist                                                                                          |
+| --backend-tls-mode | No       | disable         | TLS mode for the etcd, PostgreSQL, or MySQL connection                                                                                                |
+| --backend-tls-cert-path | No  | ""              | Client certificate path for the metadata-backend connection                                                                                           |
+| --backend-tls-key-path | No   | ""              | Client private-key path for the metadata-backend connection                                                                                           |
+| --backend-tls-ca-cert-path | No | ""            | CA certificate path for the metadata-backend connection                                                                                              |
+| --backend-tls-watch | No      | false           | Watch the backend TLS certificate files for changes                                                                                                  |
 
 #### File Options
 
 | Option      | Required | Default                       | Description                                                                                                                                          |
 | ----------- | -------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| --file-name | No       | metadata_snapshot.metadata.fb | File name of metadata export to import                                                                                                               |
-| --dir       | No       | "."                           | Directory storing exported data                                                                                                                      |
-| --force     | No       | false                         | Whether to force import, when target backend is detected to not be in a clean state, import is disabled by default, enable this flag to force import |
+| --file-path | No       | metadata_snapshot.metadata.fb | Snapshot path. A relative local path is resolved from the current directory.                                                                          |
+| --dir       | No       | /                             | Filesystem root used for local snapshot I/O.                                                                                                          |
+| --force     | No       | false                         | Bypass the non-empty target check. This writes snapshot keys but does not delete extra keys already in the target.                                   |
 
 #### Object Storage Options
 
@@ -131,6 +146,7 @@ To use object storage for importing metadata, enable one of the following provid
 | --s3-region                  | No       | -       | S3 region name                                                   |
 | --s3-endpoint                | No       | -       | S3 endpoint URL (optional, defaults based on bucket region)      |
 | --s3-enable-virtual-host-style | No       | false   | Enable virtual host style for S3 API requests                    |
+| --s3-disable-ec2-metadata      | No       | false   | Disable EC2 metadata service credential lookup                   |
 
 ##### OSS (Alibaba Cloud)
 
@@ -182,8 +198,8 @@ greptime cli meta snapshot info [OPTIONS]
 
 | Option       | Required | Default           | Description                                 |
 | ------------ | -------- | ----------------- | ------------------------------------------- |
-| --file-name  | No       | metadata_snapshot | File name of the metadata snapshot to view  |
-| --dir        | No       | "."               | Directory where the snapshot file is stored |
+| --file-path  | No       | metadata_snapshot.metadata.fb | Snapshot path to inspect.                    |
+| --dir        | No       | /                             | Filesystem root used for local snapshot I/O. |
 | --inspect-key| No       | "*"               | Query pattern to filter metadata keys       |
 | --limit      | No       | -                 | Maximum number of entries to display        |
 
@@ -203,6 +219,7 @@ To inspect snapshots stored in object storage, enable one of the following provi
 | --s3-region                  | No       | -       | S3 region name                                                   |
 | --s3-endpoint                | No       | -       | S3 endpoint URL (optional, defaults based on bucket region)      |
 | --s3-enable-virtual-host-style | No       | false   | Enable virtual host style for S3 API requests                    |
+| --s3-disable-ec2-metadata      | No       | false   | Disable EC2 metadata service credential lookup                   |
 
 ##### OSS (Alibaba Cloud)
 

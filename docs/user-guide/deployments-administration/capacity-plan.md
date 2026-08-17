@@ -1,72 +1,64 @@
 ---
 keywords: [GreptimeDB capacity planning, CPU requirements, memory requirements, storage requirements, data retention policy]
-description: Provides guidelines for CPU, memory, and storage requirements for GreptimeDB based on data points processed per second, query requests per second, data volume, and data retention policy. Includes an example scenario.
+description: Plan GreptimeDB compute, memory, and storage capacity from a representative workload and measured resource use.
 ---
 
-# Capacity Plan
+# Capacity Planning
 
-This guide provides general advice on the CPU, memory, and storage requirements for GreptimeDB.
+There is no fixed mapping from rows per second or queries per second to CPU, memory, and storage. Row width, tag cardinality, query range, aggregation cost, index configuration, compaction, and workload bursts can change resource requirements substantially. Size a production deployment with a representative benchmark, then validate it with production metrics.
 
-GreptimeDB is designed to be lightweight upon startup,
-which allows for the database to be initiated with minimal server resources.
-However, when configuring your server capacity for a production environment,
-there are several key considerations:
+## Describe the workload
 
-- Data points processed per second
-- Query requests per second
-- Data volume
-- Data retention policy
-- Hardware costs
+Record at least the following inputs before running a benchmark:
 
-To monitor the various metrics of GreptimeDB, please refer to [Monitoring](/user-guide/deployments-administration/monitoring/overview.md).
+- Average and peak write rows per second, average row size, and burst duration
+- Number of tables and regions, tag cardinality, and schema changes
+- Concurrent queries, scanned time ranges, filters, aggregations, and result sizes
+- Retention period and expected growth
+- Availability target and the amount of capacity that must remain after a node or failure domain is lost
 
-## CPU
+Use production-shaped data. Uniform synthetic rows often compress differently and exercise fewer indexes than real data.
 
-Generally, applications that handle many concurrent queries, process large amounts of data,
-or perform other compute-intensive operations will require more CPU cores.
+## Size compute and memory
 
-Here are some recommendations for CPU resource usage,
-but the actual number of CPUs you should use depends on your workload.
+Different components have different bottlenecks:
 
-Consider allocating 30% of your CPU resources for data ingestion,
-with the remaining 70% to querying and analytics.
+- Frontend nodes use CPU and network capacity to accept requests, plan distributed queries, and merge results.
+- Datanodes handle writes, queries, compaction, indexing, and caches. Their CPU and memory requirements depend on the mix of these operations.
+- Metasrv resource use depends mainly on cluster metadata and control-plane activity rather than data volume alone.
 
-A recommended guideline for resource allocation is to maintain a CPU to memory ratio of 1:4 (for instance, 8 core to 32 GB).
-However, if your workload consists primarily of data ingestion with few queries,
-a ratio of 1:2 (8 core to 16 GB) can also be acceptable.
+Do not reserve a fixed percentage of CPU for reads or writes, or assume a fixed CPU-to-memory ratio. Run write and query workloads together, including peak concurrency, and observe CPU saturation, memory use, request latency, compaction backlog, and cache behavior. See [Performance tuning](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md) for the relevant settings and metrics.
 
-## Memory
+## Size storage
 
-In general, the more memory you have, the faster your queries will run.
-For basic workloads, it's recommended to have at least 8 GB of memory, and 32 GB for more advanced ones.
+Estimate the uncompressed logical volume first:
 
-## Storage
+```text
+daily logical bytes = average rows/second × average bytes/row × 86,400
+retained logical bytes = daily logical bytes × retention days
+```
 
-GreptimeDB features an efficient data compaction mechanism that reduces the original data size to about 1/8 to 1/10 of its initial volume.
-This allows GreptimeDB to store large amounts of data in a significantly smaller space.
+This is not the required physical capacity. Compression, compaction, indexes, and object-store implementation affect the actual size. Measure the physical size produced by representative data rather than applying a universal compression ratio.
 
-Data can be stored either in a local file system or in cloud storage, such as AWS S3.
-FOr more information on storage options,
-please refer to the [storage configuration](/user-guide/deployments-administration/configuration.md#storage-options) documentation.
+Account for each storage layer separately:
 
-Cloud storage is highly recommended for data storage due to its simplicity in managing storage.
-With cloud storage, only about 200GB of local storage space is needed for query-related caches and Write-Ahead Log (WAL).
+- Object storage or local data storage for SST and index files
+- Local WAL capacity when using local WAL
+- Kafka capacity and retention when using Remote WAL
+- Local cache and index staging capacity
+- Temporary headroom for compaction and operational growth
+- Backup storage, if backups are part of the recovery plan
 
-In order to manage the storage costs effectively, 
-it is recommended setting a [retention policy](/user-guide/concepts/features-that-you-concern.md#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
+Set table TTLs to bound retained data where appropriate. See [Manage data retention with TTL](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies).
 
-## Example
+## Validate the plan
 
-Consider a scenario where your database handles a query rate of about 200 simple queries per second (QPS) and an ingestion rate of approximately 300k data points per second, using cloud storage for data.
+Test the deployment with the same schema, indexes, and storage backend planned for production. The test should cover:
 
-Given the high ingestion and query rates,
-here's an example of how you might allocate resources:
+1. Steady-state ingestion and the expected query mix.
+2. Peak writes, peak query concurrency, and their overlap.
+3. Compaction and index creation while traffic continues.
+4. A node failure or maintenance event if the capacity plan includes failure tolerance.
+5. Enough runtime to expose cache churn and background-work backlogs.
 
-- CPU: 8 cores
-- Memory: 32 GB
-- Storage: 200 GB
-
-Such an allocation is designed to optimize performance,
-ensuring smooth data ingestion and query processing without system overload.
-However, remember these are just guidelines,
-and actual requirements may vary based on specific workload characteristics and performance expectations.
+Use [GreptimeDB monitoring](/user-guide/deployments-administration/monitoring/overview.md) together with infrastructure metrics. Keep headroom for workload variance and failure recovery, and repeat the benchmark after material changes to schemas, indexes, queries, retention, or hardware.

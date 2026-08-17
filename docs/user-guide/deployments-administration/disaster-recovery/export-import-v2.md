@@ -383,6 +383,7 @@ Do not import a snapshot that fails verification. The snapshot may be incomplete
 ## Limitations
 
 - Export/Import V2 snapshots are not the same format as the legacy export/import output.
+- Export does not stop concurrent writes or create one transactionally consistent point-in-time view across schemas and chunks. For a fixed recovery boundary, pause writes or export an immutable, bounded time range after ingestion for that range has completed.
 - Schema filtering is schema-level. Table-level filtering is not covered by this command.
 - Time-range chunking is designed for time-series data. Sparse data may need a larger chunk window.
 - Schema-only snapshots do not contain data files.

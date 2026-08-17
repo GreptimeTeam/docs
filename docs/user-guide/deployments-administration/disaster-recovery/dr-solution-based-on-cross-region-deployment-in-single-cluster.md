@@ -1,126 +1,75 @@
 ---
-keywords: [disaster recovery, GreptimeDB, cross-region deployment, single cluster, high availability, metadata distribution, data distribution]
-description: Explains the disaster recovery (DR) solution based on cross-region deployment in a single GreptimeDB cluster, detailing various configurations for metadata and data distribution across regions to achieve high availability and reliability.
+keywords: [disaster recovery, GreptimeDB, cross-region deployment, single cluster, high availability, metadata, Region Failover]
+description: Design and validate a GreptimeDB cluster that spans availability zones or regions without assuming unprovided failure-domain guarantees.
 ---
 
-# DR Solution Based on Cross-Region Deployment in a Single Cluster
+# Cross-Region Deployment in a Single Cluster
 
-## How disaster recovery works in GreptimeDB
-GreptimeDB is well-suited for cross-region disaster recovery. You may have varying regional characteristics and business needs, and GreptimeDB offers tailored solutions to meet these diverse requirements.
+A GreptimeDB cluster can span availability zones or regions, but GreptimeDB alone does not make every dependency cross-region. This guide describes the failure boundaries that must be covered before treating such a deployment as a disaster-recovery solution.
 
-GreptimeDB resource management involves the concept of Availability Zones (AZs). An AZ is a logical unit of disaster recovery.
-It can be a Data Center (DC), a compartment of a DC. This depends on your specific DC conditions and deployment design.
+## Recovery model
 
-In the cross region disaster recovery solutions, a GreptimeDB region is a city. When two DC are in the same region and one DC becomes unavailable, the other DC can take over the services of the unavailable DC. This is a localization strategy.
+A table is divided into Regions, and each Region is opened on a Datanode. Community GreptimeDB does not keep a synchronous Datanode replica of every open Region. With Region Failover enabled, Metasrv detects an unavailable Region, selects a healthy Datanode, changes the route, and opens the Region there. The new Datanode recovers persisted data from shared storage and Remote WAL.
 
-Before understanding the details of each DR solution, it is necessary to first understand the following knowledge:
-1. The DR solution for the remote wal component is also very important. Essentially, it forms the foundation of the entire DR solution. Therefore, for each DR solution of GreptimeDB, we will let the remote wal component in the diagram. Currently, GreptimeDB's default remote wal component is implemented based on Kafka, and other implementations will be provided in the future; however, there won't be significant differences in deployment.
-2. The table of GreptimeDB: Each table can be divided into multiple partitions according to a certain range, and each partition may be distributed on different datanodes. When writing or querying, the specified node will be called according to the corresponding rules. A table's partitions might look like this:
+This model has two consequences:
 
-```
-Table name: T1
-Table partition count: 4
-    T1-1
-    T1-2
-    T1-3
-    T1-4
- 
-Table name: T2
-Table partition count: 3
-    T2-1
-    T2-2
-    T2-3
-```
+- The target Datanode must be able to reach the same data storage and WAL as the failed Datanode.
+- Recovery cannot succeed if a shared dependency is lost with the failed site.
 
+Region Failover is disabled by default. Read [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) before enabling it, including the initialization delay and maintenance-mode requirements.
 
-### Metadata across 2 regions, data in the same region
+## Define failure domains
 
-![DR-across-2dc-1region](/DR-across-2dc-1region.png)
+An availability zone, data center, and geographic region are infrastructure concepts. Decide which failure each deployment must tolerate, then map every component to those fault domains. GreptimeDB does not infer that a Datanode belongs to a particular city or data center.
 
-In this solution, the data is in one region (2 DCs), while the metadata across 2 regions.
+For Kubernetes, use node labels, affinity, topology spread constraints, and disruption budgets to place replicas. Verify the resulting placement after each deployment change. GreptimeDB's built-in community selectors choose among available Datanodes by round robin, lease, or load; they do not enforce cross-zone placement.
 
-DC1 and DC2 are used together to handle read and write services, while DC3 (located in region2) is a replica used to meet the majority protocol. This architecture is also called the "2-2-1" solution.
+## Required dependencies
 
-Both DC1 and DC2 must be able to handle all requests in extreme situations, so please ensure that sufficient resources are allocated.
+### Data storage
 
-Latencies:
-- 2ms latency in the same region
-- 30ms latency in two regions
+Use shared object storage that remains readable and writable after the target fault domain fails. Configure replication, versioning, credentials, endpoints, and failover according to the storage provider. A bucket in one region is still a single-region dependency even when Datanodes run in several regions.
 
-Supports High Availability:
-- A single AZ is unavailable with the same performance
-- A single DC is unavailable with almost the same performance
+### Remote WAL
 
+Use Kafka Remote WAL for safe Region Failover. Kafka must remain available from surviving Datanodes and must retain every WAL entry that GreptimeDB can still reference. Configure Kafka replication and cross-region recovery for the same failure boundary as the GreptimeDB cluster.
 
-If you want a regional-level disaster recovery solution, you can take it a step further by providing read and write services on DC3. So, the next solution is:
+Do not use Kafka size-based retention when `overwrite_entry_start_id = true`; it can delete entries that GreptimeDB still needs. See [Configure Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) and [Manage Kafka for Remote WAL](/user-guide/deployments-administration/wal/remote-wal/manage-kafka.md).
 
-### Data across 2 regions
+### Metadata
 
-![DR-across-3dc-2region](/DR-across-3dc-2region.png)
+Metasrv instances use a metadata backend such as etcd, MySQL, or PostgreSQL. Deploy both Metasrv and that backend for the target failure boundary. Adding Metasrv replicas does not create a quorum or cross-region replication for the metadata backend.
 
-In this solution, the data across 2 regions.
+Cross-region consensus adds write latency to metadata operations. Follow the backend's quorum and failover rules; do not place members merely to match the number of GreptimeDB sites.
 
-Each DC must be able to handle all requests in extreme situations, so please ensure that sufficient resources are allocated.
+### Request routing
 
-Latencies:
-- 2ms latency in the same region
-- 30ms latency in two regions
+Applications need a surviving Frontend endpoint. Configure health-checked load balancing or DNS failover outside GreptimeDB, and make client retry behavior consistent with the maximum acceptable interruption.
 
-Supports High Availability:
-- A single AZ is unavailable with the same performance
-- A single DC is unavailable with degraded performance
+### Spare capacity
 
-If you can't tolerate performance degradation from a single DC failure, consider upgrading to the five-DC and three-region solution.
+Surviving Datanodes must absorb Regions from the failed domain while serving their existing workload. Capacity planning should test the largest intended failure, not only steady state. See [Capacity Planning](/user-guide/deployments-administration/capacity-plan.md).
 
-### Metadata across 3 regions, data across 2 regions
+## Choose a topology
 
-![DR-across-5dc-2region](/DR-across-5dc-2region.png)
+Use the smallest topology that covers the declared failure:
 
-In this solution, the data across 2 regions, while the metadata across 3 regions.
+- For an availability-zone failure, distribute GreptimeDB components and all stateful dependencies across enough zones for their quorum and replication policies.
+- For a regional failure, every required dependency must either span regions or have a tested regional failover. This includes object storage, Kafka, metadata, Frontend routing, credentials, and observability.
+- If cross-region latency makes a single cluster impractical, use separate clusters with an explicit replication or backup-and-restore strategy instead of claiming a single-cluster RTO that has not been measured.
 
-Region1 and region2 are used together to handle read and write services, while region3 is a replica used to meet the majority protocol. This architecture is also called the "2-2-1" solution.
+The network figures in a topology diagram are not a product property. Measure latency, bandwidth, and packet loss between the actual sites. Test the effect on Kafka acknowledgements, metadata operations, queries, and recovery before selecting the topology.
 
-Each of the two adjacent regions must be able to handle all requests in extreme situations, so please ensure that sufficient resources are allocated.
+## Validate recovery
 
-Latencies:
-- 2ms latency in the same region
-- 7ms latency in two adjacent regions
-- 30ms latency in two distant regions
+Run failure drills before production and after material infrastructure changes:
 
-Supports High Availability:
-- A single AZ is unavailable with the same performance
-- A single DC is unavailable with the same performance
-- A single region(city) is unavailable with slightly degraded performance
+1. Stop a Datanode and confirm its Regions reopen on expected nodes.
+2. Isolate an entire availability zone or region, including its network path.
+3. Verify Kafka, object storage, and the metadata backend from surviving sites.
+4. Confirm Frontend routing and client retries restore access.
+5. Compare the last acknowledged writes with recovered query results.
+6. Measure detection, Region recovery, backlog catch-up, and total service-restoration time.
+7. Restore the failed site without triggering unnecessary failovers; use maintenance mode during planned restarts.
 
-You can take it a step further by providing read and write services on both 3 regions. So, the next solution is:
-(This solution may have higher latency, so if that's unacceptable, it's not recommended.)
-
-### Data across 3 regions
-
-![DR-across-5dc-3region](/DR-across-5dc-3region.png)
-
-In this solution, the data across 3 regions.
-
-In the event of a failure in one region, the other two regions must be able to handle all requests, so please ensure sufficient resources are allocated.
-
-Latencies:
-- 2ms latency in the same region
-- 7ms latency in two adjacent regions
-- 30ms latency in two distant regions
-
-Supports High Availability:
-- A single AZ is unavailable with the same performance
-- A single DC is unavailable with the same performance
-- A single region(city) is unavailable with degraded performance
-
-## Solution Comparison
-The goal of the above solutions is to meet the high requirements for availability and reliability in medium to large-scale scenarios. However, in specific implementations, the cost and effectiveness of each solution may vary. The table below compares each solution to help you choose the final plan based on your specific scenario, needs, and costs.
-
-Here is the content formatted into a table:
-
-| Solution | Latencies | High Availability |
-| --- | --- | --- |
-| Metadata across 2 regions, data in the same region | - 2ms latency in the same region<br/>- 30ms latency in two regions | - A single AZ is unavailable with the same performance<br/>- A single DC is unavailable with almost the same performance |
-| Data across 2 regions | - 2ms latency in the same region<br/>- 30ms latency in two regions | - A single AZ is unavailable with the same performance<br/>- A single DC is unavailable with degraded performance |
-| Metadata across 3 regions, data across 2 regions | - 2ms latency in the same region<br/>- 7ms latency in two adjacent regions<br/>- 30ms latency in two distant regions | - A single AZ is unavailable with the same performance<br/>- A single DC is unavailable with the same performance<br/>- A single region(city) is unavailable with slightly degraded performance |
-| Data across 3 regions | - 2ms latency in the same region<br/>- 7ms latency in two adjacent regions<br/>- 30ms latency in two distant regions | - A single AZ is unavailable with the same performance<br/> - A single DC is unavailable with the same performance<br/>- A single region(city) is unavailable with degraded performance |
+Use the measured data-loss window and restoration time as the deployment's RPO and RTO evidence. Do not describe the architecture as zero-RPO or minute-level RTO unless the complete failure drill demonstrates those results under the required workload.

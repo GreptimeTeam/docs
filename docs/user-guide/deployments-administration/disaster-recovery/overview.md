@@ -1,129 +1,75 @@
 ---
-keywords: [disaster recovery, GreptimeDB, DR solutions, backup and restore, active-active failover, cross-region deployment, RTO, RPO]
-description: Overview of disaster recovery (DR) solutions in GreptimeDB, including basic concepts, component architecture, and various DR solutions such as standalone, active-active failover, cross-region deployment, and backup & restore.
+keywords: [disaster recovery, GreptimeDB, backup and restore, region failover, cross-region deployment, RTO, RPO]
+description: Explains GreptimeDB disaster-recovery building blocks, their failure boundaries, and how to validate recovery objectives.
 ---
 
 # Disaster Recovery
 
-GreptimeDB is a distributed database designed to withstand disasters. It provides different solutions for disaster recovery (DR).
+GreptimeDB does not assign a fixed RPO or RTO to a deployment. Recovery depends on the WAL, data storage, metadata backend, failure detection, replacement capacity, network, and operating procedure. Design and test these dependencies as one recovery system.
 
-This document contains:
-* Basic concepts in DR.
-* The deployment architecture of GreptimeDB and Backup & Restore (BR).
-* GreptimeDB provides the DR solutions.
-* Compares these DR solutions.
+## Recovery objectives
 
-## Basic Concepts
+- **Recovery Point Objective (RPO)** is the maximum acceptable amount of data loss, measured in time.
+- **Recovery Time Objective (RTO)** is the maximum acceptable time to restore service after a failure.
 
-* **Recovery Time Objective (RTO)**: refers to the maximum acceptable amount of time that a business process can be down after a disaster occurs before it negatively impacts the organization.
-* **Recovery Point Objective (RPO)**: refers to the maximum acceptable amount of time since the last data recovery point. This determines what is considered an acceptable loss of data between the last recovery point and the interruption of service.
+An architecture only meets its objectives if every required dependency survives the target failure. For example, placing Datanodes in multiple regions does not provide region-level recovery if Kafka, object storage, metadata, or request routing still has a single-region dependency.
 
-The following figure illustrates these two concepts:
+## Persistent state
 
-![RTO-RPO-explain](/RTO-RPO-explain.png)
+GreptimeDB recovery involves three types of persistent state:
 
-* **Write-Ahead Logging (WAL)**: persistently records every data modification to ensure data integrity and consistency.
+- **WAL** stores data that has been accepted but not yet persisted in SST files. Local WAL is tied to a Datanode's disk. Remote WAL stores entries in Kafka and is required for safe automatic Region Failover.
+- **Data storage** contains SST and index files. In a distributed deployment, Region Failover requires shared storage, such as object storage, that the target Datanode can access.
+- **Metadata storage** contains catalogs, schemas, table routes, procedures, and other control-plane state. Its replication and backup policy is independent of data storage.
 
-GreptimeDB storage engine is a typical [LSM Tree](https://en.wikipedia.org/wiki/Log-structured_merge-tree) :
-![LSM-tree-explain](/LSM-tree-explain.png)
+Protect all three. Object-store durability does not protect WAL or metadata, and a metadata snapshot does not contain table data.
 
-The data written is going firstly persisted into WAL, then applied into Memtable in memory. Under specific conditions (e.g., exceeding the memory threshold), the Memtable will be flushed and persisted as an SSTable. So the DR of WAL and SSTable is key to the DR of GreptimeDB.
+## Recovery patterns
 
-* **Region**: a contiguous segment of a table, and also could be regarded as a partition in some relational databases. Read [Table Sharding](/contributor-guide/frontend/table-sharding.md#region) for more details.
+### Standalone with local storage
 
-## Component architecture
+A standalone instance with local WAL and local data depends on its host and volumes. Recovery normally uses volume-level backups or GreptimeDB data and metadata exports. RPO follows the last recoverable backup or retained source data; RTO includes provisioning, restoring, and validation.
 
-### GreptimeDB
+If a standalone instance uses Remote WAL and object storage, its persisted data is decoupled from the process host. This reduces the amount of local state needed for restart, but it does not make RPO zero or guarantee a restart time. Kafka and object-storage durability, retained WAL entries, metadata availability, and the restart procedure still determine the result.
 
-Before digging into the specific DR solution, let's explain the architecture of GreptimeDB components in the perspective of DR:
-![Component-architecture](/Component-architecture.png)
+### Distributed cluster with Region Failover
 
-GreptimeDB is designed with a cloud-native architecture based on storage-compute separation:
-* **Frontend**:  the ingestion and query service layer, which forwards requests to Datanode and processes, and merges responses from Datanode.
-* **Datanode**:  the storage layer of GreptimeDB, and is an LSM storage engine. Region is the basic unit for storing and scheduling data in Datanode. A region is a table partition, a collection of data rows. The data in region is saved into Object Storage (such as AWS S3). Unflushed Memtable data is written into WAL and can be recovered in DR.
-* **WAL**: persists the unflushed Memtable data in memory. It will be truncated when the Memtable is flushed into SSTable files. It can be local disk-based (local WAL) or Kafka cluster-based (remote WAL).
-* **Object Storage**: persists the SSTable data and index.
+GreptimeDB can reopen a failed Datanode's Regions on healthy Datanodes when all of the following are true:
 
-The GreptimeDB stores data in object storage such as [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/DataDurability.html) or its compatible services, which is designed to provide 99.999999999% durability and 99.99% availability of objects over a given year. And services such as S3 provide [replications in Single-Region or Cross-Region](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html), which is naturally capable of DR.
+- Data is stored in shared storage accessible to the target Datanodes.
+- Remote WAL is used. Enabling failover with local WAL is unsafe and can lose unflushed data.
+- Metasrv Region Failover is explicitly enabled; it is disabled by default.
+- The cluster has healthy replacement Datanodes with enough capacity.
 
-At the same time, the WAL component is pluggable, e.g. using Kafka as the WAL service that offers a mature [DR solution](https://www.confluent.io/blog/disaster-recovery-multi-datacenter-apache-kafka-deployments/).
+See [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) for configuration and startup precautions. For a deployment spanning failure domains, also see [Cross-region deployment](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md).
+
+Region Failover changes the Region route and opens it on another Datanode. It does not by itself replicate Kafka, object storage, the metadata backend, or application traffic across regions. Those systems need their own high-availability and recovery configuration.
 
 ### Backup and restore
 
-![BR-explain](/BR-explain.png)
+Use backups to recover from logical corruption, accidental deletion, or a failure that exceeds the live deployment's fault tolerance:
 
-The Backup & Restore (BR) tool can perform a full snapshot backup of databases or tables at a specific time and supports incremental backup.
-When a cluster encounters a disaster, you can restore the cluster from backup data. Generally speaking, BR is the last resort for disaster recovery.
+- [Export/Import V2](./export-import-v2.md) exports table schemas and data.
+- [Metadata export and import](./back-up-&-restore-meta-data.md) snapshots the metadata backend.
 
-## Solutions introduction
+Data and metadata exports are separate operations, not a single atomic cluster snapshot. If a recovery point must be mutually consistent, control writes and metadata changes while taking the exports, retain the original ingest source where possible, and test the combined restore procedure.
 
-### DR solution for GreptimeDB Standalone
+RPO is determined by backup frequency and any replayable source data. RTO depends on snapshot size, storage and network throughput, import parallelism, schema reconciliation, and validation time.
 
-If the Standalone is running on the local disk for WAL and data, then:
-* RPO: depends on backup frequency.
-* RTO: doesn't make sense in standalone mode, mostly depends on the size of the data to be restored, your failure response time, and the operational infrastructure.
+### Active-active failover
 
-A good start is to deploy GreptimeDB Standalone into an IaaS platform that has a backup and recovery solution. For example, Amazon EC2 with EBS volumes provides a comprehensive [Backup and Recovery solution](https://docs.aws.amazon.com/prescriptive-guidance/latest/backup-recovery/backup-recovery-ec2-ebs.html).
+GreptimeDB Enterprise supports active-active failover between standalone instances. Replication is asynchronous, so data that is still pending when the source node and its local storage are lost may be unavailable on the peer. See [Active-active failover](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md) for its failure model and operating procedure.
 
-But if running the Standalone with remote WAL and object storage, there is a better DR solution:
-![DR-Standalone](/DR-Standalone.png)
+<AnchorAlias id="solution-comparison" />
 
-Write the WAL to the Kafka cluster and store the data in object storage, so the database itself is stateless. In the event of a disaster affecting the standalone database, you can restore it using the remote WAL and object storage. This solution can achieve **RPO=0** and **RTO in minutes**.
+## Compare and validate
 
-### DR solution based on Active-Active Failover
+| Pattern | Protects against | Primary RPO factors | Primary RTO factors |
+| --- | --- | --- | --- |
+| Standalone backup and restore | Host or volume loss within backup coverage | Backup interval and source replay | Provisioning and restore duration |
+| Distributed Region Failover | Datanode loss within the surviving shared dependencies | Remote WAL and storage durability | Detection, Region opening, and spare capacity |
+| Cross-region cluster | A tested failure domain within the surviving dependencies | Cross-region durability of every state layer | Detection, dependency failover, routing, and spare capacity |
+| Export and import | Logical or deployment-wide failures covered by the exports | Export schedule and source replay | Import and validation duration |
+| Enterprise active-active | Failure of one standalone peer or site | Replication lag and failure mode | External routing and peer readiness |
 
-![Active-active failover](/active-active-failover.png)
-
-In some edge or small-to-medium scale scenarios, or if you lack the resources to deploy remote WAL or object storage, Active-Active Failover offers a better solution compared to Standalone DR. Two actively serving standalone nodes replicate data changes asynchronously. If a peer or the inter-site network fails, the healthy node continues serving, retains pending changes on its local storage, and sends them after the peer recovers.
-
-Pending changes remain recoverable only while the source node's local storage is available. Losing a node and its local storage before replication completes can leave the peer without those changes.
-
-Deploying nodes in different regions can also meet region-level DR requirements, but the scalability is limited.
-
-:::tip NOTE
-
-**Active-Active Failover  is only available in GreptimeDB Enterprise.**
-
-:::
-
-For more information about this solution, see [DR solution based on Active-Active Failover](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md).
-
-### DR solution  based on cross-region deployment in a single cluster
-
-![Cross-region-single-cluster](/Cross-region-single-cluster.png)
-
-For medium-to-large scale scenarios requiring zero RPO, this solution is highly recommended. In this deployment architecture, the entire cluster spans across three regions, with each region capable of handling both read and write requests. Data replication is achieved using remote WAL and object storage, both of which must have cross-region DR enabled.
-If Region 1 becomes completely unavailable due to a disaster, the table regions within it will be opened and recovered in the other regions.
-In the event that Region 1 becomes completely unavailable due to a disaster, the table regions within it will be opened and recovered in the other regions. Region 3 serves as a replica to adhere to the majority protocol of Metasrv.
-
-This solution provides region-level error tolerance, scalable write capability, zero RPO, and minute-level RTO or even lower. For more information about this solution, see [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md).
-
-### DR solution based on BR
-
-![/BR-DR](/BR-DR.png)
-
-In this architecture, GreptimeDB Cluster 1 is deployed in region 1. The BR process continuously and regularly backs up the data from Cluster 1 to region 2. If region 1 experiences a disaster rendering Cluster 1 unrecoverable, you can use the backup data to restore a new cluster (Cluster 2) in region 2 to resume services.
-
-The DR solution based on BR provides an RPO depending on the backup frequency and an RTO that varies with the size of the data to be restored.
-
-Read [Backup & restore data](./back-up-&-restore-data.md) for details.
-
-### Solution Comparison
-
-By comparing these DR solutions, you can decide on the final option based on their specific scenarios, requirements, and cost.
-
-
-|     DR solution | Error Tolerance Objective |  RPO | RTO | TCO | Scenarios | Remote WAL & Object Storage | Notes |
-| ------------- | ------------------------- | ----- | ----- | ----- | ---------------- | --------- | --------|
-|  DR solution for Standalone| Single-Region | Backup Interval | Minute or Hour level | Low | Low requirements for availability and reliability in small scenarios |  Optional | |
-|  DR solution based on Active-Active Failover | Cross-Region | Depends on pending changes and the failure mode | Depends on external failover | Low | High requirements for availability and reliability in small-to-medium scenarios |  Optional | Commercial feature |
-|  DR solution based on cross-region deployment in a single cluster| Multi-Regions | 0 | Minute level | High | High requirements for availability and reliability in medium-to-large scenarios |  Required | |
-|  DR solution based on BR | Single-Region | Backup Interval | Minute or Hour level | Low | Acceptable requirements for availability and reliability | Optional | |
-
-
-## References
-
-* [Backup & restore data](./back-up-&-restore-data.md)
-* [DR solution based on Active-Active Failover ](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)
-* [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)
-* [S3 Replicating objects overview](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html)
+Measure RPO and RTO with failure drills. Include dependency failures, not only Datanode termination, and verify that queries return the expected recovery point before declaring service restored.

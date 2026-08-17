@@ -383,6 +383,7 @@ Import 会从 state 文件恢复。如果之前的导入已经将任务标记为
 ## 限制
 
 - Export/Import V2 快照与 legacy export/import 输出不是同一种格式。
+- 导出不会停止并发写入，也不会在多个 Schema 和 Chunk 之间建立一个事务一致的时间点视图。如果恢复点必须固定，应暂停写入，或者等待某个有界时间范围的数据写入完成后再导出该范围。
 - Schema filter 的粒度是 schema-level。该命令不覆盖 table-level filter。
 - Time-range chunking 面向时间序列数据设计。稀疏数据可能需要更大的 chunk window。
 - Schema-only 快照不包含数据文件。
