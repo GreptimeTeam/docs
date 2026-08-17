@@ -47,6 +47,21 @@ ORDER BY type;
 该结果仅反映最近一小时内实际出现的事件类型，不能作为已配置或受支持类型的完整清单。
 支持的本地 DDL 事件类型请参阅 [DDL 事件](/user-guide/deployments-administration/monitoring/events/ddl-events.md)。
 
+## 按 actor 筛选事件
+
+使用 `actor` 查询为某个数据库用户记录的最近事件：
+
+```sql
+SELECT timestamp, type, actor, json_to_string(payload) AS payload
+FROM greptime_private.events
+WHERE actor = '<username>'
+  AND timestamp >= now() - INTERVAL '1' hour
+ORDER BY timestamp DESC
+LIMIT 20;
+```
+
+GreptimeDB 如何确定该字段的值，请参阅[事件发起人](/user-guide/deployments-administration/monitoring/events/event-data-model.md#actor)。
+
 ## 查询管理函数事件
 
 `admin_function` 事件记录管理函数名称、当前数据库用户、立即执行状态、输入参数
@@ -73,8 +88,6 @@ LIMIT 20;
 | root  | flush_table         | Succeeded              | {"result":0} |
 | root  | unknown_function     | Failed                 | {"error":"..."} |
 ```
-
-`actor` 的值来自当前协议会话用户。
 
 将事件类型、数据库和对象名称组合，可以避免混入无关事件：
 
