@@ -54,6 +54,22 @@ cluster. It varies with workload and does not define the configured or
 source-supported types. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md)
 for the supported local DDL event types.
 
+## Filter events by actor
+
+Use `actor` to list recent events recorded for a database user:
+
+```sql
+SELECT timestamp, type, actor, json_to_string(payload) AS payload
+FROM greptime_private.events
+WHERE actor = '<username>'
+  AND timestamp >= now() - INTERVAL '1' hour
+ORDER BY timestamp DESC
+LIMIT 20;
+```
+
+See [Event actor](/user-guide/deployments-administration/monitoring/events/event-data-model.md#actor)
+for how GreptimeDB determines this value.
+
 ## Query ADMIN function events
 
 An `admin_function` event records the function name, the current database user,
@@ -81,8 +97,6 @@ it contains an `error`:
 | root  | flush_table         | Succeeded              | {"result":0} |
 | root  | unknown_function     | Failed                 | {"error":"..."} |
 ```
-
-The `actor` value comes from the current protocol session user.
 
 Combine an event type with a database and object name to avoid unrelated rows:
 

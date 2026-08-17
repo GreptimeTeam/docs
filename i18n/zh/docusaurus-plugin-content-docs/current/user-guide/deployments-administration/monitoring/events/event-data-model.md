@@ -12,7 +12,21 @@ description: 了解 GreptimeDB events 表的数据模型。
 | `type`          | 事件类型，例如 `create_table` 或 `region_migration`。 |
 | `timestamp`     | 记录该行的时间。                                      |
 | `payload`       | 与事件类型相关的 JSON 数据。                          |
+| `actor`         | 记录为操作发起人的数据库用户；事件没有关联用户请求时为 SQL `NULL`。 |
 | `event_context` | 有上下文时，用于描述事件触发原因的 JSON。             |
+
+## 事件发起人（actor） {#actor}
+
+`actor` 表示 GreptimeDB 记录的操作发起用户，可用于查找谁执行了 `ADMIN` 语句，
+或谁提交了 Procedure。
+
+对于 Procedure，`actor` 来自提交该 Procedure 的请求，后续每条生命周期事件都会
+记录相同的 `actor`。没有关联用户请求的事件，其 `actor` 为 SQL `NULL`。
+
+启用[鉴权](/user-guide/deployments-administration/authentication/overview.md)后，
+`actor` 是通过身份验证的数据库用户。未启用鉴权时，`actor` 不能用于确认实际
+调用者：MySQL 和 PostgreSQL 记录客户端提供的用户名，HTTP SQL 和 gRPC 则记录
+默认用户 `greptime`。
 
 ## Procedure 事件列
 
@@ -52,7 +66,6 @@ Procedure 事件还有以下列：
 
 | 列                      | 含义                                                                                                            |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `actor`                 | 执行 `ADMIN` 语句的当前数据库用户。                                                                              |
 | `admin_function_name`   | 执行的管理函数名称。                                                                                             |
 | `admin_function_status` | 执行状态：`Succeeded` 或 `Failed`。                                                                             |
 | `admin_function_output` | JSON 数据。函数成功时包含 `result`，函数失败时包含 `error`。                                                     |
