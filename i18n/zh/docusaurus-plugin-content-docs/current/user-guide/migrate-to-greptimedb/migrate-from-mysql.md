@@ -1,103 +1,80 @@
 ---
-keywords: [MySQL 迁移, 数据迁移, 数据库创建, 数据导出, 数据导入]
-description: 指导用户从 MySQL 迁移到 GreptimeDB，包括创建数据库和表、双写策略、数据导出和导入等步骤。
+keywords: [MySQL 迁移, mysqldump, MySQL 协议, 数据校验]
+description: 使用明确的一致性边界和校验流程，把兼容的 MySQL 表数据迁移到 GreptimeDB。
 ---
 
 # 从 MySQL 迁移
 
-本文档将指引您完成从 MySQL 迁移到 GreptimeDB。
+GreptimeDB 实现了 MySQL Wire Protocol，但不是 MySQL 存储引擎，也不支持完整的 MySQL SQL 方言。因此不能直接恢复 MySQL Schema Dump；应先在 GreptimeDB 中创建表结构，再迁移兼容的行数据。
 
-## 在开始迁移之前
+## 规划迁移
 
-请注意，尽管 GreptimeDB 支持 MySQL 的协议，并不意味着 GreptimeDB 实现了 MySQL
-的所有功能。你可以参考
-- [ANSI 兼容性](/reference/sql/compatibility.md)查看在 GreptimeDB 中使用 SQL 的约束。
-- [数据建模指南](/user-guide/deployments-administration/performance-tuning/design-table.md)创建合适的表结构。
-- [数据索引指南](/user-guide/manage-data/data-index.md)用于索引规划。
+导出数据前：
 
-## 迁移步骤
+- 检查 [SQL 兼容性](/reference/sql/compatibility.md)，转换 GreptimeDB 不支持的 MySQL 类型和表达式。
+- 选择自然的事件时间作为 GreptimeDB Time Index。只有业务语义确实是写入时间时，才应另建写入时间列。
+- 根据 GreptimeDB 的查询负载设计主键和索引。GreptimeDB 主键不是 MySQL 唯一性约束。参见[表结构设计](/user-guide/deployments-administration/performance-tuning/design-table.md)和[索引](/user-guide/manage-data/data-index.md)。
+- 明确迁移的一致性边界。对于 SQL Dump 迁移，短暂停止源端写入是最简单且可靠的方式。
 
-### 在 GreptimeDB 中创建数据库和表
+应用双写不具备原子性：一个目标写入成功时，另一个目标可能失败。如果不能停机，应使用能够记录源端位置的 CDC 或双写流程，对每个目标独立重试，并在切换前对账缺失或冲突的数据。仅创建两个客户端连接不能防止数据丢失。
 
-在从 MySQL 迁移数据之前，你首先需要在 GreptimeDB 中创建相应的数据库和表。
-由于 GreptimeDB 有自己的 SQL 语法用于创建表，因此你不能直接重用 MySQL 生成的建表 SQL。
+## 创建目标表结构
 
-当你为 GreptimeDB 编写创建表的 SQL 时，首先请了解其“[数据模型](/user-guide/concepts/data-model.md)”。然后，在创建表的
-SQL 中请考虑以下几点：
+在 GreptimeDB 中创建目标数据库和表。列名应与数据 Dump 一致，但数据类型、默认值、生成列、索引和约束必须转换为 GreptimeDB 语法。
 
-1. 由于 time index 列在表创建后无法更改，所以你需要仔细选择 time index
-   列。时间索引最好设置为数据生成时的自然时间戳，因为它提供了查询数据的最直观方式，以及最佳的查询性能。例如，在 IOT
-   场景中，你可以使用传感器采集数据时的时间作为 time index；或者在可观测场景中使用事件的发生时间。
-2. 不建议在此迁移过程中另造一个时间戳用作时间索引，例如使用 `DEFAULT current_timestamp()` 创建的新列。也不建议使用具有随机时间戳的列。
-3. 选择合适的 time index 精度也至关重要。和 time index 的选择一样，一旦表创建完毕，time index
-   的精度就无法变更了。请根据你的数据集在[这里](/reference/sql/data-types.md#与-mysql-和-postgresql-兼容的数据类型)找到最适合的时间戳类型。
-4. 仅在真正需要时才选择主键。GreptimeDB 中的主键与 MySQL 中的主键不同。仅在以下情况下才应使用主键：
-    - 大部分查询可以受益于排序。
-    - 您需要通过主键和时间索引来删除重复行（包括删除）。 通常会被查询。标签列中的值是附加到收集源的标签，通常用于描述这些源的特定特征。标签列会被索引，从而使对它们的查询具有高性能。
-    
-    否则，设置主键是可选的，并且可能会损害性能。阅读[主键](/user-guide/deployments-administration/performance-tuning/design-table.md#主键)了解详情。
-    
-    最后，请参阅“[CREATE](/reference/sql/create.md)” SQL 文档，了解有关选择合适的数据类型和“ttl”或“compaction”选项等的更多详细信息。
-    
-5.  选择合适的索引以加快查询速度。
-    - 倒排索引：非常适合按低基数列进行过滤，并快速查找具有特定值的行。
-    - 跳数索引：适用于稀疏数据。
-    - 全文索引：可以在大型文本列中实现高效的关键字和模式搜索。
-    
-    有关详细信息和最佳实践，请参阅[数据索引](/user-guide/manage-data/data-index.md) 文档。
+Time Index 的类型和精度不能原地修改。完整导入前先用有代表性的行验证表结构：
 
-### 双写 GreptimeDB 和 MySQL
+```sql
+DESC TABLE db1.foo;
+SHOW CREATE TABLE db1.foo;
+```
 
-双写 GreptimeDB 和 MySQL 是迁移过程中防止数据丢失的有效策略。通过使用 MySQL 的客户端库（JDBC + 某个 MySQL
-驱动），你可以建立两个客户端实例 —— 一个用于 GreptimeDB，另一个用于 MySQL。有关如何使用 SQL 将数据写入
-GreptimeDB，请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md)部分。
+## 导出行数据
 
-若无需保留所有历史数据，你可以双写一段时间以积累业务所需的最新数据，然后停止向 MySQL 写入数据并仅使用
-GreptimeDB。如果需要完整迁移所有历史数据，请按照接下来的步骤操作。
-
-### 从 MySQL 导出数据
-
-[mysqldump](https://dev.mysql.com/doc/refman/8.4/en/mysqldump.html) 是一个常用的、从 MySQL 导出数据的工具。使用
-mysqldump，我们可以从 MySQL 中导出后续可直接导入到 GreptimeDB 的数据。例如，如果我们想要从 MySQL 导出两个数据库 `db1` 和
-`db2`，我们可以使用以下命令：
+下面的示例在停止源端写入后导出一张 InnoDB 表。`--single-transaction` 可以为事务表提供一致性快照，但不能保证非事务表的一致性。`--skip-extended-insert` 让每一行使用一条 `INSERT`，`awk` 只保留计划导入 GreptimeDB 的语句。
 
 ```bash
-mysqldump -h127.0.0.1 -P3306 -umysql_user -p --compact -cnt --skip-extended-insert --databases db1 db2 > /path/to/output.sql
+set -o pipefail
+
+mysqldump \
+  --host=127.0.0.1 \
+  --port=3306 \
+  --user=mysql_user \
+  --password \
+  --single-transaction \
+  --compact \
+  --no-create-info \
+  --complete-insert \
+  --skip-extended-insert \
+  db1 foo | awk '/^INSERT INTO /' > foo.sql
 ```
 
-替换 `-h`、`-P` 和 `-u` 参数为 MySQL 服务的正确值。`--databases` 参数用于指定要导出的数据库。输出将写入
-`/path/to/output.sql` 文件。
+如果不同表需要不同的截止条件或数据转换，应分别导出。导入前检查 `foo.sql`：其中应只包含带列名的 `INSERT`，并确认字面量和列名适用于目标表。
 
-`/path/to/output.sql` 文件应该具有如下内容：
+## 导入 GreptimeDB
 
-```plaintext
-~ ❯ cat /path/to/output.sql
-
-USE `db1`;
-INSERT INTO `foo` (`ts`, `a`, `b`) VALUES (1,'hello',1);
-INSERT INTO ...
-
-USE `db2`;
-INSERT INTO `foo` (`ts`, `a`, `b`) VALUES (2,'greptime',2);
-INSERT INTO ...
-```
-
-### 将数据导入 GreptimeDB
-
-[MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.4/en/mysql.html) 可用于将数据导入
-GreptimeDB。继续上面的示例，假设数据导出到文件 `/path/to/output.sql`，那么我们可以使用以下命令将数据导入 GreptimeDB：
+使用 MySQL Client 连接 GreptimeDB 的 MySQL 端口，默认端口为 `4002`：
 
 ```bash
-mysql -h127.0.0.1 -P4002 -ugreptime_user -p -e "source /path/to/output.sql"
+mysql \
+  --host=127.0.0.1 \
+  --port=4002 \
+  --user=greptime_user \
+  --password \
+  --database=db1 \
+  < foo.sql
 ```
 
-替换 `-h`、`-P` 和 `-u` 参数为你的 GreptimeDB 服务的值。`source` 命令用于执行 `/path/to/output.sql` 文件中的 SQL
-命令。若需要进行 debug，添加 `-vvv` 以查看详细的执行结果。
+不要使用 MySQL Client 的 `--force` 参数；该参数会在 SQL 出错后继续执行，可能让部分导入看起来像成功完成。应保存命令退出状态和导入日志。大表应按照稳定的时间或 Key 边界拆分，并记录每个已完成范围。
 
-总结一下，数据迁移步骤如下图所示：
+## 校验并切换
 
-![migrate mysql data steps](/migration-mysql.jpg)
+在同一个不可变数据范围内比较源端和目标端：
 
-数据迁移完成后，你可以停止向 MySQL 写入数据，并继续使用 GreptimeDB！
+- 行数、最小和最大时间戳
+- 重要字段的非空数量
+- 按业务 Key 或时间窗口统计的行数
+- 抽样数据，包括 NULL、Unicode、二进制值和边界时间戳
+- 应用关键查询的结果
 
-如果您需要更详细的迁移方案或示例脚本，请提供具体的表结构和数据量信息。[GreptimeDB 官方社区](https://github.com/orgs/GreptimeTeam/discussions)将为您提供进一步的支持。欢迎加入 [Greptime Slack](http://greptime.com/slack) 社区交流。
+只有导入没有报错且上述校验通过后，才能切换读写流量。回滚窗口结束前保持源端数据不变。

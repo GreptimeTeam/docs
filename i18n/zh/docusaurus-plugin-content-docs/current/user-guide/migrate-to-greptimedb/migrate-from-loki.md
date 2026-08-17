@@ -40,7 +40,7 @@ http{s}://<host>:4000/v1/loki/api/v1/push
 | --- | --- | --- |
 | `X-Greptime-DB-Name` | 否 | 目标数据库名，默认值为 `public`。 |
 | `X-Greptime-Log-Table-Name` | 否 | 目标日志表名，默认值为 `loki_logs`。 |
-| `Authorization` | 取决于部署 | 使用 Base64 编码的 `<username>:<password>` 进行 Basic 认证。 |
+| `Authorization` | 取决于部署 | `Basic <base64(username:password)>`。通常应通过 Client 的 Basic Auth 选项设置。 |
 | `X-Greptime-Pipeline-Name` 或 `X-Greptime-Log-Pipeline-Name` | 否 | 在写入前用于解析 Loki 条目的 Pipeline 名称。 |
 
 GreptimeDB 接受与 Loki 相同的 Push 请求体格式：
@@ -51,7 +51,7 @@ GreptimeDB 接受与 Loki 相同的 Push 请求体格式：
 以下 JSON 请求可用于快速检查连通性：
 
 ```bash
-curl -X POST "http://localhost:4000/v1/loki/api/v1/push" \
+curl --fail-with-body -X POST "http://localhost:4000/v1/loki/api/v1/push" \
   -H "Content-Type: application/json" \
   -H "X-Greptime-DB-Name: public" \
   -H "X-Greptime-Log-Table-Name: loki_demo_logs" \
@@ -73,6 +73,7 @@ curl -X POST "http://localhost:4000/v1/loki/api/v1/push" \
 ### 双写 Loki 和 GreptimeDB
 
 迁移期间，请同时写入 Loki 和 GreptimeDB，直到完成写入、保留策略、仪表盘和告警验证。
+两个 Sink 相互独立，一个 Sink 接收成功时另一个可能失败。应监控并保留各自的重试 Queue；双写不提供原子投递保证。
 
 以下 Alloy 示例保留现有 Loki sink，并新增一个 GreptimeDB Loki 兼容 sink：
 
@@ -247,7 +248,7 @@ transform:
 上传 Pipeline：
 
 ```bash
-curl -X POST "http://localhost:4000/v1/pipelines/zk_logs" \
+curl --fail-with-body -X POST "http://localhost:4000/v1/pipelines/zk_logs" \
   -F "file=@zk_pipeline.yaml"
 ```
 

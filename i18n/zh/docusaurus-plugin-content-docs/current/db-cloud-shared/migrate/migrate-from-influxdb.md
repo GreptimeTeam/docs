@@ -24,7 +24,7 @@ SHOW CREATE TABLE measurement_name;
 
 ## 数据库连接信息
 
-在写入或查询数据之前，需要了解 InfluxDB 和 GreptimeDB 之间的数据库连接信息的差异。
+配置 Client 时使用以下连接信息映射：
 
 - **Token**：InfluxDB API 中的 token 用于身份验证，与 GreptimeDB 身份验证相同。
   当使用 InfluxDB 的客户端库或 HTTP API 与 GreptimeDB 交互时，你可以使用 `<greptimedb_user:greptimedb_password>` 作为 token。
@@ -38,8 +38,7 @@ SHOW CREATE TABLE measurement_name;
 
 ## 写入数据
 
-GreptimeDB 兼容 InfluxDB 的行协议格式，包括 v1 和 v2。
-这意味着你可以轻松地从 InfluxDB 迁移到 GreptimeDB。
+GreptimeDB 通过兼容 v1 和 v2 的写入 Endpoint 接收 InfluxDB Line Protocol。
 
 ### HTTP API
 
@@ -60,15 +59,13 @@ GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容�
 
 ### 客户端库
 
-使用 InfluxDB 客户端库写入数据到 GreptimeDB 非常直接且简单。
-你只需在客户端配置中包含 URL 和身份验证信息。
+InfluxDB Client Library 的 URL、Database 和认证设置指向兼容 Endpoint 后，可以向 GreptimeDB 写入数据。
 
 例如：
 
 <InjectContent id="write-data-client-libs" content={props.children}/>
 
-除了上述语言之外，GreptimeDB 还支持其他 InfluxDB 支持的客户端库。
-你可以通过参考上面提供的连接信息代码片段，使用你喜欢的语言编写代码。
+其他 InfluxDB Client Library 可以使用相同的连接信息映射。应确认 Client 向受支持的写入 Endpoint 发送 Line Protocol，而不是依赖 InfluxDB Management 或 Query API。
 
 ## 查询数据
 
@@ -152,21 +149,21 @@ max_over_time(monitor{__field__="cpu"}[1h])
 
 ## 迁移数据
 
-你可以通过以下步骤实现从 InfluxDB 到 GreptimeDB 的数据无缝迁移：
+迁移应使用明确的截止边界和校验流程：
 
-![Double write to GreptimeDB and InfluxDB](/migrate-influxdb-to-greptimedb.drawio.svg)
-
-1. 同时将数据写入 GreptimeDB 和 InfluxDB，以避免迁移过程中的数据丢失。
-2. 从 InfluxDB 导出所有历史数据，并将数据导入 GreptimeDB。
+1. 定义源端时间边界，启动新的写入路径，并分别记录每个目标的写入失败。
+2. 导出并导入该边界之前的历史范围。
 3. 验证表结构、行数、时间范围和关键查询结果。
 4. 将读流量逐步切换到 GreptimeDB。
 5. 验证通过后停止向 InfluxDB 写入数据。
 
 ### 双写 GreptimeDB 和 InfluxDB
 
-将数据双写 GreptimeDB 和 InfluxDB 是迁移过程中防止数据丢失的有效策略。
+双写可以降低切换停机时间，但两次写入不具备原子性。
 当使用 InfluxDB 的[客户端库](#client-libraries)时，你可以建立两个客户端实例，一个用于 GreptimeDB，另一个用于 InfluxDB。
 有关如何使用 InfluxDB 行协议将数据写入 GreptimeDB 的操作，请参考[写入数据](#write-data)部分。
+
+应分别记录和重试每个目标的失败写入。截止位置应根据稳定的源端进度确定，不能只使用开始双写时的系统时间，因为迟到事件的时间戳可能早于双写开始时间。停用源端写入前，对账重叠范围和全部失败记录。
 
 如果无需保留所有历史数据，
 你可以双写一段时间以积累所需的最新数据，
@@ -185,7 +182,7 @@ mkdir -p /path/to/export
 
 ```shell
 influx_inspect export \
-  -database <db-name> \ 
+  -database <db-name> \
   -end <end-time> \
   -lponly \
   -datadir /var/lib/influxdb/data \
@@ -196,7 +193,7 @@ influx_inspect export \
 - `-database` 指定要导出的数据库。
 - `-end` 指定要导出的数据的结束时间。
 必须是[RFC3339 格式](https://datatracker.ietf.org/doc/html/rfc3339)，例如 `2024-01-01T00:00:00Z`。
-你可以使用同时写入 GreptimeDB 和 InfluxDB 时的时间戳作为结束时间。
+使用约定的历史截止点作为结束时间。如果迟到写入可能落在该时间戳之前，应暂停源端写入，或者对受影响范围再次导出并对账。
 - `-lponly` 指定只导出行协议数据。
 - `-datadir` 指定数据目录的路径，请见[InfluxDB 数据设置](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings)中的配置。
 - `-waldir` 指定 WAL 目录的路径，请见[InfluxDB 数据设置](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings)中的配置。
@@ -233,7 +230,7 @@ influxd inspect export-lp \
 - `--engine-path` 指定引擎目录的路径，请见[InfluxDB 数据设置](https://docs.influxdata.com/influxdb/v2.0/reference/config-options/#engine-path)中的配置。
 - `--end` 指定要导出的数据的结束时间。
 必须是[RFC3339 格式](https://datatracker.ietf.org/doc/html/rfc3339)，例如 `2024-01-01T00:00:00Z`。
-你可以使用同时写入 GreptimeDB 和 InfluxDB 时的时间戳作为结束时间。
+使用约定的历史截止点作为结束时间。如果迟到写入可能落在该时间戳之前，应暂停源端写入，或者对受影响范围再次导出并对账。
 - `--output-path` 指定输出目录。
 
 命令行的执行结果类似如下：
@@ -262,7 +259,7 @@ cpu,cpu=cpu-total,host=bogon usage_iowait=0 1714375710000000000
 split -l 100000 -d -a 10 data data.
 # -l [line_count]    创建长度为 line_count 行的拆分文件。
 # -d                 使用数字后缀而不是字母后缀。
-# -a [suffix_length] 使用 suffix_length 个字母来形成文件名的后缀。
+# -a [suffix_length] 使用 suffix_length 位数字作为文件名后缀。
 ```
 
 你可以使用 HTTP API 导入数据，如[写入数据](#写入数据)部分所述。
@@ -310,5 +307,3 @@ ORDER BY row_count DESC;
 ```
 
 逐步切换读流量期间应保持双写。只有上述检查和应用关键查询均符合预期后，才能停止向 InfluxDB 写入数据。
-
-如果您需要更详细的迁移方案或示例脚本，请提供具体的表结构和数据量信息。[GreptimeDB 官方社区](https://github.com/orgs/GreptimeTeam/discussions)将为您提供进一步的支持。欢迎加入 [Greptime Slack](http://greptime.com/slack) 社区交流。

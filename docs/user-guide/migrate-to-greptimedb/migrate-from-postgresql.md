@@ -1,145 +1,82 @@
 ---
-keywords: [migrate from PostgreSQL, create databases, write data, export data, import data]
-description: Step-by-step guide on migrating from PostgreSQL to GreptimeDB, including creating databases, writing data, exporting and importing data.
+keywords: [migrate from PostgreSQL, pg_dump, psql, PostgreSQL protocol, data validation]
+description: Migrate compatible PostgreSQL table data to GreptimeDB with an explicit consistency boundary and fail-fast import.
 ---
 
 # Migrate from PostgreSQL
 
-This document will guide you through the migration process from PostgreSQL to GreptimeDB.
+GreptimeDB implements the PostgreSQL wire protocol, not the PostgreSQL storage engine or full SQL dialect. A PostgreSQL schema dump can contain DDL, session settings, extensions, constraints, and types that GreptimeDB does not support. Create the GreptimeDB schema first and export only compatible row data.
 
-## Before you start the migration
+## Plan the migration
 
-Please be aware that though GreptimeDB supports the wire protocol of PostgreSQL, it does not mean GreptimeDB implements
-all
-PostgreSQL's features. You may refer to:
-* The [ANSI Compatibility](/reference/sql/compatibility.md) to see the constraints regarding using SQL in GreptimeDB.
-* The [Data Modeling Guide](/user-guide/deployments-administration/performance-tuning/design-table.md) to create proper table schemas.
-* The [Data Index Guide](/user-guide/manage-data/data-index.md) for index planning.
+Before exporting data:
 
+- Check [SQL compatibility](/reference/sql/compatibility.md) and map PostgreSQL-specific types and expressions.
+- Choose a natural event-time column as the GreptimeDB time index and select its precision before creating the table.
+- Design GreptimeDB primary keys and indexes from the target query workload. They do not reproduce PostgreSQL uniqueness or B-tree semantics. See [Table design](/user-guide/deployments-administration/performance-tuning/design-table.md) and [Indexes](/user-guide/manage-data/data-index.md).
+- Define an exact source boundary. A short read-only window is the simplest safe method for this dump-based procedure.
 
-## Migration steps
+Application dual-write is not atomic. If downtime is unacceptable, use CDC or a dual-write process that records a PostgreSQL source position, retries both destinations, and reconciles differences before cutover. Two independent JDBC connections do not provide a cross-database transaction.
 
-### Create the databases and tables in GreptimeDB
+## Create the target schema
 
-Before migrating the data from PostgreSQL, you first need to create the corresponding databases and tables in
-GreptimeDB.
-GreptimeDB has its own SQL syntax for creating tables, so you cannot directly reuse the table creation SQLs that are
-produced
-by PostgreSQL.
+Create the databases and tables in GreptimeDB before importing rows. Translate PostgreSQL defaults, generated columns, arrays, range types, JSON operators, constraints, and indexes where necessary.
 
-When you write the table creation SQL for GreptimeDB, it's important to understand
-its "[data model](/user-guide/concepts/data-model.md)" first. Then, please take the following considerations in
-your create table SQL:
+Test the mapping with representative values and inspect the resulting schema:
 
-1. Since the time index column cannot be changed after the table is created, you need to choose the time index column
-   carefully. The time index is best set to the natural timestamp when the data is generated, as it provides the most
-   intuitive way to query the data, and the best query performance. For example, in the IOT scenes, you can use the
-   collection time of sensor data as the time index; or the occurrence time of an event in the observability scenes.
-2. In this migration process, it's not recommend to create another synthetic timestamp, such as a new column created
-   with `DEFAULT current_timestamp()` as the time index column. It's not recommend to use the random timestamp as the
-   time index either.
-3. It's vital to set the most fit timestamp precision for your time index column, too. Like the chosen of time index
-   column, the precision of it cannot be changed as well. Find the most fit timestamp type for your
-   data set [here](/reference/sql/data-types#data-types-compatible-with-mysql-and-postgresql).
-4. Choose a primary key only when it is truly needed. The primary key in GreptimeDB is different from that in PostgreSQL. You should use a primary key only when:
-    * Most queries can benefit from the ordering.
-    * You need to deduplicate (including delete) rows by the primary key and time index.
-    
-    Otherwise, setting a primary key is optional and it may hurt performance. Read [Primary Key](/user-guide/deployments-administration/performance-tuning/design-table.md#primary-key) for details.
-    
-    Finally please refer to "[CREATE](/reference/sql/create.md)" SQL document for more details for choosing the
-right data types and "ttl" or "compaction" options, etc.
-5. Choose proper indexes to speed up queries.
-    * Inverted index: is ideal for filtering by low-cardinality columns and quickly finding rows with specific values.
-    * Skipping index: works well with sparse data.
-    * Fulltext index: enables efficient keyword and pattern search in large text columns.
+```sql
+DESC TABLE db1.foo;
+SHOW CREATE TABLE db1.foo;
+```
 
-    For details and best practices, refer to the [data index](user-guide/manage-data/data-index.md) documentation.
+## Export row data
 
-### Write data to both GreptimeDB and PostgreSQL simultaneously
-
-Writing data to both GreptimeDB and PostgreSQL simultaneously is a practical strategy to avoid data loss during
-migration. By utilizing PostgreSQL's client libraries (JDBC + a PostgreSQL driver), you can set up two client
-instances - one for GreptimeDB and another for PostgreSQL. For guidance on writing data to GreptimeDB using SQL, please
-refer to the [Ingest Data](/user-guide/ingest-data/for-iot/sql.md) section.
-
-If retaining all historical data isn't necessary, you can simultaneously write data to both GreptimeDB and PostgreSQL
-for a specific period to accumulate the required recent data. Subsequently, cease writing to PostgreSQL and continue
-exclusively with GreptimeDB. If a complete migration of all historical data is needed, please proceed with the following
-steps.
-
-### Export data from PostgreSQL
-
-[pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) is a commonly used tool to export data from
-PostgreSQL. Using it, we can export the data that can be later imported into GreptimeDB directly. For example, if we
-want to export schemas whose names start with `db` in the database `postgres` from PostgreSQL, we can use the following
-command:
+`pg_dump --column-inserts` is intended for moving data to a non-PostgreSQL database, but its output also contains PostgreSQL-specific setup statements. The following example exports one table while source writes are stopped and keeps only column-qualified `INSERT` statements:
 
 ```bash
-pg_dump -h127.0.0.1 -p5432 -Upostgres -ax --column-inserts --no-comments -n 'db*' postgres | grep -v "^SE" > /path/to/output.sql
+set -o pipefail
+
+pg_dump \
+  --host=127.0.0.1 \
+  --port=5432 \
+  --username=postgres \
+  --data-only \
+  --column-inserts \
+  --no-owner \
+  --no-privileges \
+  --table='db1.foo' \
+  postgres | awk '/^INSERT INTO /' > foo.sql
 ```
 
-Replace the `-h`, `-p` and `-U` flags with the appropriate values for your PostgreSQL server. The `-n` flag is used to
-specify the schemas to be exported. And the database `postgres` is at the end of the `pg_dump` command line. Note that we pipe the `pg_dump` output through a special
-`grep`, to remove some unnecessary `SET` or `SELECT` lines. The final output will be written to the
-`/path/to/output.sql` file.
+This allowlist is intentional. The previous pattern of removing every line beginning with `SE` was unsafe because broad prefix filtering can discard valid content. Inspect `foo.sql` and transform unsupported literals or types before import.
 
-The content in the `/path/to/output.sql` file should be like this:
+For large tables, export bounded ranges with an ETL query or tool rather than creating one unbounded SQL file. Record every completed boundary so retries do not silently duplicate or skip rows.
 
-```plaintext
-~ ❯ cat /path/to/output.sql
+## Import into GreptimeDB
 
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 16.4 (Debian 16.4-1.pgdg120+1)
--- Dumped by pg_dump version 16.4
-
-
---
--- Data for Name: foo; Type: TABLE DATA; Schema: db1; Owner: postgres
---
-
-INSERT INTO db1.foo (ts, a) VALUES ('2024-10-31 00:00:00', 1);
-INSERT INTO db1.foo (ts, a) VALUES ('2024-10-31 00:00:01', 2);
-INSERT INTO db1.foo (ts, a) VALUES ('2024-10-31 00:00:01', 3);
-INSERT INTO ...
-
-
---
--- Data for Name: foo; Type: TABLE DATA; Schema: db2; Owner: postgres
---
-
-INSERT INTO db2.foo (ts, b) VALUES ('2024-10-31 00:00:00', '1');
-INSERT INTO db2.foo (ts, b) VALUES ('2024-10-31 00:00:01', '2');
-INSERT INTO db2.foo (ts, b) VALUES ('2024-10-31 00:00:01', '3');
-INSERT INTO ...
-
-
---
--- PostgreSQL database dump complete
---
-```
-
-### Import data into GreptimeDB
-
-The [psql -- PostgreSQL interactive terminal](https://www.postgresql.org/docs/current/app-psql.html) can be used to
-import data into GreptimeDB. Continuing the above example, say the data is exported to file `/path/to/output.sql`, then
-we can use the following command to import the data into GreptimeDB:
+Use `psql` against GreptimeDB's PostgreSQL port, which defaults to `4003`. `-X` ignores local `psqlrc` settings, and `ON_ERROR_STOP` makes the command fail on the first SQL error:
 
 ```bash
-psql -h127.0.0.1 -p4003 -d public -f /path/to/output.sql
+psql \
+  -X \
+  --set ON_ERROR_STOP=1 \
+  --host=127.0.0.1 \
+  --port=4003 \
+  --username=greptime_user \
+  --dbname=public \
+  --file=foo.sql
 ```
 
-Replace the `-h` and `-p` flags with the appropriate values for your GreptimeDB server. The `-d` of the psql command is used to specify the database and cannot be omitted. The value `public` of `-d` is the default database used by GreptimeDB. You can also add `-a` to the end to see every
-executed line, or `-s` for entering the single-step mode.
+Do not remove `ON_ERROR_STOP`. Continuing after a failed row can produce a partial import without a clear failure boundary. Capture the exit status and import log.
 
-To summarize, data migration steps can be illustrate as follows:
+## Validate and cut over
 
-![migrate postgresql data steps](/migration-postgresql.jpg)
+Compare PostgreSQL and GreptimeDB over the same immutable source boundary:
 
-After the data migration is completed, you can stop writing data to PostgreSQL and continue using GreptimeDB
-exclusively!
+- Row count, minimum and maximum timestamp
+- Non-null counts and distinct counts for important dimensions
+- Counts grouped by business keys or time windows
+- Sampled rows covering nulls, time zones, numeric boundaries, Unicode, JSON, and binary values
+- Results of application-critical queries after SQL translation
 
-If you need a more detailed migration plan or example scripts, please provide the specific table structure and data volume. The [GreptimeDB official community](https://github.com/orgs/GreptimeTeam/discussions) will offer further support. Welcome to join the [Greptime Slack](http://greptime.com/slack).
+Switch traffic only after the import finishes without errors and the checks pass. Keep the PostgreSQL source unchanged until the rollback window closes.

@@ -23,7 +23,7 @@ For detailed information on querying data in GreptimeDB using Prometheus query l
 
 <div id="grafana">
 
-To add GreptimeDB as a Prometheus data source in Grafana, please refer to the [Grafana](/user-guide/integrations/grafana.md#prometheus-data-source) documentation.
+To add GreptimeDB as a Prometheus data source in Grafana, follow the [Grafana data-source configuration](/user-guide/integrations/grafana.md#prometheus-data-source).
 
 </div>
 

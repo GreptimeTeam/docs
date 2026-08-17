@@ -3,7 +3,7 @@ keywords: [Prometheus 迁移, 数据迁移, 监控数据, 数据导入, 数据�
 description: 介绍从 Prometheus 迁移到 GreptimeDB 的步骤和注意事项。
 ---
 
-import DocTemplate from '../../db-cloud-shared/migrate/_migrate-from-prometheus.md' 
+import DocTemplate from '../../db-cloud-shared/migrate/_migrate-from-prometheus.md'
 
 # 从 Prometheus 迁移
 
@@ -23,7 +23,7 @@ import DocTemplate from '../../db-cloud-shared/migrate/_migrate-from-prometheus.
 
 <div id="grafana">
 
-要在 Grafana 中将 GreptimeDB 添加为 Prometheus 数据源，请参阅 [Grafana](/user-guide/integrations/grafana#prometheus-数据源) 的集成文档。
+在 Grafana 中把 GreptimeDB 添加为 Prometheus Data Source，参见 [Grafana Data Source 配置](/user-guide/integrations/grafana.md#prometheus-数据源)。
 
 </div>
 

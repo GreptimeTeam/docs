@@ -1,127 +1,82 @@
 ---
-keywords: [PostgreSQL 迁移, 数据迁移, 数据库创建, 数据导出, 数据导入]
-description: 指导用户从 PostgreSQL 迁移到 GreptimeDB，包括创建数据库和表、双写策略、数据导出和导入等步骤。
+keywords: [PostgreSQL 迁移, pg_dump, psql, PostgreSQL 协议, 数据校验]
+description: 使用明确的一致性边界和遇错即停的导入流程，把兼容的 PostgreSQL 表数据迁移到 GreptimeDB。
 ---
 
 # 从 PostgreSQL 迁移
 
-本文档将指引您完成从 PostgreSQL 迁移到 GreptimeDB。
+GreptimeDB 实现了 PostgreSQL Wire Protocol，但不是 PostgreSQL 存储引擎，也不支持完整的 PostgreSQL SQL 方言。PostgreSQL Schema Dump 可能包含 GreptimeDB 不支持的 DDL、Session 设置、Extension、约束和数据类型。应先在 GreptimeDB 中创建表结构，只导出兼容的行数据。
 
-## 在开始迁移之前
+## 规划迁移
 
-请注意，尽管 GreptimeDB 支持 PostgreSQL 的协议，并不意味着 GreptimeDB 实现了 PostgreSQL
-的所有功能。你可以参考
-- [ANSI 兼容性](/reference/sql/compatibility.md)查看在 GreptimeDB 中使用 SQL 的约束。
-- [数据建模指南](/user-guide/deployments-administration/performance-tuning/design-table.md)创建合适的表结构。
-- [数据索引指南](/user-guide/manage-data/data-index.md)用于索引规划。
+导出数据前：
 
-## 迁移步骤
+- 检查 [SQL 兼容性](/reference/sql/compatibility.md)，转换 PostgreSQL 特有的数据类型和表达式。
+- 选择自然的事件时间作为 GreptimeDB Time Index，并在建表前确定时间精度。
+- 根据目标查询负载设计 GreptimeDB 主键和索引。它们不会复现 PostgreSQL 的唯一性或 B-tree 语义。参见[表结构设计](/user-guide/deployments-administration/performance-tuning/design-table.md)和[索引](/user-guide/manage-data/data-index.md)。
+- 明确源端一致性边界。对于这种 Dump 迁移，短暂停止源端写入是最简单且可靠的方式。
 
-### 在 GreptimeDB 中创建数据库和表
+应用双写不具备原子性。如果不能停机，应使用能够记录 PostgreSQL 源端位置的 CDC 或双写流程，对两个目标进行重试，并在切换前完成差异对账。两个独立 JDBC 连接不能提供跨数据库事务。
 
-在从 PostgreSQL 迁移数据之前，你首先需要在 GreptimeDB 中创建相应的数据库和表。
-由于 GreptimeDB 有自己的 SQL 语法用于创建表，因此你不能直接重用 PostgreSQL 生成的建表 SQL。
+## 创建目标表结构
 
-当你为 GreptimeDB 编写创建表的 SQL 时，首先请了解其“[数据模型](/user-guide/concepts/data-model.md)”。然后，在创建表的
-SQL 中请考虑以下几点：
+导入行数据前，先在 GreptimeDB 中创建数据库和表。根据需要转换 PostgreSQL 默认值、生成列、Array、Range Type、JSON Operator、约束和索引。
 
-1. 由于 time index 列在表创建后无法更改，所以你需要仔细选择 time index
-   列。时间索引最好设置为数据生成时的自然时间戳，因为它提供了查询数据的最直观方式，以及最佳的查询性能。例如，在 IOT
-   场景中，你可以使用传感器采集数据时的时间作为 time index；或者在可观测场景中使用事件的发生时间。
-2. 不建议在此迁移过程中另造一个时间戳用作时间索引，例如使用 `DEFAULT current_timestamp()` 创建的新列。也不建议使用具有随机时间戳的列。
-3. 选择合适的 time index 精度也至关重要。和 time index 的选择一样，一旦表创建完毕，time index
-   的精度就无法变更了。请根据你的数据集在[这里](/reference/sql/data-types.md#与-mysql-和-postgresql-兼容的数据类型)找到最适合的时间戳类型。
-4.  仅在真正需要时才选择主键。GreptimeDB 中的主键与 PosgreSQL 中的主键不同。仅在以下情况下才应使用主键：
-    - 大部分查询可以受益于排序。
-    - 您需要通过主键和时间索引来删除重复行（包括删除）。 通常会被查询。标签列中的值是附加到收集源的标签，通常用于描述这些源的特定特征。标签列会被索引，从而使对它们的查询具有高性能。
-    
-    否则，设置主键是可选的，并且可能会损害性能。阅读[主键](/user-guide/deployments-administration/performance-tuning/design-table.md#主键)了解详情。
-    
-    最后，请参阅“[CREATE](/reference/sql/create.md)” SQL 文档，了解有关选择合适的数据类型和“ttl”或“compaction”选项等的更多详细信息。
-    
-5.  选择合适的索引以加快查询速度。
-    - 倒排索引：非常适合按低基数列进行过滤，并快速查找具有特定值的行。
-    - 跳数索引：适用于稀疏数据。
-    - 全文索引：可以在大型文本列中实现高效的关键字和模式搜索。
-    
-    有关详细信息和最佳实践，请参阅[数据索引](/user-guide/manage-data/data-index.md) 文档。
+使用有代表性的值测试映射，并检查最终表结构：
 
-### 双写 GreptimeDB 和 PostgreSQL
+```sql
+DESC TABLE db1.foo;
+SHOW CREATE TABLE db1.foo;
+```
 
-双写 GreptimeDB 和 PostgreSQL 是迁移过程中防止数据丢失的有效策略。通过使用 PostgreSQL 的客户端库（JDBC + 某个 PostgreSQL
-驱动），你可以建立两个客户端实例 —— 一个用于 GreptimeDB，另一个用于 PostgreSQL。有关如何使用 SQL 将数据写入
-GreptimeDB，请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md)部分。
+## 导出行数据
 
-若无需保留所有历史数据，你可以双写一段时间以积累业务所需的最新数据，然后停止向 PostgreSQL 写入数据并仅使用
-GreptimeDB。如果需要完整迁移所有历史数据，请按照接下来的步骤操作。
-
-### 从 PostgreSQL 导出数据
-
-[pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) 是一个常用的、从 PostgreSQL 导出数据的工具。使用
-pg_dump，我们可以从 PostgreSQL 中导出后续可直接导入到 GreptimeDB 的数据。例如，如果我们想要从 PostgreSQL 的 database
-`postgres` 中导出以 `db` 开头的 schema，我们可以使用以下命令：
+`pg_dump --column-inserts` 适合向非 PostgreSQL 数据库迁移数据，但输出中仍包含 PostgreSQL 特有的初始化语句。下面的示例在停止源端写入后导出一张表，并且只保留带列名的 `INSERT`：
 
 ```bash
-pg_dump -h127.0.0.1 -p5432 -Upostgres -ax --column-inserts -n 'db*' postgres | grep -v "^SE" > /path/to/output.sql
+set -o pipefail
+
+pg_dump \
+  --host=127.0.0.1 \
+  --port=5432 \
+  --username=postgres \
+  --data-only \
+  --column-inserts \
+  --no-owner \
+  --no-privileges \
+  --table='db1.foo' \
+  postgres | awk '/^INSERT INTO /' > foo.sql
 ```
 
-替换 `-h`、`-p` 和 `-U` 参数为 PostgreSQL 服务的正确值。`-n` 参数用于指定要导出的 schema。数据库 `postgres` 被放在了 `pg_dump` 命令的最后。注意这里我们将
-pg_dump 的输出经过了一个特殊的 `grep` 命令以过滤掉不需要的 `SET` 和 `SELECT` 行。最终输出将写入 `/path/to/output.sql`
-文件。
+这里有意使用 Allowlist。旧示例删除所有以 `SE` 开头的行，前缀范围过大，可能丢弃有效内容。导入前检查 `foo.sql`，并转换 GreptimeDB 不支持的字面量或数据类型。
 
-`/path/to/output.sql` 文件应该具有如下内容：
+对于大表，应使用 ETL 查询或工具按有限范围导出，而不是生成一个没有边界的 SQL 文件。记录每个已完成范围，避免重试时静默重复或跳过数据。
 
-```plaintext
-~ ❯ cat /path/to/output.sql
+## 导入 GreptimeDB
 
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 16.4 (Debian 16.4-1.pgdg120+1)
--- Dumped by pg_dump version 16.4
-
-
---
--- Data for Name: foo; Type: TABLE DATA; Schema: db1; Owner: postgres
---
-
-INSERT INTO db1.foo (ts, a) VALUES ('2024-10-31 00:00:00', 1);
-INSERT INTO db1.foo (ts, a) VALUES ('2024-10-31 00:00:01', 2);
-INSERT INTO db1.foo (ts, a) VALUES ('2024-10-31 00:00:01', 3);
-INSERT INTO ...
-
-
---
--- Data for Name: foo; Type: TABLE DATA; Schema: db2; Owner: postgres
---
-
-INSERT INTO db2.foo (ts, b) VALUES ('2024-10-31 00:00:00', '1');
-INSERT INTO db2.foo (ts, b) VALUES ('2024-10-31 00:00:01', '2');
-INSERT INTO db2.foo (ts, b) VALUES ('2024-10-31 00:00:01', '3');
-INSERT INTO ...
-
-
---
--- PostgreSQL database dump complete
---
-```
-
-### 将数据导入 GreptimeDB
-
-”[psql -- PostgreSQL interactive terminal](https://www.postgresql.org/docs/current/app-psql.html)“可用于将数据导入
-GreptimeDB。继续上面的示例，假设数据导出到文件 `/path/to/output.sql`，那么我们可以使用以下命令将数据导入 GreptimeDB：
+使用 `psql` 连接 GreptimeDB 的 PostgreSQL 端口，默认端口为 `4003`。`-X` 会忽略本地 `psqlrc` 设置，`ON_ERROR_STOP` 使命令遇到第一条 SQL 错误即失败：
 
 ```bash
-psql -h127.0.0.1 -p4003 -d public -f /path/to/output.sql
+psql \
+  -X \
+  --set ON_ERROR_STOP=1 \
+  --host=127.0.0.1 \
+  --port=4003 \
+  --username=greptime_user \
+  --dbname=public \
+  --file=foo.sql
 ```
 
-替换 `-h` 和 `-p` 参数为你的 GreptimeDB 服务的值。psql 命令中的 `-d` 参数用于指定数据库，该参数不能省略，`-d` 的值 `public` 是 GreptimeDB 默认使用的数据库。你还可以添加 `-a` 以查看详细的执行结果，或使用 `-s` 进入单步执行模式。
+不要移除 `ON_ERROR_STOP`。发生错误后继续执行，会产生没有明确失败边界的部分导入。应保存命令退出状态和导入日志。
 
-总结一下，数据迁移步骤如下图所示：
+## 校验并切换
 
-![migrate postgresql data steps](/migration-postgresql.jpg)
+在同一个不可变源端范围内比较 PostgreSQL 和 GreptimeDB：
 
-数据迁移完成后，你可以停止向 PostgreSQL 写入数据，并继续使用 GreptimeDB！
+- 行数、最小和最大时间戳
+- 重要维度的非空数量和去重数量
+- 按业务 Key 或时间窗口统计的行数
+- 覆盖 NULL、时区、数值边界、Unicode、JSON 和二进制值的抽样数据
+- 完成 SQL 改写后的应用关键查询结果
 
-如果您需要更详细的迁移方案或示例脚本，请提供具体的表结构和数据量信息。[GreptimeDB 官方社区](https://github.com/orgs/GreptimeTeam/discussions)将为您提供进一步的支持。欢迎加入 [Greptime Slack](http://greptime.com/slack) 社区交流。
+只有导入没有报错且上述校验通过后，才能切换流量。回滚窗口结束前保持 PostgreSQL 源端数据不变。

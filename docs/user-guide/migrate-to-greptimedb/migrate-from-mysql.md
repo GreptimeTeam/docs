@@ -1,111 +1,80 @@
 ---
-keywords: [migrate from MySQL, create databases, write data, export data, import data]
-description: Step-by-step guide on migrating from MySQL to GreptimeDB, including creating databases, writing data, exporting and importing data.
+keywords: [migrate from MySQL, mysqldump, MySQL protocol, data validation]
+description: Migrate compatible MySQL table data to GreptimeDB with an explicit consistency boundary and validation.
 ---
 
 # Migrate from MySQL
 
-This document will guide you through the migration process from MySQL to GreptimeDB.
+GreptimeDB implements the MySQL wire protocol, not the MySQL storage engine or full SQL dialect. A MySQL schema dump cannot be restored unchanged. Create the GreptimeDB schema first, then move compatible row data.
 
-## Before you start the migration
+## Plan the migration
 
-Please be aware that though GreptimeDB supports the wire protocol of MySQL, it does not mean GreptimeDB implements all
-MySQL's features. You may refer to:
-* The [ANSI Compatibility](/reference/sql/compatibility.md) to see the constraints regarding using SQL in GreptimeDB.
-* The [Data Modeling Guide](/user-guide/deployments-administration/performance-tuning/design-table.md) to create proper table schemas.
-* The [Data Index Guide](/user-guide/manage-data/data-index.md) for index planning.
+Before exporting data:
 
-## Migration steps
+- Check [SQL compatibility](/reference/sql/compatibility.md) and map unsupported MySQL types and expressions.
+- Choose a natural event-time column as the GreptimeDB time index. Do not add an ingestion-time column unless that is the time semantics the application needs.
+- Design primary keys and indexes from the GreptimeDB query workload. A GreptimeDB primary key is not a MySQL uniqueness constraint. See [Table design](/user-guide/deployments-administration/performance-tuning/design-table.md) and [Indexes](/user-guide/manage-data/data-index.md).
+- Decide on an exact migration boundary. A short read-only window is the simplest safe option for a SQL-dump migration.
 
-### Create the databases and tables in GreptimeDB
+Application dual-write is not atomic: one destination can succeed while the other fails. If downtime is unacceptable, use a CDC or dual-write process that records a source position, retries each destination independently, and reconciles missing or conflicting rows before cutover. Merely opening two client connections does not prevent data loss.
 
-Before migrating the data from MySQL, you first need to create the corresponding databases and tables in GreptimeDB.
-GreptimeDB has its own SQL syntax for creating tables, so you cannot directly reuse the table creation SQLs that are produced
-by MySQL.
+## Create the target schema
 
-When you write the table creation SQL for GreptimeDB, it's important to understand
-its "[data model](/user-guide/concepts/data-model.md)" first. Then, please take the following considerations in
-your create table SQL:
+Create the target database and tables in GreptimeDB. Match column names used by the data dump, but translate data types, defaults, generated columns, indexes, and constraints to GreptimeDB syntax.
 
-1. Since the time index column cannot be changed after the table is created, you need to choose the time index column
-   carefully. The time index is best set to the natural timestamp when the data is generated, as it provides the most
-   intuitive way to query the data, and the best query performance. For example, in the IOT scenes, you can use the
-   collection time of sensor data as the time index; or the occurrence time of an event in the observability scenes.
-2. In this migration process, it's not recommend to create another synthetic timestamp, such as a new column created
-   with `DEFAULT current_timestamp()` as the time index column. It's not recommend to use the random timestamp as the
-   time index either.
-3. It's vital to set the most fit timestamp precision for your time index column, too. Like the chosen of time index
-   column, the precision of it cannot be changed as well. Find the most fit timestamp type for your
-   data set [here](/reference/sql/data-types#data-types-compatible-with-mysql-and-postgresql).
-4. Choose a primary key only when it is truly needed. The primary key in GreptimeDB is different from that in MySQL. You should use a primary key only when:
-    * Most queries can benefit from the ordering.
-    * You need to deduplicate (including delete) rows by the primary key and time index.
+The time-index type and precision cannot be changed in place, so test the schema with representative rows before the full import:
 
-    Otherwise, setting a primary key is optional and it may hurt performance. Read [Primary Key](/user-guide/deployments-administration/performance-tuning/design-table.md#primary-key) for details.
-    
-    Finally please refer to "[CREATE](/reference/sql/create.md)" SQL document for more details for choosing the
-right data types and "ttl" or "compaction" options, etc.
-5. Choose proper indexes to speed up queries.
-    * Inverted index: is ideal for filtering by low-cardinality columns and quickly finding rows with specific values.
-    * Skipping index: works well with sparse data.
-    * Fulltext index: enables efficient keyword and pattern search in large text columns.
+```sql
+DESC TABLE db1.foo;
+SHOW CREATE TABLE db1.foo;
+```
 
-    For details and best practices, refer to the [data index](user-guide/manage-data/data-index.md) documentation.
-### Write data to both GreptimeDB and MySQL simultaneously
+## Export row data
 
-Writing data to both GreptimeDB and MySQL simultaneously is a practical strategy to avoid data loss during migration. By
-utilizing MySQL's client libraries (JDBC + a MySQL driver), you can set up two client instances - one for GreptimeDB
-and another for MySQL. For guidance on writing data to GreptimeDB using SQL, please refer to the [Ingest Data](/user-guide/ingest-data/for-iot/sql.md) section.
-
-If retaining all historical data isn't necessary, you can simultaneously write data to both GreptimeDB and MySQL for a
-specific period to accumulate the required recent data. Subsequently, cease writing to MySQL and continue exclusively
-with GreptimeDB. If a complete migration of all historical data is needed, please proceed with the following steps.
-
-### Export data from MySQL
-
-[mysqldump](https://dev.mysql.com/doc/refman/8.4/en/mysqldump.html) is a commonly used tool to export data from MySQL.
-Using it, we can export the data that can be later imported into GreptimeDB directly. For example, if we want to export
-two databases, `db1` and `db2` from MySQL, we can use the following command:
+The following example exports one InnoDB table while source writes are stopped. `--single-transaction` provides a consistent snapshot for transactional tables; it does not make non-transactional tables consistent. `--skip-extended-insert` writes one row per `INSERT`, and the `awk` filter keeps only statements intended for GreptimeDB.
 
 ```bash
-mysqldump -h127.0.0.1 -P3306 -umysql_user -p --compact -cnt --skip-extended-insert --databases db1 db2 > /path/to/output.sql
+set -o pipefail
+
+mysqldump \
+  --host=127.0.0.1 \
+  --port=3306 \
+  --user=mysql_user \
+  --password \
+  --single-transaction \
+  --compact \
+  --no-create-info \
+  --complete-insert \
+  --skip-extended-insert \
+  db1 foo | awk '/^INSERT INTO /' > foo.sql
 ```
 
-Replace the `-h`, `-P` and `-u` flags with the appropriate values for your MySQL server. The `--databases` flag is used
-to specify the databases to be exported. The output will be written to the `/path/to/output.sql` file.
+Export tables separately when they require different cutoff conditions or transformations. Inspect `foo.sql` before import. It should contain only column-qualified `INSERT` statements whose literals and column names are valid in the target schema.
 
-The content in the `/path/to/output.sql` file should be like this:
+## Import into GreptimeDB
 
-```plaintext
-~ ❯ cat /path/to/output.sql
-
-USE `db1`;
-INSERT INTO `foo` (`ts`, `a`, `b`) VALUES (1,'hello',1);
-INSERT INTO ...
-
-USE `db2`;
-INSERT INTO `foo` (`ts`, `a`, `b`) VALUES (2,'greptime',2);
-INSERT INTO ...
-```
-
-### Import data into GreptimeDB
-
-The [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.4/en/mysql.html) can be used to import data into
-GreptimeDB. Continuing the above example, say the data is exported to file `/path/to/output.sql`, then we can use the
-following command to import the data into GreptimeDB:
+Use the MySQL client against GreptimeDB's MySQL port, which defaults to `4002`:
 
 ```bash
-mysql -h127.0.0.1 -P4002 -ugreptime_user -p -e "source /path/to/output.sql"
+mysql \
+  --host=127.0.0.1 \
+  --port=4002 \
+  --user=greptime_user \
+  --password \
+  --database=db1 \
+  < foo.sql
 ```
 
-Replace the `-h`, `-P` and `-u` flags with the appropriate values for your GreptimeDB server. The `source` command is
-used to execute the SQL commands in the `/path/to/output.sql` file. Add `-vvv` to see the detailed execution results for
-debugging purpose.
+Do not use the MySQL client's `--force` option: it continues after SQL errors and can leave a partial import looking successful. Capture the command exit status and import logs. For large tables, split the export on stable time or key boundaries and record each completed range.
 
-To summarize, data migration steps can be illustrate as follows:
+## Validate and cut over
 
-![migrate mysql data steps](/migration-mysql.jpg)
+Compare source and target over the same immutable boundary:
 
-After the data migration is completed, you can stop writing data to MySQL and continue using GreptimeDB exclusively!
+- Row count, minimum and maximum timestamp
+- Non-null counts for important fields
+- Counts grouped by business keys or time windows
+- Sampled rows, including nulls, Unicode, binary values, and boundary timestamps
+- Results of application-critical queries
 
-If you need a more detailed migration plan or example scripts, please provide the specific table structure and data volume. The [GreptimeDB official community](https://github.com/orgs/GreptimeTeam/discussions) will offer further support. Welcome to join the [Greptime Slack](http://greptime.com/slack).
+Only switch reads and writes after the import completes without errors and these checks pass. Keep the source unchanged until the rollback window closes.

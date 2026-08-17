@@ -40,7 +40,7 @@ Use the following GreptimeDB-specific headers:
 | --- | --- | --- |
 | `X-Greptime-DB-Name` | No | Target database name. The default is `public`. |
 | `X-Greptime-Log-Table-Name` | No | Target log table name. The default is `loki_logs`. |
-| `Authorization` | Depends on deployment | Basic authentication with Base64-encoded `<username>:<password>`. |
+| `Authorization` | Depends on deployment | `Basic <base64(username:password)>`. Most clients should set this through their Basic Auth option. |
 | `X-Greptime-Pipeline-Name` or `X-Greptime-Log-Pipeline-Name` | No | Pipeline name for parsing Loki entries before insertion. |
 
 GreptimeDB accepts the same Loki push body shapes:
@@ -51,7 +51,7 @@ GreptimeDB accepts the same Loki push body shapes:
 The following JSON request is useful for a quick connectivity check:
 
 ```bash
-curl -X POST "http://localhost:4000/v1/loki/api/v1/push" \
+curl --fail-with-body -X POST "http://localhost:4000/v1/loki/api/v1/push" \
   -H "Content-Type: application/json" \
   -H "X-Greptime-DB-Name: public" \
   -H "X-Greptime-Log-Table-Name: loki_demo_logs" \
@@ -73,6 +73,7 @@ curl -X POST "http://localhost:4000/v1/loki/api/v1/push" \
 ### Dual-write to Loki and GreptimeDB
 
 During migration, write to both Loki and GreptimeDB until you have validated ingestion, retention, dashboards, and alerts.
+The two sinks are independent, so one can accept an entry while the other fails. Monitor and retain each sink's retry queue; dual-write is not an atomic delivery guarantee.
 
 The following Alloy example keeps the existing Loki sink and adds GreptimeDB as a second Loki-compatible sink:
 
@@ -247,7 +248,7 @@ The sample timestamps do not include a time zone. Set `timezone` to the time zon
 Upload the pipeline:
 
 ```bash
-curl -X POST "http://localhost:4000/v1/pipelines/zk_logs" \
+curl --fail-with-body -X POST "http://localhost:4000/v1/pipelines/zk_logs" \
   -F "file=@zk_pipeline.yaml"
 ```
 

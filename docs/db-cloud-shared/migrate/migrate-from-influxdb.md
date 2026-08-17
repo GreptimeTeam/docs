@@ -24,7 +24,7 @@ Confirm that the column types and primary key columns match your expectations, e
 
 ## Database connection information
 
-Before you begin writing or querying data, it's crucial to comprehend the differences in database connection information between InfluxDB and GreptimeDB.
+Use the following connection mapping when configuring clients:
 
 - **Token**: The InfluxDB API token, used for authentication, aligns with the GreptimeDB authentication. When interacting with GreptimeDB using InfluxDB's client libraries or HTTP API, you can use `<greptimedb_user:greptimedb_password>` as the token.
 - **Organization**: Unlike InfluxDB, GreptimeDB does not require an organization for connection.
@@ -35,8 +35,7 @@ Before you begin writing or querying data, it's crucial to comprehend the differ
 
 ## Ingest data
 
-GreptimeDB is compatible with both v1 and v2 of InfluxDB's line protocol format,
-facilitating a seamless migration from InfluxDB to GreptimeDB.
+GreptimeDB accepts InfluxDB line protocol through v1- and v2-compatible write endpoints.
 
 ### HTTP API
 
@@ -55,16 +54,13 @@ To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
 
 ### Client libraries
 
-Writing data to GreptimeDB is a straightforward process when using InfluxDB client libraries.
-Simply include the URL and authentication details in the client configuration.
+InfluxDB client libraries can write to GreptimeDB when their URL, database, and authentication settings point to the compatible endpoint.
 
 For example:
 
 <InjectContent id="write-data-client-libs" content={props.children}/>
 
-In addition to the languages previously mentioned,
-GreptimeDB also accommodates client libraries for other languages supported by InfluxDB.
-You can code in your language of choice by referencing the connection information and code snippets provided earlier.
+Other InfluxDB client libraries can use the same connection mapping. Verify that a client sends line protocol to the supported write endpoint rather than relying on an InfluxDB management or query API.
 
 ## Query data
 
@@ -149,22 +145,22 @@ For more information on PromQL, please refer to the [PromQL](https://prometheus.
 
 ## Migrate data
 
-For a seamless migration of data from InfluxDB to GreptimeDB, you can follow these steps:
+Use an explicit cutoff and validation process:
 
-![Double write to GreptimeDB and InfluxDB](/migrate-influxdb-to-greptimedb.drawio.svg)
-
-1. Write data to both GreptimeDB and InfluxDB to avoid data loss during migration.
-2. Export all historical data from InfluxDB and import the data into GreptimeDB.
+1. Define a source time boundary and start the new write path while recording failures for each destination.
+2. Export and import the historical range before that boundary.
 3. Validate the schema, row counts, time ranges, and critical query results.
 4. Gradually move read traffic to GreptimeDB.
 5. Stop writing to InfluxDB after validation succeeds.
 
 ### Write data to both GreptimeDB and InfluxDB simultaneously
 
-Writing data to both GreptimeDB and InfluxDB simultaneously is a practical strategy to avoid data loss during migration.
+Dual-write can reduce cutover downtime, but the two writes are not atomic.
 By utilizing InfluxDB's [client libraries](#client-libraries),
 you can set up two client instances - one for GreptimeDB and another for InfluxDB.
 For guidance on writing data to GreptimeDB using the InfluxDB line protocol, please refer to the [Ingest Data](#ingest-data) section.
+
+Record failed writes and retry each destination independently. Establish a stable cutoff from source progress rather than wall-clock time alone, because late events can have timestamps before the moment dual-write starts. Reconcile the overlap and any failed-write log before disabling the source path.
 
 If retaining all historical data isn't necessary,
 you can simultaneously write data to both GreptimeDB and InfluxDB for a specific period to accumulate the required recent data.
@@ -194,7 +190,7 @@ influx_inspect export \
 - The `-database` flag specifies the database to be exported.
 - The `-end` flag specifies the end time of the data to be exported.
 Must be in [RFC3339 format](https://datatracker.ietf.org/doc/html/rfc3339), such as `2024-01-01T00:00:00Z`.
-You can use the timestamp when simultaneously writing data to both GreptimeDB and InfluxDB as the end time.
+Use the agreed historical cutoff as the end time. If late writes can arrive before that timestamp, quiesce the source or run a reconciliation export for the affected range.
 - The `-lponly` flag specifies that only the Line Protocol data should be exported.
 - The `-datadir` flag specifies the path to the data directory, as configured in the [InfluxDB data settings](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings).
 - The `-waldir` flag specifies the path to the WAL directory, as configured in the [InfluxDB data settings](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings).
@@ -230,7 +226,7 @@ influxd inspect export-lp \
 - The `--bucket-id` flag specifies the bucket ID to be exported.
 - The `--engine-path` flag specifies the path to the engine directory, as configured in the [InfluxDB data settings](https://docs.influxdata.com/influxdb/v2.0/reference/config-options/#engine-path).
 - The `--end` flag specifies the end time of the data to be exported. Must be in [RFC3339 format](https://datatracker.ietf.org/doc/html/rfc3339), such as `2024-01-01T00:00:00Z`.
-You can use the timestamp when simultaneously writing data to both GreptimeDB and InfluxDB as the end time.
+Use the agreed historical cutoff as the end time. If late writes can arrive before that timestamp, quiesce the source or run a reconciliation export for the affected range.
 - The `--output-path` flag specifies the output directory.
 
 The outputs look like the following:
@@ -259,7 +255,7 @@ For large data sets, export and import by measurement and time range, record com
 split -l 100000 -d -a 10 data data.
 # -l [line_count]    Create split files line_count lines in length.
 # -d                 Use a numeric suffix instead of a alphabetic suffix.
-# -a [suffix_length] Use suffix_length letters to form the suffix of the file name.
+# -a [suffix_length] Use suffix_length digits to form the file-name suffix.
 ```
 
 You can import data using the HTTP API as described in the [write data section](#http-api).
@@ -307,5 +303,3 @@ ORDER BY row_count DESC;
 ```
 
 Keep dual writes enabled while gradually moving read traffic. Stop writing to InfluxDB only after these checks and application-level queries produce the expected results.
-
-If you need a more detailed migration plan or example scripts, please provide the specific table structure and data volume. The [GreptimeDB official community](https://github.com/orgs/GreptimeTeam/discussions) will offer further support. Welcome to join the [Greptime Slack](http://greptime.com/slack).

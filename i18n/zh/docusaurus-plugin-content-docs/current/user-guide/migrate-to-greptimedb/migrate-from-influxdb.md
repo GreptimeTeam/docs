@@ -3,7 +3,7 @@ keywords: [InfluxDB 迁移, 数据迁移, HTTP API, 数据写入, 客户端库]
 description: 指导用户从 InfluxDB 迁移到 GreptimeDB，包括使用 HTTP API 和客户端库写入数据的示例。
 ---
 
-import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md' 
+import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md'
 
 # 从 InfluxDB 迁移
 
@@ -19,9 +19,9 @@ import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md'
 <TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
 
 ```shell
-curl -X POST 'http://<host>:4000/v1/influxdb/api/v2/write?bucket=<db-name>' \
+curl --fail-with-body -X POST 'http://<host>:4000/v1/influxdb/api/v2/write?bucket=<db-name>&precision=ns' \
   -H 'authorization: token <greptime_user:greptimedb_password>' \
-  -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
+  --data-binary 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
 </TabItem>
@@ -29,8 +29,8 @@ curl -X POST 'http://<host>:4000/v1/influxdb/api/v2/write?bucket=<db-name>' \
 <TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
 
 ```shell
-curl 'http://<host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
-  -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
+curl --fail-with-body 'http://<host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>&precision=ns' \
+  --data-binary 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
 </TabItem>
@@ -70,6 +70,7 @@ const point1 = new Point('temperature')
   .tag('sensor_id', 'TLM01')
   .floatField('value', 24.0)
 writeApi.writePoint(point1)
+await writeApi.close()
 
 ```
 
@@ -98,6 +99,7 @@ write_api = client.write_api(write_options=SYNCHRONOUS)
 
 p = influxdb_client.Point("my_measurement").tag("location", "Prague").field("temperature", 25.3)
 write_api.write(bucket=bucket, org=org, record=p)
+client.close()
 
 ```
 
@@ -117,7 +119,9 @@ p := influxdb2.NewPoint("stat",
     map[string]string{"unit": "temperature"},
     map[string]interface{}{"avg": 24.5, "max": 45},
     time.Now())
-writeAPI.WritePoint(context.Background(), p)
+if err := writeAPI.WritePoint(context.Background(), p); err != nil {
+    log.Fatal(err)
+}
 client.Close()
 
 ```
@@ -186,11 +190,18 @@ $writeApi->write($point);
 
 
 ```shell
+set -euo pipefail
+
+: "${GREPTIME_USERNAME:?set GREPTIME_USERNAME}"
+: "${GREPTIME_PASSWORD:?set GREPTIME_PASSWORD}"
+: "${GREPTIME_HOST:?set GREPTIME_HOST}"
+: "${GREPTIME_DB:?set GREPTIME_DB}"
+
 for file in data.*; do
-  curl -i --retry 3 \
-    -X POST "http://${GREPTIME_HOST}:4000/v1/influxdb/write?db=${GREPTIME_DB}&u=${GREPTIME_USERNAME}&p=${GREPTIME_PASSWORD}" \
+  curl --fail-with-body --retry 3 \
+    -X POST "http://${GREPTIME_HOST}:4000/v1/influxdb/api/v2/write?bucket=${GREPTIME_DB}&precision=ns" \
+    -H "Authorization: token ${GREPTIME_USERNAME}:${GREPTIME_PASSWORD}" \
     --data-binary @"${file}"
-  sleep 1
 done
 ```
 
