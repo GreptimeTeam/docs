@@ -114,13 +114,13 @@ monitoring:
   enabled: true
 ```
 
-This deploys a GreptimeDB Standalone instance named `${cluster-name}-monitoring` to collect metrics and logs. You can verify the deployment with:
+This deploys a `GreptimeDBStandalone` resource named `${cluster-name}-monitor` to collect metrics and logs. You can verify the deployment with:
 
 ```bash
-kubectl get greptimedbstandalones.greptime.io ${cluster-name}-monitoring -n ${namespace}
+kubectl get greptimedbstandalones.greptime.io ${cluster-name}-monitor -n ${namespace}
 ```
 
-The GreptimeDB Standalone instance exposes services using `${cluster-name}-monitoring-standalone` as the Kubernetes Service name. You can use the following addresses to access monitoring data:
+The Service and StatefulSet it creates are named `${cluster-name}-monitor-standalone`, and the Pods add the usual StatefulSet ordinal, for example `${cluster-name}-monitor-standalone-0`. You can use the following addresses to access monitoring data:
 
 - **Prometheus metrics**: `http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus`
 - **SQL logs**: `${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4002`. By default, cluster logs are stored in the `public._gt_logs` table.
@@ -287,12 +287,12 @@ Navigate to the `Dashboards` section to explore the pre-configured dashboards fo
 ## Cleanup the PVCs
 
 :::danger
-The cleanup operation will remove the metadata and data of the GreptimeDB cluster. Please make sure you have backed up the data before proceeding.
+This removes the collected metrics and logs stored by the monitoring standalone instance. It does not touch the data of the GreptimeDB cluster itself, but the monitoring history is not recoverable afterwards.
 :::
 To uninstall the GreptimeDB cluster, please refer to the [Cleanup GreptimeDB Cluster](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md#cleanup) documentation.
 
 To clean up the Persistent Volume Claims (PVCs) used by the GreptimeDB standalone monitoring instance, delete the PVCs using the following command:
 
 ```bash
-kubectl -n default delete pvc -l app.greptime.io/component=${cluster-name}-monitor-standalone
+kubectl -n ${namespace} delete pvc -l app.greptime.io/component=${cluster-name}-monitor-standalone
 ```
