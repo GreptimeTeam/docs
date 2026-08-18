@@ -84,8 +84,10 @@ greptime cli data export \
 
 ## Import Operations
 
-### Full Databases Backup
-Import all databases backup.
+<AnchorAlias id="full-databases-backup-1" />
+
+### Full Databases Import
+Import every database from a backup directory produced by `greptime cli data export`.
 ```bash
 # Import all databases
 greptime cli data import \
@@ -112,7 +114,9 @@ greptime cli data import \
     --target schema
 ```
 
-### Specific Database Backup
+<AnchorAlias id="specific-database-backup-1" />
+
+### Specific Database Import
 ```bash
 # The same applies to import tool
 greptime cli data import \
