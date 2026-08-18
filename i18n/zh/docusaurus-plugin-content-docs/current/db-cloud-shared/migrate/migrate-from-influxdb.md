@@ -164,7 +164,8 @@ max_over_time(monitor{__field__="cpu"}[1h])
 
 ### 双写 GreptimeDB 和 InfluxDB
 
-将数据双写 GreptimeDB 和 InfluxDB 是迁移过程中防止数据丢失的有效策略。
+双写让两套系统并行运行，便于在切流前做对比。它并不是跨两个数据库的事务：同一次写入可能一边成功、一边失败，
+因此需要记录失败的写入、对两个目标分别重试，并在切流前完成对账。
 当使用 InfluxDB 的[客户端库](#client-libraries)时，你可以建立两个客户端实例，一个用于 GreptimeDB，另一个用于 InfluxDB。
 有关如何使用 InfluxDB 行协议将数据写入 GreptimeDB 的操作，请参考[写入数据](#write-data)部分。
 

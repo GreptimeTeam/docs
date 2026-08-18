@@ -173,9 +173,13 @@ CREATE TABLE traces (
 
 ## Dual-write Strategy for Safe Migration
 
-During the migration process, to avoid data loss or inconsistent writes, adopt a dual-write approach:
-- The application should write to both ClickHouse and GreptimeDB simultaneously, running the two systems in parallel.
-- Validate and compare data using logs and checks to ensure data consistency. Once the data has been fully validated, you can switch fully over.
+During the migration, have the application write to both ClickHouse and GreptimeDB so the two systems run in parallel and you can compare them before cutting over.
+
+Dual-write is not a transaction across the two databases. Each write can succeed on one side and fail on the other, which leaves a gap or a duplicate rather than an identical copy. Plan for that:
+
+- Record every failed write with enough context to replay it, and retry each destination independently.
+- Fix a cutoff — a timestamp or a source offset — that separates what the historical export covers from what dual-write covers, so the two do not overlap or leave a hole between them.
+- Reconcile before switching over: compare row counts and aggregates per time window rather than assuming the two sides match.
 
 ---
 

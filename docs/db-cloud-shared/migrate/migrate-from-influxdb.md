@@ -153,7 +153,7 @@ For a seamless migration of data from InfluxDB to GreptimeDB, you can follow the
 
 ![Double write to GreptimeDB and InfluxDB](/migrate-influxdb-to-greptimedb.drawio.svg)
 
-1. Write data to both GreptimeDB and InfluxDB to avoid data loss during migration.
+1. Write data to both GreptimeDB and InfluxDB so the two run in parallel during migration.
 2. Export all historical data from InfluxDB and import the data into GreptimeDB.
 3. Validate the schema, row counts, time ranges, and critical query results.
 4. Gradually move read traffic to GreptimeDB.
@@ -161,7 +161,9 @@ For a seamless migration of data from InfluxDB to GreptimeDB, you can follow the
 
 ### Write data to both GreptimeDB and InfluxDB simultaneously
 
-Writing data to both GreptimeDB and InfluxDB simultaneously is a practical strategy to avoid data loss during migration.
+Writing to both GreptimeDB and InfluxDB keeps the two systems in parallel so you can compare them before cutting over.
+It is not a transaction across both databases: a write can succeed on one side and fail on the other, so record failed
+writes, retry each destination independently, and reconcile the two before switching over.
 By utilizing InfluxDB's [client libraries](#client-libraries),
 you can set up two client instances - one for GreptimeDB and another for InfluxDB.
 For guidance on writing data to GreptimeDB using the InfluxDB line protocol, please refer to the [Ingest Data](#ingest-data) section.

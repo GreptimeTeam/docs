@@ -79,7 +79,7 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 
 将 WAL 写入 Kafka 集群，并将数据存储在对象存储中，因此数据库本身是无状态的。
 在影响独立数据库的灾难事件发生时，你可以使用远程 WAL 和对象存储来恢复它。
-此方案能实现 RPO=0 和分钟级 RTO。
+RPO=0 和分钟级 RTO 是该拓扑的设计目标：只有当 Kafka 集群与对象存储都能在你所防范的故障中存活、且覆盖未 flush 写入的 WAL 仍然存在时，这两个指标才成立。请在自己的部署上通过故障演练验证。
 
 ### 基于双活互备的 DR 解决方案
 
@@ -109,7 +109,13 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 如果 Region 1 因灾难而完全不可用，其中的表 Region 将在其他 Region 中打开和恢复。
 Region 3 作为副本遵循 Metasrv 的多种协议。
 
-此解决方案提供 Region 级别的容错、可扩展的写入能力、零 RPO 和分钟级或更低的 RTO。
+此解决方案的目标是 Region 级别的容错、可扩展的写入能力、零 RPO 以及分钟级或更低的 RTO。能否达到这些指标取决于整条依赖链，而不只是集群的部署形态：
+
+- Region Failover **默认关闭**，需要显式开启。
+- Kafka、对象存储、元数据后端和流量入口都必须跨越你要防范的故障域。Metasrv 部署在三个区域，并不会替你把外部的 MySQL 或 PostgreSQL 元数据后端复制过去。
+- 自动 Datanode selector 按 round-robin、lease 或负载挑选目标，并不是可用区感知的调度策略，因此存活区域需要有足够的健康容量来接管。
+
+最终的 RPO 和 RTO 请通过端到端的故障演练确认。
 有关此解决方案的更多信息，请参阅[基于单集群跨区域部署的 DR 解决方案](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)。
 
 ### 基于备份恢复的 DR 解决方案

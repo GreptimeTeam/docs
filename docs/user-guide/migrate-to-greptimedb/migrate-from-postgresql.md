@@ -58,8 +58,10 @@ right data types and "ttl" or "compaction" options, etc.
 
 ### Write data to both GreptimeDB and PostgreSQL simultaneously
 
-Writing data to both GreptimeDB and PostgreSQL simultaneously is a practical strategy to avoid data loss during
-migration. By utilizing PostgreSQL's client libraries (JDBC + a PostgreSQL driver), you can set up two client
+Writing to both GreptimeDB and PostgreSQL keeps the two systems in parallel so you can compare them before cutting over.
+It is not a transaction across both databases: a write can succeed on one side and fail on the other, so record failed
+writes, retry each destination independently, and reconcile the two before switching over. By utilizing PostgreSQL's
+client libraries (JDBC + a PostgreSQL driver), you can set up two client
 instances - one for GreptimeDB and another for PostgreSQL. For guidance on writing data to GreptimeDB using SQL, please
 refer to the [Ingest Data](/user-guide/ingest-data/for-iot/sql.md) section.
 

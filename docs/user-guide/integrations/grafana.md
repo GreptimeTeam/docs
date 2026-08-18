@@ -17,7 +17,21 @@ In addition, it also solves some compatibility issues compared to using the Prom
 
 ### Installation
 
-The GreptimeDB Data source plugin can currently only be installed on a local Grafana instance.
+The release ships two archives. `info8fcc-greptimedb-datasource.zip` carries a
+private signature whose `rootUrls` is `http://localhost:3000/`, so Grafana accepts
+it only when its own `root_url` is exactly that. This is why the instructions below
+assume a local Grafana on the default port.
+
+To run the plugin under any other URL, install `info8fcc-greptimedb-datasource-unsigned.zip`
+from the same release and allow it explicitly in `grafana.ini`:
+
+```ini
+[plugins]
+allow_loading_unsigned_plugins = info8fcc-greptimedb-datasource
+```
+
+The equivalent environment variable is `GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS`.
+
 Make sure Grafana is installed and running before installing the plugin.
 
 You can choose one of the following installation methods:

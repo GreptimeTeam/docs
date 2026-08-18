@@ -53,7 +53,9 @@ right data types and "ttl" or "compaction" options, etc.
     For details and best practices, refer to the [data index](user-guide/manage-data/data-index.md) documentation.
 ### Write data to both GreptimeDB and MySQL simultaneously
 
-Writing data to both GreptimeDB and MySQL simultaneously is a practical strategy to avoid data loss during migration. By
+Writing to both GreptimeDB and MySQL keeps the two systems in parallel so you can compare them before cutting over. It is
+not a transaction across both databases: a write can succeed on one side and fail on the other, so record failed writes,
+retry each destination independently, and reconcile the two before switching over. By
 utilizing MySQL's client libraries (JDBC + a MySQL driver), you can set up two client instances - one for GreptimeDB
 and another for MySQL. For guidance on writing data to GreptimeDB using SQL, please refer to the [Ingest Data](/user-guide/ingest-data/for-iot/sql.md) section.
 
