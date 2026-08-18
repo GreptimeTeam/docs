@@ -509,6 +509,7 @@ CREATE EXTERNAL TABLE city (
 ```sql
 CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
+[ EVAL INTERVAL <interval> ]
 [ EXPIRE AFTER <expr> ]
 [ COMMENT '<string>' ]
 [ WITH (<flow-option> = <value> [, ...]) ]

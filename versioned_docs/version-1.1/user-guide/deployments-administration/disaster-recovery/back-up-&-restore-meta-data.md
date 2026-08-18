@@ -85,7 +85,9 @@ greptime cli meta snapshot save \
 :::warning
 **Important**: Before importing metadata, ensure the target backend is in a **clean state** (contains no existing data). Importing to a non-empty backend may result in data corruption or conflicts. 
 
-If you need to import to a backend with existing data, use the `--force` flag to bypass this safety check. However, exercise extreme caution as this can lead to data loss or inconsistencies.
+If the target backend is not empty and you do **not** pass `--force`, the command logs a warning and exits without restoring anything. It still returns a success exit code, so check the command output rather than assuming the restore ran.
+
+`--force` only bypasses the non-empty check. It does not clear the target first: the restore writes the keys contained in the snapshot and leaves any other existing keys in place, which is how a restored cluster ends up mixing two generations of metadata. Prefer restoring into an empty backend, then restart the whole cluster and verify catalogs, table routes, and procedures.
 
 :::
 

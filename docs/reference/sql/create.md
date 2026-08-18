@@ -511,6 +511,7 @@ In this example, we explicitly defined the `ts` column as the Time Index column.
 ```sql
 CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
+[ EVAL INTERVAL <interval> ]
 [ EXPIRE AFTER <expr> ]
 [ COMMENT '<string>' ]
 [ WITH (<flow-option> = <value> [, ...]) ]
