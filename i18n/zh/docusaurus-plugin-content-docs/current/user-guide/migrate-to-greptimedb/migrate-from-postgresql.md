@@ -48,8 +48,8 @@ SQL 中请考虑以下几点：
 
 ### 双写 GreptimeDB 和 PostgreSQL
 
-双写让两套系统并行运行，便于在切流前做对比。它并不是跨两个数据库的事务：同一次写入可能一边成功、一边失败，
-因此需要记录失败的写入、对两个目标分别重试，并在切流前完成对账。通过使用 PostgreSQL 的客户端库（JDBC + 某个 PostgreSQL
+双写让两套系统并行运行，便于切流前做对比。它并不是跨两个数据库的事务：同一次写入可能一边成功、一边失败，
+因此需要记录失败的写入、对两个目标分别重试，并在切换前完成对账。通过使用 PostgreSQL 的客户端库（JDBC + 某个 PostgreSQL
 驱动），你可以建立两个客户端实例 —— 一个用于 GreptimeDB，另一个用于 PostgreSQL。有关如何使用 SQL 将数据写入
 GreptimeDB，请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md)部分。
 
@@ -59,7 +59,7 @@ GreptimeDB。如果需要完整迁移所有历史数据，请按照接下来的�
 ### 从 PostgreSQL 导出数据
 
 `pg_dump` 导出的是一份一致快照，但这份快照同样包含双写已经送到 GreptimeDB 的数据，下面的命令也不例外。
-只有当目标表能按主键和时间索引去重时才可以直接照用。否则请显式导出历史窗口，例如逐表执行
+只有目标表能按主键和时间索引去重时，才可以直接照用。否则请显式导出历史窗口，例如逐表执行
 `COPY (SELECT ... WHERE ts < '<cutoff>') TO ...`。
 
 [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) 是一个常用的、从 PostgreSQL 导出数据的工具。使用

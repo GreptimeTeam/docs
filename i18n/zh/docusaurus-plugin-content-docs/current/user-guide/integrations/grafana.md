@@ -18,8 +18,8 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 ### 安装
 
 发布页提供两个压缩包。`info8fcc-greptimedb-datasource.zip` 带的是 private 签名，
-其 `rootUrls` 为 `http://localhost:3000/`，因此只有当 Grafana 自身的 `root_url`
-恰好是这个地址时才会被接受。下面的步骤默认你在本地默认端口运行 Grafana，原因即在于此。
+其 `rootUrls` 为 `http://localhost:3000/`，只有 Grafana 自身的 `root_url` 恰好是这个地址时，
+签名才会被接受——下面的步骤默认你在本地默认端口运行 Grafana，原因就在这里。
 
 如果是自建 Grafana 且访问地址不同，请改用同一发布页的 `info8fcc-greptimedb-datasource-unsigned.zip`，
 并在 `grafana.ini` 中显式放行：
@@ -31,7 +31,7 @@ allow_loading_unsigned_plugins = info8fcc-greptimedb-datasource
 
 对应的环境变量是 `GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS`。Grafana
 [不建议运行未签名插件](https://grafana.com/docs/grafana/latest/administration/plugin-management/plugin-sign/)，
-因此只在自己可控的实例上这么做。Grafana Cloud 完全不支持未签名插件，请改用预构建的 Docker 镜像或自建 Grafana。
+因此请仅在自己可控的实例上使用。Grafana Cloud 完全不支持未签名插件，请改用预构建的 Docker 镜像或自建 Grafana。
 
 在安装插件前请确保 Grafana 已经安装并运行。
 

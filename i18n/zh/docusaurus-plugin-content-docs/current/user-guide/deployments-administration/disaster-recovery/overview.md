@@ -81,9 +81,9 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 在影响独立数据库的灾难事件发生时，你可以使用远程 WAL 和对象存储来恢复它。
 把 WAL 写入 Kafka、数据存入对象存储之后，已写入的数据不再依赖节点本地磁盘。
 
-但节点并非完全无状态：单机实例的元数据——catalog、schema 和表定义——保存在本地 `<data_home>/metadata` 下的键值存储中，Kafka 和对象存储都无法重建它。主机连同磁盘一起损坏时，若没有单独备份，这部分元数据就会丢失。请通过[元数据导出与导入](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md)一并纳入方案。
+但节点并非完全无状态：单机实例的元数据，即 catalog、schema 和表定义，存放在本地 `<data_home>/metadata` 下的键值存储中，Kafka 和对象存储都无法重建。主机连同磁盘一起损坏时，若事先没有单独备份，这部分元数据就会丢失。请用[元数据导出与导入](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md)把它一并纳入灾备方案。
 
-RPO=0 和分钟级 RTO 是该拓扑的设计目标。只有当 Kafka 集群与对象存储都能在你所防范的故障中存活、覆盖未 flush 写入的 WAL 仍然存在、且元数据可以恢复时，这两个指标才成立。请在自己的部署上通过故障演练验证。
+RPO=0 和分钟级 RTO 是该拓扑的设计目标，成立需要三个前提：Kafka 集群与对象存储都在你要防范的故障中幸存、尚未 flush 的那部分写入所对应的 WAL 仍在、元数据能够恢复。请在自己的部署上通过故障演练验证。
 
 ### 基于双活互备的 DR 解决方案
 
@@ -117,7 +117,7 @@ Region 3 作为副本遵循 Metasrv 的多种协议。
 
 - Region Failover **默认关闭**，需要显式开启。
 - Kafka、对象存储、元数据后端和流量入口都必须跨越你要防范的故障域。Metasrv 部署在三个区域，并不会替你把外部的 MySQL 或 PostgreSQL 元数据后端复制过去。
-- 自动 Datanode selector 按 round-robin、lease 或负载挑选目标，并不是可用区感知的调度策略，因此存活区域需要有足够的健康容量来接管。
+- 自动 Datanode selector 按 round-robin、lease 或负载挑选目标，并不是可用区感知的调度策略，因此存活区域必须留有足够余量才能接管。
 
 最终的 RPO 和 RTO 请通过端到端的故障演练确认。
 有关此解决方案的更多信息，请参阅[基于单集群跨区域部署的 DR 解决方案](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)。
