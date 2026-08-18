@@ -127,7 +127,13 @@ See [PromQL](/user-guide/query-data/promql.md) for query syntax.
 
 ## Migrate Grafana dashboards
 
-GreptimeDB is compatible with the Prometheus ecosystem. You can import existing Grafana dashboards into Perses with the [Perses migration tool](https://perses.dev/perses/docs/migration/). After migration, map PromQL panels to the **Prometheus** datasource pointing at GreptimeDB. Variables, gauges, and time series panels from dashboards such as Node Exporter should work without changes to the queries.
+GreptimeDB is compatible with the Prometheus ecosystem. You can import existing Grafana dashboards into Perses with the [Perses migration tool](https://perses.dev/perses/docs/migration/). After migration, map PromQL panels to the **Prometheus** datasource pointing at GreptimeDB.
+
+The migration is best-effort, so review the result rather than assuming it is complete:
+
+- Only dashboards are migrated. Alerts, users and other Grafana resources are not.
+- Upstream supports Grafana 9.0.0 through 11.x. Outside that range the migration is not guaranteed to work.
+- Perses does not implement every Grafana plugin. Panels and variables it cannot map are replaced with static placeholders, which you then have to rebuild by hand.
 
 ## Next steps
 

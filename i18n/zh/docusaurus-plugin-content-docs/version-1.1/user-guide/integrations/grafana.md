@@ -125,7 +125,7 @@ http://<host>:4000
 | Operation Name Column | 初始值 `span_name`
 | Start Time Column | 初始值 `timestamp`
 | Duration Time Column | 初始值 `duration_nano`
-| Duration Unit | 初始值 `nano_seconds`
+| Duration Unit | 初始值 `nanoseconds`
 | Tags Column | 可多选，对应以 `span_attributes` 开头的列
 | Service Tags Column| 可多选，对应以 `resource_attributes` 开头的列
 
