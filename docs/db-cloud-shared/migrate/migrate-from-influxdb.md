@@ -163,7 +163,7 @@ For a seamless migration of data from InfluxDB to GreptimeDB, you can follow the
 
 Writing to both GreptimeDB and InfluxDB keeps the two systems in parallel so you can compare them before cutting over.
 It is not a transaction across both databases: a write can succeed on one side and fail on the other, so record failed
-writes, retry each destination independently, and reconcile the two before switching over.
+writes, retry each destination independently, and reconcile the two before switching over. Check that a row is actually missing before replaying it — an [append-only table](/user-guide/manage-data/overview.md#avoid-updating-data-by-creating-table-with-append_mode-option) keeps duplicate rows rather than merging them.
 By utilizing InfluxDB's [client libraries](#client-libraries),
 you can set up two client instances - one for GreptimeDB and another for InfluxDB.
 For guidance on writing data to GreptimeDB using the InfluxDB line protocol, please refer to the [Ingest Data](#ingest-data) section.

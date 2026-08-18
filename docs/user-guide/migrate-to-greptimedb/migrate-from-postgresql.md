@@ -60,7 +60,7 @@ right data types and "ttl" or "compaction" options, etc.
 
 Writing to both GreptimeDB and PostgreSQL keeps the two systems in parallel so you can compare them before cutting over.
 It is not a transaction across both databases: a write can succeed on one side and fail on the other, so record failed
-writes, retry each destination independently, and reconcile the two before switching over. By utilizing PostgreSQL's
+writes, retry each destination independently, and reconcile the two before switching over. Check that a row is actually missing before replaying it — an [append-only table](/user-guide/manage-data/overview.md#avoid-updating-data-by-creating-table-with-append_mode-option) keeps duplicate rows rather than merging them. By utilizing PostgreSQL's
 client libraries (JDBC + a PostgreSQL driver), you can set up two client
 instances - one for GreptimeDB and another for PostgreSQL. For guidance on writing data to GreptimeDB using SQL, please
 refer to the [Ingest Data](/user-guide/ingest-data/for-iot/sql.md) section.

@@ -177,7 +177,7 @@ During the migration, have the application write to both ClickHouse and Greptime
 
 Dual-write is not a transaction across the two databases. Each write can succeed on one side and fail on the other, which leaves a gap or a duplicate rather than an identical copy. Plan for that:
 
-- Record every failed write with enough context to replay it, and retry each destination independently.
+- Record every failed write with enough context to replay it, and retry each destination independently. Check that the row is actually missing before replaying it: an [append-only table](/user-guide/manage-data/overview.md#avoid-updating-data-by-creating-table-with-append_mode-option) keeps duplicate rows instead of merging them by primary key and time index, so retrying a write that did land leaves a second copy.
 - Fix a cutoff — a timestamp or a source offset — that separates what the historical export covers from what dual-write covers, so the two do not overlap or leave a hole between them.
 - Reconcile before switching over: compare row counts and aggregates per time window rather than assuming the two sides match.
 
