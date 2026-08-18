@@ -121,7 +121,7 @@ greptimedb-mcp-server --transport sse --listen-port 3000
 
 `execute_sql` **默认只读**，server 还提供多重保护。
 
-只读保证仅覆盖 `execute_sql`。pipeline 和 dashboard 工具（`create_pipeline`、`delete_pipeline`、`create_dashboard`、`delete_dashboard`）通过 HTTP API 访问 GreptimeDB，无论是否开启 `--allow-write` 都可以修改这些资源。如果要求助手完全不能改动任何东西，请在数据库层面限制权限，不要依赖这个开关。
+只读保证仅覆盖 `execute_sql`。pipeline 和 dashboard 工具（`create_pipeline`、`delete_pipeline`、`create_dashboard`、`delete_dashboard`）经由 HTTP API 访问 GreptimeDB，无论是否开启 `--allow-write` 都能修改这些资源。若要确保助手无法做出任何改动，请在数据库层面收紧权限，不要依赖这个开关。
 
 - **安全校验**：拦截 `DROP`、`DELETE`、`TRUNCATE`、`UPDATE`、`INSERT`、`ALTER`、`CREATE`、`GRANT`、`REVOKE` 以及编码绕过尝试；放行 `SELECT`、`SHOW`、`DESCRIBE`、`TQL`、`EXPLAIN`、`UNION`。
 - **数据脱敏**：列名匹配 `password`、`token`、`api_key`、`ssn`、`credit_card` 等模式的列会被脱敏为 `******`。用 `--mask-patterns` 增加模式。

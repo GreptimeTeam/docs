@@ -28,7 +28,7 @@ checkpoint_trigger_size = "128MB"
 # Topic 自动创建配置
 auto_create_topics = true
 num_topics = 64
-# 测试值：不保留冗余副本。生产环境请按 durability 要求取值。
+# 测试值：不保留冗余副本。生产环境应根据持久性要求设置。
 replication_factor = 1
 topic_name_prefix = "greptimedb_wal_topic"
 create_topic_timeout = "30s"
@@ -46,7 +46,7 @@ create_topic_timeout = "30s"
 | `auto_prune_parallelism`   | 并发清理任务的最大数量。                                                                                                                                                                                                                                                                                         |
 | `auto_create_topics`       | 是否自动创建 Kafka topic，设为 `false` 时需手动预创建。                                                                                                                                                                                                                                                           |
 | `num_topics`               | 用于存储 WAL 的 Kafka topic 数量。                                                                                                                                                                                                                                                                                |
-| `replication_factor`       | 每个 topic 的副本数量。示例值 `1` 表示不保留冗余副本，仅适用于测试；生产环境请按 durability 要求取值，且不能超过 broker 数量。                                                                                                                                                                                                                                                                                           |
+| `replication_factor`       | 每个 topic 的副本数量。示例中的 `1` 不保留冗余副本，仅适用于测试；生产环境应根据持久性要求设置，且不得超过 broker 数量。                                                                                                                                                                                                                                                                                           |
 | `topic_name_prefix`        | Kafka topic 名称前缀，必须匹配正则 `[a-zA-Z_:-][a-zA-Z0-9_:\-\.@#]*`。                                                                                                                                                                                                                                            |
 | `flush_trigger_size`       | 触发 region flush 操作的预估大小阈值（如 `"512MB"`）。计算公式为 `(latest_entry_id - flushed_entry_id) * avg_record_size`。当此值超过 `flush_trigger_size` 时，MetaSrv 会触发 region flush 操作。设为 `"0"` 时由系统自动控制。该配置还可控制 region 重放期间从 topic 重放的最大数据量，较小的值有助于缩短 Datanode 启动时的重放时间。 |
 | `checkpoint_trigger_size`  | 触发 region checkpoint 操作的预估大小阈值（如 `"128MB"`）。计算公式为 `(latest_entry_id - last_checkpoint_entry_id) * avg_record_size`。当此值超过 `checkpoint_trigger_size` 时，MetaSrv 会启动检查点操作。设为 `"0"` 时由系统自动控制。较小的值有助于缩短 Datanode 启动时的重放时间。                                 |
