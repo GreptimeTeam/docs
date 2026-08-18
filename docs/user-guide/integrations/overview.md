@@ -6,7 +6,7 @@ description: Overview of integrating GreptimeDB with popular tools for data inge
 # Integrations
 
 GreptimeDB works with common tools for data ingestion, querying, and visualization.
-Most of them connect through GreptimeDB's MySQL, PostgreSQL, Prometheus, or OpenTelemetry endpoints.
+Most of them connect through GreptimeDB's MySQL, PostgreSQL, Prometheus, OpenTelemetry, or InfluxDB line protocol endpoints.
 The pages below cover the settings for each tool.
 
 import DocCardList from '@theme/DocCardList';
