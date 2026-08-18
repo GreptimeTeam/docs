@@ -40,9 +40,10 @@ pip install greptimedb-sqlalchemy
 ```
 
 :::note SQLAlchemy 版本
-`greptimedb-sqlalchemy` 目前要求 SQLAlchemy 1.x。Superset 6.1.0 及更早版本锁定
-SQLAlchemy 1.4，因此当前两者兼容。Superset 主分支已升级到 SQLAlchemy 2.0，后续
-Superset 版本需要 dialect 先支持 2.0。
+`greptimedb-sqlalchemy` 要求 `sqlalchemy>=1.4,<2`。当前发行版 Superset 6.1.0 锁定
+SQLAlchemy 1.4.54，可以正常配合使用。Superset 主分支已升级到 SQLAlchemy 2.0，后续
+版本需要 dialect 先支持 2.0。如果你使用更老的 Superset，请自行核对它锁定的
+SQLAlchemy 版本是否落在上述范围内。
 :::
 
 ## 添加 GreptimeDB 数据库

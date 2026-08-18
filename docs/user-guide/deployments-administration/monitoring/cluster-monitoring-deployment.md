@@ -120,7 +120,7 @@ This deploys a `GreptimeDBStandalone` resource named `${cluster-name}-monitor` t
 kubectl get greptimedbstandalones.greptime.io ${cluster-name}-monitor -n ${namespace}
 ```
 
-The workloads it creates — Service, StatefulSet and Pods — are named `${cluster-name}-monitor-standalone`, not after the resource itself. You can use the following addresses to access monitoring data:
+The Service and StatefulSet it creates are named `${cluster-name}-monitor-standalone`, and the Pods add the usual StatefulSet ordinal, for example `${cluster-name}-monitor-standalone-0`. You can use the following addresses to access monitoring data:
 
 - **Prometheus metrics**: `http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus`
 - **SQL logs**: `${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4002`. By default, cluster logs are stored in the `public._gt_logs` table.

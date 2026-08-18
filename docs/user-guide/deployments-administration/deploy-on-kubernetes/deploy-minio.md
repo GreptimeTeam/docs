@@ -27,10 +27,6 @@ image:
   repository: greptime/minio
   tag: 2025.4.22-debian-12-r1
 
-auth:
-  rootUser: ${MINIO_ROOT_USER}
-  rootPassword: ${MINIO_ROOT_PASSWORD}
-
 resources:
   requests:
     cpu: 500m
@@ -53,7 +49,9 @@ persistence:
   size: 100Gi
 ```
 
-`auth.rootUser` and `auth.rootPassword` are the MinIO root credentials, and GreptimeDB uses them to reach the bucket. Supply them from your own secret store rather than committing them to `minio-values.yaml` — for example with `--set` at install time, or by pointing the chart at an existing Secret through `auth.existingSecret`.
+The root credentials are deliberately absent from this file. Helm reads a values file as plain YAML and does not expand shell variables in it, so a `${MINIO_ROOT_USER}` placeholder would be installed verbatim. Pass them on the command line as shown below, or keep them out of your shell history entirely by creating a Secret and setting `auth.existingSecret` along with `auth.rootUserSecretKey` and `auth.rootPasswordSecretKey`.
+
+These root credentials are for administering MinIO and signing in to its console. GreptimeDB does not use them — it connects with a separate Access Key that you create in [Generating Access Key](#generating-access-key), which you can scope with its own permission policy.
 
 ## Installing MinIO Cluster
 
@@ -64,7 +62,9 @@ helm upgrade \
   --install minio oci://registry-1.docker.io/bitnamicharts/minio \
   --create-namespace \
   --version 16.0.10 \
-  -n minio --values minio-values.yaml
+  -n minio --values minio-values.yaml \
+  --set-string auth.rootUser="$MINIO_ROOT_USER" \
+  --set-string auth.rootPassword="$MINIO_ROOT_PASSWORD"
 ```
 
 <details>
@@ -153,7 +153,7 @@ kubectl port-forward -n minio svc/minio 9001:9001
 
 2. Open your browser: http://localhost:9001/login
 
-3. Log in using the credentials set in the configuration file, that is the values of `auth.rootUser` and `auth.rootPassword`.
+3. Log in with the root credentials you supplied at install time.
 
 ![MinIO login](/minio-login-page.png)
 

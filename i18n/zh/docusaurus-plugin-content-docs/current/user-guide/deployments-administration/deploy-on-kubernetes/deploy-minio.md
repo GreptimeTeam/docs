@@ -27,10 +27,6 @@ image:
   repository: greptime/minio
   tag: 2025.4.22-debian-12-r1
 
-auth:
-  rootUser: ${MINIO_ROOT_USER}
-  rootPassword: ${MINIO_ROOT_PASSWORD}
-
 resources:
   requests:
     cpu: 500m
@@ -53,7 +49,9 @@ persistence:
   size: 100Gi
 ```
 
-`auth.rootUser` 和 `auth.rootPassword` 是 MinIO 的 root 凭证，GreptimeDB 也用它们访问 bucket。请从你自己的密钥管理方式提供，不要把它们提交到 `minio-values.yaml` 里——例如安装时用 `--set` 传入，或通过 `auth.existingSecret` 指向已有的 Secret。
+这个文件里刻意没有放 root 凭证。Helm 把 values 文件当作普通 YAML 读取，不会展开其中的 shell 变量，写成 `${MINIO_ROOT_USER}` 会被原样安装进去。请按下面的方式在命令行传入；如果不希望凭证出现在 shell 历史里，可以创建 Secret 并设置 `auth.existingSecret`，配合 `auth.rootUserSecretKey` 和 `auth.rootPasswordSecretKey`。
+
+root 凭证用于管理 MinIO 和登录控制台。GreptimeDB 不使用它——GreptimeDB 用的是你在[生成 Access Key](#生成-access-key) 中单独创建的 Access Key，可以为它单独配置权限策略。
 
 ## 安装 MinIO 集群
 
@@ -64,7 +62,9 @@ helm upgrade \
   --install minio oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/minio \
   --create-namespace \
   --version 16.0.10 \
-  -n minio --values minio-values.yaml
+  -n minio --values minio-values.yaml \
+  --set-string auth.rootUser="$MINIO_ROOT_USER" \
+  --set-string auth.rootPassword="$MINIO_ROOT_PASSWORD"
 ```
 
 <details>
@@ -153,7 +153,7 @@ kubectl port-forward -n minio svc/minio 9001:9001
 
 2. 打开浏览器访问 http://localhost:9001/login
 
-3. 使用配置文件中设置的账号密码登录，即 `auth.rootUser` 和 `auth.rootPassword` 的值。
+3. 使用安装时传入的 root 凭证登录。
 
 ![MinIO login](/minio-login-page.png)
 

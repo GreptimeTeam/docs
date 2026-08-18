@@ -42,10 +42,11 @@ pip install greptimedb-sqlalchemy
 ```
 
 :::note SQLAlchemy version
-`greptimedb-sqlalchemy` currently requires SQLAlchemy 1.x. Superset 6.1.0 and
-earlier pin SQLAlchemy 1.4, so the two are compatible today. Superset's main
-branch has moved to SQLAlchemy 2.0, so a later Superset release will need a
-dialect that supports 2.0 first.
+`greptimedb-sqlalchemy` requires `sqlalchemy>=1.4,<2`. Superset 6.1.0, the
+current release, pins SQLAlchemy 1.4.54 and works with it. Superset's main
+branch has moved to SQLAlchemy 2.0, so a later release will need a dialect that
+supports 2.0 first. If you run an older Superset, check its own SQLAlchemy pin
+against that range.
 :::
 
 ## Add GreptimeDB as database

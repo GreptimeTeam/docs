@@ -125,7 +125,7 @@ monitoring:
 kubectl get greptimedbstandalones.greptime.io ${cluster-name}-monitor -n ${namespace}
 ```
 
-它创建出来的工作负载——Service、StatefulSet 和 Pod——名称是 `${cluster-name}-monitor-standalone`，与资源本身的名称不同。你可以使用以下地址访问监控数据：
+它创建的 Service 和 StatefulSet 名称是 `${cluster-name}-monitor-standalone`，Pod 则带上 StatefulSet 的序号后缀，例如 `${cluster-name}-monitor-standalone-0`。你可以使用以下地址访问监控数据：
 
 - **Prometheus 指标**：`http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus`
 - **SQL 日志**：`${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4002`。默认情况下，集群日志存储在 `public._gt_logs` 表中。
