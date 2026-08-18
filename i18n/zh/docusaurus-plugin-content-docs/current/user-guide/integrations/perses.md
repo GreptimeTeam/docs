@@ -129,11 +129,11 @@ node_cpu_seconds_total{mode="idle"}
 
 GreptimeDB 兼容 Prometheus 生态。可用 [Perses 迁移工具](https://perses.dev/perses/docs/migration/) 导入现有 Grafana 仪表盘。迁移后，将 PromQL 面板映射到指向 GreptimeDB 的 **Prometheus** 数据源。
 
-迁移是 best-effort 的，迁移完需要逐个检查结果，不要默认它已经完整：
+迁移只做尽力而为的转换，完成后需逐项核对，不能默认结果是完整的：
 
-- 只迁移仪表盘。告警、用户等其他 Grafana 资源不在迁移范围内。
-- 上游支持 Grafana 9.0.0 到 11.x。超出该范围不保证能迁移成功。
-- Perses 并未实现全部 Grafana 插件。无法映射的面板和变量会被替换成静态占位符，需要手工重建。
+- 仅迁移仪表盘，告警、用户等其他 Grafana 资源不在范围内。
+- 上游支持的 Grafana 版本为 9.0.0 至 11.x，超出这个范围不保证迁移成功。
+- Perses 并未实现全部 Grafana 插件，无法映射的面板和变量会被替换为静态占位符，需要手工重建。
 
 ## 下一步
 

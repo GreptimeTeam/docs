@@ -49,7 +49,25 @@ persistence:
   size: 100Gi
 ```
 
-The root credentials are deliberately absent from this file. Helm reads a values file as plain YAML and does not expand shell variables in it, so a `${MINIO_ROOT_USER}` placeholder would be installed verbatim. Pass them on the command line as shown below, or keep them out of your shell history entirely by creating a Secret and setting `auth.existingSecret` along with `auth.rootUserSecretKey` and `auth.rootPasswordSecretKey`.
+The root credentials are deliberately absent from this file. Helm reads a values file as plain YAML and does not expand shell variables in it, so a `${MINIO_ROOT_USER}` placeholder would be installed verbatim.
+
+Create a Secret and point the chart at it instead. Avoid `--set-string` for the password: Helm splits that value on commas itself, so a password containing one fails to parse no matter how the shell quotes it.
+
+```bash
+kubectl create namespace minio
+kubectl -n minio create secret generic minio-root-credentials \
+  --from-literal=root-user="$MINIO_ROOT_USER" \
+  --from-literal=root-password="$MINIO_ROOT_PASSWORD"
+```
+
+Then reference it from `minio-values.yaml`:
+
+```yaml
+auth:
+  existingSecret: minio-root-credentials
+  rootUserSecretKey: root-user
+  rootPasswordSecretKey: root-password
+```
 
 These root credentials are for administering MinIO and signing in to its console. GreptimeDB does not use them — it connects with a separate Access Key that you create in [Generating Access Key](#generating-access-key), which you can scope with its own permission policy.
 
@@ -62,9 +80,7 @@ helm upgrade \
   --install minio oci://registry-1.docker.io/bitnamicharts/minio \
   --create-namespace \
   --version 16.0.10 \
-  -n minio --values minio-values.yaml \
-  --set-string auth.rootUser="$MINIO_ROOT_USER" \
-  --set-string auth.rootPassword="$MINIO_ROOT_PASSWORD"
+  -n minio --values minio-values.yaml
 ```
 
 <details>
@@ -153,7 +169,7 @@ kubectl port-forward -n minio svc/minio 9001:9001
 
 2. Open your browser: http://localhost:9001/login
 
-3. Log in with the root credentials you supplied at install time.
+3. Log in with the root credentials held in the `minio-root-credentials` Secret.
 
 ![MinIO login](/minio-login-page.png)
 

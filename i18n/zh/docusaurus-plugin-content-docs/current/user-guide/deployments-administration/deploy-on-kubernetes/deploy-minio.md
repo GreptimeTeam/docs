@@ -49,9 +49,27 @@ persistence:
   size: 100Gi
 ```
 
-这个文件里刻意没有放 root 凭证。Helm 把 values 文件当作普通 YAML 读取，不会展开其中的 shell 变量，写成 `${MINIO_ROOT_USER}` 会被原样安装进去。请按下面的方式在命令行传入；如果不希望凭证出现在 shell 历史里，可以创建 Secret 并设置 `auth.existingSecret`，配合 `auth.rootUserSecretKey` 和 `auth.rootPasswordSecretKey`。
+这里没有写入 root 凭证。Helm 读取 values 文件时只当作普通 YAML，不会展开 shell 变量，`${MINIO_ROOT_USER}` 会被当作字面量写进配置。
 
-root 凭证用于管理 MinIO 和登录控制台。GreptimeDB 不使用它——GreptimeDB 用的是你在[生成 Access Key](#生成-access-key) 中单独创建的 Access Key，可以为它单独配置权限策略。
+凭证改用 Secret 保存，再让 chart 引用。密码不要走 `--set-string`：Helm 会对该值按逗号分段，密码中含逗号就会解析失败，在 shell 层加引号也无济于事。
+
+```bash
+kubectl create namespace minio
+kubectl -n minio create secret generic minio-root-credentials \
+  --from-literal=root-user="$MINIO_ROOT_USER" \
+  --from-literal=root-password="$MINIO_ROOT_PASSWORD"
+```
+
+然后在 `minio-values.yaml` 中引用：
+
+```yaml
+auth:
+  existingSecret: minio-root-credentials
+  rootUserSecretKey: root-user
+  rootPasswordSecretKey: root-password
+```
+
+root 凭证用于管理 MinIO 和登录控制台，GreptimeDB 并不使用。GreptimeDB 连接时用的是[生成 Access Key](#生成-access-key) 一节中单独创建的 Access Key，可以为其单独设置权限策略。
 
 ## 安装 MinIO 集群
 
@@ -62,9 +80,7 @@ helm upgrade \
   --install minio oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/minio \
   --create-namespace \
   --version 16.0.10 \
-  -n minio --values minio-values.yaml \
-  --set-string auth.rootUser="$MINIO_ROOT_USER" \
-  --set-string auth.rootPassword="$MINIO_ROOT_PASSWORD"
+  -n minio --values minio-values.yaml
 ```
 
 <details>
@@ -153,7 +169,7 @@ kubectl port-forward -n minio svc/minio 9001:9001
 
 2. 打开浏览器访问 http://localhost:9001/login
 
-3. 使用安装时传入的 root 凭证登录。
+3. 使用 `minio-root-credentials` Secret 中保存的 root 凭证登录。
 
 ![MinIO login](/minio-login-page.png)
 

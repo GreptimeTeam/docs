@@ -125,7 +125,7 @@ monitoring:
 kubectl get greptimedbstandalones.greptime.io ${cluster-name}-monitor -n ${namespace}
 ```
 
-它创建的 Service 和 StatefulSet 名称是 `${cluster-name}-monitor-standalone`，Pod 则带上 StatefulSet 的序号后缀，例如 `${cluster-name}-monitor-standalone-0`。你可以使用以下地址访问监控数据：
+它创建的 Service 和 StatefulSet 名为 `${cluster-name}-monitor-standalone`，Pod 在此基础上带 StatefulSet 序号，例如 `${cluster-name}-monitor-standalone-0`。你可以使用以下地址访问监控数据：
 
 - **Prometheus 指标**：`http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus`
 - **SQL 日志**：`${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4002`。默认情况下，集群日志存储在 `public._gt_logs` 表中。
@@ -292,7 +292,7 @@ kubectl -n ${namespace} port-forward svc/${cluster-name}-grafana 18080:80
 ## 清理 PVC
 
 :::danger
-该操作会删除监控用单机实例存储的指标和日志，不会影响 GreptimeDB 集群本身的数据，但监控历史删除后无法恢复。
+该操作删除的是监控单机实例中存储的指标与日志，不影响 GreptimeDB 集群自身的数据；但监控历史一经删除便无法恢复。
 :::
 
 请参考[清理 GreptimeDB 集群](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md#cleanup)文档
