@@ -158,7 +158,7 @@ CREATE TABLE http_logs (
 例如，如果你总是只查询特定应用程序的日志，可以将 `application` 列设为主键（tag）。
 
 ```sql
-SELECT message FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 应用程序的数量通常是有限的。表 `http_logs_v2` 使用 `application` 作为主键。
@@ -312,7 +312,7 @@ CREATE TABLE http_logs_v3 (
 以下查询可以使用 `http_method` 列上的倒排索引。
 
 ```sql
-SELECT message FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = `GET` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = 'GET' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 倒排索引支持以下运算符：
@@ -350,7 +350,7 @@ CREATE TABLE http_logs_v4 (
 以下查询可以使用跳数索引过滤 `request_id` 列。
 
 ```sql
-SELECT message FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = `25b6f398-41cf-4965-aa19-e1c63a88a7a9` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = '25b6f398-41cf-4965-aa19-e1c63a88a7a9' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 然而，请注意跳数索引的查询功能通常不如倒排索引丰富。

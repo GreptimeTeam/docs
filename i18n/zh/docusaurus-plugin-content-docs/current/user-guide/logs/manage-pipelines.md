@@ -41,7 +41,7 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/test" \
 成功上传 pipeline 后，响应将包含版本信息：
 
 ```json
-{"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}
+{"name":"test","version":"2024-06-27 12:02:34.257312110Z"}
 ```
 
 版本是 UTC 格式的时间戳，表示 pipeline 的创建时间。
@@ -193,7 +193,12 @@ SELECT name, pipeline, created_at::bigint FROM greptime_private.pipelines;
 然后可以使用程序将 SQL 结果中的 bigint 类型的时间戳转换为时间字符串。
 
 ```shell
-timestamp_ns="1719489754257312110"; readable_timestamp=$(TZ=UTC date -d @$((${timestamp_ns:0:10}+0)) +"%Y-%m-%d %H:%M:%S").${timestamp_ns:10}Z; echo "Readable timestamp (UTC): $readable_timestamp"
+python3 -c '
+import datetime, sys
+ns = int(sys.argv[1])
+dt = datetime.datetime.fromtimestamp(ns // 10**9, datetime.timezone.utc)
+print("Readable timestamp (UTC):", dt.strftime("%Y-%m-%d %H:%M:%S") + ".%09dZ" % (ns % 10**9))
+' 1719489754257312110
 ```
 
 输出：
