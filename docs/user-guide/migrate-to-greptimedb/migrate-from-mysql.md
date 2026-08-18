@@ -65,6 +65,11 @@ with GreptimeDB. If a complete migration of all historical data is needed, pleas
 
 ### Export data from MySQL
 
+`mysqldump` writes whatever the tables hold when it runs, so rows that dual-write has already delivered to GreptimeDB
+appear in the dump as well. Unless the destination table deduplicates on its primary key and time index, import the dump
+into a staging table and copy across only the rows older than the moment dual-write started, or restrict the export with
+`--where` on the time column so the two windows meet without overlapping.
+
 [mysqldump](https://dev.mysql.com/doc/refman/8.4/en/mysqldump.html) is a commonly used tool to export data from MySQL.
 Using it, we can export the data that can be later imported into GreptimeDB directly. For example, if we want to export
 two databases, `db1` and `db2` from MySQL, we can use the following command:

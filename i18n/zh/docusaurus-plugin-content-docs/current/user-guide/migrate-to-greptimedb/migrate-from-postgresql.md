@@ -58,6 +58,10 @@ GreptimeDB。如果需要完整迁移所有历史数据，请按照接下来的�
 
 ### 从 PostgreSQL 导出数据
 
+`pg_dump` 导出的是执行那一刻表里的全部内容，双写已经写到 GreptimeDB 的行同样会出现在 dump 里。
+除非目标表能按主键和时间索引去重，否则请显式导出历史窗口——例如逐表执行
+`COPY (SELECT ... WHERE ts < '<cutoff>') TO ...`——让 dump 与双写窗口首尾相接而不重叠。
+
 [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) 是一个常用的、从 PostgreSQL 导出数据的工具。使用
 pg_dump，我们可以从 PostgreSQL 中导出后续可直接导入到 GreptimeDB 的数据。例如，如果我们想要从 PostgreSQL 的 database
 `postgres` 中导出以 `db` 开头的 schema，我们可以使用以下命令：

@@ -187,13 +187,13 @@ CREATE TABLE traces (
 历史数据导出与导入
 ---------
 
-1.  **迁移前开启双写** 应用同时写入 ClickHouse 和 GreptimeDB，校验数据一致性，减少数据缺失风险。
+1.  **先开启双写，再确定 cutoff** 让应用同时写入 ClickHouse 和 GreptimeDB。双写生效后，取该时刻或之后的一个时间戳作为 cutoff，下面所有导出都以它为界。不设 cutoff 就导出，会把双写已经写入的行再导一遍；除非表能按主键和时间索引去重，否则会产生重复数据。
     
 2.  **从 ClickHouse 导出数据** 利用 ClickHouse 命令将数据导出为 CSV、TSV、Parquet 等格式样例：
     
 
 ```sh
-clickhouse client --query="SELECT * FROM example INTO OUTFILE 'example.csv' FORMAT CSVWithNames"
+clickhouse client --query="SELECT * FROM example WHERE timestamp < '2024-04-26 00:00:00' INTO OUTFILE 'example.csv' FORMAT CSVWithNames"
 ```
 
 导出的 CSV 内容类似：

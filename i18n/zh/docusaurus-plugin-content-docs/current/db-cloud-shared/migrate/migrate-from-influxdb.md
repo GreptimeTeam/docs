@@ -156,7 +156,7 @@ max_over_time(monitor{__field__="cpu"}[1h])
 
 ![Double write to GreptimeDB and InfluxDB](/migrate-influxdb-to-greptimedb.drawio.svg)
 
-1. 同时将数据写入 GreptimeDB 和 InfluxDB，以避免迁移过程中的数据丢失。
+1. 同时将数据写入 GreptimeDB 和 InfluxDB，让两套系统在迁移期间并行运行。
 2. 从 InfluxDB 导出所有历史数据，并将数据导入 GreptimeDB。
 3. 验证表结构、行数、时间范围和关键查询结果。
 4. 将读流量逐步切换到 GreptimeDB。

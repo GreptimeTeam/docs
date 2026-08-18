@@ -22,15 +22,19 @@ private signature whose `rootUrls` is `http://localhost:3000/`, so Grafana accep
 it only when its own `root_url` is exactly that. This is why the instructions below
 assume a local Grafana on the default port.
 
-To run the plugin under any other URL, install `info8fcc-greptimedb-datasource-unsigned.zip`
-from the same release and allow it explicitly in `grafana.ini`:
+On a self-hosted Grafana served from a different URL, install
+`info8fcc-greptimedb-datasource-unsigned.zip` from the same release and allow it explicitly in
+`grafana.ini`:
 
 ```ini
 [plugins]
 allow_loading_unsigned_plugins = info8fcc-greptimedb-datasource
 ```
 
-The equivalent environment variable is `GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS`.
+The equivalent environment variable is `GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS`. Grafana
+[recommends against running unsigned plugins](https://grafana.com/docs/grafana/latest/administration/plugin-management/plugin-sign/),
+so limit this to instances you control. Grafana Cloud does not support unsigned plugins at all; use the
+prebuilt Docker image or a self-hosted Grafana instead.
 
 Make sure Grafana is installed and running before installing the plugin.
 

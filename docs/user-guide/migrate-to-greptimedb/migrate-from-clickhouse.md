@@ -185,13 +185,13 @@ Dual-write is not a transaction across the two databases. Each write can succeed
 
 ## Exporting and Importing Historical Data
 
-1. **Enable dual-write before migration**
-The application should write to both ClickHouse and GreptimeDB. Check for data consistency to reduce the risk of missing data.
+1. **Enable dual-write, then fix a cutoff**
+Start writing to both ClickHouse and GreptimeDB. Once dual-write is live, pick a timestamp at or after that moment and use it as the cutoff for every export below. Exporting without one re-imports rows that dual-write has already delivered, which duplicates them unless the table deduplicates on its primary key and time index.
 
 2. **Data export from ClickHouse**
 Use ClickHouse’s native command to export data as CSV, TSV, Parquet, or other formats. For example:
 ```sh
-clickhouse client --query="SELECT * FROM example INTO OUTFILE 'example.csv' FORMAT CSVWithNames"
+clickhouse client --query="SELECT * FROM example WHERE timestamp < '2024-04-26 00:00:00' INTO OUTFILE 'example.csv' FORMAT CSVWithNames"
 ```
 The exported CSV will look like:
 ```csv

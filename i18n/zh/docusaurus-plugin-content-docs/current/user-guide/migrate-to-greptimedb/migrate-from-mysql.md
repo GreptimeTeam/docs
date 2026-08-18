@@ -58,6 +58,10 @@ GreptimeDB。如果需要完整迁移所有历史数据，请按照接下来的�
 
 ### 从 MySQL 导出数据
 
+`mysqldump` 导出的是执行那一刻表里的全部内容，双写已经写到 GreptimeDB 的行同样会出现在 dump 里。
+除非目标表能按主键和时间索引去重，否则请把 dump 先导入中转表、只搬运早于双写起点的行，
+或者用时间列上的 `--where` 限定导出范围，让历史导出与双写窗口首尾相接而不重叠。
+
 [mysqldump](https://dev.mysql.com/doc/refman/8.4/en/mysqldump.html) 是一个常用的、从 MySQL 导出数据的工具。使用
 mysqldump，我们可以从 MySQL 中导出后续可直接导入到 GreptimeDB 的数据。例如，如果我们想要从 MySQL 导出两个数据库 `db1` 和
 `db2`，我们可以使用以下命令：

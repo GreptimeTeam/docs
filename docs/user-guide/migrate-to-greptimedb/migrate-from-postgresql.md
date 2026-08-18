@@ -72,6 +72,11 @@ steps.
 
 ### Export data from PostgreSQL
 
+`pg_dump` writes whatever the tables hold when it runs, so rows that dual-write has already delivered to GreptimeDB
+appear in the dump as well. Unless the destination table deduplicates on its primary key and time index, export the
+historical window explicitly — for example with `COPY (SELECT ... WHERE ts < '<cutoff>') TO ...` per table — so the dump
+and the dual-write window meet without overlapping.
+
 [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) is a commonly used tool to export data from
 PostgreSQL. Using it, we can export the data that can be later imported into GreptimeDB directly. For example, if we
 want to export schemas whose names start with `db` in the database `postgres` from PostgreSQL, we can use the following

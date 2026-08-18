@@ -68,7 +68,11 @@ A good start is to deploy GreptimeDB Standalone into an IaaS platform that has a
 But if running the Standalone with remote WAL and object storage, there is a better DR solution:
 ![DR-Standalone](/DR-Standalone.png)
 
-Write the WAL to the Kafka cluster and store the data in object storage, so the database itself is stateless. In the event of a disaster affecting the standalone database, you can restore it using the remote WAL and object storage. **RPO=0** and an **RTO in minutes** are the design targets of this topology: they hold only as long as the Kafka cluster and the object storage both survive the failure you are planning for, and the WAL covering unflushed writes is still present. Verify them with a failure drill against your own deployment.
+Write the WAL to the Kafka cluster and store the data in object storage, so that the ingested data no longer depends on the node's local disk.
+
+The node is not fully stateless, though: a standalone instance keeps its metadata — catalogs, schemas and table definitions — in a local key-value store under `<data_home>/metadata`. Kafka and object storage cannot rebuild it. Losing the host together with its disk means losing that metadata unless you have backed it up separately, so include it in the plan with [Metadata Export & Import](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md).
+
+**RPO=0** and an **RTO in minutes** are the design targets of this topology. They hold as long as the Kafka cluster and the object storage both survive the failure you are planning for, the WAL covering unflushed writes is still present, and the metadata can be restored. Verify them with a failure drill against your own deployment.
 
 ### DR solution based on Active-Active Failover
 
@@ -116,7 +120,7 @@ Read [Backup & restore data](./back-up-&-restore-data.md) for details.
 
 ### Solution Comparison
 
-By comparing these DR solutions, you can decide on the final option based on their specific scenarios, requirements, and cost.
+By comparing these DR solutions, you can decide on the final option based on their specific scenarios, requirements, and cost. The RPO and RTO columns are the design targets of each topology under the conditions described above, not values guaranteed for every deployment; confirm them with a failure drill.
 
 
 |     DR solution | Error Tolerance Objective |  RPO | RTO | TCO | Scenarios | Remote WAL & Object Storage | Notes |
