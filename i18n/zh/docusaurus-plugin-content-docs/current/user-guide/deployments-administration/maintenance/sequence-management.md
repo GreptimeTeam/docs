@@ -34,10 +34,24 @@ description: 介绍如何维护和更新 GreptimeDB 集群中的资源标识（I
 
 要安全地更新`待分配的表 ID`，请按照以下步骤操作：
 
-1. **启用集群恢复模式** - 这可以防止在更新过程中创建新表。详情请参阅[集群恢复模式](/user-guide/deployments-administration/maintenance/recovery-mode.md)。
-2. **设置待分配的表 ID** - 通过 HTTP 接口设置`待分配的表 ID`。
-3. **重启 metasrv 节点** - 这确保新的`待分配的表 ID`被正确设置。
-4. **禁用集群恢复模式** - 恢复正常的集群操作。
+1. **暂停 Procedure Manager** - 这会拒绝新的元数据变更操作，包括建表。详见[阻止元数据变更](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md)。
+2. **等待在途 procedure 结束** - 暂停只拒绝**新的** procedure，已经在运行的会继续执行。轮询直到没有仍在进行的 procedure：
+
+   ```sql
+   SELECT procedure_id, procedure_type, status
+   FROM INFORMATION_SCHEMA.PROCEDURE_INFO
+   WHERE status IN ('Running', 'Retrying', 'PrepareRollback', 'RollingBack');
+   ```
+
+   只有该查询返回空结果时才能继续。如果超过预期等待时间仍有 procedure 在运行，请停止操作并排查原因，不要继续修改 sequence。出现 `Failed` 或 `Poisoned` 表示 procedure 以非正常状态终止，需先处理干净再继续。参见 [PROCEDURE_INFO](/reference/sql/information-schema/procedure-info.md)。
+3. **启用集群恢复模式** - 设置`待分配的表 ID`只允许在恢复模式下进行。详情请参阅[集群恢复模式](/user-guide/deployments-administration/maintenance/recovery-mode.md)。
+4. **设置待分配的表 ID** - 通过 HTTP 接口设置`待分配的表 ID`。
+5. **重启 metasrv 节点** - 这确保新的`待分配的表 ID`被正确设置。重启后先确认恢复模式仍然开启、Procedure Manager 仍处于暂停状态，再验证新的`待分配的表 ID`。
+6. **禁用集群恢复模式** - 然后恢复 Procedure Manager，回到正常的集群操作。
+
+:::warning
+恢复模式本身不会阻止 DDL。它只是 `set-next-id` 接口的前置条件，并放宽 Datanode 的启动检查。真正阻止新元数据变更的是暂停 Procedure Manager。
+:::
 
 通过发送 POST 请求到 `/admin/sequence/table/set-next-id` 端点设置`待分配的表 ID`：
 

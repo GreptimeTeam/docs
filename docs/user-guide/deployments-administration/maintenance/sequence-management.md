@@ -34,10 +34,24 @@ You can get or set the `next table ID` using Metasrv's HTTP interface at the fol
 
 To safely update the `next table ID`, follow this step-by-step process:
 
-1. **Enable cluster recovery mode** - This prevents new table creation during the update process. See [Cluster Recovery Mode](/user-guide/deployments-administration/maintenance/recovery-mode.md) for more details.
-2. **Set the next table ID** - Use the HTTP interface to set the `next table ID`.
-3. **Restart metasrv nodes** - This ensures the new `next table ID` is properly applied.
-4. **Disable cluster recovery mode** - Resume normal cluster operations.
+1. **Pause the Procedure Manager** - This rejects new metadata-changing operations, including table creation. See [Prevent Metadata Changes](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md).
+2. **Wait for in-flight procedures to finish** - Pausing only rejects *new* procedures; the ones already running continue. Poll until no procedure is still in progress:
+
+   ```sql
+   SELECT procedure_id, procedure_type, status
+   FROM INFORMATION_SCHEMA.PROCEDURE_INFO
+   WHERE status IN ('Running', 'Retrying', 'PrepareRollback', 'RollingBack');
+   ```
+
+   Proceed only when this returns no rows. If procedures keep running past the window you allotted, stop here and investigate instead of changing the sequence. A `Failed` or `Poisoned` row means a procedure stopped in an unclean state; resolve it before continuing. See [PROCEDURE_INFO](/reference/sql/information-schema/procedure-info.md).
+3. **Enable cluster recovery mode** - Setting the `next table ID` is only allowed in recovery mode. See [Cluster Recovery Mode](/user-guide/deployments-administration/maintenance/recovery-mode.md) for more details.
+4. **Set the next table ID** - Use the HTTP interface to set the `next table ID`.
+5. **Restart metasrv nodes** - This ensures the new `next table ID` is properly applied. After the restart, confirm that recovery mode is still enabled and that the Procedure Manager is still paused, then verify the new `next table ID`.
+6. **Disable cluster recovery mode** - Then resume the Procedure Manager to return to normal cluster operations.
+
+:::warning
+Recovery mode does not block DDL on its own. It only gates the `set-next-id` endpoint and relaxes Datanode startup checks. Pausing the Procedure Manager is what stops new metadata changes.
+:::
 
 Set the `next table ID` by sending a POST request to the `/admin/sequence/table/set-next-id` endpoint:
 

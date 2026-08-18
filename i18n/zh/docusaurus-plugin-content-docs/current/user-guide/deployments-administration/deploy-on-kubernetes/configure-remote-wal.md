@@ -42,6 +42,7 @@ meta:
   configData: |
     [wal]
     provider = "kafka"
+    # 测试值：不保留冗余副本。生产环境请按 durability 要求取值。
     replication_factor = 1
     topic_name_prefix = "gtp_greptimedb_wal_topic"
     auto_prune_interval = "30m"
