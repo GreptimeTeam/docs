@@ -78,7 +78,9 @@ The node is not fully stateless, though: a standalone instance keeps its metadat
 
 ![Active-active failover](/active-active-failover.png)
 
-In some edge or small-to-medium scale scenarios, or if you lack the resources to deploy remote WAL or object storage, Active-Active Failover offers a better solution compared to Standalone DR. By replicating requests synchronously between two actively serving standalone nodes, high availability is ensured. The failure of any single node will not lead to data loss or a decrease in service availability even when using local disk-based WAL and data storage.
+In some edge or small-to-medium scale scenarios, or if you lack the resources to deploy remote WAL or object storage, Active-Active Failover offers a better solution compared to Standalone DR. Two actively serving standalone nodes replicate data changes asynchronously. If a peer or the inter-site network fails, the healthy node continues serving, retains pending changes on its local storage, and sends them after the peer recovers.
+
+Pending changes remain recoverable only while the source node's local storage is available. Losing a node and its local storage before replication completes can leave the peer without those changes.
 
 Deploying nodes in different regions can also meet region-level DR requirements, but the scalability is limited.
 
@@ -124,7 +126,7 @@ By comparing these DR solutions, you can decide on the final option based on the
 |     DR solution | Error Tolerance Objective |  RPO | RTO | TCO | Scenarios | Remote WAL & Object Storage | Notes |
 | ------------- | ------------------------- | ----- | ----- | ----- | ---------------- | --------- | --------|
 |  DR solution for Standalone| Single-Region | Backup Interval | Minute or Hour level | Low | Low requirements for availability and reliability in small scenarios |  Optional | |
-|  DR solution based on Active-Active Failover | Cross-Region | Configurable | Minute level | Low | High requirements for availability and reliability in small-to-medium scenarios |  Optional | Commercial feature |
+|  DR solution based on Active-Active Failover | Cross-Region | Depends on pending changes and the failure mode | Depends on external failover | Low | High requirements for availability and reliability in small-to-medium scenarios |  Optional | Commercial feature |
 |  DR solution based on cross-region deployment in a single cluster| Multi-Regions | 0 | Minute level | High | High requirements for availability and reliability in medium-to-large scenarios |  Required | |
 |  DR solution based on BR | Single-Region | Backup Interval | Minute or Hour level | Low | Acceptable requirements for availability and reliability | Optional | |
 

@@ -325,7 +325,7 @@ GreptimeDB offers multiple disaster recovery strategies:
 
 - **Standalone DR**: Remote WAL + object storage. RPO=0 and an RTO in minutes are the targets; a standalone instance also keeps its metadata on local disk, so back that up too.
 - **Region Failover**: Automatic failover for individual regions with minimal downtime.
-- **Active-Active Failover** (Enterprise): Synchronous request replication between two nodes.
+- **Active-Active Failover** (Enterprise): Asynchronous request replication between two nodes.
 - **Cross-Region Single Cluster**: Spans three regions with zero RPO and region-level fault tolerance.
 - **Backup and Restore**: Periodic data backups with RPO depending on backup frequency.
 
