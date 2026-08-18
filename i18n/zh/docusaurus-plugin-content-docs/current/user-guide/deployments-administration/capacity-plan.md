@@ -8,8 +8,7 @@ description: 提供 GreptimeDB 的 CPU、内存和存储需求的一般建议，
 本指南提供了关于 GreptimeDB 的 CPU、内存和存储需求的一般建议。
 
 :::note
-本页的比例和容量数字来自 Greptime 内部测试和交付经验，不是 benchmark 结果，
-也没有公开的测试环境说明，因此不带版本、硬件和数据模型等适用条件。
+本页的比例和容量数字来自 Greptime 内部测试和交付经验，没有公开的 benchmark 作为依据。
 请把它们当作容量规划的起点，并用自己的负载验证。
 :::
 
@@ -55,7 +54,7 @@ GreptimeDB 会对落盘数据做压缩。在 Greptime 内部测试和交付中�
 请参阅[存储配置](/user-guide/deployments-administration/configuration.md#存储选项)文档。
 
 由于云存储在存储管理方面的简单性，强烈推荐使用云存储进行数据存储。
-使用云存储时，本地磁盘只承载查询相关的缓存和 Write-Ahead Log (WAL)，在 Greptime 内部交付中大约 200GB 已经够用。
+使用云存储时，本地磁盘主要用于查询相关的缓存和 Write-Ahead Log (WAL)，在 Greptime 内部交付中大约 200GB 已经够用。
 请按自己的缓存配置和 WAL 保留时间来估算，不要把 200GB 当作固定要求。
 
 无论你选择云存储还是本地存储，

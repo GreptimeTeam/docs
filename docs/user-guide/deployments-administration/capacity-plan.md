@@ -8,11 +8,9 @@ description: Provides guidelines for CPU, memory, and storage requirements for G
 This guide provides general advice on the CPU, memory, and storage requirements for GreptimeDB.
 
 :::note
-The ratios and sizes on this page are field guidelines drawn from Greptime's own
-testing and deployments. They are not benchmark results and were not produced
-under a published test setup, so they carry no version, hardware, or schema
-qualification. Use them as a starting point for sizing and validate them against
-your own workload.
+The ratios and sizes on this page come from Greptime's own testing and
+deployments, not from a published benchmark. Use them as a starting point for
+sizing and validate them against your own workload.
 :::
 
 GreptimeDB is designed to be lightweight upon startup,
@@ -58,7 +56,7 @@ FOr more information on storage options,
 please refer to the [storage configuration](/user-guide/deployments-administration/configuration.md#storage-options) documentation.
 
 Cloud storage is highly recommended for data storage due to its simplicity in managing storage.
-With cloud storage, local disk only holds query-related caches and the Write-Ahead Log (WAL), and about 200GB has been enough in Greptime's own deployments.
+With cloud storage, local disk is used for query-related caches and the Write-Ahead Log (WAL), and about 200GB has been enough in Greptime's own deployments.
 Size it from your own cache configuration and WAL retention instead of treating 200GB as a fixed requirement.
 
 In order to manage the storage costs effectively, 
