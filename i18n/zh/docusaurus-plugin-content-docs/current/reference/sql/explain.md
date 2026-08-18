@@ -186,6 +186,7 @@ SeqScan: region=0(1, 0), "partition_count":{"count":2, "mem_ranges":1, "files":1
 | `partition_count.other_ranges` | 全部 | extension 或非 memtable、非 SST 范围数量。 | 非零时出现。 |
 | `selector` | 全部 | 附加到扫描的 series row selector。 | 存在 series row selector 时。 |
 | `distribution` | 全部 | 附加到扫描的分布信息。 | 存在 distribution 时。 |
+| `mode` | 全部 | Series scan 模式：`two_phase` 表示新的扫描路径，`legacy` 表示旧版扫描路径。 | `SeriesScan` 中总是出现。 |
 | `projection` | Verbose | 投影剪枝后的输出列名。 | 输出 schema 非空时。 |
 | `filters` | Verbose | 下推到扫描器的静态物理谓词表达式。这些谓词可能驱动 row group 剪枝、索引应用和精确过滤。 | 存在静态谓词时。 |
 | `dyn_filters` | Verbose | 计划创建后附加的动态过滤表达式。上游算子产生过滤值时，这些表达式可能变化。 | 存在动态过滤器时。 |
@@ -472,4 +473,7 @@ verbose 分区级输出在记录了相关工作时会包含嵌套指标对象。
 但当查询需要有序输出时，下游计划节点可能会增加 sort 算子。
 
 `SeriesScan` 返回按 series 分组的行。它使用与其他扫描器相同的分区级指标结构，
-也可以上报来自 series distributor 分区的 distributor 指标。
+也可以上报来自 series distributor 分区的 distributor 指标。GreptimeDB 会自动选择
+符合条件的扫描模式，并在 `mode` 字段中显示结果。将
+`region_engine.mito.experimental_series_scan_v2` 设为 `false` 会强制使用
+`legacy` 模式。
