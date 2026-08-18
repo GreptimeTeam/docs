@@ -1,103 +1,26 @@
 ---
 keywords: [Kafka, kubernetes, helm, GreptimeDB, remote WAL, installation, configuration, management]
-description: This guide describes how to install and manage Kafka cluster.
+description: How a Kafka cluster is used as GreptimeDB Remote WAL storage, and where to find its deployment and configuration requirements.
 ---
 # Manage Kafka
 
-The GreptimeDB cluster uses Kafka as the [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) storage. This guide describes how to manage Kafka cluster. This guide will use Bitnami's Kafka Helm [chart](https://github.com/bitnami/charts/tree/main/bitnami/kafka) as an example.
+When [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) is enabled, the GreptimeDB cluster writes its write-ahead log to Kafka instead of local disks. Datanodes append WAL entries to Kafka topics, and Metasrv prunes entries that every region has already flushed to object storage.
 
-## Prerequisites
+This means the Kafka cluster holds data that has not been persisted anywhere else yet. Treat it as a stateful dependency of the database, not as a transport buffer.
 
-- [Kubernetes](https://kubernetes.io/docs/setup/) >= v1.23
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) >= v1.18.0
-- [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
+## Deploy the Kafka cluster
 
-## Install
+Follow [Deploying Kafka Cluster](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-kafka.md) for installation, verification, monitoring, and uninstallation with the Bitnami Kafka Helm chart.
 
-Save the following configuration as a file `kafka.yaml`:
+## Requirements for Remote WAL
 
-```yaml
-global:
-  security:
-    allowInsecureImages: true
+Before pointing GreptimeDB at the cluster, review [Required Settings and Limitations](/user-guide/deployments-administration/wal/remote-wal/configuration.md#required-settings-and-limitations). It covers the retention policy, the Kafka permissions Datanode needs, and the relationship between `max_batch_bytes` and Kafka's maximum message size.
 
-image:
-  registry: docker.io
-  repository: greptime/kafka
-  tag: 3.9.0-debian-12-r12
+Getting the retention policy wrong is the most common way to lose data here: Kafka deletes segments on its own schedule, and a WAL entry deleted before GreptimeDB replays it cannot be recovered.
 
-controller:
-  replicaCount: 3
+## Connect GreptimeDB to Kafka
 
-  resources:
-    requests:
-      cpu: 2
-      memory: 2Gi
-    limits:
-      cpu: 2
-      memory: 2Gi
+To configure the GreptimeDB cluster itself, see:
 
-  persistence:
-    enabled: true
-    size: 200Gi
-
-broker:
-  replicaCount: 3
-
-  resources:
-    requests:
-      cpu: 2
-      memory: 2Gi
-    limits:
-      cpu: 2
-      memory: 2Gi
-
-  persistence:
-    enabled: true
-    size: 200Gi
-
-listeners:
-  client:
-    # When deploying on production environment, you normally want to use a more secure protocol like SASL.
-    # Please refer to the chart's docs for the "how-to": https://artifacthub.io/packages/helm/bitnami/kafka#enable-security-for-kafka
-    # Here for the sake of example's simplicity, we use plaintext (no authentications).
-    protocol: plaintext
-```
-
-Install Kafka cluster:
-
-```bash
-helm upgrade --install kafka \
-    oci://registry-1.docker.io/bitnamicharts/kafka \
-    --values kafka.yaml \
-    --version 32.4.3 \
-    --create-namespace \
-    -n kafka-cluster
-```
-
-Wait for Kafka cluster to be ready:
-
-```bash
-kubectl wait --for=condition=ready pod \
-    -l app.kubernetes.io/instance=kafka \
-    -n kafka-cluster \
-```
-
-Check the status of the Kafka cluster:
-
-```bash
-kubectl get pods -n kafka-cluster
-```
-
-<details>
-  <summary>Expected Output</summary>
-```bash
-NAME                 READY   STATUS    RESTARTS   AGE
-kafka-controller-0   1/1     Running   0          64s
-kafka-controller-1   1/1     Running   0          64s
-kafka-controller-2   1/1     Running   0          64s
-kafka-broker-0       1/1     Running   0          63s
-kafka-broker-1       1/1     Running   0          62s
-kafka-broker-2       1/1     Running   0          61s
-```
-</details>
+- [Remote WAL Configuration](/user-guide/deployments-administration/wal/remote-wal/configuration.md) for the Metasrv and Datanode `[wal]` options, including topic creation, WAL pruning, and Kafka authentication.
+- [Configure Remote WAL](/user-guide/deployments-administration/deploy-on-kubernetes/configure-remote-wal.md) for a complete Helm chart example on Kubernetes.
