@@ -9,10 +9,13 @@ In SQL, a view is a virtual table based on the result set of an SQL statement.
 It contains rows and columns just like a real table.
 The query of a view is run every time the view is referenced in a query.
 
-Views are useful for simplifying complex queries, so that a complex statement does not have to be written and sent for every query.
+In the following situations, you can use views:
+
+* Simplifying complex queries, avoiding the need to repeatedly write and send complex statements for every query.
+* Restricting a user to a subset of columns and rows, when combined with a permission model that can grant the view without granting its base tables.
 
 :::note
-A view is not an access control mechanism in GreptimeDB. The [static user provider](/user-guide/deployments-administration/authentication/static.md) grants privileges per user, not per object, and GreptimeDB Enterprise adds [table-level ACLs](/enterprise/user.md#access-control-lists-acls) matched by table name. Neither provides column- or row-level policies, so defining a view over a subset of columns does not by itself restrict who can read the underlying data.
+A view is not a permission model on its own. The [static user provider](/user-guide/deployments-administration/authentication/static.md) grants privileges per user rather than per object, so a view alone isolates nothing there. GreptimeDB Enterprise [matches its ACLs against the object names that appear in the query](/enterprise/user.md#access-control-lists-acls), which makes it possible to grant a view without granting the tables it reads, confining the user to the columns and rows the view selects.
 :::
 
 A view is created with the `CREATE VIEW` statement.

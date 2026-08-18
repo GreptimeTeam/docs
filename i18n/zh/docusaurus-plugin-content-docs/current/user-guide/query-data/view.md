@@ -11,10 +11,12 @@ description: 介绍了视图的定义、使用示例、更新、显示定义、�
 它包含与真实的表一样的行和列。
 每次查询视图时，都会运行该视图的查询。
 
-视图适合用来简化复杂查询，避免每次查询都重复编写和发送同一条复杂语句。
+在以下情况下，我们可以使用视图：
+* 简化复杂查询，避免每次查询都重复编写和发送复杂语句。
+* 配合能够只授权视图、不授权底表的权限模型，把用户限制在部分列和行的范围内。
 
 :::note
-视图并不是 GreptimeDB 的访问控制手段。[静态用户 provider](/user-guide/deployments-administration/authentication/static.md) 按用户授予权限，而非按对象；GreptimeDB 企业版在此基础上提供按表名匹配的[表级 ACL](/enterprise/user.md#访问控制列表-acl)。两者都没有列级或行级的权限策略，因此仅仅建一个只选取部分列的视图，并不能限制谁能读到底层数据。
+视图本身不是权限模型。[静态用户 provider](/user-guide/deployments-administration/authentication/static.md) 按用户授予权限而非按对象，单靠视图无法起到隔离作用。GreptimeDB 企业版的 [ACL 按查询中出现的对象名匹配](/enterprise/user.md#访问控制列表-acl)，因此可以只授权视图而不授权它读取的表，把用户限制在视图选出的列和行之内。
 :::
 
 可以使用 `CREATE VIEW` 语句创建视图。

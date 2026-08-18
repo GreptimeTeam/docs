@@ -77,11 +77,9 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 
 ![DR-Standalone](/DR-Standalone.png)
 
-将 WAL 写入 Kafka 集群，并将数据存储在对象存储中，因此数据库本身是无状态的。
-在影响独立数据库的灾难事件发生时，你可以使用远程 WAL 和对象存储来恢复它。
-把 WAL 写入 Kafka、数据存入对象存储之后，已写入的数据不再依赖节点本地磁盘。
+把 WAL 写入 Kafka、数据存入对象存储之后，已写入的数据不再依赖节点本地磁盘；灾难发生时可以借助远程 WAL 和对象存储恢复实例。
 
-但节点并非完全无状态：单机实例的元数据，即 catalog、schema 和表定义，存放在本地 `<data_home>/metadata` 下的键值存储中，Kafka 和对象存储都无法重建。主机连同磁盘一起损坏时，若事先没有单独备份，这部分元数据就会丢失。请用[元数据导出与导入](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md)把它一并纳入灾备方案。
+但节点并非完全无状态：单机实例的元数据，即 catalog、schema 和表定义，存放在本地 `<data_home>/metadata` 下的键值存储中（参见[存储位置](/user-guide/concepts/storage-location.md)），Kafka 和对象存储都无法重建。主机连同磁盘一起损坏时，若事先没有单独备份，这部分元数据就会丢失。请用[元数据导出与导入](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md)把它一并纳入灾备方案。
 
 RPO=0 和分钟级 RTO 是该拓扑的设计目标，成立需要三个前提：Kafka 集群与对象存储都在你要防范的故障中幸存、尚未 flush 的那部分写入所对应的 WAL 仍在、元数据能够恢复。请在自己的部署上通过故障演练验证。
 

@@ -70,7 +70,7 @@ But if running the Standalone with remote WAL and object storage, there is a bet
 
 Write the WAL to the Kafka cluster and store the data in object storage, so that the ingested data no longer depends on the node's local disk.
 
-The node is not fully stateless, though: a standalone instance keeps its metadata — catalogs, schemas and table definitions — in a local key-value store under `<data_home>/metadata`. Kafka and object storage cannot rebuild it. Losing the host together with its disk means losing that metadata unless you have backed it up separately, so include it in the plan with [Metadata Export & Import](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md).
+The node is not fully stateless, though: a standalone instance keeps its metadata — catalogs, schemas and table definitions — in a local key-value store under `<data_home>/metadata` (see [Storage Location](/user-guide/concepts/storage-location.md)). Kafka and object storage cannot rebuild it. Losing the host together with its disk means losing that metadata unless you have backed it up separately, so include it in the plan with [Metadata Export & Import](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md).
 
 **RPO=0** and an **RTO in minutes** are the design targets of this topology. They hold as long as the Kafka cluster and the object storage both survive the failure you are planning for, the WAL covering unflushed writes is still present, and the metadata can be restored. Verify them with a failure drill against your own deployment.
 
