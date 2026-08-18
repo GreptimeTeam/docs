@@ -131,7 +131,7 @@ Select the `Traces` query type when you want to query distributed tracing data.
 | **Operation Name Column** | Default value: `span_name`                                                                            |
 | **Start Time Column** | Default value: `timestamp`                                                                              |
 | **Duration Time Column** | Default value: `duration_nano`                                                                          |
-| **Duration Unit** | Default value: `nano_seconds`                                                                           |
+| **Duration Unit** | Default value: `nanoseconds`                                                                           |
 | **Tags Column** | Multiple selections allowed. Corresponds to columns starting with `span_attributes` (e.g., `span_attributes.http.method`). |
 | **Service Tags Column** | Multiple selections allowed. Corresponds to columns starting with `resource_attributes` (e.g., `resource_attributes.host.name`). |
 
