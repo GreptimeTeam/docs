@@ -118,7 +118,7 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
              |   "resource_attributes.telemetry.sdk.version" STRING NULL,                              +
              |   "span_events" JSON NULL,                                                              +
              |   "span_links" JSON NULL,                                                               +
-             |   "parent_span_id" STRING NULL,                                                         +
+             |   "parent_span_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),+
              |   "span_attributes.db.system" STRING NULL,                                              +
              |   "span_attributes.db.name" STRING NULL,                                                +
              |   "span_attributes.db.statement" STRING NULL,                                           +
@@ -171,6 +171,7 @@ Trace 表包含了默认的 [分区规
 2. 通过设置 OTLP 写入请求的 `x-greptime-hints` [HTTP
    头](/user-guide/protocols/http#hints)，加入 `trace_table_partitions=n`，其中
    `n` 是要设置的分区数。将 `n` 设置为 `0` 或 `1` 可以取消分区。
+   其他取值必须是 `2` 到 `65536` 之间的 2 的幂，否则建表会失败。
 
 ### 索引
 

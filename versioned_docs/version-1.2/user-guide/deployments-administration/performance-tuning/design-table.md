@@ -360,7 +360,7 @@ SELECT request FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id
 ```
 
 However, note that the query capabilities of the skipping index are generally inferior to those of the inverted index.
-Skipping index can't handle complex filter conditions and may have a lower filtering performance on low cardinality columns. It only supports the equal operator.
+Skipping index can't handle complex filter conditions and may have a lower filtering performance on low cardinality columns. It applies to equality predicates and to predicates that reduce to a membership test, such as `IN` and a chain of `OR` equalities. Other operators do not use the index.
 
 
 ### Full-Text Index

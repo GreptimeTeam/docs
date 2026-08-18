@@ -391,13 +391,13 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | account_name              | String  | The account name of Azure Blob Storage                                           |
 |         | account_key               | String  | The access key                                                                   |
 |         | sas_token                 | String  | The shared access signature                                                      |
-| Gsc     |                           |         | Google Cloud Storage options, valid when type="Gsc"                              |
-|         | name                      | String  | The storage provider name, default is `Gsc`                                      |
-|         | root                      | String  | The root path in Gsc bucket                                                      |
-|         | bucket                    | String  | The Gsc bucket name                                                              |
-|         | scope                     | String  | The Gsc service scope                                                            |
-|         | credential_path           | String  | The Gsc credentials path                                                         |
-|         | endpoint                  | String  | The API endpoint of Gsc                                                          |
+| Gcs     |                           |         | Google Cloud Storage options, valid when type="Gcs"                              |
+|         | name                      | String  | The storage provider name, default is `Gcs`                                      |
+|         | root                      | String  | The root path in the GCS bucket                                                      |
+|         | bucket                    | String  | The GCS bucket name                                                              |
+|         | scope                     | String  | The GCS service scope                                                            |
+|         | credential_path           | String  | The GCS credentials path                                                         |
+|         | endpoint                  | String  | The API endpoint of GCS                                                          |
 
 A file storage sample configuration:
 

@@ -195,9 +195,12 @@ $writeApi->write($point);
 
 ```shell
 for file in data.*; do
-  curl -i --retry 3 \
+  if ! curl -sS --fail-with-body --retry 3 \
     -X POST "http://${GREPTIME_HOST}:4000/v1/influxdb/write?db=${GREPTIME_DB}&u=${GREPTIME_USERNAME}&p=${GREPTIME_PASSWORD}" \
-    --data-binary @"${file}"
+    --data-binary @"${file}"; then
+    echo "import failed on ${file}" >&2
+    exit 1
+  fi
   sleep 1
 done
 ```
