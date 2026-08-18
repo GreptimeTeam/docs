@@ -196,7 +196,7 @@ influx_inspect export \
 - The `-database` flag specifies the database to be exported.
 - The `-end` flag specifies the end time of the data to be exported.
 Must be in [RFC3339 format](https://datatracker.ietf.org/doc/html/rfc3339), such as `2024-01-01T00:00:00Z`.
-You can use the timestamp when simultaneously writing data to both GreptimeDB and InfluxDB as the end time.
+Base it on the moment dual-write started. The bound is inclusive — the exporter keeps points whose timestamp equals it — so pass an instant just before that moment to avoid exporting a point that dual-write has already delivered.
 - The `-lponly` flag specifies that only the Line Protocol data should be exported.
 - The `-datadir` flag specifies the path to the data directory, as configured in the [InfluxDB data settings](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings).
 - The `-waldir` flag specifies the path to the WAL directory, as configured in the [InfluxDB data settings](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings).
@@ -232,7 +232,7 @@ influxd inspect export-lp \
 - The `--bucket-id` flag specifies the bucket ID to be exported.
 - The `--engine-path` flag specifies the path to the engine directory, as configured in the [InfluxDB data settings](https://docs.influxdata.com/influxdb/v2.0/reference/config-options/#engine-path).
 - The `--end` flag specifies the end time of the data to be exported. Must be in [RFC3339 format](https://datatracker.ietf.org/doc/html/rfc3339), such as `2024-01-01T00:00:00Z`.
-You can use the timestamp when simultaneously writing data to both GreptimeDB and InfluxDB as the end time.
+Base it on the moment dual-write started. The bound is inclusive — the exporter keeps points whose timestamp equals it — so pass an instant just before that moment to avoid exporting a point that dual-write has already delivered.
 - The `--output-path` flag specifies the output directory.
 
 The outputs look like the following:

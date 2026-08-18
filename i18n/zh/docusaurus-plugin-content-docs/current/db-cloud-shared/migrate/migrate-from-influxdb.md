@@ -197,7 +197,7 @@ influx_inspect export \
 - `-database` 指定要导出的数据库。
 - `-end` 指定要导出的数据的结束时间。
 必须是[RFC3339 格式](https://datatracker.ietf.org/doc/html/rfc3339)，例如 `2024-01-01T00:00:00Z`。
-你可以使用同时写入 GreptimeDB 和 InfluxDB 时的时间戳作为结束时间。
+以双写开始的时刻为准。该边界是闭区间——时间戳恰好等于它的数据点也会被导出——因此请传入略早于该时刻的时间，避免把双写已经送达的点再导一遍。
 - `-lponly` 指定只导出行协议数据。
 - `-datadir` 指定数据目录的路径，请见[InfluxDB 数据设置](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings)中的配置。
 - `-waldir` 指定 WAL 目录的路径，请见[InfluxDB 数据设置](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings)中的配置。
@@ -234,7 +234,7 @@ influxd inspect export-lp \
 - `--engine-path` 指定引擎目录的路径，请见[InfluxDB 数据设置](https://docs.influxdata.com/influxdb/v2.0/reference/config-options/#engine-path)中的配置。
 - `--end` 指定要导出的数据的结束时间。
 必须是[RFC3339 格式](https://datatracker.ietf.org/doc/html/rfc3339)，例如 `2024-01-01T00:00:00Z`。
-你可以使用同时写入 GreptimeDB 和 InfluxDB 时的时间戳作为结束时间。
+以双写开始的时刻为准。该边界是闭区间——时间戳恰好等于它的数据点也会被导出——因此请传入略早于该时刻的时间，避免把双写已经送达的点再导一遍。
 - `--output-path` 指定输出目录。
 
 命令行的执行结果类似如下：

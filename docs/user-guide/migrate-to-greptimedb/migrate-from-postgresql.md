@@ -72,10 +72,10 @@ steps.
 
 ### Export data from PostgreSQL
 
-`pg_dump` writes whatever the tables hold when it runs, so rows that dual-write has already delivered to GreptimeDB
-appear in the dump as well. Unless the destination table deduplicates on its primary key and time index, export the
-historical window explicitly — for example with `COPY (SELECT ... WHERE ts < '<cutoff>') TO ...` per table — so the dump
-and the dual-write window meet without overlapping.
+`pg_dump` takes a consistent snapshot, but that snapshot still contains the rows dual-write has already delivered to
+GreptimeDB. The command below exports them too. Use it as-is only when the destination table deduplicates on its primary
+key and time index. Otherwise export the historical window explicitly, for example with
+`COPY (SELECT ... WHERE ts < '<cutoff>') TO ...` per table.
 
 [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) is a commonly used tool to export data from
 PostgreSQL. Using it, we can export the data that can be later imported into GreptimeDB directly. For example, if we

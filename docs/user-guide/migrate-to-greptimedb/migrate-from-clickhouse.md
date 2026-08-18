@@ -186,7 +186,9 @@ Dual-write is not a transaction across the two databases. Each write can succeed
 ## Exporting and Importing Historical Data
 
 1. **Enable dual-write, then fix a cutoff**
-Start writing to both ClickHouse and GreptimeDB. Once dual-write is live, pick a timestamp at or after that moment and use it as the cutoff for every export below. Exporting without one re-imports rows that dual-write has already delivered, which duplicates them unless the table deduplicates on its primary key and time index.
+Start writing to both ClickHouse and GreptimeDB, and note the instant dual-write became live. Use **that same instant** as the cutoff `C` for every export below, so the historical export covers `timestamp < C` and dual-write covers everything from `C` onward.
+
+Do not pick a cutoff later than the moment dual-write started: rows written in between would be delivered by dual-write *and* matched by the export, and would arrive twice unless the destination table deduplicates on its primary key and time index. This split also assumes rows carry a timestamp at or after the moment they are written; late or backfilled data with older timestamps still lands on both sides.
 
 2. **Data export from ClickHouse**
 Use ClickHouse’s native command to export data as CSV, TSV, Parquet, or other formats. For example:
