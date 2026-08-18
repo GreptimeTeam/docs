@@ -72,6 +72,15 @@ const point1 = new Point('temperature')
   .floatField('value', 24.0)
 writeApi.writePoint(point1)
 
+// The write API buffers points into batches, so nothing is sent until the
+// buffer is flushed. close() flushes the remaining data and cancels pending
+// retries; without it, buffered points can be lost.
+try {
+  await writeApi.close()
+} catch (e) {
+  console.error('write failed', e)
+  process.exitCode = 1
+}
 ```
 
 </TabItem>

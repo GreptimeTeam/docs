@@ -558,8 +558,8 @@ meta:
 - `postgresql.electionLockID`: PostgreSQL 中用于选举的锁 ID。
 - `postgresql.credentials.secretName`: PostgreSQL 凭证 secret 名称。
 - `postgresql.credentials.existingSecretName`: PostgreSQL 凭证 secret 名称。如果你希望使用已有的 secret，你需要确保该 secret 包含 `username` 和 `password` 两个 key。
-- `postgresql.credentials.username`: PostgreSQL 凭证用户名。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。`username` 将会被存储在 `username` key 中，该 key 的值为 `mysql.credentials.secretName`。
-- `postgresql.credentials.password`: PostgreSQL 凭证密码。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。`password` 将会被存储在 `password` key 中，该 key 的值为 `mysql.credentials.secretName`。
+- `postgresql.credentials.username`: PostgreSQL 凭证用户名。如果 `postgresql.credentials.existingSecretName` 被设置，该字段将被忽略。`username` 将会被存储在 `username` key 中，该 key 的值为 `postgresql.credentials.secretName`。
+- `postgresql.credentials.password`: PostgreSQL 凭证密码。如果 `postgresql.credentials.existingSecretName` 被设置，该字段将被忽略。`password` 将会被存储在 `password` key 中，该 key 的值为 `postgresql.credentials.secretName`。
 
 #### 使用 etcd 作为后端存储
 
