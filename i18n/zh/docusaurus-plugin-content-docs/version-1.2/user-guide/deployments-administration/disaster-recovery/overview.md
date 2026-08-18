@@ -77,9 +77,11 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 
 ![DR-Standalone](/DR-Standalone.png)
 
-将 WAL 写入 Kafka 集群，并将数据存储在对象存储中，因此数据库本身是无状态的。
-在影响独立数据库的灾难事件发生时，你可以使用远程 WAL 和对象存储来恢复它。
-此方案能实现 RPO=0 和分钟级 RTO。
+把 WAL 写入 Kafka、数据存入对象存储之后，已写入的数据不再依赖节点本地磁盘；灾难发生时可以借助远程 WAL 和对象存储恢复实例。
+
+但节点并非完全无状态：单机实例的元数据，即 catalog、schema 和表定义，存放在本地 `<data_home>/metadata` 下的键值存储中（参见[存储位置](/user-guide/concepts/storage-location.md)），Kafka 和对象存储都无法重建。主机连同磁盘一起损坏时，若事先没有单独备份，这部分元数据就会丢失。请用[元数据导出与导入](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md)把它一并纳入灾备方案。
+
+RPO=0 和分钟级 RTO 是该拓扑的设计目标，成立需要三个前提：Kafka 集群与对象存储都在你要防范的故障中幸存、尚未 flush 的那部分写入所对应的 WAL 仍在、元数据能够恢复。请在自己的部署上通过故障演练验证。
 
 ### 基于双活互备的 DR 解决方案
 
@@ -109,7 +111,13 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 如果 Region 1 因灾难而完全不可用，其中的表 Region 将在其他 Region 中打开和恢复。
 Region 3 作为副本遵循 Metasrv 的多种协议。
 
-此解决方案提供 Region 级别的容错、可扩展的写入能力、零 RPO 和分钟级或更低的 RTO。
+此解决方案的目标是 Region 级别的容错、可扩展的写入能力、零 RPO 以及分钟级或更低的 RTO。能否达到这些指标取决于整条依赖链，而不只是集群的部署形态：
+
+- Region Failover **默认关闭**，需要显式开启。
+- Kafka、对象存储、元数据后端和流量入口都必须跨越你要防范的故障域。Metasrv 部署在三个区域，并不会替你把外部的 MySQL 或 PostgreSQL 元数据后端复制过去。
+- 自动 Datanode selector 按 round-robin、lease 或负载挑选目标，并不是可用区感知的调度策略，因此存活区域必须留有足够余量才能接管。
+
+最终的 RPO 和 RTO 请通过端到端的故障演练确认。
 有关此解决方案的更多信息，请参阅[基于单集群跨区域部署的 DR 解决方案](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)。
 
 ### 基于备份恢复的 DR 解决方案
@@ -127,7 +135,7 @@ BR 进程持续定期将数据从 Cluster 1 备份到 Region 2。
 
 ### 解决方案比较
 
-通过比较这些 DR 解决方案，你可以根据其特定场景、需求和成本选择最终的选项。
+通过比较这些 DR 解决方案，你可以根据其特定场景、需求和成本选择最终的选项。表中的 RPO 和 RTO 是各拓扑在上述条件下的设计目标，并非对任意部署都成立的保证，请通过故障演练确认。
 
 
 |     DR 解决方案 | 容错目标 |  RPO | RTO | TCO | 场景 | 远程 WAL 和对象存储 | 备注 |

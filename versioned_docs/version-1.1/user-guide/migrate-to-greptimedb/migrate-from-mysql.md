@@ -53,7 +53,9 @@ right data types and "ttl" or "compaction" options, etc.
     For details and best practices, refer to the [data index](user-guide/manage-data/data-index.md) documentation.
 ### Write data to both GreptimeDB and MySQL simultaneously
 
-Writing data to both GreptimeDB and MySQL simultaneously is a practical strategy to avoid data loss during migration. By
+Writing to both GreptimeDB and MySQL keeps the two systems in parallel so you can compare them before cutting over. It is
+not a transaction across both databases: a write can succeed on one side and fail on the other, so record failed writes,
+retry each destination independently, and reconcile the two before switching over. Check that a row is actually missing before replaying it — an [append-only table](/user-guide/manage-data/overview.md#avoid-updating-data-by-creating-table-with-append_mode-option) keeps duplicate rows rather than merging them. By
 utilizing MySQL's client libraries (JDBC + a MySQL driver), you can set up two client instances - one for GreptimeDB
 and another for MySQL. For guidance on writing data to GreptimeDB using SQL, please refer to the [Ingest Data](/user-guide/ingest-data/for-iot/sql.md) section.
 
@@ -62,6 +64,11 @@ specific period to accumulate the required recent data. Subsequently, cease writ
 with GreptimeDB. If a complete migration of all historical data is needed, please proceed with the following steps.
 
 ### Export data from MySQL
+
+The command below exports the tables in full, including rows that dual-write has already delivered to GreptimeDB. Use it
+as-is only when the destination table deduplicates on its primary key and time index. Otherwise, import it into a staging
+table and copy across only the rows below the cutoff, or add `--where` on a time column to the export — note that
+`--where` applies to every table in the dump, so tables that do not share that column have to be exported separately.
 
 [mysqldump](https://dev.mysql.com/doc/refman/8.4/en/mysqldump.html) is a commonly used tool to export data from MySQL.
 Using it, we can export the data that can be later imported into GreptimeDB directly. For example, if we want to export

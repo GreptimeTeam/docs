@@ -176,21 +176,26 @@ CREATE TABLE traces (
 双写保障迁移策略
 --------
 
-迁移期间，为避免数据丢失和写入不一致，建议采用双写：
+迁移期间，让应用同时写入 ClickHouse 和 GreptimeDB，两套系统并行运行，便于在切流前做对比。
 
--   应用需同时写入 ClickHouse 和 GreptimeDB，双系统并行。
--   通过日志和校验对比数据，可保证一致性，数据无误后再切换全部流量。
+双写并不是跨两个数据库的事务：同一次写入完全可能一边成功、一边失败，结果是数据缺口或重复，而不是两份一致的副本。因此需要：
+
+-   记录每一次失败的写入及其上下文，以便之后逐个目标重试。重试前先确认这条数据确实没有落库：[append-only 表](/user-guide/manage-data/overview.md#通过创建带有-append_mode-选项的表来避免更新数据)保留重复行，不按主键和时间索引合并，原本已经写成功的请求重试一次就会多出一条。
+-   确定一个 cutoff（时间戳或数据源位点），划清历史导出与双写各自覆盖的范围，避免两者重叠或留下空隙。
+-   切流前做对账：按时间窗口比较行数与聚合值，而不是默认两边一致。
 
 历史数据导出与导入
 ---------
 
-1.  **迁移前开启双写** 应用同时写入 ClickHouse 和 GreptimeDB，校验数据一致性，减少数据缺失风险。
+1.  **先开启双写，再确定 cutoff** 让应用同时写入 ClickHouse 和 GreptimeDB，并记下双写生效的那一刻，**就以这一刻**作为 cutoff `C`。下面所有导出都以它为界：`timestamp < C` 由历史导出覆盖，`C` 及之后由双写覆盖。
+
+    不要选晚于双写起点的 cutoff：这段时间写入的行既会被双写送达，也会被导出命中，除非目标表能按主键和时间索引去重，否则会写入两次。这种切分还有一个前提，即每行的时间戳不早于它被写入的时刻；迟到或回填的数据若带着更早的时间戳，仍会在两边各落一份。
     
 2.  **从 ClickHouse 导出数据** 利用 ClickHouse 命令将数据导出为 CSV、TSV、Parquet 等格式样例：
     
 
 ```sh
-clickhouse client --query="SELECT * FROM example INTO OUTFILE 'example.csv' FORMAT CSVWithNames"
+clickhouse client --query="SELECT * FROM example WHERE timestamp < '2024-04-26 00:00:00' INTO OUTFILE 'example.csv' FORMAT CSVWithNames"
 ```
 
 导出的 CSV 内容类似：
