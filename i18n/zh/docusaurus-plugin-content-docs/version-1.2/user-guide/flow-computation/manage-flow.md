@@ -42,8 +42,8 @@ CREATE TABLE temp_sensor_data (
 
 ## 创建 sink 表
 
-在创建 flow 之前，你需要有一个 sink 表来存储 flow 生成的聚合数据。
-虽然它与常规的时间序列表相同，但有一些重要的注意事项：
+flow 把聚合结果写入 sink 表。`CREATE FLOW` 会在 sink 表不存在时自动创建它，因此自己建表是可选的——
+需要控制 schema，或者表已经存在时才需要自己建。已存在的 sink 表必须与 flow 查询结果兼容，即：
 
 - **列的顺序和类型**：确保 sink 表中列的顺序和类型与 flow 查询结果匹配。
 - **时间索引**：为 sink 表指定 `TIME INDEX`，通常使用时间窗口函数生成的时间列。

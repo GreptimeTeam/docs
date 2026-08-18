@@ -160,7 +160,7 @@ You can use primary key when there are suitable columns and one of the following
 For example, if you always only query logs of a specific application, you may set the `application` column as primary key (tag).
 
 ```sql
-SELECT message FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 The number of applications is usually limited. Table `http_logs_v2` uses `application` as the primary key.
@@ -317,7 +317,7 @@ CREATE TABLE http_logs_v3 (
 The following query can use the inverted index on the `http_method` column.
 
 ```sql
-SELECT message FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = `GET` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = 'GET' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 Inverted index supports the following operators:
@@ -356,7 +356,7 @@ CREATE TABLE http_logs_v4 (
 The following query can use the skipping index to filter the `request_id` column.
 
 ```sql
-SELECT message FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = `25b6f398-41cf-4965-aa19-e1c63a88a7a9` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = '25b6f398-41cf-4965-aa19-e1c63a88a7a9' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 However, note that the query capabilities of the skipping index are generally inferior to those of the inverted index.

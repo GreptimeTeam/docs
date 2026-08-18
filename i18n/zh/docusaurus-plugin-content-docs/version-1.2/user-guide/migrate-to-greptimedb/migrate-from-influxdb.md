@@ -71,6 +71,14 @@ const point1 = new Point('temperature')
   .floatField('value', 24.0)
 writeApi.writePoint(point1)
 
+// 写入 API 会把数据点攒成批次，在 flush 之前不会真正发送。
+// close() 会 flush 剩余数据并取消待重试的请求；不调用它可能丢掉已缓冲的数据点。
+try {
+  await writeApi.close()
+} catch (e) {
+  console.error('写入失败', e)
+  process.exitCode = 1
+}
 ```
 
 </TabItem>
