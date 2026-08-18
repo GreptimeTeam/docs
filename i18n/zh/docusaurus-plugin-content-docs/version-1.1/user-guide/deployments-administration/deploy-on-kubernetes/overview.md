@@ -36,6 +36,6 @@ GreptimeDB Operator 在 Kubernetes 上自动完成 GreptimeDB 实例的部署、
 - [部署 MinIO 集群](deploy-minio.md)：学习如何部署，配置和监控 MinIO 集群。
 - [部署 Kafka 集群](deploy-kafka.md)：学习如何部署，配置和监控 Kafka 集群。
 - [部署带有 Remote WAL 的 GreptimeDB 集群](configure-remote-wal.md)：将 Kafka 配置为 GreptimeDB 集群的远程预写日志 (WAL)，以持久记录每个数据修改并确保不丢失内存缓存的数据。
-- [使用 MySQL/PostgreSQL 作为元数据存储](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#配置-metasrv-后端存储)：用 MySQL 或 PostgreSQL 数据库替代默认后端存储集群元数据。
+- [使用 MySQL/PostgreSQL 作为元数据存储](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#配置-metasrv-后端存储)：用 MySQL 或 PostgreSQL 数据库存储集群元数据。
 - [部署多 Frontend 的 GreptimeDB 集群](configure-frontend-groups.md)：GreptimeDB 集群的 Frontend 组由多个 Frontend 实例组成，以改善负载分配和可用性。
 

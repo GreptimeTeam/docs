@@ -5,7 +5,7 @@ description: Learn how to use GreptimeDB's continuous aggregation for real-time 
 
 # Continuous Aggregation
 
-The Flow engine maintains aggregates such as sums, averages, and counts over time windows, updating the sink table as new rows arrive. Queries then read the sink table instead of scanning the raw stream, which also keeps storage and query cost down when the source is high-frequency.
+The Flow engine maintains aggregates such as sums, averages, and counts over time windows, updating the sink table as new rows arrive. Queries then read the sink table instead of scanning the raw stream.
 
 The three examples below cover the common cases:
 
