@@ -34,10 +34,9 @@ Table partition count: 3
 
 :::note
 The latencies listed under each solution below are example network round-trip
-values used to illustrate the topology. They are not measured GreptimeDB
-results, and no test conditions are recorded for them. Measure the round-trip
-latency between your own AZs, DCs, and regions and substitute those numbers when
-comparing the solutions.
+values used to illustrate the topology, not measured GreptimeDB results. Measure
+the round-trip latency between your own AZs, DCs, and regions and substitute
+those numbers when comparing the solutions.
 :::
 
 ### Metadata across 2 regions, data in the same region
