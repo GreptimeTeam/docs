@@ -4,9 +4,9 @@ description: How a Kafka cluster is used as GreptimeDB Remote WAL storage, and w
 ---
 # Manage Kafka
 
-When [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) is enabled, the GreptimeDB cluster writes its write-ahead log to Kafka instead of local disks. Datanodes append WAL entries to Kafka topics, and Metasrv prunes entries that every region has already flushed to object storage.
+When [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) is enabled, the GreptimeDB cluster writes its write-ahead log to Kafka instead of local disks. Datanodes append WAL entries to Kafka topics, and Metasrv prunes entries that are no longer needed for recovery.
 
-This means the Kafka cluster holds data that has not been persisted anywhere else yet. Treat it as a stateful dependency of the database, not as a transport buffer.
+Until a region flushes to object storage, Kafka may hold the only durable copy of those writes. Treat it as a stateful dependency of the database, not as a transport buffer.
 
 ## Deploy the Kafka cluster
 

@@ -5,9 +5,9 @@ description: 介绍 Kafka 集群在 GreptimeDB Remote WAL 中的作用，以及�
 
 # 管理 Kafka
 
-启用 [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) 后，GreptimeDB 集群不再把预写日志写到本地磁盘，而是写入 Kafka。Datanode 向 Kafka topic 追加 WAL entry，Metasrv 负责清理所有 region 都已 flush 到对象存储的部分。
+启用 [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) 后，GreptimeDB 集群不再把预写日志写到本地磁盘，而是写入 Kafka。Datanode 向 Kafka topic 追加 WAL entry，Metasrv 负责清理恢复时不再需要的 entry。
 
-也就是说，Kafka 集群里存放着尚未持久化到别处的数据。它是数据库的有状态依赖，不是传输层的缓冲区。
+在 region flush 到对象存储之前，Kafka 可能是这些写入唯一的持久副本。它是数据库的有状态依赖，不是传输层的缓冲区。
 
 ## 部署 Kafka 集群
 
