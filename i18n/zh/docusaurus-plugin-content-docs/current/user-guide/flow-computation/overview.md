@@ -7,15 +7,12 @@ description: 了解 GreptimeDB 的 Flow 引擎如何对持续写入的数据进�
 
 GreptimeDB 的 Flow 引擎可以对持续写入的数据进行实时计算。
 它特别适用于提取 - 转换 - 加载 (ETL) 过程，或执行持续聚合，例如求和、平均值和其他时间窗口计算。
-Flow 引擎确保数据被增量和连续地处理，
-根据到达的新数据更新最终结果。
-你可以将其视为一个聪明的物化视图，
-它知道何时更新结果视图表以及如何以最小的努力更新它。
+数据以增量方式处理，新数据到达时更新结果表，而不是在查询时重新计算。
 
 使用案例包括：
 
 - 降采样数据点，使用如平均池化等方法减少存储和分析的数据量
-- 提供近实时分析、可操作的信息
+- 为仪表盘和告警预先算好聚合结果，查询只需读结果表，无需扫描原始事件
 
 :::note
 Flow 对聚合和 TQL workload 使用 batching mode。简单的非聚合 Flow 查询当前会使用已废弃的 streaming mode，不推荐新 workload 使用。
@@ -36,8 +33,7 @@ source 表和 sink 表都是 GreptimeDB 中的时间序列表。
 
 ## 快速入门示例
 
-为了说明 GreptimeDB 的 Flow 引擎的功能，
-考虑从 nginx 日志计算 user_agent 统计信息的任务。
+下面以统计 nginx 日志中的 user_agent 为例。
 source 表是 `nginx_access_log`，
 sink 表是 `user_agent_statistics`。
 
