@@ -13,7 +13,8 @@ description: 介绍如何将 GreptimeDB 作为 Apache Superset 的数据源，�
 ### 用 Docker Compose 运行 Superset
 
 [Docker compose](https://superset.apache.org/docs/installation/docker-compose)
-是 Superset 的推荐使用方式。在这种运行方式下，需要在 Superset 代码目录下的
+是本地快速试用 Superset 最简单的方式。上游明确表示不支持也不建议把 `docker compose`
+用于生产环境，因此这条路径仅用于评估。在这种运行方式下，需要在 Superset 代码目录下的
 `docker/` 中添加一个 `requirements-local.txt`。
 
 并将 GreptimeDB 依赖加入到 `requirements-local.txt`:
@@ -37,6 +38,12 @@ Superset](https://superset.apache.org/docs/installation/pypi)，需要将 Grepti
 ```bash
 pip install greptimedb-sqlalchemy
 ```
+
+:::note SQLAlchemy 版本
+`greptimedb-sqlalchemy` 目前要求 SQLAlchemy 1.x。Superset 6.1.0 及更早版本锁定
+SQLAlchemy 1.4，因此当前两者兼容。Superset 主分支已升级到 SQLAlchemy 2.0，后续
+Superset 版本需要 dialect 先支持 2.0。
+:::
 
 ## 添加 GreptimeDB 数据库
 

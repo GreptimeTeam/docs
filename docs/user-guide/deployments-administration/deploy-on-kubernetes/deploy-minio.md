@@ -28,8 +28,8 @@ image:
   tag: 2025.4.22-debian-12-r1
 
 auth:
-  rootUser: greptimedbadmin
-  rootPassword: "greptimedbadmin"  
+  rootUser: ${MINIO_ROOT_USER}
+  rootPassword: ${MINIO_ROOT_PASSWORD}
 
 resources:
   requests:
@@ -52,6 +52,8 @@ persistence:
   storageClass: null
   size: 100Gi
 ```
+
+`auth.rootUser` and `auth.rootPassword` are the MinIO root credentials, and GreptimeDB uses them to reach the bucket. Supply them from your own secret store rather than committing them to `minio-values.yaml` — for example with `--set` at install time, or by pointing the chart at an existing Secret through `auth.existingSecret`.
 
 ## Installing MinIO Cluster
 
@@ -87,7 +89,7 @@ Did you know there are enterprise versions of the Bitnami catalog? For enhanced 
 
 ** Please be patient while the chart is being deployed **
 
-MinIO&reg; can be accessed via port  on the following DNS name from within your cluster:
+MinIO&reg; can be accessed via port 9000 on the following DNS name from within your cluster:
 
 minio.minio.svc.cluster.local
 
@@ -151,9 +153,7 @@ kubectl port-forward -n minio svc/minio 9001:9001
 
 2. Open your browser: http://localhost:9001/login
 
-3. Log in using the credentials set in the configuration file:
-- username: `greptimedbadmin`
-- password: `greptimedbadmin`
+3. Log in using the credentials set in the configuration file, that is the values of `auth.rootUser` and `auth.rootPassword`.
 
 ![MinIO login](/minio-login-page.png)
 
@@ -208,8 +208,8 @@ objectStorage:
 
 # Monitoring
 
-- Install Prometheus Operator (e.g: [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack))。
-- Install podmonitor CRD。
+- Install Prometheus Operator (e.g: [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)).
+- Install the ServiceMonitor CRD.
 
 To monitor the MinIO cluster, you need to have a monitoring system (such as Prometheus and Grafana) deployed in advance. Then add the following content to minio-values.yaml and re-run the command to update the MinIO configuration:
 

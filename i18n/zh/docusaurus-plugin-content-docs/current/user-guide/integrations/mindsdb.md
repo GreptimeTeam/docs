@@ -8,8 +8,15 @@ description: 介绍如何将 GreptimeDB 作为 MindsDB 的数据源，用于机�
 [MindsDB](https://mindsdb.com/) 是一个开源的机器学习平台，使开发人员能够轻松地将
 先进的机器学习能力与现有数据库集成。
 
-使用 MindsDB 扩展，你的 GreptimeDB 实例可以开箱即用。
-你可以使用 MySQL 协议将 GreptimeDB 配置为 MindsDB 中的数据源：
+MindsDB 通过其 GreptimeDB handler 使用 MySQL 协议访问 GreptimeDB。
+
+该 handler 属于 [community handler](https://github.com/mindsdb/community-handlers/tree/main/community_handlers/greptimedb_handler)，而 community handler 默认是关闭的。创建数据源之前需要先开启，然后重启 MindsDB：
+
+```bash
+export MINDSDB_COMMUNITY_HANDLERS=true
+```
+
+开启之后，将 GreptimeDB 配置为数据源：
 
 ```sql
 CREATE DATABASE greptime_datasource

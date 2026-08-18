@@ -325,9 +325,13 @@ objectStorage:
     endpoint: ""
 ```
 
-#### 使用 AWS EKS Pod Identity 访问 S3
+<AnchorAlias id="使用-aws-eks-pod-identity-访问-s3" />
 
-除了提供静态访问密钥外，你还可以使用 [AWS EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html)（IAM Roles for Service Accounts）来授予 GreptimeDB 访问 S3 的权限。这种方式更加安全，因为无需管理长期有效的凭证。
+#### 使用 IAM Roles for Service Accounts（IRSA）访问 S3
+
+除了提供静态访问密钥外，你还可以使用 [IAM Roles for Service Accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html)（IRSA）来授予 GreptimeDB 访问 S3 的权限。这种方式更加安全，因为无需管理长期有效的凭证。
+
+IRSA 和 [EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) 是两种不同的机制。下面的配置是 IRSA：通过给 Service Account 加上 role ARN 注解来授权。Pod Identity 则需要建立 pod identity association，不使用这个注解。
 
 首先，为 datanode 的 Service Account 配置 IAM 角色注解。只有 datanode 会读写 S3：
 
@@ -357,7 +361,7 @@ objectStorage:
 ```
 
 :::note
-使用 EKS Pod Identity 时，请完全省略 `objectStorage.credentials` 部分。datanode Pod 将通过与 Service Account 关联的 IAM 角色自动获取临时凭证。
+使用 IRSA 时，请完全省略 `objectStorage.credentials` 部分。datanode Pod 将通过与 Service Account 关联的 IAM 角色自动获取临时凭证。
 :::
 
 #### Google Cloud Storage
