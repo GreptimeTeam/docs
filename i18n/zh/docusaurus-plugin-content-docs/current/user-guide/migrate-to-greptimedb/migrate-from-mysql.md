@@ -49,7 +49,7 @@ SQL 中请考虑以下几点：
 ### 双写 GreptimeDB 和 MySQL
 
 双写让两套系统并行运行，便于切流前做对比。它并不是跨两个数据库的事务：同一次写入可能一边成功、一边失败，
-因此需要记录失败的写入、对两个目标分别重试，并在切换前完成对账。重放前请先确认该行确实缺失——[append-only 表](/user-guide/manage-data/overview.md#通过创建带有-append_mode-选项的表来避免更新数据)会保留重复行，不会合并。通过使用 MySQL 的客户端库（JDBC + 某个 MySQL
+因此需要记录失败的写入、对两个目标分别重试，并在切换前完成对账。重试前先确认数据确实没有落库——[append-only 表](/user-guide/manage-data/overview.md#通过创建带有-append_mode-选项的表来避免更新数据)保留重复行，不做合并。通过使用 MySQL 的客户端库（JDBC + 某个 MySQL
 驱动），你可以建立两个客户端实例 —— 一个用于 GreptimeDB，另一个用于 MySQL。有关如何使用 SQL 将数据写入
 GreptimeDB，请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md)部分。
 
