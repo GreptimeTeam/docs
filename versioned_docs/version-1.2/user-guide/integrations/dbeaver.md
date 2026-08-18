@@ -5,7 +5,7 @@ description: Guide to connecting GreptimeDB to DBeaver using MySQL database driv
 
 # DBeaver
 
-[DBeaver](https://dbeaver.io/) is a free, open-source, and cross-platform database tool that supports all popular databases. It is a popular choice among developers and database administrators for its ease of use and extensive feature set.
+[DBeaver](https://dbeaver.io/) is a free, open-source, cross-platform database tool.
 
 You can use DBeaver to connect to GreptimeDB via MySQL database drivers.
 Click the "New Database Connection" button in the DBeaver toolbar to create a new connection to GreptimeDB.

@@ -9,12 +9,10 @@ This guide describes how to use GreptimeDB's Export and Import tools for databas
 
 For detailed command-line options and advanced configurations, please refer to [Data Export & Import](/reference/command-lines/utilities/data.md).
 
-## Overview
-
 ## Export Operations
 
 ### Full Databases Backup
-Export all databases backup. This operation exports each database into a single directory, including all tables and their data. 
+Export every database into its own directory, including all tables and their data.
 ```bash
 # Export all databases backup
 greptime cli data export \

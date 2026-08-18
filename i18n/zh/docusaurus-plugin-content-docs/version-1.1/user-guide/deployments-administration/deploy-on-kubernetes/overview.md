@@ -5,19 +5,16 @@ description: 在 Kubernetes 上部署 GreptimeDB 的概述，介绍了 GreptimeD
 
 # 在 Kubernetes 上部署 GreptimeDB
 
-GreptimeDB 专为云原生环境而构建，从第一天起就可以在 Kubernetes 上部署。
-你可以在任何云服务提供商上部署 GreptimeDB，包括 AWS、阿里云或谷歌云等。
+GreptimeDB 可以运行在 Kubernetes 上，既可以部署在自有机房，也可以部署在 AWS、阿里云、谷歌云等公有云上。
 
 ## 部署 GreptimeDB 单机版
 
-对于开发、测试或小规模生产用例，你可以在 Kubernetes 上[部署 GreptimeDB 单机实例](deploy-greptimedb-standalone.md)。
-这种方式较为简单，无需管理完整集群的复杂性。
+对于开发、测试或小规模生产用例，你可以在 Kubernetes 上[部署 GreptimeDB 单机实例](deploy-greptimedb-standalone.md)，无需运行完整集群。
 
 ## 部署 GreptimeDB 集群
 
-对于需要高可用性和可扩展性的生产环境，
-你可以使用 GreptimeDB Operator 在 Kubernetes 上[部署 GreptimeDB 集群](deploy-greptimedb-cluster.md)以建立分布式 GreptimeDB 集群，
-水平扩展并高效处理大量数据。
+对于需要高可用和水平扩展的生产环境，
+使用 GreptimeDB Operator 在 Kubernetes 上[部署 GreptimeDB 集群](deploy-greptimedb-cluster.md)。
 
 ## 配置
 
@@ -27,19 +24,18 @@ GreptimeDB 专为云原生环境而构建，从第一天起就可以在 Kubernet
 
 ## 管理 GreptimeDB Operator
 
-基于 GreptimeDB Operator，你可以很轻松地部署、升级和管理 GreptimeDB 集群和单机实例。
-无论是私有还是公有云部署，GreptimeDB Operator 都将快速部署和扩容 GreptimeDB 变得简单易行。
+GreptimeDB Operator 在 Kubernetes 上自动完成 GreptimeDB 实例的部署、初始化和日常管理。
 了解如何[管理 GreptimeDB Operator](./greptimedb-operator-management.md)，
 包括安装和升级。
 
 ## 进阶部署
 
-在熟悉了 [GreptimeDB 的架构和组件](/user-guide/concepts/architecture.md)之后，你可以进一步探索高级部署场景：
+了解 [GreptimeDB 的架构和组件](/user-guide/concepts/architecture.md)之后，可以继续下面这些部署场景：
 
 - [部署 GreptimeDB 基础设施测试](deploy-greptimedb-infra-test.md)： 安装 GreptimeDB 的前置基础设施测试检查。
 - [部署 MinIO 集群](deploy-minio.md)：学习如何部署，配置和监控 MinIO 集群。
 - [部署 Kafka 集群](deploy-kafka.md)：学习如何部署，配置和监控 Kafka 集群。
 - [部署带有 Remote WAL 的 GreptimeDB 集群](configure-remote-wal.md)：将 Kafka 配置为 GreptimeDB 集群的远程预写日志 (WAL)，以持久记录每个数据修改并确保不丢失内存缓存的数据。
-- [使用 MySQL/PostgreSQL 作为元数据存储](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#配置-metasrv-后端存储)：集成 MySQL/PostgreSQL 数据库以提供强大的元数据存储功能，增强可靠性和性能。
+- [使用 MySQL/PostgreSQL 作为元数据存储](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#配置-metasrv-后端存储)：用 MySQL 或 PostgreSQL 数据库替代默认后端存储集群元数据。
 - [部署多 Frontend 的 GreptimeDB 集群](configure-frontend-groups.md)：GreptimeDB 集群的 Frontend 组由多个 Frontend 实例组成，以改善负载分配和可用性。
 

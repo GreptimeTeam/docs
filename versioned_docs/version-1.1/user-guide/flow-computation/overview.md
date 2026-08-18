@@ -7,13 +7,11 @@ description: Discover how GreptimeDB's Flow engine enables real-time continuous 
 
 GreptimeDB's Flow engine enables real-time computation on incoming data.
 It is particularly beneficial for Extract-Transform-Load (ETL) processes or for performing continuous aggregations such as sum, average, and other time-window calculations.
-The Flow engine ensures that data is processed incrementally and continuously,
-updating the final results as new data arrives.
-You can think of it as a clever materialized views that know when to update result view table and how to update it with minimal effort.
+Data is processed incrementally, so the result table is updated as new rows arrive instead of being recomputed at query time.
 
 Use cases include:
 
-- Real-time analytics that deliver actionable insights almost instantaneously.
+- Keeping aggregates ready for dashboards and alerts, so queries read the result table instead of scanning raw events.
 - Downsampling data points, such as using average pooling, to reduce the volume of data for storage and analysis.
 
 ## Programming Model
@@ -35,8 +33,7 @@ This process is visually represented in the following image:
 
 ## Quick Start Example
 
-To illustrate the capabilities of GreptimeDB's Flow engine,
-consider the task of calculating user agent statistics from nginx logs.
+As an example, count user agents in nginx logs.
 The source table is `nginx_access_log`,
 and the sink table is `user_agent_statistics`.
 

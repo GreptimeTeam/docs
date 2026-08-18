@@ -12,16 +12,16 @@ you can create custom pipelines to define exactly how your log data should be pa
 
 ## Identify Your Original Log Format
 
-Before creating a custom pipeline, it's essential to understand the format of original log data.
+A custom pipeline is written against a specific log format, so start by determining the format of your original log data.
 If you're using log collectors and aren't sure about the log format,
 there are two ways to examine your logs:
 
 1. **Read the collector official documentation**: Configure your collector to output data to console or file to inspect the log format.
 2. **Use the `greptime_identity` pipeline**: Ingest sample logs directly into GreptimeDB using the built-in `greptime_identity` pipeline.
   The `greptime_identity` pipeline treats the entire text log as a single `message` field,
-  which makes it very convenient to see the raw log content directly.
+  so you can read the raw log content back from the table.
 
-Once understand the log format you want to process,
+Once you know the log format you want to process,
 you can create a custom pipeline.
 This document uses the following Nginx access log entry as an example:
 
@@ -98,7 +98,7 @@ contains `processors` and `transform` sections that work together to structure y
 - **Field Transformation**: Each extracted field is converted to its appropriate data type with specific indexing configurations. Fields like `http_method` retain their default data types when no explicit configuration is provided.
 - **Indexing Strategy**:
   - `ip_address` and `status_code` use inverted indexing as tags for fast filtering
-  - `request_line` and `user_agent` use full-text indexing for optimal text search capabilities
+  - `request_line` and `user_agent` use full-text indexing so they can be searched by keyword
   - `timestamp` serves as the required time index column
 
 For detailed information about pipeline configuration options,

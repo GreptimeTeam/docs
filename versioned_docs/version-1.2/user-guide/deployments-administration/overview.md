@@ -10,8 +10,7 @@ This guide provides an overview of deployment strategies, configuration, monitor
 
 ## GreptimeDB Architecture
 
-Before diving into the deployment and administration of GreptimeDB,
-it's important to understand its [architecture](/user-guide/concepts/architecture.md).
+Start with the [architecture](/user-guide/concepts/architecture.md) to see which components you will deploy and operate.
 
 ## Self-Managed GreptimeDB Deployment
 
@@ -36,11 +35,11 @@ This section outlines the key aspects of deploying and administering GreptimeDB 
 ### Data Management and Performance
 
 - **Data Management:** [Manage your data](/user-guide/deployments-administration/manage-data/overview.md) to prevent data loss, reduce costs, and optimize performance.
-- **Performance Tuning:** Review [performance tuning tips](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md) and learn how to [design your table schema](/user-guide/deployments-administration/performance-tuning/design-table.md) for optimal efficiency.
+- **Performance Tuning:** Review [performance tuning tips](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md) and learn how to [design your table schema](/user-guide/deployments-administration/performance-tuning/design-table.md).
 
 ### Disaster Recovery
 
-- **Disaster Recovery:** Implement [disaster recovery strategies](/user-guide/deployments-administration/disaster-recovery/overview.md) to protect your data and ensure business continuity.
+- **Disaster Recovery:** Implement [disaster recovery strategies](/user-guide/deployments-administration/disaster-recovery/overview.md) to protect your data.
 
 ### Additional Topics
 
