@@ -34,8 +34,8 @@ You can get or set the `next table ID` using Metasrv's HTTP interface at the fol
 
 To safely update the `next table ID`, follow this step-by-step process:
 
-1. **Pause the Procedure Manager** - This rejects new metadata-changing operations, including table creation. See [Prevent Metadata Changes](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md).
-2. **Wait for in-flight procedures to finish** - Pausing only rejects *new* procedures; the ones already running continue. Poll until no procedure is still in progress:
+1. **Block new procedure submissions** - Pause the Procedure Manager. This rejects newly submitted procedures, including table creation. It does not suspend or cancel procedures that were already accepted, and their child procedures keep running. See [Prevent Metadata Changes](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md).
+2. **Wait for in-flight procedures to finish** - Poll until no procedure is still in progress:
 
    ```sql
    SELECT procedure_id, procedure_type, status

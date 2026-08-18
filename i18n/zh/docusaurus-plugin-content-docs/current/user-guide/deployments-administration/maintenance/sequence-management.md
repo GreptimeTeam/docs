@@ -34,8 +34,8 @@ description: 介绍如何维护和更新 GreptimeDB 集群中的资源标识（I
 
 要安全地更新`待分配的表 ID`，请按照以下步骤操作：
 
-1. **暂停 Procedure Manager** - 这会拒绝新的元数据变更操作，包括建表。详见[阻止元数据变更](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md)。
-2. **等待在途 procedure 结束** - 暂停只拒绝**新的** procedure，已经在运行的会继续执行。轮询直到没有仍在进行的 procedure：
+1. **阻止新的 procedure 提交** - 暂停 Procedure Manager。这会拒绝新提交的 procedure，包括建表。它不会挂起或取消已经受理的 procedure，这些 procedure 及其子 procedure 会继续执行。详见[阻止元数据变更](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md)。
+2. **等待在途 procedure 结束** - 轮询直到没有仍在进行的 procedure：
 
    ```sql
    SELECT procedure_id, procedure_type, status
