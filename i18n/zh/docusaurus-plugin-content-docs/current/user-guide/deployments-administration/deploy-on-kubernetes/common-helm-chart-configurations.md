@@ -520,8 +520,8 @@ meta:
 - `mysql.table`: MySQL 表。
 - `mysql.credentials.secretName`: MySQL 凭证 secret 名称。
 - `mysql.credentials.existingSecretName`: MySQL 凭证 secret 名称。如果你希望使用已有的 secret，你需要确保该 secret 包含 `username` 和 `password` 两个 key。
-- `mysql.credentials.username`: MySQL 凭证用户名。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。`username` 将会被存储在 `username` key 中，该 key 的值为 `mysql.credentials.secretName`。
-- `mysql.credentials.password`: MySQL 凭证密码。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。`password` 将会被存储在 `password` key 中，该 key 的值为 `mysql.credentials.secretName`。
+- `mysql.credentials.username`: MySQL 凭证用户名。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。该用户名会写入 `mysql.credentials.secretName` 指定的 Secret 的 `username` key 中。
+- `mysql.credentials.password`: MySQL 凭证密码。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。该密码会写入 `mysql.credentials.secretName` 指定的 Secret 的 `password` key 中。
 
 `meta.backendStorage.postgresql` 的大部分字段与 `meta.backendStorage.mysql` 的相同。例如：
 
@@ -558,8 +558,8 @@ meta:
 - `postgresql.electionLockID`: PostgreSQL 中用于选举的锁 ID。
 - `postgresql.credentials.secretName`: PostgreSQL 凭证 secret 名称。
 - `postgresql.credentials.existingSecretName`: PostgreSQL 凭证 secret 名称。如果你希望使用已有的 secret，你需要确保该 secret 包含 `username` 和 `password` 两个 key。
-- `postgresql.credentials.username`: PostgreSQL 凭证用户名。如果 `postgresql.credentials.existingSecretName` 被设置，该字段将被忽略。`username` 将会被存储在 `username` key 中，该 key 的值为 `postgresql.credentials.secretName`。
-- `postgresql.credentials.password`: PostgreSQL 凭证密码。如果 `postgresql.credentials.existingSecretName` 被设置，该字段将被忽略。`password` 将会被存储在 `password` key 中，该 key 的值为 `postgresql.credentials.secretName`。
+- `postgresql.credentials.username`: PostgreSQL 凭证用户名。如果 `postgresql.credentials.existingSecretName` 被设置，该字段将被忽略。该用户名会写入 `postgresql.credentials.secretName` 指定的 Secret 的 `username` key 中。
+- `postgresql.credentials.password`: PostgreSQL 凭证密码。如果 `postgresql.credentials.existingSecretName` 被设置，该字段将被忽略。该密码会写入 `postgresql.credentials.secretName` 指定的 Secret 的 `password` key 中。
 
 #### 使用 etcd 作为后端存储
 
