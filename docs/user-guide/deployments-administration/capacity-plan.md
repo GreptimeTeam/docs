@@ -7,6 +7,14 @@ description: Provides guidelines for CPU, memory, and storage requirements for G
 
 This guide provides general advice on the CPU, memory, and storage requirements for GreptimeDB.
 
+:::note
+The ratios and sizes on this page are field guidelines drawn from Greptime's own
+testing and deployments. They are not benchmark results and were not produced
+under a published test setup, so they carry no version, hardware, or schema
+qualification. Use them as a starting point for sizing and validate them against
+your own workload.
+:::
+
 GreptimeDB is designed to be lightweight upon startup,
 which allows for the database to be initiated with minimal server resources.
 However, when configuring your server capacity for a production environment,
@@ -42,15 +50,16 @@ For basic workloads, it's recommended to have at least 8 GB of memory, and 32 GB
 
 ## Storage
 
-GreptimeDB features an efficient data compaction mechanism that reduces the original data size to about 1/8 to 1/10 of its initial volume.
-This allows GreptimeDB to store large amounts of data in a significantly smaller space.
+GreptimeDB compresses data on disk. In Greptime's own testing and deployments, stored data has come out at about 1/8 to 1/10 of the raw input size.
+Treat that as an observed range rather than a ratio you can count on: how well data compresses depends on your schema, column types, and how repetitive the values are.
 
 Data can be stored either in a local file system or in cloud storage, such as AWS S3.
 FOr more information on storage options,
 please refer to the [storage configuration](/user-guide/deployments-administration/configuration.md#storage-options) documentation.
 
 Cloud storage is highly recommended for data storage due to its simplicity in managing storage.
-With cloud storage, only about 200GB of local storage space is needed for query-related caches and Write-Ahead Log (WAL).
+With cloud storage, local disk only holds query-related caches and the Write-Ahead Log (WAL), and about 200GB has been enough in Greptime's own deployments.
+Size it from your own cache configuration and WAL retention instead of treating 200GB as a fixed requirement.
 
 In order to manage the storage costs effectively, 
 it is recommended setting a [retention policy](/user-guide/concepts/features-that-you-concern.md#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
@@ -66,7 +75,6 @@ here's an example of how you might allocate resources:
 - Memory: 32 GB
 - Storage: 200 GB
 
-Such an allocation is designed to optimize performance,
-ensuring smooth data ingestion and query processing without system overload.
-However, remember these are just guidelines,
-and actual requirements may vary based on specific workload characteristics and performance expectations.
+This is a starting point, not a validated configuration for that load.
+Whether it holds depends on your schema, average row width, index and TTL settings, and the time range and concurrency of the queries behind the 200 QPS figure.
+Run your own workload against it and watch ingestion lag, query latency, and memory before committing to these numbers.
