@@ -43,7 +43,7 @@ To safely update the `next table ID`, follow this step-by-step process:
    WHERE status IN ('Running', 'Retrying', 'PrepareRollback', 'RollingBack');
    ```
 
-   Proceed only when this returns no rows. If procedures keep running past the window you allotted, stop here and investigate instead of changing the sequence. A `Failed` or `Poisoned` row means a procedure stopped in an unclean state; resolve it before continuing. See [PROCEDURE_INFO](/reference/sql/information-schema/procedure-info.md).
+   Proceed only when this returns no rows. Terminal states such as `Done`, `Failed` and `Poisoned` are not included: their runners have already exited and released their locks, and the rows stay visible until background cleanup removes them. If procedures keep running past the window you allotted, stop here and investigate instead of changing the sequence. See [PROCEDURE_INFO](/reference/sql/information-schema/procedure-info.md).
 3. **Enable cluster recovery mode** - Setting the `next table ID` is only allowed in recovery mode. See [Cluster Recovery Mode](/user-guide/deployments-administration/maintenance/recovery-mode.md) for more details.
 4. **Set the next table ID** - Use the HTTP interface to set the `next table ID`.
 5. **Restart metasrv nodes** - This ensures the new `next table ID` is properly applied. After the restart, confirm that recovery mode is still enabled and that the Procedure Manager is still paused, then verify the new `next table ID`.

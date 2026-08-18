@@ -43,7 +43,7 @@ description: 介绍如何维护和更新 GreptimeDB 集群中的资源标识（I
    WHERE status IN ('Running', 'Retrying', 'PrepareRollback', 'RollingBack');
    ```
 
-   只有该查询返回空结果时才能继续。如果超过预期等待时间仍有 procedure 在运行，请停止操作并排查原因，不要继续修改 sequence。出现 `Failed` 或 `Poisoned` 表示 procedure 以非正常状态终止，需先处理干净再继续。参见 [PROCEDURE_INFO](/reference/sql/information-schema/procedure-info.md)。
+   只有该查询返回空结果时才能继续。`Done`、`Failed`、`Poisoned` 等终态不在过滤条件内：这些 procedure 的执行已经退出并释放了锁，对应的行会一直保留到后台清理为止。如果超过预期等待时间仍有 procedure 在运行，请停止操作并排查原因，不要继续修改 sequence。参见 [PROCEDURE_INFO](/reference/sql/information-schema/procedure-info.md)。
 3. **启用集群恢复模式** - 设置`待分配的表 ID`只允许在恢复模式下进行。详情请参阅[集群恢复模式](/user-guide/deployments-administration/maintenance/recovery-mode.md)。
 4. **设置待分配的表 ID** - 通过 HTTP 接口设置`待分配的表 ID`。
 5. **重启 metasrv 节点** - 这确保新的`待分配的表 ID`被正确设置。重启后先确认恢复模式仍然开启、Procedure Manager 仍处于暂停状态，再验证新的`待分配的表 ID`。

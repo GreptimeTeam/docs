@@ -393,11 +393,11 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 |         | sas_token         | 字符串 | 共享访问签名                                        |
 | Gcs     |                   |        | Google Cloud Storage 存储选项，当 type="Gcs" 时有效 |
 |         | name            | 字符串 |  存储提供商名字，默认为 `Gcs`               |
-|         | root              | 字符串 | Gcs 桶中的根路径                                    |
-|         | bucket            | 字符串 | Gcs 桶名称                                          |
-|         | scope             | 字符串 | Gcs 权限                                            |
-|         | credential_path   | 字符串 | Gcs 访问证书                                        |
-|         | endpoint          | 字符串 | GSC 的 API 端点                                     |
+|         | root              | 字符串 | GCS 桶中的根路径                                    |
+|         | bucket            | 字符串 | GCS 桶名称                                          |
+|         | scope             | 字符串 | GCS 权限                                            |
+|         | credential_path   | 字符串 | GCS 访问证书                                        |
+|         | endpoint          | 字符串 | GCS 的 API 端点                                     |
 
 文件存储配置范例：
 
