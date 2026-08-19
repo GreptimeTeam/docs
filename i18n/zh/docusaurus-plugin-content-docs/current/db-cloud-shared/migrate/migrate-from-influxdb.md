@@ -156,7 +156,7 @@ max_over_time(monitor{__field__="cpu"}[1h])
 
 ![Double write to GreptimeDB and InfluxDB](/migrate-influxdb-to-greptimedb.drawio.svg)
 
-1. 同时将数据写入 GreptimeDB 和 InfluxDB，以避免迁移过程中的数据丢失。
+1. 同时将数据写入 GreptimeDB 和 InfluxDB，让两套系统在迁移期间并行运行。
 2. 从 InfluxDB 导出所有历史数据，并将数据导入 GreptimeDB。
 3. 验证表结构、行数、时间范围和关键查询结果。
 4. 将读流量逐步切换到 GreptimeDB。
@@ -164,7 +164,8 @@ max_over_time(monitor{__field__="cpu"}[1h])
 
 ### 双写 GreptimeDB 和 InfluxDB
 
-将数据双写 GreptimeDB 和 InfluxDB 是迁移过程中防止数据丢失的有效策略。
+双写让两套系统并行运行，便于切流前做对比。它并不是跨两个数据库的事务：同一次写入可能一边成功、一边失败，
+因此需要记录失败的写入、对两个目标分别重试，并在切换前完成对账。重试前先确认数据确实没有落库——[append-only 表](/user-guide/manage-data/overview.md#通过创建带有-append_mode-选项的表来避免更新数据)保留重复行，不做合并。
 当使用 InfluxDB 的[客户端库](#client-libraries)时，你可以建立两个客户端实例，一个用于 GreptimeDB，另一个用于 InfluxDB。
 有关如何使用 InfluxDB 行协议将数据写入 GreptimeDB 的操作，请参考[写入数据](#write-data)部分。
 
@@ -196,7 +197,7 @@ influx_inspect export \
 - `-database` 指定要导出的数据库。
 - `-end` 指定要导出的数据的结束时间。
 必须是[RFC3339 格式](https://datatracker.ietf.org/doc/html/rfc3339)，例如 `2024-01-01T00:00:00Z`。
-你可以使用同时写入 GreptimeDB 和 InfluxDB 时的时间戳作为结束时间。
+以双写开始的时刻为准。该参数是闭区间：时间戳正好等于它的数据点也会被导出，因此请传入略早于该时刻的时间，避免把双写已经送达的点再导一遍。
 - `-lponly` 指定只导出行协议数据。
 - `-datadir` 指定数据目录的路径，请见[InfluxDB 数据设置](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings)中的配置。
 - `-waldir` 指定 WAL 目录的路径，请见[InfluxDB 数据设置](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings)中的配置。
@@ -233,7 +234,7 @@ influxd inspect export-lp \
 - `--engine-path` 指定引擎目录的路径，请见[InfluxDB 数据设置](https://docs.influxdata.com/influxdb/v2.0/reference/config-options/#engine-path)中的配置。
 - `--end` 指定要导出的数据的结束时间。
 必须是[RFC3339 格式](https://datatracker.ietf.org/doc/html/rfc3339)，例如 `2024-01-01T00:00:00Z`。
-你可以使用同时写入 GreptimeDB 和 InfluxDB 时的时间戳作为结束时间。
+以双写开始的时刻为准。该参数是闭区间：时间戳正好等于它的数据点也会被导出，因此请传入略早于该时刻的时间，避免把双写已经送达的点再导一遍。
 - `--output-path` 指定输出目录。
 
 命令行的执行结果类似如下：

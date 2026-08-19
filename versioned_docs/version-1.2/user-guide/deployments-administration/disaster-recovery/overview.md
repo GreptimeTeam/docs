@@ -68,7 +68,11 @@ A good start is to deploy GreptimeDB Standalone into an IaaS platform that has a
 But if running the Standalone with remote WAL and object storage, there is a better DR solution:
 ![DR-Standalone](/DR-Standalone.png)
 
-Write the WAL to the Kafka cluster and store the data in object storage, so the database itself is stateless. In the event of a disaster affecting the standalone database, you can restore it using the remote WAL and object storage. This solution can achieve **RPO=0** and **RTO in minutes**.
+Write the WAL to the Kafka cluster and store the data in object storage, so that the ingested data no longer depends on the node's local disk.
+
+The node is not fully stateless, though: a standalone instance keeps its metadata — catalogs, schemas and table definitions — in a local key-value store under `<data_home>/metadata` (see [Storage Location](/user-guide/concepts/storage-location.md)). Kafka and object storage cannot rebuild it. Losing the host together with its disk means losing that metadata unless you have backed it up separately, so include it in the plan with [Metadata Export & Import](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md).
+
+**RPO=0** and an **RTO in minutes** are the design targets of this topology. They hold as long as the Kafka cluster and the object storage both survive the failure you are planning for, the WAL covering unflushed writes is still present, and the metadata can be restored. Verify them with a failure drill against your own deployment.
 
 ### DR solution based on Active-Active Failover
 
@@ -96,7 +100,13 @@ For medium-to-large scale scenarios requiring zero RPO, this solution is highly 
 If Region 1 becomes completely unavailable due to a disaster, the table regions within it will be opened and recovered in the other regions.
 In the event that Region 1 becomes completely unavailable due to a disaster, the table regions within it will be opened and recovered in the other regions. Region 3 serves as a replica to adhere to the majority protocol of Metasrv.
 
-This solution provides region-level error tolerance, scalable write capability, zero RPO, and minute-level RTO or even lower. For more information about this solution, see [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md).
+This solution targets region-level fault tolerance, scalable write capability, zero RPO, and a minute-level RTO or lower. Reaching those numbers depends on the whole dependency chain, not on the cluster layout alone:
+
+- Region Failover is **disabled by default** and must be enabled explicitly.
+- Kafka, the object storage, the metadata backend and the traffic entry point all have to span the failure domain you are protecting against. Metasrv running in three regions does not replicate an external MySQL or PostgreSQL metadata backend for you.
+- The automatic Datanode selector picks targets by round-robin, lease or load. It is not an availability-zone-aware placement policy, so surviving regions need enough healthy capacity to take over.
+
+Confirm the resulting RPO and RTO with an end-to-end failure drill. For more information about this solution, see [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md).
 
 ### DR solution based on BR
 
@@ -110,7 +120,7 @@ Read [Backup & restore data](./back-up-&-restore-data.md) for details.
 
 ### Solution Comparison
 
-By comparing these DR solutions, you can decide on the final option based on their specific scenarios, requirements, and cost.
+By comparing these DR solutions, you can decide on the final option based on their specific scenarios, requirements, and cost. The RPO and RTO columns are the design targets of each topology under the conditions described above, not values guaranteed for every deployment; confirm them with a failure drill.
 
 
 |     DR solution | Error Tolerance Objective |  RPO | RTO | TCO | Scenarios | Remote WAL & Object Storage | Notes |

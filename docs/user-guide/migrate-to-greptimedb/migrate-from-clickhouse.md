@@ -173,21 +173,27 @@ CREATE TABLE traces (
 
 ## Dual-write Strategy for Safe Migration
 
-During the migration process, to avoid data loss or inconsistent writes, adopt a dual-write approach:
-- The application should write to both ClickHouse and GreptimeDB simultaneously, running the two systems in parallel.
-- Validate and compare data using logs and checks to ensure data consistency. Once the data has been fully validated, you can switch fully over.
+During the migration, have the application write to both ClickHouse and GreptimeDB so the two systems run in parallel and you can compare them before cutting over.
+
+Dual-write is not a transaction across the two databases. Each write can succeed on one side and fail on the other, which leaves a gap or a duplicate rather than an identical copy. Plan for that:
+
+- Record every failed write with enough context to replay it, and retry each destination independently. Check that the row is actually missing before replaying it: an [append-only table](/user-guide/manage-data/overview.md#avoid-updating-data-by-creating-table-with-append_mode-option) keeps duplicate rows instead of merging them by primary key and time index, so retrying a write that did land leaves a second copy.
+- Fix a cutoff — a timestamp or a source offset — that separates what the historical export covers from what dual-write covers, so the two do not overlap or leave a hole between them.
+- Reconcile before switching over: compare row counts and aggregates per time window rather than assuming the two sides match.
 
 ---
 
 ## Exporting and Importing Historical Data
 
-1. **Enable dual-write before migration**
-The application should write to both ClickHouse and GreptimeDB. Check for data consistency to reduce the risk of missing data.
+1. **Enable dual-write, then fix a cutoff**
+Start writing to both ClickHouse and GreptimeDB, and note the instant dual-write became live. Use **that same instant** as the cutoff `C` for every export below, so the historical export covers `timestamp < C` and dual-write covers everything from `C` onward.
+
+Do not pick a cutoff later than the moment dual-write started: rows written in between would be delivered by dual-write *and* matched by the export, and would arrive twice unless the destination table deduplicates on its primary key and time index. This split also assumes rows carry a timestamp at or after the moment they are written; late or backfilled data with older timestamps still lands on both sides.
 
 2. **Data export from ClickHouse**
 Use ClickHouse’s native command to export data as CSV, TSV, Parquet, or other formats. For example:
 ```sh
-clickhouse client --query="SELECT * FROM example INTO OUTFILE 'example.csv' FORMAT CSVWithNames"
+clickhouse client --query="SELECT * FROM example WHERE timestamp < '2024-04-26 00:00:00' INTO OUTFILE 'example.csv' FORMAT CSVWithNames"
 ```
 The exported CSV will look like:
 ```csv
