@@ -48,16 +48,16 @@ For basic workloads, it's recommended to have at least 8 GB of memory, and 32 GB
 
 ## Storage
 
-GreptimeDB compresses data on disk. In Greptime's own testing and deployments, stored data has come out at about 1/8 to 1/10 of the raw input size.
-Treat that as an observed range rather than a ratio you can count on: how well data compresses depends on your schema, column types, and how repetitive the values are.
+GreptimeDB compresses data on disk, and stored data typically comes out at about 1/8 to 1/10 of the raw input size.
+The actual ratio depends on your schema, column types, and how repetitive the values are.
 
 Data can be stored either in a local file system or in cloud storage, such as AWS S3.
-FOr more information on storage options,
+For more information on storage options,
 please refer to the [storage configuration](/user-guide/deployments-administration/configuration.md#storage-options) documentation.
 
 Cloud storage is highly recommended for data storage due to its simplicity in managing storage.
-With cloud storage, local disk is used for query-related caches and the Write-Ahead Log (WAL), and about 200GB has been enough in Greptime's own deployments.
-Size it from your own cache configuration and WAL retention instead of treating 200GB as a fixed requirement.
+With cloud storage, local disk is used for query-related caches and the Write-Ahead Log (WAL), and about 200GB is usually enough.
+Size it from your own cache configuration and WAL retention rather than treating 200GB as a fixed requirement.
 
 In order to manage the storage costs effectively, 
 it is recommended setting a [retention policy](/user-guide/concepts/features-that-you-concern.md#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
@@ -73,6 +73,5 @@ here's an example of how you might allocate resources:
 - Memory: 32 GB
 - Storage: 200 GB
 
-This is a starting point, not a validated configuration for that load.
-Whether it holds depends on your schema, average row width, index and TTL settings, and the time range and concurrency of the queries behind the 200 QPS figure.
-Run your own workload against it and watch ingestion lag, query latency, and memory before committing to these numbers.
+Whether this allocation holds depends on your schema, average row width, index and TTL settings, and the time range and concurrency of the queries behind the 200 QPS figure.
+Watch ingestion lag, query latency, and memory when you run your own workload against it.

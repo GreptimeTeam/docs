@@ -185,10 +185,9 @@ rules](/user-guide/deployments-administration/manage-data/table-sharding.md#part
 trace table on the `trace_id` column based on the first character of it. This is
 optimised for retrieve trace spans by the trace id.
 
-The partition rule introduces 16 partitions for the table, which is a reasonable
-starting point for a 3-5 datanode setup. It is a default rather than a tuned
-value: ingestion rate, query concurrency, and total region count across the
-cluster may call for a different partition count.
+The partition rule introduces 16 partitions for the table, a reasonable starting
+point for a 3-5 datanode setup. Ingestion rate, query concurrency, and total
+region count across the cluster may call for a different partition count.
 
 To customize the partition rule, you can:
 
