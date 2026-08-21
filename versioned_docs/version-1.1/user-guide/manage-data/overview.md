@@ -13,7 +13,6 @@ Updates can be efficiently performed by inserting new data.
 If rows of data have the same tags and time index,
 the old data will be replaced with the new data.
 This means that you can only update columns with a field type.
-To update data, simply insert new data with the same tag and time index as the existing data.
 
 For more information about column types, please refer to the [Data Model](../concepts/data-model.md).
 

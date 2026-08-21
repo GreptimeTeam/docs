@@ -12,13 +12,13 @@ GreptimeDB 能够将日志自动解析和转换为多列的结构化数据，
 
 ## 识别你的原始日志格式
 
-在创建自定义 pipeline 之前，了解原始日志数据的格式至关重要。
+自定义 pipeline 是针对具体日志格式编写的，因此先确认原始日志数据的格式。
 如果你正在使用日志收集器且不确定日志格式，
 有两种方法可以检查你的日志：
 
 1. **阅读收集器的官方文档**：配置你的收集器将数据输出到控制台或文件以检查日志格式。
 2. **使用 `greptime_identity` pipeline**：使用内置的 `greptime_identity` pipeline 将示例日志直接写入到 GreptimeDB 中。
-  `greptime_identity` pipeline 将整个文本日志视为单个 `message` 字段，方便你直接看到原始日志的内容。
+  `greptime_identity` pipeline 将整个文本日志视为单个 `message` 字段，可以从表里读回原始日志内容。
 
 一旦了解了要处理的日志格式，
 你就可以创建自定义 pipeline。
@@ -99,7 +99,7 @@ transform:
 - **字段转换**：每个提取的字段都转换为适当的数据类型并根据需要配置相应的索引。像 `http_method` 这样的字段在没有提供显式配置时保留其默认数据类型。
 - **索引策略**：
   - `ip_address` 和 `status_code` 使用倒排索引作为标签进行快速过滤
-  - `request_line` 和 `user_agent` 使用全文索引以获得最佳文本搜索能力
+  - `request_line` 和 `user_agent` 使用全文索引，可以按关键词检索
   - `timestamp` 是必需的时间索引列
 
 有关 pipeline 配置选项的详细信息，
