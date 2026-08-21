@@ -126,10 +126,10 @@ When creating or modifying a full-text index, you can specify the following opti
 GreptimeDB provides two full-text index backends for efficient log searching:
 
 :::note
-The index sizes and performance multipliers below come from Greptime's own
-testing, with no published test setup. Use them to compare the two backends
-against each other, not as absolute figures for your data: selectivity, term
-distribution, and cache state all move these numbers.
+The index sizes and performance multipliers below come from Greptime's testing.
+Use them to compare the two backends against each other, not as absolute figures
+for your data: selectivity, term distribution, and cache state all move these
+numbers.
 :::
 
 1. **Bloom Backend**

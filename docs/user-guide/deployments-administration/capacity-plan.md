@@ -8,9 +8,9 @@ description: Provides guidelines for CPU, memory, and storage requirements for G
 This guide provides general advice on the CPU, memory, and storage requirements for GreptimeDB.
 
 :::note
-The ratios and sizes on this page come from Greptime's own testing and
-deployments, not from a published benchmark. Use them as a starting point for
-sizing and validate them against your own workload.
+The ratios and sizes on this page come from Greptime's testing and deployments.
+Use them as a starting point for sizing and validate them against your own
+workload.
 :::
 
 GreptimeDB is designed to be lightweight upon startup,

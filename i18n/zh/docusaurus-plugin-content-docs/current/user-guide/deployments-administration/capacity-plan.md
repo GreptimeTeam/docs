@@ -8,7 +8,7 @@ description: 提供 GreptimeDB 的 CPU、内存和存储需求的一般建议，
 本指南提供了关于 GreptimeDB 的 CPU、内存和存储需求的一般建议。
 
 :::note
-本页的比例和容量数字来自 Greptime 内部测试和交付经验，没有公开的 benchmark 作为依据。
+本页的比例和容量数字来自 Greptime 的测试和交付经验。
 请把它们当作容量规划的起点，并用自己的负载验证。
 :::
 
