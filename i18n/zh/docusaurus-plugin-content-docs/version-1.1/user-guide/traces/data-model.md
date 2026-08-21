@@ -162,7 +162,8 @@ Trace 表包含了默认的 [分区规
 则](/user-guide/deployments-administration/manage-data/table-sharding.md#partition)，在
 `trace_id` 列上根据首个字符的取值划分区间。
 
-这个规则默认将引入 16 个分区，适合在 3-5 个 datanode 的部署规模下使用。
+这个规则默认将引入 16 个分区，在 3-5 个 datanode 的部署规模下是一个合理的起点。
+写入速率、查询并发以及集群中 region 的总数，都可能要求换一个分区数。
 
 如果数据量和部署规模更大，需要自定义分区规则，可以：
 
