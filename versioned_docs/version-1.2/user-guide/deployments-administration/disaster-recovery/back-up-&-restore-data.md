@@ -122,7 +122,7 @@ greptime cli data import \
 
 ### Specific Database Import
 ```bash
-# The same applies to import tool
+# Import a specific database
 greptime cli data import \
     --addr localhost:4000 \
     --input-dir /tmp/backup/greptimedb \
