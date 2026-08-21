@@ -356,9 +356,9 @@ auth:
       password: "1fa44bbc-5ded-42bd-a3f1-c3621affce63"
       permission: "admin"       
 
-# 审计日志配置
+# 审计日志配置（仅企业版）
 # 审计日志记录在数据库上执行的操作，帮助监控用户活动、检测可疑操作并确保合规。
-# 参见 /enterprise/deployments-administration/monitoring/audit-logging.md
+# 参见 https://docs.greptime.cn/enterprise/deployments-administration/monitoring/audit-logging/
 auditLog:
   # 启用审计日志插件。默认：false。
   enabled: true
