@@ -356,10 +356,10 @@ auth:
       password: "1fa44bbc-5ded-42bd-a3f1-c3621affce63"
       permission: "admin"       
 
-# Audit logging configuration
+# Audit logging configuration(Enterprise GreptimeDB only)
 # Audit logs record operations executed on the database, helping monitor user activity,
 # detect suspicious operations, and ensure compliance.
-# See /enterprise/deployments-administration/monitoring/audit-logging.md
+# See https://docs.greptime.com/enterprise/deployments-administration/monitoring/audit-logging/
 auditLog:
   # Enable the audit log plugin. Default: false.
   enabled: true
