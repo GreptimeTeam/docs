@@ -5,7 +5,7 @@ description: 将 GreptimeDB 与 Coroot 集成。
 
 # Coroot
 
-Coroot 是一个开源的 APM 和可观测性工具，
+Coroot 是一个开源的 APM 和可观测性工具，是 DataDog 和 New Relic 的替代方案，
 覆盖指标、日志、链路追踪、持续性能分析和基于 SLO 的告警。
 
 GreptimeDB 可以配置为 Coroot 中的 Prometheus 数据存储。

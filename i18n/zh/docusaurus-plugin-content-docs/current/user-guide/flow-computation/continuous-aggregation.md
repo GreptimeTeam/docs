@@ -5,7 +5,7 @@ description: 持续聚合是处理时间序列数据以提供实时洞察的关�
 
 # 持续聚合
 
-Flow 引擎按时间窗口维护总和、平均值、计数等聚合结果，新数据到达时更新 sink 表。查询直接读 sink 表，不必扫描原始数据流。
+Flow 引擎按时间窗口维护总和、平均值、计数等聚合结果，新数据到达时更新 sink 表。查询直接读 sink 表，不必扫描 source 表。
 
 下面三个例子覆盖了常见的用法：
 
@@ -55,7 +55,7 @@ CREATE TABLE `ngx_statistics` (
 );
 ```
 
-然后创建名为 `ngx_aggregation` 的 flow 任务，包括 `count`、`min`、`max`、`avg` `size` 列的聚合函数，以及大于 550 的所有数据包的大小总和。聚合是在 `access_time` 列的 1 分钟固定窗口中计算的，并且还按 `status` 列分组。某个窗口内 `high_size_count` 或 `max_size` 突然升高，就指向了需要进一步排查的那一分钟。
+然后创建名为 `ngx_aggregation` 的 flow 任务，包括 `count`、`min`、`max`、`avg` `size` 列的聚合函数，以及 `size` 大于 550 的数据包数量。聚合是在 `access_time` 列的 1 分钟固定窗口中计算的，并且还按 `status` 列分组。某个窗口内 `high_size_count` 或 `max_size` 突然升高，就指向了需要进一步排查的那一分钟。
 
 下方 SQL 语句中的 `EXPIRE AFTER '6h'` 参数确保 flow 计算仅使用过去 6 小时内的源数据。对于 sink 表中超过 6 小时的历史数据，本 flow 不会对其进行修改。有关`EXPIRE AFTER`的详细信息，请参阅[管理 Flow](manage-flow.md#expire-after)
 

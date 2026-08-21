@@ -5,7 +5,7 @@ description: Overview of deploying GreptimeDB on Kubernetes using the GreptimeDB
 
 # Deploy GreptimeDB on Kubernetes
 
-GreptimeDB runs on Kubernetes, on-premises or on any cloud provider such as AWS, Alibaba Cloud, or Google Cloud.
+GreptimeDB runs on Kubernetes, either on-premises or on a cloud provider such as AWS, Alibaba Cloud, or Google Cloud.
 
 ## Deploy GreptimeDB Standalone
 
@@ -30,7 +30,7 @@ including installation and upgrades.
 
 ## Advanced Deployments
 
-Once you know [the architecture and components of GreptimeDB](/user-guide/concepts/architecture.md), you can move on to these deployment scenarios:
+Once you are familiar with [the architecture and components of GreptimeDB](/user-guide/concepts/architecture.md), you can move on to these deployment scenarios:
 
 - [Deploy GreptimeDB Infrastructure test](deploy-greptimedb-infra-test.md): Prerequisite infrastructure testing for installing GreptimeDB.
 - [Deploy MinIO cluster](deploy-minio.md): Learn how to deploy, configure, and monitor a MinIO cluster.

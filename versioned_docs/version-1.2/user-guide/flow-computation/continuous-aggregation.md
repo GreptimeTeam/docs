@@ -5,7 +5,7 @@ description: Learn how to use GreptimeDB's continuous aggregation for real-time 
 
 # Continuous Aggregation
 
-The Flow engine maintains aggregates such as sums, averages, and counts over time windows, updating the sink table as new rows arrive. Queries then read the sink table instead of scanning the raw stream.
+The Flow engine maintains aggregates such as sums, averages, and counts over time windows, updating the sink table as new rows arrive. Queries then read the sink table instead of scanning the source table.
 
 The three examples below cover the common cases:
 
@@ -57,7 +57,7 @@ CREATE TABLE `ngx_statistics` (
 );
 ```
 
-Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. A spike in `high_size_count` or `max_size` within a single window then points you at the minute to inspect.
+Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the number of packets with a size greater than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. A spike in `high_size_count` or `max_size` within a single window then points you at the minute to inspect.
 
 The `EXPIRE AFTER '6h'` in the following SQL ensures that the flow computation only uses source data from the last 6 hours. Data older than 6 hours in the sink table will not be modified by this flow. For more details, see [manage-flow](manage-flow.md#expire-after).
 

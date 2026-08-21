@@ -5,8 +5,8 @@ description: Integrate GreptimeDB with Coroot.
 
 # Coroot
 
-Coroot is an open-source APM and observability tool covering metrics, logs, traces,
-continuous profiling, and SLO-based alerting.
+Coroot is an open-source APM and observability tool, an alternative to DataDog and New Relic.
+It covers metrics, logs, traces, continuous profiling, and SLO-based alerting.
 
 GreptimeDB can be configured as a Prometheus data sink for Coroot.
 To integrate GreptimeDB with Coroot, navigate to `Settings` in the Coroot Dashboard,
