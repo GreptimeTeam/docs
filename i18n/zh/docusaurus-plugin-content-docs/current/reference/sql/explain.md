@@ -473,7 +473,6 @@ verbose 分区级输出在记录了相关工作时会包含嵌套指标对象。
 但当查询需要有序输出时，下游计划节点可能会增加 sort 算子。
 
 `SeriesScan` 返回按 series 分组的行。它使用与其他扫描器相同的分区级指标结构，
-也可以上报来自 series distributor 分区的 distributor 指标。GreptimeDB 会自动选择
-符合条件的扫描模式，并在 `mode` 字段中显示结果。将
-`region_engine.mito.experimental_series_scan_v2` 设为 `false` 会强制使用
-`legacy` 模式。
+也可以上报来自 series distributor 分区的 distributor 指标。仅当扫描 metric 引擎物理
+region 且 `region_engine.mito.experimental_series_scan_v2` 已启用时，
+`SeriesScan` 才使用 `two_phase` 模式；其他情况显示 `legacy`。

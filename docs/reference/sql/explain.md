@@ -486,7 +486,7 @@ sort operators when a query needs ordered output.
 
 `SeriesScan` returns rows grouped by series. It uses the same per-partition
 metric structure as the other scanners and can also report distributor metrics
-from the series distributor partition. GreptimeDB automatically selects an
-eligible scan mode and reports the result in the `mode` field. Setting
-`region_engine.mito.experimental_series_scan_v2` to `false` forces `legacy`
-mode.
+from the series distributor partition. It uses `two_phase` only for scans of
+metric engine physical regions when
+`region_engine.mito.experimental_series_scan_v2` is enabled. Other
+`SeriesScan` nodes report `legacy`.

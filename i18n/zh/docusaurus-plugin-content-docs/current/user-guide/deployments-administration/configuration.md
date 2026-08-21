@@ -656,7 +656,7 @@ fork_dictionary_bytes = "1GiB"
 | `min_compaction_interval`           | 字符串 | `0m`          | 两次 compaction 之间的最小时间间隔。设为 "0m"（默认）允许 compactions 立即运行，无限制。                              |
 | `schedule_compaction_after_edit`    | 布尔值 | `true`        | 是否允许在成功的 region edit 之后调度 compaction。<br/>设为 `true` 是在 region edit 后调度 compaction 的必要但不充分条件，`min_compaction_interval` 等其他约束仍可能阻止 compaction 被调度。<br/>设为 `false` 则保证 region edit 后不会调度 compaction。 |
 | `default_flat_format`                | 布尔值 | `true`        | 是否启用 Flat 格式作为默认 SST 格式。                                                                                |
-| `experimental_series_scan_v2`       | 布尔值 | `true`        | 是否为符合条件的 Metric Engine series scan 启用实验性的 two-phase 模式。设为 `false` 时使用 legacy 模式。            |
+| `experimental_series_scan_v2`       | 布尔值 | `true`        | 是否为 metric 引擎物理 region 的 series scan 启用实验性的 two-phase 模式。设为 `false` 时使用 legacy 模式，其他 series scan 也使用 legacy 模式。 |
 | `scan_parallelism`                       | 整数   | `0`           | （已弃用，请使用 `max_concurrent_scan_files`）旧版扫描并发度选项。                                                |
 | `index` | -- | -- | Mito 引擎中索引的选项。 |
 | `index.aux_path` | 字符串 | `""` | 文件系统中索引的辅助目录路径，用于存储创建索引的中间文件和搜索索引的暂存文件，默认为 `{data_home}/index_intermediate`。为了向后兼容，该目录的默认名称为 `index_intermediate`。此路径包含两个子目录：- `__intm`: 用于存储创建索引时使用的中间文件。- `staging`: 用于存储搜索索引时使用的暂存文件。 |
