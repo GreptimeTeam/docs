@@ -86,8 +86,10 @@ greptime cli data export \
 
 ## 导入操作
 
-### 完整数据库备份
-导入所有数据库备份。
+<AnchorAlias id="完整数据库备份-1" />
+
+### 完整数据库导入
+从 `greptime cli data export` 生成的备份目录导入所有数据库。
 ```bash
 # 导入所有数据库
 greptime cli data import \
@@ -114,7 +116,9 @@ greptime cli data import \
     --target schema
 ```
 
-### 指定数据库备份
+<AnchorAlias id="指定数据库备份-1" />
+
+### 指定数据库导入
 ```bash
 # 导入指定数据库
 greptime cli data import \

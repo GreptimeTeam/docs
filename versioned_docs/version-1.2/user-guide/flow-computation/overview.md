@@ -34,10 +34,10 @@ This process is visually represented in the following image:
 ## Quick Start Example
 
 As an example, count user agents in nginx logs.
-The source table is `nginx_access_log`,
+The source table is `ngx_http_log`,
 and the sink table is `user_agent_statistics`.
 
-First, create the source table `nginx_access_log`.
+First, create the source table `ngx_http_log`.
 To optimize performance for counting the `user_agent` field,
 specify it as a `TAG` column type using the `PRIMARY KEY` keyword.
 

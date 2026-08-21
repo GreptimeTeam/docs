@@ -34,10 +34,10 @@ source 表和 sink 表都是 GreptimeDB 中的时间序列表。
 ## 快速入门示例
 
 下面以统计 nginx 日志中的 user_agent 为例。
-source 表是 `nginx_access_log`，
+source 表是 `ngx_http_log`，
 sink 表是 `user_agent_statistics`。
 
-首先，创建 source 表 `nginx_access_log`。
+首先，创建 source 表 `ngx_http_log`。
 为了优化计算 `user_agent` 字段的性能，
 使用 `PRIMARY KEY` 关键字将其指定为 `TAG` 列类型。
 
@@ -86,10 +86,10 @@ GROUP BY
 ```
 
 一旦创建了 Flow，
-Flow 引擎将持续处理 `nginx_access_log` 表中的数据，并使用计算结果更新 `user_agent_statistics` 表。
+Flow 引擎将持续处理 `ngx_http_log` 表中的数据，并使用计算结果更新 `user_agent_statistics` 表。
 
 要观察 Flow 的结果，
-将示例数据插入 `nginx_access_log` 表。
+将示例数据插入 `ngx_http_log` 表。
 
 ```sql
 INSERT INTO ngx_http_log
