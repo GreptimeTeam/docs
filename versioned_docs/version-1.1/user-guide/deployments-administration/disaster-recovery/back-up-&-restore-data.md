@@ -104,7 +104,9 @@ greptime cli data import \
     --auth-basic <username>:<password>
 ```
 
-### Schema-Only Operations
+<AnchorAlias id="schema-only-operations-1" />
+
+### Schema-Only Import
 Import only schemas without data. This operation imports `CREATE TABLE` statements from SQL files, allowing you to restore table structures without the actual data.
 ```bash
 # Import only schemas
