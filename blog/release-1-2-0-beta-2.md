@@ -14,8 +14,6 @@ GreptimeDB v1.2.0-beta.2 is the second beta of the v1.2 line. It focuses on safe
 
 - **One-way `skip_wal` changes with `ALTER TABLE`** — You can enable `skip_wal` on supported tables with `ALTER TABLE`, and the change is validated against the table's leader routes before the irreversible metadata update. The transition is intentionally one-way: changing `skip_wal` back to `false` is rejected ([#8817](https://github.com/GreptimeTeam/greptimedb/pull/8817), [#8838](https://github.com/GreptimeTeam/greptimedb/pull/8838)).
 
-- **Flow runtime statistics** — `information_schema.flow_statistics` and `SHOW FLOW STATUS` expose the supported per-flow runtime state. In distributed Flow, `start_time` and `uptime_seconds` remain unavailable (`NULL`) in this release; full upstream state support is not included. Aggregation and SQL rendering fixes also improve distributed Flow statistics and Flow query execution ([#8392](https://github.com/GreptimeTeam/greptimedb/pull/8392), [#8729](https://github.com/GreptimeTeam/greptimedb/pull/8729)).
-
 - **JSON2 extension and layout preparation** — JSON2 now has a separate extension type, type hints can be pushed down to Parquet reads, and DDL accepts JSON2 storage-layout settings. The v2 physical-layout primitives are prepared, but the v2 physical layout is not activated by this release ([#8745](https://github.com/GreptimeTeam/greptimedb/pull/8745), [#8833](https://github.com/GreptimeTeam/greptimedb/pull/8833), [#8895](https://github.com/GreptimeTeam/greptimedb/pull/8895), [#8901](https://github.com/GreptimeTeam/greptimedb/pull/8901)).
 
 - **Procedure and administration event observability** — Procedure events now carry structured context, lifecycle locators, submission context, and the actor; admin function executions are recorded as events, and the shared query-channel definition keeps event protocol information consistent ([#8734](https://github.com/GreptimeTeam/greptimedb/pull/8734), [#8787](https://github.com/GreptimeTeam/greptimedb/pull/8787), [#8834](https://github.com/GreptimeTeam/greptimedb/pull/8834), [#8835](https://github.com/GreptimeTeam/greptimedb/pull/8835), [#8856](https://github.com/GreptimeTeam/greptimedb/pull/8856), [#8849](https://github.com/GreptimeTeam/greptimedb/pull/8849), [#8825](https://github.com/GreptimeTeam/greptimedb/pull/8825)).
@@ -43,7 +41,7 @@ The bundled GreptimeDB dashboard was updated from **v0.13.10** to **v0.13.13** (
 
 ### 🚀 Features
 
-- Add `information_schema.flow_statistics` and `SHOW FLOW STATUS` for Flow runtime observability ([#8392](https://github.com/GreptimeTeam/greptimedb/pull/8392)) by [@onepizzateam](https://github.com/onepizzateam).
+- Add `information_schema.flow_statistics` and `SHOW FLOW STATUS` for Flow runtime observability; in distributed Flow, `start_time` and `uptime_seconds` remain unavailable (`NULL`) in this release ([#8392](https://github.com/GreptimeTeam/greptimedb/pull/8392)) by [@onepizzateam](https://github.com/onepizzateam).
 - Safely discard unflushed region data while retaining persisted SST files ([#8600](https://github.com/GreptimeTeam/greptimedb/pull/8600)) by [@evenyag](https://github.com/evenyag).
 - Make the frontend heartbeat extensible and lifecycle-safe ([#8726](https://github.com/GreptimeTeam/greptimedb/pull/8726)) by [@fengjiachun](https://github.com/fengjiachun).
 - Add structured event context to procedure events ([#8734](https://github.com/GreptimeTeam/greptimedb/pull/8734)) by [@WenyXu](https://github.com/WenyXu).
