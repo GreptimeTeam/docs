@@ -264,9 +264,7 @@ ALTER TABLE table_name UNSET 'repartition.column.hint';
 
 使用 `ALTER TABLE` 时，该 hint 必须单独设置或取消，不能和其他 table options 一起修改。
 
-<AnchorAlias id="split-or-merge-partitions" />
-
-### 重分区、拆分与合并
+### 重分区、拆分与合并 {#split-or-merge-partitions}
 
 使用 `PARTITION ON COLUMNS` 可以将未分区的表重分区为多个分区：
 

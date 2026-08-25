@@ -216,7 +216,7 @@ SET FULLTEXT INDEX WITH (
 
 ## 修改索引
 
-你可以随时通过`ALTER TABLE`语句来更改列的索引类型，阅读[文档](/reference/sql/alter.md#alter-table)以获取更多信息。
+你可以随时通过`ALTER TABLE`语句来更改列的索引类型，阅读[文档](/reference/sql/alter#alter-table)以获取更多信息。
 
 ## 最佳实践
 

@@ -229,7 +229,7 @@ Consider using full-text index only when you need advanced text search capabilit
 
 ## Modify indexes
 
-You can always change the index type of columns by the `ALTER TABLE` statement, read the [reference](/reference/sql/alter.md#alter-table) for more info.
+You can always change the index type of columns by the `ALTER TABLE` statement, read the [reference](/reference/sql/alter/#alter-table) for more info.
 
 ## Best Practices
 

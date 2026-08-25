@@ -138,7 +138,7 @@ keep_firing_for: 180
     flownode_id: 0
 ```
 
-关于更多字段说明，参见 [Triggers](/reference/sql/information-schema/triggers.md)。
+关于更多字段说明，参见 [Triggers](/reference/sql/information-schema/triggers)。
 
 #### 查看告警实例
 
@@ -149,7 +149,7 @@ SELECT * FROM information_schema.alerts;
 如果尚未写入数据，将返回空结果。
 
 
-关于更多字段说明，参见 [Alerts](/reference/sql/information-schema/alerts.md)。
+关于更多字段说明，参见 [Alerts](/reference/sql/information-schema/alerts)。
 
 ### 4. 写入数据并观察告警状态
 
@@ -261,6 +261,6 @@ SELECT trigger_id, labels, active_at, fired_at, resolved_at FROM information_sch
 ## 参考资料
 
 - [Trigger 语法](/reference/sql/trigger-syntax.md): 与 `TRIGGER` 相关的 SQL 语句的语法细节
-- [INFORMATION_SCHEMA.TRIGGERS](/reference/sql/information-schema/triggers.md): 关于 `Trigger` 元数据的视图
-- [INFORMATION_SCHEMA.ALERTS](/reference/sql/information-schema/alerts.md): 关于告警实例元数据的视图
+- [INFORMATION_SCHEMA.TRIGGERS](/reference/sql/information-schema/triggers): 关于 `Trigger` 元数据的视图
+- [INFORMATION_SCHEMA.ALERTS](/reference/sql/information-schema/alerts): 关于告警实例元数据的视图
 

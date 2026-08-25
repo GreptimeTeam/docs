@@ -166,7 +166,7 @@ CREATE TABLE traces (
 **Notes:**
 - `service` and `operation` serve as primary key, supporting trace scheduling and aggregate queries by service or operations.
 - `trace_id`, `span_id`, and `parent_span_id` use skip indexes but are not part of the primary key.
-- High-cardinality fields are set as fields for efficient writes. For complex properties like `tags`, [JSON storage](/reference/sql/data-types.md#json-type-experimental) or string is recommended, and they can be expanded using GreptimeDB’s ETL - [Pipeline](/user-guide/logs/use-custom-pipelines.md) if necessary.
+- High-cardinality fields are set as fields for efficient writes. For complex properties like `tags`, [JSON storage](/reference/sql/data-types/#json-type-experimental) or string is recommended, and they can be expanded using GreptimeDB’s ETL - [Pipeline](/user-guide/logs/use-custom-pipelines.md) if necessary.
 - Depending on overall business volume, consider whether to partition traces into multiple tables (such as in massive multi-service environments).
 
 ---
@@ -209,7 +209,7 @@ The exported CSV will look like:
 3. **Data import into GreptimeDB**
 > The table must be created in GreptimeDB before importing data.
 
-GreptimeDB currently supports batch data import via SQL commands or [REST API](/user-guide/protocols/http.md#post-sql-statements). For large datasets, import in batches.
+GreptimeDB currently supports batch data import via SQL commands or [REST API](/reference/http-endpoints.md#protocol-endpoints). For large datasets, import in batches.
 Use the [`COPY FROM` command](/reference/sql/copy.md#copy-from) to import:
 ```sql
   COPY example FROM "/path/to/example.csv" WITH (FORMAT = 'CSV');

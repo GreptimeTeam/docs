@@ -265,9 +265,7 @@ The hint only records metadata for future Auto Repartition. It does not trigger 
 
 When using `ALTER TABLE`, the hint must be set or unset separately from other table options.
 
-<AnchorAlias id="split-or-merge-partitions" />
-
-### Repartition, split, or merge partitions
+### Repartition, split, or merge partitions {#split-or-merge-partitions}
 
 Use `PARTITION ON COLUMNS` to repartition an unpartitioned table into multiple partitions:
 
