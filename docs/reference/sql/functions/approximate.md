@@ -128,7 +128,7 @@ This following flowchart illustrates above usage of the HyperLogLog functions. F
 
 ## Approximate Quantile (UDDSketch)
 
-Three functions are provided for approximate quantile calculation using the [UDDSketch](https://arxiv.org/abs/2004.08604) algorithm.
+Four functions are provided for approximate quantile calculation using the [UDDSketch](https://arxiv.org/abs/2004.08604) algorithm.
 
 :::warning
 Notice that the UDDSketch algorithm is designed to provide approximate quantiles with a tunable error rate, which allows for efficient memory usage and fast calculations. The results may not be exact but are usually very close to the actual quantiles.
@@ -165,6 +165,21 @@ The `uddsketch_calc` function is used to calculate the approximate quantile from
 
 see [UDDSketch Full Usage Example](#uddsketch-full-usage-example) for a full example of how to use these functions in combination to calculate approximate quantiles.
 
+### `uddsketch_rank`
+
+The `uddsketch_rank` scalar function estimates the quantile rank of a value in a UDDSketch state. It has the following signature:
+
+```sql
+uddsketch_rank(value, udd_state)
+```
+
+- `value` is the `DOUBLE` value whose rank you want to estimate.
+- `udd_state` is the binary UDDSketch state created by `uddsketch_state` or merged by `uddsketch_merge`.
+
+The function returns a `DOUBLE` between 0 and 1. A result of 0 means the value is below all values represented by the sketch, while 1 means it is above all represented values. For a value that falls in a sketch bucket, the estimated rank counts half of that bucket.
+
+Both current and legacy UDDSketch state encodings are supported. The function returns `NULL` when either argument is `NULL`, the state is empty or invalid, or the value is invalid, such as `NaN`.
+
 ### How to determine `bucket_num` and `error_rate`
 
 The `bucket_num` parameter sets the maximum number of internal containers the sketch can use, directly controlling its memory footprint. Think of it as the physical storage capacity for tracking different value ranges. A larger `bucket_num` allows the sketch to accurately represent a wider dynamic range of data (i.e. a larger ratio between the maximum and minimum values). If this limit is too small for your data, the sketch will be forced to merge very high or low values, which degrades its accuracy. A recommended value for `bucket_num` is 128, which provides a good balance between accuracy and memory usage for most use cases. 
@@ -174,7 +189,7 @@ The `error_rate` defines the desired precision for your quantile calculations. I
 These two parameters create a direct trade-off. To achieve the high precision promised by a small `error_rate`, the sketch needs a sufficient `bucket_num`, especially for data that spans a wide range. `bucket_num` acts as the physical limit on accuracy. If your `bucket_num` is restricted by memory constraints, setting the `error_rate` to an extremely small value will not improve precision because the limit imposed by the available buckets.
 
 ### UDDSketch Full Usage Example
-This example demonstrates how to use three `uddsketch` functions describe above to calculate the approximate quantile of a set of values.
+This example demonstrates how to use the four `uddsketch` functions described above to calculate approximate quantiles and ranks for a set of values.
 
 First create the base table `percentile_base` for store the raw data, and the `percentile_5s` table for storing the UDDSketch states within a 5-second time window. notice the `percentile_state` column is of type `BINARY`, which will store the UDDSketch state in binary format.
 ```sql
@@ -219,6 +234,26 @@ GROUP BY
     time_window;
 -- results will be similar to this:
 -- Query OK, 3 rows affected (0.05 sec)
+```
+
+Use `uddsketch_rank` to estimate where specific values fall in the distribution. The following query shows ranks for values below the minimum, in the middle, and above the maximum:
+
+```sql
+SELECT
+    ROUND(uddsketch_rank(5, `percentile_state`), 2) AS below_min_rank,
+    ROUND(uddsketch_rank(55, `percentile_state`), 2) AS middle_rank,
+    ROUND(uddsketch_rank(110, `percentile_state`), 2) AS above_max_rank
+FROM (
+    SELECT uddsketch_state(128, 0.01, `value`) AS percentile_state
+    FROM percentile_base
+);
+
+-- results as follows:
+-- +----------------+-------------+----------------+
+-- | below_min_rank | middle_rank | above_max_rank |
+-- +----------------+-------------+----------------+
+-- | 0.0            | 0.5         | 1.0            |
+-- +----------------+-------------+----------------+
 ```
 
 Now we can use the `uddsketch_calc` function to calculate the approximate quantile from the UDDSketch state. For example, to get the approximate 99th percentile (p99) for each 5-second time window, we can run the following query:

@@ -128,7 +128,7 @@ GROUP BY
 
 ## 近似分位数（UDDSketch）
 
-使用 [UDDSketch](https://arxiv.org/abs/2004.08604) 算法提供了三个函数用于近似分位数计算。
+使用 [UDDSketch](https://arxiv.org/abs/2004.08604) 算法提供了四个函数用于近似分位数计算。
 
 :::warning
 UDDSketch 算法旨在提供具有可调误差率的近似分位数，这有助于实现高效的内存使用和快速计算。结果可能并非完全精确，但通常非常接近实际分位数。
@@ -165,6 +165,21 @@ UDDSketch 算法旨在提供具有可调误差率的近似分位数，这有助�
 
 有关如何结合使用这些函数来计算近似分位数的完整示例，请参阅[UDDSketch 完整使用示例](#uddsketch-完整使用示例)。
 
+### `uddsketch_rank`
+
+`uddsketch_rank` 标量函数用于估算指定值在 UDDSketch 状态中的分位排名。函数签名如下：
+
+```sql
+uddsketch_rank(value, udd_state)
+```
+
+- `value`：要估算排名的 `DOUBLE` 值。
+- `udd_state`：由 `uddsketch_state` 创建或由 `uddsketch_merge` 合并的二进制 UDDSketch 状态。
+
+该函数返回一个介于 0 和 1 之间的 `DOUBLE` 值。结果为 0 表示指定值小于 sketch 中记录的所有值，结果为 1 表示指定值大于其中的所有值。如果指定值落入某个 sketch 桶，估算排名时会计入该桶中一半的数据。
+
+该函数同时支持当前和旧版 UDDSketch 状态编码。当任一参数为 `NULL`、状态为空或无效，或者指定值无效（例如 `NaN`）时，函数返回 `NULL`。
+
 ### 如何确定桶数量和误差率
 
 `bucket_num` 参数设置了 UDDSketch 算法可使用的内部容器的最大数量，直接控制其内存占用。可以将其视为跟踪不同值范围的物理存储容量。更大的 `bucket_num` 允许 UddSketch 状态更准确地表示更宽的数据动态范围（即最大值和最小值之间更大的比率）。如果此限制对于你的数据而言过小，UddSketch 状态将被迫合并非常高或非常低的值，从而降低其准确性。对于大多数用例，`bucket_num` 的推荐值为 128，这在准确性和内存使用之间提供了良好的平衡。
@@ -174,7 +189,7 @@ UDDSketch 算法旨在提供具有可调误差率的近似分位数，这有助�
 这两个参数之间存在直接的权衡关系。为了达到小 `error_rate` 所承诺的高精度，UDDSketch 算法需要足够的 `bucket_num`，特别是对于跨度较大的数据。`bucket_num` 充当了精度的物理限制。如果你的 `bucket_num` 受到内存限制，那么将 `error_rate` 设置为极小值并不会提高精度，因为受到可用桶数量的限制。
 
 ### UDDSketch 完整使用示例
-本示例演示了如何使用上述三个 `uddsketch` 函数来计算一组值的近似分位数。
+本示例演示了如何使用上述四个 `uddsketch` 函数来计算一组值的近似分位数和分位排名。
 
 首先创建用于存储原始数据的基表 `percentile_base`，以及用于存储 5 秒时间窗口内 UDDSketch 状态的 `percentile_5s` 表。请注意，`percentile_state` 列的类型为 `BINARY`，它将以二进制格式存储 UDDSketch 状态。
 ```sql
@@ -219,6 +234,26 @@ GROUP BY
     time_window;
 -- 结果类似：
 -- Query OK, 3 rows affected (0.05 sec)
+```
+
+使用 `uddsketch_rank` 可以估算指定值在数据分布中的位置。以下查询分别展示小于最小值、位于分布中间和大于最大值的排名：
+
+```sql
+SELECT
+    ROUND(uddsketch_rank(5, `percentile_state`), 2) AS below_min_rank,
+    ROUND(uddsketch_rank(55, `percentile_state`), 2) AS middle_rank,
+    ROUND(uddsketch_rank(110, `percentile_state`), 2) AS above_max_rank
+FROM (
+    SELECT uddsketch_state(128, 0.01, `value`) AS percentile_state
+    FROM percentile_base
+);
+
+-- 结果如下：
+-- +----------------+-------------+----------------+
+-- | below_min_rank | middle_rank | above_max_rank |
+-- +----------------+-------------+----------------+
+-- | 0.0            | 0.5         | 1.0            |
+-- +----------------+-------------+----------------+
 ```
 
 现在我们可以使用 `uddsketch_calc` 函数从 UDDSketch 状态中计算近似分位数。例如，要获取每个 5 秒时间窗口的近似第 99 百分位数 (p99)，我们可以运行以下查询：
