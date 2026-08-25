@@ -21,7 +21,7 @@ greptime cli meta snapshot save [OPTIONS]
 
 | 选项               | 是否必需 | 默认值            | 描述                                                                                                   |
 | ------------------ | -------- | ----------------- | ------------------------------------------------------------------------------------------------------ |
-| --store-addrs      | 条件必需 | -                 | 元数据存储地址。持久化后端需要设置，格式取决于所选后端                                                                                                |
+| --store-addrs      | 是（使用持久化后端时） | - | 元数据存储地址。持久化后端需要设置，格式取决于所选后端                                                                                                |
 | --backend          | 否       | etcd-store        | 元数据存储后端：`etcd-store`、`memory-store`、`postgres-store`、`mysql-store` 或 `raft-engine-store`                                                   |
 | --store-key-prefix | 否       | ""                | 元数据存储前缀，参考 Metasrv 配置                                                                                                                    |
 | --meta-table-name  | 否       | greptime_metakv   | 当后端为 `postgres-store` 或 `mysql-store` 时，元数据存储的表名                                                                                      |
@@ -99,7 +99,7 @@ greptime cli meta snapshot restore [OPTIONS]
 
 | 选项               | 是否必需 | 默认值          | 描述                                                                                                   |
 | ------------------ | -------- | --------------- | ------------------------------------------------------------------------------------------------------ |
-| --store-addrs      | 条件必需 | -               | 元数据存储地址。持久化后端需要设置，格式取决于所选后端                                                                                                 |
+| --store-addrs      | 是（使用持久化后端时） | - | 元数据存储地址。持久化后端需要设置，格式取决于所选后端                                                                                                 |
 | --backend          | 否       | etcd-store      | 元数据存储后端：`etcd-store`、`memory-store`、`postgres-store`、`mysql-store` 或 `raft-engine-store`                                                    |
 | --store-key-prefix | 否       | ""              | 元数据存储的 key 前缀，参考 Metasrv 配置                                                                                                             |
 | --meta-table-name  | 否       | greptime_metakv | 当后端为 `postgres-store` 或 `mysql-store` 时，元数据存储的表名                                                                                      |

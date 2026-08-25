@@ -21,7 +21,7 @@ greptime cli meta snapshot save [OPTIONS]
 
 | Option             | Required | Default           | Description                                                                                                                                        |
 | ------------------ | -------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| --store-addrs      | Conditional | -              | Metadata store addresses. Required for persistent backends; the format depends on the backend                                                       |
+| --store-addrs      | Yes, for persistent backends | - | Metadata store addresses. Required for persistent backends; the format depends on the backend                                                       |
 | --backend          | No       | etcd-store        | Metadata store backend: `etcd-store`, `memory-store`, `postgres-store`, `mysql-store`, or `raft-engine-store`                                      |
 | --store-key-prefix | No       | ""                | Unified prefix for data in metasrv, refer to metasrv configuration                                                                                 |
 | --meta-table-name  | No       | greptime_metakv   | When backend is one of `postgres-store`, `mysql-store`, the table name storing metadata                                                            |
@@ -101,7 +101,7 @@ greptime cli meta snapshot restore [OPTIONS]
 
 | Option             | Required | Default         | Description                                                                                                                                          |
 | ------------------ | -------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| --store-addrs      | Conditional | -            | Metadata store addresses. Required for persistent backends; the format depends on the backend                                                         |
+| --store-addrs      | Yes, for persistent backends | - | Metadata store addresses. Required for persistent backends; the format depends on the backend                                                         |
 | --backend          | No       | etcd-store      | Metadata store backend: `etcd-store`, `memory-store`, `postgres-store`, `mysql-store`, or `raft-engine-store`                                         |
 | --store-key-prefix | No       | ""              | Unified prefix for data in metasrv, refer to metasrv configuration                                                                                   |
 | --meta-table-name  | No       | greptime_metakv | When backend is `postgres-store`, `mysql-store`, the table name storing metadata                                                                     |
