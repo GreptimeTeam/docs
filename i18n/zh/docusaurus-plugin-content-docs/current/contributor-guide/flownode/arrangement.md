@@ -1,18 +1,14 @@
 ---
-keywords: [Arrangement, 状态存储, 键值对]
-description: 描述了 Arrangement 在数据流进程中的状态存储功能，包括键值对存储、查询和删除操作的实现。
+keywords: [旧流处理模式, Arrangement, 状态, 差分更新, watermark]
+description: 介绍 Flownode 旧 streaming 路径使用的内存 Arrangement 状态。
 ---
 
 # Arrangement
 
-Arrangement 存储数据流进程中的状态，存储 flow 的更新流（stream）以供进一步查询和更新。
+`Arrangement` 是 Flownode 旧 streaming 路径使用的内存状态索引，实现在 `src/flow/src/utils.rs` 中；batching 模式不使用它。
 
-Arrangement 本质上存储的是带有时间戳的键值对。
-在内部，Arrangement 接收类似 `((Key Row, Value Row), timestamp, diff)` 的 tuple，并将其存储在内存中。
-你可以使用 `get(now: Timestamp, key: Row)` 查询某个时间的键值对。
-Arrangement 假定早于某个时间（也称为 Low Watermark）的所有内容都已被写入到 sink 表中，不会为其保留历史记录。
+Arrangement 以 `((key row, value row), timestamp, diff)` 保存更新。`timestamp` 按 dataflow 时间排列变更，差分值 `diff` 用于添加或删除 value。`get(now: Timestamp, key: &Row)` 返回指定时间对该 key 可见的 value。
 
-:::tip 注意
-Arrangement 允许通过将传入 tuple 的 `diff` 设置为 -1 来删除键。
-此外，如果已将行数据添加到 Arrangement 并且使用不同的值插入相同的键，则原始值将被新值覆盖。
-:::
+Low watermark 表示仍可能需要保留历史状态的最早时间。早于该 watermark 的状态被视为已经写入 sink，可以进行压缩。过早推进 watermark 会使后续差分更新无法正确合并。
+
+在当前实现中，`diff` 为 `-1` 时删除 key；以不同 value 再次插入同一个 key 时，会替换原 value。这些语义属于旧 streaming 状态模型，不能套用到 batching 模式的 sink 写入。

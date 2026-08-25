@@ -1,34 +1,21 @@
 ---
-keywords: [Datanode, region server, data storage, gRPC service, heartbeat task, region manager]
-description: Overview of Datanode in GreptimeDB, its responsibilities, components, and interaction with other parts of the system.
+keywords: [Datanode, RegionServer, storage engine, query engine, heartbeat]
+description: Overview of Datanode's Region-level storage and query responsibilities.
 ---
 
 # Datanode
 
 ## Introduction
 
-`Datanode` is mainly responsible for storing the actual data for GreptimeDB. As we know, in GreptimeDB,
-a `table` can have one or more `Region`s, and `Datanode` is responsible for managing the reading and writing
-of these `Region`s. `Datanode` is not aware of `table` and can be considered as a `region server`. Therefore,
-`Frontend` and `Metasrv` operate `Datanode` at the granularity of `Region`.
-
-![Datanode](/datanode.png)
+Datanode stores table data and executes queries against its local Regions. A table can contain multiple Regions, but Datanode does not manage tables as a metadata object. Frontend and Metasrv address it through Region-level requests, so its primary abstraction is a Region server.
 
 ## Components
 
-A `Datanode` contains all the components needed for a `region server`. Here we list some of the vital parts:
+- `RegionServer` in `src/datanode/src/region_server.rs` dispatches Region requests to the registered storage engine and exposes Regions to the query layer.
+- The gRPC service accepts Region reads, writes, and lifecycle operations from Frontend and Metasrv.
+- The local query engine plans and executes logical subplans received from Frontend. Datanode does not parse client SQL or coordinate a distributed query.
+- The heartbeat task reports node and Region state to Metasrv and receives control instructions such as Region open, close, migration, and cache invalidation messages.
+- HTTP handlers expose operational endpoints such as metrics and configuration.
+- Datanode registers the Mito, Metric, and File Region engines. Mito is the primary time-series storage engine; Metric delegates physical storage to Mito for high-cardinality metric-table workloads; File exposes data in external files.
 
-- A gRPC service is provided for reading and writing region data, and `Frontend` uses this service
-  to read and write data from `Datanode`s.
-- An HTTP service, through which you can obtain metrics, configuration information, etc., of the current node.
-- `Heartbeat Task` is used to send heartbeat to the `Metasrv`. The heartbeat plays a crucial role in the
-  distributed architecture of GreptimeDB and serves as a basic communication channel for distributed coordination.
-  The upstream heartbeat messages contain important information such as the workload of a `Region`. If the
-  `Metasrv `has made scheduling(such as `Region` migration) decisions, it will send instructions to the
-  `Datanode` via downstream heartbeat messages.
-- The `Datanode` does not parse user SQL or perform distributed planning. The user's query requests for one or
-  more `Table`s will be transformed into `Region` query requests in the `Frontend`. The `Datanode` is responsible
-  for executing these `Region` query plans with its local query engine.
-- A `Region Manager` is used to manage all `Region`s on a `Datanode`.
-- GreptimeDB supports a pluggable multi-engine architecture, with existing engines including `File Engine` and
-  `Mito Engine`.
+In standalone mode, the same Region server runs in-process without Metasrv coordination. In distributed mode, Region writability and lifecycle changes are coordinated through Metasrv leases and heartbeat messages.

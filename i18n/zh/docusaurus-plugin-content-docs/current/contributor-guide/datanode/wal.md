@@ -1,6 +1,6 @@
 ---
-keywords: [预写日志, WAL, 数据持久化, 同步刷盘, 异步刷盘]
-description: 介绍了 GreptimeDB 的预写日志（WAL）机制，包括其命名空间、同步/异步刷盘策略和在数据节点重启时的重放功能。
+keywords: [预写日志, WAL, 恢复, raft-engine, Kafka]
+description: 介绍 Mito 的 WAL 抽象、恢复路径和持久性配置。
 ---
 
 # 预写日志
@@ -9,20 +9,18 @@ description: 介绍了 GreptimeDB 的预写日志（WAL）机制，包括其命�
 
 ## 介绍
 
-我们的存储引擎受到了日志结构合并树（Log-structured Merge Tree，LSMT）的启发。对数据的变更操作直接应用于 MemTable 而不是持久化到磁盘上的数据页，这显著提高了性能，但也带来了持久化相关的问题，特别是在 Datanode 意外崩溃时。与所有类似 LSMT 的存储引擎一样，GreptimeDB 使用预写日志（Write-Ahead Log，WAL）来确保数据被可靠地持久化，并且保证崩溃时的数据完整性。
+Mito 在把数据刷写为 SST 文件前，先将写入应用到内存中的 memtable。为了恢复尚未进入 SST 的数据，每个 Region 的写操作会先追加到预写日志（WAL），再写入 memtable。
 
-预写日志是一个仅提供追加写的文件组。所有的 INSERT 和 DELETE 操作都被转换为操作日志，然后追加到 WAL。一旦操作日志被持久化到底层文件，该操作才可以进一步应用到 MemTable。
+打开 Region 或重启 Datanode 时，Mito 从已持久化的最后一个 sequence 之后开始重放 WAL，重建内存状态。Sequence number 在 Region 内分配，同时用于去重和 snapshot read。
 
-当数据节点重新启动时，WAL 中的操作条目将被重放，以重建正确的 MemTable 状态。
-
-![WAL in Datanode](/wal.png)
+存储引擎通过 `LogStore` 抽象访问 WAL。Datanode 支持本地 `raft_engine` provider 和远端 Kafka provider，因此 WAL 并不等同于本地文件。Provider 在 `src/datanode/src/datanode.rs` 中构建，Mito 的 WAL 接入位于 `src/mito2/src/wal.rs` 及写入 worker。
 
 ## 命名空间
 
-WAL 的命名空间用于区分来自不同 region 的条目。追加和读取操作必须提供一个命名空间。目前，region ID 被用作命名空间，因为每个 region 都有一个在数据节点重新启动时需要重构的 MemTable。
+WAL 按 Region 隔离。追加和读取操作使用 Region ID 作为 namespace，使恢复过程只重放当前 Region 的日志。一张表可以包含多个 Region，因此 WAL namespace 不是 Table ID。
 
 ## 同步/异步刷盘
 
-默认情况下，WAL 的追加写是异步的，这意味着写入方不会等待操作日志被刷入到磁盘并持久化。这个默认设置提供了更高的性能，但在服务器意外关闭时可能会丢失数据。另一方面，同步刷新提供了更高的可靠性，但其代价是性能更低。
+对于本地 `raft_engine` provider，`sync_write` 控制追加操作是否等待日志同步到持久化存储，默认值为 `false`。异步写入延迟较低，但主机或存储在日志同步前发生故障时，最近已确认的 entry 可能丢失。设置 `sync_write = true` 可以加强这一持久性边界，同时会增加写入延迟。
 
-在 v0.4 版本中，新的 region worker 架构可以使用批处理来减轻同步刷盘的开销。
+Kafka WAL 的持久性取决于 Kafka producer 和集群配置，而不是本地 `sync_write` 选项。无论使用哪一种 provider，确认写入的代码都必须保持先追加 WAL、再修改 memtable 的顺序。

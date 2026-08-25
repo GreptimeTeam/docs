@@ -1,26 +1,28 @@
 ---
-keywords: [continuous aggregation, flow management, standalone mode, Flownode components, Flownode limitations]
-description: Overview of Flownode, a component providing Flow computation capabilities to the database, including batching mode, deprecated streaming mode, and core components.
+keywords: [Flownode, continuous aggregation, batching mode, streaming mode, Flow]
+description: Flownode's execution modes, routing boundary, and implementation layout.
 ---
 
 # Flownode
 
 ## Introduction
 
+Flownode is the execution component behind GreptimeDB Flow, which maintains continuously computed results from source tables in a sink table. It runs in-process in standalone mode and as a separate service in distributed mode.
 
-`Flownode` provides Flow computation capabilities to the database.
-`Flownode` manages `flows` which are tasks that receive data from the `source` and send data to the `sink`.
+Flownode has two execution paths:
 
-`Flownode` support both `standalone` and `distributed` mode. In `standalone` mode, `Flownode` runs in the same process as the database. In `distributed` mode, `Flownode` runs in a separate process and communicates with the database through the network.
+- **Batching mode** is the actively developed path. It tracks affected time windows and periodically runs an aggregation query through Frontend. See the [batching mode guide](./batching_mode.md).
+- **Streaming mode** is the legacy incremental-dataflow path. It processes row-level changes through worker-owned compute graphs and remains for compatibility.
 
-There are two execution modes for a flow:
-- **Batching Mode**: The active mode for continuous data aggregation. It periodically executes a user-defined SQL query over small, discrete time windows. Aggregation and TQL queries use this mode. For more details, see the [Batching Mode Developer Guide](./batching_mode.md).
-- **Streaming Mode (deprecated)**: The original mode where data is processed as it arrives. It is kept for legacy compatibility and is not recommended for new workloads.
+Users do not select an execution mode directly. `flow_type` is reserved internal metadata. `StatementExecutor::determine_flow_type` in `src/operator/src/statement/ddl.rs` chooses the mode when a Flow is created, and `FlowDualEngine` handles compatibility routing inside Flownode.
 
 ## Components
 
-A `Flownode` contains all the components needed to execute a flow. The specific components involved depend on the execution mode. At a high level, the key parts are:
+- `FlowEngine` in `src/flow/src/engine.rs` defines the create, remove, flush, and insert lifecycle shared by both paths.
+- `FlowDualEngine` in `src/flow/src/adapter/flownode_impl.rs` routes each Flow to the batching or streaming engine.
+- `src/flow/src/batching_mode/` contains time-window tracking, task scheduling, Frontend RPC, sink-table creation, and checkpoint logic.
+- `src/flow/src/adapter/`, `compute/`, `expr/`, and `plan.rs` implement the legacy streaming path.
+- `src/flow/src/server.rs` exposes the Flownode gRPC service; `heartbeat.rs` reports Flownode state to Metasrv.
+- Persisted Flow metadata and DDL procedures live in `src/common/meta/`, not in the `flow` crate.
 
-- **Flow Manager**: A central component responsible for managing the lifecycle of all flows.
-- **Task Executor**: The runtime environment where the flow logic is executed. In batching mode, this is a `BatchingTask`; in the deprecated streaming mode, this is typically a `FlowWorker`.
-- **Flow Task**: Represents a single, independent data flow, containing the logic for transforming data from a source to a sink.
+Mode-specific changes must be reviewed against `FlowDualEngine` and the shared metadata contract. Do not assume that a fix in one execution path applies to the other.

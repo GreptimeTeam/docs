@@ -1,34 +1,30 @@
 ---
-keywords: [tokio-console, GreptimeDB, tokio_unstable, build, connect, subscriber]
-description: Guides on using tokio-console in GreptimeDB, including building with specific features and connecting to the tokio console subscriber.
+keywords: [tokio-console, tokio_unstable, asynchronous tasks, diagnostics]
+description: Build GreptimeDB with tokio-console support and inspect its Tokio runtime.
 ---
 
 # How to use tokio-console in GreptimeDB
 
-This document introduces how to use the [tokio-console](https://github.com/tokio-rs/console) in GreptimeDB.
+[`tokio-console`](https://github.com/tokio-rs/console) displays live Tokio tasks and resources. GreptimeDB compiles the subscriber behind the `cmd/tokio-console` feature and also requires Tokio's unstable instrumentation cfg.
 
-First, build GreptimeDB with feature `cmd/tokio-console`. Also the `tokio_unstable` cfg must be enabled:
+Build GreptimeDB with both enabled:
 
 ```bash
 RUSTFLAGS="--cfg tokio_unstable" cargo build -F cmd/tokio-console
 ```
 
-Then start GreptimeDB with the tokio console binding address config: `--tokio-console-addr`. For example:
+Start the component with a full socket address for the console subscriber:
 
 ```bash
-greptime --tokio-console-addr="127.0.0.1:6669" standalone start
+./target/debug/greptime --tokio-console-addr="127.0.0.1:6669" standalone start
 ```
 
-Now you can use `tokio-console` to connect to GreptimeDB's tokio console subscriber:
+The option is global and can also be used with `frontend`, `datanode`, `metasrv`, or `flownode` commands built with the same feature.
+
+Install the console client as described in the [tokio-console repository](https://github.com/tokio-rs/console#installing-the-console) and connect to the configured address:
 
 ```bash
-tokio-console [TARGET_ADDR]
+tokio-console http://127.0.0.1:6669
 ```
 
-"TARGET_ADDR" defaults to "\<http://127.0.0.1:6669\>".
-
-:::tip Note
-
-You can refer to [tokio-console](https://github.com/tokio-rs/console) to see the installation of `tokio-console`.
-
-:::
+Keep the subscriber on a loopback or otherwise protected address. It is a diagnostic endpoint, not a public GreptimeDB protocol. The feature and `tokio_unstable` instrumentation add runtime diagnostics and should be enabled deliberately when investigating task stalls, wakeups, or resource contention.

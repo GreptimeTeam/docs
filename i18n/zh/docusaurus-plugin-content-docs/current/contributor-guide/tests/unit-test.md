@@ -1,28 +1,34 @@
 ---
-keywords: [单元测试, Rust, nextest, 测试覆盖率, CI]
-description: 介绍 GreptimeDB 的单元测试，包括如何编写、运行和检查测试覆盖率。
+keywords: [单元测试, Rust, cargo-nextest, crate 测试, 覆盖率]
+description: 使用 cargo-nextest 编写并运行 crate 内的 Rust 测试。
 ---
 
 # 单元测试
 
 ## 介绍
 
-单元测试嵌入在代码库中，通常放置在被测试逻辑的旁边。它们使用 Rust 的 `#[test]` 属性编写，并可以使用 `cargo nextest run` 运行。
+Rust 单元测试通常位于被测模块内或相邻的 `*_test.rs` 文件中。适合覆盖 crate 内部不变量、边界条件、错误处理，以及不需要启动 GreptimeDB 集群的行为。
 
-GreptimeDB 代码库不支持默认的 `cargo` 测试运行器。推荐使用 [`nextest`](https://nexte.st/)。你可以通过以下命令安装它：
+GreptimeDB 的标准测试运行器是 [cargo-nextest](https://nexte.st/)。安装命令如下：
 
 ```shell
 cargo install cargo-nextest --locked
 ```
 
-然后运行测试（这里 `--workspace` 不是必须的）
+开发期间先运行受影响 crate 的测试：
 
 ```shell
-cargo nextest run
+cargo nextest run -p <package-name>
 ```
 
-注意，如果你的 Rust 是通过 `rustup` 安装的，请确保使用 `cargo` 安装 `nextest`，而不是像 `homebrew` 这样的包管理器，否则会弄乱你的本地环境。
+可能影响多个 crate 的改动，在提交前应运行 CI 对应的 workspace 配置：
+
+```shell
+cargo nextest run --workspace --features pg_kvbackend,mysql_kvbackend
+```
+
+Feature-gated 代码需要在测试命令中启用对应 feature。不要假设默认 feature set 已覆盖相关路径，应检查 crate 的 `Cargo.toml`、本地 `AGENTS.md` 和 CI workflow。
 
 ## 覆盖率
 
-我们的持续集成（CI）作业有一个“覆盖率检查”步骤。它会报告有多少代码被单元测试覆盖。请在你的补丁中添加必要的单元测试。
+CI 会记录 Rust 测试覆盖率。测试应保护实际改动的行为和可信的失败场景，不要只为提高百分比增加断言。查询语言行为和跨组件流程通常还需要 sqlness 或集成测试。

@@ -1,18 +1,14 @@
 ---
-keywords: [Dataflow, SQL 查询, 执行计划, 数据流, map, reduce]
-description: 解释了 Dataflow 模块的核心计算功能，包括 SQL 查询转换、内部执行计划、数据流的触发运行和支持的操作。
+keywords: [旧流处理模式, Dataflow, DFIR, 差分数据, Flow]
+description: 介绍 Flownode 旧 streaming 执行路径使用的内部计算图。
 ---
 
 # 数据流
 
-Dataflow 模块（参见 `flow::compute` 模块）是 `flow` 的核心计算模块。
-它接收 SQL 查询并将其转换为 `flow` 的内部执行计划。
-然后，该执行计划被转化为实际的数据流，而数据流本质上是一个由带有输入和输出端口的函数组成的有向无环图（DAG）。
-数据流会在需要时被触发运行。
+本文说明 Flownode 旧 streaming 模式使用的计算图。新的持续聚合工作使用[批处理模式](./batching_mode.md)，不能根据本页推断 batching 行为。
 
-目前该数据流只支持 `map`和 `reduce` 操作，未来将添加对 `join` 等操作的支持。
+Streaming 路径通过 `src/flow/src/transform.rs` 将 Flow 定义转换为 `plan.rs` 中的 typed plan。`src/flow/src/compute/render.rs` 把受支持的 plan node 渲染为 DFIR 风格的 dataflow graph，`src/flow/src/adapter/` 下的 worker 持有并执行这些 graph。
 
-在内部，数据流使用 `tuple(row, time, diff)` 以行格式处理数据。
-这里 `row` 表示实际传递的数据，可能包含多个 `value` 对象。
-`time` 是系统时间，用于跟踪数据流的进度，`diff` 通常表示行的插入或删除（+1 或 -1）。
-因此，`tuple` 表示给定系统时间的 `row` 的插入/删除操作。
+内部记录使用差分行 `(row, timestamp, diff)`。`row` 保存值，`timestamp` 跟踪 dataflow 进度，`diff` 表示插入（`+1`）、删除（`-1`）等 multiplicity 变更。算子沿执行图传递这些变更，从而增量更新聚合状态和 sink 输出。
+
+Typed plan 可以表示 map/filter/project、reduce、join 和 union 节点。当前 streaming renderer 可以执行 map/filter/project 和 reduce；join 与 union 的渲染仍返回 not-implemented 错误。添加算子时必须同时检查 `plan.rs` 和 `compute/render.rs`，因为能出现在计划中并不等于已经可以执行。

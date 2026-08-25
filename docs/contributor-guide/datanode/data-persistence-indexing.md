@@ -5,80 +5,62 @@ description: Explanation of data persistence and indexing in GreptimeDB, includi
 
 # Data Persistence and Indexing
 
-Similar to all LSMT-like storage engines, data in MemTables is persisted to durable storage, for example, the local disk file system or object storage service. GreptimeDB adopts [Apache Parquet][1] as its persistent file format.
+Mito flushes data from memtables to durable local filesystems or object storage. SST files use [Apache Parquet][1] as their data format.
 
 ## SST File Format
 
-Parquet is an open source columnar format that provides fast data querying and has already been adopted by many projects, such as Delta Lake.
+Parquet is a columnar file format. Its hierarchy determines the units that Mito can read, cache, or prune during a scan.
 
-Parquet has a hierarchical structure like "row groups-columns-data pages". Data in a Parquet file is horizontally partitioned into row groups, in which all values of the same column are stored together to form a data page. Data page is the minimal storage unit. This structure greatly improves performance.
+Parquet organizes data as row groups, column chunks, and pages. A row group contains one column chunk for each column, and each column chunk contains one or more pages. Pages are the smallest encoded I/O units within a column chunk.
 
-First, clustering data by column makes file scanning more efficient, especially when only a few columns are queried, which is very common in analytical systems.
+Column chunks let a projected scan read only the requested columns.
 
-Second, data of the same column tends to be homogeneous which helps with compression when apply techniques like dictionary and Run-Length Encoding (RLE).
+Pages within one column also tend to compress well with encodings such as dictionary encoding and run-length encoding (RLE).
 
 <img src="/parquet-file-format.png" alt="Parquet file format" width="500"/>
 
 ## Data Persistence
 
-GreptimeDB provides a configuration item `region_engine.mito.global_write_buffer_size`, which is flush threshold of the total memory usage for all MemTables.
+`region_engine.mito.global_write_buffer_size` sets the memory threshold shared by all Mito memtables on a Datanode.
 
-When the size of data buffered in MemTables reaches that threshold, GreptimeDB will pick MemTables and flush them to SST files.
+When memory usage reaches the threshold, the write-buffer manager selects memtables and schedules SST flushes through `src/mito2/src/flush.rs`.
 
 ## Indexing Data in SST Files
 
-Apache Parquet file format provides inherent statistics in headers of column chunks and data pages, which are used for pruning and skipping.
-
-<img src="/column-chunk-header.png" alt="Column chunk header" width="350"/>
-
-For example, in the above Parquet file, if you want to filter rows where `name` = `Emily`, you can easily skip row group 0 because the max value for `name` field is `Charlie`. This statistical information reduces IO operations.
+Parquet records column statistics for row groups and pages. Mito converts compatible query predicates into Parquet pruning predicates so it can skip row groups whose min/max or null statistics cannot match.
 
 ## Index Files
 
-For each SST file, GreptimeDB not only maintains an internal index but also generates a separate file to store the index structures specific to that SST file.
+Mito stores index artifacts associated with an SST in versioned [Puffin][3] files. The Region manifest identifies the active index version; publishing or rebuilding an index must not make the manifest reference an incomplete artifact.
 
-The index files utilize the [Puffin][3] format, which offers significant flexibility, allowing for the storage of additional metadata and supporting a broader range of index structures.
-
-![Puffin](/puffin.png)
-
-GreptimeDB stores several index structures in the Puffin file as Blobs, including the inverted index, the skipping index (backed by a bloom filter), and the full-text index. The inverted index was the first one supported and is described in detail below.
+`src/mito2/src/sst/index/` integrates inverted, bloom-filter skipping, full-text, and feature-gated vector indexes with SST reads and writes. Their reusable index formats live under `src/index/src/`, while `puffin_manager.rs` manages the companion files.
 
 ## Inverted Index
 
-In version 0.7, GreptimeDB introduced the inverted index to accelerate queries.
-
-The inverted index is a common index structure used for full-text searches, mapping each word in the document to a list of documents containing that word. GreptimeDB applies this search-engine technique to indexes over time-series data.
-
-Search engines and time series databases operate in separate domains, yet the principle behind the applied inverted index technology is similar. This similarity requires some conceptual adjustments:
-1. Term: In GreptimeDB, it refers to the column value of the time series.
-2. Document: In GreptimeDB, it refers to the data segment containing multiple time series.
-
-The inverted index enables GreptimeDB to skip data segments that do not meet query conditions, thus improving scanning efficiency.
+For each indexed column, the inverted index maps encoded column values to the SST data segments that contain them. Applying a predicate produces candidate segment IDs; the normal scan still evaluates the complete predicate on rows from those segments.
 
 ![Inverted index searching](/inverted-index-searching.png)
 
-For instance, the query above uses the inverted index to identify data segments where `job` equals `apiserver`, `handler` matches the regex `.*users`, and `status` matches the regex `4...`. It then scans these data segments to produce the final results that meet all conditions, significantly reducing the number of IO operations.
+The query above uses the inverted index to identify data segments where `job` equals `apiserver`, `handler` matches the regex `.*users`, and `status` matches the regex `4...`. Mito scans those candidate segments and applies the complete query predicate to their rows.
 
 ### Inverted Index Format
 
 ![Inverted index format](/inverted-index-format.png)
 
-GreptimeDB builds inverted indexes by column, with each inverted index consisting of an FST and multiple Bitmaps.
-
-The FST (Finite State Transducer) enables GreptimeDB to store mappings from column values to Bitmap positions in a compact format and provides excellent search performance and supports complex search capabilities (such as regular expression matching). The Bitmaps maintain a list of data segment IDs, with each bit representing a data segment.
+Each column index contains a finite-state transducer (FST) and bitmaps. The FST maps encoded values to bitmap positions and supports lookups such as regular-expression matching. Each bitmap records the data segments that contain a value.
 
 ### Index Data Segments
 
-GreptimeDB divides an SST file into multiple indexed data segments, with each segment housing an equal number of rows. This segmentation is designed to optimize query performance by scanning only the data segments that match the query conditions. 
+GreptimeDB divides an SST file into fixed-size indexed data segments. A matching bitmap becomes a Parquet row selection, so Mito reads only the candidate row ranges.
 
-For example, if a data segment contains 1024 rows and the list of data segments identified through the inverted index for the query conditions is `[0, 2]`, then only the 0th and 2nd data segments in the SST file—from rows 0 to 1023 and 2048 to 3071, respectively—need to be scanned.
+For example, with 1024 rows per segment and candidate segment IDs `[0, 2]`, Mito scans rows 0–1023 and 2048–3071 instead of all rows in the SST.
 
-The number of rows in a data segment is controlled by the engine option `index.inverted_index.segment_row_count`, which defaults to `1024`. A smaller value means more precise indexing and often results in better query performance but increases the cost of index storage. By adjusting this option, a balance can be struck between storage costs and query performance.
+The engine option `index.inverted_index.segment_row_count`, which defaults to `1024`, controls the target segment size. Smaller segments make pruning more precise but increase index size and build cost.
 
 ## Unified Data Access Layer: OpenDAL
 
-GreptimeDB uses [OpenDAL][2] to provide a unified data access layer, thus, the storage engine does not need to interact with different storage APIs, and data can be migrated to cloud-based storage like AWS S3 seamlessly.
+The `object-store` crate wraps [OpenDAL][2] for local filesystems and object stores. Mito performs SST and index I/O through `src/mito2/src/access_layer.rs`; storage-engine code should not add backend-specific paths around that boundary. Changing a configured backend does not migrate existing data.
 
 [1]: https://parquet.apache.org
-[2]: https://github.com/datafuselabs/opendal
+[2]: https://opendal.apache.org/
 [3]: https://iceberg.apache.org/puffin-spec

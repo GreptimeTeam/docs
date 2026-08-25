@@ -1,32 +1,34 @@
 ---
-keywords: [unit tests, Rust, cargo nextest, test runner, coverage]
-description: Guide on writing and running unit tests in GreptimeDB using Rust's `#[test]` attribute and `cargo nextest`.
+keywords: [unit tests, Rust, cargo-nextest, package tests, coverage]
+description: Write and run crate-local Rust tests with cargo-nextest.
 ---
 
 # Unit Test
 
 ## Introduction
 
-Unit tests are embedded into the codebase, usually placed next to the logic being tested.
-They are written using Rust's `#[test]` attribute and can run with `cargo nextest run`.
+Rust unit tests normally live in the module they exercise or in a nearby `*_test.rs` file. Use them for local invariants, boundary conditions, error handling, and behavior that does not require a running GreptimeDB cluster.
 
-The default test runner ships with `cargo` is not supported in GreptimeDB codebase. It's recommended
-to use [`nextest`](https://nexte.st/) instead. You can install it with
+GreptimeDB's standard runner is [cargo-nextest](https://nexte.st/). Install it with:
 
 ```shell
 cargo install cargo-nextest --locked
 ```
 
-And run the tests (here the `--workspace` is not necessary)
+During development, run the affected package first:
 
 ```shell
-cargo nextest run
+cargo nextest run -p <package-name>
 ```
 
-Notes if your Rust is installed via `rustup`, be sure to install `nextest` with `cargo` rather
-than the package manager like `homebrew`. Otherwise it will mess up your local environment.
+Run the workspace configuration used by CI before submitting a change that can affect several crates:
+
+```shell
+cargo nextest run --workspace --features pg_kvbackend,mysql_kvbackend
+```
+
+Feature-gated code requires the corresponding feature in the test command. Check the crate's `Cargo.toml`, local `AGENTS.md`, and CI workflow before assuming the default feature set covers the path.
 
 ## Coverage
 
-Our continuous integration (CI) jobs have a "coverage checking" step. It will report how many
-codes are covered by unit tests. Please add the necessary unit test to your patch.
+CI records Rust test coverage. Add tests that protect the changed behavior and credible failure cases; do not add assertions solely to increase the percentage. Query-language behavior and cross-component flows usually need a sqlness or integration test in addition to a unit test.

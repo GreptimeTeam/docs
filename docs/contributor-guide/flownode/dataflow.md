@@ -1,17 +1,14 @@
 ---
-keywords: [dataflow module, SQL query transformation, execution plan, DAG, map and reduce operations]
-description: Explanation of the dataflow module in Flownode, its operations, internal data handling, and future enhancements.
+keywords: [legacy streaming mode, dataflow, DFIR, differential rows, Flow]
+description: Internal compute graph used by Flownode's legacy streaming execution path.
 ---
 
 # Dataflow
 
-The `dataflow` module (see `flow::compute` module) is the core computing module of `flow`.
-It takes a SQL query and transforms it into flow's internal execution plan.
-This execution plan is then rendered into an actual dataflow, which is essentially a directed acyclic graph (DAG) of functions with input and output ports.
-The dataflow is triggered to run when needed.
+This page describes the compute graph used by Flownode's legacy streaming mode. New continuous-aggregation work uses [batching mode](./batching_mode.md); do not use this page to infer batching behavior.
 
-Currently, this dataflow only supports `map` and `reduce` operations. Support for `join` operations will be added in the future.
+The streaming path converts a Flow definition through `src/flow/src/transform.rs` into a typed plan in `plan.rs`. `src/flow/src/compute/render.rs` renders supported plan nodes into a DFIR-style dataflow graph, and workers under `src/flow/src/adapter/` own and execute those graphs.
 
-Internally, the dataflow handles data in row format, using a tuple `(row, time, diff)`. Here, `row` represents the actual data being passed, which may contain multiple `Value` objects.
-`time` is the system time which tracks the progress of the dataflow, and `diff` typically represents the insertion or deletion of the row (+1 or -1).
-Therefore, the tuple represents the insert/delete operation of the `row` at a given system `time`.
+The internal record is a differential row `(row, timestamp, diff)`. `row` contains the values, `timestamp` tracks dataflow progress, and `diff` records multiplicity changes such as insertion (`+1`) and deletion (`-1`). Operators propagate those changes so aggregates and sink output can be updated incrementally.
+
+The typed plan represents map/filter/project and reduce operations, along with join and union nodes. The streaming renderer currently executes map/filter/project and reduce; join and union rendering still return a not-implemented error. Check both `plan.rs` and `compute/render.rs` before adding an operator, because being representable in a plan does not mean it is executable.

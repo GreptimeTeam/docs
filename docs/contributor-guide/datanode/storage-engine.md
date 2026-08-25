@@ -7,36 +7,18 @@ description: Overview of the storage engine in GreptimeDB, its architecture, com
 
 ## Introduction
 
-The `storage engine` is responsible for storing the data of the database. Mito, based on [LSMT][1] (Log-structured Merge-tree), is the storage engine we use by default. We have made significant optimizations for handling time-series data scenarios, so mito engine is not suitable for general purposes.
+Mito is GreptimeDB's primary time-series Region engine. It implements the `RegionEngine` trait and uses an [LSM tree][1] write path: WAL and memtables absorb writes, immutable Parquet SST files hold persisted data, and background compaction reorganizes those files.
 
 ## Architecture
 
-The picture below shows the architecture and process procedure of the storage engine.
+The implementation is under `src/mito2/src/`. `engine.rs` dispatches Region requests, `worker/` owns the per-Region write loop, `read/` builds scans, and `flush.rs`, `compaction/`, `manifest/`, and `sst/` implement the persistent lifecycle.
 
-![Architecture](/storage-engine-arch.png)
-
-The architecture is the same as a traditional LSMT engine:
-
-- [WAL][2]
-  - Guarantees high durability for data that is not yet being flushed.
-  - Based on the `Log Store` API, thus it doesn't care about the underlying storage
-    media.
-  - Log records of the WAL can be stored on the local disk, or in a remote log service such as
-    Kafka (remote WAL) that implements the `Log Store` API.
-- Memtables:
-  - Data is written into the `active memtable`, aka `mutable memtable` first.
-  - When a `mutable memtable` is full, it will be changed to a `read-only memtable`, aka `immutable memtable`.
-- SST
-  - The full name of SST, aka SSTable is `Sorted String Table`.
-  - `Immutable memtable` is flushed to persistent storage and produces an SST file.
-  - Rows in an SST are sorted by primary key and time index; see [Data Layout in SST Files](#data-layout-in-sst-files).
-- Compactor
-  - Small `SST` is merged into large `SST` by the compactor via compaction.
-  - The default compaction strategy is [TWCS][3]. Compaction groups SST files into time windows and, together with TTL, removes expired data. See [Compaction](/user-guide/deployments-administration/manage-data/compaction.md).
-- Manifest
-  - The manifest stores the metadata of the engine, such as the metadata of the `SST`.
-- Cache
-  - Speed up queries.
+- **WAL** records writes that have not reached an SST so a Region can recover its memtable state. It uses the `LogStore` API with local raft-engine and remote Kafka providers. The acknowledgement durability boundary depends on provider configuration; see [Write-Ahead Logging](./wal.md).
+- **Memtables** receive writes in a mutable active memtable. A flush freezes it into an immutable memtable that remains readable until its rows have been written to an SST.
+- **SST files** are immutable Parquet files whose rows are sorted by primary key and time index; see [Data Layout in SST Files](#data-layout-in-sst-files).
+- **Compaction** merges SST files and removes expired data. The default strategy is [TWCS][3], which groups files by time window. See [Compaction](/user-guide/deployments-administration/manage-data/compaction.md).
+- **Manifest** stores versioned Region metadata and SST file changes used during recovery.
+- **Caches** retain file metadata, data pages, and other reusable scan state.
 
 [1]: https://en.wikipedia.org/wiki/Log-structured_merge-tree
 [2]: https://en.wikipedia.org/wiki/Write-ahead_logging
@@ -44,54 +26,17 @@ The architecture is the same as a traditional LSMT engine:
 
 ## Data Model
 
-The data model provided by the storage engine is between the `key-value` model and the tabular model.
-
-```txt
-tag-1, ..., tag-m, timestamp -> field-1, ..., field-n
-```
-
-Each row of data contains multiple tag columns, one timestamp column, and multiple field columns.
-- `0 ~ m` tag columns
-  - Tag columns can be nullable.
-  - Specified during table creation using `PRIMARY KEY`.
-- Must include one timestamp column
-  - Timestamp column cannot be null.
-  - Specified during table creation using `TIME INDEX`.
-- `0 ~ n` field columns
-  - Field columns can be nullable.
-- Data is sorted by tag columns and timestamp column.
+Mito receives a `RegionMetadata` schema with a primary-key column list, one non-null time-index column, and field columns. The SQL layer exposes primary-key columns as tags, but Mito operates on column IDs and semantic types rather than SQL table definitions.
 
 ### Region
 
-Data in the storage engine is stored in `regions`, which are logical isolated storage units within the engine. Rows within a `region` must have the same `schema`, which defines the tag columns, timestamp column, and field columns within the `region`. The data of tables in the database is stored in one or multiple `regions`.
+A Region is Mito's isolation, recovery, and request unit. Every row in a Region follows its Region metadata. A table can span several Regions, while table routing and placement remain outside the storage engine.
 
 ## Data Layout in SST Files
 
 When a memtable is flushed, Mito writes its rows into immutable [Apache Parquet](https://parquet.apache.org) SST files. For the Parquet file format itself and how SST files are indexed, see [Data Persistence and Indexing](data-persistence-indexing.md).
 
 Within an SST file, rows are sorted by `(primary key, time index)`. Rows that share the same primary key (the tag columns) belong to the same time-series and are stored contiguously, ordered by timestamp. This locality is what makes scanning a single series cheap and improves compression. For append-only tables without a primary key, rows are sorted by the time index alone.
-
-For example, consider a table that stores host metrics:
-
-```sql
-CREATE TABLE host_metrics (
-  host STRING,
-  region STRING,
-  ts TIMESTAMP TIME INDEX,
-  cpu DOUBLE,
-  memory DOUBLE,
-  PRIMARY KEY (host, region)
-);
-```
-
-Mito groups rows by primary key and orders them by time, so the data within an SST conceptually looks like:
-
-| host | region | ts | cpu | memory |
-| --- | --- | --- | --- | --- |
-| host-a | us-east | 10:00 | 0.42 | 7.1 |
-| host-a | us-east | 10:01 | 0.47 | 7.4 |
-| host-a | us-west | 10:00 | 0.31 | 6.8 |
-| host-b | us-east | 10:00 | 0.80 | 8.6 |
 
 Besides the table columns, Mito stores three internal columns in each SST file so it can merge, deduplicate, and apply deletes correctly when reading from multiple memtables and SST files:
 
@@ -111,6 +56,6 @@ Mito avoids reading data that cannot match a query by combining several pruning 
 
 1. **Time-range pruning.** Files and memtables whose time range does not intersect the query's time range are skipped before opening any reader. This is usually the cheapest and most effective step for time-series queries.
 2. **Row-group statistics.** If a row group's min-max statistics prove that no row can match a predicate, the whole row group is skipped.
-3. **Indexes.** Inverted, skipping, and full-text indexes provide more selective pruning for predicates that statistics cannot resolve. See [Data Persistence and Indexing](data-persistence-indexing.md).
+3. **Indexes.** Inverted, skipping, and full-text indexes provide more selective pruning for predicates that statistics cannot resolve. The feature-gated vector index selects candidate rows for vector search. See [Data Persistence and Indexing](data-persistence-indexing.md).
 
 <img src="/scan-pruning.svg" alt="Scan pruning pipeline" style={{width: '80%', margin: '0 auto'}}/>

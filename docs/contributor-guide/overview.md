@@ -1,25 +1,19 @@
 ---
-keywords: [architecture, key components, user requests, data processing, database components]
-description: Overview of GreptimeDB's architecture, key components, and how they interact to process user requests.
+keywords: [contributor guide, architecture, frontend, datanode, metasrv, flownode]
+description: Entry point for contributors who want to understand and develop GreptimeDB.
 ---
 
 # Contributor Guide
 
-DeepWiki provides a detailed and clear explanation of GreptimeDB's architecture and implementation. Highly recommended:
-
-[https://deepwiki.com/GreptimeTeam/greptimedb](https://deepwiki.com/GreptimeTeam/greptimedb)
+This guide describes GreptimeDB's internal architecture and points contributors to the code that implements each subsystem. For build, test, and contribution requirements, start with the repository's [CONTRIBUTING.md](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md).
 
 ## Architecture
 
-For the architecture and components of GreptimeDB, please see the [Architecture](/user-guide/concepts/architecture.md) document in the user guide.
+The [architecture overview](/user-guide/concepts/architecture.md) explains the components and request paths from a user's perspective. The contributor guides below cover their implementation boundaries:
 
-For more details on each component, see the following guides:
+- [Frontend](./frontend/overview.md): protocol handling, request orchestration, routing, and distributed query planning.
+- [Datanode](./datanode/overview.md): Region management, query execution, and storage engines.
+- [Metasrv](./metasrv/overview.md): metadata, cluster coordination, and distributed procedures.
+- [Flownode](./flownode/overview.md): continuous aggregation in standalone and distributed deployments.
 
-- [frontend][1]
-- [datanode][2]
-- [metasrv][3]
-
-[1]: /contributor-guide/frontend/overview.md
-[2]: /contributor-guide/datanode/overview.md
-[3]: /contributor-guide/metasrv/overview.md
-
+To build GreptimeDB locally, continue with [Getting started](./getting-started.md).

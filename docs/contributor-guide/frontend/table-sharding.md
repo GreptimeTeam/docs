@@ -5,23 +5,19 @@ description: Explains how table data in GreptimeDB is sharded and distributed, i
 
 # Table Sharding
 
-The sharding of stored data is essential to any distributed database. This document will describe how table's data in GreptimeDB is being sharded, and distributed.
+GreptimeDB shards a table into partitions and stores each partition in a Region. This page describes the implementation-level relationship between those objects.
 
 ## Partition
 
-For the syntax of creating a partitioned table, please refer to the [Table Sharding](/user-guide/deployments-administration/manage-data/table-sharding.md) section in the User Guide.
+The [Table Sharding](/user-guide/deployments-administration/manage-data/table-sharding.md) section in the User Guide documents the partition syntax.
 
 ## Region
 
-The data within a table is logically split after creating partitions. You may ask the question "
-how are the data, after being logically partitioned, stored in the GreptimeDB? The answer is in "`Region`"s.
-
-Each region is corresponding to a partition, and stores the data in the partition. The regions are distributed among
-`Datanode`s. `Metasrv` manages the route information that maps regions to Datanodes.
+Each partition maps to one Region, which is the storage and scheduling unit managed by Datanodes. Metasrv stores the route that maps each Region to its Datanode.
 If the partition layout needs to change after table creation, GreptimeDB supports explicit
 [repartitioning](/user-guide/deployments-administration/manage-data/repartition.md) through split and merge operations.
 
-The relationship between partition and region can be viewed as the following diagram:
+The relationship is shown below:
 
 ```text
                        ┌───────┐

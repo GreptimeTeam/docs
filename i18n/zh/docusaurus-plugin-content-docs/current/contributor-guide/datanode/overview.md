@@ -1,28 +1,25 @@
 ---
-keywords: [Datanode, gRPC 服务, HTTP 服务, Heartbeat Task, Region Manager]
-description: 介绍了 Datanode 的主要职责和组件，包括 gRPC 服务、HTTP 服务、Heartbeat Task 和 Region Manager。
+keywords: [Datanode, RegionServer, 存储引擎, 查询引擎, 心跳]
+description: 介绍 Datanode 在 Region 级别的存储和查询职责。
 ---
 
 # Datanode
 
-## Introduction
+<AnchorAlias id="introduction" />
 
-`Datanode` 主要的职责是为 GreptimeDB 存储数据，我们知道在 GreptimeDB 中一个 `table` 可以有一个或者多个 `Region`, 
-而 `Datanode` 的职责便是管理这些 `Region` 的读写。`Datanode` 不感知 `table`，可以认为它是一个 `region server`。
-所以 `Frontend` 和 `Metasrv` 按照 `Region` 粒度来操作 `Datanode`。
+## 介绍
 
-![Datanode](/datanode.png)
+Datanode 存储表数据，并在本地 Region 上执行查询。一张表可以包含多个 Region，但 Datanode 不把表作为元数据对象管理。Frontend 和 Metasrv 通过 Region 级请求访问 Datanode，因此它的核心抽象是 Region server。
 
-## Components
+<AnchorAlias id="components" />
 
-一个 datanode 包含了 region server 所需的全部组件。这里列出了比较重要的部分：
+## 组件
 
-- 一个 gRPC 服务来提供对 `Region` 数据的读写，`Frontend` 便是使用这个服务来从 `Datanode` 读写数据。
-- 一个 HTTP 服务，可以通过它来获得当前节点的 metrics、配置信息等
-- `Heartbeat Task` 用来向 `Metasrv` 发送心跳，心跳在 GreptimeDB 的分布式架构中发挥着至关重要的作用，
-  是分布式协调和调度的基础通信通道，心跳的上行消息中包含了重要信息比如 `Region` 的负载，如果 `Metasrv` 做出了调度
-  决定（比如 Region 转移），它会通过心跳的下行消息发送指令到 `Datanode`
-- `Datanode` 不负责解析用户 SQL 或进行分布式规划，用户对一个或多个 `Table` 的查询请求会在 `Frontend` 中被转换为
-  `Region` 查询请求，`Datanode` 负责用本地 query engine 执行这些 `Region` 查询计划
-- 一个 `Region Manager` 用来管理 `Datanode` 上的所有 `Region`s
-- GreptimeDB 支持可插拔的多引擎架构，目前已有的 engine 包括 `File Engine` 和 `Mito Engine`
+- `src/datanode/src/region_server.rs` 中的 `RegionServer` 将 Region 请求分发到已注册的存储引擎，并向查询层提供 Region 数据。
+- gRPC 服务接收 Frontend 和 Metasrv 发出的 Region 读写及生命周期操作。
+- 本地查询引擎规划并执行 Frontend 发送的逻辑子计划。Datanode 不解析客户端 SQL，也不负责协调分布式查询。
+- 心跳任务向 Metasrv 报告节点和 Region 状态，并接收 Region 打开、关闭、迁移及缓存失效等控制消息。
+- HTTP handler 提供指标、配置等运维端点。
+- Datanode 注册 Mito、Metric 和 File 三种 Region engine。Mito 是主要的时序存储引擎；Metric 面向大量指标表的场景，并将物理存储委托给 Mito；File 用于访问外部文件中的数据。
+
+单机模式下，同一个 Region server 在进程内运行，不需要 Metasrv 协调。分布式模式下，Region 的可写状态和生命周期变更由 Metasrv 租约及心跳消息协调。

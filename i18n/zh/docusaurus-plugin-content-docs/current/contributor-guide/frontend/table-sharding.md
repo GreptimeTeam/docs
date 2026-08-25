@@ -5,7 +5,7 @@ description: 介绍 GreptimeDB 中表数据的分片方法，包括分区和 Reg
 
 # 表分片
 
-对于任何分布式数据库来说，数据的分片都是必不可少的。本文将描述 GreptimeDB 中的表数据如何进行分片。
+GreptimeDB 将表拆分为分区，并把每个分区存储在一个 Region 中。本文说明这两个对象在实现上的关系。
 
 <AnchorAlias id="partition" />
 
@@ -15,10 +15,7 @@ description: 介绍 GreptimeDB 中表数据的分片方法，包括分区和 Reg
 
 ## Region
 
-在创建分区后，表中的数据被逻辑上分割。你可能会问："在 GreptimeDB 中，被逻辑上分区的数据是如何存储的？" 答案是保存在 `Region` 当中。
-
-每个 `Region` 对应一个分区，并保存分区的数据。所有的 `Region` 分布在各个 `Datanode` 之中。
-`Metasrv` 管理 `Region` 到 `Datanode` 的路由信息。如果建表后需要调整分区布局，
+每个分区对应一个 Region。Region 是由 Datanode 管理的存储和调度单元，Metasrv 保存 Region 到 Datanode 的路由信息。如果建表后需要调整分区布局，
 GreptimeDB 支持通过显式的 [repartition](/user-guide/deployments-administration/manage-data/repartition.md) 操作拆分或合并分区。
 
 分区和 Region 的关系参见下图：
@@ -41,7 +38,7 @@ GreptimeDB 支持通过显式的 [repartition](/user-guide/deployments-administr
   │    P0     │      │    P1     │      │    Px     │
   └─────┬─────┘      └─────┬─────┘      └─────┬─────┘
         │                  │                  │
-        │                  │                  │  
+        │                  │                  │
 ┌───────┼──────────────────┼───────┐          │  Partition 和 Region 是一一对应的
 │       │                  │       │          │
 │ ┌─────▼─────┐      ┌─────▼─────┐ │    ┌─────▼─────┐

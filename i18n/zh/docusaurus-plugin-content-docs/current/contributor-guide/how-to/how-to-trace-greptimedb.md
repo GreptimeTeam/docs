@@ -1,30 +1,31 @@
 ---
-keywords: [tracing, 分布式追踪, tracing 上下文, RPC 调用, 代码埋点]
-description: 介绍如何在 GreptimeDB 中使用 Rust 的 tracing 框架进行代码埋点，包括在 RPC 中定义和传递 tracing 上下文的方法。
+keywords: [tracing, W3C Trace Context, RPC, instrument, runtime]
+description: 介绍 GreptimeDB 代码中的分布式 trace 传递和埋点方法。
 ---
 
 # How to trace GreptimeDB
 
-GreptimeDB 使用 Rust 的 [tracing](https://docs.rs/tracing/latest/tracing/) 框架进行代码埋点，tracing 的具体原理和使用方法参见 tracing 的官方文档。
+GreptimeDB 使用 Rust [`tracing`](https://docs.rs/tracing/latest/tracing/) 生态和 OpenTelemetry context propagation。只有 tracing context 沿同一条异步执行路径传递时，本地 span 才会自动建立父子关系；跨 RPC 或 runtime 时必须显式传递。
 
-通过将 `trace_id` 等信息在整个分布式数据链路上透传，使得我们能够记录整个分布式链路的函数调用链，知道每个被追踪函数的调用时间等相关信息，从而对整个系统进行诊断。
+公共实现在 `common-telemetry` 的 [`TracingContext`](https://github.com/GreptimeTeam/greptimedb/blob/main/src/common/telemetry/src/tracing_context.rs) 中，负责在当前 span context 和 W3C Trace Context 字段之间转换。
 
-## 在 RPC 中定义 tracing 上下文
+<AnchorAlias id="在-rpc-中定义-tracing-上下文" />
 
-因为 tracing 框架并没有原生支持分布式追踪，我们需要手动将 `trace_id` 等信息在 RPC 消息中传递，从而正确的识别函数的调用关系。我们使用基于 [w3c 的标准](https://www.w3.org/TR/trace-context/#traceparent-header-field-values) 将相关信息编码为 `tracing_context` ，将消息附在 RPC 的 header 中。主要定义在：
+## RPC 中的 context 字段
 
-- `frontend` 与 `datanode` 交互：`tracing_context` 定义在 [`RegionRequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/region/server.proto) 中
-- `frontend` 与 `metasrv` 交互：`tracing_context`  定义在  [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/meta/common.proto) 中
-- Client 与 `frontend` 交互：`tracing_context`  定义在  [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/common.proto) 中
+GreptimeDB 的 protobuf header 使用 `map<string, string> tracing_context` 保存 W3C trace 字段：
 
-## 在 RPC 调用中传递 tracing 上下文
+- Frontend 到 Datanode：[`RegionRequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/region/server.proto)
+- Meta client 和 service：[`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/meta/common.proto)
+- Client 到 Frontend database RPC：[`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/common.proto)
 
-我们构建了一个 `TracingContext` 结构体，封装了与 tracing 上下文有关的操作。[相关代码](https://github.com/GreptimeTeam/greptimedb/blob/main/src/common/telemetry/src/tracing_context.rs)
+增加内部 RPC 时应尽量复用已有 header type。另建 tracing 字段或采用不同编码，会产生公共 helper 无法处理的传递路径。
 
-GreptimeDB 在使用 `TracingContext::from_current_span()` 获取当前 tracing 上下文，使用 `to_w3c()` 方法将 tracing 上下文编码为符合 w3c 的格式，并将其附在 RPC 消息中，从而使 tracing 上下文正确的在分布式组件之中传递。
+<AnchorAlias id="在-rpc-调用中传递-tracing-上下文" />
 
-下面的例子说明了如何获取当前 tracing 上下文，并在构造 RPC 消息时正确传递参数，从而使 tracing 上下文正确的在分布式组件之中传递。
+## 跨 RPC 传递 context
 
+构造出站请求时获取当前 context：
 
 ```rust
 let request = RegionRequest {
@@ -36,45 +37,52 @@ let request = RegionRequest {
 };
 ```
 
-在 RPC 消息的接收方，需要将 tracing 上下文正确解码，并且使用该上下文构建第一个 `span` 对函数调用进行追踪。比如下面的代码就将接收到的 RPC 消息中的 `tracing_context` 使用 `TracingContext::from_w3c` 方法正确解码。并使用 `attach` 方法将新建的 `info_span!("RegionServer::handle_read")`  附上了上下文消息，从而能够跨分布式组件对调用进行追踪。 
+接收端解析 header，并把新的本地 span 挂到该 context 下：
 
 ```rust
-...
 let tracing_context = request
     .header
     .as_ref()
-    .map(|h| TracingContext::from_w3c(&h.tracing_context))
+    .map(|header| TracingContext::from_w3c(&header.tracing_context))
     .unwrap_or_default();
+
 let result = self
     .handle_read(request)
     .trace(tracing_context.attach(info_span!("RegionServer::handle_read")))
     .await?;
-...
 ```
 
-## 使用 `tracing::instrument` 对监测代码进行埋点
+Header 缺失或 context 无效时会得到空 context，请求仍可在没有 parent trace 的情况下执行。不能把一个请求的 context 复用于无关工作。
 
-我们使用 tracing 提供的 `instrument` 宏对代码进行埋点，只要将 `instrument` 宏标记在需要进行埋点的函数即可。 `instrument` 宏会每次将函数调用的参数以 `Debug` 的形式打印到 span 中。对于没有实现 `Debug` trait 的参数，或者结构体过大、参数过多，最后导致 span 过大，希望避免这些情况就需要使用 `skip_all`，跳过所有的参数打印。
+<AnchorAlias id="使用-tracinginstrument-对监测代码进行埋点" />
+
+## 使用 `tracing::instrument` 创建 span
+
+在异步边界或开销较大的操作上使用 `#[tracing::instrument]`，便于关联延迟和错误。该宏默认通过 `Debug` 记录参数。凭据、token、大 batch、查询 payload 以及不适合进入 telemetry 的完整参数必须跳过。
 
 ```rust
-#[tracing::instrument(skip_all)]
-async fn instrument_function(....) {
-    ...
+#[tracing::instrument(skip_all, fields(region_id = %region_id))]
+async fn handle_region(region_id: RegionId, request: RegionRequest) {
+    region_server.handle(request).await;
 }
 ```
 
-## 跨越 runtime 的代码埋点
+`fields(...)` 中应记录少量稳定标识符，不要记录完整请求。为每个 helper 都添加 span 会增加大量 trace 数据，却不能改善请求级调用链。
 
-Rust 的 tracing 库会自动处理埋点函数间的嵌套关系，但如果某个函数的调用跨越 runtime 的话，tracing 不能自动对这类调用进行追踪，我们需要手动跨越 runtime 去传递上下文。
+<AnchorAlias id="跨越-runtime-的代码埋点" />
+
+## 跨 runtime 传递 context
+
+把 future 移到另一个 runtime，或在当前 instrumented future 之外 spawn 任务时，可能丢失当前 parent。跨越边界前先获取 context，再在新 future 中挂载 span：
 
 ```rust
 let tracing_context = TracingContext::from_current_span();
 let handle = runtime.spawn(async move {
     handler
         .handle(query)
-        .trace(tracing_context.attach(info_span!("xxxxx")))
-    ...
+        .trace(tracing_context.attach(info_span!("background_query")))
+        .await
 });
 ```
 
-比如上面这段代码需要跨越 runtime 去进行 tracing，我们先通过 `TracingContext::from_current_span()` 获取当前 tracing 上下文，通过在另外一个 runtime 里新建一个 span，并将 span 附着在当前上下文中，我们就完成了跨越 runtime 的代码埋点，正确追踪到了调用链。
+Context 必须在 spawn 前获取。挂载的 span 只应覆盖该异步操作，避免无关任务继承同一个 parent。

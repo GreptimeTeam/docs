@@ -1,33 +1,24 @@
 ---
-keywords: [distributed querying, dist planner, dist plan, logical plan, substrait format]
-description: Describes the process of distributed querying in GreptimeDB, focusing on the dist planner and dist plan.
+keywords: [distributed querying, DistPlannerAnalyzer, MergeScan, Substrait, Region pruning]
+description: How GreptimeDB turns a logical query plan into local and remote execution stages.
 ---
 
 # Distributed Querying
 
-Most steps of querying in frontend and datanode are identical. The only difference is that
-Frontend have a "special" step in planning phase to make the logical query plan distributed.
-Let's reference it as "dist planner" in the following text.
-
-The modified, distributed logical plan has multiple stages, each of them is executed in different
-server node.
+Frontend and Datanode use the same DataFusion-based query engine. In distributed mode, Frontend adds a planning step that separates work executed on Datanodes from work completed by Frontend.
 
 ![Frontend query](/frontend-query.png)
 
 ## Dist Planner
 
-Planner will traverse the input logical plan, and split it into multiple stages by the "[commutativity
-rule](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/rfcs/2023-05-09-distributed-planner.md)".
+`DistPlannerAnalyzer` in `src/query/src/dist_plan/analyzer.rs` rewrites the DataFusion logical plan. It pushes compatible operators toward table scans and wraps remote subplans in `MergeScan` nodes. The planner uses operator commutativity and plan-shape rules to decide which work is safe to execute on each Datanode; unsupported shapes remain on Frontend or use the configured fallback path.
 
-This rule is under heavy development. At present it will consider things like:
-- whether the operator itself is commutative
-- how the partition rule is configured
-- etc...
+Filters on partition columns are also used to prune Regions. Frontend resolves each selected Region to a Datanode through `FrontendRegionQueryHandler` before execution.
+
+The original design and its commutativity rules are documented in the [distributed planner RFC](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/rfcs/2023-05-09-distributed-planner.md).
 
 ## Dist Plan
 
-Except the first stage, which have to read data from files in storage. All other stages' leaf node
-are actually a gRPC call to its previous stage.
+A `MergeScan` remote input is a complete logical subplan. Frontend serializes that subplan with Substrait and sends a Region-specific query request to the selected Datanode. The Datanode plans and executes the subplan against its local Regions and streams Arrow record batches back.
 
-Sub-plan in a stage is itself a complete logical plan, and can be executed independently without
-the follow up stages. The plan is encoded in [substrait format](https://substrait.io).
+Frontend merges the remote streams and executes any operators that could not be pushed down. This boundary is not limited to the logical `TableScan` node: filters, projections, partial aggregates, and other compatible operators may be part of a remote subplan.

@@ -1,36 +1,24 @@
 ---
-keywords: [write-ahead logging, WAL, data durability, LSMT, synchronous flush, asynchronous flush]
-description: Introduction to Write-Ahead Logging (WAL) in GreptimeDB, its purpose, architecture, and operational modes.
+keywords: [write-ahead log, WAL, recovery, raft-engine, Kafka]
+description: Mito's write-ahead log abstraction, recovery path, and durability settings.
 ---
 
 # Write-Ahead Logging
 
 ## Introduction
 
-Our storage engine is inspired by the Log-structured Merge Tree (LSMT). Mutating operations are
-applied to a MemTable instead of persisting to disk, which significantly improves performance but
-also brings durability-related issues, especially when the Datanode crashes unexpectedly. Similar
-to all LSMT-like storage engines, GreptimeDB uses a write-ahead log (WAL) to ensure data durability
-and is safe from crashing.
+Mito applies writes to an in-memory memtable before they are flushed to SST files. To recover data that has not reached an SST, it appends each Region's write operations to a write-ahead log (WAL) before applying them to the memtable.
 
-WAL is an append-only file group. All `INSERT` and `DELETE` operations are transformed into
-operation entries and then appended to WAL. Once operation entries are persisted to the underlying
-file, the operation can be further applied to MemTable.
+On Region open or Datanode restart, Mito replays WAL entries after the last persisted sequence and rebuilds the in-memory state. Sequence numbers are assigned per Region and are also used for deduplication and snapshot reads.
 
-When the Datanode restarts, operation entries in WAL are replayed to reconstruct the correct
-in-memory state.
-
-![WAL in Datanode](/wal.png)
+The WAL is accessed through the `LogStore` abstraction. Datanode supports a local `raft_engine` provider and a remote Kafka provider; the storage engine does not assume that the log is a local file. Provider construction is in `src/datanode/src/datanode.rs`, while Mito's WAL integration is in `src/mito2/src/wal.rs` and its write worker.
 
 ## Namespace
 
-Namespace of WAL is used to separate entries from different tables (different regions). Append and
-read operations must provide a Namespace. Currently, region ID is used as the Namespace, because
-each region has a MemTable that needs to be reconstructed when Datanode restarts.
+WAL entries are isolated by Region. Append and read operations use the Region ID as their namespace, allowing recovery to replay exactly the log for the Region being opened. A table may contain several Regions, so the WAL namespace is not a table identifier.
 
 ## Synchronous/Asynchronous flush
 
-By default, appending to WAL is asynchronous, which means the writer will not wait until entries are
-flushed to disk. This setting provides higher performance, but may lose data when running host shutdown unexpectedly. In the other hand, synchronous flush provides higher durability at the cost of performance.
+For the local `raft_engine` provider, `sync_write` controls whether an append waits for the log to be synced to durable storage. It defaults to `false`. Asynchronous writes reduce latency but can lose recently acknowledged entries if the host or storage fails before the buffered log is synced. Setting `sync_write = true` strengthens that durability boundary at the cost of additional write latency.
 
-In v0.4 version, the new region worker architecture can use batching to alleviate the overhead of sync flush.
+Kafka WAL durability depends on the Kafka producer and cluster settings rather than the local `sync_write` option. Code that acknowledges a write must preserve the ordering between WAL append and memtable mutation for every provider.

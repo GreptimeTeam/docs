@@ -1,35 +1,30 @@
 ---
-keywords: [setup, running from source, prerequisites, build dependencies, unit tests]
-description: Instructions for setting up and running GreptimeDB from source, including prerequisites, build dependencies, and running unit tests.
+keywords: [setup, build from source, Rust toolchain, unit tests]
+description: Set up a development environment and build, run, and test GreptimeDB from source.
 ---
 
 # Getting started
 
-This page describes how to run GreptimeDB from source in your local environment.
+This page covers the minimum setup for building and running GreptimeDB from source.
 
-## Prerequisite
+<AnchorAlias id="prerequisite" />
+
+## Prerequisites
 
 ### System & Architecture
 
-At the moment, GreptimeDB supports Linux (both amd64 and arm64), macOS (both amd64 and Apple Silicon), and Windows.
+GreptimeDB supports Linux and macOS on x86-64 and Arm64, as well as Windows.
 
 ### Build Dependencies
 
-- [Git](https://git-scm.com/book/en/v2/Getting-Started-The-Command-Line) (optional)
-- C/C++ Toolchain: provides essential tools for compiling and linking. This is available either as `build-essential` on ubuntu or a similar name on other platforms.
-- Rust nightly toolchain ([guide][1])
-  - Compile the source code
-- Protobuf ([guide][2])
-  - Compile the proto file
-  - Note that the version needs to be >= 3.15. You can check it with `protoc --version`
-- Machine: Recommended memory is 16GB or more, or use the [mold](https://github.com/rui314/mold) tool to reduce memory usage during linking.
-
-[1]: <https://www.rust-lang.org/tools/install/>
-[2]: <https://grpc.io/docs/protoc-installation/>
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-The-Command-Line).
+- A C/C++ build toolchain, such as `build-essential` on Ubuntu or Xcode Command Line Tools on macOS.
+- [Rustup](https://rustup.rs/). The repository's `rust-toolchain.toml` selects the required nightly toolchain automatically.
+- [Protocol Buffers compiler](https://grpc.io/docs/protoc-installation/) 3.15 or later. Check the installed version with `protoc --version`.
 
 ## Compile and Run
 
-Start GreptimeDB standalone instance in just a few commands!
+Clone the repository and start a standalone instance:
 
 ```shell
 git clone https://github.com/GreptimeTeam/greptimedb.git
@@ -37,34 +32,32 @@ cd greptimedb
 cargo run -- standalone start
 ```
 
-Next, you can choose the protocol you like to interact with in GreptimeDB.
-
-Or if you just want to build the server without running it:
+To build without starting the server, run:
 
 ```shell
-cargo build # --release
+cargo build
 ```
 
-The artifacts can be found under `$REPO/target/debug` or `$REPO/target/release`, depending on the build mode (whether the `--release` option is passed)
+Add `--release` for an optimized build. Artifacts are written to `target/debug` or `target/release`.
 
-## Unit test
+<AnchorAlias id="unit-test" />
 
-GreptimeDB is well-tested, the entire unit test suite is shipped with source code. To test them, run with [nextest](https://nexte.st/index.html).
+## Unit tests
 
-To install nextest using cargo, run:
+GreptimeDB uses [cargo-nextest](https://nexte.st/) as its standard Rust test runner. Install it with:
 
 ```shell
 cargo install cargo-nextest --locked
 ```
 
-Or you can check their [docs](https://nexte.st/docs/installation/pre-built-binaries/) for other ways to install.
-
-After nextest is ready, you can run the test suite with:
+Run the workspace test suite with the features used by CI:
 
 ```shell
 cargo nextest run --workspace --features pg_kvbackend,mysql_kvbackend
 ```
 
+For package-scoped tests and other test types, see the [testing guide](./tests/overview.md).
+
 ## Docker
 
-We also provide prebuilt binaries via Docker, available on Docker Hub: [https://hub.docker.com/r/greptime/greptimedb](https://hub.docker.com/r/greptime/greptimedb)
+Prebuilt images are published to [Docker Hub](https://hub.docker.com/r/greptime/greptimedb). They are useful for running GreptimeDB, but do not replace the source build when developing or testing code changes.

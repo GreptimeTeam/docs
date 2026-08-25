@@ -1,53 +1,45 @@
 ---
-keywords: [SQL tests, sqlness, test suite, test cases, test output]
-description: Instructions for running SQL tests in GreptimeDB using the `sqlness` test suite, including file types, case organization, and running tests.
+keywords: [SQL tests, sqlness, golden files, standalone, distributed]
+description: Add and run sqlness regression cases for user-visible query behavior.
 ---
 
 # Sqlness Test
 
 ## Introduction
 
-SQL is an important user interface for `GreptimeDB`. We have a separate test suite for it (named `sqlness`).
+Sqlness is GreptimeDB's golden-file test harness for SQL and query behavior. It builds and starts the requested GreptimeDB environment, executes case files, and compares the output with checked-in results. The harness and its current options are documented in [`tests/README.md`](https://github.com/GreptimeTeam/greptimedb/blob/main/tests/README.md).
 
 ## Sqlness manual
 
 ### Case file
 
-Sqlness has two types of file
+Each case has two files:
 
-- `.sql`: test input, SQL only
-- `.result`: expected test output, SQL and its results
+- `.sql` contains the statements and sqlness directives.
+- `.result` contains the expected statements and output.
 
-The `.result` file is the expected execution output. If you see `.result` files changed,
-it means the test gets a different result and indicates it may fail. You should
-check the change logs to solve the problem.
-
-You only need to write test SQL in the `.sql` file, and run the test.
+Edit the `.sql` input first, run sqlness, and review the resulting `.result` diff. A changed result can be the intended new behavior or a regression; the harness cannot decide which one. Commit a result change only after checking every changed row and error message.
 
 ### Case organization
 
-The root dir of input cases is `tests/cases`. It contains several sub-directories stand for different test
-modes. E.g., `standalone/` contains all the tests to run under `greptimedb standalone start` mode.
+Cases live under `tests/cases/`. The first directory level selects an environment, such as `standalone/`; directories below it organize related cases. Sqlness discovers case files recursively.
 
-Under the first level of sub-directory (e.g. the `cases/standalone`), you can organize your cases as you like.
-Sqlness walks through every file recursively and runs them.
+Place a regression in the environment where the behavior is observable. Distributed planning, routing, and multi-node metadata behavior require a distributed case even when an equivalent standalone query also succeeds.
 
 ## Run the test
 
-Unlike other tests, this harness is in a binary target form. You can run it with
+The repository defines a cargo alias for the harness:
 
 ```shell
-cargo run --bin sqlness-runner bare
+cargo sqlness bare
 ```
 
-It automatically finishes the following procedures: compile `GreptimeDB`, start it, grab tests and feed it to
-the server, then collect and compare the results. You only need to check whether any `.result` files changed.
-If not, congratulations, the test is passed 🥳!
+This command builds GreptimeDB, starts the test environment, runs the cases, and updates or compares `.result` files. Inspect both the command result and `git diff`.
 
 ### Run a specific test
 
 ```shell
-cargo sqlness bare -t your_test
+cargo sqlness bare -t 'standalone:your_case'
 ```
 
-The `-t` or `--test-filter` option accepts a regex string. Sqlness examines case names in the format of `env:case`.
+`-t`/`--test-filter` accepts a regular expression and matches case names in `env:case` form. Use a narrow filter while iterating, then run the affected environment or full suite before submission.
