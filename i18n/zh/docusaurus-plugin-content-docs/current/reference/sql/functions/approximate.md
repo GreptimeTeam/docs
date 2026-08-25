@@ -21,22 +21,22 @@ HLL 返回估计值，而非精确计数。其相对标准误差约为 `1.04 / s
 
 ### `hll`
 
-`hll(value)` 将每个值转换为 `STRING`，再聚合为二进制 HLL 状态。该状态可以存入 `BINARY` 列、与其他状态合并，或传给 `hll_count`。
+`hll(value)` 将每个值转换为 `STRING`，再聚合为二进制 HLL 状态。该状态可以存入 `BINARY` 列、与其他状态合并，或传给 `hll_count`。持久化状态后，可以在不保留或扫描全部原始值的情况下计算后续聚合结果。
 
 ### `hll_merge`
 
-`hll_merge(hll_state)` 将 [`hll`](#hll) 生成的多个二进制状态聚合为一个状态，可用于合并不同分组或时间窗口的 sketch。
+`hll_merge(hll_state)` 将 [`hll`](#hll) 生成的多个二进制状态聚合为一个状态，可用于合并不同分组、时间窗口或数据源的 sketch。这支持分阶段聚合：先按一种粒度创建并保存状态，再将其合并成粒度更大的聚合结果。
 
 
 ### `hll_count`
 
-`hll_count(hll_state)` 从 `hll` 创建或 `hll_merge` 合并的状态中返回近似去重计数。
+`hll_count(hll_state)` 从 `hll` 创建或 `hll_merge` 合并的状态中返回近似去重计数。HLL 状态是二进制中间值，并非可直接阅读的计数；查询返回估计值时需要使用 `hll_count`。
 
 ### 完整使用示例
 
-以下示例按时间窗口计算近似去重用户数。
+以下示例按时间窗口计算近似去重用户数。示例先根据原始访问记录创建并存储紧凑状态，再读取或合并状态以生成不同时间粒度的结果。
 
-创建存储原始数据的 `access_log` 表，以及每个 10 秒窗口存储一个二进制 HLL 状态的 `access_log_10s` 表。
+创建存储原始数据的 `access_log` 表，以及每个 10 秒窗口存储一个二进制 HLL 状态的 `access_log_10s` 表。`BINARY` 状态列保存后续计算计数和聚合所需的 sketch。
 ```sql
 CREATE TABLE access_log (
     `url` STRING,
@@ -67,7 +67,7 @@ INSERT INTO access_log VALUES
         ("/not_found", 4, "2025-03-04 00:00:12");
 ```
 
-将数据按 10 秒窗口分组，并为每个 URL 和窗口存储一个 HLL 状态：
+将数据按 10 秒窗口分组，并为每个 URL 和窗口存储一个 HLL 状态。`date_bin` 将每行数据归入对应窗口，`hll` 聚合该分组中的用户 ID：
 ```sql
 -- 使用 10 秒窗口查询来计算 HyperLogLog 状态：
 INSERT INTO
@@ -84,7 +84,7 @@ GROUP BY
 -- 结果类似：
 -- Query OK, 3 rows affected (0.05 sec)
 ```
-从每个已存储的状态中读取近似去重计数：
+从每个已存储的状态中读取近似去重计数。对于数据量很小的分组，精确计数可能更合适，因为 HLL 面向高基数场景并返回估计值：
 ```sql
 -- 使用 `hll_count` 查询 `access_log_10s` 中的近似数据，请注意对于小型数据集，结果可能不是很准确。
 SELECT `url`, `time_window`, hll_count(state) FROM access_log_10s;
@@ -99,7 +99,7 @@ SELECT `url`, `time_window`, hll_count(state) FROM access_log_10s;
 -- +------------+---------------------+---------------------------------+
 ```
 
-合并 10 秒窗口的状态，计算每个 1 分钟窗口的近似去重计数。把已存储状态聚合为更大的时间窗口可用于趋势分析：
+合并 10 秒窗口的状态，计算每个 1 分钟窗口的近似去重计数。HLL 状态可以组合，因此该聚合无需再次扫描原始访问记录，适合用于趋势分析：
 ```sql
 -- 使用 `hll_merge` 合并 HyperLogLog 状态，将 10 秒的数据聚合到 1 分钟级别。
 SELECT
@@ -136,22 +136,22 @@ UDDSketch 可以在有限内存中快速计算近似分位数。内存使用和�
 
 ### `uddsketch_state`
 
-`uddsketch_state(bucket_num, error_rate, value)` 将 `DOUBLE` 值聚合为二进制状态。
+`uddsketch_state(bucket_num, error_rate, value)` 将 `DOUBLE` 值聚合为二进制状态。该状态使用对数 bucket 对数值分布进行紧凑汇总，而不保留每个输入值。
 
 - `bucket_num`：sketch 的最大 bucket 数量。
 - `error_rate`：初始相对误差上限。
 - `value`：要聚合的 `DOUBLE` 表达式。
 
-该状态可以存入 `BINARY` 列、使用 `uddsketch_merge` 合并，或使用 `uddsketch_calc` 查询。
+该状态可以存入 `BINARY` 列、使用 `uddsketch_merge` 合并，或使用 `uddsketch_calc` 查询。后续查询需要按多种时间粒度计算分位数时，存储状态可以避免重复处理原始值。
 
 ### `uddsketch_merge`
 
-`uddsketch_merge(bucket_num, error_rate, udd_state)` 将多个二进制 UDDSketch 状态聚合为一个状态。`bucket_num` 和 `error_rate` 必须与创建输入状态时的参数一致。
+`uddsketch_merge(bucket_num, error_rate, udd_state)` 将多个二进制 UDDSketch 状态聚合为一个状态，可用于合并不同分组、时间窗口或数据源的分布，而无需重新读取原始值。`bucket_num` 和 `error_rate` 必须与创建输入状态时的参数一致，否则合并失败。
 
 
 ### `uddsketch_calc`
   
-`uddsketch_calc(quantile, udd_state)` 从 `uddsketch_state` 创建或 `uddsketch_merge` 合并的状态中返回分位数估计值。
+`uddsketch_calc(quantile, udd_state)` 从 `uddsketch_state` 创建或 `uddsketch_merge` 合并的状态中返回分位数估计值。它不会修改状态，因此同一个已存储状态可以用于计算多个分位数。
 
 - `quantile`：取值范围为 0 到 1；例如 `0.99` 表示第 99 百分位数。
 - `udd_state`：二进制 UDDSketch 状态。
@@ -167,9 +167,9 @@ UDDSketch 可以在有限内存中快速计算近似分位数。内存使用和�
 这两个参数用于权衡内存与准确性。较小的 `error_rate` 需要足够多的桶来覆盖数据的动态范围。如果 `bucket_num` 过小，继续减小 `error_rate` 无法避免桶压缩及最大误差上升。
 
 ### UDDSketch 完整使用示例
-本示例演示了如何使用上述三个 `uddsketch` 函数来计算一组值的近似分位数。
+本示例演示如何结合上述三个 `uddsketch` 函数计算近似分位数：先为每个 5 秒窗口保存一个状态，计算各状态的 p99，再合并这些状态得到 1 分钟粒度的结果。
 
-首先创建用于存储原始数据的基表 `percentile_base`，以及用于存储 5 秒时间窗口内 UDDSketch 状态的 `percentile_5s` 表。请注意，`percentile_state` 列的类型为 `BINARY`，它将以二进制格式存储 UDDSketch 状态。
+首先创建用于存储原始数据的基表 `percentile_base`，以及用于存储 5 秒时间窗口内 UDDSketch 状态的 `percentile_5s` 表。`percentile_state` 列以 `BINARY` 格式存储 sketch，后续查询可以直接计算或合并分位数，而无需扫描原始表。
 ```sql
 CREATE TABLE percentile_base (
     `id` INT PRIMARY KEY,
@@ -198,7 +198,7 @@ INSERT INTO percentile_base (`id`, `value`, `ts`) VALUES
     (10, 100.0, 10);
 ```
 
-将数据按 5 秒窗口分组，并为每个窗口存储一个 UDDSketch 状态：
+将数据按 5 秒窗口分组，并为每个窗口存储一个 UDDSketch 状态。`date_bin` 将输入值归入对应窗口，`uddsketch_state` 汇总该分组中的数值分布：
 
 ```sql
 INSERT INTO
@@ -214,7 +214,7 @@ GROUP BY
 -- Query OK, 3 rows affected (0.05 sec)
 ```
 
-计算每个已存储状态的 p99：
+计算每个已存储状态的 p99。分位数参数 `0.99` 表示估算约 99% 的观测值不超过的数值：
 ```sql
 -- 查询 percentile_5s 以获取近似第 99 百分位数
 SELECT
@@ -232,7 +232,7 @@ FROM
 -- | 1970-01-01 00:00:10 | 100.49456770856492 |
 -- +---------------------+--------------------+
 ```
-合并 5 秒窗口的状态，计算每个 1 分钟窗口的 p99。把已存储状态聚合为更大的时间窗口可用于趋势分析：
+合并 5 秒窗口的状态，计算每个 1 分钟窗口的 p99。`uddsketch_merge` 合并已存储的分布，外层 `uddsketch_calc` 再从合并状态中读取 p99，因此无需根据原始数据重新构建 1 分钟分布：
 ```sql
 -- 此外，我们可以通过使用 `uddsketch_merge` 合并 UDDSketch 状态，将 5 秒的数据聚合到 1 分钟级别。
 SELECT

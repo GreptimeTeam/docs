@@ -21,21 +21,21 @@ HLL returns an estimate rather than an exact count. Its relative standard error 
 
 ### `hll`
 
-`hll(value)` coerces each value to `STRING` and aggregates it into a binary HLL state. The state can be stored in a `BINARY` column, merged with other states, or passed to `hll_count`.
+`hll(value)` coerces each value to `STRING` and aggregates it into a binary HLL state. The state can be stored in a `BINARY` column, merged with other states, or passed to `hll_count`. Persisting the state makes it possible to calculate later rollups without retaining or scanning every original value.
 
 ### `hll_merge`
 
-`hll_merge(hll_state)` aggregates binary states produced by [`hll`](#hll) into one state. Use it to combine sketches from different groups or time windows.
+`hll_merge(hll_state)` aggregates binary states produced by [`hll`](#hll) into one state. Use it to combine sketches from different groups, time windows, or data sources. This supports staged aggregation: a query can create and store states at one granularity, then merge them into larger rollups later.
 
 
 ### `hll_count`
 
-`hll_count(hll_state)` returns the approximate distinct count from a state produced by `hll` or `hll_merge`.
+`hll_count(hll_state)` returns the approximate distinct count from a state produced by `hll` or `hll_merge`. HLL states are binary intermediate values rather than human-readable counts, so apply `hll_count` when returning the estimate to a query.
 
 ### Full Usage Example
-This example calculates approximate distinct user counts by time window.
+This example calculates approximate distinct user counts by time window. It first creates compact states from raw access records, stores those states, and then reads or merges them for different reporting windows.
 
-Create `access_log` for source rows and `access_log_10s` for one binary HLL state per 10-second window.
+Create `access_log` for source rows and `access_log_10s` for one binary HLL state per 10-second window. The `BINARY` state column preserves the sketch needed for later counts and rollups.
 ```sql
 CREATE TABLE access_log (
     `url` STRING,
@@ -66,7 +66,7 @@ INSERT INTO access_log VALUES
         ("/not_found", 4, "2025-03-04 00:00:12");
 ```
 
-Group rows into 10-second windows and store one HLL state for each URL and window:
+Group rows into 10-second windows and store one HLL state for each URL and window. `date_bin` assigns each row to a window, and `hll` aggregates the user IDs in that group:
 ```sql
 -- Use a 10-second windowed query to calculate the HyperLogLog states
 INSERT INTO
@@ -84,7 +84,7 @@ GROUP BY
 -- Query OK, 3 rows affected (0.05 sec)
 ```
 
-Read the approximate distinct count from each stored state:
+Read the approximate distinct count from each stored state. For very small groups, an exact count can be more appropriate because HLL is designed for large cardinalities and returns an estimate:
 ```sql
 -- use hll_count to query approximate data in access_log_10s, notice for small datasets, the results may not be very accurate.
 SELECT `url`, `time_window`, hll_count(state) FROM access_log_10s;
@@ -99,7 +99,7 @@ SELECT `url`, `time_window`, hll_count(state) FROM access_log_10s;
 -- +------------+---------------------+---------------------------------+
 ```
 
-Merge the 10-second states to calculate a distinct count for each one-minute window. Aggregating stored states into larger windows is useful for trend analysis:
+Merge the 10-second states to calculate a distinct count for each one-minute window. Because HLL states are composable, this rollup does not need to scan the original access records again and is useful for trend analysis:
 ```sql
 -- aggregate the 10-second data to a 1-minute level by merging the HyperLogLog states using `hll_merge`.
 SELECT
@@ -136,22 +136,22 @@ UDDSketch provides fast approximate quantiles with bounded memory use. Its memor
 
 ### `uddsketch_state`
 
-`uddsketch_state(bucket_num, error_rate, value)` aggregates `DOUBLE` values into a binary state.
+`uddsketch_state(bucket_num, error_rate, value)` aggregates `DOUBLE` values into a binary state. The state is a compact summary of the value distribution, organized into logarithmic buckets rather than retaining every input value.
 
 - `bucket_num`: Maximum number of buckets in the sketch.
 - `error_rate`: Initial relative-error bound.
 - `value`: `DOUBLE` expression to aggregate.
 
-The state can be stored in a `BINARY` column, merged with `uddsketch_merge`, or queried with `uddsketch_calc`.
+The state can be stored in a `BINARY` column, merged with `uddsketch_merge`, or queried with `uddsketch_calc`. Storing states is useful when later queries need quantiles at several time granularities.
 
 ### `uddsketch_merge`
 
-`uddsketch_merge(bucket_num, error_rate, udd_state)` aggregates binary UDDSketch states into one state. `bucket_num` and `error_rate` must match the parameters used to create the input states.
+`uddsketch_merge(bucket_num, error_rate, udd_state)` aggregates binary UDDSketch states into one state. Use it to combine distributions from different groups, time windows, or data sources without rereading the original values. `bucket_num` and `error_rate` must match the parameters used to create the input states; otherwise, the merge fails.
 
 
 ### `uddsketch_calc`
 
-`uddsketch_calc(quantile, udd_state)` returns a quantile estimate from a state created by `uddsketch_state` or `uddsketch_merge`.
+`uddsketch_calc(quantile, udd_state)` returns a quantile estimate from a state created by `uddsketch_state` or `uddsketch_merge`. It reads the state without changing it, so the same stored state can be used to calculate several quantiles.
 
 - `quantile`: Value from 0 through 1; for example, `0.99` requests the 99th percentile.
 - `udd_state`: Binary UDDSketch state.
@@ -167,9 +167,9 @@ The `error_rate` sets the initial relative-error bound used to map values to buc
 These parameters trade memory for accuracy. A small `error_rate` requires enough buckets for the data's dynamic range. If `bucket_num` is too small, decreasing `error_rate` does not prevent compaction or the resulting increase in maximum error.
 
 ### UDDSketch Full Usage Example
-This example combines the three `uddsketch` functions to calculate approximate quantiles.
+This example combines the three `uddsketch` functions to calculate approximate quantiles. It stores one state per five-second window, calculates p99 from each state, and then merges those states for a one-minute rollup.
 
-Create `percentile_base` for the raw data and `percentile_5s` for the UDDSketch states in each five-second window. The `percentile_state` column stores the binary sketch state.
+Create `percentile_base` for the raw data and `percentile_5s` for the UDDSketch states in each five-second window. The `percentile_state` column stores the binary sketch state so that later queries can calculate or merge quantiles without scanning the raw table.
 ```sql
 CREATE TABLE percentile_base (
     `id` INT PRIMARY KEY,
@@ -198,7 +198,7 @@ INSERT INTO percentile_base (`id`, `value`, `ts`) VALUES
     (10, 100.0, 10);
 ```
 
-Group rows into five-second windows and store one UDDSketch state for each window:
+Group rows into five-second windows and store one UDDSketch state for each window. `date_bin` assigns input values to a window, and `uddsketch_state` summarizes the distribution in that group:
 
 ```sql
 INSERT INTO
@@ -214,7 +214,7 @@ GROUP BY
 -- Query OK, 3 rows affected (0.05 sec)
 ```
 
-Calculate p99 for each stored state:
+Calculate p99 for each stored state. The quantile argument `0.99` asks for an estimate of the value below which approximately 99% of the observations fall:
 ```sql
 -- query percentile_5s to get the approximate 99th percentile
 SELECT
@@ -232,7 +232,7 @@ FROM
 -- | 1970-01-01 00:00:10 | 100.49456770856492 |
 -- +---------------------+--------------------+
 ```
-Merge the five-second states to calculate p99 for each one-minute window. Aggregating stored states into larger windows is useful for trend analysis:
+Merge the five-second states to calculate p99 for each one-minute window. `uddsketch_merge` combines the stored distributions, and the outer `uddsketch_calc` reads p99 from the merged state. This avoids rebuilding the one-minute distribution from raw rows:
 ```sql
 -- in addition, we can aggregate the 5-second data to a 1-minute level by merging the UDDSketch states using `uddsketch_merge`.
 SELECT

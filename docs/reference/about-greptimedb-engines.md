@@ -23,9 +23,11 @@ The Metric Engine is optimized for metrics workloads that create many small logi
 
 Multiple logical tables share wide physical tables, which lets the engine reuse columns and metadata instead of creating separate physical storage for every logical table. This reduces storage and metadata overhead, improves columnar compression, and improves query efficiency for metrics workloads. The physical tables are stored by Mito.
 
+Applications continue to create and query logical tables independently. Sharing a physical table is an internal storage optimization; it does not merge the logical schemas or query interfaces of those tables.
+
 ### File Engine
 
-The File Engine backs tables created with `CREATE EXTERNAL TABLE`. It reads CSV, JSON, Parquet, and ORC files from local or object storage without importing or converting the data. File Engine tables are read-only and use GreptimeDB's query engine when processing external files.
+The File Engine backs tables created with `CREATE EXTERNAL TABLE`. It reads CSV, JSON, Parquet, and ORC files from local or object storage without importing or converting the data. File Engine tables are read-only and use GreptimeDB's query engine when processing external files. They can participate in SQL queries alongside regular GreptimeDB tables, which is useful for exploring or correlating existing file data before deciding whether to import it.
 
 ## Engine Selection Guide
 

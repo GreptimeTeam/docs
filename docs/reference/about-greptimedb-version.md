@@ -12,10 +12,13 @@ GreptimeDB follows [Semantic Versioning](https://semver.org/) and uses version n
 - `3` is the patch version.
 
 ## Major release(1)
-The major version changes when a release contains incompatible API or behavior changes.
+
+The major version changes when a release contains incompatible API or behavior changes. Upgrading to a new major version may require changes to clients, configuration, or deployment procedures, so review the release's upgrade notes before migrating.
 
 ## Minor release(2)
-The minor version changes when a release adds backward-compatible functionality.
+
+The minor version changes when a release adds backward-compatible functionality. A minor release can introduce SQL features, APIs, configuration options, or operational capabilities while keeping existing public interfaces compatible.
 
 ## Revision number(3)
-The patch version changes when a release contains backward-compatible bug fixes, security fixes, or performance improvements.
+
+The patch version changes when a release contains backward-compatible bug fixes, security fixes, or performance improvements. Patch releases do not intentionally introduce incompatible changes to public interfaces.
