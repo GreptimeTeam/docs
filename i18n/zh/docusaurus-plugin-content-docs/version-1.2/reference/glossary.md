@@ -34,6 +34,8 @@ description: 本文档解释 GreptimeDB 在可观测数据、存储、查询和�
 
 ---
 
+<AnchorAlias id="d-1" />
+
 ## D
 
 ### Datanode (数据节点)
@@ -100,6 +102,8 @@ GreptimeDB 的全托管数据库服务，提供托管的 GreptimeDB 实例，并
 
 ---
 
+<AnchorAlias id="l-1" />
+
 ## L
 
 ### Log Aggregation (日志聚合)
@@ -115,6 +119,8 @@ Logical table 是用户创建和查询的表，physical table 是内部实际保
 GreptimeDB 存储引擎采用的数据结构，通过先将数据写入日志再定期合并为有序结构来优化写入性能。该设计特别适合高写入吞吐量的时序工作负载。
 
 ---
+
+<AnchorAlias id="m-1" />
 
 ## M
 
@@ -183,6 +189,8 @@ GreptimeDB 架构中数据分布的基本单元。Region 包含表数据的子�
 对到达的数据流进行连续实时处理的技术。GreptimeDB 的 Flow Engine 通过 batching mode 提供持续聚合能力；其原始的 streaming mode 已经废弃，不推荐新 workload 使用。
 
 ---
+
+<AnchorAlias id="t-1" />
 
 ## T
 

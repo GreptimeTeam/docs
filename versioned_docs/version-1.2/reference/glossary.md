@@ -32,6 +32,8 @@ A data layout that stores values by column rather than by row. Queries can read 
 
 ---
 
+<AnchorAlias id="d-1" />
+
 ## D
 
 ### Datanode
@@ -100,6 +102,8 @@ The ability of systems to exchange data through compatible interfaces. GreptimeD
 
 ---
 
+<AnchorAlias id="l-1" />
+
 ## L
 
 ### Log Aggregation
@@ -115,6 +119,8 @@ The overall process of handling log data, including collection, storage, analysi
 A data structure used by GreptimeDB's storage engine that optimizes write performance by initially writing data to a log and periodically merging these logs into sorted structures. This design is particularly effective for time-series workloads with high write throughput.
 
 ---
+
+<AnchorAlias id="m-1" />
 
 ## M
 
@@ -141,6 +147,8 @@ A measure of how well a system's internal state can be inferred from its outputs
 An open-source framework with APIs, SDKs, and protocols for collecting and exporting metrics, logs, and traces. GreptimeDB accepts these signals through OTLP/HTTP.
 
 ---
+
+<AnchorAlias id="p-1" />
 
 ## P
 
@@ -183,6 +191,8 @@ A standardized language for defining, managing, and querying relational data. Gr
 The continuous, real-time processing of data streams as they arrive. GreptimeDB's Flow Engine provides continuous aggregation through batching mode; its original streaming mode is deprecated and is not recommended for new workloads.
 
 ---
+
+<AnchorAlias id="t-1" />
 
 ## T
 

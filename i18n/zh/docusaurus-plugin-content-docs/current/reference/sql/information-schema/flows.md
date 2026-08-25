@@ -33,7 +33,7 @@ DESC TABLE INFORMATION_SCHEMA.FLOWS;
 * `table_catalog`: 该 Flow 所属的目录，命名为 `table_catalog` 以保持与 `INFORMATION_SCHEMA` 标准一致。
 * `flow_definition`: Flow 任务的定义，是用于创建 Flow 任务的 SQL 语句。
 * `comment`: Flow 任务的注释。
-* `expire_after`: Flow 任务的过期时间。
+* `expire_after`: Flow 任务的保留时长，单位为秒。
 * `source_table_ids`: Flow 任务的源表 id。
 * `sink_table_name`: Flow 任务的目标表名称。
 * `flownode_ids`: Flow 任务使用的 flownode id。

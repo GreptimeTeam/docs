@@ -311,7 +311,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 
 #### Create a physical table with metric engine
 
-The metric engine use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. For details, please refer to the [metric engine document](/contributor-guide/datanode/metric-engine) and [Table Engines](/reference/about-greptimedb-engines.md)  introduction.
+The metric engine use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. For details, please refer to the [metric engine document](/contributor-guide/datanode/metric-engine.md) and [Table Engines](/reference/about-greptimedb-engines.md)  introduction.
 
 Create a physical table with the metric engine.
 ```sql
@@ -421,7 +421,7 @@ For more information on the `INDEX` column option, please refer to the [Data Ind
 
 ### Region partition rules
 
-Please refer to [Partition](/contributor-guide/frontend/table-sharding.md#partition) for more details.
+Please refer to [Partition](/user-guide/deployments-administration/manage-data/table-sharding.md#partition) for more details.
 
 ## CREATE EXTERNAL TABLE
 

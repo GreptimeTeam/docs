@@ -371,7 +371,7 @@ CREATE TABLE IF NOT EXISTS `raw_logs` (
 ```
 
 `message` 字段使用 `FULLTEXT INDEX` 选项进行全文索引。
-更多信息请参见[fulltext 列选项](/reference/sql/create.md#index-column-option)。
+更多信息请参见[fulltext 列选项](/reference/sql/alter.md#创建列的索引)。
 
 存储和查询结构化日志通常比带有全文索引的非结构化日志性能更好。
 建议[使用 Pipeline](/user-guide/logs/use-custom-pipelines.md#create-a-pipeline) 将日志转换为结构化日志。

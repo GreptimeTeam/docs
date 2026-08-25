@@ -1,6 +1,6 @@
 ---
 keywords: [HTTP API, endpoints, health check, status, metrics, configuration, query APIs, PromQL, InfluxDB, OpenTelemetry]
-description: Provides a full list of HTTP paths and their usage in GreptimeDB, including admin APIs, query endpoints, and protocol endpoints.
+description: Describes commonly used GreptimeDB HTTP paths, including admin APIs, query endpoints, and protocol endpoints.
 ---
 
 # HTTP API Endpoint List
@@ -10,27 +10,27 @@ GreptimeDB provides two HTTP servers:
 | Server | Default address | Purpose |
 |--------|----------------|---------|
 | **Main HTTP server** | `127.0.0.1:4000` | Internal / operational use. Serves all paths, including admin endpoints such as `/health`, `/metrics`, `/config`, and `/debug/*`, as well as all `/v1` and `/dashboard` paths. Keep this port private and accessible only by trusted operators. |
-| **Public HTTP API server** | `127.0.0.1:4006` | User-facing access. Serves only `/v1` APIs and `/dashboard`. Safe to expose to database end-users. Disabled by default; enable it with `http.enable_api_server = true` in your configuration file. |
+| **Public HTTP API server** | `127.0.0.1:4006` | User-facing API traffic. Serves only `/v1` APIs and `/dashboard`, excluding the admin endpoints. Disabled by default; enable it with `http.enable_api_server = true` in your configuration file. |
 
-We recommend keeping the main HTTP server port for internal/operational use only. Alternatively, it can be safely exposed through an HTTP proxy, provided direct access is restricted and the proxy allows only the required protocols. But If you want to expose GreptimeDB as a service to end-users, enable the dedicated public API server and expose only its port.
+Keep the main HTTP server private. The public API server reduces the exposed route surface, but route filtering does not provide authentication or transport security. With no `user_provider` configured, GreptimeDB accepts requests without authentication. Before allowing external access, configure authentication, TLS, and network access controls, either directly or through a reverse proxy.
 
 ```toml
 [http]
 # Main HTTP server — keep this internal
 addr = "127.0.0.1:4000"
 
-# Enable the public API server and bind it to an externally accessible address
+# Enable the public API server for access through a local reverse proxy
 enable_api_server = true
-api_server_addr = "0.0.0.0:4006"
+api_server_addr = "127.0.0.1:4006"
 ```
 
 See the [configuration documentation](/user-guide/deployments-administration/configuration.md#protocol-options) for all `[http]` options.
 
-Here is the full list for the various HTTP paths and their usage in GreptimeDB:
+The following sections describe the commonly used HTTP paths:
 
 ## Admin APIs
 
-Endpoints that is not versioned (under `/v1`). For admin usage like health check, status, metrics, etc.
+Unversioned endpoints outside `/v1`, used for health checks, status, metrics, and other administrative operations.
 
 :::note
 Admin API endpoints are available **only** on the main HTTP server (default port `4000`). They are not exposed by the dedicated public API server even when `http.enable_api_server` is enabled.
@@ -129,7 +129,7 @@ is_strict_mode = false
 - **Description**: Provides access to the server's dashboard interface.
 - **Usage**: Access these endpoints to interact with the web-based dashboard.
 
-This dashboard is packaged with the GreptimeDB server and provides a user-friendly interface for interacting with the server. It requires corresponding compile flags to be enabled when building GreptimeDB. The original source code for the dashboard can be found at https://github.com/GreptimeTeam/dashboard
+The dashboard is packaged with GreptimeDB when the corresponding build feature is enabled. Its source code is in the [GreptimeDB Dashboard repository](https://github.com/GreptimeTeam/dashboard).
 
 ### Log Level
 
@@ -204,7 +204,7 @@ For operational guidance, see [Collect profiling data](/user-guide/deployments-a
 
 ## Query Endpoints
 
-Various query APIs for sending query to GreptimeDB.
+These endpoints execute SQL, PromQL, or structured log queries.
 
 ### SQL API
 
@@ -224,6 +224,13 @@ For more information on the SQL API, refer to the [HTTP API documentation](/user
 
 For more information on the Format SQL API, refer to the [HTTP API documentation](/user-guide/protocols/http.md#format-sql-with-greptimedbs-sql-dialect) in the user guide.
 
+### Parse SQL API
+
+- **Path**: `/v1/sql/parse`
+- **Methods**: `GET`, `POST`
+- **Description**: Parses SQL and returns the GreptimeDB statement representation without executing it.
+- **Usage**: Pass SQL in the `sql` query parameter or in an `application/x-www-form-urlencoded` form body.
+
 ### PromQL API
 
 - **Path**: `/v1/promql`
@@ -235,7 +242,7 @@ For more information on the PromQL API, refer to the [PromQL documentation](/use
 
 ## Protocol Endpoints
 
-Endpoints for various protocols that are compatible with GreptimeDB. Like InfluxDB, Prometheus, OpenTelemetry, etc.
+These endpoints implement selected APIs from InfluxDB, Prometheus, OpenTelemetry, Loki, Splunk HEC, and OpenTSDB.
 
 ### InfluxDB Compatibility
 
@@ -274,6 +281,7 @@ The detailed documentation for InfluxDB protocol can be found at [here](/user-gu
   - `/query`
   - `/query_range`
   - `/labels`
+  - `/metadata`
   - `/series`
   - `/parse_query`
   - `/label/{label_name}/values`
@@ -314,18 +322,16 @@ Refer to the original Prometheus documentation for more information on the [Prom
 - **Description**: Supports data ingestion using the OpenTSDB protocol.
 - **Usage**: Ingest time series data using OpenTSDB's JSON format.
 
-## Log Ingestion Endpoints
+## Log and Pipeline Endpoints
 
-- **Paths**:
-  - `/v1/ingest`
-  - `/v1/pipelines/{pipeline_name}`
-  - `/v1/pipelines/_dryrun`
-- **Methods**:
-  - `POST` for ingesting logs and adding pipelines.
-  - `DELETE` for deleting pipelines.
-- **Description**: Provides endpoints for log ingestion and pipeline management.
-- **Usage**:
-  - Ingest logs via the `/logs` endpoint.
-  - Manage log pipelines using the `/pipelines` endpoints.
+| Path | Methods | Description |
+| --- | --- | --- |
+| `/v1/ingest` | `POST` | Ingests logs through a Pipeline. |
+| `/v1/logs` | `GET`, `POST` | Executes a structured log query. The request uses a JSON body; `POST` is the usual method. |
+| `/v1/pipelines/{pipeline_name}` | `GET` | Returns a Pipeline definition. |
+| `/v1/pipelines/{pipeline_name}` | `POST` | Creates or replaces a Pipeline. |
+| `/v1/pipelines/{pipeline_name}` | `DELETE` | Deletes a Pipeline. |
+| `/v1/pipelines/{pipeline_name}/ddl` | `GET` | Returns the table DDL inferred from a Pipeline. |
+| `/v1/pipelines/_dryrun` | `POST` | Runs a Pipeline against sample input without ingesting the result. |
 
-For more information on log ingestion and pipeline management, refer to the [log overview](/user-guide/logs/overview.md).
+See [Log overview](/user-guide/logs/overview.md), [Log query](/user-guide/query-data/log-query.md), and [Pipeline configuration](/reference/pipeline/pipeline-config.md).

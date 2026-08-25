@@ -157,5 +157,5 @@ processors:
 
 ## 示例
 
-请参考[快速开始](/user-guide/logs/quick-start.md)和[使用自定义 pipeline 中的](/user-guide/logs/use-custom-pipelines.md#使用-pipeline-写入日志)写入日志部分的文档。
+请参考[快速开始](/user-guide/logs/quick-start.md#直接通过-http-写入日志)和[使用自定义 pipeline 中的](/user-guide/logs/use-custom-pipelines.md#使用-pipeline-写入日志)写入日志部分的文档。
 

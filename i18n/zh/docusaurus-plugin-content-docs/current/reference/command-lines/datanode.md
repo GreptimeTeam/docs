@@ -1,6 +1,6 @@
 ---
 keywords: [GreptimeDB datanode, 命令行界面, datanode 配置, datanode 启动, datanode 选项, datanode 示例]
-description: GreptimeDB datanode 命令行界面完整指南，包括配置选项、启动命令以及部署 datanode 实例的实用示例。
+description: GreptimeDB datanode 的启动与诊断命令行选项和示例。
 ---
 
 # Datanode
@@ -13,7 +13,7 @@ description: GreptimeDB datanode 命令行界面完整指南，包括配置选�
 
 ### 选项
 
-你可以通过以下命令列出所有选项：
+运行以下命令查看当前二进制支持的选项：
 
 ```
 greptime datanode start --help
@@ -21,12 +21,14 @@ greptime datanode start --help
 
 | 选项                                  | 描述                                                                                                                                            |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-c`/`--config-file`                  | Datanode 的配置文件                                                                                                                             |
-| `--data-home`                         | 数据库存储 home 目录                                                                                                                            |
+| `-c`/`--config-file <CONFIG_FILE>`    | Datanode 的配置文件                                                                                                                             |
+| `--data-home <DATA_HOME>`             | 数据库存储 home 目录                                                                                                                            |
 | `--env-prefix <ENV_PREFIX>`           | 配置的环境变量前缀，默认为`GREPTIMEDB_DATANODE`                                                                                                 |
 | `--http-addr <HTTP_ADDR>`             | HTTP 服务器地址                                                                                                                                 |
 | `--http-timeout <HTTP_TIMEOUT>`       | HTTP 超时设置，单位秒                                                                                                                           |
-| `--metasrv-addrs <METASRV_ADDR>`      | Metasrv 服务器列表，用逗号或者空格隔开                                                                                                          |
+| `--log-dir <LOG_DIR>`                 | 日志目录                                                                                                                                        |
+| `--log-level <LOG_LEVEL>`             | 日志级别                                                                                                                                        |
+| `--metasrv-addrs <METASRV_ADDRS>...`  | Metasrv 服务器列表                                                                                                                              |
 | `--node-id <NODE_ID>`                 | 节点 ID                                                                                                                                         |
 | `--grpc-bind-addr <GRPC_BIND_ADDR>`     | gRPC 服务绑定地址                                                                                                                               |
 | `--grpc-server-addr <GRPC_SERVER_ADDR>` | 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `grpc_bind_addr` 中指定的相同； |
@@ -38,19 +40,19 @@ greptime datanode start --help
 
 #### 使用配置启动服务
 
-使用自定义配置启动 Datanode 实例：
+使用配置文件启动 Datanode 实例：
 
 ```sh
 greptime datanode start -c config/datanode.example.toml
 ```
 
-使用命令行参数启动 Datanode，指定 gRPC 服务地址、MySQL 服务地址、Metasrv 地址和该 Datanode 的 ID：
+使用命令行参数启动 Datanode，并指定 gRPC 服务地址、Metasrv 地址和 Datanode ID：
 
 ```sh
-greptime datanode start --grpc-bind-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addrs=0.0.0.0:3002 --node-id=1
+greptime datanode start --grpc-bind-addr=0.0.0.0:4001 --metasrv-addrs=0.0.0.0:3002 --node-id=1
 ```
 
-`datanode.example.toml` 配置文件来自 `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` 仓库的 `config` 目录。你可以在那里找到更多示例配置文件。`-c` 选项指定配置文件，更多信息请参考 [Configuration](/user-guide/deployments-administration/configuration.md)。
+[`datanode.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml) 位于 GreptimeDB 仓库中。`-c` 选项用于选择配置文件，详见[配置](/user-guide/deployments-administration/configuration.md)。
 
 ## objbench
 
@@ -83,7 +85,7 @@ greptime datanode objbench --config ./datanode.toml --source data/greptime/publi
 greptime datanode objbench --config ./datanode.toml --source data/greptime/public/1024/1024_0000000000/metadata/8fb41bc7-a106-4b9e-879b-392da799f958.parquet --pprof-file=./flamegraph.svg
 ```
 
-这将生成一个 SVG 格式的火焰图，可以在 Web 浏览器中打开进行性能分析。
+该命令生成可在浏览器中打开的 SVG 火焰图，用于性能分析。
 
 ## scanbench
 

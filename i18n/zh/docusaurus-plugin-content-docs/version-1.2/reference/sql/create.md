@@ -321,7 +321,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 
 #### 创建 metric engine 的物理表
 
-metric engine 使用合成物理宽表来存储大量的小表数据，实现重用相同列和元数据的效果。详情请参考 [metric engine 文档](/contributor-guide/datanode/metric-engine)和[表引擎](/reference/about-greptimedb-engines.md)介绍。
+metric engine 使用合成物理宽表来存储大量的小表数据，实现重用相同列和元数据的效果。详情请参考 [metric engine 文档](/contributor-guide/datanode/metric-engine.md)和[表引擎](/reference/about-greptimedb-engines.md)介绍。
 
 创建一个使用 metric engine 的物理表。
 ```sql
@@ -434,7 +434,7 @@ Query OK, 0 rows affected (0.01 sec)
 
 ### Region 分区规则
 
-请参考 [分区](/contributor-guide/frontend/table-sharding.md#partition) 章节。
+请参考 [分区](/user-guide/deployments-administration/manage-data/table-sharding.md#分区) 章节。
 
 ## CREATE EXTERNAL TABLE
 
