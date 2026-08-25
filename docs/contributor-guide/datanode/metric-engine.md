@@ -1,39 +1,40 @@
 ---
-keywords: [Metric engine, logical table, physical table, Mito, Prometheus]
-description: Metric Engine's logical-to-physical storage model for large numbers of metric tables.
+keywords: [Metric engine, small tables, logical table, physical table, storage optimization]
+description: Overview of the Metric engine in GreptimeDB, its concepts, architecture, and design for handling small tables.
 ---
 
 # Metric Engine
 
 ## Overview
 
-Metric Engine is a `RegionEngine` implementation for Prometheus-style workloads with many small metric tables. It multiplexes logical tables into shared physical Mito Regions, reducing per-table metadata and storage overhead while retaining a table-level interface for reads and writes.
+The `Metric` engine is a component of GreptimeDB, and it's an implementation of the storage engine. It mainly targets scenarios with a large number of small tables for observable metrics.
 
-Metric Engine does not implement another on-disk format. It rewrites logical requests and delegates physical storage, indexing, and scans to Mito.
+Its main feature is to use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. This reduces storage overhead for small tables and improves columnar compression efficiency. The concept of a table becomes even more lightweight under the `Metric` engine.
 
 ## Concepts
 
+The `Metric` engine introduces two new concepts: "logical table" and "physical table". From the user's perspective, logical tables are exactly like ordinary ones. From a storage point-of-view, physical Regions are just regular Regions.
+
 ### Logical Table
 
-A logical table is the table exposed to users. It has its own schema and table ID, and all user writes and queries address that table. Internally, each logical Region records the physical Region that stores its rows.
+A logical table refers to user-defined tables. Just like any other ordinary table, its definition includes the name of the table, column definitions, index definitions etc. All operations such as queries or write-ins by users are based on these logical tables. Users don't need to worry about differences between logical and ordinary tables during usage.
 
-On writes, Metric Engine injects the logical table identity into each row before forwarding it to the physical data Region. On reads, it adds a logical-table filter so only rows belonging to the requested table are returned.
+From an implementation standpoint, a logical table is virtual; it doesn't directly read or write physical data but maps read/write requests into corresponding requests for physical tables in order to implement data storage and querying.
 
 ### Physical Table
 
-A physical table owns the shared Regions. Each physical Region is represented by a pair of Mito Regions:
-
-- a data Region containing rows from multiple logical tables;
-- a metadata Region containing logical-table and logical-column mappings used by Metric Engine.
-
-Direct writes to a physical Region are rejected because they would bypass the logical-table mapping. Queries against a physical table remain supported.
+A physical table is a table that actually stores data, possessing several physical Regions defined by partition rules.
 
 ## Architecture and Design
 
-Logical tables associated with a physical table use the same partition layout. Their logical Region IDs map to the corresponding physical data and metadata Region IDs. The mapping is maintained by Metric Engine and by table-route metadata.
+The main design architecture of the `Metric` engine is as follows:
 
-`row_modifier.rs` and `batch_modifier.rs` encode the logical table identity and time-series identity into Mito's internal columns. Depending on the physical Region's primary-key encoding, this uses `__table_id` and `__tsid` columns or the sparse `__primary_key` representation. The read path always applies the logical table ID before delegating the scan to Mito.
+![Arch](/metric-engine-arch.png)
 
-Metric Engine provides batch DDL paths for operations that affect many logical tables. This avoids issuing a separate metadata update for every table during workloads such as Prometheus Remote Write auto-creation or physical Region migration. These are data definition language operations; ordinary logical-table inserts, deletes, and queries still use the standard Region request paths.
+The `Metric` engine delegates physical storage and queries to the `Mito` engine. Each physical Region is represented by a data Region, which stores rows from many logical tables, and a metadata Region, which stores the logical-table and logical-column mappings.
 
-The main implementation is under `src/metric-engine/src/`. Changes to reserved columns, Region ID conversion, or metadata encoding affect persisted data and require backward-compatibility review.
+Logical tables associated with the same physical table share its partition layout. During writes, the engine records the logical table identity with each row. During reads, it adds a logical-table filter before scanning the physical Region.
+
+Logical tables support normal INSERT, DELETE, and SELECT operations. Direct writes to a physical Region are rejected because they would bypass the logical-table mapping; querying a physical table remains supported.
+
+Batch DDL operations reduce metadata work when many logical tables are created or updated together, such as during Prometheus Remote Write auto-creation or physical Region migration.

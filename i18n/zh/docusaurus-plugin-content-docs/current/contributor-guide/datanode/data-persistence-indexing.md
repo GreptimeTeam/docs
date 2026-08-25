@@ -5,65 +5,83 @@ description: 介绍了 GreptimeDB 的数据持久化和索引机制，包括 SST
 
 # 数据持久化与索引
 
-Mito 将 memtable 中的数据 flush 到本地文件系统或对象存储，SST 文件使用 [Apache Parquet][1] 作为数据格式。
+与所有类似 LSMT 的存储引擎一样，MemTables 中的数据被持久化到耐久性存储，例如本地磁盘文件系统或对象存储服务。GreptimeDB 采用 [Apache Parquet][1] 作为其持久文件格式。
 
 ## SST 文件格式
 
-Parquet 是一种列式文件格式，其层级结构决定 Mito 扫描时可以读取、缓存或裁剪的单元。
+Parquet 是一种提供快速数据查询的开源列式存储格式，已经被许多项目采用，例如 Delta Lake。
 
 Parquet 按 row group、column chunk 和 page 组织数据。每个 row group 为每一列保存一个 column chunk，每个 column chunk 再包含一个或多个 page。Page 是 column chunk 内最小的编码 I/O 单元。
 
-Column chunk 使投影扫描只读取查询需要的列。
+首先，数据按列聚集，这使得文件扫描更加高效，特别是当查询只涉及少数列时，这在分析系统中非常常见。
 
-同一列的 page 也适合使用字典编码、run-length encoding（RLE）等方式压缩。
+其次，相同列的数据往往是同质的（比如具备近似的值），这有助于在采用字典和 Run-Length Encoding（RLE）等技术进行压缩。
 
 <img src="/parquet-file-format.png" alt="Parquet file format" width="500"/>
 
 ## 数据持久化
 
-`region_engine.mito.global_write_buffer_size` 设置一个 Datanode 上所有 Mito memtable 共享的内存阈值。内存使用达到阈值后，write-buffer manager 选择 memtable，并通过 `src/mito2/src/flush.rs` 调度 SST flush。
+GreptimeDB 提供了 `region_engine.mito.global_write_buffer_size` 的配置项来设置全局的 Memtable 大小阈值。当数据库所有 MemTable 中的数据量之和达到阈值时将自动触发持久化操作，将 MemTable 的数据 flush 到 SST 文件中。
 
 
 ## SST 文件中的索引数据
 
-Parquet 为 row group 和 page 保存列统计信息。Mito 将兼容的查询谓词转换为 Parquet pruning predicate，利用 min/max 和 null 统计信息跳过不可能匹配的 row group。
+Apache Parquet 文件格式在列块和数据页的头部提供了内置的统计信息，用于剪枝和跳过。
+
+<img src="/column-chunk-header.png" alt="Column chunk header" width="350"/>
+
+例如，在上述 Parquet 文件中，如果你想要过滤 `name` 等于 `Emily` 的行，你可以轻松跳过行组 0，因为 `name` 字段的最大值是 `Charlie`。这些统计信息减少了 IO 操作。
 
 
 ## 索引文件
 
-Mito 将 SST 对应的索引 artifact 保存在带版本的 [Puffin][3] 文件中，Region manifest 记录当前生效的索引版本。发布或重建索引时，不能让 manifest 引用尚未完整写入的 artifact。
+对于每个 SST 文件，GreptimeDB 不但维护 SST 文件内部索引，还会单独生成一个文件用于存储针对该 SST 文件的索引结构。
 
-`src/mito2/src/sst/index/` 负责将倒排索引、基于 bloom filter 的 skipping index、全文索引及 feature-gated vector index 接入 SST 读写。可复用的索引格式位于 `src/index/src/`，companion file 由 `puffin_manager.rs` 管理。
+索引文件采用 [Puffin][3] 格式，这种格式具有较大的灵活性，能够存储更多的元数据，并支持更多的索引结构。
+
+![Puffin](/puffin.png)
+
+GreptimeDB 会将多种索引结构作为 Blob 存储在 Puffin 文件中，包括倒排索引、跳数索引（基于 bloom filter）和全文索引。倒排索引是最早支持的索引结构，下面将详细介绍。
 
 
 ## 倒排索引
 
-倒排索引按列把编码后的列值映射到包含该值的 SST 数据段。应用谓词后得到候选 segment ID；正常扫描仍会对候选数据段中的行执行完整谓词。
+在 v0.7 版本中，GreptimeDB 引入了倒排索引（Inverted Index）来加速查询。
+
+倒排索引是全文搜索中常见的索引结构，它将文档中的每个单词映射到包含该单词的文档列表。GreptimeDB 将这项搜索引擎技术用于时序数据索引。
+
+搜索引擎和时间序列数据库虽然运行在不同的领域，但是应用的倒排索引技术背后的原理是相似的。这种相似性需要一些概念上的调整：
+1. 单词：在 GreptimeDB 中，指时间线的列值。
+2. 文档：在 GreptimeDB 中，指包含多个时间线的数据段。
+
+倒排索引的引入，使得 GreptimeDB 可以跳过不符合查询条件的数据段，从而提高扫描效率。
 
 ![Inverted index searching](/inverted-index-searching.png)
 
-上图中的查询使用倒排索引找出 `job` 等于 `apiserver`、`handler` 匹配正则表达式 `.*users` 且 `status` 匹配正则表达式 `4...` 的候选数据段。Mito 扫描这些数据段，并对数据行应用完整查询谓词。
+例如，上述查询使用倒排索引来定位数据段，数据段满足条件：`job` 等于 `apiserver`，`handler` 符合正则匹配 `.*users` 及 `status` 符合正则匹配 `4..`，然后扫描这些数据段以产生满足所有条件的最终结果，从而显着减少 IO 操作的次数。
 
 ### 倒排索引格式
 
 ![Inverted index format](/inverted-index-format.png)
 
-每个列索引包含一个 FST（Finite State Transducer）和多个 bitmap。FST 把编码后的列值映射到 bitmap 位置，并支持正则表达式匹配等查询。每个 bitmap 记录包含该值的数据段。
+GreptimeDB 按列构建倒排索引，每个倒排索引包含一个 FST 和多个 Bitmap。
+
+FST（Finite State Transducer）允许 GreptimeDB 以紧凑的格式存储列值到 Bitmap 位置的映射，并且提供了优秀的搜索性能和支持复杂搜索（例如正则表达式匹配）；Bitmap 则维护了数据段 ID 列表，每个位表示一个数据段。
 
 
 ### 索引数据段
 
-GreptimeDB 把 SST 文件分割成固定大小的索引数据段。匹配的 bitmap 会转换为 Parquet row selection，使 Mito 只读取候选行范围。
+GreptimeDB 把一个 SST 文件分割成多个索引数据段，每个数据段包含相同行数的数据。这种分段的目的是通过只扫描符合查询条件的数据段来优化查询性能。
 
-例如，每个数据段包含 1024 行且候选数据段 ID 为 `[0, 2]` 时，Mito 只扫描第 0–1023 行和第 2048–3071 行，不需要读取 SST 中的全部数据行。
+例如，当数据段的行数为 1024，如果查询条件应用倒排索引后，得到的数据段列表为 `[0, 2]`，那么只需扫描 SST 文件中的第 0 和第 2 个数据段（即第 0 行到第 1023 行和第 2048 行到第 3071 行）即可。
 
-引擎选项 `index.inverted_index.segment_row_count` 控制目标 segment 大小，默认值为 `1024`。较小的 segment 可以提高裁剪精度，但会增加索引大小和构建成本。
+数据段的行数由引擎选项 `index.inverted_index.segment_row_count` 控制，默认为 `1024`。较小的值意味着更精确的索引，往往会得到更好的查询性能，但会增加索引存储成本。通过调整该选项，可以在存储成本和查询性能之间进行权衡。
 
 
 ## 统一数据访问层：OpenDAL
 
-`object-store` crate 基于 [OpenDAL][2] 封装本地文件系统和对象存储。Mito 通过 `src/mito2/src/access_layer.rs` 执行 SST 与索引 I/O；存储引擎代码不应绕过该边界增加 backend-specific 路径。修改配置的 backend 不会迁移已有数据。
+GreptimeDB 使用 [OpenDAL][2] 为本地文件系统和对象存储提供统一访问层。修改配置的存储 backend 不会迁移已有数据。
 
 [1]: https://parquet.apache.org
-[2]: https://opendal.apache.org/
+[2]: https://github.com/datafuselabs/opendal
 [3]: https://iceberg.apache.org/puffin-spec

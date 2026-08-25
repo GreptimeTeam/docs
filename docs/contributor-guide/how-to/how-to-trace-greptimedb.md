@@ -1,88 +1,80 @@
 ---
-keywords: [tracing, W3C Trace Context, RPC, instrument, runtime]
-description: Propagate and instrument distributed traces in GreptimeDB code.
+keywords: [tracing, distributed tracing, trace_id, RPC, instrument, span, runtime]
+description: Describes how to use Rust's tracing framework in GreptimeDB for distributed tracing, including defining tracing context in RPC, passing it, and instrumenting code.
 ---
 
 # How to trace GreptimeDB
 
-GreptimeDB uses the Rust [`tracing`](https://docs.rs/tracing/latest/tracing/) ecosystem and OpenTelemetry context propagation. Local spans are connected automatically only while their tracing context is carried through the same asynchronous execution path. RPC and runtime boundaries require explicit propagation.
+GreptimeDB uses Rust's [tracing](https://docs.rs/tracing/latest/tracing/) framework for code instrument. For the specific details and usage of tracing, please refer to the official documentation of tracing.
 
-The shared implementation is [`TracingContext`](https://github.com/GreptimeTeam/greptimedb/blob/main/src/common/telemetry/src/tracing_context.rs) in `common-telemetry`. It converts the active span context to and from W3C Trace Context fields.
+By transparently transmitting `trace_id` and other information on the entire distributed system, we can record the function call chain of the entire distributed link, know the time of each tracked function take and other related information, so as to monitor the entire system.
 
-<AnchorAlias id="define-tracing-context-in-rpc" />
+## Define tracing context in RPC
 
-## RPC context fields
+Because the tracing framework does not natively support distributed tracing, we need to manually pass information such as `trace_id` in the RPC message to correctly identify the function calling relationship. We use standards based on [w3c](https://www.w3.org/TR/trace-context/#traceparent-header-field-values) to encode relevant information into `tracing_context` and attach the message to the RPC header. Mainly defined in:
 
-GreptimeDB protobuf headers store W3C trace fields in a `map<string, string> tracing_context` field:
+- `frontend` interacts with `datanode`: `tracing_context` is defined in [`RegionRequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/region/server.proto)
+- `frontend` interacts with `metasrv`: `tracing_context` is defined in [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/meta/common.proto)
+- Client interacts with `frontend`: `tracing_context` is defined in [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/common.proto)
 
-- Frontend to Datanode: [`RegionRequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/region/server.proto)
-- Meta clients and services: [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/meta/common.proto)
-- Client to Frontend database RPC: [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/common.proto)
+## Pass tracing context in RPC call
 
-When adding an internal RPC, use the existing header type when possible. A separate tracing field with a different encoding creates a propagation path that the common helpers cannot handle.
+We build a `TracingContext` structure that encapsulates operations related to the tracing context. [Related code](https://github.com/GreptimeTeam/greptimedb/blob/main/src/common/telemetry/src/tracing_context.rs)
 
-<AnchorAlias id="pass-tracing-context-in-rpc-call" />
+GreptimeDB uses `TracingContext::from_current_span()` to obtain the current tracing context, uses the `to_w3c()` method to encode the tracing context into a w3c-compliant format, and attaches it to the RPC message, so that the tracing context is correctly distributed passed within the component.
 
-## Propagate context across an RPC
+The following example illustrates how to obtain the current tracing context and pass the parameters correctly when constructing the RPC message, so that the tracing context is correctly passed among the distributed components.
 
-Capture the current context when constructing an outbound request:
 
 ```rust
 let request = RegionRequest {
-    header: Some(RegionRequestHeader {
-        tracing_context: TracingContext::from_current_span().to_w3c(),
-        ..Default::default()
-    }),
-    body: Some(region_request::Body::Alter(request)),
+     header: Some(RegionRequestHeader {
+         tracing_context: TracingContext::from_current_span().to_w3c(),
+         ..Default::default()
+     }),
+     body: Some(region_request::Body::Alter(request)),
 };
 ```
 
-At the receiver, decode the header and attach a new local span as a child of that context:
+On the receiver side of the RPC message, the tracing context needs to be correctly decoded and used to build the first `span` to trace the function call. For example, the following code will correctly decode the `tracing_context` in the received RPC message using the `TracingContext::from_w3c` method. And use the `attach` method to attach the context message to the newly created `info_span!("RegionServer::handle_read")`, so that the call can be tracked across distributed components.
 
 ```rust
+...
 let tracing_context = request
-    .header
-    .as_ref()
-    .map(|header| TracingContext::from_w3c(&header.tracing_context))
-    .unwrap_or_default();
-
+     .header
+     .as_ref()
+     .map(|h| TracingContext::from_w3c(&h.tracing_context))
+     .unwrap_or_default();
 let result = self
-    .handle_read(request)
-    .trace(tracing_context.attach(info_span!("RegionServer::handle_read")))
-    .await?;
+     .handle_read(request)
+     .trace(tracing_context.attach(info_span!("RegionServer::handle_read")))
+     .await?;
+...
 ```
 
-An absent or invalid context becomes an empty context, so request handling still works without a parent trace. Do not reuse one request's context for unrelated work.
+## Use `tracing::instrument` to instrument the code
 
-<AnchorAlias id="use-tracinginstrument-to-instrument-the-code" />
-
-## Instrument local work
-
-Use `#[tracing::instrument]` at asynchronous or expensive boundaries where a span helps correlate latency and errors. The macro records arguments through `Debug` by default. Skip credentials, tokens, large batches, query payloads, and any argument whose full value is not safe or useful in telemetry.
+We use the `instrument` macro provided by tracing to instrument the code. We only need to annotate the `instrument` macro in the function that needs to be instrument. The `instrument` macro will print every function parameter on each function call into the span in the form of `Debug`. For parameters that do not implement the `Debug` trait, or the structure is too large and has too many parameters, resulting in a span that is too large. If you want to avoid these situations, you need to use `skip_all` to skip printing all parameters.
 
 ```rust
-#[tracing::instrument(skip_all, fields(region_id = %region_id))]
-async fn handle_region(region_id: RegionId, request: RegionRequest) {
-    region_server.handle(request).await;
+#[tracing::instrument(skip_all)]
+async fn instrument_function(....) {
+     ...
 }
 ```
 
-Prefer a small set of stable identifiers in `fields(...)` to recording a complete request. Instrumenting every helper function creates high-volume traces without improving the request-level call graph.
+## Code instrument across runtime
 
-<AnchorAlias id="code-instrument-across-runtime" />
-
-## Propagate context across runtimes
-
-Moving a future to another runtime or spawning work outside the current instrumented future can lose the active parent. Capture the context before crossing that boundary and attach it to a new span inside the spawned future:
+Rust's tracing library will automatically handle the nested relationship between instrument functions in the same runtime, but if a function call across the runtime, tracing library cannot automatically trace such calls, and we need to manually pass the context across the runtime.
 
 ```rust
 let tracing_context = TracingContext::from_current_span();
 let handle = runtime.spawn(async move {
-    handler
-        .handle(query)
-        .trace(tracing_context.attach(info_span!("background_query")))
-        .await
+     handler
+         .handle(query)
+         .trace(tracing_context.attach(info_span!("xxxxx")))
+     ...
 });
 ```
 
-The context must be captured before the spawn. Keep the attached span scoped to the spawned operation so unrelated tasks do not inherit the same parent.
+For example, the above code needs to perform tracing across runtimes. We first obtain the current tracing context through `TracingContext::from_current_span()`, create a span in another runtime, and attach the span to the current context, and we are done. The hidden code points that span the runtime are eliminated, and the call chain is correctly traced.

@@ -1,40 +1,43 @@
 ---
-keywords: [selector, metasrv, datanode, lease based, load based, round robin]
-description: Region placement selectors used by Metasrv and their configuration names.
+keywords: [selector, metasrv, datanode, leasebased, loadbased, roundrobin]
+description: Describes the different types of selectors in the Metasrv service, their characteristics, and how to configure them.
 ---
 
 # Selector
 
 ## Introduction
 
-When a table is created, Metasrv must choose Datanodes for its Regions. The [`Selector` trait](https://github.com/GreptimeTeam/greptimedb/blob/main/src/meta-srv/src/selector.rs) receives the required number of peers and a selection context, then returns candidate Datanodes from the current lease and statistics data.
+When a table is created, Metasrv uses a `Selector` to choose Datanodes for its Regions. Selection uses the current node leases and, depending on the selector, Region statistics.
 
 ## Selector Type
 
-Metasrv provides three selector implementations:
+The `Metasrv` service currently offers the following types of `Selectors`:
 
 ### LeaseBasedSelector
 
-`LeaseBasedSelector` chooses randomly from Datanodes with valid leases. It does not use Region counts to rank candidates.
+`LeaseBasedSelector` randomly selects from Datanodes with valid leases.
 
 ### LoadBasedSelector
 
-`LoadBasedSelector` treats the number of Regions on a Datanode as its load and prefers nodes with fewer Regions.
+The `LoadBasedSelector` load value is determined by the number of regions on each `Datanode`, fewer regions indicate lower load, and `LoadBasedSelector` prioritizes selecting low-load `Datanodes`.
 
 ### RoundRobinSelector [default]
-
-`RoundRobinSelector` rotates through available Datanodes. It is the default selector.
+`RoundRobinSelector` selects `Datanode`s in a round-robin fashion. It is the default option.
 
 ## Configuration
 
-Set the selector when starting Metasrv. The accepted names are:
+You can configure the `Selector` by its name when starting the `Metasrv` service.
 
-- `lease_based` or `LeaseBased`
-- `load_based` or `LoadBased`
-- `round_robin` or `RoundRobin`
+- LeaseBasedSelector: `lease_based` or `LeaseBased`
+- LoadBasedSelector: `load_based` or `LoadBased`
+- RoundRobinSelector: `round_robin` or `RoundRobin`
 
 For example:
 
 ```shell
 cargo run -- metasrv start --selector round_robin
+```
+
+```shell
+cargo run -- metasrv start --selector RoundRobin
 ```

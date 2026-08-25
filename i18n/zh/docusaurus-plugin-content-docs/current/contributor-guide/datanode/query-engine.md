@@ -1,35 +1,39 @@
 ---
-keywords: [查询引擎, Apache DataFusion, 逻辑计划, 物理计划, Arrow, 索引]
-description: 介绍 GreptimeDB 基于 DataFusion 的查询规划和执行链路。
+keywords: [查询引擎, DataFusion, 逻辑计划, 物理计划]
+description: 介绍了 GreptimeDB 的查询引擎架构，基于 Apache DataFusion 构建，涵盖逻辑计划、物理计划、优化和执行过程。
 ---
 
 # Query Engine
 
 ## 介绍
 
-GreptimeDB 查询引擎基于 [Apache DataFusion][1] 构建。`query` crate 负责 SQL、PromQL 和日志查询规划，以及 GreptimeDB optimizer rule、物理计划和执行。
+GreptimeDB 的查询引擎是基于[Apache DataFusion][1]（属于[Apache Arrow][2]的子项目）构建的，它是一个用 Rust 编写的出色的查询引擎。它提供了一整套功能齐全的组件，从逻辑计划、物理计划到执行运行时。下面将解释每个组件如何被整合在一起，以及在执行过程中它们的位置。
 
-![执行流程](/execution-procedure.png)
+![Execution Procedure](/execution-procedure.png)
 
-查询首先转换为 DataFusion 逻辑计划。SQL 及其他查询语言的 planner 会生成逻辑计划；分布式执行期间，Frontend 也会把序列化后的逻辑子计划发送给 Datanode。
+入口点是逻辑计划，它被用作查询或执行逻辑等的通用中间表示。逻辑计划的两个主要来源是：1. 用户查询，例如通过 SQL 解析器和规划器的 SQL；2. Frontend 的分布式查询，这将在下一节中详细解释。
 
-Analyzer 和 optimizer rule 会规范化计划、下推过滤与投影、裁剪 Region，并插入 `MergeScan` 等 GreptimeDB extension node。该阶段同时使用 DataFusion 原生规则和 `src/query/src/optimizer/` 下的自定义规则。
+接下来是物理计划，或称执行计划。与包含所有逻辑计划变体（除特殊扩展计划节点外）的大型枚举的逻辑计划不同，物理计划实际上是一个定义了在执行过程中调用的一组方法的特性。所有数据处理逻辑都包装在实现该特性的相应结构中。它们是对数据执行的实际操作，如聚合器 `MIN` 或 `AVG` ，以及表扫描 `SELECT ... FROM`。
 
-物理 planner 将优化后的逻辑计划转换为 DataFusion `ExecutionPlan` 实现。执行根计划会返回异步 Arrow `RecordBatch` stream。可以使用 `EXPLAIN` 或 `EXPLAIN VERBOSE` 查看 SQL 语句对应的计划。
+优化阶段通过转换逻辑计划和物理计划来提高执行性能，现在全部基于规则。它也被称为“基于规则的优化”。一些规则是 DataFusion 原生的，其他一些是在 GreptimeDB 中自定义的。在未来，我们计划添加更多规则，并利用数据统计进行基于成本的优化 (CBO)。
+
+最后一个阶段"执行"是一个动词，代表从存储读取数据、进行计算并生成预期结果的过程。虽然它比之前提到的概念更抽象，但你可以简单地将它想象为执行一个 Rust 异步函数，并且它确实是一个异步流。
+
+当你想知道 SQL 是如何通过逻辑计划或物理计划中表示时，`EXPLAIN [VERBOSE] <SQL>` 是非常有用的。
 
 ## 数据表示
 
-GreptimeDB 使用 [Apache Arrow][2] array 和 `RecordBatch` 在内存中交换数据。存储扫描、查询算子、RPC stream 和结果编码器共享同一种列式表示，避免在执行链路中逐行转换。
+GreptimeDB 使用 [Apache Arrow][2]作为内存中的数据表示格式。它是面向列的，以跨平台格式，也包含许多高性能的基础操作。这些特性使得在许多不同的环境中共享数据和实现计算逻辑变得容易。
 
 ## 索引
 
-索引构建和持久化格式属于存储引擎，而不是查询引擎。Mito 使用 Parquet 统计信息、倒排索引、跳数索引和全文索引裁剪 SST 文件、row group 及数据段；feature-gated vector index 为向量搜索提供候选行。参见[数据持久化与索引](./data-persistence-indexing.md)。
-
-查询层向扫描提供谓词和投影。兼容的谓词可以通过索引减少读取的数据量，但查询计划仍需执行其余过滤算子。
+索引构建和持久化格式属于存储引擎。查询层向扫描提供谓词和投影，Mito 再利用时间范围、Parquet 统计信息和索引跳过不可能匹配的数据。参见[数据持久化与索引](./data-persistence-indexing.md)。
 
 ## 分布式查询
 
-Frontend 将兼容的逻辑计划片段重写为远端 `MergeScan` 输入，使用 Substrait 序列化，再向 Datanode 发送 Region 级请求。参见[分布式查询](../frontend/distributed-querying.md)。
+参考 [Distributed Querying][6].
 
-[1]: https://datafusion.apache.org/
+[1]: https://github.com/apache/arrow-datafusion
 [2]: https://arrow.apache.org/
+[3]: https://parquet.apache.org
+[6]: ../frontend/distributed-querying.md

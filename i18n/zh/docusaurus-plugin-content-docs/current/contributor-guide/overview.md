@@ -1,19 +1,24 @@
 ---
-keywords: [贡献者指南, 架构, Frontend, Datanode, Metasrv, Flownode]
-description: 介绍 GreptimeDB 内部架构及各子系统源码入口的贡献者文档。
+keywords: [架构, 关键概念, 数据处理, 组件交互, 数据库]
+description: 介绍 GreptimeDB 的架构、关键概念和工作原理，包括各组件的交互方式和数据处理流程。
 ---
 
 # 贡献者指南
 
-本指南介绍 GreptimeDB 的内部架构，并提供各子系统的源码入口。构建、测试及贡献要求以源码仓库的 [CONTRIBUTING.md](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md) 为准。
+本指南面向 GreptimeDB 贡献者，介绍理解内部实现所需的设计机制。构建、测试和提交要求以源码仓库的 [CONTRIBUTING.md](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md) 为准。
 
 ## 架构
 
-[架构概览](/user-guide/concepts/architecture.md) 从用户视角说明系统组件和请求链路。以下贡献者文档进一步说明各组件的实现边界：
+有关 GreptimeDB 的架构和组件，请参阅用户指南中的 [架构](/user-guide/concepts/architecture.md) 文档。
 
-- [Frontend](./frontend/overview.md)：协议处理、请求编排、路由和分布式查询规划。
-- [Datanode](./datanode/overview.md)：Region 管理、查询执行和存储引擎。
-- [Metasrv](./metasrv/overview.md)：元数据、集群协调和分布式 Procedure。
-- [Flownode](./flownode/overview.md)：单机及分布式部署中的持续聚合。
+有关每个组件的更多详细信息，请参阅以下指南：
 
-本地构建 GreptimeDB 请继续阅读[快速开始](./getting-started.md)。
+- [frontend][1]
+- [datanode][2]
+- [metasrv][3]
+- [flownode][4]
+
+[1]: /contributor-guide/frontend/overview.md
+[2]: /contributor-guide/datanode/overview.md
+[3]: /contributor-guide/metasrv/overview.md
+[4]: /contributor-guide/flownode/overview.md

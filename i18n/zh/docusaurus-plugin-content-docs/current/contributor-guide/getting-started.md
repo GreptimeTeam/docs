@@ -1,28 +1,33 @@
 ---
-keywords: [开发环境, 源码构建, Rust 工具链, 单元测试]
-description: 配置开发环境，并从源码构建、运行和测试 GreptimeDB。
+keywords: [编译, 运行, 源代码, 系统要求, 依赖项, Docker]
+description: 介绍如何在本地环境中从源代码编译和运行 GreptimeDB，包括系统要求和依赖项。
 ---
 
 # 立即开始
 
-本页说明从源码构建和运行 GreptimeDB 所需的基本环境。
+本页面介绍如何在本地环境中从源代码运行 GreptimeDB。
 
 ## 先决条件
 
 ### 系统和架构
 
-GreptimeDB 支持 x86-64 和 Arm64 架构的 Linux 与 macOS，也支持 Windows。
+目前，GreptimeDB 支持 Linux（amd64 和 arm64）、macOS（amd64 和 Apple Silicon）和 Windows。
 
 ### 构建依赖项
 
-- [Git](https://git-scm.com/book/en/v2/Getting-Started-The-Command-Line)。
-- C/C++ 构建工具链，例如 Ubuntu 上的 `build-essential` 或 macOS 上的 Xcode Command Line Tools。
-- [Rustup](https://rustup.rs/)。仓库中的 `rust-toolchain.toml` 会自动选择项目要求的 nightly 工具链。
-- 3.15 或更高版本的 [Protocol Buffers 编译器](https://grpc.io/docs/protoc-installation/)。使用 `protoc --version` 检查版本。
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-The-Command-Line)
+- C/C++ 工具链：提供编译和链接的基本工具。在 Ubuntu 上，这可用作 `build-essential`。在其他平台上，也有类似的命令。
+- [Rustup][1]。仓库通过 `rust-toolchain.toml` 指定所需的 nightly 工具链。
+- Protobuf（[指南][2]）
+  - 编译 proto 文件
+  - 请注意，版本需要 >= 3.15。你可以使用 `protoc --version` 检查它。
+
+[1]: <https://www.rust-lang.org/tools/install/>
+[2]: <https://grpc.io/docs/protoc-installation/>
 
 ## 编译和运行
 
-克隆仓库并启动单机实例：
+只需几个命令即可使用以 Standalone 模式启动 GreptimeDB 实例：
 
 ```shell
 git clone https://github.com/GreptimeTeam/greptimedb.git
@@ -30,30 +35,34 @@ cd greptimedb
 cargo run -- standalone start
 ```
 
-只构建、不启动服务时运行：
+接下来，你可以选择与 GreptimeDB 交互的协议。
+
+如果你只想构建服务器而不运行它：
 
 ```shell
-cargo build
+cargo build # --release
 ```
 
-优化构建请添加 `--release`。构建产物位于 `target/debug` 或 `target/release`。
+根据构建的模式（是否传递了 `--release` 选项），构建后的文件可以在 `$REPO/target/debug` 或 `$REPO/target/release` 目录下找到。
 
 ## 单元测试
 
-GreptimeDB 使用 [cargo-nextest](https://nexte.st/) 作为标准 Rust 测试运行器。安装命令如下：
+GreptimeDB 经过了充分的测试，整个单元测试套件都随源代码一起提供。要测试它们，请使用 [nextest](https://nexte.st/index.html)。
+
+要使用 cargo 安装 nextest，请运行：
 
 ```shell
 cargo install cargo-nextest --locked
 ```
 
-使用 CI 对应的 feature 运行 workspace 测试：
+或者，你可以查看他们的[文档](https://nexte.st/docs/installation/pre-built-binaries/)以了解其他安装方式。
+
+安装好 nextest 后，你可以使用以下命令运行测试套件：
 
 ```shell
 cargo nextest run --workspace --features pg_kvbackend,mysql_kvbackend
 ```
 
-按 crate 运行测试以及其他测试类型参见[测试指南](./tests/overview.md)。
-
 ## Docker
 
-预构建镜像发布在 [Docker Hub](https://hub.docker.com/r/greptime/greptimedb)。镜像适合直接运行 GreptimeDB；开发和验证代码改动时仍应使用源码构建。
+我们还通过 Docker 提供预构建二进制文件，可以在 [Docker Hub 上获取](https://hub.docker.com/r/greptime/greptimedb)。

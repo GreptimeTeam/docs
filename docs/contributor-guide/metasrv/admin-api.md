@@ -1,53 +1,155 @@
 ---
 keywords: [admin api, health check, leader query, heartbeat, maintenance mode, RESTful API]
-description: Maintainer reference for Metasrv's unauthenticated Admin API router and state-changing endpoints.
+description: Details the Admin API for Metasrv, including endpoints for health checks, leader queries, heartbeat data, maintenance mode, and Procedure Manager controls.
 ---
 
 # Admin API
 
-The Axum router is assembled in `src/meta-srv/src/service/admin.rs` and mounted under `/admin` on Metasrv's HTTP server. The default HTTP port is `4000`.
+:::tip
+Note that all Admin API endpoints in this document listen on Metasrv's `HTTP_PORT`, which defaults to `4000`.
+:::
 
-The router does not add authentication. Some endpoints change cluster behavior, so deployments must protect this port with network-level controls. When adding a route, define its HTTP method explicitly, keep read and mutation handlers separate, and add handler-level tests in `src/meta-srv/src/service/admin/`.
+The Admin API exposes Metasrv health, leader, Datanode heartbeat, maintenance mode, and Procedure Manager information over HTTP. It does not provide authentication, and some endpoints change cluster behavior. Deployments must protect the HTTP port with network-level controls.
+This page covers the following APIs:
 
-## /health HTTP endpoint
+- /health
+- /leader
+- /heartbeat
+- /maintenance
+- /procedure-manager
 
-`GET /admin/health` returns `OK` when the HTTP service is running. It does not prove that this node is the current leader or that external dependencies are reachable. The handler is in `health.rs`.
+All these APIs are under the parent resource `/admin`.
+
+In the following sections, we assume that your metasrv instance is running on localhost port 4000.
+
+## /health HTTP endpoint  
+
+The `/health` endpoint accepts GET requests and returns `OK` when the HTTP service is running. It does not check whether this Metasrv is the leader or whether external dependencies are available.
+
+### Definition
+
+```bash
+curl -X GET http://localhost:4000/admin/health
+```
+
+### Examples
+
+#### Request
+
+```bash
+curl -X GET http://localhost:4000/admin/health
+```
+
+#### Response
+
+```json
+OK
+```
 
 ## /leader HTTP endpoint
 
-`GET /admin/leader` reads the elected Metasrv leader address through the configured election backend. The handler is in `leader.rs`.
+The `/leader` endpoint accepts GET HTTP requests and you can use this endpoint to query the leader's addr of your metasrv instance.
+
+### Definition
+
+```bash
+curl -X GET http://localhost:4000/admin/leader
+```
+
+### Examples
+
+#### Request
+
+```bash
+curl -X GET http://localhost:4000/admin/leader
+```
+
+#### Response
+
+```json
+127.0.0.1:4000
+```
 
 ## /heartbeat HTTP endpoint
 
-`GET /admin/heartbeat` returns Datanode heartbeat records. The optional `addr` query parameter filters by Datanode address, and `GET /admin/heartbeat/help` shows the supported query forms. The handler is in `heartbeat.rs` and reads through `MetaPeerClient`.
+The `/heartbeat` endpoint accepts GET HTTP requests and you can use this endpoint to query the heartbeat of all datanodes.
+
+You can also query the heartbeat data of the datanode for a specified `addr`, however, specifying `addr` in the path is optional.
+
+### Definition
+
+```bash
+curl -X GET http://localhost:4000/admin/heartbeat
+```
+
+| Query String Parameter | Type   | Optional/Required | Definition                |
+|:-----------------------|:-------|:------------------|:--------------------------|
+| addr                   | String | Optional          | The addr of the datanode. |
+
+### Examples
+
+#### Request
+
+```bash
+curl -X GET 'http://localhost:4000/admin/heartbeat?addr=127.0.0.1:4100'
+```
+
+#### Response
+
+```json
+[
+  [
+    {
+      "timestamp_millis": 1677049348651,
+      "id": 1,
+      "addr": "127.0.0.1:4100",
+      "rcus": 0,
+      "wcus": 0,
+      "region_num": 2,
+      "region_stats": [],
+      "topic_stats": [],
+      "node_epoch": 0,
+      "datanode_workloads": {
+        "types": []
+      },
+      "gc_stat": null
+    }
+  ]
+]
+```
 
 ## /maintenance HTTP endpoint
 
-Maintenance mode disables selected automatic cluster-management work. Its user-facing behavior is documented under [Cluster Maintenance Mode](/user-guide/deployments-administration/maintenance/maintenance-mode.md). The router exposes:
+Cluster Maintenance Mode is a safety feature in GreptimeDB that temporarily disables automatic cluster management operations. This mode is particularly useful during cluster upgrades, planned downtime, and any operation that might temporarily affect cluster stability. For more details, please refer to [Cluster Maintenance Mode](/user-guide/deployments-administration/maintenance/maintenance-mode.md).
+
+The `/maintenance` endpoint supports the following HTTP requests:
 
 - `GET /admin/maintenance` or `GET /admin/maintenance/status`: query the maintenance mode status.
 - `POST /admin/maintenance/enable`: enable maintenance mode.
 - `POST /admin/maintenance/disable`: disable maintenance mode.
 
-The implementation is in `maintenance.rs` and updates `RuntimeSwitchManager`.
+The response body uses the following format:
+
+```json
+{
+  "enabled": true
+}
+```
 
 ## /procedure-manager HTTP endpoint
 
-These routes pause or resume Procedure Manager scheduling. See [Prevent Metadata Changes](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md) for user-facing behavior. The router exposes:
+This endpoint is used to manage the Procedure Manager status. For more details, please refer to [Prevent Metadata Changes](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md).
+
+The `/procedure-manager` endpoint supports the following HTTP requests:
 
 - `GET /admin/procedure-manager/status`: query the Procedure Manager status.
 - `POST /admin/procedure-manager/pause`: pause the Procedure Manager.
 - `POST /admin/procedure-manager/resume`: resume the Procedure Manager.
 
-The implementation is in `procedure.rs` and also updates `RuntimeSwitchManager`.
+The response body uses the following format:
 
-## Other internal endpoints
-
-The router also exposes these maintainer-facing endpoints:
-
-- `GET /admin/node-lease` returns the active Datanode lease records.
-- `GET /admin/recovery/status` and `POST /admin/recovery/{enable,disable}` read or change recovery mode.
-- `GET /admin/sequence/table/next-id` reads the next table ID without allocating it.
-- `POST /admin/sequence/table/set-next-id` changes the allocator's next table ID. The handler rejects this operation unless recovery mode is enabled.
-
-The recovery and sequence routes can change cluster state and are intended for controlled repair procedures. Read their handlers and tests before changing or invoking them; this page does not define a general recovery workflow.
+```json
+{
+  "status": "running"
+}
+```

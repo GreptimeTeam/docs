@@ -1,46 +1,43 @@
 ---
-keywords: [Frontend, 协议, 请求路由, 分布式查询, 权限校验]
-description: GreptimeDB 无状态请求入口和查询协调组件 Frontend 的实现概览。
+keywords: [frontend, proxy, protocol, routing, distributed query, tenant management, authorization, flow control, cloud deployment, endpoints]
+description: GreptimeDB Frontend 组件概述 - 为客户端请求提供服务的无状态代理服务。
 ---
 
 # Frontend
 
-Frontend 是 GreptimeDB 的无状态请求入口和编排层。它实现协议服务背后的业务逻辑，负责查询规划、写入与 Region 读取路由，以及分布式查询协调。
+**Frontend** 是一个无状态服务，作为 GreptimeDB 中客户端请求的入口点。它为多种数据库协议提供统一接口，并充当代理，将读写请求转发到分布式系统中的相应 Datanode。
 
-网络监听和 wire format 属于 `servers` crate。`frontend` crate 为 SQL、gRPC、MySQL、PostgreSQL、InfluxDB、OpenTelemetry、Prometheus、OpenTSDB、Jaeger 等接口实现对应的 handler trait。
+## 核心功能
 
-<AnchorAlias id="核心功能" />
-
-## 职责
-
-- 解析和规划 SQL、PromQL 及日志查询。
-- 校验权限，并在请求处理链路中传递 session context。
-- 使用 Catalog 和路由元数据分发插入、删除及 Region 查询。
-- 将分布式查询片段发送到 Datanode，并合并执行结果。
-
-面向用户的接口参见[协议概览](/user-guide/protocols/overview.md)。
+- **协议支持**：支持多种数据库协议，包括 SQL、PromQL、MySQL 和 PostgreSQL。详见[协议][1]
+- **请求路由**：基于元数据将请求路由到相应的 Datanode
+- **查询分发**：将分布式查询拆分到多个节点
+- **响应聚合**：合并来自多个 Datanode 的结果
+- **认证授权**：安全和访问控制验证
 
 ## 架构
 
 ### 关键组件
-
-- `src/frontend/src/instance.rs` 中的 `Instance` 是主要业务逻辑容器，实现各类 server handler trait。
-- `src/frontend/src/instance/` 下的模块处理不同请求类型和协议。
-- `operator` crate 中的 `StatementExecutor` 负责语句及写入侧操作。
-- `query` crate 负责逻辑计划、优化和分布式计划。
-- `instance/region_query.rs` 中的 `FrontendRegionQueryHandler` 解析 Region 目标并向 Datanode 发送查询请求。
+- **协议处理器**：处理不同的数据库协议
+- **目录管理器**：缓存来自 Metasrv 的元数据以实现高效的请求路由和 Schema 校验
+- **分布式规划器**：将逻辑计划转换为分布式执行计划
+- **请求路由器**：为每个请求确定目标 Datanodes
 
 ### 请求流程
 
-单机模式下，Frontend 通过本地 `RegionServer` adapter 访问内嵌的 Datanode。分布式模式下，Frontend 使用 Metasrv 提供的元数据和 RPC client 访问远端 Datanode。
+![request flow](/request_flow.png)
 
 ### 部署
 
-Frontend 不持有表数据。多个 Frontend 实例可以共同服务同一组 Metasrv 和 Datanode。
+下图是 GreptimeDB 在云上的一个典型的部署。`Frontend` 实例组成了一个集群处理来自客户端的请求：
 
-<AnchorAlias id="详细信息" />
+![frontend](/frontend.png)
 
-## 实现指南
+## 详细信息
 
-- [表分片](./table-sharding.md)
-- [分布式查询](./distributed-querying.md)
+- [表分片][2]
+- [分布式查询][3]
+
+[1]: /user-guide/protocols/overview.md
+[2]: ./table-sharding.md
+[3]: ./distributed-querying.md

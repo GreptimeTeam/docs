@@ -1,70 +1,60 @@
 ---
-keywords: [Metasrv, 元数据, 路由, Leader 选举, 心跳, 分布式 Procedure]
-description: 介绍 Metasrv 的元数据、协调和集群管理职责。
+keywords: [Metasrv, 元数据, 路由, Leader 选举, Procedure, 心跳]
+description: 介绍 Metasrv 提供的元数据及集群协调机制。
 ---
 
 # Metasrv
 
-<AnchorAlias id="metasrv-包含什么" />
+## Metasrv 包含什么
 
-## 职责
+Metasrv 是 GreptimeDB 分布式集群中的元数据和协调服务，不参与数据读写链路。它主要负责：
 
-Metasrv 是分布式部署中的元数据和协调服务，负责：
+- 存储 Catalog、Schema、Table、Region、路由和节点元数据；
+- 为新 Region 选择 Datanode，并维护表路由；
+- 选举一个 Metasrv leader 负责协调元数据变更；
+- 通过可恢复的 Procedure 执行 DDL、Region 迁移、故障转移和 repartition；
+- 通过心跳维护节点租约和 Region 统计信息；
+- 在缓存元数据或 Region 状态变化时通知 Frontend 和 Datanode。
 
-- 通过 KV backend 持久化 Catalog、Schema、Table、Region、路由和节点元数据；
-- 通过 Leader 选举保证协调操作和元数据修改只在一个 Leader 上执行；
-- 通过心跳流跟踪节点租约和 Region 统计信息；
-- 建表时为 Region 选择 Datanode；
-- 执行可恢复的 DDL、Region 迁移、故障转移、repartition 等分布式 Procedure；
-- 向 Frontend 和 Datanode 发布缓存失效及其他控制消息。
+## 前端如何与 Metasrv 交互
 
-数据模型、KV 抽象、选举接口、key 编码和 DDL manager 位于 `src/common/meta/`。`src/meta-srv/` crate 实现服务端、状态机、心跳 handler 和控制 Procedure。
-
-<AnchorAlias id="前端如何与-metasrv-交互" />
-
-## Frontend 与 Metasrv 的交互
-
-Frontend 通过 `meta-client` crate 获取表元数据和 Region 路由，并提交修改元数据的操作。Frontend 在本地缓存元数据；Procedure 修改元数据后，Metasrv 会发送缓存失效消息。
+Frontend 从 Metasrv 获取表元数据和 Region 路由，并缓存在本地。修改元数据的语句会发送给 Metasrv leader；普通读写则使用缓存的路由直接访问 Datanode。
 
 ### 创建表
 
-1. Frontend 向 Metasrv Leader 提交 DDL 请求。
-2. DDL manager 校验请求，根据分区规则生成 Region，并为 Region 选择 Datanode。
-3. 持久化的 Procedure 创建 Region，随后记录表和路由元数据。Procedure 状态持久化后，可以在服务重启或 Leader 切换后恢复执行。
-4. 元数据提交后，Metasrv 使相关缓存失效。
+1. Frontend 向 Metasrv leader 提交 DDL 请求。
+2. Metasrv 根据分区规则确定 Region，并为每个 Region 选择 Datanode。
+3. 持久化的 Procedure 创建 Region，并写入表元数据和路由。发生 leader 切换后，Procedure 可以从已保存的状态继续执行。
+4. 元数据提交后，Metasrv 通知 Frontend 刷新相关缓存。
 
 ### `Insert`
 
-Frontend 获取表路由，按分区拆分数据行，并把 Region 写请求发送到对应 Datanode。路由元数据保存在本地缓存中；收到缓存失效消息或 stale-route 错误时，Frontend 会从 Metasrv 刷新路由。
+Frontend 解析表路由，按照分区规则拆分数据行，再把各 Region 的写入发送到对应 Datanode。路由发生变化时，相关缓存会失效，Frontend 随后从 Metasrv 重新获取元数据。
 
 ### `Select`
 
-Frontend 在查询规划期间使用表和 Region 元数据。分区谓词用于裁剪 Region，分布式查询引擎再将远端子计划发送到持有这些 Region 的 Datanode。参见[分布式查询](../frontend/distributed-querying.md)。
+Frontend 在查询规划期间使用表和 Region 元数据。分区列上的谓词用于裁剪 Region，分布式查询引擎再把任务发送给持有这些 Region 的 Datanode。参见[分布式查询](../frontend/distributed-querying.md)。
 
-<AnchorAlias id="metasrv-架构" />
+## Metasrv 架构
 
-## 源码结构
+Metasrv 由几类协调机制组成：
 
-主要实现目录如下：
+- 元数据层通过 key-value backend 保存集群状态。
+- Leader 选举保证同一时间只有一个 Metasrv 负责元数据变更和集群管理。
+- Procedure Manager 执行多步骤操作，并持久化恢复执行所需的状态。
+- 心跳处理链更新租约和 Region 统计信息，并传递控制消息。
+- Region 监控根据租约判断 Region 是否不可用，并在需要时启动故障转移。
 
-- `src/meta-srv/src/service/`：gRPC 服务和 HTTP Admin API。
-- `src/meta-srv/src/handler/`：心跳 handler chain。
-- `src/meta-srv/src/procedure/`：Region 迁移、repartition、WAL 清理等分布式 Procedure。
-- `src/meta-srv/src/region/`：Region 租约、监控和故障转移触发逻辑。
-- `src/meta-srv/src/selector/`：为 Region 选择 Datanode。
+这些机制共享元数据，但故障边界不同。进程重启可以丢弃缓存和 leader 本地状态；恢复所需的元数据和 Procedure 状态必须持久化。
 
-<AnchorAlias id="分布式共识" />
+## 分布式共识
 
-## Leader 与持久化
+Metasrv 将 leader 选举与元数据存储分开。只有选出的 Metasrv leader 执行协调和元数据变更操作，其他 Metasrv 节点会把 client 引导到当前 leader。
 
-Metasrv 通过 `common-meta` 中的接口隔离 Leader 选举与持久化元数据存储。协调操作和元数据修改在 Leader 上执行；非 Leader 节点返回 not-leader 响应，client 随后连接到当前 Leader。
+Key-value backend 保存表元数据、路由、Procedure 状态以及其他必须跨 leader 切换保留的信息。Metasrv 不使用这套选举为 Datanode Region 创建读写副本；Region 可用性由租约、心跳和故障转移 Procedure 管理。
 
-Leader 切换后仍需保留的数据必须写入 KV backend。进程内缓存和 Leader 本地状态会在切换时重建或清空。分布式 Procedure 会持久化状态，其每个执行步骤必须保持幂等，才能安全恢复。
+## 心跳管理
 
-<AnchorAlias id="心跳管理" />
+Datanode 与 Metasrv leader 保持心跳流。心跳请求报告节点身份、租约、Region 统计信息以及放置和监控所需的其他状态；响应则携带 Region 生命周期指令、缓存失效等控制消息。
 
-## 心跳不变量
-
-Datanode 和 Frontend 与 Metasrv Leader 保持心跳流。请求携带节点身份、租约、Region 统计信息及其他状态。`src/meta-srv/src/handler/` 下的 handler chain 负责检查 Leader、更新租约与统计信息，并处理 mailbox 消息。
-
-心跳响应携带 Region 生命周期指令、缓存失效等控制消息。Region supervisor 根据租约状态发现不可用 Region，并触发故障转移 Procedure。修改心跳间隔时，必须同步检查 `common-meta` 和 `meta-srv` 中的租约与 supervisor 时序。
+对 Metasrv 而言，心跳不仅是指标上报，也是租约续期。租约过期会参与故障检测，并可能触发 Region 故障转移。因此，修改心跳周期时必须同时考虑租约和监控周期。

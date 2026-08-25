@@ -1,30 +1,34 @@
 ---
-keywords: [tokio-console, tokio_unstable, 异步任务, 诊断]
-description: 构建启用 tokio-console 的 GreptimeDB 并检查 Tokio runtime。
+keywords: [tokio-console, GreptimeDB, 构建配置, 启动配置, 调试工具]
+description: 介绍如何在 GreptimeDB 中启用 tokio-console，包括构建和启动时的配置方法。
 ---
 
 # 如何在 GreptimeDB 中启用 tokio-console
 
-[`tokio-console`](https://github.com/tokio-rs/console) 用于查看实时 Tokio task 和 resource。GreptimeDB 通过 `cmd/tokio-console` feature 编译 subscriber，同时要求启用 Tokio 的 unstable instrumentation cfg。
+本文介绍了如何在 GreptimeDB 中启用 [tokio-console](https://github.com/tokio-rs/console)。
 
-使用以下命令构建：
+首先，在构建 GreptimeDB 时带上 feature `cmd/tokio-console`。同时 `tokio_unstable` cfg 也必须开启：
 
 ```bash
 RUSTFLAGS="--cfg tokio_unstable" cargo build -F cmd/tokio-console
 ```
 
-启动组件时为 console subscriber 指定完整 socket address：
+启动 GreptimeDB，可设置 tokio console 绑定的地址，配置是 `--tokio-console-addr`。例如：
 
 ```bash
-./target/debug/greptime --tokio-console-addr="127.0.0.1:6669" standalone start
+greptime --tokio-console-addr="127.0.0.1:6669" standalone start
 ```
 
-该参数是全局参数，也可以用于以相同 feature 构建的 `frontend`、`datanode`、`metasrv` 或 `flownode` 命令。
-
-按照 [tokio-console 仓库](https://github.com/tokio-rs/console#installing-the-console)的说明安装 client，再连接到配置地址：
+这样就可以使用 `tokio-console` 命令去连接 GreptimeDB 的 tokio console 服务了：
 
 ```bash
-tokio-console http://127.0.0.1:6669
+tokio-console [TARGET_ADDR]
 ```
 
-Subscriber 应绑定到 loopback 或其他受保护的地址。它是诊断端点，不是公开的 GreptimeDB 协议。该 feature 和 `tokio_unstable` instrumentation 会增加 runtime 诊断信息，只应在排查 task 阻塞、唤醒或资源争用时按需启用。
+"`TARGET_ADDR`" 默认是 "\<http://127.0.0.1:6669\>"。
+
+:::tip Note
+
+`tokio-console` 命令的安装方法参见 [tokio-console](https://github.com/tokio-rs/console)。
+
+:::

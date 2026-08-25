@@ -1,6 +1,6 @@
 ---
-keywords: [分布式查询, DistPlannerAnalyzer, MergeScan, Substrait, Region 裁剪]
-description: GreptimeDB 如何将逻辑查询计划划分为本地和远端执行阶段。
+keywords: [分布式查询, 逻辑计划, MergeScan, Substrait, Region 裁剪]
+description: 介绍 GreptimeDB 如何把逻辑查询计划划分为 Frontend 和 Datanode 上的执行任务。
 ---
 
 # 分布式查询
@@ -9,16 +9,12 @@ Frontend 和 Datanode 使用同一套基于 DataFusion 的查询引擎。在分�
 
 ![Frontend query](/frontend-query.png)
 
-## 分布式规划器
+## 分布式规划
 
-`src/query/src/dist_plan/analyzer.rs` 中的 `DistPlannerAnalyzer` 会重写 DataFusion 逻辑计划。它将可下推的算子移向表扫描，并用 `MergeScan` 节点包装远端子计划。规划器根据算子的交换律和计划形态判断哪些工作可以安全地在各 Datanode 执行；不支持的计划形态保留在 Frontend，或使用配置允许的 fallback 路径。
+分布式规划器重写逻辑计划，把可以下推的算子移向表扫描，并用 `MergeScan` 节点包装远端子计划。分区列上的谓词还会在任务调度前用于裁剪 Region。
 
-分区列上的过滤条件同时用于裁剪 Region。执行前，Frontend 通过 `FrontendRegionQueryHandler` 将每个入选 Region 解析到对应 Datanode。
-
-初始设计及交换律规则参见[分布式规划器 RFC](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/rfcs/2023-05-09-distributed-planner.md)。
+算子能否下推取决于计划形态和算子本身的性质。不支持的部分会保留在 Frontend。初始设计及交换律规则参见[分布式规划器 RFC](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/rfcs/2023-05-09-distributed-planner.md)。
 
 ## 分布式计划
 
-`MergeScan` 的远端输入是一个完整的逻辑子计划。Frontend 使用 Substrait 对子计划进行序列化，并向选定的 Datanode 发送 Region 级查询请求。Datanode 针对本地 Region 规划并执行该子计划，再以 Arrow RecordBatch stream 返回结果。
-
-Frontend 合并远端数据流，并执行无法下推的算子。这个边界并不局限于逻辑计划中的 `TableScan` 节点：过滤、投影、部分聚合以及其他兼容算子都可能进入远端子计划。
+远端输入是完整的逻辑子计划，并不局限于表扫描。Frontend 使用 [Substrait](https://substrait.io) 序列化子计划，再向持有相应数据的 Datanode 发送 Region 级请求。Datanode 在本地规划并执行子计划，将结果流返回 Frontend。Frontend 合并远端数据流，并执行没有下推的算子。

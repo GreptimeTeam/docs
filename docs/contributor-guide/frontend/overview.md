@@ -1,46 +1,44 @@
 ---
-keywords: [frontend, protocols, request routing, distributed query, authorization]
-description: Overview of Frontend, GreptimeDB's stateless request entry point and query coordinator.
+keywords: [frontend, proxy, protocol, routing, distributed query, tenant management, authorization, flow control, cloud deployment, endpoints]
+description: Overview of GreptimeDB's Frontend component - a stateless proxy service for client requests.
 ---
 
 # Frontend
 
-Frontend is GreptimeDB's stateless request entry point and orchestration layer. It implements the business logic behind the protocol servers, plans queries, routes writes and Region reads, and coordinates distributed query execution.
+The **Frontend** is a stateless service that serves as the entry point for client requests in GreptimeDB. It provides a unified interface for multiple database protocols and acts as a proxy that forwards read/write requests to appropriate Datanodes in the distributed system.
 
-Network listeners and wire formats belong to the `servers` crate. The `frontend` crate implements handler traits for SQL, gRPC, MySQL, PostgreSQL, InfluxDB, OpenTelemetry, Prometheus, OpenTSDB, Jaeger, and other supported interfaces.
+## Core Functions
 
-<AnchorAlias id="core-functions" />
-
-## Responsibilities
-
-- Parse and plan SQL, PromQL, and log queries.
-- Check permissions and carry session context through request processing.
-- Route inserts, deletes, and Region queries using catalog and route metadata.
-- Dispatch distributed query fragments to Datanodes and merge their results.
-
-See the [protocol overview](/user-guide/protocols/overview.md) for the user-facing interfaces.
+- **Protocol Support**: Multiple database protocols including SQL, PromQL, MySQL, and PostgreSQL. See [Protocols][1] for details
+- **Request Routing**: Routes requests to appropriate Datanodes based on metadata
+- **Query Distribution**: Splits distributed queries across multiple nodes
+- **Response Aggregation**: Combines results from multiple Datanodes
+- **Authorization**: Security and access control validation
 
 ## Architecture
 
 ### Key Components
-
-- `Instance` in `src/frontend/src/instance.rs` is the main business-logic container and implements the server handler traits.
-- Modules under `src/frontend/src/instance/` handle individual request types and protocols.
-- `StatementExecutor` in the `operator` crate handles statements and write-side operations.
-- The `query` crate owns logical planning, optimization, and distributed plans.
-- `FrontendRegionQueryHandler` in `instance/region_query.rs` resolves Region targets and sends query requests to Datanodes.
+- **Protocol Handlers**: Handle different database protocols
+- **Catalog Manager**: Caches metadata from Metasrv to enable efficient request routing and schema validation
+- **Dist Planner**: Converts logical plans to distributed execution plans
+- **Request Router**: Determines target Datanodes for each request
 
 ### Request Flow
 
-In standalone mode, Frontend accesses an embedded Datanode through a local `RegionServer` adapter. In distributed mode, it uses metadata from Metasrv and RPC clients to reach remote Datanodes.
+![request flow](/request_flow.png)
 
 ### Deployment
 
-Frontend instances do not own table data. Multiple instances can serve requests against the same Metasrv and Datanode cluster.
+The following picture shows a typical deployment of GreptimeDB in the cloud. The `Frontend` instances
+form a cluster to serve the requests from clients:
 
-<AnchorAlias id="details" />
+![frontend](/frontend.png)
 
-## Implementation guides
+## Details
 
-- [Table Sharding](./table-sharding.md)
-- [Distributed Querying](./distributed-querying.md)
+- [Table Sharding][2]
+- [Distributed Querying][3]
+
+[1]: /user-guide/protocols/overview.md
+[2]: ./table-sharding.md
+[3]: ./distributed-querying.md

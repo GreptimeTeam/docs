@@ -1,70 +1,60 @@
 ---
-keywords: [metasrv, metadata, routing, leader election, heartbeat, distributed procedures]
-description: Overview of Metasrv's metadata, coordination, and cluster-management responsibilities.
+keywords: [metasrv, metadata, routing, leader election, procedure, heartbeat]
+description: Overview of the metadata and coordination mechanisms provided by Metasrv.
 ---
 
 # Metasrv
 
-<AnchorAlias id="whats-in-metasrv" />
+## What's in Metasrv
 
-## Responsibilities
+Metasrv is the metadata and coordination service in a distributed GreptimeDB cluster. It does not sit on the data path. Its main responsibilities are:
 
-Metasrv is the metadata and coordination service for distributed deployments. It:
+- storing Catalog, Schema, Table, Region, route, and node metadata;
+- choosing Datanodes for new Regions and maintaining table routes;
+- electing one Metasrv leader to coordinate metadata changes;
+- running recoverable procedures for DDL, Region migration, failover, and repartitioning;
+- tracking node leases and Region statistics through heartbeats;
+- notifying Frontends and Datanodes when cached metadata or Region state changes.
 
-- persists Catalog, Schema, Table, Region, route, and node metadata through the KV backend;
-- uses leader election so coordination and metadata-changing work runs on one leader;
-- tracks node leases and Region statistics through heartbeat streams;
-- selects Datanodes for Regions when tables are created;
-- runs recoverable distributed procedures for DDL, Region migration, failover, repartitioning, and related maintenance work;
-- publishes cache invalidations and other control messages to Frontend and Datanode.
+## How the Frontend interacts with Metasrv
 
-The data models, KV abstraction, election interfaces, key encoding, and DDL manager are implemented in `src/common/meta/`. The `src/meta-srv/` crate provides the server, state machine, heartbeat handlers, and control procedures.
-
-<AnchorAlias id="how-the-frontend-interacts-with-metasrv" />
-
-## Frontend interaction
-
-Frontend uses the `meta-client` crate to obtain table metadata and Region routes and to submit metadata-changing operations. It caches metadata locally; Metasrv sends invalidation messages when a procedure changes metadata.
+Frontend obtains table metadata and Region routes from Metasrv and caches them locally. Metadata-changing statements are sent to the Metasrv leader, while reads and writes use the cached routes to reach Datanodes directly.
 
 ### Create Table
 
 1. Frontend submits the DDL request to the Metasrv leader.
-2. The DDL manager validates the request, derives the Regions from the partition rules, and selects Datanodes for those Regions.
-3. A persisted procedure creates the Regions and records the table and route metadata. Persisted procedure state makes the operation recoverable after a restart or leader change.
-4. Metasrv invalidates affected caches after the metadata change is committed.
+2. Metasrv derives Regions from the partition rules and selects a Datanode for each Region.
+3. A persisted procedure creates the Regions and records the table and route metadata. If leadership changes, the procedure can resume from its persisted state.
+4. Metasrv notifies Frontends after the metadata change is committed so their caches can be refreshed.
 
 ### Insert
 
-Frontend resolves the table route, splits rows by partition, and sends Region write requests to the corresponding Datanodes. Route metadata is cached, but cache invalidation or a stale-route error causes Frontend to refresh it from Metasrv.
+Frontend resolves the table route, splits rows according to the partition rules, and sends each Region write to the corresponding Datanode. Route changes cause the cached metadata to be invalidated and fetched again from Metasrv.
 
 ### Select
 
-Frontend uses table and Region metadata while planning a query. Partition predicates prune Regions, and the distributed query engine sends remote subplans to the Datanodes that own the selected Regions. See [Distributed Querying](../frontend/distributed-querying.md).
+Frontend uses table and Region metadata while planning the query. Predicates on partition columns prune Regions, and the distributed query engine sends work to the Datanodes that own the selected Regions. See [Distributed Querying](../frontend/distributed-querying.md).
 
-<AnchorAlias id="metasrv-architecture" />
+## Metasrv Architecture
 
-## Source layout
+Metasrv combines several coordination mechanisms:
 
-The main implementation areas are:
+- A metadata layer stores cluster state through a key-value backend.
+- Leader election ensures that one Metasrv coordinates metadata changes and cluster-management work.
+- The Procedure Manager executes multi-step operations and persists enough state to resume them after failure.
+- Heartbeat handlers update leases and Region statistics and deliver control messages.
+- Region supervision uses lease state to detect unavailable Regions and start failover when appropriate.
 
-- `src/meta-srv/src/service/`: gRPC services and the HTTP Admin API.
-- `src/meta-srv/src/handler/`: the heartbeat handler chain.
-- `src/meta-srv/src/procedure/`: Region migration, repartition, WAL pruning, and other distributed procedures.
-- `src/meta-srv/src/region/`: Region leases, supervision, and failover triggers.
-- `src/meta-srv/src/selector/`: Datanode selection for Region placement.
+These mechanisms share metadata, but they have different failure boundaries. A process restart may discard caches and leader-local state; metadata and procedure state required for recovery must be durable.
 
-<AnchorAlias id="distributed-consensus" />
+## Distributed Consensus
 
-## Leadership and persistence
+Metasrv separates leader election from metadata storage. Only the elected Metasrv leader performs coordination and metadata-changing operations. Other Metasrv nodes direct clients to the current leader.
 
-Metasrv separates leader election and durable metadata storage behind interfaces in `common-meta`. Coordination and metadata-changing operations run on the leader; a non-leader returns a not-leader response so the client can reconnect to the current leader.
+The key-value backend stores table metadata, routes, procedure state, and other information that must survive a leader change. Metasrv does not use this election to create leader and follower replicas for Datanode Regions; Region availability is managed through leases, heartbeats, and failover procedures.
 
-Anything required after a leader change must be stored in the KV backend. In-memory caches and leader-local state are rebuilt or cleared during a transition. Distributed procedures persist their state and must keep each step idempotent so execution can resume safely.
+## Heartbeat Management
 
-<AnchorAlias id="heartbeat-management" />
+Datanodes maintain heartbeat streams to the Metasrv leader. Heartbeat requests report node identity, lease information, Region statistics, and other state used for placement and supervision. Responses carry control messages such as Region lifecycle instructions and cache invalidations.
 
-## Heartbeat invariants
-
-Datanodes and Frontends maintain heartbeat streams to the Metasrv leader. Requests report node identity, leases, Region statistics, and other state. The handler chain under `src/meta-srv/src/handler/` checks leadership, updates leases and statistics, and handles mailbox messages.
-
-Heartbeat responses carry control messages such as Region lifecycle instructions and cache invalidations. Region supervision uses lease state to detect unavailable Regions and trigger failover procedures. Changes to heartbeat intervals must remain consistent with lease and supervisor timing in `common-meta` and `meta-srv`.
+Metasrv treats a heartbeat as a lease renewal, not merely as a metrics sample. Lease expiration is therefore part of failure detection and can lead to a Region failover procedure. Changes to heartbeat timing must remain consistent with the lease and supervision intervals.

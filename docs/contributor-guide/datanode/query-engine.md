@@ -1,35 +1,53 @@
 ---
-keywords: [query engine, Apache DataFusion, logical plan, physical plan, Arrow, indexes]
-description: Overview of GreptimeDB's DataFusion-based query planning and execution pipeline.
+keywords: [query engine, Apache DataFusion, logical plan, physical plan, data representation, indexing]
+description: Overview of GreptimeDB's query engine, its architecture, data representation, indexing, and extensibility.
 ---
 
 # Query Engine
 
 ## Introduction
 
-GreptimeDB's query engine is built on [Apache DataFusion][1]. The `query` crate owns SQL, PromQL, and log planning, GreptimeDB optimizer rules, physical planning, and execution.
+GreptimeDB's query engine is built on [Apache DataFusion][1] (subproject under [Apache
+Arrow][2]), a brilliant query engine written in Rust. It provides a set of well functional components from
+logical plan, physical plan and the execution runtime. Below explains how each component is orchestrated and their positions during execution.
 
 ![Execution Procedure](/execution-procedure.png)
 
-A query first becomes a DataFusion logical plan. SQL and other query-language planners produce these plans, and Frontend also sends serialized logical subplans to Datanodes during distributed execution.
+The entry point is the logical plan, which is used as the general intermediate representation of a
+query or execution logic etc. Two noticeable sources of logical plan are from: 1. the user query, like
+SQL through SQL parser and planner; 2. the Frontend's distributed query, which is explained in details in the following section.
 
-Analyzer and optimizer rules normalize the plan, push filters and projections, prune Regions, and introduce GreptimeDB extension nodes such as `MergeScan`. Both DataFusion rules and rules under `src/query/src/optimizer/` participate in this phase.
+Next is the physical plan, or the execution plan. Unlike the logical plan which is a big
+enumeration containing all the logical plan variants (except the special extension plan node), the
+physical plan is in fact a trait that defines a group of methods invoked during
+execution. All data processing logics are packed in corresponding structures that
+implement the trait. They are the actual operations performed on the data, like
+aggregator `MIN` or `AVG`, and table scan `SELECT ... FROM`.
 
-The physical planner converts the optimized logical plan into DataFusion `ExecutionPlan` implementations. Executing the root plan returns an asynchronous stream of Arrow `RecordBatch` values. Use `EXPLAIN` or `EXPLAIN VERBOSE` to inspect the plans produced for a SQL statement.
+The optimization phase which improves execution performance by transforming both logical and physical plans, is now all based on rules. It is also called, "Rule Based Optimization". Some of the rules are DataFusion native and others are customized in Greptime DB. In the future, we plan to add more
+rules and leverage the data statistics for Cost Based Optimization/CBO.
+
+The last phase "execute" is a verb, stands for the procedure that reads data from storage, performs
+calculations and generates the expected results. Although it's more abstract than previously mentioned concepts, you can just
+simply imagine it as executing a Rust async function. And it's indeed a future (stream).
+
+`EXPLAIN [VERBOSE] <SQL>` is very useful if you want to see how your SQL is represented in the logical or physical plan.
 
 ## Data Representation
 
-GreptimeDB uses [Apache Arrow][2] arrays and `RecordBatch` values for in-memory data exchange. The columnar representation is shared by storage scans, query operators, RPC streams, and result encoders, avoiding row-by-row conversion inside the execution pipeline.
+GreptimeDB uses [Apache Arrow][2] as the in-memory data representation. It's column-oriented, in
+cross-platform format, and also contains many high-performance data operators. These features
+make it easy to share data in many different environments and implement calculation logic.
 
 ## Indexing
 
-Index construction and persistent index formats belong to the storage engine, not the query engine. Mito uses Parquet statistics and inverted, skipping, and full-text indexes to prune SST files, row groups, and data segments. A feature-gated vector index supplies candidate rows for vector search. See [Data Persistence and Indexing](./data-persistence-indexing.md).
-
-The query layer contributes predicates and projections to the scan. An index can reduce the data read by a compatible predicate, but it does not replace the remaining filter operators in the query plan.
+Index construction and persistent index formats belong to the storage engine. The query layer supplies predicates and projections to a scan; Mito then uses time ranges, Parquet statistics, and indexes to avoid reading data that cannot match. See [Data Persistence and Indexing](./data-persistence-indexing.md).
 
 ## Distributed Execution
 
-Frontend rewrites compatible logical-plan fragments into remote `MergeScan` inputs, serializes them with Substrait, and sends Region-specific requests to Datanodes. See [Distributed Querying](../frontend/distributed-querying.md).
+Covered in [Distributed Querying][6].
 
-[1]: https://datafusion.apache.org/
+[1]: https://github.com/apache/arrow-datafusion
 [2]: https://arrow.apache.org/
+[3]: https://parquet.apache.org
+[6]: ../frontend/distributed-querying.md
