@@ -9,7 +9,7 @@ This guide provides a brief overview of the batching mode in `flownode`. It's in
 
 ## Overview
 
-The batching mode in `flownode` is designed for continuous data aggregation. It periodically executes a user-defined SQL query over small, discrete time windows. This is in contrast to the original streaming mode, now deprecated, where data was processed as it arrived.
+The batching mode in `flownode` is designed for continuous data aggregation. It periodically executes a user-defined SQL query over small, discrete time windows. This is in contrast to the legacy streaming path, which processes data as it arrives and is retained for compatibility but deprecated for new workloads.
 
 The core idea is to:
 1.  Define a `flow` with a SQL query that aggregates data from a source table into a sink table.

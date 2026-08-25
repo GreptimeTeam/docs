@@ -20,6 +20,32 @@ Metasrv is the metadata and coordination service in a distributed GreptimeDB clu
 
 Frontend obtains table metadata and Region routes from Metasrv and caches them locally. Metadata-changing statements are sent to the Metasrv leader, while reads and writes use the cached routes to reach Datanodes directly.
 
+The control and data paths are separate:
+
+```text
+Frontend
+  |-- metadata lookup and DDL ------------> Metasrv leader
+  `-- Region reads and writes ------------> Datanode
+
+Metasrv leader
+  |-- Region lifecycle procedures --------> Datanode
+  `-- cache and Region-state notifications -> Frontend / Datanode
+
+Datanode
+  `-- heartbeat, lease renewal, Region stats -> Metasrv leader
+```
+
+A table route maps each Region to its current Datanode peer. It does not contain a separate list of read replicas:
+
+```text
+Table route
+  |-- Region 0 -> Datanode A
+  |-- Region 1 -> Datanode B
+  `-- Region 2 -> Datanode C
+```
+
+Region migration or failover changes this mapping. Frontend refreshes its cached route before sending subsequent reads or writes to the new peer.
+
 ### Create Table
 
 1. Frontend submits the DDL request to the Metasrv leader.

@@ -5,19 +5,23 @@ description: 介绍了 GreptimeDB 的数据持久化和索引机制，包括 SST
 
 # 数据持久化与索引
 
-与所有类似 LSMT 的存储引擎一样，MemTables 中的数据被持久化到耐久性存储，例如本地磁盘文件系统或对象存储服务。GreptimeDB 采用 [Apache Parquet][1] 作为其持久文件格式。
+与其他 LSM-tree 存储引擎类似，GreptimeDB 将 memtable 中的数据持久化到本地文件系统或对象存储，并使用 [Apache Parquet][1] 作为持久化文件格式。
 
 ## SST 文件格式
 
 Parquet 是一种提供快速数据查询的开源列式存储格式，已经被许多项目采用，例如 Delta Lake。
 
-Parquet 按 row group、column chunk 和 page 组织数据。每个 row group 为每一列保存一个 column chunk，每个 column chunk 再包含一个或多个 page。Page 是 column chunk 内最小的编码 I/O 单元。
+Parquet 按 row group、column chunk 和 page 组织数据。每个 row group 为每一列保存一个 column chunk，每个 column chunk 再包含一个或多个 page。Page 是编码和压缩单元，读取指定列时则以 column chunk 为 I/O 单元。
 
 首先，数据按列聚集，这使得文件扫描更加高效，特别是当查询只涉及少数列时，这在分析系统中非常常见。
 
-其次，相同列的数据往往是同质的（比如具备近似的值），这有助于在采用字典和 Run-Length Encoding（RLE）等技术进行压缩。
+其次，同一列中的值通常比较相似，有利于字典编码和 Run-Length Encoding（RLE）等压缩技术发挥作用。
 
-<img src="/parquet-file-format.png" alt="Parquet file format" width="500"/>
+下面这张来自 Apache Parquet 规范的图进一步展示了物理文件布局：column chunk 按 row group 写入，文件元数据及其长度则保存在 footer 中。
+
+<img src="/parquet-file-layout.gif" alt="Apache Parquet 文件布局" width="601"/>
+
+*来源：[Apache Parquet 文件格式规范](https://parquet.apache.org/docs/file-format/)。*
 
 ## 数据持久化
 

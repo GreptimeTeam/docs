@@ -22,3 +22,7 @@ For more details on each component, see the following guides:
 [2]: /contributor-guide/datanode/overview.md
 [3]: /contributor-guide/metasrv/overview.md
 [4]: /contributor-guide/flownode/overview.md
+
+## Additional reference
+
+[DeepWiki](https://deepwiki.com/GreptimeTeam/greptimedb) provides an automatically generated walkthrough of the GreptimeDB repository. It can help when exploring an unfamiliar area, but it is a secondary reference: verify version-sensitive behavior against the source code.

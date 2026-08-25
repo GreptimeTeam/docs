@@ -24,7 +24,7 @@ description: 介绍 Metasrv 中的 Selector，包括其类型和配置方法。
 `LoadBasedSelector` 按照负载来选择，负载值则由每个 `Datanode` 上的 region 数量决定，较少的 region 表示较低的负载，`LoadBasedSelector` 优先选择低负载的 `Datanode`。
 
 ### RoundRobinSelector [默认选项]
-`RoundRobinSelector` 以轮询方式选择 Datanode，是默认选项。
+`RoundRobinSelector` 以轮询方式选择 Datanode，是默认选项，也适用于大多数部署。
 
 ## 配置
 

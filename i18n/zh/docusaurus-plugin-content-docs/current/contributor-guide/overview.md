@@ -22,3 +22,7 @@ description: 介绍 GreptimeDB 的架构、关键概念和工作原理，包括�
 [2]: /contributor-guide/datanode/overview.md
 [3]: /contributor-guide/metasrv/overview.md
 [4]: /contributor-guide/flownode/overview.md
+
+## 补充参考
+
+[DeepWiki](https://deepwiki.com/GreptimeTeam/greptimedb) 提供了自动生成的 GreptimeDB 源码导读，可用于了解不熟悉的模块。它属于辅助资料；涉及具体版本的行为时，仍应以对应源码为准。

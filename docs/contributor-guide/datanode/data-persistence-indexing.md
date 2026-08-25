@@ -5,19 +5,23 @@ description: Explanation of data persistence and indexing in GreptimeDB, includi
 
 # Data Persistence and Indexing
 
-Similar to all LSMT-like storage engines, data in MemTables is persisted to durable storage, for example, the local disk file system or object storage service. GreptimeDB adopts [Apache Parquet][1] as its persistent file format.
+Like other LSM-tree storage engines, GreptimeDB persists data from memtables to durable storage such as a local filesystem or object storage. It uses [Apache Parquet][1] as the persistent file format.
 
 ## SST File Format
 
 Parquet is an open source columnar format that provides fast data querying and has already been adopted by many projects, such as Delta Lake.
 
-Parquet organizes data as row groups, column chunks, and pages. A row group contains one column chunk for each column, and each column chunk contains one or more pages. Pages are the smallest encoded I/O units within a column chunk.
+Parquet organizes data as row groups, column chunks, and pages. A row group contains one column chunk for each column, and each column chunk contains one or more pages. Pages are the units of encoding and compression; column chunks are the I/O units for reading selected columns.
 
 First, clustering data by column makes file scanning more efficient, especially when only a few columns are queried, which is very common in analytical systems.
 
-Second, data of the same column tends to be homogeneous which helps with compression when apply techniques like dictionary and Run-Length Encoding (RLE).
+Second, values within a column tend to be similar, which improves compression with techniques such as dictionary encoding and run-length encoding (RLE).
 
-<img src="/parquet-file-format.png" alt="Parquet file format" width="500"/>
+The following diagram from the Apache Parquet specification also shows the physical file layout: column chunks are stored by row group, while file metadata and its length are written in the footer.
+
+<img src="/parquet-file-layout.gif" alt="Apache Parquet file layout" width="601"/>
+
+*Source: [Apache Parquet file-format specification](https://parquet.apache.org/docs/file-format/).*
 
 ## Data Persistence
 

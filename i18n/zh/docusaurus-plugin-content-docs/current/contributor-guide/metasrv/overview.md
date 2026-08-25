@@ -20,6 +20,32 @@ Metasrv 是 GreptimeDB 分布式集群中的元数据和协调服务，不参与
 
 Frontend 从 Metasrv 获取表元数据和 Region 路由，并缓存在本地。修改元数据的语句会发送给 Metasrv leader；普通读写则使用缓存的路由直接访问 Datanode。
 
+控制链路和数据链路相互分离：
+
+```text
+Frontend
+  |-- 元数据查询和 DDL -------------------> Metasrv leader
+  `-- Region 读写 ------------------------> Datanode
+
+Metasrv leader
+  |-- Region 生命周期 Procedure ----------> Datanode
+  `-- 缓存和 Region 状态通知 -------------> Frontend / Datanode
+
+Datanode
+  `-- 心跳、租约续期和 Region 统计信息 ----> Metasrv leader
+```
+
+表路由把每个 Region 映射到当前 Datanode peer，其中没有单独的只读副本列表：
+
+```text
+Table route
+  |-- Region 0 -> Datanode A
+  |-- Region 1 -> Datanode B
+  `-- Region 2 -> Datanode C
+```
+
+Region 迁移或故障转移会修改这项映射。Frontend 刷新缓存路由后，再把后续读写发送给新的 peer。
+
 ### 创建表
 
 1. Frontend 向 Metasrv leader 提交 DDL 请求。
