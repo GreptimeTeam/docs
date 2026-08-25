@@ -11,6 +11,8 @@ A Datanode stores and processes Region data. A table can contain multiple Region
 
 This boundary lets the same Region server host different storage engines without exposing their implementation to Frontend or Metasrv.
 
+![Frontend sends Region requests to the Datanode Region server, while Metasrv exchanges lifecycle instructions through the heartbeat task. The Region server uses the local query engine and dispatches requests to the Mito, Metric, or File Region engine.](/datanode-architecture.svg)
+
 ## Components
 
 The main components are:

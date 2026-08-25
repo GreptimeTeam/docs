@@ -102,6 +102,8 @@ Mito 支持两种 SST 格式：`flat` 和 `primary_key`。`flat` 是新表的默
 
 ![Mito 默认的 flat SST 布局将文件级元数据与包含数据列和合并元数据的 Parquet row group 组合在一起。](/mito-sst-layout.zh.svg)
 
+一个 SST 可能跨越多个 compaction time window。
+
 ## 扫描裁剪
 
 Mito 会组合多个从粗到细的裁剪步骤，避免读取不可能匹配查询的数据：

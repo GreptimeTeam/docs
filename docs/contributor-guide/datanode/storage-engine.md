@@ -105,6 +105,8 @@ Mito supports two SST formats: `flat` and `primary_key`. `flat` is the default f
 
 ![The default flat Mito SST layout combines file-level metadata with Parquet row groups containing data columns and merge metadata.](/mito-sst-layout.svg)
 
+An SST may span more than one compaction time window.
+
 ## Scan Pruning
 
 Mito avoids reading data that cannot match a query by combining several pruning steps, from coarse to fine:

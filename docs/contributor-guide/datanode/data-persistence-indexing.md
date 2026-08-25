@@ -21,7 +21,7 @@ The following diagram from the Apache Parquet specification also shows the physi
 
 <img src="/parquet-file-layout.gif" alt="Apache Parquet file layout" width="601"/>
 
-*Source: [Apache Parquet file-format specification](https://parquet.apache.org/docs/file-format/).*
+*Source: Apache Parquet [FileLayout.gif](https://github.com/apache/parquet-format/blob/master/doc/images/FileLayout.gif). Copyright 2014 The Apache Software Foundation, licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).*
 
 ## Data Persistence
 

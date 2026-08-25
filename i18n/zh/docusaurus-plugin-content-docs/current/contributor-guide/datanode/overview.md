@@ -11,6 +11,8 @@ Datanode 存储并处理 Region 数据。一张表可以包含多个 Region，�
 
 这个边界使同一个 Region server 可以承载不同的存储引擎，而不向 Frontend 或 Metasrv 暴露引擎实现。
 
+![Frontend 向 Datanode Region server 发送 Region 请求，Metasrv 通过 heartbeat task 与 Datanode 交换生命周期指令。Region server 使用本地 query engine，并将请求分发给 Mito、Metric 或 File Region engine。](/datanode-architecture.zh.svg)
+
 ## Components
 
 Datanode 包含以下主要组件：

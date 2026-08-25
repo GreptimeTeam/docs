@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
+  <title id="title">Datanode 组件边界</title>
+  <desc id="desc">Frontend 通过 gRPC 向 Datanode 发送 Region 请求。Metasrv 与 heartbeat task 交换 Region 生命周期指令和状态。Region server 使用本地 query engine，并将请求分发给 Mito、Metric 或 File Region engine。</desc>
+  <defs>
+    <style>
+      .group { font: 650 22px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .title { font: 650 19px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .label { font: 600 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .small { font: 500 15px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748B; }
+      .purple { fill: #6D28D9; }
+      .blue { fill: #1D4ED8; }
+      .teal { fill: #0F766E; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="500" fill="#FFFFFF"/>
+  <rect x="40" y="35" width="250" height="70" rx="14" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2.5"/>
+  <text x="165" y="78" text-anchor="middle" class="group">Frontend</text>
+  <rect x="910" y="35" width="250" height="70" rx="14" fill="#F5F3FF" stroke="#A78BFA" stroke-width="2.5"/>
+  <text x="1035" y="78" text-anchor="middle" class="group">Metasrv</text>
+
+  <rect x="40" y="145" width="1120" height="310" rx="20" fill="#FAFAFF" stroke="#C4B5FD" stroke-width="2.5"/>
+  <text x="70" y="180" class="group">Datanode</text>
+
+  <path d="M 165 115 L 165 205" fill="none" stroke="#64748B" stroke-width="2.5"/>
+  <path d="M 165 205 L 158 193 L 172 193 Z" fill="#64748B"/>
+  <text x="185" y="140" class="small">Region 请求</text>
+  <path d="M 1035 115 L 1035 180" fill="none" stroke="#8B5CF6" stroke-width="2.5"/>
+  <path d="M 1035 115 L 1028 127 L 1042 127 Z" fill="#8B5CF6"/>
+  <path d="M 1035 180 L 1028 168 L 1042 168 Z" fill="#8B5CF6"/>
+  <text x="1055" y="140" class="small purple">状态</text>
+  <text x="1055" y="163" class="small purple">指令</text>
+
+  <rect x="90" y="205" width="200" height="80" rx="13" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2"/>
+  <text x="190" y="239" text-anchor="middle" class="title blue">gRPC 服务</text>
+  <text x="190" y="266" text-anchor="middle" class="small">Region · Flight</text>
+  <path d="M 300 245 L 380 245" fill="none" stroke="#64748B" stroke-width="2.5"/>
+  <path d="M 380 245 L 368 238 L 368 252 Z" fill="#64748B"/>
+
+  <rect x="390" y="190" width="290" height="190" rx="17" fill="#FFFFFF" stroke="#8B5CF6" stroke-width="2.5"/>
+  <text x="535" y="232" text-anchor="middle" class="group">Region server</text>
+  <rect x="430" y="285" width="210" height="58" rx="11" fill="#ECFDF5" stroke="#5EEAD4" stroke-width="2"/>
+  <text x="535" y="320" text-anchor="middle" class="label teal">本地 query engine</text>
+
+  <rect x="790" y="180" width="260" height="80" rx="13" fill="#F5F3FF" stroke="#A78BFA" stroke-width="2"/>
+  <text x="920" y="228" text-anchor="middle" class="title purple">Heartbeat task</text>
+  <path d="M 780 220 L 690 220" fill="none" stroke="#8B5CF6" stroke-width="2.5"/>
+  <path d="M 690 220 L 702 213 L 702 227 Z" fill="#8B5CF6"/>
+  <text x="735" y="207" text-anchor="middle" class="small purple">生命周期</text>
+
+  <path d="M 690 345 L 750 345" fill="none" stroke="#64748B" stroke-width="2.5"/>
+  <path d="M 750 345 L 738 338 L 738 352 Z" fill="#64748B"/>
+  <rect x="760" y="300" width="350" height="110" rx="14" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="790" y="331" class="title">Region engines</text>
+  <rect x="790" y="350" width="85" height="42" rx="9" fill="#F5F3FF" stroke="#A78BFA" stroke-width="2"/>
+  <text x="832.5" y="377" text-anchor="middle" class="label purple">Mito</text>
+  <rect x="890" y="350" width="90" height="42" rx="9" fill="#ECFDF5" stroke="#5EEAD4" stroke-width="2"/>
+  <text x="935" y="377" text-anchor="middle" class="label teal">Metric</text>
+  <rect x="995" y="350" width="85" height="42" rx="9" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2"/>
+  <text x="1037.5" y="377" text-anchor="middle" class="label blue">File</text>
+</svg>

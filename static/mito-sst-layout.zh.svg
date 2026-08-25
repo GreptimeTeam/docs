@@ -1,62 +1,52 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="800" viewBox="0 0 1500 800" role="img" aria-labelledby="title desc">
-  <title id="title">Mito Parquet SST 布局</title>
-  <desc id="desc">Mito 为 Parquet SST 记录文件级元数据，并把文件切分为可以独立读取的 row group。Row group 保存 field 列、time index、编码后的 primary key、sequence 和操作类型；所选编码需要时还会保存原始 primary-key 列。由于一个 SST 可以跨越多个 compaction time window，图中不把 SST 限定在单个 time window 内。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Mito 默认的 flat SST 布局</title>
+  <desc id="desc">Mito 为 Parquet SST 记录文件级元数据。每个 row group 保存可选的原始 primary-key 列、field 列、time index、编码后的 primary key、sequence 和操作类型。</desc>
   <defs>
     <style>
-      .kicker { font: 650 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: .08em; fill: #64748B; }
-      .headline { font: 650 31px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
-      .title { font: 650 23px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
-      .subtitle { font: 400 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748B; }
-      .label { font: 600 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
-      .small { font: 500 15px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
-      .mono { font: 600 15px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; fill: #334155; }
-      .amber { font: 600 15px Inter, ui-sans-serif, system-ui, sans-serif; fill: #B45309; }
-      .purple { font: 600 15px Inter, ui-sans-serif, system-ui, sans-serif; fill: #6D28D9; }
-      .teal { font: 600 15px Inter, ui-sans-serif, system-ui, sans-serif; fill: #0F766E; }
-      .blue { font: 600 15px Inter, ui-sans-serif, system-ui, sans-serif; fill: #1D4ED8; }
+      .group { font: 650 22px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .title { font: 650 18px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .label { font: 600 15px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .small { font: 500 14px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748B; }
+      .mono { font: 600 14px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; fill: #334155; }
+      .amber { fill: #B45309; }
+      .purple { fill: #6D28D9; }
+      .teal { fill: #0F766E; }
+      .blue { fill: #1D4ED8; }
     </style>
   </defs>
 
-  <rect width="1500" height="800" fill="#FFFFFF"/>
-  <text x="70" y="58" class="kicker">默认 FLAT SST 布局</text>
-  <text x="70" y="101" class="headline">Parquet SST 同时保存表数据列和 Mito 合并元数据</text>
-  <line x1="70" y1="126" x2="1430" y2="126" stroke="#E2E8F0" stroke-width="2"/>
+  <rect width="1200" height="420" fill="#FFFFFF"/>
 
-  <rect x="70" y="165" width="1360" height="105" rx="16" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2.5"/>
-  <text x="105" y="205" class="title">Mito SST 元数据</text>
-  <text x="105" y="239" class="subtitle">时间范围 · primary-key 范围 · 行数 · row-group 数量 · 可用索引</text>
+  <rect x="40" y="30" width="1120" height="80" rx="14" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2.5"/>
+  <text x="70" y="64" class="title">SST 元数据</text>
+  <text x="70" y="91" class="small">时间范围 · primary-key 范围 · 行数 · row group 数量 · 索引</text>
 
-  <rect x="70" y="305" width="1360" height="370" rx="20" fill="#FAFAFF" stroke="#C4B5FD" stroke-width="2.5"/>
-  <text x="105" y="348" class="title">Parquet SST</text>
-  <text x="105" y="378" class="subtitle">row group 是可以独立读取和跳过的单位</text>
+  <rect x="40" y="140" width="1120" height="240" rx="18" fill="#FAFAFF" stroke="#C4B5FD" stroke-width="2.5"/>
+  <text x="70" y="176" class="group">Parquet SST</text>
 
-  <rect x="105" y="415" width="1290" height="105" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
-  <text x="135" y="456" class="title">Row group 0</text>
-  <rect x="300" y="435" width="230" height="64" rx="11" fill="#FFFBEB" stroke="#F59E0B" stroke-width="2" stroke-dasharray="7 5"/>
-  <text x="415" y="461" text-anchor="middle" class="amber">原始 primary-key 列</text>
-  <text x="415" y="484" text-anchor="middle" class="small">所选编码需要时保存</text>
-  <rect x="550" y="435" width="170" height="64" rx="11" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="2"/>
-  <text x="635" y="461" text-anchor="middle" class="purple">Field 列</text>
-  <text x="635" y="484" text-anchor="middle" class="mono">cpu · memory</text>
-  <rect x="740" y="435" width="135" height="64" rx="11" fill="#ECFDF5" stroke="#2DD4BF" stroke-width="2"/>
-  <text x="807.5" y="461" text-anchor="middle" class="teal">Time index</text>
-  <text x="807.5" y="484" text-anchor="middle" class="mono">ts</text>
-  <rect x="895" y="435" width="205" height="64" rx="11" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2"/>
-  <text x="997.5" y="461" text-anchor="middle" class="blue">编码后的 key</text>
-  <text x="997.5" y="484" text-anchor="middle" class="mono">__primary_key</text>
-  <rect x="1120" y="435" width="245" height="64" rx="11" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2"/>
-  <text x="1242.5" y="461" text-anchor="middle" class="label">合并元数据</text>
-  <text x="1242.5" y="484" text-anchor="middle" class="mono">__sequence · __op_type</text>
+  <rect x="70" y="200" width="1060" height="105" rx="13" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="90" y="238" class="title">Row group 0</text>
 
-  <rect x="105" y="545" width="1290" height="92" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
-  <text x="135" y="583" class="title">Row group 1</text>
-  <text x="300" y="583" class="subtitle">使用相同物理列，保存下一组可以独立读取的数据行</text>
-  <rect x="1120" y="563" width="245" height="50" rx="25" fill="#EDE9FE"/>
-  <text x="1242.5" y="594" text-anchor="middle" class="purple">列 min / max / null 数量</text>
+  <rect x="220" y="220" width="185" height="64" rx="10" fill="#FFFBEB" stroke="#F59E0B" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="312.5" y="247" text-anchor="middle" class="label amber">原始 PK 列</text>
+  <text x="312.5" y="271" text-anchor="middle" class="small">可选</text>
 
-  <line x1="70" y1="718" x2="1430" y2="718" stroke="#E2E8F0" stroke-width="2"/>
-  <text x="70" y="752" class="label">排序：</text>
-  <text x="140" y="752" class="small">对于带 primary key 的表，先按 primary key、再按 time index 排序。</text>
-  <text x="870" y="752" class="label">Compaction：</text>
-  <text x="1000" y="752" class="small">一个 SST 可以跨越多个 compaction time window。</text>
+  <rect x="425" y="220" width="145" height="64" rx="10" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="2"/>
+  <text x="497.5" y="247" text-anchor="middle" class="label purple">Field 列</text>
+  <text x="497.5" y="271" text-anchor="middle" class="mono">cpu · memory</text>
+
+  <rect x="590" y="220" width="120" height="64" rx="10" fill="#ECFDF5" stroke="#2DD4BF" stroke-width="2"/>
+  <text x="650" y="247" text-anchor="middle" class="label teal">时间列</text>
+  <text x="650" y="271" text-anchor="middle" class="mono">ts</text>
+
+  <rect x="730" y="220" width="175" height="64" rx="10" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2"/>
+  <text x="817.5" y="247" text-anchor="middle" class="label blue">编码后的 key</text>
+  <text x="817.5" y="271" text-anchor="middle" class="mono">__primary_key</text>
+
+  <rect x="925" y="220" width="180" height="64" rx="10" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2"/>
+  <text x="1015" y="247" text-anchor="middle" class="label">合并元数据</text>
+  <text x="1015" y="271" text-anchor="middle" class="mono">__sequence · __op_type</text>
+
+  <rect x="70" y="330" width="1060" height="36" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="600" y="354" text-anchor="middle" class="small">… Row group n</text>
 </svg>

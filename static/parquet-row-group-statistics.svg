@@ -1,61 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760" role="img" aria-labelledby="title desc">
-  <title id="title">Parquet row-group statistics pruning</title>
-  <desc id="desc">A query for name equals Emily compares the predicate with column statistics stored in row-group column metadata. Row group zero is skipped because its maximum name is Charlie, while row group one remains a candidate because Emily falls between Doug and John.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Parquet row-group pruning with column statistics</title>
+  <desc id="desc">For the predicate name equals Emily, row group 0 can be skipped because its maximum name is Charlie. Row group 1 must be read because Emily falls between its minimum value Doug and maximum value John.</desc>
   <defs>
-    <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/></marker>
     <style>
-      .kicker { font: 650 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: .08em; text-transform: uppercase; fill: #64748B; }
-      .headline { font: 650 31px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
-      .title { font: 650 23px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
-      .subtitle { font: 400 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748B; }
+      .group { font: 650 22px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .title { font: 650 18px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
       .label { font: 600 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .small { font: 500 15px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748B; }
       .mono { font: 600 17px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; fill: #334155; }
-      .red { font: 650 17px Inter, ui-sans-serif, system-ui, sans-serif; fill: #B91C1C; }
-      .teal { font: 650 17px Inter, ui-sans-serif, system-ui, sans-serif; fill: #0F766E; }
+      .red { fill: #B91C1C; }
+      .teal { fill: #0F766E; }
+      .purple { fill: #6D28D9; }
     </style>
   </defs>
 
-  <rect width="1500" height="760" fill="#FFFFFF"/>
-  <text x="70" y="58" class="kicker">Parquet row-group pruning</text>
-  <text x="70" y="101" class="headline">Column statistics eliminate row groups before data is read</text>
-  <line x1="70" y1="126" x2="1430" y2="126" stroke="#E2E8F0" stroke-width="2"/>
+  <rect width="1200" height="420" fill="#FFFFFF"/>
 
-  <rect x="70" y="170" width="430" height="110" rx="16" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="2.5"/>
-  <text x="105" y="207" class="kicker">Query predicate</text>
-  <text x="105" y="250" class="mono">name = "Emily"</text>
-  <path d="M500 225 L610 225" fill="none" stroke="#94A3B8" stroke-width="3" marker-end="url(#arrow-slate)"/>
-  <text x="555" y="205" text-anchor="middle" class="label">compare</text>
+  <rect x="40" y="155" width="260" height="100" rx="15" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="2.5"/>
+  <text x="70" y="192" class="label purple">Predicate</text>
+  <text x="70" y="229" class="mono">name = "Emily"</text>
 
-  <rect x="620" y="158" width="810" height="525" rx="20" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2.5"/>
-  <text x="660" y="202" class="title">Parquet file metadata</text>
-  <text x="660" y="232" class="subtitle">ColumnMetaData for each row-group column chunk</text>
+  <path d="M 310 205 L 370 205" fill="none" stroke="#94A3B8" stroke-width="2.5"/>
+  <path d="M 370 205 L 358 198 L 358 212 Z" fill="#94A3B8"/>
+  <text x="340" y="190" text-anchor="middle" class="small">min / max</text>
 
-  <rect x="660" y="275" width="730" height="160" rx="15" fill="#FFF7F7" stroke="#FCA5A5" stroke-width="2.5"/>
-  <text x="695" y="315" class="title">Row group 0</text>
-  <rect x="695" y="340" width="300" height="65" rx="11" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
-  <text x="720" y="368" class="label">name</text>
-  <text x="795" y="368" class="mono">min Alice</text>
-  <text x="795" y="393" class="mono">max Charlie</text>
-  <rect x="1020" y="340" width="205" height="65" rx="11" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
-  <text x="1045" y="368" class="label">age</text>
-  <text x="1100" y="368" class="mono">18…23</text>
-  <rect x="1250" y="340" width="105" height="65" rx="32.5" fill="#FEE2E2"/>
-  <text x="1302.5" y="379" text-anchor="middle" class="red">Skip</text>
-  <text x="695" y="420" class="red">Emily is greater than the maximum value Charlie.</text>
+  <rect x="380" y="35" width="780" height="350" rx="18" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2.5"/>
+  <text x="415" y="72" class="group">Parquet metadata</text>
 
-  <rect x="660" y="475" width="730" height="160" rx="15" fill="#F0FDFA" stroke="#5EEAD4" stroke-width="2.5"/>
-  <text x="695" y="515" class="title">Row group 1</text>
-  <rect x="695" y="540" width="300" height="65" rx="11" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
-  <text x="720" y="568" class="label">name</text>
-  <text x="795" y="568" class="mono">min Doug</text>
-  <text x="795" y="593" class="mono">max John</text>
-  <rect x="1020" y="540" width="205" height="65" rx="11" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
-  <text x="1045" y="568" class="label">age</text>
-  <text x="1100" y="568" class="mono">20…30</text>
-  <rect x="1250" y="540" width="105" height="65" rx="32.5" fill="#CCFBF1"/>
-  <text x="1302.5" y="579" text-anchor="middle" class="teal">Keep</text>
-  <text x="695" y="620" class="teal">Emily falls within the recorded min-max range.</text>
+  <rect x="420" y="95" width="700" height="115" rx="14" fill="#FFF7F7" stroke="#FCA5A5" stroke-width="2.5"/>
+  <text x="450" y="137" class="title">Row group 0</text>
+  <rect x="620" y="118" width="300" height="62" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="645" y="156" class="label">name</text>
+  <text x="720" y="156" class="mono">Alice … Charlie</text>
+  <rect x="970" y="118" width="115" height="62" rx="31" fill="#FEE2E2"/>
+  <text x="1027.5" y="156" text-anchor="middle" class="title red">Skip</text>
 
-  <line x1="70" y1="709" x2="1430" y2="709" stroke="#E2E8F0" stroke-width="2"/>
-  <text x="70" y="744" class="label">Statistics prove when a row group cannot match; they do not prove that every remaining row matches.</text>
+  <rect x="420" y="240" width="700" height="115" rx="14" fill="#F0FDFA" stroke="#5EEAD4" stroke-width="2.5"/>
+  <text x="450" y="282" class="title">Row group 1</text>
+  <rect x="620" y="263" width="300" height="62" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="645" y="301" class="label">name</text>
+  <text x="720" y="301" class="mono">Doug … John</text>
+  <rect x="970" y="263" width="115" height="62" rx="31" fill="#CCFBF1"/>
+  <text x="1027.5" y="301" text-anchor="middle" class="title teal">Read</text>
 </svg>

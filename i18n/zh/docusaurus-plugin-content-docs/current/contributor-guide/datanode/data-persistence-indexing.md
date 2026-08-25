@@ -21,7 +21,7 @@ Parquet 按 row group、column chunk 和 page 组织数据。每个 row group �
 
 <img src="/parquet-file-layout.gif" alt="Apache Parquet 文件布局" width="601"/>
 
-*来源：[Apache Parquet 文件格式规范](https://parquet.apache.org/docs/file-format/)。*
+*来源：Apache Parquet [FileLayout.gif](https://github.com/apache/parquet-format/blob/master/doc/images/FileLayout.gif)。Copyright 2014 The Apache Software Foundation，依据 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) 使用。*
 
 ## 数据持久化
 
