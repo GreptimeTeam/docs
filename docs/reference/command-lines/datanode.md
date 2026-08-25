@@ -32,7 +32,7 @@ greptime datanode start --help
 | `--node-id <NODE_ID>`                 | The datanode ID                                                                                                                                                                                                                                                               |
 | `--grpc-bind-addr <GRPC_BIND_ADDR>`     | The address to bind the gRPC server                                                                                                                                                                                                                                           |
 | `--grpc-server-addr <GRPC_SERVER_ADDR>` | The address advertised to the metasrv, and used for connections from outside the host. If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `grpc_bind_addr` |
-| `--wal-dir <WAL_DIR>`                 | The directory of WAL                                                                                                                                                                                                                                                          |
+| `--wal-dir <WAL_DIR>`                 | Overrides the WAL directory when using the Raft Engine WAL backend                                                                                                                                                                                                            |
 
 All the `addr` options are in the form of `ip:port`.
 

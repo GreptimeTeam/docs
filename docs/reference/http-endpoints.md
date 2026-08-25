@@ -12,16 +12,20 @@ GreptimeDB provides two HTTP servers:
 | **Main HTTP server** | `127.0.0.1:4000` | Internal / operational use. Serves all paths, including admin endpoints such as `/health`, `/metrics`, `/config`, and `/debug/*`, as well as all `/v1` and `/dashboard` paths. Keep this port private and accessible only by trusted operators. |
 | **Public HTTP API server** | `127.0.0.1:4006` | User-facing API traffic. Serves only `/v1` APIs and `/dashboard`, excluding the admin endpoints. Disabled by default; enable it with `http.enable_api_server = true` in your configuration file. |
 
-Keep the main HTTP server private. The public API server reduces the exposed route surface, but route filtering does not provide authentication or transport security. With no `user_provider` configured, GreptimeDB accepts requests without authentication. Before allowing external access, configure authentication, TLS, and network access controls, either directly or through a reverse proxy.
+Keep the main HTTP server private. To expose GreptimeDB APIs to end users, enable the public API server and expose only that port.
+
+:::warning
+The public API server reduces the exposed route surface, but route filtering does not provide authentication or transport security. With no `user_provider` configured, GreptimeDB accepts requests without authentication. Before allowing external access, configure authentication, TLS, and network access controls, either directly or through a reverse proxy.
+:::
 
 ```toml
 [http]
 # Main HTTP server — keep this internal
 addr = "127.0.0.1:4000"
 
-# Enable the public API server for access through a local reverse proxy
+# Enable the public API server and bind it for external access
 enable_api_server = true
-api_server_addr = "127.0.0.1:4006"
+api_server_addr = "0.0.0.0:4006"
 ```
 
 See the [configuration documentation](/user-guide/deployments-administration/configuration.md#protocol-options) for all `[http]` options.

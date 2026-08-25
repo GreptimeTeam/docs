@@ -12,16 +12,20 @@ GreptimeDB 提供两个 HTTP Server：
 | **主 HTTP Server** | `127.0.0.1:4000` | 内部/运维使用。提供所有路径，包括 `/health`、`/metrics`、`/config`、`/debug/*` 等管理端点，以及全部 `/v1` 和 `/dashboard` 路径。该端口应保持私有，仅对可信运维人员开放。 |
 | **公共 HTTP API Server** | `127.0.0.1:4006` | 面向用户的 API 流量。仅提供 `/v1` API 和 `/dashboard`，不提供管理端点。默认禁用；可在配置文件中设置 `http.enable_api_server = true` 来启用。 |
 
-主 HTTP Server 应保持私有。公共 API Server 可以缩小对外路由面，但路由过滤不提供身份认证或传输加密。未配置 `user_provider` 时，GreptimeDB 会接受未认证的请求。允许外部访问前，应直接配置或通过反向代理提供身份认证、TLS 和网络访问控制。
+主 HTTP Server 应保持私有。如需向终端用户开放 GreptimeDB API，请启用公共 API Server，并只对外开放该端口。
+
+:::warning
+公共 API Server 可以缩小对外路由面，但路由过滤不提供身份认证或传输加密。未配置 `user_provider` 时，GreptimeDB 会接受未认证的请求。允许外部访问前，应直接配置或通过反向代理提供身份认证、TLS 和网络访问控制。
+:::
 
 ```toml
 [http]
 # 主 HTTP Server — 保持内部访问
 addr = "127.0.0.1:4000"
 
-# 启用公共 API Server，通过本地反向代理访问
+# 启用公共 API Server，并绑定到可供外部访问的地址
 enable_api_server = true
-api_server_addr = "127.0.0.1:4006"
+api_server_addr = "0.0.0.0:4006"
 ```
 
 详见[配置文档](/user-guide/deployments-administration/configuration.md#协议选项)中的 `[http]` 选项。

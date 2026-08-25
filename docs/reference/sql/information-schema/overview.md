@@ -44,7 +44,7 @@ The tables below distinguish implemented metadata tables from compatibility tabl
 | [`TABLES`](./tables.md) | Provides a list of tables that the current user has visibility of. Similar to `SHOW TABLES`. |
 | `TABLESPACES` | Not supported. |
 | `TABLE_PRIVILEGES` | Not implemented. Returns zero rows. |
-| [`TRIGGERS`](./triggers.md) | Available with GreptimeDB Enterprise; see the GreptimeDB-provided tables below. |
+| `TRIGGERS` | Not supported. GreptimeDB Enterprise provides a differently shaped [`TRIGGERS`](./triggers.md) table. |
 | `USER_ATTRIBUTES` | Not supported. |
 | `USER_PRIVILEGES` | Not supported.|
 | `VARIABLES_INFO` | Not supported. |

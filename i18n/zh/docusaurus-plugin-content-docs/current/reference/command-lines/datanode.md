@@ -32,7 +32,7 @@ greptime datanode start --help
 | `--node-id <NODE_ID>`                 | 节点 ID                                                                                                                                         |
 | `--grpc-bind-addr <GRPC_BIND_ADDR>`     | gRPC 服务绑定地址                                                                                                                               |
 | `--grpc-server-addr <GRPC_SERVER_ADDR>` | 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `grpc_bind_addr` 中指定的相同； |
-| `--wal-dir <WAL_DIR>`                 | WAL 目录                                                                                                                                        |
+| `--wal-dir <WAL_DIR>`                 | 使用 Raft Engine 作为 WAL 后端时覆盖 WAL 目录                                                                                                    |
 
 所有的 `addr` 类选项都是 `ip:port` 形式的字符串。
 
