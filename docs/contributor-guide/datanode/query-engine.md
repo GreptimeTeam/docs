@@ -7,37 +7,22 @@ description: Overview of GreptimeDB's query engine, its architecture, data repre
 
 ## Introduction
 
-GreptimeDB's query engine is built on [Apache DataFusion][1] (subproject under [Apache
-Arrow][2]), a brilliant query engine written in Rust. It provides a set of well functional components from
-logical plan, physical plan and the execution runtime. Below explains how each component is orchestrated and their positions during execution.
+GreptimeDB's query engine is built on [Apache DataFusion][1]. DataFusion supplies the logical and physical plan interfaces, optimizer framework, and execution runtime. GreptimeDB adds planners for its query languages, storage-aware optimizer rules, custom plan nodes, and distributed execution.
 
-![Execution Procedure](/execution-procedure.png)
+DDL and other control-plane operations are dispatched by the statement executor. The query engine receives plans for data processing, including the input side of operations such as `INSERT ... SELECT`.
 
-The entry point is the logical plan, which is used as the general intermediate representation of a
-query or execution logic etc. Two noticeable sources of logical plan are from: 1. the user query, like
-SQL through SQL parser and planner; 2. the Frontend's distributed query, which is explained in details in the following section.
+## Query Lifecycle
 
-Next is the physical plan, or the execution plan. Unlike the logical plan which is a big
-enumeration containing all the logical plan variants (except the special extension plan node), the
-physical plan is in fact a trait that defines a group of methods invoked during
-execution. All data processing logics are packed in corresponding structures that
-implement the trait. They are the actual operations performed on the data, like
-aggregator `MIN` or `AVG`, and table scan `SELECT ... FROM`.
+1. The SQL, PromQL, or log-query planner resolves tables through the catalog and produces a DataFusion logical plan. GreptimeDB plan extensions represent operations that DataFusion does not provide directly.
+2. DataFusion analyzer and optimizer rules run together with GreptimeDB rules. These rules normalize expressions and types, rewrite time-range operations, push projections and filters toward scans, and introduce distributed plan nodes when required.
+3. The physical planner converts the optimized logical plan into streaming operators. GreptimeDB then applies physical rules for scan parallelism, ordering, and distributed execution.
+4. Execution pulls Arrow record batches through the physical plan. Storage scans receive the projection and predicates, and downstream operators consume the resulting stream without materializing the complete result first.
 
-The optimization phase which improves execution performance by transforming both logical and physical plans, is now all based on rules. It is also called, "Rule Based Optimization". Some of the rules are DataFusion native and others are customized in Greptime DB. In the future, we plan to add more
-rules and leverage the data statistics for Cost Based Optimization/CBO.
-
-The last phase "execute" is a verb, stands for the procedure that reads data from storage, performs
-calculations and generates the expected results. Although it's more abstract than previously mentioned concepts, you can just
-simply imagine it as executing a Rust async function. And it's indeed a future (stream).
-
-`EXPLAIN [VERBOSE] <SQL>` is very useful if you want to see how your SQL is represented in the logical or physical plan.
+Use [`EXPLAIN`](/reference/sql/explain.md) to inspect the logical and physical plans. `EXPLAIN ANALYZE` also executes the plan and reports runtime metrics.
 
 ## Data Representation
 
-GreptimeDB uses [Apache Arrow][2] as the in-memory data representation. It's column-oriented, in
-cross-platform format, and also contains many high-performance data operators. These features
-make it easy to share data in many different environments and implement calculation logic.
+GreptimeDB uses [Apache Arrow][2] record batches as its in-memory data representation. A record batch contains equal-length column arrays and a schema. Query operators exchange streams of these batches, which keeps the execution path columnar from Region scans through result encoding.
 
 ## Indexing
 
@@ -45,9 +30,7 @@ Index construction and persistent index formats belong to the storage engine. Th
 
 ## Distributed Execution
 
-Covered in [Distributed Querying][6].
+In distributed mode, the Frontend plans the cluster-wide query and Datanodes execute Region-local subplans. [`MergeScan`](../frontend/distributed-querying.md) is the boundary between those stages.
 
-[1]: https://github.com/apache/arrow-datafusion
+[1]: https://datafusion.apache.org/
 [2]: https://arrow.apache.org/
-[3]: https://parquet.apache.org
-[6]: ../frontend/distributed-querying.md

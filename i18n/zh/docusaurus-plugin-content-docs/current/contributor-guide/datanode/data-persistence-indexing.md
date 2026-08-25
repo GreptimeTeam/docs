@@ -34,14 +34,14 @@ Apache Parquet 文件格式在列块和数据页的头部提供了内置的统�
 
 <img src="/column-chunk-header.png" alt="Column chunk header" width="350"/>
 
-例如，在上述 Parquet 文件中，如果你想要过滤 `name` 等于 `Emily` 的行，你可以轻松跳过行组 0，因为 `name` 字段的最大值是 `Charlie`。这些统计信息减少了 IO 操作。
+例如，查询 `name` 等于 `Emily` 的行时，可以跳过 row group 0，因为其中 `name` 的最大值是 `Charlie`，无需读取该 row group。
 
 
 ## 索引文件
 
-对于每个 SST 文件，GreptimeDB 不但维护 SST 文件内部索引，还会单独生成一个文件用于存储针对该 SST 文件的索引结构。
+当一个 SST 存在已配置且适用的索引输出时，GreptimeDB 将这些索引写入与该 SST 关联的 Puffin 文件。没有适用索引的 SST 不需要生成 Puffin 文件。
 
-索引文件采用 [Puffin][3] 格式，这种格式具有较大的灵活性，能够存储更多的元数据，并支持更多的索引结构。
+Puffin 是索引 Blob 及其元数据的容器，使不同索引结构可以共用一个文件。
 
 ![Puffin](/puffin.png)
 
@@ -62,7 +62,7 @@ GreptimeDB 会将多种索引结构作为 Blob 存储在 Puffin 文件中，包�
 
 ![Inverted index searching](/inverted-index-searching.png)
 
-例如，上述查询使用倒排索引来定位数据段，数据段满足条件：`job` 等于 `apiserver`，`handler` 符合正则匹配 `.*users` 及 `status` 符合正则匹配 `4..`，然后扫描这些数据段以产生满足所有条件的最终结果，从而显着减少 IO 操作的次数。
+上述查询使用倒排索引定位 `job` 等于 `apiserver`、`handler` 匹配 `.*users` 且 `status` 匹配 `4..` 的数据段。Mito 只扫描这些数据段，再应用剩余过滤条件。
 
 ### 倒排索引格式
 

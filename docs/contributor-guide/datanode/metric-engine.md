@@ -7,9 +7,9 @@ description: Overview of the Metric engine in GreptimeDB, its concepts, architec
 
 ## Overview
 
-The `Metric` engine is a component of GreptimeDB, and it's an implementation of the storage engine. It mainly targets scenarios with a large number of small tables for observable metrics.
+The `Metric` engine stores workloads with many small metric tables.
 
-Its main feature is to use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. This reduces storage overhead for small tables and improves columnar compression efficiency. The concept of a table becomes even more lightweight under the `Metric` engine.
+It maps those logical tables onto shared physical wide tables so they can reuse columns and metadata. This reduces per-table storage overhead and improves columnar compression.
 
 ## Concepts
 
@@ -19,7 +19,7 @@ The `Metric` engine introduces two new concepts: "logical table" and "physical t
 
 A logical table refers to user-defined tables. Just like any other ordinary table, its definition includes the name of the table, column definitions, index definitions etc. All operations such as queries or write-ins by users are based on these logical tables. Users don't need to worry about differences between logical and ordinary tables during usage.
 
-From an implementation standpoint, a logical table is virtual; it doesn't directly read or write physical data but maps read/write requests into corresponding requests for physical tables in order to implement data storage and querying.
+A logical table is virtual. The engine maps its read and write requests to the corresponding physical table instead of storing data for it directly.
 
 ### Physical Table
 

@@ -7,7 +7,7 @@ description: Overview of the storage engine in GreptimeDB, its architecture, com
 
 ## Introduction
 
-The `storage engine` is responsible for storing the data of the database. Mito, based on [LSMT][1] (Log-structured Merge-tree), is the storage engine we use by default. We have made significant optimizations for handling time-series data scenarios, so mito engine is not suitable for general purposes.
+Mito is GreptimeDB's default storage engine. It uses an [LSM tree][1] and is designed for time-series workloads rather than as a general-purpose embedded storage engine.
 
 ## Architecture
 

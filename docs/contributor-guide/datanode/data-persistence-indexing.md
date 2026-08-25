@@ -35,13 +35,13 @@ Apache Parquet file format provides inherent statistics in headers of column chu
 
 <img src="/column-chunk-header.png" alt="Column chunk header" width="350"/>
 
-For example, in the above Parquet file, if you want to filter rows where `name` = `Emily`, you can easily skip row group 0 because the max value for `name` field is `Charlie`. This statistical information reduces IO operations.
+For example, a query filtering for `name` = `Emily` can skip row group 0 because the maximum `name` value is `Charlie`. This avoids reading that row group.
 
 ## Index Files
 
-For each SST file, GreptimeDB not only maintains an internal index but also generates a separate file to store the index structures specific to that SST file.
+When an SST has one or more configured index outputs, GreptimeDB writes them to a Puffin file associated with that SST. An SST with no applicable index does not need a Puffin file.
 
-The index files utilize the [Puffin][3] format, which offers significant flexibility, allowing for the storage of additional metadata and supporting a broader range of index structures.
+Puffin provides a container for index blobs and their metadata, allowing different index structures to share one file.
 
 ![Puffin](/puffin.png)
 
@@ -61,7 +61,7 @@ The inverted index enables GreptimeDB to skip data segments that do not meet que
 
 ![Inverted index searching](/inverted-index-searching.png)
 
-For instance, the query above uses the inverted index to identify data segments where `job` equals `apiserver`, `handler` matches the regex `.*users`, and `status` matches the regex `4...`. It then scans these data segments to produce the final results that meet all conditions, significantly reducing the number of IO operations.
+The query above uses the inverted index to identify data segments where `job` equals `apiserver`, `handler` matches `.*users`, and `status` matches `4...`. It scans only those segments before applying the remaining filters.
 
 ### Inverted Index Format
 

@@ -7,22 +7,24 @@ description: 介绍了 Datanode 的主要职责和组件，包括 gRPC 服务、
 
 ## Introduction
 
-`Datanode` 主要的职责是为 GreptimeDB 存储数据，我们知道在 GreptimeDB 中一个 `table` 可以有一个或者多个 `Region`, 
-而 `Datanode` 的职责便是管理这些 `Region` 的读写。`Datanode` 不感知 `table`，可以认为它是一个 `region server`。
-所以 `Frontend` 和 `Metasrv` 按照 `Region` 粒度来操作 `Datanode`。
+Datanode 存储并处理 Region 数据。一张表可以包含多个 Region，但 Datanode 不负责表级路由。Frontend 按 Region 发送数据请求，Metasrv 则控制 Region 的放置和生命周期。
 
-![Datanode](/datanode.png)
+这个边界使同一个 Region server 可以承载不同的存储引擎，而不向 Frontend 或 Metasrv 暴露引擎实现。
 
 ## Components
 
-一个 datanode 包含了 region server 所需的全部组件。这里列出了比较重要的部分：
+Datanode 包含以下主要组件：
 
-- 一个 gRPC 服务来提供对 `Region` 数据的读写，`Frontend` 便是使用这个服务来从 `Datanode` 读写数据。
-- 一个 HTTP 服务，可以通过它来获得当前节点的 metrics、配置信息等
-- `Heartbeat Task` 用来向 `Metasrv` 发送心跳，心跳在 GreptimeDB 的分布式架构中发挥着至关重要的作用，
-  是分布式协调和调度的基础通信通道，心跳的上行消息中包含了重要信息比如 `Region` 的负载，如果 `Metasrv` 做出了调度
-  决定（比如 Region 转移），它会通过心跳的下行消息发送指令到 `Datanode`
-- `Datanode` 不负责解析用户 SQL 或进行分布式规划，用户对一个或多个 `Table` 的查询请求会在 `Frontend` 中被转换为
-  `Region` 查询请求，`Datanode` 负责用本地 query engine 执行这些 `Region` 查询计划
-- Region server 管理 Datanode 上所有 Region 的生命周期，并把请求分发给相应的存储引擎。
-- GreptimeDB 支持多种 Region engine。`Mito` 是主要的时序存储引擎；`Metric` 将多个逻辑指标表存储在共享的 Mito Region 中；`File` 用于访问外部文件。
+- Region server 记录已打开的 Region，并把读写和生命周期请求分发给该 Region 注册的 engine。
+- `Mito` 是主要的时序 Region engine。`Metric` 将多个逻辑指标 Region 映射到共享的 Mito Region，`File` 通过 Region 接口访问外部文件。
+- 本地 query engine 执行 Region 查询计划。它不解析客户端 SQL，也不进行集群级规划。
+- Heartbeat task 向 Metasrv 上报节点和 Region 状态，并接收 open、close、upgrade、downgrade 和迁移步骤等指令。
+- gRPC 承载发往 Datanode 的 Region 请求；HTTP 提供 metrics 和配置等节点诊断信息。
+
+## Region 请求生命周期
+
+Mito 写入到达 Region server 后，Region server 根据 Region 元数据选择 Mito。Mito 将 mutation 追加到 WAL，写入 memtable，并在之后把 memtable flush 为 SST 文件。Metric 写入会先补充逻辑表标识，再委托给对应的物理 Mito Region。
+
+读取时，本地 query engine 在 Region engine 提供的 table provider 上执行 Region 计划。Mito scan 获取不可变的 Region version，读取相关 memtable 和 SST 文件，合并并去重数据，最后返回 Arrow record batch 流。
+
+Region 所有权可以在不重启 Datanode 的情况下改变。Metasrv 通过心跳流下发生命周期指令；Region server 将指令应用到对应 engine，并在后续心跳中上报新的 Region role 和统计信息。

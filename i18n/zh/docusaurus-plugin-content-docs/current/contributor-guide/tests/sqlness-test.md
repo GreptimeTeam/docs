@@ -7,36 +7,34 @@ description: 介绍 GreptimeDB 的 Sqlness 测试，包括测试文件类型、�
 
 ## 介绍
 
-SQL 是 `GreptimeDB` 的一个重要用户接口。我们为它提供了一个单独的测试套件（名为 `sqlness`）。
+Sqlness 是 GreptimeDB 针对 SQL 和协议行为的端到端回归测试。每个 case 向运行中的 GreptimeDB 发送语句，并将输出与仓库中的结果文件比较。
 
 ## Sqlness 手册
 
 ### 测试文件
 
-Sqlness 有两种类型的文件
+每个 case 使用两类文件：
 
 - `.sql`：测试输入，仅包含 SQL
 - `.result`：预期的测试输出，包含 SQL 和其结果
 
-`.result` 文件是预期的执行输出。如果 `.result` 文件发生变化，意味着测试结果不同，测试可能失败。你应该检查变更日志来解决问题。
-
-你只需要在 `.sql` 文件中编写测试 SQL，然后运行测试。
+在 `.sql` 文件中编写输入，运行测试后生成或更新 `.result`。必须检查每一处结果差异，只有行为变化符合预期时才能接受。
 
 ### 组织测试案例
 
-输入案例的根目录是 `tests/cases`。它包含几个子目录，代表不同的测试模式。例如，`standalone/` 包含所有在 `greptimedb standalone start` 模式下运行的测试。
+输入 case 位于 `tests/cases`。第一级目录选择运行环境，例如 `standalone/` 表示使用单机 GreptimeDB。
 
-在第一级子目录下（例如 `cases/standalone`），你可以随意组织你的测试案例。Sqlness 会递归地遍历每个文件并运行它们。
+在环境目录内，新 case 应与它覆盖的功能放在一起。Sqlness 会递归发现 case 文件。
 
 ## 运行测试
 
-与其他测试不同，这个测试工具是以二进制目标形式存在的。你可以用以下命令运行它
+运行命令如下：
 
 ```shell
 cargo sqlness bare
 ```
 
-它会自动完成以下步骤：编译 `GreptimeDB`、启动测试环境、执行测试，再收集和比较结果。确认没有非预期的 `.result` 变化后，测试才算通过。
+该命令会构建并启动 GreptimeDB、执行选中的 case，再比较输出。`.result` 发生变化只是待审查的结果，不代表新输出一定正确。
 
 ### 运行特定测试
 
