@@ -129,7 +129,7 @@ is_strict_mode = false
 - **描述**: 提供对服务器仪表盘界面的访问。
 - **用法**: 访问这些端点以与基于 Web 的仪表盘进行交互。
 
-此仪表盘与 GreptimeDB 服务器一起打包，并提供一个用户友好的界面与服务器进行交互。构建 GreptimeDB 时需要启用相应的编译标志。仪表盘的原始源代码在 https://github.com/GreptimeTeam/dashboard。
+此仪表盘与 GreptimeDB 服务器一起打包，并提供一个用户友好的界面与服务器进行交互。构建 GreptimeDB 时需要启用相应的编译标志。仪表盘的原始源代码在 [GreptimeTeam/dashboard](https://github.com/GreptimeTeam/dashboard)。
 
 ### 日志级别
 
