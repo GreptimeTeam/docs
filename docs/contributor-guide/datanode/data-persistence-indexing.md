@@ -31,9 +31,9 @@ When the size of data buffered in MemTables reaches that threshold, GreptimeDB w
 
 ## Indexing Data in SST Files
 
-Apache Parquet file format provides inherent statistics in headers of column chunks and data pages, which are used for pruning and skipping.
+Parquet stores row-group column statistics such as minimum, maximum, and null count in each column chunk's metadata. Page metadata and optional column indexes can provide finer-grained statistics.
 
-<img src="/column-chunk-header.png" alt="Column chunk header" width="350"/>
+![A name predicate uses Parquet column statistics to skip one row group while retaining another as a read candidate.](/parquet-row-group-statistics.svg)
 
 For example, a query filtering for `name` = `Emily` can skip row group 0 because the maximum `name` value is `Charlie`. This avoids reading that row group.
 
@@ -61,13 +61,13 @@ The inverted index enables GreptimeDB to skip data segments that do not meet que
 
 ![Inverted index searching](/inverted-index-searching.png)
 
-The query above uses the inverted index to identify data segments where `job` equals `apiserver`, `handler` matches `.*users`, and `status` matches `4...`. It scans only those segments before applying the remaining filters.
+The query above uses the inverted index to identify data segments where `job` equals `apiserver`, `handler` matches `.*users`, and `status` matches `4..`. It scans only those segments before applying the remaining filters.
 
 ### Inverted Index Format
 
-![Inverted index format](/inverted-index-format.png)
+![An inverted-index blob contains one index per column followed by footer metadata; each column index contains a null bitmap, posting bitmaps, and an FST.](/inverted-index-blob-layout.svg)
 
-GreptimeDB builds inverted indexes by column, with each inverted index consisting of an FST and multiple Bitmaps.
+GreptimeDB builds inverted indexes by column. Each column index contains a null bitmap, multiple posting bitmaps, and an FST. The blob footer records the offsets, sizes, and metadata needed to locate and decode the column indexes.
 
 The FST (Finite State Transducer) enables GreptimeDB to store mappings from column values to Bitmap positions in a compact format and provides excellent search performance and supports complex search capabilities (such as regular expression matching). The Bitmaps maintain a list of data segment IDs, with each bit representing a data segment.
 

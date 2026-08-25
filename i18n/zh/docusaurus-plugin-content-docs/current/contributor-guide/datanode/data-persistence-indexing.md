@@ -30,9 +30,9 @@ GreptimeDB 提供了 `region_engine.mito.global_write_buffer_size` 的配置项�
 
 ## SST 文件中的索引数据
 
-Apache Parquet 文件格式在列块和数据页的头部提供了内置的统计信息，用于剪枝和跳过。
+Parquet 在每个 column chunk 的元数据中保存 row group 级列统计信息，例如最小值、最大值和 null 数量。Page 元数据和可选的 column index 可以提供粒度更细的统计信息。
 
-<img src="/column-chunk-header.png" alt="Column chunk header" width="350"/>
+![查询 name 列时，Parquet 列统计信息排除了一个 row group，并将另一个保留为待读取对象。](/parquet-row-group-statistics.zh.svg)
 
 例如，查询 `name` 等于 `Emily` 的行时，可以跳过 row group 0，因为其中 `name` 的最大值是 `Charlie`，无需读取该 row group。
 
@@ -66,9 +66,9 @@ GreptimeDB 会将多种索引结构作为 Blob 存储在 Puffin 文件中，包�
 
 ### 倒排索引格式
 
-![Inverted index format](/inverted-index-format.png)
+![倒排索引 Blob 先保存各列索引，再保存 footer 元数据；每个列索引包含 null bitmap、posting bitmap 和 FST。](/inverted-index-blob-layout.zh.svg)
 
-GreptimeDB 按列构建倒排索引，每个倒排索引包含一个 FST 和多个 Bitmap。
+GreptimeDB 按列构建倒排索引。每个列索引包含一个 null bitmap、多个 posting bitmap 和一个 FST。Blob footer 记录定位和解码各列索引所需的 offset、size 和元数据。
 
 FST（Finite State Transducer）允许 GreptimeDB 以紧凑的格式存储列值到 Bitmap 位置的映射，并且提供了优秀的搜索性能和支持复杂搜索（例如正则表达式匹配）；Bitmap 则维护了数据段 ID 列表，每个位表示一个数据段。
 

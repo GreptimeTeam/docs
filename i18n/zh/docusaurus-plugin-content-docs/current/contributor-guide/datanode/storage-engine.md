@@ -100,7 +100,7 @@ Mito 会按 primary key 对行分组，并按时间排序，因此 SST 中的数
 
 Mito 支持两种 SST 格式：`flat` 和 `primary_key`。`flat` 是新表的默认格式，适用于各种 primary key 基数，包括高基数 key。`primary_key` 是为了兼容旧表而保留的遗留格式。更多详情请参考 [SST format](/reference/sql/create.md#创建指定-sst-格式的表) 和[表设计指南](/user-guide/deployments-administration/performance-tuning/design-table.md#sst-格式)。
 
-<img src="/sst-layout.svg" alt="SST layout" style={{width: '80%', margin: '0 auto'}}/>
+![Mito 默认的 flat SST 布局将文件级元数据与包含数据列和合并元数据的 Parquet row group 组合在一起。](/mito-sst-layout.zh.svg)
 
 ## 扫描裁剪
 

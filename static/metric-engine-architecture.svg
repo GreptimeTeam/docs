@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760" role="img" aria-labelledby="title desc">
+  <title id="title">Metric engine logical-to-physical mapping</title>
+  <desc id="desc">Multiple logical tables share one physical Region group. The Metric engine maps logical tables and columns to a pair of Mito Regions: a metadata Region for mappings and a data Region for shared rows carrying logical table identity.</desc>
+  <defs>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#7C3AED"/></marker>
+    <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/></marker>
+    <style>
+      .kicker { font: 650 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: .08em; text-transform: uppercase; fill: #64748B; }
+      .headline { font: 650 31px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .title { font: 650 24px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .subtitle { font: 400 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748B; }
+      .label { font: 600 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .small { font: 500 15px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .purple { font: 600 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #6D28D9; }
+      .teal { font: 600 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0F766E; }
+      .blue { font: 600 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1D4ED8; }
+    </style>
+  </defs>
+
+  <rect width="1500" height="760" fill="#FFFFFF"/>
+  <text x="70" y="58" class="kicker">Logical-to-physical mapping</text>
+  <text x="70" y="101" class="headline">Many logical tables share one physical Region group</text>
+  <line x1="70" y1="126" x2="1430" y2="126" stroke="#E2E8F0" stroke-width="2"/>
+
+  <text x="70" y="177" class="kicker">Logical tables</text>
+  <rect x="70" y="210" width="310" height="105" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="225" y="252" text-anchor="middle" class="title">Logical table A</text>
+  <text x="225" y="282" text-anchor="middle" class="subtitle">independent schema and identity</text>
+  <rect x="70" y="345" width="310" height="105" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="225" y="387" text-anchor="middle" class="title">Logical table B</text>
+  <text x="225" y="417" text-anchor="middle" class="subtitle">independent schema and identity</text>
+  <rect x="70" y="480" width="310" height="105" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="225" y="522" text-anchor="middle" class="title">Logical table C</text>
+  <text x="225" y="552" text-anchor="middle" class="subtitle">independent schema and identity</text>
+
+  <path d="M380 262 C440 262, 455 330, 505 350" fill="none" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#arrow-slate)"/>
+  <path d="M380 397 L500 397" fill="none" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#arrow-slate)"/>
+  <path d="M380 532 C440 532, 455 465, 505 445" fill="none" stroke="#94A3B8" stroke-width="2.5" marker-end="url(#arrow-slate)"/>
+
+  <rect x="510" y="235" width="360" height="325" rx="18" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="3"/>
+  <text x="690" y="280" text-anchor="middle" class="title">Metric engine</text>
+  <text x="690" y="312" text-anchor="middle" class="subtitle">maps logical requests to shared storage</text>
+  <rect x="555" y="350" width="270" height="55" rx="12" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="2"/>
+  <text x="690" y="384" text-anchor="middle" class="purple">Resolve logical table</text>
+  <rect x="555" y="425" width="270" height="55" rx="12" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="2"/>
+  <text x="690" y="459" text-anchor="middle" class="purple">Map logical columns</text>
+  <rect x="555" y="500" width="270" height="36" rx="18" fill="#EDE9FE"/>
+  <text x="690" y="524" text-anchor="middle" class="small">shared partition layout</text>
+
+  <path d="M870 350 C925 350, 930 285, 985 285" fill="none" stroke="#7C3AED" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <text x="927" y="305" text-anchor="middle" class="purple">mappings</text>
+  <path d="M870 445 C925 445, 930 500, 985 500" fill="none" stroke="#7C3AED" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <text x="930" y="477" text-anchor="middle" class="purple">rows</text>
+
+  <rect x="990" y="170" width="440" height="460" rx="20" fill="#FAFAFF" stroke="#C4B5FD" stroke-width="2.5"/>
+  <text x="1030" y="212" class="kicker">Mito engine</text>
+  <text x="1030" y="246" class="subtitle">a physical Region group contains two Mito Regions</text>
+
+  <rect x="1030" y="275" width="360" height="125" rx="14" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2.5"/>
+  <text x="1210" y="316" text-anchor="middle" class="title">Metadata Region</text>
+  <text x="1210" y="349" text-anchor="middle" class="blue">logical table mappings</text>
+  <text x="1210" y="375" text-anchor="middle" class="small">logical columns → physical columns</text>
+
+  <rect x="1030" y="445" width="360" height="135" rx="14" fill="#ECFDF5" stroke="#2DD4BF" stroke-width="2.5"/>
+  <text x="1210" y="487" text-anchor="middle" class="title">Data Region</text>
+  <text x="1210" y="521" text-anchor="middle" class="teal">rows from mapped logical tables</text>
+  <rect x="1090" y="539" width="240" height="28" rx="14" fill="#CCFBF1"/>
+  <text x="1210" y="559" text-anchor="middle" class="small">logical table identity per row</text>
+
+  <line x1="70" y1="675" x2="1430" y2="675" stroke="#E2E8F0" stroke-width="2"/>
+  <text x="70" y="713" class="label">Write:</text>
+  <text x="145" y="713" class="small">attach logical table identity before writing the shared data Region.</text>
+  <text x="770" y="713" class="label">Read:</text>
+  <text x="840" y="713" class="small">add a logical-table filter before scanning the data Region.</text>
+</svg>

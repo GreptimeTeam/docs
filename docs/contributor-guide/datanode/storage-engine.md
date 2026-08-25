@@ -103,7 +103,7 @@ Each Parquet SST is split into row groups, the unit that Parquet can read or ski
 
 Mito supports two SST formats: `flat` and `primary_key`. `flat` is the default for new tables and works well across primary-key cardinalities, including high-cardinality keys. `primary_key` is the legacy format kept for compatibility with older tables. See [SST format](/reference/sql/create.md#create-a-table-with-sst-format) and the [table design guide](/user-guide/deployments-administration/performance-tuning/design-table.md#sst-format) for more details.
 
-<img src="/sst-layout.svg" alt="SST layout" style={{width: '80%', margin: '0 auto'}}/>
+![The default flat Mito SST layout combines file-level metadata with Parquet row groups containing data columns and merge metadata.](/mito-sst-layout.svg)
 
 ## Scan Pruning
 

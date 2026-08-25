@@ -27,9 +27,9 @@ description: 介绍了 Metric 引擎的概念、架构及设计，重点描述�
 
 `Metric` 引擎的主要设计架构如下：
 
-![Arch](/metric-engine-arch.png)
+![多个逻辑表通过 Metric 引擎映射到由 Mito 管理的共享数据 Region 和元数据 Region。](/metric-engine-architecture.zh.svg)
 
-`Metric` 引擎将物理存储和查询交给 `Mito` 引擎。每个物理 Region 由一个数据 Region 和一个元数据 Region 表示：数据 Region 保存多个逻辑表的数据，元数据 Region 保存逻辑表及逻辑列的映射。
+`Metric` 引擎将物理存储和查询交给 `Mito` 引擎。每个物理 Region 组包含一个数据 Region 和一个元数据 Region：数据 Region 保存映射到该 Region 组的逻辑表数据，元数据 Region 保存逻辑表及逻辑列的映射。
 
 关联到同一物理表的逻辑表使用相同的分区布局。写入时，Metric 引擎为每行数据记录逻辑表身份；读取时，它在扫描物理 Region 前增加逻辑表过滤条件。
 

@@ -29,9 +29,9 @@ A physical table is a table that actually stores data, possessing several physic
 
 The main design architecture of the `Metric` engine is as follows:
 
-![Arch](/metric-engine-arch.png)
+![Multiple logical tables map through the Metric engine to shared data and metadata Regions managed by Mito.](/metric-engine-architecture.svg)
 
-The `Metric` engine delegates physical storage and queries to the `Mito` engine. Each physical Region is represented by a data Region, which stores rows from many logical tables, and a metadata Region, which stores the logical-table and logical-column mappings.
+The `Metric` engine delegates physical storage and queries to the `Mito` engine. Each physical Region group contains a data Region, which stores rows from its mapped logical tables, and a metadata Region, which stores the logical-table and logical-column mappings.
 
 Logical tables associated with the same physical table share its partition layout. During writes, the engine records the logical table identity with each row. During reads, it adds a logical-table filter before scanning the physical Region.
 

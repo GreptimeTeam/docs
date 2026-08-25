@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760" role="img" aria-labelledby="title desc">
+  <title id="title">Parquet row group 统计信息裁剪</title>
+  <desc id="desc">查询 name 等于 Emily 时，系统将谓词与 row group 的列元数据统计信息比较。Row group 0 的 name 最大值为 Charlie，因此可以跳过；Emily 位于 Doug 和 John 之间，因此 row group 1 仍需读取。</desc>
+  <defs>
+    <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/></marker>
+    <style>
+      .kicker { font: 650 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: .08em; fill: #64748B; }
+      .headline { font: 650 31px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .title { font: 650 23px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .subtitle { font: 400 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748B; }
+      .label { font: 600 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .mono { font: 600 17px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; fill: #334155; }
+      .red { font: 650 17px Inter, ui-sans-serif, system-ui, sans-serif; fill: #B91C1C; }
+      .teal { font: 650 17px Inter, ui-sans-serif, system-ui, sans-serif; fill: #0F766E; }
+    </style>
+  </defs>
+
+  <rect width="1500" height="760" fill="#FFFFFF"/>
+  <text x="70" y="58" class="kicker">PARQUET ROW GROUP 裁剪</text>
+  <text x="70" y="101" class="headline">读取数据前，先用列统计信息排除不匹配的 row group</text>
+  <line x1="70" y1="126" x2="1430" y2="126" stroke="#E2E8F0" stroke-width="2"/>
+
+  <rect x="70" y="170" width="430" height="110" rx="16" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="2.5"/>
+  <text x="105" y="207" class="kicker">查询谓词</text>
+  <text x="105" y="250" class="mono">name = "Emily"</text>
+  <path d="M500 225 L610 225" fill="none" stroke="#94A3B8" stroke-width="3" marker-end="url(#arrow-slate)"/>
+  <text x="555" y="205" text-anchor="middle" class="label">比较</text>
+
+  <rect x="620" y="158" width="810" height="525" rx="20" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2.5"/>
+  <text x="660" y="202" class="title">Parquet 文件元数据</text>
+  <text x="660" y="232" class="subtitle">每个 row group column chunk 的 ColumnMetaData</text>
+
+  <rect x="660" y="275" width="730" height="160" rx="15" fill="#FFF7F7" stroke="#FCA5A5" stroke-width="2.5"/>
+  <text x="695" y="315" class="title">Row group 0</text>
+  <rect x="695" y="340" width="300" height="65" rx="11" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="720" y="368" class="label">name</text>
+  <text x="795" y="368" class="mono">min Alice</text>
+  <text x="795" y="393" class="mono">max Charlie</text>
+  <rect x="1020" y="340" width="205" height="65" rx="11" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="1045" y="368" class="label">age</text>
+  <text x="1100" y="368" class="mono">18…23</text>
+  <rect x="1250" y="340" width="105" height="65" rx="32.5" fill="#FEE2E2"/>
+  <text x="1302.5" y="379" text-anchor="middle" class="red">跳过</text>
+  <text x="695" y="420" class="red">Emily 大于最大值 Charlie。</text>
+
+  <rect x="660" y="475" width="730" height="160" rx="15" fill="#F0FDFA" stroke="#5EEAD4" stroke-width="2.5"/>
+  <text x="695" y="515" class="title">Row group 1</text>
+  <rect x="695" y="540" width="300" height="65" rx="11" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="720" y="568" class="label">name</text>
+  <text x="795" y="568" class="mono">min Doug</text>
+  <text x="795" y="593" class="mono">max John</text>
+  <rect x="1020" y="540" width="205" height="65" rx="11" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="1045" y="568" class="label">age</text>
+  <text x="1100" y="568" class="mono">20…30</text>
+  <rect x="1250" y="540" width="105" height="65" rx="32.5" fill="#CCFBF1"/>
+  <text x="1302.5" y="579" text-anchor="middle" class="teal">保留</text>
+  <text x="695" y="620" class="teal">Emily 位于记录的 min-max 范围内。</text>
+
+  <line x1="70" y1="709" x2="1430" y2="709" stroke="#E2E8F0" stroke-width="2"/>
+  <text x="70" y="744" class="label">统计信息只能证明某个 row group 不可能匹配，不能证明保留下来的每一行都匹配。</text>
+</svg>
