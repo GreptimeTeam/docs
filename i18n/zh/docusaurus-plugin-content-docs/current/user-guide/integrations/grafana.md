@@ -14,29 +14,14 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 
 ### 安装
 
-该插件尚未上架 Grafana 插件市场，因此请安装未签名的压缩包，并在 `grafana.ini` 中显式放行：
-
-```ini
-[plugins]
-allow_loading_unsigned_plugins = info8fcc-greptimedb-datasource
-```
-
-对应的环境变量是 `GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS`。Grafana Cloud 不接受未签名插件，请使用自建
-Grafana。如果需要与自己 Grafana `root_url` 绑定的签名版本，请[联系我们](https://greptime.com/contactus)。
-
-在安装插件前请确保 Grafana 已经安装并运行。
+推荐从[最新 Release](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/)安装 **unsigned** 插件 zip。
+请先允许加载该插件 ID 的未签名插件。
 
 在 `grafana.ini` 中：
 
-- 从[发布页面](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/)下载 `info8fcc-greptimedb-datasource-unsigned.zip`，解压到你的 [grafana 插件目录](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#plugins)。
-- 使用 Grafana Cli 下载并安装：
-  ```shell
-  grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource-unsigned.zip plugins install info8fcc
-  ```
-- 使用我们 [预构建的 Grafana 镜
-  像](https://hub.docker.com/r/greptime/grafana-greptimedb)，已经提前包含了
-  GreptimeDB 数据源插件 `docker run -p 3000:3000
-  greptime/grafana-greptimedb:latest`
+```
+allow_loading_unsigned_plugins = info8fcc-greptimedb-datasource
+```
 
 或在 Docker 中运行 Grafana 时：
 
