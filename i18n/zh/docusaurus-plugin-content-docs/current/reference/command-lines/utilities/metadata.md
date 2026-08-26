@@ -1,11 +1,11 @@
 ---
 keywords: [备份, 恢复, 导出工具, 导入工具, 数据库元信息备份, 数据恢复, 命令行工具, GreptimeDB CLI, 灾难恢复]
-description: 介绍 GreptimeDB 的元信息导出和导入工具，用于数据库元信息的备份和恢复，包括命令语法、选项。
+description: 保存、恢复和查看 GreptimeDB 元数据快照的命令行选项。
 ---
 
 # 元数据导出和导入
 
-元数据导出和导入工具提供了备份和恢复 GreptimeDB 元信息的功能。这些工具允许进行元信息备份和恢复操作。
+Snapshot 命令用于保存、恢复和查看 GreptimeDB 元数据快照。
 
 ## 导出工具
 
@@ -21,8 +21,8 @@ greptime cli meta snapshot save [OPTIONS]
 
 | 选项               | 是否必需 | 默认值            | 描述                                                                                                   |
 | ------------------ | -------- | ----------------- | ------------------------------------------------------------------------------------------------------ |
-| --store-addrs      | 是       | -                 | 要连接的元数据存储服务地址（支持 etcd、MySQL、PostgreSQL 和 RaftEngine），格式与 Metasrv 配置中的 store-addrs 一致。RaftEngine 使用 `raftengine:///path/to/metadata` 格式 |
-| --backend          | 是       | -                 | 元数据存储后端类型，支持 `etcd-store`、`postgres-store`、`mysql-store`、`raft-engine-store`                                                         |
+| --store-addrs      | 是（使用持久化后端时） | - | 元数据存储地址。持久化后端需要设置，格式取决于所选后端                                                                                                |
+| --backend          | 否       | etcd-store        | 元数据存储后端：`etcd-store`、`memory-store`、`postgres-store`、`mysql-store` 或 `raft-engine-store`                                                   |
 | --store-key-prefix | 否       | ""                | 元数据存储前缀，参考 Metasrv 配置                                                                                                                    |
 | --meta-table-name  | 否       | greptime_metakv   | 当后端为 `postgres-store` 或 `mysql-store` 时，元数据存储的表名                                                                                      |
 | --max-txn-ops      | 否       | 128               | 最大事务操作数                                                                                                                                       |
@@ -31,8 +31,8 @@ greptime cli meta snapshot save [OPTIONS]
 
 | 选项        | 是否必需 | 默认值            | 描述                                               |
 | ----------- | -------- | ----------------- | -------------------------------------------------- |
-| --file-name | 否       | metadata_snapshot | 元数据导出的文件名，会自动添加 `.metadata.fb` 后缀 |
-| --dir       | 否       | ""                | 存储导出数据的目录                                 |
+| --file-path | 否       | metadata_snapshot.metadata.fb | 快照文件路径                             |
+| --dir       | 否       | /                             | 文件或对象存储 I/O 使用的根目录          |
 
 #### 对象存储选项
 
@@ -99,8 +99,8 @@ greptime cli meta snapshot restore [OPTIONS]
 
 | 选项               | 是否必需 | 默认值          | 描述                                                                                                   |
 | ------------------ | -------- | --------------- | ------------------------------------------------------------------------------------------------------ |
-| --store-addrs      | 是       | -               | 要连接的元数据存储服务地址（支持 etcd、MySQL、PostgreSQL 和 RaftEngine），格式与 Metasrv 配置中的 store-addrs 一致。RaftEngine 使用 `raftengine:///path/to/metadata` 格式 |
-| --backend          | 是       | -               | 元数据存储后端类型，支持 `etcd-store`、`postgres-store`、`mysql-store`、`raft-engine-store`                                                          |
+| --store-addrs      | 是（使用持久化后端时） | - | 元数据存储地址。持久化后端需要设置，格式取决于所选后端                                                                                                 |
+| --backend          | 否       | etcd-store      | 元数据存储后端：`etcd-store`、`memory-store`、`postgres-store`、`mysql-store` 或 `raft-engine-store`                                                    |
 | --store-key-prefix | 否       | ""              | 元数据存储的 key 前缀，参考 Metasrv 配置                                                                                                             |
 | --meta-table-name  | 否       | greptime_metakv | 当后端为 `postgres-store` 或 `mysql-store` 时，元数据存储的表名                                                                                      |
 | --max-txn-ops      | 否       | 128             | 最大事务操作数                                                                                                                                       |
@@ -109,8 +109,8 @@ greptime cli meta snapshot restore [OPTIONS]
 
 | 选项        | 是否必需 | 默认值                        | 描述                                                                                   |
 | ----------- | -------- | ----------------------------- | -------------------------------------------------------------------------------------- |
-| --file-name | 否       | metadata_snapshot.metadata.fb | 元数据导出的文件名                                                                     |
-| --dir       | 否       | "."                           | 存储导出数据的目录                                                                     |
+| --file-path | 否       | metadata_snapshot.metadata.fb | 要恢复的快照文件路径                                                                   |
+| --dir       | 否       | /                             | 文件或对象存储 I/O 使用的根目录                                                        |
 | --force     | 否       | false                         | 是否强制导入，当目标后端检测包含旧数据时，默认无法导入数据，若想强制导入则可开启此标志 |
 
 #### 对象存储选项
@@ -180,8 +180,8 @@ greptime cli meta snapshot info [OPTIONS]
 
 | 选项          | 是否必需 | 默认值            | 描述                   |
 | ------------- | -------- | ----------------- | ---------------------- |
-| --file-name   | 否       | metadata_snapshot | 要查看的元数据快照文件名 |
-| --dir         | 否       | "."               | 快照文件存储的目录     |
+| --file-path   | 否       | metadata_snapshot.metadata.fb | 要查看的快照文件路径 |
+| --dir         | 否       | /                             | 文件或对象存储 I/O 使用的根目录 |
 | --inspect-key | 否       | "*"               | 过滤元数据键的查询模式 |
 | --limit       | 否       | -                 | 显示的最大条目数       |
 

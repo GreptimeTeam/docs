@@ -9,7 +9,7 @@ description: 列出了 GreptimeDB 中的所有 JSON 函数，包括函数的定�
 JSON 类型目前仍处于实验阶段，在未来的版本中可能会有所调整。
 :::
 
-本页面列出了 GreptimeDB 中所有 JSON 类型相关的函数。
+本页介绍 GreptimeDB 中用于构造、转换和提取 JSON 值的函数。
 
 ## 转换
 
@@ -28,6 +28,14 @@ SELECT json_to_string(parse_json('{"a": 1, "b": 2}'));
 +----------------------------------------------------------+
 ```
 
+## 构造
+
+`json_object(key, value [, key, value ...])` 构造 JSON 对象并返回 JSONB。Key 会转换为字符串且不能为 NULL；value 可以是字符串、整数、浮点数、布尔值或 NULL，其他类型需要先显式转换。Key 重复时保留最后一个值。不传参数的 `json_object()` 返回空对象。
+
+```sql
+SELECT json_to_string(json_object('host', 'web-1', 'cpu', 0.42, 'healthy', true));
+```
+
 ## 提取
 
 通过给定的路径和给定的数据类型，从 JSON 中提取值。
@@ -37,7 +45,10 @@ SELECT json_to_string(parse_json('{"a": 1, "b": 2}'));
 * `json_get_float(json, path)` 按照路径 `path` 从 JSON 中获取浮点数值。布尔值、整数值将被转换为浮点数。
 * `json_get_string(json, path)` 按照路径 `path` 从 JSON 中获取字符串。所有类型的 JSON 值都将被转换为字符串，包括数组、对象和 null。
 * `json_get_object(json, path)` 按照路径 `path` 从 JSON 中获取对象值。如果路径未指向对象，则返回 NULL。
+* `json_get(json, path)` 以字符串形式提取值。要提取为其他 SQL 标量类型，可转换函数结果，例如 `json_get(value, 'a')::INT`。
 * `json_object_keys(json)` 返回 JSON 对象最外层的所有键，并以字符串列表的形式返回。空对象返回 `[]`，非对象 JSON 值或 `NULL` 输入返回 `NULL`。
+
+`json_get` 的 `path` 参数必须是字符串字面量。路径未选中值或选中的值无法转换为目标类型时返回 NULL。
 
 `path` 是一个用于从 JSON 值中选择和提取元素的字符串。`path` 中支持的操作符有：
 
@@ -65,6 +76,8 @@ SELECT json_get_int(parse_json('{"a": {"c": 3}, "b": 2}'), 'a.c');
 +-----------------------------------------------------------------------+
 |                                                                     3 |
 +-----------------------------------------------------------------------+
+
+SELECT json_get(parse_json('{"a": 3}'), 'a')::INT;
 
 SELECT json_to_string(json_get_object(parse_json('{"a": {"b": {"c": {"d": 42}}}}'), 'a.b.c'));
 

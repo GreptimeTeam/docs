@@ -1,6 +1,6 @@
 ---
 keywords: [GreptimeDB frontend, command-line interface, frontend configuration, frontend startup, frontend options, frontend examples]
-description: Comprehensive guide to GreptimeDB frontend command-line interface, including configuration options, startup commands, and practical examples for deploying frontend instances.
+description: Command-line options and examples for starting GreptimeDB frontend instances.
 ---
 
 # Frontend
@@ -8,7 +8,7 @@ description: Comprehensive guide to GreptimeDB frontend command-line interface, 
 ## Subcommand options
 
 
-You can list all the options from the following command:
+Print the options supported by the current binary:
 
 ```
 greptime frontend start --help
@@ -16,35 +16,41 @@ greptime frontend start --help
 
 | Option                                | Description                                                                                                                                                                                                                                                                   |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-c`/`--config-file`                  | The configuration file for frontend                                                                                                                                                                                                                                           |
-| `--disable-dashboard`                 | Disable dashboard http service, default is `false`                                                                                                                                                                                                                            |
+| `-c`/`--config-file <CONFIG_FILE>`    | The configuration file for frontend                                                                                                                                                                                                                                           |
+| `--disable-dashboard <DISABLE_DASHBOARD>` | Whether to disable the dashboard HTTP service. Defaults to `false`                                                                                                                                                                                                         |
 | `--env-prefix <ENV_PREFIX>`           | The prefix of environment variables, default is `GREPTIMEDB_FRONTEND`                                                                                                                                                                                                         |
 | `--rpc-bind-addr <RPC_BIND_ADDR>`     | The address to bind the gRPC server                                                                                                                                                                                                                                           |
-| `--rpc-server-addr <RPC_SERVER_ADDR>` | The address advertised to the metasrv, and used for connections from outside the host. If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `rpc_bind_addr` |
+| `--rpc-server-addr <RPC_SERVER_ADDR>` | Address advertised to Metasrv for connections from outside the host. When unset, GreptimeDB uses the first network interface address and the port from `rpc_bind_addr` |
+| `--internal-rpc-bind-addr <INTERNAL_RPC_BIND_ADDR>` | The address to bind the internal gRPC server |
+| `--internal-rpc-server-addr <INTERNAL_RPC_SERVER_ADDR>` | Address advertised to Metasrv for external connections to the internal gRPC server. When unset, GreptimeDB uses the first network interface address and the port from `internal_rpc_bind_addr` |
+| `--http-addr <HTTP_ADDR>`             | HTTP server address                                                                                                                                                                                                                                                           |
 | `--http-timeout <HTTP_TIMEOUT>`       | HTTP request timeout in seconds                                                                                                                                                                                                                                               |
-| `--influxdb-enable`                   | Whether to enable InfluxDB protocol in HTTP API                                                                                                                                                                                                                               |
-| `--metasrv-addrs <METASRV_ADDR>`      | Metasrv address list                                                                                                                                                                                                                                                          |
+| `-i`/`--influxdb-enable <INFLUXDB_ENABLE>` | Whether to enable the InfluxDB protocol in the HTTP API                                                                                                                                                                                                                 |
+| `--log-dir <LOG_DIR>`                 | Log directory                                                                                                                                                                                                                                                                 |
+| `--log-level <LOG_LEVEL>`             | Log level                                                                                                                                                                                                                                                                     |
+| `--metasrv-addrs <METASRV_ADDRS>...`  | Metasrv address list                                                                                                                                                                                                                                                          |
 | `--mysql-addr <MYSQL_ADDR>`           | MySQL server address                                                                                                                                                                                                                                                          |
 | `--postgres-addr <POSTGRES_ADDR>`     | Postgres server address                                                                                                                                                                                                                                                       |
 | `--tls-cert-path <TLS_CERT_PATH>`     | The TLS public key file path                                                                                                                                                                                                                                                  |
 | `--tls-key-path <TLS_KEY_PATH>`       | The TLS private key file path                                                                                                                                                                                                                                                 |
-| `--tls-mode <TLS_MODE>`               | TLS Mode                                                                                                                                                                                                                                                                      |
-| `--user-provider <USER_PROVIDER>`     | You can refer [authentication](/user-guide/deployments-administration/authentication/overview.md)                                                                                                                                                                             |
+| `--tls-mode <TLS_MODE>`               | TLS mode                                                                                                                                                                                                                                                                      |
+| `--tls-watch`                         | Watch the TLS certificate files and reload them when they change                                                                                                                                                                                                              |
+| `--user-provider <USER_PROVIDER>`     | Authentication provider configuration. See [Authentication](/user-guide/deployments-administration/authentication/overview.md)                                                                                                                                               |
 
 ## Examples
 
 ### Start service with configurations
 
-Starts a frontend instance with customized configurations:
+Start a Frontend instance from a configuration file:
 
 ```sh
 greptime frontend start -c config/frontend.example.toml
 ```
 
-Starts a frontend instance with command line arguments specifying the address of the metasrv:
+Start a Frontend instance and specify the Metasrv address on the command line:
 
 ```sh
 greptime frontend start --metasrv-addrs=0.0.0.0:3002
 ```
 
-The `frontend.example.toml` configuration file comes from the `config` directory of the `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` repository. You can find more example configuration files there. The `-c` option specifies the configuration file, for more information check [Configuration](/user-guide/deployments-administration/configuration.md).
+The [`frontend.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.0.2/config/frontend.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md) for details.

@@ -1,13 +1,13 @@
 ---
 keywords: [GreptimeDB metasrv, command-line interface, metasrv configuration, metasrv startup, metasrv options, metasrv examples]
-description: Comprehensive guide to GreptimeDB metasrv command-line interface, including configuration options, startup commands, and practical examples for deploying instances.
+description: Command-line options and examples for starting GreptimeDB metasrv instances.
 ---
 
 # Metasrv
 
 ## Subcommand options
 
-You can list all the options from the following command:
+Print the options supported by the current binary:
 
 ```
 greptime metasrv start --help
@@ -15,24 +15,30 @@ greptime metasrv start --help
 
 | Option                                | Description                                                                                                                                                                                                                                                                  |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-c`/`--config-file`                  | The configuration file for metasrv                                                                                                                                                                                                                                           |
-| `--enable-region-failover`            | Whether to enable region failover, default is `false`. Please refer to [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) for the conditions to enable it.                                                                             |
+| `-c`/`--config-file <CONFIG_FILE>`    | The configuration file for metasrv                                                                                                                                                                                                                                           |
+| `--enable-region-failover <ENABLE_REGION_FAILOVER>` | Whether to enable region failover. Defaults to `false`. See [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) for its prerequisites.                                                                                           |
+| `--backend <BACKEND>`                 | Metadata store backend: `etcd-store`, `memory-store`, `postgres-store`, or `mysql-store`                                                                                                                                                                                       |
+| `--data-home <DATA_HOME>`             | Working directory of this metasrv instance                                                                                                                                                                                                                                    |
 | `--env-prefix <ENV_PREFIX>`           | The prefix of environment variables, default is `GREPTIMEDB_METASRV`                                                                                                                                                                                                         |
 | `--grpc-bind-addr <GRPC_BIND_ADDR>`     | The address to bind the gRPC server                                                                                                                                                                                                                                          |
-| `--grpc-server-addr <GRPC_SERVER_ADDR>` | The communication server address for the other components(frontend, datanode, flownode, etc.) If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `grpc_bind_addr` |
+| `--grpc-server-addr <GRPC_SERVER_ADDR>` | Address advertised to Frontend, Datanode, and Flownode. When unset, GreptimeDB uses the first network interface address and the port from `grpc_bind_addr` |
 | `--http-addr <HTTP_ADDR>`             | HTTP server address                                                                                                                                                                                                                                                          |
 | `--http-timeout <HTTP_TIMEOUT>`       | HTTP request timeout in seconds                                                                                                                                                                                                                                              |
-| `--selector <SELECTOR>`               | You can refer [selector-type](/contributor-guide/metasrv/selector.md#selector-type)                                                                                                                                                                                          |
-| `--store-addrs <STORE_ADDR>`          | Comma or space separated key-value storage server (default is etcd) address, used for storing metadata                                                                                                                                                                       |
+| `--log-dir <LOG_DIR>`                 | Log directory                                                                                                                                                                                                                                                                |
+| `--log-level <LOG_LEVEL>`             | Log level                                                                                                                                                                                                                                                                    |
+| `--max-txn-ops <MAX_TXN_OPS>`         | Maximum number of operations in one transaction                                                                                                                                                                                                                               |
+| `-s`/`--selector <SELECTOR>`          | Selector used for Region placement. See [Selector types](/contributor-guide/metasrv/selector.md#selector-type)                                                                                                                                                               |
+| `--store-addrs <STORE_ADDRS>...`      | Metadata store addresses                                                                                                                                                                                                                                                      |
+| `--store-key-prefix <STORE_KEY_PREFIX>` | Key prefix used in the metadata store                                                                                                                                                                                                                                       |
 
 ## Examples
 
 ### Start service with configurations
 
-Starts a metasrv with customized configurations:
+Start Metasrv from a configuration file:
 
 ```sh
 greptime metasrv start -c config/metasrv.example.toml
 ```
 
-The `metasrv.example.toml` configuration file comes from the `config` directory of the `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` repository. You can find more example configuration files there. The `-c` option specifies the configuration file, for more information check [Configuration](/user-guide/deployments-administration/configuration.md).
+The [`metasrv.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.1.4/config/metasrv.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md).

@@ -49,7 +49,7 @@ The output is as follows:
 ```
 
 Main columns:
-* `table_catalog`:  The name of the catalog to which the table belongs. This value is always `def`.
+* `table_catalog`: The name of the catalog to which the table belongs, usually `greptime`.
 * `table_schema`: The name of the schema (database) to which the table belongs.
 * `table_name`: The name of the table containing the partition(region).
 * `partition_name`: The name of the partition(region).

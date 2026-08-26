@@ -28,7 +28,7 @@ greptime cli meta repair partition-column [OPTIONS]
 | `--max-txn-ops <MAX_TXN_OPS>` | 事务中的最大操作数。仅在使用 `etcd-store` 时使用。 | `128` | 数字 |
 | `--store-key-prefix <STORE_KEY_PREFIX>` | 元数据存储的键前缀 | "" | 字符串 |
 | `--meta-table-name <META_TABLE_NAME>` | RDS 中存储元数据的表名。仅在使用 `postgres-store` 或 `mysql-store` 时使用。 | `greptime_metakv` | 字符串 |
-| `--dry-run <DRY_RUN>` | 如果存在此选项，该工具将不会对表元数据进行任何更改。相反，它只会报告（通过向标准输出打印日志）无效的分区列。建议在第一次运行此工具时添加此选项，并手动验证结果。 | `false` | 以下其一：<br/>`true`<br/>`false` | 
+| `--dry-run` | 只报告无效的分区列，不修改表元数据。执行修复前可先使用此选项检查拟进行的更改。 | `false` | flag |
 | `--update-limit <N>` | 该工具对表元数据执行更改的最大次数。此选项可用于逐步更新表元数据。 | 无限制 | 数字 |
 
 ## 示例
@@ -37,6 +37,6 @@ greptime cli meta repair partition-column [OPTIONS]
 greptime cli meta repair partition-column \
     --store-addrs=$ENDPOINT \
     --backend=postgres-store \
-    --dry-run true \
+    --dry-run \
     --update-limit 1
 ```

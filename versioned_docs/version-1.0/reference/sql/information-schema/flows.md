@@ -33,7 +33,7 @@ The columns in table:
 * `table_catalog`: the catalog this flow belongs to, named as `table_catalog` to keep consistent with the `INFORMATION_SCHEMA` standard.
 * `flow_definition`: the flow task's definition. It's the SQL statement used to create the flow task.
 * `comment`: the comment of the flow task.
-* `expire_after`: the expire time of the flow task.
+* `expire_after`: the retention duration of the flow task, in seconds.
 * `source_table_ids`: the source table ids of the flow task.
 * `sink_table_name`: the sink table name of the flow task.
 * `flownode_ids`: the flownode ids used by the flow task.
