@@ -55,9 +55,8 @@ http://<host>:4000
 
 然后单击 Save & Test 按钮以测试连接。
 
-### Query Builder
 
-#### 基础查询设置
+### 基础查询设置
 
 在选择任何查询类型之前，需要先配置要查询的 **Database** 和 **Table**。
 
@@ -73,7 +72,7 @@ http://<host>:4000
 
 ---
 
-#### Table 查询
+### Table 查询
 
 当查询结果**不包含时间列**时，选择 `Table` 查询类型，适合展示表格数据。
 
@@ -86,11 +85,11 @@ http://<host>:4000
 
 ---
 
-#### Time Series 查询
+### Time Series 查询
 
 当查询包含时间列和数值时，选择 `Time Series` 查询类型，适合按时间可视化指标。
 
-##### 使用 `date_bin` 分桶查询
+#### 使用 `date_bin` 分桶查询
 
 对一段时间做聚合时，可用 `date_bin` 对时序数据降采样：按时间间隔计算分桶，
 并将每个时间戳映射到最近区间的起点，从而把行归入时间窗口，再对每个窗口应用
@@ -120,7 +119,7 @@ ORDER BY time;
 
 ![Time Series](/grafana/series.png)
 
-##### Multi-Frame 拆分
+#### Multi-Frame 拆分
 
 当查询结果包含 **时间 + 字符串 + 数值** 字段时，插件会自动将长表拆成多个 frame——每个唯一标签组合一个。Grafana 将每个 frame 渲染为图表中的独立序列。
 
@@ -130,7 +129,7 @@ ORDER BY time;
 
 ---
 
-#### Logs 查询
+### Logs 查询
 
 选择 `Logs` 查询类型以查询日志数据。
 
@@ -147,7 +146,7 @@ ORDER BY time;
 
 ---
 
-#### Traces 查询
+### Traces 查询
 
 | 主要设置项 | 对应值 |
 |-----------|---------------------|
@@ -165,7 +164,7 @@ ORDER BY time;
 
 ![Traces](/grafana/traceconfig.png)
 
-##### Attribute 自动发现
+#### Attribute 自动发现
 
 当 Trace ID 查询使用 `SELECT *` 时，插件会自动发现所有以 `span_attributes.` 和 `resource_attributes.` 开头的列，并在瀑布图中作为可展开标签展示，无需手动枚举每个 attribute 列。
 

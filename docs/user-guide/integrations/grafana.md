@@ -58,9 +58,8 @@ In the Auth section, click basic auth, and fill in the username and password for
 
 Then click the Save & Test button to test the connection.
 
-### Query Builder
 
-#### General Settings
+### General Settings
 
 Before selecting any query type, you first need to configure the **Database** and **Table** to query from.
 
@@ -77,7 +76,7 @@ expands to the dashboard's current time range.
 
 ---
 
-#### Table Query
+### Table Query
 
 Choose the `Table` query type when your query results **do not include a time column**. Suitable for displaying tabular data.
 
@@ -90,12 +89,12 @@ Choose the `Table` query type when your query results **do not include a time co
 
 ---
 
-#### Time Series Query
+### Time Series Query
 
 Select the `Time Series` query type when your query includes a time column and
 numerical values. Ideal for visualizing metrics over time.
 
-##### Time bucketing with `date_bin`
+#### Time bucketing with `date_bin`
 
 For aggregating metrics over a time range, use `date_bin` to downsample time
 series data: it calculates time intervals and returns the start of the interval
@@ -126,7 +125,7 @@ dashboard time range. See [SQL Macros](#sql-macros) for more macros.
 
 ![Time Series](/grafana/series.png)
 
-##### Multi-Frame Splitting
+#### Multi-Frame Splitting
 
 When the query result contains **time + string + number** fields, the plugin
 automatically splits the long table into multiple frames — one per unique label
@@ -139,7 +138,7 @@ To avoid splitting, use the `Table` query type instead.
 
 ---
 
-#### Logs Query
+### Logs Query
 
 Choose the `Logs` query type for log data.
 
@@ -157,7 +156,7 @@ term/phrase matching.
 
 ---
 
-#### Traces Query
+### Traces Query
 
 Select the `Traces` query type for distributed tracing data.
 
@@ -177,7 +176,7 @@ Select the `Traces` query type for distributed tracing data.
 
 ![Traces](/grafana/traceconfig.png)
 
-##### Attribute Auto-Discovery
+#### Attribute Auto-Discovery
 
 When the Trace ID query uses `SELECT *`, the plugin automatically discovers
 all columns starting with `span_attributes.` and `resource_attributes.` and
