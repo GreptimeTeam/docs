@@ -32,7 +32,7 @@ The columns in the table:
 * `CONSTRAINT_NAME`: The name of the constraint, `TIME INDEX` or `PRIMARY`.
 * `TABLE_NAME`: The name of the table.
 * `CONSTRAINT_TYPE`: The type of the constraint. The value can be `TIME INDEX` or `PRIMARY KEY`. The `TIME INDEX` and `PRIMARY KEY` information is similar to the execution result of the `SHOW INDEX` statement.
-* `enforced`:  Doesn't support `CHECK` constraints, the value is always` YES`.
+* `ENFORCED`: Whether the constraint is enforced. GreptimeDB reports `YES` for time-index and primary-key constraints.
 
 ```sql
 select * from INFORMATION_SCHEMA.table_constraints WHERE table_name = 'monitor'\G;

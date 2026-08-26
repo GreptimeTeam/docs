@@ -444,9 +444,7 @@ In the above example, the configuration of the `csv` processor includes the foll
 ### `json_path` (deprecated)
 
 :::danger Deprecated Feature
-With the addition of the vrl processor, the use cases for the `json_path` processor have been greatly reduced.
-If you need to extract fields from JSON data, it is recommended to use the `vrl` processor for more flexible processing.
-We plan to deprecate the `json_path` processor in future versions.
+The `json_path` processor is deprecated. The `vrl` processor covers its use cases and provides more flexible JSON field extraction, so use `vrl` in new pipelines.
 :::
 
 The `json_path` processor is used to extract fields from JSON data. Here's an example configuration:
@@ -795,11 +793,9 @@ The above example can also be done in the following `select` processor's configu
 This experimental feature may contain unexpected behavior, have its functionality change in the future.
 :::
 
-The `vrl` processor run the vrl programming script against the pipeline context.
-It's more powerful than simple processors, for it allows you to write actual programming codes to manipulate the context; however, it also costs more resource to execute.
-Refer to the [official website](https://vector.dev/docs/reference/vrl/) for more language introduction and usage.
+The `vrl` processor runs a VRL script against the pipeline context. It supports transformations that cannot be expressed with the built-in processors, but executing a script uses more resources than a built-in processor. See the [VRL reference](https://vector.dev/docs/reference/vrl/) for language syntax.
 
-The `vrl` processor only takes one configuration, that is the `source` field. Here's an example:
+The `vrl` processor takes one configuration field, `source`:
 ```YAML
 processors:
   - date:
@@ -1108,7 +1104,7 @@ Specify which field uses the inverted index. Refer to the [Transform Example](#t
 
 #### The Fulltext Index
 
-Specify which field will be used for full-text search using `index: fulltext`. This index greatly improves the performance of [log search](/user-guide/logs/fulltext-search.md).
+Specify which field will be used for full-text search using `index: fulltext`. This index improves the performance of [log search](/user-guide/logs/fulltext-search.md).
 Use the detailed form when you need to set fulltext index options:
 
 ```yaml

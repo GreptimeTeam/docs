@@ -20,7 +20,7 @@ DESC TABLE INFORMATION_SCHEMA.VIEWS;
 | table_name           | String  |      | NO   |         | FIELD         |
 | view_definition      | String  |      | NO   |         | FIELD         |
 | check_option         | String  |      | YES  |         | FIELD         |
-| is_updatable         | Boolean |      | YES  |         | FIELD         |
+| is_updatable         | String  |      | YES  |         | FIELD         |
 | definer              | String  |      | YES  |         | FIELD         |
 | security_type        | String  |      | YES  |         | FIELD         |
 | character_set_client | String  |      | YES  |         | FIELD         |
@@ -36,7 +36,7 @@ The columns in table:
 * `view_definition`: The definition of view, which is made by the `SELECT` statement when the view is created.
 * `check_option`: Doesn't support, is always `NULL`.
 * `is_updatable`: Whether `UPDATE/INSERT/DELETE` is applicable to the view, always `NO`.
-* `definer`: The name of the user who creates the view.
+* `definer`: Reserved for the account that defines the view. The value is always `NULL`.
 * `security_type`: Doesn't support, is always `NULL`.
 * `character_set_client`: The value of the `character_set_client` session variable when the view is created, is always `utf8`.
 * `collation_connection`: The value of the `collation_connection` session variable when the view is created, is always `utf8_bin`.

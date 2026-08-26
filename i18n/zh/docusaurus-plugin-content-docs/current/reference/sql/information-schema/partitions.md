@@ -49,7 +49,7 @@ DESC PARTITIONS;
 ```
 
 主要列包括：
-* `table_catalog`：表所属目录的名称。该值始终为 `def`。
+* `table_catalog`：表所属 catalog 的名称，通常为 `greptime`。
 * `table_schema`：表所属的 schema（数据库）的名称。
 * `table_name`：包含分区（region）的表的名称。
 * `partition_name`：分区（region）的名称。

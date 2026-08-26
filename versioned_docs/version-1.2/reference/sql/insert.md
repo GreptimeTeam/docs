@@ -124,13 +124,12 @@ FROM table1;
 
 In the above syntax, `table1` is the source table from which you want to copy data, and `table2` is the target table
 into which the data will be inserted.
-`table1` and `table2` should have the same names and data types for the columns that you want to copy.
+The selected expressions must be assignment-compatible with the corresponding target columns. Source and target column names do not need to match.
 The `SELECT` statement selects the columns you want to insert from the source
 table. If you do not specify the column names in the `INSERT INTO` statement, then the data will be inserted into
 all columns in the target table.
 
-The `INSERT INTO SELECT` statement is useful when you want to copy data from one table to another, for example when
-archiving or backing up data. It is more efficient than creating a backup of the entire database and restoring it.
+Use `INSERT INTO SELECT` to copy query results into another table. For table-level archival or copying selected data, it is more efficient than backing up and restoring the entire database.
 
 ### Examples
 

@@ -211,7 +211,7 @@ clickhouse client --query="SELECT * FROM example WHERE timestamp < '2024-04-26 0
 
 > 需先在 GreptimeDB 创建好目标表。
 
-支持 SQL 命令批量导入，或用 [REST API](/reference/http-endpoints.md#协议端点) 分批导入大数据量。 可用 [`COPY FROM` 命令](/reference/sql/copy.md#copy-from)：
+支持 SQL 命令批量导入，或用 [REST API](/user-guide/protocols/http.md#post-sql-语句) 分批导入大数据量。 可用 [`COPY FROM` 命令](/reference/sql/copy.md#copy-from)：
 
 ```sql
   COPY example FROM "/path/to/example.csv" WITH (FORMAT = 'CSV');

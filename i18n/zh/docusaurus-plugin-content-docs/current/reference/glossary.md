@@ -34,6 +34,8 @@ description: 本文档解释 GreptimeDB 在可观测数据、存储、查询和�
 
 ---
 
+<AnchorAlias id="d-1" />
+
 ## D
 
 ### Datanode (数据节点)
@@ -83,10 +85,10 @@ GreptimeDB 的全托管数据库服务，提供托管的 GreptimeDB 实例，并
 专为物联网应用设计的云计算平台，提供海量设备数据存储、处理与连接管理能力。
 
 ### IoT Database (物联网数据库)
-针对物联网传感器高频时序数据优化的数据库系统。GreptimeDB 可高效处理物联网设备产生的大规模时序数据，提供弹性扩展能力。
+针对物联网设备产生的高频数据进行优化的数据库，用于存储和查询时序测量、设备事件和日志。随着设备数量和数据量增长，它可以提供可扩展的存储和查询能力。
 
 ### IoT Observability (物联网可观测性)
-通过指标、日志与事件数据对物联网设备及系统进行监控、分析与洞察的能力，确保物联网生态的可靠运行。
+使用指标、日志和事件监控物联网设备及其配套服务的状态与行为，帮助团队保障可靠性并诊断性能问题。
 
 ### Interoperability (协议互操作性)
 系统通过兼容接口交换数据的能力。GreptimeDB 支持 SQL 接口，以及 InfluxDB、OpenTelemetry、Prometheus、Elasticsearch 和 Loki 的部分 API；每一层兼容接口都有各自的范围。
@@ -100,6 +102,8 @@ GreptimeDB 的全托管数据库服务，提供托管的 GreptimeDB 实例，并
 
 ---
 
+<AnchorAlias id="l-1" />
+
 ## L
 
 ### Log Aggregation (日志聚合)
@@ -109,12 +113,14 @@ GreptimeDB 的全托管数据库服务，提供托管的 GreptimeDB 实例，并
 Logical table 是用户创建和查询的表，physical table 是内部实际保存数据的表。Mito Engine 通常为 logical table 使用独立的物理存储；Metric Engine 可以把多张 logical metrics table 映射到共享的 physical table。共享 physical table 不会合并各张逻辑表的 schema 和查询接口。
 
 ### Log Management (日志管理)
-涵盖日志采集、存储、分析与可视化的全生命周期管理方案，是保障系统性能与安全的重要基础。
+对日志进行采集、存储、查询和可视化的过程，用于性能分析和安全调查。
 
 ### LSM-Tree (日志结构合并树)
 GreptimeDB 存储引擎采用的数据结构，通过先将数据写入日志再定期合并为有序结构来优化写入性能。该设计特别适合高写入吞吐量的时序工作负载。
 
 ---
+
+<AnchorAlias id="m-1" />
 
 ## M
 
@@ -125,7 +131,7 @@ GreptimeDB 存储引擎采用的数据结构，通过先将数据写入日志再
 GreptimeDB 分布式架构中的元数据管理服务，维护集群状态、表结构和 region 分布信息。Metasrv 协调集群操作，管理表的创建和修改，处理 region 分配和迁移，确保集群范围内的元数据一致性。它作为集群管理的中央控制平面，是所有元数据操作的权威数据源。
 
 ### Metric Engine (指标引擎)
-GreptimeDB 中针对 metrics 数据设计的存储引擎，适用于可观测 workload 中常见的大量小表。Metric Engine 使用合成的宽 physical table 保存多张 logical table 的数据，以复用列和 metadata、降低存储开销并改善列式压缩。Metric Engine 基于 Mito Engine 构建。
+GreptimeDB 用于大量逻辑指标表的存储引擎。它将逻辑表映射到共享的物理宽表，以复用列和元数据，从而降低存储开销，并改善列式压缩和查询效率。Metric Engine 使用 Mito Engine 进行物理存储。
 
 ### Mito Engine (Mito 引擎)
 GreptimeDB 的默认存储引擎。Mito 采用 LSM-Tree 设计，包含 WAL、memtable、不可变 SST 文件和 compaction。它支持本地存储和对象存储，并可使用本地 cache 加速远端数据访问。
@@ -145,20 +151,20 @@ GreptimeDB 的默认存储引擎。Mito 采用 LSM-Tree 设计，包含 WAL、me
 ## P
 
 ### Pipeline (数据管道)
-GreptimeDB 中用于实时处理传入数据的强大解析和转换机制。Pipeline 由可配置的处理器组成，用于预处理原始数据；分发器用于将数据路由到不同管道；以及转换规则用于数据类型转换和表结构定义。支持多种输入格式和数据源（包括日志、Prometheus 指标和其他可观测性数据），提供广泛的处理能力，包括时间戳解析、正则匹配、字段提取和数据类型转换，实现可观测性数据的结构化存储和高效查询。
+GreptimeDB 在数据写入存储前执行解析和转换的配置。Processor 解析或修改字段，transform 将字段映射为表中的列和类型，dispatcher 可以根据输入记录中的值选择 Pipeline。Pipeline 支持时间戳解析、正则匹配、字段提取和类型转换，使可观测数据能够以便于高效查询的结构写入存储。
 
 ### Primary Key (主键)
 由一列或多列 Tag 组成，用于标识一组时间序列或记录。对于开启去重的表，主键与时间索引共同标识按 merge mode 合并的数据行。它不是通用关系数据库中的唯一约束：append-only 表可以不设置主键，也可以把主键和时间戳重复的写入保留为不同数据行。
 
 ### PromQL (Prometheus 查询语言)
-专为 Prometheus 设计的时序数据查询语言。GreptimeDB 支持 PromQL 且兼容性接近 100%，支持用户执行复杂的时序数据分析操作并使用现有的 Prometheus 仪表盘和告警规则。
+Prometheus 用于查询时序数据的语言。GreptimeDB 提供接近 100% 的 PromQL 兼容性，并支持使用已有的 Prometheus 仪表盘和告警规则。具体限制和范围参见[兼容性列表](/user-guide/query-data/promql.md#局限)。
 
 ---
 
 ## R
 
 ### Read Replica (读副本)
-GreptimeDB 企业版中的功能，通过创建额外的只读数据实例来提升查询性能和可扩展性。读副本将读取工作负载分布到多个实例上，减少主数据库的负载同时提供更快的查询响应。该功能支持数据访问点的地理分布，提升读取操作的高可用性，并在企业环境中实现读密集型工作负载的高效扩展。
+GreptimeDB Enterprise 为表增加只读 Follower Region 的功能，用于扩展读取负载并降低 Leader Region 的查询压力。Leader Region 和 Follower Region 共享对象存储中的 SST 文件；Leader 同步 SST metadata，Follower 在读取最新数据时从 Leader 获取尚未 flush 的数据。通过 Datanode group 可以把 Leader 和 Follower 部署到不同节点，隔离读写 workload、缩短查询响应时间、支持地理分布式访问并提高读取可用性。参见[读副本](/enterprise/read-replicas/overview.md)。
 
 ### Region (区域)
 GreptimeDB 架构中数据分布的基本单元。Region 包含表数据的子集，可分布在集群的不同节点上。每个 Region 管理自己的存储、索引和查询处理，实现水平扩展和容错能力。
@@ -184,6 +190,8 @@ GreptimeDB 架构中数据分布的基本单元。Region 包含表数据的子�
 
 ---
 
+<AnchorAlias id="t-1" />
+
 ## T
 
 ### Table Engine (表引擎)
@@ -193,7 +201,7 @@ GreptimeDB 架构中数据分布的基本单元。Region 包含表数据的子�
 将一张大表拆分为多个更小分区的技术。在 GreptimeDB 中，表分片有助于将负载分散到多个 region 上，并提升热点表或大表的吞吐能力。
 
 ### Tag (标签)
-GreptimeDB 数据模型中用于唯一标识时序数据的列类型。具有相同 Tag 值的行属于同一个时间序列，使 Tag 成为组织和查询可观测性数据的关键。Tag 通常用于存储元数据，如主机名、服务名或设备 ID，并在表架构中指定为 PRIMARY KEY 列。
+用于标识时间序列的列语义。Tag 值相同的数据行属于同一条时间序列。Tag 通常保存主机名、服务名或设备 ID 等维度，并声明为 `PRIMARY KEY` 列。
 
 ### Time Index (时间索引)
 GreptimeDB 表中的特殊时间戳列，作为时序数据的主要时间维度。每个 GreptimeDB 表都需要一个 Time Index 列来按时间顺序组织数据，实现基于时间的查询，支持高效的时序操作，如降采样和时间窗口聚合。
@@ -222,10 +230,10 @@ GreptimeDB Enterprise 中按配置周期执行 SQL 规则的功能。条件匹�
 批量处理一组值、而不是逐值处理的查询执行方式。GreptimeDB 查询引擎采用向量化执行，并可在支持的操作中使用 SIMD 指令。
 
 ### Vehicle Data Collection (车载数据采集)
-对车辆传感器读数、GPS 定位信息等数据进行采集的标准化流程，是现代车联网生态的核心组成部分。
+采集车辆传感器读数、GPS 定位和诊断信息等数据的过程。
 
 ### Vehicle-Cloud Integrated TSDB (车云协同时序数据库)
-专为车联网设计的时序数据库系统，支持车载终端与云端系统的协同工作，实现车联网数据的高效存储与实时分析。
+由车端或边缘系统采集数据、云端服务汇总存储并查询数据的时序数据库部署方式，可为车联网应用提供高效存储和实时分析能力。
 
 ---
 
