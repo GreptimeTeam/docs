@@ -70,7 +70,7 @@ service:
 
 在上面的配置中，我们定义了一个接收器 `otlp`，它可以接收来自 OpenTelemetry 的数据。我们还定义了三个导出器 `otlphttp/traces`、`otlphttp/logs` 和 `otlphttp/metrics`，它们将数据发送到 GreptimeDB 的 OTLP 路径。
 
-在 otlphttp 协议的基础上，我们增加了一些 header 用来指定一些参数，比如 `x-greptime-pipeline-name` 和 `x-greptime-log-table-name`:
+基于 OTLP/HTTP 协议，我们增加了一些 header 用来指定参数，比如 `x-greptime-pipeline-name` 和 `x-greptime-log-table-name`:
 * `x-greptime-pipeline-name` 用来指定要使用的 pipeline 名称
 * `x-greptime-pipeline-params` 用来向 pipeline 传入参数
 * `x-greptime-log-table-name` 用来指定数据将要写入 GreptimeDB 的表名。

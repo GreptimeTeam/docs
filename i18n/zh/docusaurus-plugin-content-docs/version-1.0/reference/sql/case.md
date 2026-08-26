@@ -30,7 +30,7 @@ END
 ### 在 `SELECT` 中使用 `CASE`
 
 在 `SELECT` 子句中，你可以使用 `CASE` 语句根据条件创建新列。
-请参阅查询数据指南中的[示例](/user-guide/query-data/sql.md#case)。
+请参阅查询数据指南中的[示例](/user-guide/query-data/sql.md#case-expression)。
 
 你还可以将 `CASE` 与 `SUM` 等函数一起使用，以有条件地聚合数据。
 例如，你可以计算状态码为 200 和 404 的日志总数：

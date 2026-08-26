@@ -266,7 +266,7 @@ Output:
 
 ### Query JSON data
 
-You can query the JSON data directly or extract specific fields using [JSON functions](./functions/overview.md#json-functions) provided by GreptimeDB. Here's an example:
+You can query the JSON data directly or extract specific fields using [JSON functions](./functions/json.md) provided by GreptimeDB. Here's an example:
 
 ```sql
 SELECT json_get_string(my_json, '$.name') as name FROM json_data;

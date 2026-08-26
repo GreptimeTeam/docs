@@ -225,6 +225,8 @@ function expandDocCardList(
 export interface LlmsTxtOptions {
   ignoreFiles?: string[];
   includeOrder?: string[];
+  /** Version served at the site root; defaults to the newest one. */
+  lastVersion?: string;
 }
 
 export default function llmsTxtGenerator(
@@ -239,13 +241,15 @@ export default function llmsTxtGenerator(
       const locale = context.i18n.currentLocale;
       const siteOrigin = new URL(props.siteConfig.url).origin;
 
-      // Determine the latest version and its source directory
+      // Determine the version served at the root and its source directory
       const versionsPath = path.resolve(process.cwd(), 'versions.json');
-      const latestVersion: string = JSON.parse(fs.readFileSync(versionsPath, 'utf-8'))[0];
+      const { lastVersion: lastVersionOption, ...llmsOptions } = options;
+      const lastVersion: string =
+        lastVersionOption ?? JSON.parse(fs.readFileSync(versionsPath, 'utf-8'))[0];
 
       const docsDir = locale === 'zh'
-        ? `i18n/zh/docusaurus-plugin-content-docs/version-${latestVersion}`
-        : `versioned_docs/version-${latestVersion}`;
+        ? `i18n/zh/docusaurus-plugin-content-docs/version-${lastVersion}`
+        : `versioned_docs/version-${lastVersion}`;
 
       if (!fs.existsSync(path.resolve(process.cwd(), docsDir))) {
         console.warn(`[llms-txt-generator] Source not found: ${docsDir}, skipping`);
@@ -256,7 +260,7 @@ export default function llmsTxtGenerator(
       const mod = require('docusaurus-plugin-llms');
       const createPlugin = typeof mod === 'function' ? mod : mod.default;
       const llmsPlugin = createPlugin(context, {
-        ...options,
+        ...llmsOptions,
         generateLLMsTxt: true,
         generateLLMsFullTxt: true,
         generateMarkdownFiles: true,
@@ -284,7 +288,7 @@ export default function llmsTxtGenerator(
       }
 
       // Post-process: resolve VAR:: placeholders, then rewrite URLs
-      const variables = loadVariables(latestVersion);
+      const variables = loadVariables(lastVersion);
       const escapedDocsDir = docsDir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const docsUrlPattern = new RegExp(
         `(${siteOrigin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})?/+${escapedDocsDir}/`, 'g'
@@ -324,7 +328,7 @@ export default function llmsTxtGenerator(
       }
 
       console.log(
-        `[llms-txt-generator] v${latestVersion}: llms.txt + llms-full.txt + ${movedFiles.length} .md files. ` +
+        `[llms-txt-generator] v${lastVersion}: llms.txt + llms-full.txt + ${movedFiles.length} .md files. ` +
         `Post-processed ${postProcessedCount} files.`
       );
 

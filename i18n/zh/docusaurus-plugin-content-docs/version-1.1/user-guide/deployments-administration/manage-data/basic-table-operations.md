@@ -68,6 +68,8 @@ SHOW DATABASES LIKE 'p%';
 USE test;
 ```
 
+<AnchorAlias id="create-a-table" />
+
 ## 创建表
 
 :::tip NOTE
@@ -115,8 +117,7 @@ GreptimeDB 目前不支持在创建表后更改 TIME INDEX 约束，
 
 ### `CREATE TABLE` 语法
 
-- 时间戳列：GreptimeDB 是一个时序数据库系统，在创建表时，必须用 `TIME INDEX` 关键字明确指定时间序列的列。
-  时间序列的列的数据类型必须是 `TIMESTAMP`。
+- 时间索引：每张 GreptimeDB 表都必须有且只有一个时间索引。使用 `TIME INDEX` 关键字声明，列类型必须是 `TIMESTAMP`。
 - 主键：`Primary key`指定的主键列类似于其他时序系统中的 Tag，比如 [InfluxDB][1]。主键和时间戳列用于唯一地定义一条时间线，这类似于其他时间序列系统中的时间线的概念，如 [InfluxDB][2]。
 - 表选项：当创建一个表时，可以指定一组表选项，点击[这里](/reference/sql/create.md#table-options)了解更多细节。
 
@@ -222,7 +223,7 @@ SHOW INDEXES FROM monitor;
 +---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
 ```
 
-有关 `SHOW` 语句的更多信息，请阅读 [SHOW 参考](/reference/sql/show.md#show)。
+有关 `SHOW` 语句的更多信息，请阅读 [SHOW 参考](/reference/sql/show.md)。
 
 ## 列出现有的表
 
@@ -333,7 +334,7 @@ DROP DATABASE test;
 
 ```shell
 curl -X POST \
-  -H 'authorization: Basic {{authorization if exists}}' \
+  -H 'authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'sql=CREATE TABLE monitor (host STRING, ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP(), cpu FLOAT64 DEFAULT 0, memory FLOAT64, TIME INDEX (ts), PRIMARY KEY(host))' \
 http://localhost:4000/v1/sql?db=public

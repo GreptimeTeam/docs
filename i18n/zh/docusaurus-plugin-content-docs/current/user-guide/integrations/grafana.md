@@ -14,14 +14,29 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 
 ### 安装
 
-推荐从[最新 Release](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/)安装 **unsigned** 插件 zip。
-请先允许加载该插件 ID 的未签名插件。
+该插件尚未上架 Grafana 插件市场，因此请安装未签名的压缩包，并在 `grafana.ini` 中显式放行：
+
+```ini
+[plugins]
+allow_loading_unsigned_plugins = info8fcc-greptimedb-datasource
+```
+
+对应的环境变量是 `GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS`。Grafana Cloud 不接受未签名插件，请使用自建
+Grafana。如果需要与自己 Grafana `root_url` 绑定的签名版本，请[联系我们](https://greptime.com/contactus)。
+
+在安装插件前请确保 Grafana 已经安装并运行。
 
 在 `grafana.ini` 中：
 
-```
-allow_loading_unsigned_plugins = info8fcc-greptimedb-datasource
-```
+- 从[发布页面](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/)下载 `info8fcc-greptimedb-datasource-unsigned.zip`，解压到你的 [grafana 插件目录](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#plugins)。
+- 使用 Grafana Cli 下载并安装：
+  ```shell
+  grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource-unsigned.zip plugins install info8fcc
+  ```
+- 使用我们 [预构建的 Grafana 镜
+  像](https://hub.docker.com/r/greptime/grafana-greptimedb)，已经提前包含了
+  GreptimeDB 数据源插件 `docker run -p 3000:3000
+  greptime/grafana-greptimedb:latest`
 
 或在 Docker 中运行 Grafana 时：
 
@@ -163,32 +178,19 @@ ORDER BY time;
 
 #### Traces 查询
 
-选择 `Traces` 查询类型以查询分布式追踪数据。
-
-**两种模式：**
-
-| 模式 | 用途 | 面板 |
-|------|---------|-------|
-| **Trace Search** | 列出最近的 Trace | Table |
-| **Trace ID** | 查看单条 Trace 的 Span 瀑布图 | Traces（甘特图 + Span 树） |
-
-查看 Trace 瀑布图的方式：
-- 切换到 **Trace ID** 模式并输入 Trace ID
-- 在 Trace Search 表格中点击 `trace_id` 单元格 → "View trace"
-
-| 设置项 | 说明 | 默认值 |
-|:--------|:------------|---------|
-| **Trace Mode** | `Trace Search` 或 `Trace ID` | |
-| **Trace Id Column** | Trace ID 字段 | `trace_id` |
-| **Span Id Column** | Span ID 字段 | `span_id` |
-| **Parent Span ID Column** | Parent Span ID 字段 | `parent_span_id` |
-| **Service Name Column** | 服务名字段 | `service_name` |
-| **Operation Name Column** | Span/操作名字段 | `span_name` |
-| **Start Time Column** | Span 开始时间字段 | `timestamp` |
-| **Duration Time Column** | 耗时字段 | `duration_nano` |
-| **Duration Unit** | 耗时列单位 | `nanoseconds` |
-| **Tags Column** | Span attributes（前缀如 `span_attributes`） | |
-| **Service Tags Column** | Resource attributes（前缀如 `resource_attributes`） | |
+| 主要设置项 | 对应值 |
+|-----------|---------------------|
+| Trace Model | 选择 `Trace Search` 以查询 Trace 列表
+| Trace Id Column | 初始值 `trace_id`
+| Span Id Column | 初始值 `span_id`
+| Parent Span ID Column | 初始值 `parent_span_id`
+| Service Name Column | 初始值 `service_name`
+| Operation Name Column | 初始值 `span_name`
+| Start Time Column | 初始值 `timestamp`
+| Duration Time Column | 初始值 `duration_nano`
+| Duration Unit | 初始值 `nanoseconds`
+| Tags Column | 可多选，对应以 `span_attributes` 开头的列
+| Service Tags Column| 可多选，对应以 `resource_attributes` 开头的列
 
 ![Traces](/grafana/traceconfig.png)
 

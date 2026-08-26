@@ -52,7 +52,11 @@
             "user-guide/concepts/why-greptimedb",
             "user-guide/concepts/data-model",
             "user-guide/concepts/architecture",
-            "user-guide/concepts/observability-2",
+            {
+              "type": "doc",
+              "id": "user-guide/concepts/observability-2",
+              "label": "Observability 2.0 and wide events"
+            },
             "user-guide/concepts/semantic-layer",
             "user-guide/concepts/storage-location",
             "user-guide/concepts/key-concepts",
@@ -162,6 +166,8 @@
             "user-guide/integrations/prometheus",
             "user-guide/integrations/vector",
             "user-guide/integrations/kafka",
+            "user-guide/integrations/flink",
+            "user-guide/integrations/spark",
             "user-guide/integrations/telegraf",
             "user-guide/integrations/grafana",
             "user-guide/integrations/superset",
@@ -502,7 +508,8 @@
           "label": "Management Console",
           "items": [
             "enterprise/console-ui",
-            "enterprise/console-ui/continuous-profiling"
+            "enterprise/console-ui/continuous-profiling",
+            "enterprise/console-ui/webhook-triggers"
           ]
         },
         {

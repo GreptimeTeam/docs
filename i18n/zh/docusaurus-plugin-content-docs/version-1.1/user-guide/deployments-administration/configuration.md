@@ -29,6 +29,8 @@ greptime standalone start --http-addr 127.0.0.1:4000
 
 有关 Greptime 命令行支持的所有选项，请参阅 [GreptimeDB 命令行界面](/reference/command-lines/overview.md)。
 
+<AnchorAlias id="configuration-file-options" />
+
 ### 配置文件选项
 
 你可以在 TOML 文件中指定配置项。
@@ -151,6 +153,8 @@ concurrent_query_limiter_timeout = "100ms"
 | ---------------------------------- | ------ | --------- | --------------------------------------------------------------------------------------------------------------- |
 | `max_concurrent_queries`           | 整数   | `0`       | Datanode 上允许同时运行的最大读取查询数量。设置为 `0` 表示禁用限制。                                  |
 | `concurrent_query_limiter_timeout` | 字符串 | `"100ms"` | 当达到 `max_concurrent_queries` 后，查询等待可用名额的最长时间。如果超时后仍然没有可用名额，查询将失败。 |
+
+<AnchorAlias id="protocol-options" />
 
 ### 协议选项
 
@@ -277,6 +281,8 @@ max_inflight_requests = 3000
 parallelism = 0
 ```
 
+<AnchorAlias id="storage-options" />
+
 ### 存储选项
 
 `存储`选项在 `datanode` 和 `standalone` 模式下有效，它指定了数据库数据目录和其他存储相关的选项。
@@ -313,13 +319,13 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 |         | account_name      | 字符串 | Azure Blob 存储的账户名                             |
 |         | account_key       | 字符串 | 访问密钥                                            |
 |         | sas_token         | 字符串 | 共享访问签名                                        |
-| Gsc     |                   |        | Google Cloud Storage 存储选项，当 type="Gsc" 时有效 |
-|         | name            | 字符串 |  存储提供商名字，默认为 `Gsc`               |
-|         | root              | 字符串 | Gsc 桶中的根路径                                    |
-|         | bucket            | 字符串 | Gsc 桶名称                                          |
-|         | scope             | 字符串 | Gsc 权限                                            |
-|         | credential_path   | 字符串 | Gsc 访问证书                                        |
-|         | endpoint          | 字符串 | GSC 的 API 端点                                     |
+| Gcs     |                   |        | Google Cloud Storage 存储选项，当 type="Gcs" 时有效 |
+|         | name            | 字符串 |  存储提供商名字，默认为 `Gcs`               |
+|         | root              | 字符串 | GCS 桶中的根路径                                    |
+|         | bucket            | 字符串 | GCS 桶名称                                          |
+|         | scope             | 字符串 | GCS 权限                                            |
+|         | credential_path   | 字符串 | GCS 访问证书                                        |
+|         | endpoint          | 字符串 | GCS 的 API 端点                                     |
 
 文件存储配置范例：
 
@@ -428,6 +434,8 @@ default_ratio = 1.0
 
 如何使用分布式追踪，请参考 [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
 
+<AnchorAlias id="region-engine-options" />
+
 ### Region 引擎选项
 
 datanode 和 standalone 在 `[region_engine]` 部分可以配置不同存储引擎的对应参数。目前可以配置 `mito` 和 `metric` 存储引擎的选项。
@@ -510,7 +518,9 @@ fork_dictionary_bytes = "1GiB"
 | `index_cache_percent`                    | 整数   | `20`          | 为索引（puffin）文件分配的写入缓存容量百分比（默认：20）。<br/>剩余容量用于数据（parquet）文件。<br/>必须在 0 到 100 之间（不包括边界）。例如，对于 5GiB 的写入缓存和 20% 的分配，<br/>1GiB 保留给索引文件，4GiB 用于数据文件。 |
 | `enable_refill_cache_on_read`            | 布尔值 | `true`        | 启用读取操作时的缓存回填（默认：true）。<br/>禁用时，不会在读取时回填缓存。                                            |
 | `manifest_cache_size`                    | 字符串 | `256MB`       | Manifest 缓存容量（默认：256MB）。                                                                                     |
-| `selector_result_cache_size`             | 字符串 | `512MB`       | `last_value()` 等时间线检索结果的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                         |
+| `selector_result_cache_size`             | 字符串 | `512MB`       | `last_value()` 等时间线检索结果的缓存。设为 0 可关闭该缓存<br/>未设置时默认为内存的 1/16，不超过 512MB。                         |
+| `range_result_cache_size`                | 字符串 | `512MB`       | Flat range scan 结果的缓存大小。设为 0 可关闭该缓存。<br/>未设置时默认为内存的 1/16，不超过 512MB。                         |
+| `prefilter_result_cache_size`            | 字符串 | `128MB`       | Prefilter 结果的缓存大小。设为 0 可关闭该缓存。<br/>未设置时默认为内存的 1/32，不超过 128MB。                         |
 | `sst_write_buffer_size`                  | 字符串 | `8MB`         | SST 的写缓存大小                                                                                                       |
 | `max_concurrent_scan_files`             | 整数   | `384`         | 最大并发扫描的 SST 文件数量。                                                                                         |
 | `allow_stale_entries`                 | 布尔值 | `false`       | 是否允许 replay 时读取陈旧的 WAL 条目。                                                                              |
@@ -524,10 +534,10 @@ fork_dictionary_bytes = "1GiB"
 | `index.aux_path` | 字符串 | `""` | 文件系统中索引的辅助目录路径，用于存储创建索引的中间文件和搜索索引的暂存文件，默认为 `{data_home}/index_intermediate`。为了向后兼容，该目录的默认名称为 `index_intermediate`。此路径包含两个子目录：- `__intm`: 用于存储创建索引时使用的中间文件。- `staging`: 用于存储搜索索引时使用的暂存文件。 |
 | `index.staging_size` | 字符串 | `2GB` | 暂存目录的最大容量。 |
 | `index.staging_ttl` | 字符串 | `7d` | 暂存目录的 TTL。默认为 7 天。设为 "0s" 可禁用 TTL。 |
-| `index.metadata_cache_size` | 字符串 | `64MiB` | 索引元数据的缓存大小。 |
-| `index.content_cache_size` | 字符串 | `128MiB` | 索引内容的缓存大小。 |
+| `index.metadata_cache_size` | 字符串 | `64MiB` | 索引元数据的缓存大小。<br/>未设置时默认为内存的 1/32，不超过 64MiB。 |
+| `index.content_cache_size` | 字符串 | `128MiB` | 索引内容的缓存大小。<br/>未设置时默认为内存的 1/16，不超过 128MiB。 |
 | `index.content_cache_page_size` | 字符串 | `64KiB` | 倒排索引内容缓存的页大小。 |
-| `index.result_cache_size` | 字符串 | `128MiB` | 索引查询结果的缓存大小。 |
+| `index.result_cache_size` | 字符串 | `128MiB` | 索引查询结果的缓存大小。<br/>未设置时默认为内存的 1/16，不超过 128MiB。 |
 | `inverted_index.create_on_flush`         | 字符串 | `auto`        | 是否在 flush 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                       |
 | `inverted_index.create_on_compaction`    | 字符串 | `auto`        | 是否在 compaction 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                  |
 | `inverted_index.apply_on_query`          | 字符串 | `auto`        | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                          |
@@ -601,6 +611,8 @@ default_timezone = "UTC"
 
 `default_timezone` 的值可以是任何时区名称，例如 `Europe/Berlin` 或 `Asia/Shanghai`。
 有关客户端时区如何影响数据的写入和查询，请参阅[时区](/user-guide/timezone.md#时区对-sql-语句的影响)文档。
+
+<AnchorAlias id="metasrv-only-configuration" />
 
 ### 仅限于 Metasrv 的配置
 

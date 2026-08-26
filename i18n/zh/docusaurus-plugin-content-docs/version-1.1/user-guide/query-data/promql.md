@@ -7,6 +7,8 @@ description: 介绍 GreptimeDB 对 Prometheus 查询语言（PromQL）的支持�
 
 GreptimeDB 可以作为 Grafana 中 Prometheus 的替代品，因为 GreptimeDB 支持 PromQL（Prometheus Query Language）。GreptimeDB 在 Rust 中重新实现了 PromQL，并通过接口将能力开放，包括 Prometheus 的 HTTP API、GreptimeDB 的 HTTP API 和 SQL 接口。
 
+<AnchorAlias id="prometheus-http-api" />
+
 ## Prometheus 的 HTTP API
 
 <!-- Maybe add a section to introduce the simulated interfaces, when there is -->
@@ -34,7 +36,7 @@ GreptimeDB 实现了兼容 Prometheus 的一系列 API，通过 `/v1/prometheus`
 
 ```shell
 curl -X POST \
-    -H 'Authorization: Basic {{authorization if exists}}' \
+    -H 'Authorization: Basic <base64-encoded-credentials>' \
     --data-urlencode 'query=irate(process_cpu_seconds_total[1h])' \
     --data-urlencode 'start=2024-11-24T00:00:00Z' \
     --data-urlencode 'end=2024-11-25T00:00:00Z' \
@@ -233,11 +235,11 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | cosh               | `cosh(metric)`                    |
     | scalar             | `scalar(metric)`                  |
     | tanh               | `tanh(metric)`                    |
-    | timestamp          | `timestamp()`                     |
+    | timestamp          | `timestamp(metric)`               |
     | sort               | `sort(http_requests_total)`       |
     | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
-    | predicate_linear   | `predict_linear(metric, 120)`     |
+    | predict_linear     | `predict_linear(metric[5m], 120)` |
     | absent             | `absent(nonexistent{job="myjob"})`|
     | sgn                | `sgn(metric)`                     |
     | pi                 | `pi()`                            |
@@ -268,7 +270,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | deriv              | `deriv(metric[5m])`            |
     | increase           | `increase(metric[5m])`         |
     | irate              | `irate(metric[5m])`            |
-    | reset              | `reset(metric[5m])`            |
+    | resets             | `resets(metric[5m])`           |
 
 - 不支持：
 

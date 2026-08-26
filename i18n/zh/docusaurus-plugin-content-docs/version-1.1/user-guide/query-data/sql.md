@@ -257,6 +257,8 @@ http://localhost:4000/v1/sql
 
 有关请求 hints 的更多信息，请参阅 [HTTP hints](/user-guide/protocols/http.md#hints)。
 
+<AnchorAlias id="case-expression" />
+
 ## `CASE` 表达式
 
 你可以使用 `CASE` 表达式在查询中执行条件逻辑。
@@ -291,7 +293,7 @@ FROM monitor;
 
 ## 按标签聚合数据
 
-你可以使用 `GROUP BY` 语句将具有相同值的行进行分组汇总，例如查询 `idc` 列中的所有不同值的内存均值：
+你可以使用 `GROUP BY` 语句将具有相同值的行进行分组汇总，例如按 `host` 分组查询 CPU 均值：
 
 ```sql
 SELECT host, avg(cpu) FROM monitor GROUP BY host;
@@ -382,7 +384,7 @@ ALIGN '5s' TO '2023-12-01T00:00:00' BY (host) ORDER BY ts ASC;
 ### 时间范围窗口
 
 将初始时间范围窗口在时间序列中向前和向后移动，就生成了所有时间范围窗口。
-在上面的例子中，初始对齐时间被设置为 `2023-12-01T00:00:00`，这也是初始时间窗口的结束时间。
+在上面的例子中，初始对齐时间被设置为 `2023-12-01T00:00:00`，这也是初始时间窗口的起始时间。
 
 `RANGE` 选项和初始对齐时间定义了初始时间范围窗口，它从 `初始对齐时间` 开始，到 `初始对齐时间 + RANGE` 结束。
 `ALIGN` 选项定义了查询的步频，决定了从初始时间窗口到其他时间窗口的计算步频。
@@ -446,7 +448,7 @@ ALIGN '1d' TO '2023-12-01T00:00:00+08:00' BY (host);
 
 ```shell
 curl -X POST \
-  -H 'authorization: Basic {{authorization if exists}}' \
+  -H 'authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'sql=select * from monitor' \
 http://localhost:4000/v1/sql?db=public

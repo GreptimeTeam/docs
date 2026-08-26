@@ -12,16 +12,16 @@ you can create custom pipelines to define exactly how your log data should be pa
 
 ## Identify Your Original Log Format
 
-Before creating a custom pipeline, it's essential to understand the format of original log data.
+A custom pipeline is written against a specific log format, so start by determining the format of your original log data.
 If you're using log collectors and aren't sure about the log format,
 there are two ways to examine your logs:
 
 1. **Read the collector official documentation**: Configure your collector to output data to console or file to inspect the log format.
 2. **Use the `greptime_identity` pipeline**: Ingest sample logs directly into GreptimeDB using the built-in `greptime_identity` pipeline.
   The `greptime_identity` pipeline treats the entire text log as a single `message` field,
-  which makes it very convenient to see the raw log content directly.
+  so you can read the raw log content back from the table.
 
-Once understand the log format you want to process,
+Once you know the log format you want to process,
 you can create a custom pipeline.
 This document uses the following Nginx access log entry as an example:
 
@@ -92,13 +92,13 @@ contains `processors` and `transform` sections that work together to structure y
 - **Data Extraction**: The `dissect` processor uses pattern matching to parse the `message` field and extract structured data including `ip_address`, `timestamp`, `http_method`, `request_line`, `status_code`, `response_size`, and `user_agent`.
 - **Timestamp Processing**: The `date` processor parses the extracted `timestamp` field using the format `%d/%b/%Y:%H:%M:%S %z` and converts it to a proper timestamp data type.
 - **Field Selection**: The `select` processor excludes the original `message` field from the final output while retaining all other fields.
-- **Table Options**: The `vrl` processor sets the table options based on the extracted fields, such as adding a suffix to the table name and setting the TTL. The `greptime_ttl = "7d"` line configures the table data to have a time-to-live of 7 days.
+- **Table Options**: The `vrl` processor sets table options on the rows it emits. Here the `.greptime_ttl = "7d"` line gives the table a 7-day time-to-live.
 
 **Transform**: Defines how to convert and index the extracted fields:
 - **Field Transformation**: Each extracted field is converted to its appropriate data type with specific indexing configurations. Fields like `http_method` retain their default data types when no explicit configuration is provided.
 - **Indexing Strategy**:
   - `ip_address` and `status_code` use inverted indexing as tags for fast filtering
-  - `request_line` and `user_agent` use full-text indexing for optimal text search capabilities
+  - `request_line` and `user_agent` use full-text indexing so they can be searched by keyword
   - `timestamp` serves as the required time index column
 
 For detailed information about pipeline configuration options,
@@ -111,7 +111,7 @@ Execute the following command to upload the pipeline configuration:
 ```shell
 curl -X "POST" \
   "http://localhost:4000/v1/pipelines/nginx_pipeline" \
-     -H 'Authorization: Basic {{authentication}}' \
+     -H 'Authorization: Basic <base64-encoded-credentials>' \
      -F "file=@pipeline.yaml"
 ```
 
@@ -133,7 +133,7 @@ The following example writes logs to the `custom_pipeline_logs` table using the 
 curl -X POST \
   "http://localhost:4000/v1/ingest?db=public&table=custom_pipeline_logs&pipeline_name=nginx_pipeline" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Basic {{authentication}}" \
+  -H "Authorization: Basic <base64-encoded-credentials>" \
   -d '[
     {
       "message": "127.0.0.1 - - [25/May/2024:20:16:37 +0000] \"GET /index.html HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\""
@@ -198,7 +198,7 @@ SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GE
 ### Full‑Text Search
 
 For the text fields `request_line` and `user_agent`, you can use `matches_term` function to search logs.
-Remember, we created the full-text index for these two columns when [creating a pipeline](#create-a-pipeline).
+Remember, we created the full-text index for these two columns when [creating a pipeline](#create-a-custom-pipeline).
 This allows for high-performance full-text searches.
 
 For example, query the logs with `request_line` containing `/index.html` or `/api/login`.

@@ -308,13 +308,24 @@ ORDER BY files DESC;
 - 支持手动 Region 迁移进行负载均衡——参见 [Region 迁移指南](/user-guide/deployments-administration/manage-data/region-migration.md)。
 - 自动 Region 故障转移保障容灾——参见 [Region 故障转移](/user-guide/deployments-administration/manage-data/region-failover.md)。
 
+### 如何实现多租户？
+
+推荐按**数据库**或**表**的维度隔离租户，而不是把所有租户塞进同一张表、仅靠一个 tag 区分。
+
+- **每个租户一个数据库**：为每个租户单独建一个[数据库](/reference/sql/create.md#create-database)。数据隔离最彻底——Schema 独立，TTL 等表默认选项按租户区分。
+- **每个租户一张表**：在同一个数据库内，给每个租户单独一张表（或用表名前缀）。适合租户共享配置、但仍希望数据层面隔离的场景。
+
+不用担心数据库或表的数量太多。GreptimeDB 的分布式架构可以水平扩展——表会切分成 Region 分布到各个 datanode 上，表和 Region 数量增长时加 datanode 即可。表的数量没有硬性上限，性能主要取决于主键设计而非表数量（参见[扩展能力](#greptimedb-的扩展能力如何)）。
+
+**访问控制**：开源版不强制数据库或表级别的租户隔离——内置[认证](/user-guide/deployments-administration/authentication/overview.md)会对每个 catalog 和 schema 授权，权限检查只区分读/写，不检查具体访问哪张表，因此一个只读用户仍然能查询任意租户的数据。开源版需要在应用层自行实现租户隔离（或通过独立部署）。企业版 / GreptimeCloud 提供 RBAC 和 ACL 来实现真正的租户级访问控制。
+
 ### 有哪些灾备方案？
 
 GreptimeDB 提供多种灾备策略：
 
-- **单机灾备**：远程 WAL + 对象存储，RPO=0，RTO 分钟级。
+- **单机灾备**：远程 WAL + 对象存储。RPO=0、RTO 分钟级是设计目标；单机实例的元数据仍在本地磁盘上，需要一并备份。
 - **Region 故障转移**：单个 Region 自动切换，停机时间极短。
-- **双活容灾**（企业版）：双节点间同步复制请求。
+- **双活容灾**（企业版）：双节点间异步复制请求。
 - **跨区域单集群**：横跨三个区域，零 RPO，区域级容错。
 - **备份与恢复**：定期数据备份，RPO 取决于备份频率。
 

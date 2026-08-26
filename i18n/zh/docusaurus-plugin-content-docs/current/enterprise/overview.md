@@ -1,15 +1,13 @@
 ---
-keywords: [企业版, 时序数据库, BYOC, 全托管云, 边云一体]
-description: GreptimeDB Enterprise 是为企业设计的时序数据库解决方案，提供了 BYOC、全托管云、边云一体等部署方式，并包含高级功能如双活互备的 DR 解决方案、LDAP 身份验证和审计日志。
+keywords: [企业版, 可观测性数据库, 时序数据库, BYOC, 全托管云, 边云一体]
+description: GreptimeDB Enterprise 概述，包括 BYOC、全托管独立云和边云一体等部署方案，以及安全、可用性和运维能力。
 ---
 
 # 企业版
 
-GreptimeDB Enterprise 是专为满足企业特定需求而设计的强大时序数据库解决方案。
-除了开源版 GreptimeDB 中提供的所有功能外，
-Enterprise 版还提供更多增强功能，帮助企业优化数据效率并显著降低成本，使企业能够使用时序数据做出更智能、更快速的决策。
+GreptimeDB Enterprise 在开源可观测性数据库的基础上，增加面向企业部署的安全、可用性、运维和负载管理能力。
 
-解决方案包括：
+可选的部署方式与解决方案包括：
 
 - **将数据库部署在你的云中 - Bring Your Own Cloud（BYOC**: 利用你自己的云基础设施来托管 GreptimeDB，提供广泛的定制和灵活性以满足你的业务需求。此服务包括对你的云资源的全面管理和强大的安全措施，以保护你的基础设施。
 - **全托管的独立云**: Greptime 团队提供完全托管的专用云环境，确保最佳性能、增强的安全性和卓越的可靠性，以满足你的企业需求。
@@ -28,7 +26,10 @@ GreptimeDB Enterprise 包括以下高级功能，
 - [基于双活互备的 DR 解决方案](./deployments-administration/disaster-recovery/overview.md)：通过高级灾难恢复解决方案确保服务不中断和数据保护。
 - [部署 GreptimeDB](./deployments-administration/overview.md)：设置认证信息及其他关键配置后，将 GreptimeDB 部署在 Kubernetes 上并监控关键指标。
 - [审计日志](./deployments-administration/monitoring/audit-logging.md)：记录数据库用户行为的日志。
+- [Query Guard](./deployments-administration/query-guard.md)：对所有用户（包括管理员）禁止 `DROP TABLE`、`DELETE`、`ALTER TABLE DROP COLUMN` 等破坏性操作，并拒绝跨 catalog 访问。
+- [Soft-Drop Table](./soft-drop.md)：防止误删表，可在保留期内从 recycle bin 中恢复表。
 - [自动分区平衡](./autopilot/region-balancer.md)：通过分区监控和迁移在 datanode 之间自动平衡负载。
+- [定时 Compaction](./deployments-administration/scheduled-compaction.md)：定期为所有物理 Region 提交 regular Compaction 请求，并提供用于人工触发和任务查询的 HTTP endpoints。
 - [Elasticsearch 查询兼容性](./elasticsearch-compatible/overview.md)：在 Kibana 中以 GreptimeDB 作为后端。
 - [Greptime 企业版管理控制台](./console-ui.md)：加强版本的管理界面，提供更多的集群管理和监控功能。
 - [读副本](./read-replicas/overview.md)：专门运行复杂的查询操作的 datanode，避免影响实时写入。

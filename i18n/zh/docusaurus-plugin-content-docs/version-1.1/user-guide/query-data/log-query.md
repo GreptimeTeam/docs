@@ -31,7 +31,7 @@ POST /v1/logs
 
 ## 使用限制
 
-- 最大结果数量：1000 条记录
+- 默认返回条数：1000 条，可在请求中通过 `limit.fetch` 覆盖。
 - 需要时间索引列。字符串搜索过滤器适用于字符串/文本表达式，类型化比较过滤器可用于兼容的数字、布尔值和字符串表达式。
 
 ## 使用示例
@@ -40,7 +40,7 @@ POST /v1/logs
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/logs" \
-    -H "Authorization: Basic {{authentication}}" \
+    -H "Authorization: Basic <base64-encoded-credentials>" \
     -H "Content-Type: application/json" \
     -d $'
     {

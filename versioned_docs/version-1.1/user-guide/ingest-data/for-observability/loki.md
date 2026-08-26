@@ -134,11 +134,7 @@ WITH(
 
 ## Using Pipeline with Loki Push API
 
-:::warning Experimental Feature
-This experimental feature may contain unexpected behavior and have its functionality change in the future.
-:::
-
-Starting from version `v0.15`, GreptimeDB supports using pipelines to process Loki push requests.
+GreptimeDB supports using pipelines to process Loki push requests.
 You can simply set the HTTP header `x-greptime-pipeline-name` to the target pipeline name to enable pipeline processing.
 
 **Note:** When request data goes through the pipeline engine, GreptimeDB adds prefixes to the label and metadata column names:
@@ -222,7 +218,7 @@ In the `greptime_loki`, the `x-greptime-pipeline-name` header is added to indica
 
 1. First, start your GreptimeDB instance. See [here](/getting-started/installation/overview.md) for quick startup.
 
-2. [Upload](/user-guide/logs/manage-pipelines.md#create-a-pipeline) the pipeline configuration to the database using `curl`:
+2. [Upload](/user-guide/logs/manage-pipelines.md#upload-a-pipeline) the pipeline configuration to the database using `curl`:
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/pipelines/pp" -F "file=@pipeline.yaml"

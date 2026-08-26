@@ -228,6 +228,8 @@ SELECT * FROM monitor ORDER BY ts ASC;
 SELECT * FROM monitor ORDER BY ts DESC;
 ```
 
+<AnchorAlias id="case-expression" />
+
 ## `CASE` 表达式
 
 你可以使用 `CASE` 表达式在查询中执行条件逻辑。

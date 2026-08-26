@@ -155,9 +155,9 @@ For example, you can filter data based on the `device` condition from logical ta
 ```sql
 SELECT *
 FROM greptime_physical_table
-WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
-  AND device = "device1"
-  AND job = "job1";
+WHERE greptime_timestamp > '2024-08-07 03:27:26.964000'
+  AND device = 'device1'
+  AND job = 'job1';
 ```
 
 ### GreptimeDB cluster with metric engine
@@ -218,8 +218,8 @@ It's probably fine for data ingestion. However, this set-up might slow down the 
 
 If you can foresee a large data volume and incremental queries upon a small group of metrics each time, then it might be useful to split the storage during the ingestion to reduce the query overhead later. This fine-grade level of control can be achieved using ingest options for each metric within a remote request.
 
-Starting from `v0.15`, GreptimeDB is adding support for special labels.
-There labels (along with there values) will turn into ingest options during the parsing phase, allowing individual metric within a request to be more precisely controlled.
+GreptimeDB supports special labels.
+These labels (along with their values) turn into ingest options during the parsing phase, allowing each individual metric within a request to be more precisely controlled.
 The labels are not mutually exclusive, so they can be combined together to produce more versatile controlling.
 
 Here is a representative diagram of special labels for a metric. Note this is not the actual data model of a metric.
@@ -269,11 +269,7 @@ So setting different physical table for the same metric within the same database
 
 ## Using pipeline in remote write
 
-:::warning Experimental Feature
-This experimental feature may contain unexpected behavior, have its functionality change in the future.
-:::
-
-Starting from `v0.15`, GreptimeDB supports using pipeline to process Prometheus remote write requests.
+GreptimeDB supports using a pipeline to process Prometheus remote write requests.
 You can simply set the HTTP header `x-greptime-pipeline-name` to the target pipeline name to enable pipeline processing.
 
 Here is a very simple pipeline configuration, using `vrl` processor to add a `source` label to each metric:

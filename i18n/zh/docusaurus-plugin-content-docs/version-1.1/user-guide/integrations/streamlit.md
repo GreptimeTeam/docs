@@ -1,12 +1,12 @@
 ---
 keywords: [Streamlit, 数据应用, SQL 连接, MySQL 协议, Python]
-description: 使用 GreptimeCloud 和 Streamlit 构建数据应用的说明，包括创建 SQL 连接和运行 SQL 查询。
+description: 使用 GreptimeDB 和 Streamlit 构建数据应用的说明，包括创建 SQL 连接和运行 SQL 查询。
 ---
 
 # Streamlit
 
-[Streamlit](https://streamlit.io/) 是一种更快的构建和分享数据应用的方式。
-可以基于 GreptimeDB 构建基于 Streamlit 的数据应用。
+[Streamlit](https://streamlit.io/) 是一个用于构建数据应用的开源 Python 框架，
+可以用 GreptimeDB 中的数据驱动 Streamlit 应用。
 
 你需要创建一个 SQL 连接在应用程序中使用 GreptimeDB 数据。
 由于 GreptimeDB 的 [MySQL 协议兼容性](/user-guide/protocols/mysql.md)，你可以在连接时将 GreptimeDB 视为 MySQL。

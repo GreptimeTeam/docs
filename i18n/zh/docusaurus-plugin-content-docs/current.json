@@ -11,6 +11,10 @@
     "message": "核心函数",
     "description": "The ZH label for Core Functions"
   },
+  "sidebar.docs.doc.Observability 2.0 and wide events": {
+    "message": "Observability 2.0 与宽事件",
+    "description": "The ZH label for Observability 2.0 and wide events"
+  },
   "sidebar.docs.doc.Migrate from Loki": {
     "message": "从 Loki 迁移",
     "description": "The ZH label for Migrate from Loki"
@@ -230,6 +234,10 @@
   "sidebar.docs.category.Monitoring": {
     "message": "监控",
     "description": "The label for category Monitoring in sidebar docs"
+  },
+  "sidebar.docs.category.Events": {
+    "message": "事件",
+    "description": "The label for category Events in sidebar docs"
   },
   "sidebar.docs.category.Maintenance": {
     "message": "维护",

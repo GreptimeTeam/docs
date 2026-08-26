@@ -18,7 +18,7 @@ description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表�
 - **描述**: 提供一个健康检查端点以验证服务器是否正在运行。
 - **用法**: 访问此端点以检查服务器的健康状态。
 
-请参考[检查 GreptimeDB 健康状态文档](/enterprise/deployments-administration/monitoring/check-db-status.md#查看-greptimedb-是否正常运行)获取示例。
+请参考[检查 GreptimeDB 健康状态文档](/user-guide/deployments-administration/monitoring/check-db-status.md#check-if-greptimedb-is-running-normally)获取示例。
 
 ### 状态
 
@@ -27,7 +27,7 @@ description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表�
 - **描述**: 检索服务器的当前状态。
 - **用法**: 使用此端点获取服务器状态信息。
 
-请参考[检查 GreptimeDB 状态文档](/enterprise/deployments-administration/monitoring/check-db-status.md#查看-greptimedb-的部署状态)获取示例。
+请参考[检查 GreptimeDB 状态文档](/user-guide/deployments-administration/monitoring/check-db-status.md#check-greptimedb-runtime-status)获取示例。
 
 ### 指标
 
@@ -141,14 +141,41 @@ curl --data "false" http://127.0.0.1:4000/debug/enable_trace
 ### 性能分析工具
 
 - **基础路径**: `/debug/prof/`
-- **端点**:
-  - `cpu`
-  - `mem`
-- **方法**: `POST` 用于分析数据库节点。
-- **描述**: 运行时 CPU 或内存使用情况分析。
-- **用法**:
-  - 有关 CPU 分析的详细指南，请参阅 [CPU 分析](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-cpu.md)。
-  - 有关内存分析的详细指南，请参阅 [内存分析](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-memory.md)。
+- **描述**: 数据库节点运行时 CPU 或内存使用情况分析。
+
+CPU 性能分析：
+
+| 路径 | 方法 | 描述 |
+| --- | --- | --- |
+| `/debug/prof/cpu` | `POST` | 采集 CPU profile。查询参数包括 `seconds`、`frequency` 和 `output`。支持的输出格式为 `proto`、`text` 和 `flamegraph`。 |
+
+示例：
+
+```bash
+curl -X POST -s 'http://127.0.0.1:4000/debug/prof/cpu?seconds=10&output=flamegraph' > greptime-cpu.svg
+```
+
+内存性能分析：
+
+| 路径 | 方法 | 描述 |
+| --- | --- | --- |
+| `/debug/prof/mem` | `POST` | 导出内存 profile 数据。查询参数 `output` 支持 `text`、`proto` 和 `flamegraph`。 |
+| `/debug/prof/mem/status` | `GET` | 检查堆分析是否处于启用状态。 |
+| `/debug/prof/mem/activate` | `POST` | 启用堆分析。 |
+| `/debug/prof/mem/deactivate` | `POST` | 停用堆分析。 |
+| `/debug/prof/mem/gdump` | `GET` | 检查 jemalloc gdump 是否处于启用状态。 |
+| `/debug/prof/mem/gdump` | `POST` | 启用或停用 jemalloc gdump。使用表单字段 `activate=true` 或 `activate=false`。 |
+| `/debug/prof/mem/symbol` | `POST` | 上传 jemalloc heap dump 文件并返回符号化后的火焰图。 |
+
+示例：
+
+```bash
+curl -X POST -s 'http://127.0.0.1:4000/debug/prof/mem?output=flamegraph' > greptime-mem.svg
+curl -X GET 'http://127.0.0.1:4000/debug/prof/mem/status'
+curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
+```
+
+运维指导请参阅[采集性能分析数据](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md#采集性能分析数据)。高级用法请参阅 [CPU 分析](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-cpu.md) 和 [内存分析](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-memory.md)。
 
 ## 查询端点
 

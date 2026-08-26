@@ -192,7 +192,7 @@ Enterprise Dashboard require users to log in with an account.
 The following screenshot shows the Enterprise Dashboard login page:
 
 <p align="center">
-    <img src="/ent_user/login.jpeg" alt="login page"/>
+    <img src="/ent_user/login.png" alt="login page"/>
 </p>
 
 You can log in with the automatically created admin account or with an account

@@ -9,12 +9,10 @@ description: 介绍 GreptimeDB 的导出和导入工具，用于数据库备份�
 
 有关详细的命令行选项和高级配置，请参阅 [数据导出和导入](/reference/command-lines/utilities/data.md)。
 
-## 概述
-
 ## 导出操作
 
 ### 完整数据库备份
-导出所有数据库备份。此操作将每个数据库导出到单个目录中，包括所有表及其数据。
+将每个数据库分别导出到各自的目录中，包括所有表及其数据。
 ```bash
 # 导出所有数据库备份
 greptime cli data export \
@@ -86,8 +84,10 @@ greptime cli data export \
 
 ## 导入操作
 
-### 完整数据库备份
-导入所有数据库备份。
+<AnchorAlias id="完整数据库备份-1" />
+
+### 完整数据库导入
+从 `greptime cli data export` 生成的备份目录导入所有数据库。
 ```bash
 # 导入所有数据库
 greptime cli data import \
@@ -114,7 +114,9 @@ greptime cli data import \
     --target schema
 ```
 
-### 指定数据库备份
+<AnchorAlias id="指定数据库备份-1" />
+
+### 指定数据库导入
 ```bash
 # 导入指定数据库
 greptime cli data import \

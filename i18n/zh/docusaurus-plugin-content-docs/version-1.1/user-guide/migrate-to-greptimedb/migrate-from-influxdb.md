@@ -7,6 +7,10 @@ import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md'
 
 # 从 InfluxDB 迁移
 
+如果你使用 AI coding agent 迁移查询，可以为其提供
+[`influxql-to-greptimedb-sql` Skill](/faq-and-others/vibecoding.md#greptimedb-skills)，
+将 InfluxQL 转换为 GreptimeDB SQL，并识别其中的语义差异。
+
 <DocTemplate>
 
 <div id="write-data-http-api">
@@ -15,8 +19,8 @@ import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md'
 <TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
 
 ```shell
-curl -X POST 'http://{{host}}:4000/v1/influxdb/api/v2/write?db={{db-name}}' \
-  -H 'authorization: token {{greptime_user:greptimedb_password}}' \
+curl -X POST 'http://<host>:4000/v1/influxdb/api/v2/write?bucket=<db-name>' \
+  -H 'authorization: token <greptime_user:greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
@@ -25,7 +29,7 @@ curl -X POST 'http://{{host}}:4000/v1/influxdb/api/v2/write?db={{db-name}}' \
 <TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
 
 ```shell
-curl 'http://{{host}}:4000/v1/influxdb/write?db={{db-name}}&u={{greptime_user}}&p={{greptimedb_password}}' \
+curl 'http://<host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
@@ -67,6 +71,14 @@ const point1 = new Point('temperature')
   .floatField('value', 24.0)
 writeApi.writePoint(point1)
 
+// 写入 API 会把数据点攒成批次，在 flush 之前不会真正发送。
+// close() 会 flush 剩余数据并取消待重试的请求；不调用它可能丢掉已缓冲的数据点。
+try {
+  await writeApi.close()
+} catch (e) {
+  console.error('写入失败', e)
+  process.exitCode = 1
+}
 ```
 
 </TabItem>
@@ -183,9 +195,12 @@ $writeApi->write($point);
 
 ```shell
 for file in data.*; do
-  curl -i --retry 3 \
+  if ! curl -sS --fail-with-body --retry 3 \
     -X POST "http://${GREPTIME_HOST}:4000/v1/influxdb/write?db=${GREPTIME_DB}&u=${GREPTIME_USERNAME}&p=${GREPTIME_PASSWORD}" \
-    --data-binary @${file}
+    --data-binary @"${file}"; then
+    echo "import failed on ${file}" >&2
+    exit 1
+  fi
   sleep 1
 done
 ```

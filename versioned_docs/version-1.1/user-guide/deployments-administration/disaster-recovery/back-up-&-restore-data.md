@@ -9,12 +9,10 @@ This guide describes how to use GreptimeDB's Export and Import tools for databas
 
 For detailed command-line options and advanced configurations, please refer to [Data Export & Import](/reference/command-lines/utilities/data.md).
 
-## Overview
-
 ## Export Operations
 
 ### Full Databases Backup
-Export all databases backup. This operation exports each database into a single directory, including all tables and their data. 
+Export every database into its own directory, including all tables and their data.
 ```bash
 # Export all databases backup
 greptime cli data export \
@@ -86,8 +84,10 @@ greptime cli data export \
 
 ## Import Operations
 
-### Full Databases Backup
-Import all databases backup.
+<AnchorAlias id="full-databases-backup-1" />
+
+### Full Databases Import
+Import every database from a backup directory produced by `greptime cli data export`.
 ```bash
 # Import all databases
 greptime cli data import \
@@ -104,7 +104,9 @@ greptime cli data import \
     --auth-basic <username>:<password>
 ```
 
-### Schema-Only Operations
+<AnchorAlias id="schema-only-operations-1" />
+
+### Schema-Only Import
 Import only schemas without data. This operation imports `CREATE TABLE` statements from SQL files, allowing you to restore table structures without the actual data.
 ```bash
 # Import only schemas
@@ -114,9 +116,11 @@ greptime cli data import \
     --target schema
 ```
 
-### Specific Database Backup
+<AnchorAlias id="specific-database-backup-1" />
+
+### Specific Database Import
 ```bash
-# The same applies to import tool
+# Import a specific database
 greptime cli data import \
     --addr localhost:4000 \
     --input-dir /tmp/backup/greptimedb \

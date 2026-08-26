@@ -1,6 +1,6 @@
 ---
 keywords: [MindsDB, machine learning, data source, configuration, SQL]
-description: Guide on configuring GreptimeCloud as a data source in MindsDB for machine learning capabilities.
+description: Guide on configuring GreptimeDB as a data source in MindsDB for machine learning capabilities.
 ---
 
 # MindsDB
@@ -9,8 +9,15 @@ description: Guide on configuring GreptimeCloud as a data source in MindsDB for 
 enables developers to easily incorporate advanced machine learning capabilities
 with existing databases.
 
-Your GreptimeDB instance work out of box as using GreptimeDB extension with
-MindsDB. You can configure GreptimeDB as a data source in MindsDB using MySQL protocol:
+MindsDB reaches GreptimeDB through the MySQL protocol using its GreptimeDB handler.
+
+The handler ships as a [community handler](https://github.com/mindsdb/community-handlers/tree/main/community_handlers/greptimedb_handler), and community handlers are disabled by default. Enable them before creating the data source, then restart MindsDB:
+
+```bash
+export MINDSDB_COMMUNITY_HANDLERS=true
+```
+
+Once enabled, configure GreptimeDB as a data source:
 
 ```sql
 CREATE DATABASE greptime_datasource

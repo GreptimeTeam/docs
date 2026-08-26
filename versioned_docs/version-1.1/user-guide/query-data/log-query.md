@@ -31,7 +31,7 @@ This endpoint has the same response format as the SQL query endpoint. Please ref
 
 ## Limitations
 
-- Maximum result limit: 1000 entries
+- Default result limit: 1000 entries. Set `limit.fetch` in the request to override it.
 - Requires a time index column. String search filters apply to string/text expressions, while typed comparison filters can be applied to compatible numeric, boolean, and string expressions.
 
 ## Example
@@ -40,7 +40,7 @@ The following example demonstrates how to query log data using the log query end
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/logs" \
-    -H "Authorization: Basic {{authentication}}" \
+    -H "Authorization: Basic <base64-encoded-credentials>" \
     -H "Content-Type: application/json" \
     -d $'
     {

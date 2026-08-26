@@ -39,6 +39,8 @@ GreptimeDB 中的一个 region 具有相对固定的吞吐量，
 
 有关分区和 region 之间关系的更多信息，请参阅贡献者指南中的[表分片](/contributor-guide/frontend/table-sharding.md)部分。
 
+<AnchorAlias id="partition" />
+
 ## 分区
 
 在 GreptimeDB 中，表可以按列值范围进行水平分区。

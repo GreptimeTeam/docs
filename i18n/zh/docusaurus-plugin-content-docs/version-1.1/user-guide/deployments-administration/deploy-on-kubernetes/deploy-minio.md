@@ -27,10 +27,6 @@ image:
   repository: greptime/minio
   tag: 2025.4.22-debian-12-r1
 
-auth:
-  rootUser: greptimedbadmin
-  rootPassword: "greptimedbadmin"  
-
 resources:
   requests:
     cpu: 500m
@@ -52,6 +48,28 @@ persistence:
   storageClass: null
   size: 100Gi
 ```
+
+这里没有写入 root 凭证。Helm 读取 values 文件时只当作普通 YAML，不会展开 shell 变量，`${MINIO_ROOT_USER}` 会被当作字面量写进配置。
+
+凭证改用 Secret 保存，再让 chart 引用。密码不要走 `--set-string`：Helm 会对该值按逗号分段，密码中含逗号就会解析失败，在 shell 层加引号也无济于事。
+
+```bash
+kubectl create namespace minio
+kubectl -n minio create secret generic minio-root-credentials \
+  --from-literal=root-user="$MINIO_ROOT_USER" \
+  --from-literal=root-password="$MINIO_ROOT_PASSWORD"
+```
+
+然后在 `minio-values.yaml` 中引用：
+
+```yaml
+auth:
+  existingSecret: minio-root-credentials
+  rootUserSecretKey: root-user
+  rootPasswordSecretKey: root-password
+```
+
+root 凭证用于管理 MinIO 和登录控制台，GreptimeDB 并不使用。GreptimeDB 连接时用的是[生成 Access Key](#生成-access-key) 一节中单独创建的 Access Key，可以为其单独设置权限策略。
 
 ## 安装 MinIO 集群
 
@@ -87,7 +105,7 @@ Did you know there are enterprise versions of the Bitnami catalog? For enhanced 
 
 ** Please be patient while the chart is being deployed **
 
-MinIO&reg; can be accessed via port  on the following DNS name from within your cluster:
+MinIO&reg; can be accessed via port 9000 on the following DNS name from within your cluster:
 
 minio.minio.svc.cluster.local
 
@@ -151,9 +169,7 @@ kubectl port-forward -n minio svc/minio 9001:9001
 
 2. 打开浏览器访问 http://localhost:9001/login
 
-3. 使用配置文件中设置的账号密码登录：
-- username: `greptimedbadmin`
-- password: `greptimedbadmin`
+3. 使用 `minio-root-credentials` Secret 中保存的 root 凭证登录。
 
 ![MinIO login](/minio-login-page.png)
 
@@ -209,7 +225,7 @@ objectStorage:
 # 监控
 
 - 安装 Prometheus Operator (例如: [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack))。
-- 安装 podmonitor CRD。
+- 安装 ServiceMonitor CRD。
 
 要监控 MinIO 集群，你需要提前部署好监控系统（如 Prometheus 和 Grafana）。然后在 `minio-values.yaml` 中增加以下内容，并重新执行更新 MinIO 配置：
 

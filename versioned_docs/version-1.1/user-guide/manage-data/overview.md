@@ -13,7 +13,6 @@ Updates can be efficiently performed by inserting new data.
 If rows of data have the same tags and time index,
 the old data will be replaced with the new data.
 This means that you can only update columns with a field type.
-To update data, simply insert new data with the same tag and time index as the existing data.
 
 For more information about column types, please refer to the [Data Model](../concepts/data-model.md).
 
@@ -24,7 +23,7 @@ Excessive updates may negatively impact query performance, even though the perfo
 #### Update all fields in a table
 
 By default, when updating data, all fields will be overwritten with the new values,
-except for [InfluxDB line protocol](/user-guide/protocols/influxdb-line-protocol.md), which only [updates the specified fields](#overwrite-specific-fields-in-a-table).
+except for [InfluxDB line protocol](/user-guide/protocols/influxdb-line-protocol.md), which only [updates the specified fields](#update-specific-fields-in-a-table).
 The following example using SQL demonstrates the behavior of overwriting all fields in a table.
 
 Assuming you have a table named `monitor` with the following schema.

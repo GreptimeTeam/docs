@@ -82,7 +82,7 @@ service:
 endpoint：
 
 ```shell
-export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="http://localhost:4318/v1/otlp/v1/traces"
+export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="http://localhost:4318/v1/traces"
 ```
 
 此处为了方便，我们可使用工具
@@ -120,6 +120,8 @@ GreptimeDB 的 OTEL 端点支持 Basic 认证。详情请参考 [鉴权](/user-g
 
 通过此接口创建的表，默认为[Append-only 模
 式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表).
+
+<AnchorAlias id="query" />
 
 ## 查询
 

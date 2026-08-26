@@ -497,6 +497,7 @@ In this example, we explicitly defined the `ts` column as the Time Index column.
 ```sql
 CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
+[ EVAL INTERVAL <interval> ]
 [ EXPIRE AFTER <expr> ]
 [ COMMENT '<string>' ]
 [ WITH (<flow-option> = <value> [, ...]) ]
@@ -537,7 +538,7 @@ CREATE [OR REPLACE] VIEW [ IF NOT EXISTS ] <view-name>
 AS select_statement
 ```
 
-For the statement to create or update a view, please read the [view user guide](/user-guide/query-data/view.md#view).
+For the statement to create or update a view, please read the [view user guide](/user-guide/query-data/view.md).
 
 ## CREATE TRIGGER
 

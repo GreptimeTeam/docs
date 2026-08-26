@@ -71,4 +71,4 @@ FROM system_metrics
 GROUP BY dt
 ```
 
-Please refer to [date_trunc](./functions/overview.md#date_trunc) for more details.
+Please refer to [date_trunc](./functions/df-functions.md#date_trunc) for more details.

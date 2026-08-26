@@ -116,9 +116,8 @@ Therefore, it is important to carefully choose your TIME INDEX column before cre
 
 ### `CREATE TABLE` syntax
 
-- Timestamp column: GreptimeDB is a time-series database system, a timestamp column must
-  be explicitly specified by `TIME INDEX` keyword when creating tables. The data type of
-  the timestamp column must be `TIMESTAMP`type.
+- Time index: Every GreptimeDB table requires exactly one time index. Declare it with the
+  `TIME INDEX` keyword. The column must use a `TIMESTAMP` data type.
 - Primary key: The columns in primary key are similar to tags in other other time-series systems like [InfluxDB][1]. The primary key columns with the time index column are used to uniquely define a series of data, which is similar
   to time series like [InfluxDB][2].
 - Table options: when creating a table, you can specify a set of table options, click [here](/reference/sql/create.md#table-options) for more details.
@@ -226,7 +225,7 @@ SHOW INDEXES FROM monitor;
 +---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
 ```
 
-For more info about `SHOW` statement, please read the [SHOW reference](/reference/sql/show.md#show).
+For more info about `SHOW` statement, please read the [SHOW reference](/reference/sql/show.md).
 
 ## List Existing Tables
 
@@ -337,7 +336,7 @@ using the following code to create a table through POST method:
 
 ```shell
 curl -X POST \
-  -H 'authorization: Basic {{authorization if exists}}' \
+  -H 'authorization: Basic <base64-encoded-credentials>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'sql=CREATE TABLE monitor (host STRING, ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP(), cpu FLOAT64 DEFAULT 0, memory FLOAT64, TIME INDEX (ts), PRIMARY KEY(host))' \
 http://localhost:4000/v1/sql?db=public
@@ -356,4 +355,3 @@ If you set the default value of a timestamp column to a string without a time zo
 the client's time zone information will be automatically added.
 
 For more information about the effect of the client time zone, please refer to the [time zone](/user-guide/ingest-data/for-iot/sql.md#time-zone) section in the write data document.
-

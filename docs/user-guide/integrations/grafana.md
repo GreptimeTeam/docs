@@ -14,10 +14,33 @@ The [GreptimeDB data source plugin](https://github.com/GreptimeTeam/greptimedb-g
 
 ### Installation
 
-The recommended install path is the **unsigned** plugin zip from the [latest release](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/).
-Allow unsigned loading for this plugin id first.
+The plugin is not published in the Grafana plugin catalog, so install the unsigned archive and
+allow it explicitly in `grafana.ini`:
 
-In `grafana.ini`:
+```ini
+[plugins]
+allow_loading_unsigned_plugins = info8fcc-greptimedb-datasource
+```
+
+`GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS` is the equivalent environment variable. Grafana Cloud
+does not accept unsigned plugins, so use a self-hosted Grafana. If you need a signed build bound to
+your own Grafana `root_url`, [contact us](https://greptime.com/contactus).
+
+Make sure Grafana is installed and running before installing the plugin.
+
+You can choose one of the following installation methods:
+- Download `info8fcc-greptimedb-datasource-unsigned.zip` from the [release
+page](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/) and unzip it
+to your [grafana plugin
+directory](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#plugins).
+- Use grafana cli to download and install:
+  ```shell
+  grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource-unsigned.zip plugins install info8fcc
+  ```
+- Use our [prebuilt Grafana docker
+  image](https://hub.docker.com/r/greptime/grafana-greptimedb), which ships the
+  plugin by default: `docker run -p 3000:3000
+  greptime/grafana-greptimedb:latest`
 
 ```
 allow_loading_unsigned_plugins = info8fcc-greptimedb-datasource
@@ -171,30 +194,19 @@ term/phrase matching.
 
 Select the `Traces` query type for distributed tracing data.
 
-**Two modes:**
-
-| Mode | Purpose | Panel |
-|------|---------|-------|
-| **Trace Search** | List recent traces | Table |
-| **Trace ID** | View a single trace's span waterfall | Traces (Gantt chart + span tree) |
-
-To view a trace waterfall, either:
-- Switch mode to **Trace ID** and enter a trace ID
-- Click a `trace_id` cell in the Trace Search table → "View trace"
-
-| Setting | Description | Default |
-|:--------|:------------|---------|
-| **Trace Mode** | `Trace Search` or `Trace ID` | |
-| **Trace Id Column** | Trace ID field | `trace_id` |
-| **Span Id Column** | Span ID field | `span_id` |
-| **Parent Span ID Column** | Parent Span ID field | `parent_span_id` |
-| **Service Name Column** | Service name field | `service_name` |
-| **Operation Name Column** | Span/operation name field | `span_name` |
-| **Start Time Column** | Span start time field | `timestamp` |
-| **Duration Time Column** | Duration field | `duration_nano` |
-| **Duration Unit** | Unit of duration column | `nanoseconds` |
-| **Tags Column** | Span attributes (prefix like `span_attributes`) | |
-| **Service Tags Column** | Resource attributes (prefix like `resource_attributes`) | |
+| Main Setting          | Description                                                                                             |
+| :-------------------- | :------------------------------------------------------------------------------------------------------ |
+| **Trace Model** | Select `Trace Search` to query a list of traces.                                                        |
+| **Trace Id Column** | Default value: `trace_id`                                                                               |
+| **Span Id Column** | Default value: `span_id`                                                                                |
+| **Parent Span ID Column** | Default value: `parent_span_id`                                                                       |
+| **Service Name Column** | Default value: `service_name`                                                                         |
+| **Operation Name Column** | Default value: `span_name`                                                                            |
+| **Start Time Column** | Default value: `timestamp`                                                                              |
+| **Duration Time Column** | Default value: `duration_nano`                                                                          |
+| **Duration Unit** | Default value: `nanoseconds`                                                                           |
+| **Tags Column** | Multiple selections allowed. Corresponds to columns starting with `span_attributes` (e.g., `span_attributes.http.method`). |
+| **Service Tags Column** | Multiple selections allowed. Corresponds to columns starting with `resource_attributes` (e.g., `resource_attributes.host.name`). |
 
 ![Traces](/grafana/traceconfig.png)
 

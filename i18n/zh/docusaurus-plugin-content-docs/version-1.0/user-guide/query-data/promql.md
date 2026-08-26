@@ -7,6 +7,8 @@ description: 介绍 GreptimeDB 对 Prometheus 查询语言（PromQL）的支持�
 
 GreptimeDB 可以作为 Grafana 中 Prometheus 的替代品，因为 GreptimeDB 支持 PromQL（Prometheus Query Language）。GreptimeDB 在 Rust 中重新实现了 PromQL，并通过接口将能力开放，包括 Prometheus 的 HTTP API、GreptimeDB 的 HTTP API 和 SQL 接口。
 
+<AnchorAlias id="prometheus-http-api" />
+
 ## Prometheus 的 HTTP API
 
 <!-- Maybe add a section to introduce the simulated interfaces, when there is -->

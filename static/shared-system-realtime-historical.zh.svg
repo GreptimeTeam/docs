@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">实时监控与历史分析共用一套系统</title>
+  <desc id="desc">在使用对象存储的分布式部署中，实时监控与历史分析共用同一个引擎、存储系统和查询层。内存与节点本地缓存加速近期数据和高频访问数据，对象存储保存持久数据并支持长时间范围查询。容量和查询并发需要按 workload 规划，Datanode 级 workload 隔离属于 Enterprise 能力。</desc>
+  <defs>
+    <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/></marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#7C3AED"/></marker>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#0F766E"/></marker>
+    <style>
+      .kicker { font: 650 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: .08em; text-transform: uppercase; fill: #64748B; }
+      .title { font: 650 28px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .subtitle { font: 400 19px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748B; }
+      .small { font: 500 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .purple { font: 600 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #6D28D9; }
+      .teal { font: 600 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0F766E; }
+      .blue { font: 600 17px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1D4ED8; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#FFFFFF"/>
+
+  <!-- Workload heading and cards -->
+  <text x="100" y="82" class="kicker">不同的工作负载特征</text>
+  <line x1="100" y1="105" x2="1500" y2="105" stroke="#E2E8F0" stroke-width="2"/>
+
+  <rect x="160" y="150" width="490" height="160" rx="16" fill="#F5F3FF" stroke="#A78BFA" stroke-width="2.5"/>
+  <circle cx="214" cy="202" r="24" fill="#EDE9FE" stroke="#C4B5FD" stroke-width="1.5"/>
+  <path d="M214 187 L214 202 L225 209" fill="none" stroke="#7C3AED" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="255" y="210" class="title">实时监控</text>
+  <text x="255" y="242" class="subtitle">近期数据 · 低延迟查询</text>
+  <rect x="255" y="264" width="132" height="29" rx="14" fill="#EDE9FE"/>
+  <text x="321" y="284" text-anchor="middle" class="purple">热路径</text>
+
+  <rect x="950" y="150" width="490" height="160" rx="16" fill="#ECFEFF" stroke="#5EEAD4" stroke-width="2.5"/>
+  <circle cx="1004" cy="202" r="24" fill="#CCFBF1" stroke="#99F6E4" stroke-width="1.5"/>
+  <path d="M992 207 C1000 193, 1008 214, 1018 199" fill="none" stroke="#0F766E" stroke-width="3" stroke-linecap="round"/>
+  <text x="1045" y="210" class="title">历史分析</text>
+  <text x="1045" y="242" class="subtitle">长时间范围扫描 · 更多数据</text>
+  <rect x="1045" y="264" width="168" height="29" rx="14" fill="#CCFBF1"/>
+  <text x="1129" y="284" text-anchor="middle" class="teal">长范围查询路径</text>
+
+  <!-- Independent settings, deliberately outside the data path -->
+  <rect x="520" y="350" width="560" height="68" rx="14" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="800" y="378" text-anchor="middle" class="small">工作负载规划与控制</text>
+  <text x="800" y="403" text-anchor="middle" class="small">容量 · 查询并发 · Datanode 级隔离（Enterprise）</text>
+  <path d="M520 370 C430 350, 370 325, 330 310" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 5"/>
+  <path d="M1080 370 C1170 350, 1230 325, 1270 310" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 5"/>
+
+  <!-- Converging lines: common query foundation -->
+  <path d="M405 310 C485 405, 590 432, 690 465" fill="none" stroke="#A78BFA" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <path d="M1195 310 C1115 405, 1010 432, 910 465" fill="none" stroke="#2DD4BF" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <text x="800" y="448" text-anchor="middle" class="kicker">共享基础</text>
+
+  <rect x="540" y="470" width="520" height="125" rx="18" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="3"/>
+  <text x="800" y="520" text-anchor="middle" class="title">GreptimeDB</text>
+  <text x="800" y="552" text-anchor="middle" class="subtitle">一套系统 · 分布式部署使用对象存储</text>
+  <text x="800" y="578" text-anchor="middle" class="purple">同一引擎 · 存储系统 · 查询层</text>
+
+  <!-- Storage hierarchy; a single shared path -->
+  <path d="M800 595 L800 650" fill="none" stroke="#94A3B8" stroke-width="3" marker-end="url(#arrow-slate)"/>
+  <rect x="560" y="655" width="480" height="95" rx="14" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2.5"/>
+  <text x="800" y="694" text-anchor="middle" class="title">内存与节点本地缓存</text>
+  <text x="800" y="722" text-anchor="middle" class="blue">加速近期数据与高频访问数据</text>
+
+  <path d="M800 750 L800 793" fill="none" stroke="#94A3B8" stroke-width="3" marker-end="url(#arrow-slate)"/>
+  <rect x="560" y="798" width="480" height="76" rx="18" fill="#ECFDF5" stroke="#2DD4BF" stroke-width="3"/>
+  <text x="800" y="831" text-anchor="middle" class="title">持久化对象存储</text>
+  <text x="800" y="858" text-anchor="middle" class="teal">持久数据 · 支持长时间范围查询</text>
+</svg>

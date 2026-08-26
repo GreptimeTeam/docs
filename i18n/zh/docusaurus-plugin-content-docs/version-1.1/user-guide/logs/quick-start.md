@@ -18,6 +18,8 @@ GreptimeDB 提供了强大的基于 pipeline 的日志写入系统。
 - 灵活支持变化的日志结构
 - 需要最少的配置即可开始使用
 
+<AnchorAlias id="direct-http-ingestion" />
+
 ## 直接通过 HTTP 写入日志
 
 GreptimeDB 日志写入最简单的方法是通过使用 `greptime_identity` pipeline 发送 HTTP 请求。
@@ -28,7 +30,7 @@ GreptimeDB 日志写入最简单的方法是通过使用 `greptime_identity` pip
 curl -X POST \
   "http://localhost:4000/v1/ingest?db=public&table=demo_logs&pipeline_name=greptime_identity" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Basic {{authentication}}" \
+  -H "Authorization: Basic <base64-encoded-credentials>" \
   -d '[
     {
       "timestamp": "2024-01-15T10:30:00Z",

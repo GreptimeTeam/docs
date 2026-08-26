@@ -12,13 +12,13 @@ GreptimeDB 能够将日志自动解析和转换为多列的结构化数据，
 
 ## 识别你的原始日志格式
 
-在创建自定义 pipeline 之前，了解原始日志数据的格式至关重要。
+自定义 pipeline 是针对具体日志格式编写的，因此先确认原始日志数据的格式。
 如果你正在使用日志收集器且不确定日志格式，
 有两种方法可以检查你的日志：
 
 1. **阅读收集器的官方文档**：配置你的收集器将数据输出到控制台或文件以检查日志格式。
 2. **使用 `greptime_identity` pipeline**：使用内置的 `greptime_identity` pipeline 将示例日志直接写入到 GreptimeDB 中。
-  `greptime_identity` pipeline 将整个文本日志视为单个 `message` 字段，方便你直接看到原始日志的内容。
+  `greptime_identity` pipeline 将整个文本日志视为单个 `message` 字段，可以从表里读回原始日志内容。
 
 一旦了解了要处理的日志格式，
 你就可以创建自定义 pipeline。
@@ -27,6 +27,8 @@ GreptimeDB 能够将日志自动解析和转换为多列的结构化数据，
 ```txt
 127.0.0.1 - - [25/May/2024:20:16:37 +0000] "GET /index.html HTTP/1.1" 200 612 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 ```
+
+<AnchorAlias id="create-a-pipeline" />
 
 ## 创建自定义 Pipeline
 
@@ -91,17 +93,19 @@ transform:
 - **数据提取**：`dissect` 处理器使用 pattern 匹配来解析 `message` 字段并提取结构化数据，包括 `ip_address`、`timestamp`、`http_method`、`request_line`、`status_code`、`response_size` 和 `user_agent`。
 - **时间戳处理**：`date` 处理器使用格式 `%d/%b/%Y:%H:%M:%S %z` 解析提取的 `timestamp` 字段并将其转换为适当的时间戳数据类型。
 - **字段选择**：`select` 处理器从最终输出中排除原始 `message` 字段，同时保留所有其他字段。
-- **表选项**：`vrl` 处理器根据提取的字段设置表选项，例如向表名添加后缀和设置 TTL。`greptime_ttl = "7d"` 配置表数据的保存时间为 7 天。
+- **表选项**：`vrl` 处理器为写出的数据行设置表选项。这里的 `.greptime_ttl = "7d"` 把表数据的保存时间设为 7 天。
 
 **Transform**：定义如何转换和索引提取的字段：
 - **字段转换**：每个提取的字段都转换为适当的数据类型并根据需要配置相应的索引。像 `http_method` 这样的字段在没有提供显式配置时保留其默认数据类型。
 - **索引策略**：
   - `ip_address` 和 `status_code` 使用倒排索引作为标签进行快速过滤
-  - `request_line` 和 `user_agent` 使用全文索引以获得最佳文本搜索能力
+  - `request_line` 和 `user_agent` 使用全文索引，可以按关键词检索
   - `timestamp` 是必需的时间索引列
 
 有关 pipeline 配置选项的详细信息，
 请参考 [Pipeline 配置](/reference/pipeline/pipeline-config.md) 文档。
+
+<AnchorAlias id="upload-the-pipeline" />
 
 ## 上传 Pipeline
 
@@ -110,7 +114,7 @@ transform:
 ```shell
 curl -X "POST" \
   "http://localhost:4000/v1/pipelines/nginx_pipeline" \
-     -H 'Authorization: Basic {{authentication}}' \
+     -H 'Authorization: Basic <base64-encoded-credentials>' \
      -F "file=@pipeline.yaml"
 ```
 
@@ -124,6 +128,8 @@ curl -X "POST" \
 所有 pipeline 都存储在 `greptime_private.pipelines` 表中。
 参考[查询 Pipeline](manage-pipelines.md#查询-pipeline) 来查看 pipeline 数据。
 
+<AnchorAlias id="ingest-logs-using-the-pipeline" />
+
 ## 使用 Pipeline 写入日志
 
 以下示例使用 `nginx_pipeline` pipeline 将日志写入 `custom_pipeline_logs` 表来格式化和转换日志消息：
@@ -132,7 +138,7 @@ curl -X "POST" \
 curl -X POST \
   "http://localhost:4000/v1/ingest?db=public&table=custom_pipeline_logs&pipeline_name=nginx_pipeline" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Basic {{authentication}}" \
+  -H "Authorization: Basic <base64-encoded-credentials>" \
   -d '[
     {
       "message": "127.0.0.1 - - [25/May/2024:20:16:37 +0000] \"GET /index.html HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\""

@@ -325,9 +325,13 @@ objectStorage:
     endpoint: ""
 ```
 
-#### 使用 AWS EKS Pod Identity 访问 S3
+<AnchorAlias id="使用-aws-eks-pod-identity-访问-s3" />
 
-除了提供静态访问密钥外，你还可以使用 [AWS EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html)（IAM Roles for Service Accounts）来授予 GreptimeDB 访问 S3 的权限。这种方式更加安全，因为无需管理长期有效的凭证。
+#### 使用 IAM Roles for Service Accounts（IRSA）访问 S3
+
+除了提供静态访问密钥外，你还可以使用 [IAM Roles for Service Accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html)（IRSA）来授予 GreptimeDB 访问 S3 的权限。这种方式更加安全，因为无需管理长期有效的凭证。
+
+IRSA 与 [EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) 是两种不同的机制。下面这份配置属于 IRSA，通过在 Service Account 上标注 role ARN 完成授权；Pod Identity 则需要建立 pod identity association，并不使用该注解。
 
 首先，为 datanode 的 Service Account 配置 IAM 角色注解。只有 datanode 会读写 S3：
 
@@ -357,7 +361,7 @@ objectStorage:
 ```
 
 :::note
-使用 EKS Pod Identity 时，请完全省略 `objectStorage.credentials` 部分。datanode Pod 将通过与 Service Account 关联的 IAM 角色自动获取临时凭证。
+使用 IRSA 时，请完全省略 `objectStorage.credentials` 部分。datanode Pod 将通过与 Service Account 关联的 IAM 角色自动获取临时凭证。
 :::
 
 #### Google Cloud Storage
@@ -480,6 +484,8 @@ debugPod:
       cpu: 200m
 ```
 
+<AnchorAlias id="configuring-metasrv-backend-storage" />
+
 ### 配置 Metasrv 后端存储
 
 #### 使用 MySQL 和 PostgreSQL 作为后端存储
@@ -518,8 +524,8 @@ meta:
 - `mysql.table`: MySQL 表。
 - `mysql.credentials.secretName`: MySQL 凭证 secret 名称。
 - `mysql.credentials.existingSecretName`: MySQL 凭证 secret 名称。如果你希望使用已有的 secret，你需要确保该 secret 包含 `username` 和 `password` 两个 key。
-- `mysql.credentials.username`: MySQL 凭证用户名。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。`username` 将会被存储在 `username` key 中，该 key 的值为 `mysql.credentials.secretName`。
-- `mysql.credentials.password`: MySQL 凭证密码。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。`password` 将会被存储在 `password` key 中，该 key 的值为 `mysql.credentials.secretName`。
+- `mysql.credentials.username`: MySQL 凭证用户名。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。该用户名会写入 `mysql.credentials.secretName` 指定的 Secret 的 `username` key 中。
+- `mysql.credentials.password`: MySQL 凭证密码。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。该密码会写入 `mysql.credentials.secretName` 指定的 Secret 的 `password` key 中。
 
 `meta.backendStorage.postgresql` 的大部分字段与 `meta.backendStorage.mysql` 的相同。例如：
 
@@ -556,8 +562,8 @@ meta:
 - `postgresql.electionLockID`: PostgreSQL 中用于选举的锁 ID。
 - `postgresql.credentials.secretName`: PostgreSQL 凭证 secret 名称。
 - `postgresql.credentials.existingSecretName`: PostgreSQL 凭证 secret 名称。如果你希望使用已有的 secret，你需要确保该 secret 包含 `username` 和 `password` 两个 key。
-- `postgresql.credentials.username`: PostgreSQL 凭证用户名。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。`username` 将会被存储在 `username` key 中，该 key 的值为 `mysql.credentials.secretName`。
-- `postgresql.credentials.password`: PostgreSQL 凭证密码。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。`password` 将会被存储在 `password` key 中，该 key 的值为 `mysql.credentials.secretName`。
+- `postgresql.credentials.username`: PostgreSQL 凭证用户名。如果 `postgresql.credentials.existingSecretName` 被设置，该字段将被忽略。该用户名会写入 `postgresql.credentials.secretName` 指定的 Secret 的 `username` key 中。
+- `postgresql.credentials.password`: PostgreSQL 凭证密码。如果 `postgresql.credentials.existingSecretName` 被设置，该字段将被忽略。该密码会写入 `postgresql.credentials.secretName` 指定的 Secret 的 `password` key 中。
 
 #### 使用 etcd 作为后端存储
 
@@ -584,6 +590,8 @@ meta:
 
 - `etcd.endpoints`: etcd 服务地址。
 - `etcd.storeKeyPrefix`: etcd 存储 key 前缀。所有 key 都会被存储在这个前缀下。如果你希望使用一个 etcd 集群为多个 GreptimeDB 集群提供服务，你可以为每个 GreptimeDB 集群配置不同的存储 key 前缀。这仅用于测试和调试目的。
+
+<AnchorAlias id="enable-region-failover" />
 
 ### 启用 Region Failover
 

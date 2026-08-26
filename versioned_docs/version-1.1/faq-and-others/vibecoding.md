@@ -66,6 +66,8 @@ skill uses `dryrun_pipeline` to verify a config before applying it).
 - **`self-monitoring-export`** — for cluster incidents: infer the log export
   time range from the user's description, then export cluster self-monitoring
   logs and metrics for investigation.
+- **`influxql-to-greptimedb-sql`** — convert InfluxQL queries to GreptimeDB SQL
+  while identifying semantic differences in windows, fills, and series limits.
 
 Skills follow the [Agent Skills](https://agentskills.io/) open standard, so they
 work with Claude Code, OpenAI Codex CLI, GitHub Copilot, Cursor, and others.

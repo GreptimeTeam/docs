@@ -29,6 +29,8 @@ greptime standalone start --http-addr 127.0.0.1:4000
 
 有关 Greptime 命令行支持的所有选项，请参阅 [GreptimeDB 命令行界面](/reference/command-lines/overview.md)。
 
+<AnchorAlias id="configuration-file-options" />
+
 ### 配置文件选项
 
 你可以在 TOML 文件中指定配置项。
@@ -36,14 +38,14 @@ greptime standalone start --http-addr 127.0.0.1:4000
 
 ```toml
 [storage]
+data_home = "./greptimedb_data"
 type = "File"
-data_home = "./greptimedb_data/"
 ```
 
 然后使用命令行参数 `-c [file_path]` 指定配置文件。
 
 ```sh
-greptime [standalone | frontend | datanode | metasrv]  start -c config/standalone.example.toml
+greptime [standalone | frontend | datanode | flownode | metasrv] start -c config/standalone.example.toml
 ```
 
 例如以 standalone 模式启动 GreptimeDB：
@@ -96,6 +98,7 @@ export GREPTIMEDB_DATANODE__STORAGE__DATA_HOME=/data/greptimedb
   - `GREPTIMEDB_FRONTEND`
   - `GREPTIMEDB_METASRV`
   - `GREPTIMEDB_DATANODE`
+  - `GREPTIMEDB_FLOWNODE`
   - `GREPTIMEDB_STANDALONE`
 
 - 使用**双下划线 `__`**作为分隔符。例如，数据结构 `storage.data_home` 转换为 `STORAGE__DATA_HOME`。
@@ -110,6 +113,34 @@ GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127
 
 本节将介绍主要的配置项，请前往 GitHub 查看[所有配置项](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/config.md)。
 
+### 运行时选项
+
+GreptimeDB 在多个专用的 Tokio 运行时上执行后台任务。
+这些选项适用于所有子命令（`standalone`、`datanode`、`frontend` 和 `metasrv`）。
+
+```toml
+[runtime]
+# 执行全局读操作的运行时线程数。
+# 默认为 CPU 核心数。
+global_rt_size = 8
+
+# 执行 compaction 操作的线程数。
+# 默认为 max(num_cpus / 2, 1)。
+compact_rt_size = 4
+
+# compaction 操作的最大阻塞线程数。
+# compaction picker 的 CPU 工作运行在 compact 运行时的阻塞线程池中，
+# 该限制可防止 compaction 规划的突发负载耗尽所有可用 CPU。
+# 默认为 max(num_cpus / 2, 1)。显式设置为 0 时会被调整为 1。
+compact_rt_max_blocking_threads = 4
+```
+
+| 配置项                                  | 类型   | 默认值                   | 描述                                                                                                                                   |
+| --------------------------------------- | ------ | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `runtime.global_rt_size`                | 整数   | CPU 核心数               | 执行全局读操作的运行时线程数。                                                                                                          |
+| `runtime.compact_rt_size`               | 整数   | `max(num_cpus / 2, 1)`   | 执行 compaction 操作的线程数。                                                                                                          |
+| `runtime.compact_rt_max_blocking_threads` | 整数 | `max(num_cpus / 2, 1)`   | compaction 操作的最大阻塞线程数。compaction picker 的 CPU 工作运行在该阻塞线程池中。显式设置为 `0` 时会被调整为 `1`。                    |
+
 ### 写入内存限制选项
 
 内存限制选项控制所有协议（HTTP、gRPC 和 Arrow Flight）并发写入请求使用的总内存。
@@ -121,14 +152,14 @@ GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127
 max_in_flight_write_bytes = "1GB"
 
 # 写入字节配额耗尽时的策略
-# 可选值：`"wait"`（默认，10 秒超时）、`"wait(<duration>)"`（例如 `"wait(30s)"`）、`"fail"`
+# 可选值：`wait`（默认，10 秒超时）、`wait(<duration>)`（例如 `wait(30s)`）、`fail`
 write_bytes_exhausted_policy = "wait"
 ```
 
 | 配置项                          | 类型   | 默认值    | 描述                                                                                                                                                                                                              |
 | ------------------------------- | ------ | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `max_in_flight_write_bytes`     | 字符串 | `"0"`     | 所有并发写入请求体和消息（HTTP、gRPC、Flight）的最大总内存。设置为 `"0"` 表示禁用限制（无限制）。支持的单位：`B`、`KB`、`MB`、`GB` 等。示例：`"1GB"` 将并发写入总量限制为 1GB。                              |
-| `write_bytes_exhausted_policy`  | 字符串 | `"wait"`  | 写入字节配额耗尽时的策略。可选值：`"wait"`（默认，等待最多 10 秒）、`"wait(<duration>)"`（自定义超时时间，例如 `"wait(30s)"`）、`"fail"`（立即拒绝请求）。                                                      |
+| `max_in_flight_write_bytes`     | 字符串 | `0`     | 所有并发写入请求体和消息（HTTP、gRPC、Flight）的最大总内存。设置为 `0` 表示禁用限制（无限制）。支持的单位：`B`、`KB`、`MB`、`GB` 等。示例：`1GB` 将并发写入总量限制为 1GB。                              |
+| `write_bytes_exhausted_policy`  | 字符串 | `wait`  | 写入字节配额耗尽时的策略。可选值：`wait`（默认，等待最多 10 秒）、`wait(<duration>)`（自定义超时时间，例如 `wait(30s)`）、`fail`（立即拒绝请求）。                                                      |
 
 ### Datanode 查询并发限制
 
@@ -150,11 +181,16 @@ concurrent_query_limiter_timeout = "100ms"
 | 配置项                             | 类型   | 默认值    | 描述                                                                                                            |
 | ---------------------------------- | ------ | --------- | --------------------------------------------------------------------------------------------------------------- |
 | `max_concurrent_queries`           | 整数   | `0`       | Datanode 上允许同时运行的最大读取查询数量。设置为 `0` 表示禁用限制。                                  |
-| `concurrent_query_limiter_timeout` | 字符串 | `"100ms"` | 当达到 `max_concurrent_queries` 后，查询等待可用名额的最长时间。如果超时后仍然没有可用名额，查询将失败。 |
+| `concurrent_query_limiter_timeout` | 字符串 | `100ms` | 当达到 `max_concurrent_queries` 后，查询等待可用名额的最长时间。如果超时后仍然没有可用名额，查询将失败。 |
+
+<AnchorAlias id="protocol-options" />
 
 ### 协议选项
 
 协议选项适用于 `frontend` 和 `standalone` 子命令，它指定了协议服务器地址和其他协议相关的选项。
+其中，`http.enable_api_server` 可用于启动一个专门对外提供服务的公共 HTTP API Server，它只暴露 `/v1` API 和 `/dashboard`，而主 HTTP Server 继续用于内部和运维端点。
+这种分离方式适合希望将 GreptimeDB 暴露给终端用户或应用程序、同时又不暴露 health、metrics、config、debug 等管理路径的场景。
+使用时，将 `http.enable_api_server = true`，并把 `http.api_server_addr` 配置为你希望对外暴露的地址，同时将 `http.addr` 保持为仅供运维访问的内部地址。
 
 :::tip 提示
 HTTP 协议配置适用于所有 GreptimeDB 组件：`frontend`、`datanode`、`flownode` 和 `metasrv`。
@@ -170,30 +206,46 @@ HTTP 协议配置适用于所有 GreptimeDB 组件：`frontend`、`datanode`、`
 addr = "127.0.0.1:4000"
 timeout = "0s"
 body_limit = "64MB"
-
+enable_cors = true
+# cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
+experimental_enable_explain_analyze_stream = true
+# 启用专用公共 HTTP API Server（仅提供 /v1 和 /dashboard）
+enable_api_server = false
+api_server_addr = "127.0.0.1:4006"
 [grpc]
 bind_addr = "127.0.0.1:4001"
 runtime_size = 8
+
+[grpc.tls]
+mode = "disable"
+cert_path = ""
+key_path = ""
+watch = false
 
 [mysql]
 enable = true
 addr = "127.0.0.1:4002"
 runtime_size = 2
+keep_alive = "0s"
+prepared_stmt_cache_size = 10000
 
 [mysql.tls]
 mode = "disable"
 cert_path = ""
 key_path = ""
+watch = false
 
 [postgres]
 enable = true
 addr = "127.0.0.1:4003"
 runtime_size = 2
+keep_alive = "0s"
 
 [postgres.tls]
 mode = "disable"
 cert_path = ""
 key_path = ""
+watch = false
 
 [opentsdb]
 enable = true
@@ -204,9 +256,18 @@ enable = true
 # 可选值："last_non_null"、"last_row"。
 default_merge_mode = "last_non_null"
 
+[jaeger]
+enable = true
+
+[otlp]
+enable = true
+trace_ingest_chunk_size = 512
+
 [prom_store]
 enable = true
 with_metric_engine = true
+prom_validation_mode = "strict"
+experimental_enable_prometheus_native_histogram = false
 pending_rows_flush_interval = "0s"
 max_batch_rows = 100000
 max_concurrent_flushes = 256
@@ -220,9 +281,13 @@ max_inflight_requests = 3000
 | ---------- | ------------------ | ------ | ------------------------------------------------------------ |
 | http       |                    |        | HTTP 服务器选项                                              |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
-|            | timeout            | 字符串 | HTTP 请求超时时间。设为 "0s" 可禁用超时（默认值为 "0s"）。                              |
+|            | timeout            | 字符串 | HTTP 请求超时时间。设为 "0s" 可禁用超时（默认值为 "0s"）。启用 Prometheus Remote Write [批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式) 时，非零且不超过 `prom_store.pending_rows_flush_interval` 加 1 秒的超时值会被自动调整为该值。                              |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
-|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
+|            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
+|            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
+|            | experimental_enable_explain_analyze_stream | 布尔值 | 实验性：启用 `POST /v1/sql/analyze/stream`，用于流式返回 `EXPLAIN ANALYZE VERBOSE` 指标，默认为 true。 |
+|            | enable_api_server    | 布尔值 | 是否启动专用公共 HTTP API Server。该 Server 仅提供 `/v1` API 和 `/dashboard`，可安全地对外暴露给终端用户。主 HTTP Server（`addr`）用于内部使用。默认禁用；设为 `true` 可启用。 |
+|            | api_server_addr      | 字符串 | 专用公共 HTTP API Server 的绑定地址，默认为 `"127.0.0.1:4006"`。仅在 `enable_api_server` 为 `true` 时生效。 |
 | grpc       |                    |        | gRPC 服务器选项                                              |
 |            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
@@ -232,15 +297,24 @@ max_inflight_requests = 3000
 |            | enable             | 布尔值 | 是否启用 MySQL 协议，默认为 true                             |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                 |
+|            | keep_alive         | 字符串 | 服务端保持连接时间。设为 `0s` 可禁用。 |
+|            | prepared_stmt_cache_size | 整数 | MySQL prepared statement 缓存的最大条目数，默认为 10000。 |
 | influxdb   |                    |        | InfluxDB 协议选项                                            |
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true            |
 |            | default_merge_mode | 字符串 | InfluxDB 协议自动创建表时使用的默认 merge 模式。可选值：`last_non_null`、`last_row`。默认值：`last_non_null` |
 | opentsdb   |                    |        | OpenTSDB 协议选项                                            |
 |            | enable             | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                          |
+| jaeger     |                    |        | Jaeger 协议选项                                              |
+|            | enable             | 布尔值 | 是否在 HTTP API 中启用 Jaeger 协议，默认为 true              |
+| otlp       |                    |        | OpenTelemetry 协议选项                                       |
+|            | enable             | 布尔值 | 是否在 HTTP API 中启用 OpenTelemetry 协议，默认为 true       |
+|            | trace_ingest_chunk_size | 整数 | 每个 trace 写入分块的最大 span 数量。设为 `0` 可禁用分块。 |
 | prom_store |                              |        | Prometheus 远程存储选项                                                                                                                                                                                         |
 |            | enable                       | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true                                                                                                                                                         |
 |            | with_metric_engine           | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true                                                                                                                                                     |
-|            | pending_rows_flush_interval  | 字符串 | Prometheus Remote Write 批量刷写的时间间隔。设为非零值（如 `"500ms"`）以启用[批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式)，默认为 `"0s"`（禁用）                         |
+|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
+|            | experimental_enable_prometheus_native_histogram | 布尔值 | 实验性：启用 Prometheus remote write v2 native histogram 写入，默认为 false。 |
+|            | pending_rows_flush_interval  | 字符串 | Prometheus Remote Write 批量刷写的时间间隔。设为非零值（如 `500ms`）以启用[批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式)，默认为 `0s`（禁用）                         |
 |            | max_batch_rows               | 整数   | 触发刷写的最大批量行数，默认为 100000                                                                                                                                                                           |
 |            | max_concurrent_flushes       | 整数   | 同时执行的最大刷写操作数量，默认为 256                                                                                                                                                                          |
 |            | worker_channel_capacity      | 整数   | 内部接收行数据的 worker 通道容量，默认为 65526                                                                                                                                                                  |
@@ -249,6 +323,7 @@ max_inflight_requests = 3000
 |            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                       |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                 |
+|            | keep_alive         | 字符串 | 服务端保持连接时间。设为 `0s` 可禁用。 |
 
 对 MySQL，Postgres 和 gRPC 接口，我们支持 TLS 配置
 
@@ -258,7 +333,7 @@ max_inflight_requests = 3000
 |                                          | `mode`      | String  | TLS 模式，支持 `disable`, `prefer` and `require` |
 |                                          | `cert_path` | String  | TLS 证书文件路径                                 |
 |                                          | `key_path`  | String  | TLS 私钥文件路径                                 |
-|                                          | `watch`     | Boolean | 监控文件变化，自动重新加载证书或私钥             |
+|                                          | `watch`     | Boolean | 监控文件变化，自动重新加载证书或私钥。`grpc.tls` 不支持自动重新加载，请保持 `grpc.tls.watch` 为 `false`。 |
 
 ### 查询选项
 
@@ -277,6 +352,8 @@ max_inflight_requests = 3000
 parallelism = 0
 ```
 
+<AnchorAlias id="storage-options" />
+
 ### 存储选项
 
 `存储`选项在 `datanode` 和 `standalone` 模式下有效，它指定了数据库数据目录和其他存储相关的选项。
@@ -289,6 +366,7 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 |         | type              | 字符串 | 存储类型，支持 "File"，"S3" 和 "Oss" 等。           |
 | File    |                   |        | 本地文件存储选项，当 type="File" 时有效             |
 |         | data_home         | 字符串 | 数据库存储根目录，默认为 "./greptimedb_data"          |
+|         | copy_root         | 字符串 | 单机模式下 SQL 访问本地文件的根目录（默认为 `<data_home>/copy`）。`COPY` 语句和外部表中的相对路径将在该目录下解析；仅当绝对路径位于该目录内时才被接受。分布式部署始终禁止 SQL 访问本地文件。升级指引请参阅[迁移本地 SQL 文件访问](/user-guide/deployments-administration/migrate-local-sql-file-access.md)。 |
 | S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                |
 |         | name            | 字符串 |  存储提供商名字，默认为 `S3`               |
 |         | bucket            | 字符串 | S3 桶名称                                           |
@@ -313,20 +391,20 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 |         | account_name      | 字符串 | Azure Blob 存储的账户名                             |
 |         | account_key       | 字符串 | 访问密钥                                            |
 |         | sas_token         | 字符串 | 共享访问签名                                        |
-| Gsc     |                   |        | Google Cloud Storage 存储选项，当 type="Gsc" 时有效 |
-|         | name            | 字符串 |  存储提供商名字，默认为 `Gsc`               |
-|         | root              | 字符串 | Gsc 桶中的根路径                                    |
-|         | bucket            | 字符串 | Gsc 桶名称                                          |
-|         | scope             | 字符串 | Gsc 权限                                            |
-|         | credential_path   | 字符串 | Gsc 访问证书                                        |
-|         | endpoint          | 字符串 | GSC 的 API 端点                                     |
+| Gcs     |                   |        | Google Cloud Storage 存储选项，当 type="Gcs" 时有效 |
+|         | name            | 字符串 |  存储提供商名字，默认为 `Gcs`               |
+|         | root              | 字符串 | GCS 桶中的根路径                                    |
+|         | bucket            | 字符串 | GCS 桶名称                                          |
+|         | scope             | 字符串 | GCS 权限                                            |
+|         | credential_path   | 字符串 | GCS 访问证书                                        |
+|         | endpoint          | 字符串 | GCS 的 API 端点                                     |
 
 文件存储配置范例：
 
 ```toml
 [storage]
+data_home = "./greptimedb_data"
 type = "File"
-data_home = "./greptimedb_data/"
 ```
 
 s3 配置范例：
@@ -348,10 +426,10 @@ secret_access_key = "<secret access key>"
 
 | Key                      | 类型  | 默认值        | 含义                                                          |
 |--------------------------|-----|------------|-------------------------------------------------------------|
-| `pool_max_idle_per_host` | 数字  | 1024       | http 连接池中对每个 host 的最大空闲连接数。                                 |
-| `connect_timeout`        | 字符串 | “30s”（30 秒） | http 客户端在进行连接时的超时                                           |
-| `timeout`                | 字符串 | “30s”（30 秒） | 总的 http 请求超时，包括了从建立连接到接收完返回值为止的时间。也可视为一个请求从开始到结束的一个完整的截止时间。 |
-| `pool_idle_timeout`      | 字符串 | “90s”（90 秒） | 对空闲连接进行保活（ "keep-alive" ）的超时。                               |
+| `pool_max_idle_per_host` | 数字  | `1024`       | http 连接池中对每个 host 的最大空闲连接数。                                 |
+| `connect_timeout`        | 字符串 | `30s` | http 客户端在进行连接时的超时                                           |
+| `timeout`                | 字符串 | `30s` | 总的 http 请求超时，包括了从建立连接到接收完返回值为止的时间。也可视为一个请求从开始到结束的一个完整的截止时间。 |
+| `pool_idle_timeout`      | 字符串 | `90s` | 对空闲连接进行保活（ "keep-alive" ）的超时。                               |
 
 ### 存储引擎提供商
 
@@ -413,6 +491,7 @@ GreptimeDB 支持三种 WAL 存储方式：本地 WAL、Remote WAL 和 Noop WAL�
 dir = "./greptimedb_data/logs"
 level = "info"
 enable_otlp_tracing = false
+enable_per_region_metrics = false
 otlp_endpoint = "localhost:4317"
 append_stdout = true
 [logging.tracing_sample_ratio]
@@ -422,11 +501,64 @@ default_ratio = 1.0
 - `dir`: log 输出目录。
 - `level`: log 输出的日志等级，日志等级有 `info`, `debug`, `error`, `warn`，默认等级为 `info`。
 - `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
+- `enable_per_region_metrics`：是否暴露 Prometheus 的 Region 维度查询负载指标，包括 `greptime_mito_region_query_cpu_time` 和 `greptime_mito_region_query_scanned_bytes`。该选项默认关闭，因为它会为每个 Region 产生一条时间序列。通过 heartbeat 上报并在 `INFORMATION_SCHEMA.REGION_STATISTICS` 中暴露的查询统计信息不受该选项控制。
 - `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
 - `append_stdout`：是否将日志打印到 stdout。默认是`true`。
 - `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
 
 如何使用分布式追踪，请参考 [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
+
+### 事件记录配置
+
+记录的事件保存在 `greptime_private.events` 系统表中。
+
+```toml
+[event_recorder]
+# 事件表的 TTL，默认值为 90 天。
+ttl = "90d"
+
+# 省略此项以记录当前及未来的所有事件类型。
+# 使用空数组可禁用事件记录。
+event_types = ["create_table", "drop_table"]
+```
+
+- `ttl`：事件表的 TTL，默认值为 `90d`。
+- `event_types`：要记录的事件类型。省略时记录当前及未来的所有事件类型；设为 `[]` 可禁用事件记录。
+
+standalone 支持以下事件类型：
+
+```text
+create_database, alter_database, drop_database,
+create_flow, drop_flow,
+create_table, create_logical_tables, alter_table, alter_logical_tables,
+drop_table, undrop_table, purge_dropped_table, truncate_table,
+create_view, drop_view, admin_function
+```
+
+`undrop_table` 和 `purge_dropped_table` 仅 GreptimeDB 企业版支持。
+
+在分布式部署中，Frontend 支持以下事件类型：
+
+```text
+admin_function
+```
+
+Metasrv 支持以下事件类型：
+
+```text
+region_migration,
+create_database, alter_database, drop_database,
+create_flow, drop_flow,
+create_table, create_logical_tables, alter_table, alter_logical_tables,
+drop_table, undrop_table, purge_dropped_table, truncate_table,
+create_view, drop_view,
+repartition, repartition_group,
+batch_gc, wal_prune
+```
+
+`undrop_table` 和 `purge_dropped_table` 仅 GreptimeDB 企业版支持。
+
+<AnchorAlias id="region-engine-options" />
 
 ### Region 引擎选项
 
@@ -445,7 +577,8 @@ max_background_purges = 4
 auto_flush_interval = "1h"
 global_write_buffer_size = "1GB"
 global_write_buffer_reject_size = "2GB"
-sst_meta_cache_size = "128MB"
+default_region_write_buffer_size = "0"
+sst_meta_cache_size = "512MB"
 vector_cache_size = "512MB"
 page_cache_size = "512MB"
 write_cache_size = "5GB"
@@ -455,6 +588,7 @@ scan_memory_on_exhausted = "fail"
 min_compaction_interval = "0m"
 schedule_compaction_after_edit = true
 default_flat_format = true
+experimental_series_scan_v2 = true
 sst_write_buffer_size = "8MB"
 max_concurrent_scan_files = 384
 
@@ -495,13 +629,14 @@ fork_dictionary_bytes = "1GiB"
 | `num_workers`                            | 整数   | `8`           | 写入线程数量                                                                                                           |
 | `manifest_checkpoint_distance`           | 整数   | `10`          | 每写入 `manifest_checkpoint_distance` 个 manifest 文件创建一次 checkpoint                                              |
 | `compress_manifest`                      | 布尔值 | `false`       | 是否使用 gzip 压缩 manifest 和 checkpoint 文件。                                                                          |
-| `max_background_flushes`                 | 整数   | 自动          | 后台 flush 任务数（默认：1/2 CPU 核心数）。                                                                              |
-| `max_background_compactions`            | 整数   | 自动          | 后台 compaction 任务数（默认：1/4 CPU 核心数）。                                                                      |
-| `max_background_purges`                | 整数   | 自动          | 后台 purge 任务数（默认：CPU 核心数）。                                                                                  |
-| `auto_flush_interval`                    | 字符串 | `1h`          | 自动 flush 超过 `auto_flush_interval` 没 flush 的 region                                                               |
+| `max_background_flushes`                 | 整数   | `自动` | 后台 flush 任务数（默认：1/2 CPU 核心数）。                                                                              |
+| `max_background_compactions`            | 整数   | `自动` | 后台 compaction 任务数（默认：1/4 CPU 核心数）。                                                                      |
+| `max_background_purges`                | 整数   | `自动` | 后台 purge 任务数（默认：CPU 核心数）。                                                                                  |
+| `auto_flush_interval`                    | 字符串 | `1h`          | 自动 flush 超过 `auto_flush_interval` 没 flush 的 region。可以通过[表选项 `auto_flush_interval`](/reference/sql/create.md#table-options) 按表覆盖 |
 | `global_write_buffer_size`               | 字符串 | `1GB`         | 写入缓冲区大小，默认值为内存总量的 1/8，但不会超过 1GB                                                                 |
 | `global_write_buffer_reject_size`        | 字符串 | `2GB`         | 写入缓冲区内数据的大小超过 `global_write_buffer_reject_size` 后拒绝写入请求，默认为 `global_write_buffer_size` 的 2 倍 |
-| `sst_meta_cache_size`                    | 字符串 | `128MB`       | SST 元数据缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/32，不超过 128MB                                            |
+| `default_region_write_buffer_size`       | 字符串 | `0`           | 默认的单 region 写缓冲区阻塞阈值。设置为正值后，mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入。设置为 `0` 会禁用默认单 region 限制。表级 `write_buffer_size` 会覆盖该值，包括显式设置为 `0` 以禁用该表的限制。 |
+| `sst_meta_cache_size`                    | 字符串 | 自动          | SST 元数据缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/8，不超过 512MB                                             |
 | `vector_cache_size`                      | 字符串 | `512MB`       | 内存向量和 arrow array 的缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                             |
 | `page_cache_size`                        | 字符串 | `512MB`       | SST 数据页的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/8                                                             |
 | `write_cache_size`                       | 字符串 | `5GiB`        | 写入缓存容量。如果磁盘空间充足，建议设置更大的值。                                                                     |
@@ -510,7 +645,9 @@ fork_dictionary_bytes = "1GiB"
 | `index_cache_percent`                    | 整数   | `20`          | 为索引（puffin）文件分配的写入缓存容量百分比（默认：20）。<br/>剩余容量用于数据（parquet）文件。<br/>必须在 0 到 100 之间（不包括边界）。例如，对于 5GiB 的写入缓存和 20% 的分配，<br/>1GiB 保留给索引文件，4GiB 用于数据文件。 |
 | `enable_refill_cache_on_read`            | 布尔值 | `true`        | 启用读取操作时的缓存回填（默认：true）。<br/>禁用时，不会在读取时回填缓存。                                            |
 | `manifest_cache_size`                    | 字符串 | `256MB`       | Manifest 缓存容量（默认：256MB）。                                                                                     |
-| `selector_result_cache_size`             | 字符串 | `512MB`       | `last_value()` 等时间线检索结果的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                         |
+| `selector_result_cache_size`             | 字符串 | `512MB`       | `last_value()` 等时间线检索结果的缓存。设为 0 可关闭该缓存<br/>未设置时默认为内存的 1/16，不超过 512MB。                         |
+| `range_result_cache_size`                | 字符串 | `512MB`       | Flat range scan 结果的缓存大小。设为 0 可关闭该缓存。<br/>未设置时默认为内存的 1/16，不超过 512MB。                         |
+| `prefilter_result_cache_size`            | 字符串 | `128MB`       | Prefilter 结果的缓存大小。设为 0 可关闭该缓存。<br/>未设置时默认为内存的 1/32，不超过 128MB。                         |
 | `sst_write_buffer_size`                  | 字符串 | `8MB`         | SST 的写缓存大小                                                                                                       |
 | `max_concurrent_scan_files`             | 整数   | `384`         | 最大并发扫描的 SST 文件数量。                                                                                         |
 | `allow_stale_entries`                 | 布尔值 | `false`       | 是否允许 replay 时读取陈旧的 WAL 条目。                                                                              |
@@ -519,15 +656,16 @@ fork_dictionary_bytes = "1GiB"
 | `min_compaction_interval`           | 字符串 | `0m`          | 两次 compaction 之间的最小时间间隔。设为 "0m"（默认）允许 compactions 立即运行，无限制。                              |
 | `schedule_compaction_after_edit`    | 布尔值 | `true`        | 是否允许在成功的 region edit 之后调度 compaction。<br/>设为 `true` 是在 region edit 后调度 compaction 的必要但不充分条件，`min_compaction_interval` 等其他约束仍可能阻止 compaction 被调度。<br/>设为 `false` 则保证 region edit 后不会调度 compaction。 |
 | `default_flat_format`                | 布尔值 | `true`        | 是否启用 Flat 格式作为默认 SST 格式。                                                                                |
+| `experimental_series_scan_v2`       | 布尔值 | `true`        | 是否为 metric 引擎物理 region 的 series scan 启用实验性的 two-phase 模式。设为 `false` 时使用 legacy 模式，其他 series scan 也使用 legacy 模式。 |
 | `scan_parallelism`                       | 整数   | `0`           | （已弃用，请使用 `max_concurrent_scan_files`）旧版扫描并发度选项。                                                |
 | `index` | -- | -- | Mito 引擎中索引的选项。 |
 | `index.aux_path` | 字符串 | `""` | 文件系统中索引的辅助目录路径，用于存储创建索引的中间文件和搜索索引的暂存文件，默认为 `{data_home}/index_intermediate`。为了向后兼容，该目录的默认名称为 `index_intermediate`。此路径包含两个子目录：- `__intm`: 用于存储创建索引时使用的中间文件。- `staging`: 用于存储搜索索引时使用的暂存文件。 |
 | `index.staging_size` | 字符串 | `2GB` | 暂存目录的最大容量。 |
 | `index.staging_ttl` | 字符串 | `7d` | 暂存目录的 TTL。默认为 7 天。设为 "0s" 可禁用 TTL。 |
-| `index.metadata_cache_size` | 字符串 | `64MiB` | 索引元数据的缓存大小。 |
-| `index.content_cache_size` | 字符串 | `128MiB` | 索引内容的缓存大小。 |
+| `index.metadata_cache_size` | 字符串 | `64MiB` | 索引元数据的缓存大小。<br/>未设置时默认为内存的 1/32，不超过 64MiB。 |
+| `index.content_cache_size` | 字符串 | `128MiB` | 索引内容的缓存大小。<br/>未设置时默认为内存的 1/16，不超过 128MiB。 |
 | `index.content_cache_page_size` | 字符串 | `64KiB` | 倒排索引内容缓存的页大小。 |
-| `index.result_cache_size` | 字符串 | `128MiB` | 索引查询结果的缓存大小。 |
+| `index.result_cache_size` | 字符串 | `128MiB` | 索引查询结果的缓存大小。<br/>未设置时默认为内存的 1/16，不超过 128MiB。 |
 | `inverted_index.create_on_flush`         | 字符串 | `auto`        | 是否在 flush 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                       |
 | `inverted_index.create_on_compaction`    | 字符串 | `auto`        | 是否在 compaction 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                  |
 | `inverted_index.apply_on_query`          | 字符串 | `auto`        | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                          |
@@ -538,19 +676,11 @@ fork_dictionary_bytes = "1GiB"
 | `memtable.data_freeze_threshold`         | 整数   | `32768`       | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效                                            |
 | `memtable.fork_dictionary_bytes`         | 字符串 | `1GiB`        | 主键字典的大小<br/>只对 `partition_tree` memtable 生效                                                                 |
 
-`metric` 引擎针对包含大量小表的 metrics 数据进行了优化：
+`metric` 引擎针对包含大量小表的 metrics 数据进行了优化。
 
-```toml
-[[region_engine]]
-[region_engine.metric]
-sparse_primary_key_encoding = true
-```
-
-可用选项：
-
-| 键                                | 类型   | 默认值  | 描述                                                                                                              |
-| --------------------------------- | ------ | ------- | ----------------------------------------------------------------------------------------------------------------- |
-| `sparse_primary_key_encoding`     | 布尔值 | `true`  | 是否使用稀疏主键编码。此优化通过仅编码非空主键列来提高写入和查询性能。                                            |
+:::note
+从 v1.2 起，metric 引擎始终启用稀疏主键编码，无法禁用。该编码仅对非空主键列进行编码，可提升写入和查询性能。配置文件中已有的 `sparse_primary_key_encoding` 设置会被接受但不产生任何效果。
+:::
 
 ### 设定 meta client
 
@@ -602,7 +732,12 @@ default_timezone = "UTC"
 `default_timezone` 的值可以是任何时区名称，例如 `Europe/Berlin` 或 `Asia/Shanghai`。
 有关客户端时区如何影响数据的写入和查询，请参阅[时区](/user-guide/timezone.md#时区对-sql-语句的影响)文档。
 
+<AnchorAlias id="metasrv-only-configuration" />
+
 ### 仅限于 Metasrv 的配置
+
+`datanode.client` 选项用于配置从 Metasrv 到 Datanode 的出站 gRPC 连接。
+客户端的消息大小限制独立于 `[grpc]` 服务器的消息大小限制。
 
 ```toml
 # 工作主目录。
@@ -625,23 +760,29 @@ store_key_prefix = ""
 # - `mysql_store`
 backend = "etcd_store"
 # 在 RDS 中存储元数据的表名。仅在使用 RDS kvbackend 时生效。
-# **仅当后端为 RDS kvbackend 时使用。**
+# **仅在 backend 为 RDS kvbackend 时使用。**
 meta_table_name = "greptime_metakv"
+# PostgreSQL 元数据表和选举表使用的 schema。
+# 当 PostgreSQL public schema 不可写时（例如 PostgreSQL 15+ 限制 public schema），
+# 请设置为一个可写的 schema。GreptimeDB 将使用 `meta_schema_name`.`meta_table_name`。
+# **仅在 backend 为 `postgres_store` 时使用。**
+meta_schema_name = "greptime_schema"
+# 如果 PostgreSQL schema 不存在，是否自动创建。
+# **仅在 backend 为 `postgres_store` 时使用。**
+auto_create_schema = true
 ## PostgreSQL 选举的咨询锁 ID。仅在使用 PostgreSQL 作为 kvbackend 时生效。
 ## 仅当后端为 `postgres_store` 时使用。
 meta_election_lock_id = 1
 # Datanode 选择器类型。
-# - "lease_based" (默认值)
+# - `round_robin`（默认值）
 # - `lease_based`
-# - "load_based"
-# 详情请参阅 "https://docs.greptime.com/contributor-guide/meta/selector"
-selector = "lease_based"
-# 将数据存储在内存中，默认值为 false。
-use_memory_store = false
+# - `load_based`
+# 详情请参阅 "https://docs.greptime.com/contributor-guide/metasrv/selector/"
+selector = "round_robin"
 # 是否启用 region failover。
-# 该功能仅适用于以集群模式运行并使用共享存储（例如 s3）的 GreptimeDB，并且 WAL 需要满足以下条件之一：
-# - Remote WAL
-# - Local WAL 且设置 `allow_region_failover_on_local_wal = true`（故障转移期间可能导致数据丢失）
+# 该功能仅适用于运行在集群模式下的 GreptimeDB，并且需要满足以下条件：
+# - 使用 Remote WAL，或使用 Local WAL 且将 `allow_region_failover_on_local_wal` 设置为 `true`
+# - 使用共享存储（例如 S3）
 enable_region_failover = false
 ## 设置启动 region 故障检测的延迟时间。
 ## 该延迟有助于避免在所有 Datanode 尚未完全启动时，Metasrv 过早启动 region 故障检测，从而导致不必要的 region failover。
@@ -654,6 +795,20 @@ allow_region_failover_on_local_wal = false
 
 ## 从 metasrv 内存中删除节点信息前允许的最大空闲时间。
 node_max_idle_time = "24hours"
+
+# 用于计算分布式时间常量的基础心跳间隔。
+# 心跳间隔由 metasrv 在握手期间协商，本地节点配置不会覆盖该值。
+# heartbeat_interval = "3s"
+# 是否启用 GreptimeDB telemetry，默认启用。
+# enable_telemetry = true
+
+# kv store backend 的 TLS 配置（适用于 etcd、PostgreSQL 和 MySQL backend）。
+# 如果此处和 `store_addrs` 连接字符串中都配置了 TLS，则此处配置会覆盖 `store_addrs` 中的 TLS 设置。
+[backend_tls]
+mode = "prefer"
+cert_path = ""
+key_path = ""
+ca_cert_path = ""
 
 ## 后端客户端选项。
 ## 目前仅适用于使用 etcd 作为元数据存储时。
@@ -670,10 +825,23 @@ connect_timeout = "3s"
 bind_addr = "127.0.0.1:3002"
 server_addr = "127.0.0.1:3002"
 runtime_size = 8
+## gRPC server 的最大接收消息大小。
+max_recv_message_size = "512MB"
+## gRPC server 的最大发送消息大小。
+max_send_message_size = "512MB"
 ## 服务器端 HTTP/2 保持连接间隔
 http2_keep_alive_interval = "10s"
 ## 服务器端 HTTP/2 保持连接超时时间。
 http2_keep_alive_timeout = "3s"
+
+## HTTP server 选项。
+[http]
+addr = "127.0.0.1:4000"
+timeout = "0s"
+body_limit = "64MB"
+## 启用专用公共 HTTP API Server（仅提供 /v1 和 /dashboard）。
+enable_api_server = false
+api_server_addr = "127.0.0.1:4006"
 
 ## Procedure 选项
 [procedure]
@@ -683,6 +851,9 @@ max_retry_times = 12
 
 ## 程序的初始重试延迟
 retry_delay = "500ms"
+
+## 自动拆分较大的值。
+max_metadata_value_size = "1500KiB"
 
 ## 最大运行程序数。
 ## 同一时间可以运行的程序最大数量。
@@ -720,6 +891,12 @@ connect_timeout = "10s"
 
 ## 接受连接时的 `TCP_NODELAY` 选项，默认为 true。
 tcp_nodelay = true
+
+## gRPC 客户端可接收的最大消息大小。
+max_recv_message_size = "512MB"
+
+## gRPC 客户端可发送的最大消息大小。
+max_send_message_size = "512MB"
 
 [wal]
 # 可用的 WAL 提供者：
@@ -768,13 +945,17 @@ timeout = "3s"
 | `data_home`                                   | String  | `./greptimedb_data/metasrv/`      | 工作目录。                                                                                                                           |
 | `bind_addr`                                   | String  | `127.0.0.1:3002`     | Metasrv 的绑定地址。                                                                                                                 |
 | `server_addr`                                 | String  | `127.0.0.1:3002`     | frontend 和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                                                 |
-| `store_addrs`                                 | Array   | `["127.0.0.1:2379"]`     | 元数据服务地址，默认值为 `["127.0.0.1:2379"]`。支持配置多个服务地址，格式为 `["ip1:port1","ip2:port2",...]`。默认使用 Etcd 作为元数据后端。<br/>根据你的存储服务器类型配置地址，例如：<br/>- 使用 `"127.0.0.1:2379"` 连接到 etcd<br/>- 使用 `"password=password dbname=postgres user=postgres host=localhost port=5432"` 连接到 postgres<br/>- 使用 `"mysql://user:password@ip:port/dbname"` 连接到 mysql |
-| `selector`                                    | String  | `lease_based`        | 创建新表时选择 datanode 的负载均衡策略，详见 [选择器](/contributor-guide/metasrv/selector.md)。                                      |
-| `use_memory_store`                            | Boolean | `false`              | 仅用于在没有 etcd 集群时的测试，将数据存储在内存中，默认值为 `false`。                                                               |
-| `enable_region_failover`                      | Bool    | `false`                      | 是否启用 region failover。<br/>该功能仅适用于以集群模式运行并使用共享存储（如 s3）的 GreptimeDB，并且 WAL 需要满足以下条件之一：<br/>- Remote WAL<br/>- Local WAL 且设置 `allow_region_failover_on_local_wal = true`（故障转移期间可能导致数据丢失）。   |
+| `store_addrs`                                 | Array   | `["127.0.0.1:2379"]`     | 元数据服务地址，默认值为 `["127.0.0.1:2379"]`。支持配置多个服务地址，格式为 `["ip1:port1","ip2:port2",...]`。默认使用 Etcd 作为元数据后端。<br/>根据你的存储服务器类型配置地址，例如：<br/>- 使用 `127.0.0.1:2379` 连接到 etcd<br/>- 使用 `"password=password dbname=postgres user=postgres host=localhost port=5432"` 连接到 postgres<br/>- 使用 `"mysql://user:password@ip:port/dbname"` 连接到 mysql |
+| `selector`                                    | String  | `round_robin`                | Datanode 选择器类型。<br/>- `round_robin`（默认值）<br/>- `lease_based`<br/>- `load_based`<br/>详见 [选择器](/contributor-guide/metasrv/selector.md)。                                      |
+| `enable_region_failover`                      | Bool    | `false`                      | 是否启用 region failover。<br/>该功能仅适用于运行在集群模式下的 GreptimeDB，并且需要满足以下条件：<br/>- 使用 Remote WAL，或使用 Local WAL 且将 `allow_region_failover_on_local_wal` 设置为 `true`<br/>- 使用共享存储（例如 S3）。   |
 | `region_failure_detector_initialization_delay` | String  | `10m`                        | 设置启动 region 故障检测的延迟时间。该延迟有助于避免在所有 Datanode 尚未完全启动时，Metasrv 过早启动 region 故障检测，从而导致不必要的 region failover。尤其适用于未通过 GreptimeDB Operator 部署的集群，此时可能未正确启用集群维护模式，提前检测可能会引发误判。 |
-| `allow_region_failover_on_local_wal`          | Bool    | false                | 是否允许在本地 WAL 上进行 region failover。<br/>**此选项不建议设置为 true，因为这可能会在故障转移期间导致数据丢失。** |
+| `allow_region_failover_on_local_wal`          | Bool    | `false` | 是否允许在本地 WAL 上进行 region failover。<br/>**此选项不建议设置为 true，因为这可能会在故障转移期间导致数据丢失。** |
 | `node_max_idle_time`                          | String  | `24hours`            | 从 metasrv 内存中删除节点信息前允许的最大空闲时间。超过该时间未发送心跳的节点将被视为不活跃并被删除。                 |
+| `backend_tls`                                 | --      | --                   | kv store 后端的 TLS 配置，适用于 etcd、PostgreSQL 和 MySQL 后端。如果此处和 `store_addrs` 连接字符串中都配置了 TLS，则此处配置会覆盖 `store_addrs` 中的 TLS 设置。 |
+| `backend_tls.mode`                            | String  | `prefer`             | kv store 后端的 TLS 模式，可选值为 `disable`、`prefer`、`require`、`verify_ca` 和 `verify_full`。 |
+| `backend_tls.cert_path`                       | String  | --                   | 客户端 TLS 证书文件路径。 |
+| `backend_tls.key_path`                        | String  | --                   | 客户端 TLS 私钥文件路径。 |
+| `backend_tls.ca_cert_path`                    | String  | --                   | 受信任 CA 证书文件路径。 |
 | `backend_client`                              | --      | --                   | 后端客户端选项。<br/>目前仅适用于使用 etcd 作为元数据存储时。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `backend_client.keep_alive_timeout`           | String  | `3s`                 | 后端客户端的保持连接超时时间。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `backend_client.keep_alive_interval`          | String  | `10s`                | 后端客户端的保持连接间隔。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
@@ -782,17 +963,26 @@ timeout = "3s"
 | `grpc`                                        | --      | --                   | gRPC 服务器选项。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `grpc.bind_addr`                              | String  | `127.0.0.1:3002`     | gRPC 服务器的绑定地址。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `grpc.server_addr`                            | String  | `127.0.0.1:3002`     | frontend 和 datanode 连接到 metasrv 的通信服务器地址。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `grpc.runtime_size`                           | Integer | `8`                  | 服务器工作线程数。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `grpc.runtime_size`                           | Integer | `8`                  | 服务器工作线程数。 |
+| `grpc.max_recv_message_size`                  | String  | `512MB`              | gRPC 服务器的最大接收消息大小。 |
+| `grpc.max_send_message_size`                  | String  | `512MB`              | gRPC 服务器的最大发送消息大小。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `grpc.http2_keep_alive_interval`              | String  | `10s`                | 服务器端 HTTP/2 保持连接间隔。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `grpc.http2_keep_alive_timeout`               | String  | `3s`                 | 服务器端 HTTP/2 保持连接超时时间。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `http`                                        | --      | --                   | HTTP 服务器选项。 |
+| `http.addr`                                   | String  | `127.0.0.1:4000`     | HTTP 服务器地址。 |
+| `http.timeout`                                | String  | `0s`                 | HTTP 请求超时时间。设为 `0s` 可禁用超时。 |
+| `http.body_limit`                             | String  | `64MB`               | HTTP 最大 body 大小。 |
+| `http.enable_api_server`                      | Bool    | `false`              | 是否启动专用公共 HTTP API Server。启用后，会在 `api_server_addr` 地址启动一个独立 Server，仅提供 `/v1` API 和 `/dashboard`。主 HTTP Server 保留用于内部使用。 |
+| `http.api_server_addr`                        | String  | `127.0.0.1:4006`     | 专用公共 HTTP API Server 的绑定地址。仅在 `enable_api_server` 为 `true` 时生效。 |
 | `backend`                                     | String  | `etcd_store`           | 元数据存储类型。<br/>- `etcd_store` (默认)<br/>- `memory_store` (纯内存存储 - 仅用于测试)<br/>- `postgres_store`<br/>- `mysql_store` |
-| `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为  postgre_store 和 mysql_store 时有效。** |
+| `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为 RDS kvbackend 时有效。** |
 | `meta_schema_name` | String | -- | 可选的 PostgreSQL schema，用于元数据表和选举表名称限定。当 PostgreSQL public schema 不可写入时（例如 PostgreSQL 15+ 限制 public schema），可设置此参数为可写入的 schema。GreptimeDB 将使用 `meta_schema_name.meta_table_name`。<br/>**仅在 backend 为 postgres_store 时有效。** |
 | `auto_create_schema` | Bool | `true` | 如果 PostgreSQL schema 不存在则自动创建。启用后，系统会在创建元数据表之前执行 `CREATE SCHEMA IF NOT EXISTS <schema_name>`。这在生产环境中可能受限于手动创建 schema 的情况下非常有用。注意：PostgreSQL 用户必须具有 CREATE SCHEMA 权限才能使此功能生效。<br/>**仅在 backend 为 postgres_store 时有效。** |
-| `meta_election_lock_id` | Integer | `1` | 用于领导选举的 PostgreSQL 咨询锁 id。**仅在 backend 为  postgre_store 时有效。** |
+| `meta_election_lock_id` | Integer | `1` | 用于领导选举的 PostgreSQL 咨询锁 id。**仅在 backend 为  postgres_store 时有效。** |
 | `procedure`                                   | --      | --                   |                                                                                                                                      |
 | `procedure.max_retry_times`                   | 整数    | `12`                 | Procedure 的最大重试次数。                                                                                                           |
-| `procedure.retry_delay`                       | 字符串  | `500ms`              | Procedure 初始重试延迟，延迟会指数增长。                                                                                             |
+| `procedure.retry_delay`                       | 字符串  | `500ms`              | Procedure 初始重试延迟，延迟会指数增长。 |
+| `procedure.max_metadata_value_size`           | String  | `1500KiB`            | 单个 Procedure 元数据值被拆分为多个后端条目前允许的最大大小。                                                                                             |
 | `procedure.max_running_procedures`            | Integer | `128`                  | 同一时间可以运行的程序最大数量。如果运行的程序数量超过此限制，程序将被拒绝。 |
 | `failure_detector`                            | --      | --                   | 故障检测选项。                                                                                                                       |
 | `failure_detector.threshold`                  | 浮点数  | `8.0`                | 判定节点故障前可接受的最大 φ 值。<br/>较低的值反应更快但会产生更多误报。                                                            |
@@ -803,18 +993,20 @@ timeout = "3s"
 | `datanode.client.timeout`                     | 字符串  | `10s`                | 操作超时。                                                                                                                           |
 | `datanode.client.connect_timeout`             | 字符串  | `10s`                | 连接服务器超时。                                                                                                                     |
 | `datanode.client.tcp_nodelay`                 | 布尔值  | `true`               | 接受连接的 `TCP_NODELAY` 选项。                                                                                                      |
+| `datanode.client.max_recv_message_size`       | 字符串  | `512MB`              | gRPC 客户端可接收的最大消息大小。                                                                                                    |
+| `datanode.client.max_send_message_size`       | 字符串  | `512MB`              | gRPC 客户端可发送的最大消息大小。                                                                                                    |
 | wal                                           | --      | --                   | --                                                                                                                                   |
-| wal.provider                                  | String  | raft_engine          | --                                                                                                                                   |
+| wal.provider                                  | String  | `raft_engine` | --                                                                                                                                   |
 | wal.broker_endpoints                          | Array   | --                   | Kafka 集群的端点                                                                                                                     |
 | `wal.auto_create_topics`                      | Bool    | `true`               | 自动为 WAL 创建 topics <br/>设置为 `true` 则自动为 WAL 创建 topics <br/>否则，使用名为 `topic_name_prefix_[0..num_topics)` 的 topics |
 | `wal.auto_prune_interval`                     | String  | `0s`                 | 定期自动裁剪远程 WAL 的时间间隔 <br/>设置为 `0s` 表示禁止自动裁剪 |
 | `wal.trigger_flush_threshold`                 | Integer | `0`                  | 自动 WAL 裁剪中触发 region flush 操作的阈值 <br/>当满足以下条件时，metasrv 会对 region 发送 flush 请求：<br/>`trigger_flush_threshold` + `prunable_entry_id` < `max_prunable_entry_id`<br/>其中：<br/>- `prunable_entry_id` 是该 region 可裁剪的最大日志条目 ID，在该 ID 之前的日志都不被该 region 使用<br/>- `max_prunable_entry_id` 是使用与该 region 同一 kafka topic 的所有 region 可裁剪的最大日志条目 ID，在该 ID 之前的日志都不再被任一 region 使用 <br/>设置为 `0` 以禁止在自动 WAL 裁剪中触发 region flush 操作 |
 | `wal.auto_prune_parallelism`                  | Integer | `10` | 自动 WAL 裁剪的最大并行任务限制，其中每个任务负责一个 kafka topic 的 WAL 裁剪 |
 | `wal.num_topics`                              | Integer | `64`                 | Topic 数量                                                                                                                           |
-| wal.selector_type                             | String  | round_robin          | topic selector 类型 <br/>可用 selector 类型：<br/>- round_robin（默认）                                                              |
-| wal.topic_name_prefix                         | String  | greptimedb_wal_topic | 一个 Kafka topic 是通过连接 topic_name_prefix 和 topic_id 构建的                                                                     |
-| wal.replication_factor                        | Integer | 1                    | 每个分区的副本数                                                                                                                     |
-| wal.create_topic_timeout                      | String  | 30s                  | 超过该时间后，topic 创建操作将被取消                                                                                                 |
+| wal.selector_type                             | String  | `round_robin` | topic selector 类型 <br/>可用 selector 类型：<br/>- round_robin（默认）                                                              |
+| wal.topic_name_prefix                         | String  | `greptimedb_wal_topic` | 一个 Kafka topic 是通过连接 topic_name_prefix 和 topic_id 构建的                                                                     |
+| wal.replication_factor                        | Integer | `1` | 每个分区的副本数                                                                                                                     |
+| wal.create_topic_timeout                      | String  | `30s` | 超过该时间后，topic 创建操作将被取消                                                                                                 |
 | `wal.connect_timeout`                         | String  | `3s`                 | kafka 客户端的连接超时时间。<br/>**仅在 provider 为 `kafka` 时使用。**                                                               |
 | `wal.timeout`                                 | String  | `3s`                 | kafka 客户端的超时时间。<br/>**仅在 provider 为 `kafka` 时使用。**                                                                   |
 | `wal.sasl`                                    | String  | --                   | Kafka 客户端 SASL 配置                                                                                                               |
@@ -843,24 +1035,33 @@ ingest_rt_size = 8
 | Key              | Type   | Description                                 |
 | ---------------- | ------ | ------------------------------------------- |
 | node_id          | 整数   | 该 `datanode` 的唯一标识符。                |
-| grpc.bind_addr   | 字符串 | gRPC 服务绑定地址，默认为`"127.0.0.1:3001"`。 |
+| grpc.bind_addr   | 字符串 | gRPC 服务绑定地址，默认为`127.0.0.1:3001`。 |
 | grpc.server_addr | 字符串 | 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `grpc.bind_addr` 中指定的相同。 |
 | grpc.runtime_size | 整数   | gRPC 服务器工作线程数，默认为 8。           |
 | runtime.query_rt_size | 整数   | 执行 datanode 查询操作的运行时线程数。默认值为 `max(num_cpus - 1, 1)`。 |
 | runtime.ingest_rt_size | 整数   | 执行 datanode 写入操作的运行时线程数。默认值为 CPU 核心数。 |
 
+所有组件共享的通用运行时选项，请参阅[运行时选项](#运行时选项)。
+
 ### 仅限于 `Frontend` 的配置
+
+`datanode.client` 选项用于配置从 Frontend 到 Datanode 的出站 gRPC 连接。
+客户端的消息大小限制独立于 `[grpc]` 服务器的消息大小限制。
 
 ```toml
 [datanode]
 [datanode.client]
 connect_timeout = "1s"
 tcp_nodelay = true
+max_recv_message_size = "512MB"
+max_send_message_size = "512MB"
 ```
 
-| Key                               | Type | Default | Description             |
-|-----------------------------------|------|---------|-------------------------|
-| `datanode`                        | --   | --      |                         |
-| `datanode.client`                 | --   | --      | Datanode 客户端选项。         |
-| `datanode.client.connect_timeout` | 字符串  | `1s`    | 连接服务器超时。                |
-| `datanode.client.tcp_nodelay`     | 布尔值  | `true`  | 接受连接的 `TCP_NODELAY` 选项。 |
+| Key                                             | Type   | Default | Description                              |
+| ----------------------------------------------- | ------ | ------- | ---------------------------------------- |
+| `datanode`                                      | --     | --      |                                          |
+| `datanode.client`                               | --     | --      | Datanode 客户端选项。                    |
+| `datanode.client.connect_timeout`               | 字符串 | `1s`    | 连接服务器超时。                         |
+| `datanode.client.tcp_nodelay`                   | 布尔值 | `true`  | 接受连接的 `TCP_NODELAY` 选项。          |
+| `datanode.client.max_recv_message_size`         | 字符串 | `512MB` | gRPC 客户端可接收的最大消息大小。        |
+| `datanode.client.max_send_message_size`         | 字符串 | `512MB` | gRPC 客户端可发送的最大消息大小。        |
