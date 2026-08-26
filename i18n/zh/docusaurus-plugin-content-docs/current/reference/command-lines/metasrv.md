@@ -21,7 +21,7 @@ greptime metasrv start --help
 | `--data-home <DATA_HOME>`             | Metasrv 实例的工作目录                                                                                                                            |
 | `--env-prefix <ENV_PREFIX>`           | 配置的环境变量前缀，默认为`GREPTIMEDB_METASRV`                                                                                                     |
 | `--grpc-bind-addr <GRPC_BIND_ADDR>`     | gRPC 服务绑定地址                                                                                                                                    |
-| `--grpc-server-addr <GRPC_SERVER_ADDR>` | 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `grpc_bind_addr` 中指定的相同；    |
+| `--grpc-server-addr <GRPC_SERVER_ADDR>` | Metasrv 向 Frontend、Datanode 和 Flownode 公布的地址。未设置时，GreptimeDB 使用第一个网络接口的 IP 地址和 `grpc_bind_addr` 中的端口。    |
 | `--http-addr <HTTP_ADDR>`             | HTTP 服务器地址                                                                                                                                    |
 | `--http-timeout <HTTP_TIMEOUT>`       | HTTP 请求超时时间（秒）                                                                                                                            |
 | `--log-dir <LOG_DIR>`                 | 日志目录                                                                                                                                          |
