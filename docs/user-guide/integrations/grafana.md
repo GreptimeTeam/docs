@@ -238,6 +238,12 @@ The plugin automatically adds double quotes around column names in macros.
 `"timestamp" >= 'ISO1' AND "timestamp" <= 'ISO2'`. The `date_bin` function
 does NOT quote its column argument: `date_bin('15s', ts)`.
 
+### Native Grafana alerting
+
+The plugin evaluates queries on the backend, so the same panel SQL—including
+time macros such as `$__timeFilter`—can be used directly in a Grafana alert
+rule.
+
 ### Configuring Column Mappings
 
 Before using the Logs or Traces query types, configure the default column names

@@ -222,6 +222,10 @@ ORDER BY time;
 `"timestamp" >= 'ISO1' AND "timestamp" <= 'ISO2'`。`date_bin` 函数
 不会对其列参数加引号：`date_bin('15s', ts)`。
 
+### Native Grafana 告警
+
+插件在后端执行查询，因此面板中的同一条 SQL（含 `$__timeFilter` 等时间宏）可直接用于创建 Grafana 告警规则。
+
 ### 配置列映射
 
 在使用 Logs 或 Traces 查询类型之前，请先在数据源设置中配置默认列名，以便 Query Builder 自动映射。
