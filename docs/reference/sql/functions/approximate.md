@@ -142,7 +142,7 @@ UDDSketch provides fast approximate quantiles with bounded memory use. Its memor
 - `error_rate`: Initial relative-error bound.
 - `value`: `DOUBLE` expression to aggregate.
 
-The state can be stored in a `BINARY` column, merged with `uddsketch_merge`, or queried with `uddsketch_calc`. Storing states is useful when later queries need quantiles at several time granularities.
+The state can be stored in a `BINARY` column, merged with `uddsketch_merge`, or queried with `uddsketch_calc` and `uddsketch_rank`. Storing states is useful when later queries need quantiles at several time granularities.
 
 ### `uddsketch_merge`
 
@@ -158,6 +158,14 @@ The state can be stored in a `BINARY` column, merged with `uddsketch_merge`, or 
 
 See [UDDSketch Full Usage Example](#uddsketch-full-usage-example) for an example that combines these functions.
 
+### `uddsketch_rank`
+
+`uddsketch_rank(value, udd_state)` returns the approximate quantile rank of a `DOUBLE` value in a binary UDDSketch state created by `uddsketch_state` or `uddsketch_merge`.
+
+The result is a `DOUBLE` from 0 through 1. A result of 0 means the value is below all values represented by the sketch, while 1 means it is above all represented values. When a value falls in a sketch bucket, the estimated rank counts half of that bucket.
+
+Both current and legacy UDDSketch state encodings are supported. The function returns `NULL` when either argument is `NULL`, the state is empty or invalid, or the value is invalid, such as `NaN`.
+
 ### How to determine `bucket_num` and `error_rate`
 
 The `bucket_num` parameter sets the maximum number of internal buckets and therefore bounds the sketch's memory use. A larger value can represent a wider ratio between the minimum and maximum values before compaction. When the sketch reaches this limit, it merges buckets at one end of the value range and loses accuracy. The recommended value is `128`, which balances accuracy and memory use for most workloads.
@@ -167,7 +175,7 @@ The `error_rate` sets the initial relative-error bound used to map values to buc
 These parameters trade memory for accuracy. A small `error_rate` requires enough buckets for the data's dynamic range. If `bucket_num` is too small, decreasing `error_rate` does not prevent compaction or the resulting increase in maximum error.
 
 ### UDDSketch Full Usage Example
-This example combines the three `uddsketch` functions to calculate approximate quantiles. It stores one state per five-second window, calculates p99 from each state, and then merges those states for a one-minute rollup.
+This example combines the four `uddsketch` functions to calculate approximate quantiles and ranks. It stores one state per five-second window, calculates p99 from each state, estimates the rank of selected values, and then merges the states for a one-minute rollup.
 
 Create `percentile_base` for the raw data and `percentile_5s` for the UDDSketch states in each five-second window. The `percentile_state` column stores the binary sketch state so that later queries can calculate or merge quantiles without scanning the raw table.
 ```sql
@@ -212,6 +220,26 @@ GROUP BY
     time_window;
 -- results will be similar to this:
 -- Query OK, 3 rows affected (0.05 sec)
+```
+
+Estimate where selected values fall in the complete distribution. The query covers values below the minimum, in the middle, and above the maximum:
+
+```sql
+SELECT
+    ROUND(uddsketch_rank(5, `percentile_state`), 2) AS below_min_rank,
+    ROUND(uddsketch_rank(55, `percentile_state`), 2) AS middle_rank,
+    ROUND(uddsketch_rank(110, `percentile_state`), 2) AS above_max_rank
+FROM (
+    SELECT uddsketch_state(128, 0.01, `value`) AS percentile_state
+    FROM percentile_base
+);
+
+-- results as follows:
+-- +----------------+-------------+----------------+
+-- | below_min_rank | middle_rank | above_max_rank |
+-- +----------------+-------------+----------------+
+-- | 0.0            | 0.5         | 1.0            |
+-- +----------------+-------------+----------------+
 ```
 
 Calculate p99 for each stored state. The quantile argument `0.99` asks for an estimate of the value below which approximately 99% of the observations fall:

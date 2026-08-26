@@ -142,7 +142,7 @@ UDDSketch 可以在有限内存中快速计算近似分位数。内存使用和�
 - `error_rate`：初始相对误差上限。
 - `value`：要聚合的 `DOUBLE` 表达式。
 
-该状态可以存入 `BINARY` 列、使用 `uddsketch_merge` 合并，或使用 `uddsketch_calc` 查询。后续查询需要按多种时间粒度计算分位数时，存储状态可以避免重复处理原始值。
+该状态可以存入 `BINARY` 列、使用 `uddsketch_merge` 合并，或使用 `uddsketch_calc` 和 `uddsketch_rank` 查询。后续查询需要按多种时间粒度计算分位数时，存储状态可以避免重复处理原始值。
 
 ### `uddsketch_merge`
 
@@ -158,6 +158,14 @@ UDDSketch 可以在有限内存中快速计算近似分位数。内存使用和�
 
 有关如何结合使用这些函数来计算近似分位数的完整示例，请参阅[UDDSketch 完整使用示例](#uddsketch-完整使用示例)。
 
+### `uddsketch_rank`
+
+`uddsketch_rank(value, udd_state)` 返回 `DOUBLE` 值在二进制 UDDSketch 状态中的近似分位排名。`udd_state` 可以由 `uddsketch_state` 创建，也可以由 `uddsketch_merge` 合并生成。
+
+返回值是 0 到 1 之间的 `DOUBLE`。结果为 0 表示指定值小于 sketch 中记录的所有值，结果为 1 表示指定值大于其中的所有值。如果指定值落入某个 sketch bucket，估算排名时会计入该 bucket 中一半的数据。
+
+该函数同时支持当前和旧版 UDDSketch 状态编码。当任一参数为 `NULL`、状态为空或无效，或者指定值无效（例如 `NaN`）时，函数返回 `NULL`。
+
 ### 如何确定桶数量和误差率
 
 `bucket_num` 参数设置内部 bucket 的最大数量，从而限制 sketch 的内存使用。值越大，在触发 compaction 前可表示的最小值与最大值比例越大。达到上限后，sketch 会合并数值范围一端的 bucket，精度随之下降。推荐值为 `128`，对大多数工作负载可以兼顾准确性和内存使用。
@@ -167,7 +175,7 @@ UDDSketch 可以在有限内存中快速计算近似分位数。内存使用和�
 这两个参数用于权衡内存与准确性。较小的 `error_rate` 需要足够多的桶来覆盖数据的动态范围。如果 `bucket_num` 过小，继续减小 `error_rate` 无法避免桶压缩及最大误差上升。
 
 ### UDDSketch 完整使用示例
-本示例演示如何结合上述三个 `uddsketch` 函数计算近似分位数：先为每个 5 秒窗口保存一个状态，计算各状态的 p99，再合并这些状态得到 1 分钟粒度的结果。
+本示例演示如何结合上述四个 `uddsketch` 函数计算近似分位数和分位排名：先为每个 5 秒窗口保存一个状态，计算各状态的 p99，估算指定值的分位排名，再合并这些状态得到 1 分钟粒度的结果。
 
 首先创建用于存储原始数据的基表 `percentile_base`，以及用于存储 5 秒时间窗口内 UDDSketch 状态的 `percentile_5s` 表。`percentile_state` 列以 `BINARY` 格式存储 sketch，后续查询可以直接计算或合并分位数，而无需扫描原始表。
 ```sql
@@ -212,6 +220,26 @@ GROUP BY
     time_window;
 -- 结果类似：
 -- Query OK, 3 rows affected (0.05 sec)
+```
+
+估算指定值在完整数据分布中的位置。以下查询分别展示小于最小值、位于分布中间和大于最大值的分位排名：
+
+```sql
+SELECT
+    ROUND(uddsketch_rank(5, `percentile_state`), 2) AS below_min_rank,
+    ROUND(uddsketch_rank(55, `percentile_state`), 2) AS middle_rank,
+    ROUND(uddsketch_rank(110, `percentile_state`), 2) AS above_max_rank
+FROM (
+    SELECT uddsketch_state(128, 0.01, `value`) AS percentile_state
+    FROM percentile_base
+);
+
+-- 结果如下：
+-- +----------------+-------------+----------------+
+-- | below_min_rank | middle_rank | above_max_rank |
+-- +----------------+-------------+----------------+
+-- | 0.0            | 0.5         | 1.0            |
+-- +----------------+-------------+----------------+
 ```
 
 计算每个已存储状态的 p99。分位数参数 `0.99` 表示估算约 99% 的观测值不超过的数值：
