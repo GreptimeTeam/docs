@@ -18,7 +18,11 @@ See [Event recording](/user-guide/deployments-administration/configuration.md#ev
 
 ## Query events
 
-The table is created when the first event is recorded. If no event has been
+The first event creates the internal `greptime.greptime_private.events` table, even
+when the server-side global `auto_create_table` setting is `false`. Recording an event
+also adds columns missing from an existing events table. This exception applies
+only to the internal events table; `auto_create_table=false` still prevents
+automatic creation and schema changes for user tables. If no event has been
 recorded yet, or event recording is disabled, this query returns a table-not-found
 error.
 
