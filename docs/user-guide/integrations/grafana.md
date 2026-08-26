@@ -14,45 +14,35 @@ The [GreptimeDB data source plugin](https://github.com/GreptimeTeam/greptimedb-g
 
 ### Installation
 
-The recommended install path is the **unsigned** plugin zip from the [latest release](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/).
-Allow unsigned loading for this plugin id first.
+The plugin is not published in the Grafana plugin catalog, so install the unsigned archive and
+allow it explicitly in `grafana.ini`:
 
-In `grafana.ini`:
-
-```
+```ini
+[plugins]
 allow_loading_unsigned_plugins = info8fcc-greptimedb-datasource
 ```
 
-Or with Grafana in Docker:
+`GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS` is the equivalent environment variable. Grafana Cloud
+does not accept unsigned plugins, so use a self-hosted Grafana. If you need a signed build bound to
+your own Grafana `root_url`, [contact us](https://greptime.com/contactus).
 
-```
-GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=info8fcc-greptimedb-datasource
-```
+Make sure Grafana is installed and running before installing the plugin.
 
-#### Manual install
+You can choose one of the following installation methods:
+- Download `info8fcc-greptimedb-datasource-unsigned.zip` from the [release
+page](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/) and unzip it
+to your [grafana plugin
+directory](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#plugins).
+- Use grafana cli to download and install:
+  ```shell
+  grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource-unsigned.zip plugins install info8fcc
+  ```
+- Use our [prebuilt Grafana docker
+  image](https://hub.docker.com/r/greptime/grafana-greptimedb), which ships the
+  plugin by default: `docker run -p 3000:3000
+  greptime/grafana-greptimedb:latest`
 
-Download `info8fcc-greptimedb-datasource-unsigned.zip` and unzip it into your [Grafana plugins directory](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#plugins).
-
-#### Install with grafana cli
-
-```shell
-grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource-unsigned.zip plugins install info8fcc
-```
-
-Restart Grafana after installing the plugin.
-
-If your Grafana host is not `localhost:3000`, please [contact us](https://greptime.com/contactus) for a customized signed build.
-
-#### Docker Image
-
-We also build a Grafana docker image that includes the GreptimeDB datasource by default:
-
-```shell
-docker pull greptime/grafana-greptimedb:latest
-docker run -p 3000:3000 greptime/grafana-greptimedb:latest
-```
-
-Log in at http://localhost:3000. The default username and password are both `admin`.
+Note that you may need to restart your grafana server after installing the plugin.
 
 ### Connection settings
 
