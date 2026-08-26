@@ -132,9 +132,7 @@ ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
 - 其他列是 GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 中的 `Field` 类型。
 
 :::tip 注意
-`CREATE` 语句中指定的 `PRIMARY KEY` **不是** 传统关系数据库中的主键。
-实际上，传统关系数据库中的 `PRIMARY KEY` 相当于 GreptimeDB 中的 `PRIMARY KEY` 和 `TIME INDEX` 的组合。
-换句话说，`PRIMARY KEY` 和 `TIME INDEX` 一起构成了 GreptimeDB 中行的唯一标识符。
+`PRIMARY KEY` 列和 `TIME INDEX` 共同组成用于排序与合并数据行的存储键。与关系数据库的主键不同，该存储键不强制唯一性。[`merge_mode`](#创建带有-merge-模式的表)和 [`append_mode`](#创建-append-only-表)决定 GreptimeDB 如何处理存储键相同的数据行。
 :::
 
 如果表已经存在且创建表时指定了 `IF NOT EXISTS`，`CREATE` 语句不会返回错误；否则返回错误。
@@ -307,7 +305,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 
 #### 创建 metric engine 的物理表
 
-metric engine 使用合成物理宽表来存储大量的小表数据，实现重用相同列和元数据的效果。详情请参考 [metric engine 文档](/contributor-guide/datanode/metric-engine)和[表引擎](/reference/about-greptimedb-engines.md)介绍。
+Metric Engine 将多个逻辑指标表存储在共享的物理宽表中，在逻辑表之间复用列和元数据。详见 [Metric Engine 架构](/contributor-guide/datanode/metric-engine.md)和[表引擎](/reference/about-greptimedb-engines.md)。
 
 创建一个使用 metric engine 的物理表。
 ```sql
@@ -420,7 +418,7 @@ Query OK, 0 rows affected (0.01 sec)
 
 ### Region 分区规则
 
-请参考 [分区](/contributor-guide/frontend/table-sharding.md#partition) 章节。
+请参考 [分区](/user-guide/deployments-administration/manage-data/table-sharding.md#分区) 章节。
 
 ## CREATE EXTERNAL TABLE
 
@@ -446,7 +444,7 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [db.]table_name
   [,ENDPOINT = uri ]
   [,ACCESS_KEY_ID = key_id ]
   [,SECRET_ACCESS_KEY = access_key ]
-  [,ENABLE_VIRTUAL HOST_STYLE = { TRUE | FALSE }]
+  [,ENABLE_VIRTUAL_HOST_STYLE = { TRUE | FALSE }]
   [,SESSION_TOKEN = token ]
   ...
 )
@@ -468,7 +466,7 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [db.]table_name
 | `ENDPOINT`                  | The bucket endpoint                                             | 可选     |
 | `ACCESS_KEY_ID`             | 用于连接 AWS S3 兼容对象存储的访问密钥 ID                       | 可选     |
 | `SECRET_ACCESS_KEY`         | 用于连接 AWS S3 兼容对象存储的秘密访问密钥                      | 可选     |
-| `ENABLE_VIRTUAL HOST_STYLE` | 如果你想要使用 virtual hosting 来定位 bucket，将其设置为 `true` | 可选     |
+| `ENABLE_VIRTUAL_HOST_STYLE` | 如果使用 virtual hosting 访问 bucket，则设置为 `true`             | 可选     |
 | `SESSION_TOKEN`             | 用于连接 AWS S3 服务的临时凭证                                  | 可选     |
 
 ### 时间索引列
