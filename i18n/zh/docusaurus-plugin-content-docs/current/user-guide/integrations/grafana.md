@@ -229,11 +229,12 @@ ORDER BY time;
 ### 配置列映射
 
 在使用 Logs 或 Traces 查询类型之前，请先在数据源设置中配置默认列名，以便 Query Builder 自动映射。
+下表示例遵循 OpenTelemetry 约定；若表结构不同，可将字段映射到你自己的列名。
 
 #### Logs 配置
 
-| 字段 | 用途 | 建议值（OTel 表） |
-|-------|---------|------------------------|
+| 字段 | 用途 | 示例（OTel） |
+|-------|---------|----------------|
 | Default Table | 默认日志表 | `genai_conversations` |
 | Time Column | 时间戳列 | `timestamp` |
 | Message Column | 日志正文列 | `body` |
@@ -245,8 +246,8 @@ ORDER BY time;
 
 #### Traces 配置
 
-| 字段 | 用途 | 建议值（OTel 表） |
-|-------|---------|---------|
+| 字段 | 用途 | 示例（OTel） |
+|-------|---------|----------------|
 | Default Table | 默认 Trace 表 | `opentelemetry_traces` |
 | Trace ID Column | Trace ID | `trace_id` |
 | Span ID Column | Span ID | `span_id` |

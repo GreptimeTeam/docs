@@ -248,11 +248,13 @@ rule.
 
 Before using the Logs or Traces query types, configure the default column names
 in the data source settings so the Query Builder can automatically map them.
+The examples below follow OpenTelemetry conventions; if your schema differs, map
+the fields to your own column names.
 
 #### Logs Config
 
-| Field | Purpose | Suggested (OTel table) |
-|-------|---------|------------------------|
+| Field | Purpose | Example (OTel) |
+|-------|---------|----------------|
 | Default Table | Default log table | `genai_conversations` |
 | Time Column | Timestamp column | `timestamp` |
 | Message Column | Log body column | `body` |
@@ -264,8 +266,8 @@ Enable **Select context columns** to automatically include them in log queries.
 
 #### Traces Config
 
-| Field | Purpose | Suggested (OTel table) |
-|-------|---------|---------|
+| Field | Purpose | Example (OTel) |
+|-------|---------|----------------|
 | Default Table | Default trace table | `opentelemetry_traces` |
 | Trace ID Column | Trace ID | `trace_id` |
 | Span ID Column | Span ID | `span_id` |
