@@ -58,9 +58,19 @@ With the default engine configuration, a Region without an explicit SST format u
 
 ### BulkMemtable
 
-`BulkMemtable` keeps incoming rows in the flat Arrow layout used by the flat SST path. Writes add record-batch parts instead of inserting one row at a time into a per-series structure. Small fragments first accumulate in an unordered part. Background memtable compaction merges eligible parts and can encode larger merged parts.
+`BulkMemtable` stores writes as parts in the flat Arrow layout instead of inserting rows into per-series buffers:
 
-Each part is exposed as a memtable range with its own statistics. A scan can prune ranges before opening their readers, while a flush can merge and deduplicate multiple ranges. An encoded range can be written as an SST without decoding and encoding its rows again.
+```text
+BulkMemtable
+├─ unordered_part
+│  └─ small BulkPart batches
+└─ parts
+   ├─ BulkPart        (Arrow RecordBatch)
+   ├─ MultiBulkPart   (raw RecordBatches)
+   └─ EncodedBulkPart (in-memory Parquet)
+```
+
+Small parts accumulate in `unordered_part`; larger parts enter `parts` directly. Background memtable compaction merge-sorts eligible parts into a `MultiBulkPart` or encodes them as an `EncodedBulkPart`. Scans use part statistics to prune ranges, and flush can write encoded ranges to SST without decoding and encoding the rows again. For the design rationale and performance results, see [Scaling Time Series to Millions of Cardinalities: GreptimeDB's Flat Format](https://www.greptime.com/blogs/2025-12-22-flat-format).
 
 ### TimeSeriesMemtable
 

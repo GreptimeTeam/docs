@@ -58,9 +58,19 @@ primary_key SST、dense encoding、无 primary key -> SimpleBulkMemtable
 
 ### BulkMemtable
 
-`BulkMemtable` 按照 flat SST 读取路径使用的 Arrow 布局保存写入数据。每次写入增加一个 record batch part，而不是逐行插入按时间序列组织的数据结构。较小的 fragment 会先进入 unordered part；后台 memtable compaction 合并符合条件的 part，并可以编码合并后的较大 part。
+`BulkMemtable` 使用 flat Arrow 布局把写入保存为 part，而不是将数据行插入按时间序列组织的缓冲区：
 
-每个 part 都作为独立的 memtable range 暴露，并带有自己的统计信息。Scan 可以在打开 reader 前裁剪 range，flush 则可以合并多个 range 并执行去重。已经编码的 range 可以直接写为 SST，无需再次解码并编码其中的行。
+```text
+BulkMemtable
+├─ unordered_part
+│  └─ 小批量 BulkPart
+└─ parts
+   ├─ BulkPart        (Arrow RecordBatch)
+   ├─ MultiBulkPart   (未编码的 RecordBatch)
+   └─ EncodedBulkPart (内存中的 Parquet 数据)
+```
+
+小 part 先积累在 `unordered_part` 中，较大的 part 则直接进入 `parts`。后台 memtable compaction 对符合条件的 part 执行 merge sort，生成 `MultiBulkPart` 或编码为 `EncodedBulkPart`。Scan 利用 part 的统计信息裁剪 range；flush 可以将已编码的 range 写入 SST，无需再次解码和编码数据行。设计动机和性能数据见 [Scaling Time Series to Millions of Cardinalities: GreptimeDB's Flat Format](https://www.greptime.com/blogs/2025-12-22-flat-format)。
 
 ### TimeSeriesMemtable
 
