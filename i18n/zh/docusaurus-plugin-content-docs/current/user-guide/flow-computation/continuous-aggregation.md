@@ -17,7 +17,7 @@ Flow 引擎按时间窗口维护总和、平均值、计数等聚合结果，新
 
 ### 日志统计
 
-这个例子是根据输入表中的数据计算一系列统计数据，包括一分钟时间窗口内的总日志数、最小大小、最大大小、平均大小以及大小大于 550 的数据包数。
+这个例子是根据 source 表中的数据计算一系列统计数据，包括一分钟时间窗口内的总日志数、最小大小、最大大小、平均大小以及大小大于 550 的数据包数。
 
 首先，创建一个 source 表 `ngx_access_log` 和一个 sink 表 `ngx_statistics`，如下所示：
 
@@ -72,7 +72,7 @@ SELECT
     max(size) as max_size,
     avg(size) as avg_size,
     sum(case when `size` > 550 then 1 else 0 end) as high_size_count,
-    date_bin('1 minutes'::INTERVAL, access_time) as time_window,
+    date_bin('1 minutes'::INTERVAL, access_time) as time_window
 FROM ngx_access_log
 GROUP BY
     status,
@@ -90,7 +90,9 @@ VALUES
     ('ios', 'iOS', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 404, 700, 'agent', now());
 ```
 
-则 `ngx_access_log` 表将被增量更新以包含以下数据：
+然后，sink 表 `ngx_statistics` 将被增量更新并包含以下数据。
+
+下面结果中的时间窗口和 `update_at` 时间戳仅用于示例，会随执行时间而变化。
 
 ```sql
 SELECT * FROM ngx_statistics;
@@ -176,7 +178,7 @@ COMMENT 'aggregate for distinct country'
 AS
 SELECT
     DISTINCT country,
-    date_bin('1 hour'::INTERVAL, access_time) as time_window,
+    date_bin('1 hour'::INTERVAL, access_time) as time_window
 FROM ngx_access_log
 GROUP BY
     country,
@@ -185,7 +187,7 @@ GROUP BY
 
 上述查询将 `ngx_access_log` 表中的数据聚合到 `ngx_country` 表中，它计算了每个时间窗口内的不同国家。
 `date_bin` 函数用于将数据聚合到一小时的间隔中。
-`ngx_country` 表将不断更新聚合数据，以监控访问系统的不同国家。`EXPIRE AFTER` 参数将确保流式处理流程自动忽略 `access_time` 超过 7 天的数据且不再参与 flow 计算，详见 请参阅[管理 Flow](manage-flow.md#expire-after) 中的说明。
+`ngx_country` 表将不断更新聚合数据，以监控访问系统的不同国家。`EXPIRE AFTER` 参数会使 Flow 忽略 `access_time` 早于 7 天的数据，详见[管理 Flow](manage-flow.md#expire-after)。
 
 你可以向 source 表 `ngx_access_log` 插入一些数据：
 
@@ -257,7 +259,7 @@ SELECT
     sensor_id,
     loc,
     max(temperature) as max_temp,
-    date_bin('10 seconds'::INTERVAL, ts) as time_window,
+    date_bin('10 seconds'::INTERVAL, ts) as time_window
 FROM temp_sensor_data
 GROUP BY
     sensor_id,
@@ -279,7 +281,7 @@ INSERT INTO temp_sensor_data VALUES
     (2, 'room2', 99.5, now());
 ```
 
-表现在应该是空的，等待几秒钟让 flow 将结果更新到输出表：
+此时表应为空；等待几秒钟让 Flow 更新 sink 表：
 
 ```sql
 SELECT * FROM temp_alerts;
@@ -297,7 +299,7 @@ INSERT INTO temp_sensor_data VALUES
     (2, 'room2', 102.5, now());
 ```
 
-等待几秒钟，让 flow 将结果更新到输出表：
+等待几秒钟，让 Flow 更新 sink 表：
 
 ```sql
 SELECT * FROM temp_alerts;
@@ -343,7 +345,7 @@ SELECT
     stat,
     trunc(size, -1)::INT as bucket_size,
     count(client) AS total_logs,
-    date_bin('1 minutes'::INTERVAL, access_time) as time_window,
+    date_bin('1 minutes'::INTERVAL, access_time) as time_window
 FROM
     ngx_access_log
 GROUP BY
@@ -373,7 +375,7 @@ INSERT INTO ngx_access_log VALUES
     ('cli10', 404, 184, now());
 ```
 
-等待几秒钟，让 flow 将结果更新到 sink 表：
+等待几秒钟，让 Flow 更新 sink 表：
 
 ```sql
 SELECT * FROM ngx_distribution;
@@ -394,7 +396,6 @@ SELECT * FROM ngx_distribution;
 ```
 
 <AnchorAlias id="using-tql-with-flow-for-advanced-time-series-analysis" />
-
 ## 将 TQL 与 Flow 结合使用进行高级时序分析
 
 :::warning 实验性特性
@@ -413,7 +414,7 @@ TQL 与 Flow 的集成提供了以下几个优势：
 3. **连续处理**：结合 Flow 的调度，TQL 函数在传入数据上持续运行。
 4. **高级分析**：使用复杂的时序函数，如 `rate()`、`increase()` 和统计聚合。
 
-### 设置 Source 表
+### 设置 source 表
 
 首先，让我们创建一个 Source 表来存储 HTTP 请求指标：
 
@@ -568,8 +569,10 @@ SELECT * FROM rate_reqs;
 
 ```sql
 DROP FLOW calc_rate;
-DROP TABLE http_requests;
+DROP FLOW calc_rate_cte;
+DROP TABLE http_requests_total;
 DROP TABLE rate_reqs;
+DROP TABLE rate_reqs_cte;
 ```
 
 ## 下一步
