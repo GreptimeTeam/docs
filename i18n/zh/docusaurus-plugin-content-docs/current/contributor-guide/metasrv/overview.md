@@ -49,7 +49,7 @@ Region 迁移或故障转移会修改这项映射。Frontend 刷新缓存路由�
 ### 创建表
 
 1. Frontend 向 Metasrv leader 提交 DDL 请求。
-2. Metasrv 根据分区规则确定 Region，并为每个 Region 选择 Datanode。
+2. Metasrv 根据分区规则确定 Region，并[为每个 Region 选择 Datanode](/contributor-guide/metasrv/selector.md)。
 3. 持久化的 Procedure 创建 Region，并写入表元数据和路由。发生 leader 切换后，Procedure 可以从已保存的状态继续执行。
 4. 元数据提交后，Metasrv 通知 Frontend 刷新相关缓存。
 
@@ -63,13 +63,20 @@ Frontend 在查询规划期间使用表和 Region 元数据。分区列上的谓
 
 ## Metasrv 架构
 
-Metasrv 由几类协调机制组成：
+主要协调路径如下：
 
-- 元数据层通过 key-value backend 保存集群状态。
-- Leader 选举保证同一时间只有一个 Metasrv 负责元数据变更和集群管理。
-- Procedure Manager 执行多步骤操作，并持久化恢复执行所需的状态。
-- 心跳处理链更新租约和 Region 统计信息，并传递控制消息。
-- Region 监控根据租约判断 Region 是否不可用，并在需要时启动故障转移。
+```text
+Leader election
+      |
+      v
+Metasrv leader
+├─ DDL manager -> Procedure manager
+├─ Selector -> 新 Region 的放置
+├─ Heartbeat handler chain -> 租约和 Region 统计信息
+├─ Region supervisor -> Region 迁移 Procedure
+├─ Mailbox -> 缓存失效和 Region 指令
+└─ Metadata managers -> KV backend
+```
 
 这些机制共享元数据，但故障边界不同。进程重启可以丢弃缓存和 leader 本地状态；恢复所需的元数据和 Procedure 状态必须持久化。
 

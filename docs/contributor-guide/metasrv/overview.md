@@ -49,7 +49,7 @@ Region migration or failover changes this mapping. Frontend refreshes its cached
 ### Create Table
 
 1. Frontend submits the DDL request to the Metasrv leader.
-2. Metasrv derives Regions from the partition rules and selects a Datanode for each Region.
+2. Metasrv derives Regions from the partition rules and [selects a Datanode for each Region](/contributor-guide/metasrv/selector.md).
 3. A persisted procedure creates the Regions and records the table and route metadata. If leadership changes, the procedure can resume from its persisted state.
 4. Metasrv notifies Frontends after the metadata change is committed so their caches can be refreshed.
 
@@ -63,13 +63,20 @@ Frontend uses table and Region metadata while planning the query. Predicates on 
 
 ## Metasrv Architecture
 
-Metasrv combines several coordination mechanisms:
+The main coordination paths are:
 
-- A metadata layer stores cluster state through a key-value backend.
-- Leader election ensures that one Metasrv coordinates metadata changes and cluster-management work.
-- The Procedure Manager executes multi-step operations and persists enough state to resume them after failure.
-- Heartbeat handlers update leases and Region statistics and deliver control messages.
-- Region supervision uses lease state to detect unavailable Regions and start failover when appropriate.
+```text
+Leader election
+      |
+      v
+Metasrv leader
+├─ DDL manager -> Procedure manager
+├─ Selector -> new Region placement
+├─ Heartbeat handler chain -> leases and Region statistics
+├─ Region supervisor -> Region migration procedures
+├─ Mailbox -> cache invalidations and Region instructions
+└─ Metadata managers -> KV backend
+```
 
 These mechanisms share metadata, but they have different failure boundaries. A process restart may discard caches and leader-local state; metadata and procedure state required for recovery must be durable.
 
