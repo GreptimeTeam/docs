@@ -9,7 +9,7 @@ description: 介绍了 GreptimeDB 的预写日志（WAL）机制，包括其命�
 
 ## 介绍
 
-Mito 在将数据 flush 为 SST 文件前，先在 memtable 中缓冲写入。每个 Region 的 mutation 会先追加到预写日志（WAL），从而恢复尚未进入 SST 的数据。
+Mito 在将数据 flush 为 SST 文件前，先在 [memtable](memtable.md) 中缓冲写入。每个 Region 的 mutation 会先追加到预写日志（WAL），从而恢复尚未进入 SST 的数据。
 
 WAL 通过统一的 log-store 抽象访问，可以使用本地 raft-engine 或远端 Kafka。
 

@@ -762,6 +762,7 @@ const sidebars: SidebarsConfig = {
               label: 'Overview',
             },
             'contributor-guide/datanode/storage-engine',
+            'contributor-guide/datanode/memtable',
             'contributor-guide/datanode/query-engine',
             'contributor-guide/datanode/data-persistence-indexing',
             'contributor-guide/datanode/wal',

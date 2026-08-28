@@ -20,9 +20,9 @@ Mito 是 GreptimeDB 的默认存储引擎，基于 [LSM tree][1]，面向时间�
   - 为尚未刷盘的数据提供高持久性保证。
   - 基于 `LogStore` API 实现，不关心底层存储介质。
   - WAL 的日志记录可以存储在本地磁盘上，也可以存储在实现了 `LogStore` API 的远程日志服务中，例如 Kafka（remote WAL）。
-- Memtable
-  - 数据首先写入 `active memtable`，又称 `mutable memtable`。
-  - 当 `mutable memtable` 已满时，它将变为只读的 `immutable memtable`。
+- [Memtable](memtable.md)
+  - Mito 根据 time index 将数据行写入 mutable memtable。
+  - Flush 冻结 mutable memtable，安装一组新的 mutable memtable 以接收写入，再将冻结的 memtable 写为 SST 文件。
 - SST
   - SST 的全名为有序字符串表（`Sorted String Table`）。
   - `immutable memtable` 刷到持久存储后形成一个 SST 文件。

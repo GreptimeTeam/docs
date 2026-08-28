@@ -35,16 +35,18 @@ Datanode
   `-- heartbeat, lease renewal, Region stats -> Metasrv leader
 ```
 
-A table route maps each Region to its current Datanode peer. It does not contain a separate list of read replicas:
+In steady state, a table route records one leader peer and zero or more follower peers for each Region. The leader is the write target. Deployments with read-replica support can route reads to followers:
 
 ```text
 Table route
-  |-- Region 0 -> Datanode A
-  |-- Region 1 -> Datanode B
-  `-- Region 2 -> Datanode C
+  |-- Region 0
+  |    |-- leader    -> Datanode A
+  |    `-- followers -> Datanode B, Datanode C
+  `-- Region 1
+       `-- leader    -> Datanode D
 ```
 
-Region migration or failover changes this mapping. Frontend refreshes its cached route before sending subsequent reads or writes to the new peer.
+Region migration or failover changes peer roles and can temporarily leave a Region without a leader. Frontend refreshes its cached route before sending subsequent reads or writes to the current peers.
 
 ### Create Table
 

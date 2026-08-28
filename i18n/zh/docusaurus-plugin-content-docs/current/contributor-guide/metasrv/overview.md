@@ -12,7 +12,7 @@ Metasrv 是 GreptimeDB 分布式集群中的元数据和协调服务，不参与
 - 存储 Catalog、Schema、Table、Region、路由和节点元数据；
 - 为新 Region 选择 Datanode，并维护表路由；
 - 选举一个 Metasrv leader 负责协调元数据变更；
-- 通过可恢复的 Procedure 执行 DDL、Region 迁移、故障转移和 repartition；
+- 通过可恢复的 Procedure 执行 DDL、Region 迁移、故障转移和重分区；
 - 通过心跳维护节点租约和 Region 统计信息；
 - 在缓存元数据或 Region 状态变化时通知 Frontend 和 Datanode。
 
@@ -35,16 +35,18 @@ Datanode
   `-- 心跳、租约续期和 Region 统计信息 ----> Metasrv leader
 ```
 
-表路由把每个 Region 映射到当前 Datanode peer，其中没有单独的只读副本列表：
+在稳定状态下，表路由为每个 Region 记录一个 leader peer 和零个或多个 follower peer。Leader 是写入目标；支持只读副本的部署可以把读取路由到 follower：
 
 ```text
 Table route
-  |-- Region 0 -> Datanode A
-  |-- Region 1 -> Datanode B
-  `-- Region 2 -> Datanode C
+  |-- Region 0
+  |    |-- leader    -> Datanode A
+  |    `-- followers -> Datanode B, Datanode C
+  `-- Region 1
+       `-- leader    -> Datanode D
 ```
 
-Region 迁移或故障转移会修改这项映射。Frontend 刷新缓存路由后，再把后续读写发送给新的 peer。
+Region 迁移或故障转移会改变 peer 角色，并可能使 Region 暂时没有 leader。Frontend 刷新缓存路由后，再把后续读写发送给当前 peer。
 
 ### 创建表
 

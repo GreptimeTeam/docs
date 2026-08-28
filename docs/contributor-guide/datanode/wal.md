@@ -7,7 +7,7 @@ description: Introduction to Write-Ahead Logging (WAL) in GreptimeDB, its purpos
 
 ## Introduction
 
-Mito buffers writes in memtables before flushing them to SST files. It first appends each Region's mutations to the write-ahead log (WAL), so data that has not reached an SST can be recovered.
+Mito buffers writes in [memtables](memtable.md) before flushing them to SST files. It first appends each Region's mutations to the write-ahead log (WAL), so data that has not reached an SST can be recovered.
 
 The WAL uses a common log-store abstraction with local raft-engine and remote Kafka providers.
 

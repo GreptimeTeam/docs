@@ -23,9 +23,9 @@ The architecture is the same as a traditional LSMT engine:
     media.
   - Log records of the WAL can be stored on the local disk, or in a remote log service such as
     Kafka (remote WAL) that implements the `Log Store` API.
-- Memtables:
-  - Data is written into the `active memtable`, aka `mutable memtable` first.
-  - When a `mutable memtable` is full, it will be changed to a `read-only memtable`, aka `immutable memtable`.
+- [Memtables](memtable.md):
+  - Mito routes rows by time index into mutable memtables.
+  - A flush freezes the mutable memtables, installs a new mutable set for writes, and writes the frozen memtables to SST files.
 - SST
   - The full name of SST, aka SSTable is `Sorted String Table`.
   - `Immutable memtable` is flushed to persistent storage and produces an SST file.

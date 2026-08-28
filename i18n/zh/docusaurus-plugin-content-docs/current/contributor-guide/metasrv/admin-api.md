@@ -190,7 +190,7 @@ Recovery mode 控制手动修改 table ID sequence 等元数据修复端点。�
 - `GET /admin/sequence/table/next-id`：返回下一个 table ID，但不执行分配。
 - `POST /admin/sequence/table/set-next-id`：推进下一个 table ID。
 
-设置 sequence 前必须开启 recovery mode。新值必须大于当前值，不能通过该 API 回退 sequence。
+设置 sequence 前必须开启 recovery mode。新值必须大于当前值，不能通过该 API 回退 sequence。Recovery mode 只是该 API 的前置条件，不能阻止 DDL。执行该操作时，必须遵循[管理 Table ID Sequence](/user-guide/deployments-administration/maintenance/sequence-management.md)中的完整集群操作流程。
 
 ```bash
 curl -X POST \
@@ -199,4 +199,4 @@ curl -X POST \
   http://localhost:4000/admin/sequence/table/set-next-id
 ```
 
-该操作会影响后续新表分配到的 ID。只有在确认所需 next ID 后，才能用它修复元数据。
+该操作会影响后续新表分配到的 ID。

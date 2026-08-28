@@ -190,7 +190,7 @@ These endpoints inspect or repair the table ID sequence:
 - `GET /admin/sequence/table/next-id`: return the next table ID without allocating it.
 - `POST /admin/sequence/table/set-next-id`: advance the next table ID.
 
-Setting the sequence requires recovery mode. The new value must be greater than the current value; the API cannot move the sequence backwards.
+Setting the sequence requires recovery mode. The new value must be greater than the current value; the API cannot move the sequence backwards. Recovery mode is an API precondition, not a DDL barrier. Follow [Manage table ID sequences](/user-guide/deployments-administration/maintenance/sequence-management.md) for the required cluster-wide procedure.
 
 ```bash
 curl -X POST \
@@ -199,4 +199,4 @@ curl -X POST \
   http://localhost:4000/admin/sequence/table/set-next-id
 ```
 
-Changing this value affects IDs allocated to future tables. Use the endpoint only when repairing metadata after confirming the required next ID.
+Changing this value affects IDs allocated to future tables.
