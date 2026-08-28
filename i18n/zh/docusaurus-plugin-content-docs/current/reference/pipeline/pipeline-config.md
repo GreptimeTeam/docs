@@ -615,9 +615,14 @@ processors:
   - json_parse:
       fields:
         - product_object
+
+transform:
+  - fields:
+      - product_object
+    type: json
 ```
 
-结果将是：
+`json_parse` 处理器执行后，上下文中的 `product_object` 字段将变为一个 JSON 对象：
 
 ```json
 {
@@ -626,6 +631,8 @@ processors:
   }
 }
 ```
+
+随后 `transform` 部分将该解析后的对象映射为 `json` 类型，因此它会被存储为表中名为 `product_object` 的 JSON 列。
 
 ### `simple_extract`
 
@@ -1070,9 +1077,11 @@ GreptimeDB 目前内置了以下几种转换类型：
 - `int8`, `int16`, `int32`, `int64`: 整数类型。
 - `uint8`, `uint16`, `uint32`, `uint64`: 无符号整数类型。
 - `float32`, `float64`: 浮点数类型。
+- `boolean`: 布尔类型。
 - `string`: 字符串类型。
 - `time`: 时间类型。将被转换为 GreptimeDB `timestamp(9)` 类型。
 - `epoch`: 时间戳类型。将被转换为 GreptimeDB `timestamp(n)` 类型。n 为时间戳精度，n 的值视 epoch 精度而定。当精度为 `s` 时，n 为 0；当精度为 `ms` 时，n 为 3；当精度为 `us` 时，n 为 6；当精度为 `ns` 时，n 为 9。
+- `json`: JSON 类型。字段值必须是 JSON 对象或数组（例如由 [`json_parse`](#json_parse) 处理器生成），将被存储为表中的 JSON 列。标量值（例如字符串、数字）无法转换为 `json` 类型。
 
 如果字段在转换过程中获得了非法值，Pipeline 将会抛出异常。例如将一个字符串 `abc` 转换为整数时，由于该字符串不是一个合法的整数，Pipeline 将会抛出异常。
 
