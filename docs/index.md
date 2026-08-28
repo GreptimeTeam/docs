@@ -19,7 +19,7 @@ description: Introduction to GreptimeDB, an open-source observability database f
 
 **Drop-in compatible.** [PromQL](/user-guide/query-data/promql.md), [Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md), [Jaeger](/user-guide/query-data/jaeger.md), [MySQL](/user-guide/protocols/mysql.md), [PostgreSQL](/user-guide/protocols/postgresql.md) protocols — migrate without rewriting queries. [SQL](/user-guide/query-data/sql.md) + [PromQL](/user-guide/query-data/promql.md) dual query capability means one database replaces your metrics store + data warehouse combo.
 
-Learn more in [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) and [Unified observability data model](/user-guide/concepts/observability-2.md).
+Learn more in [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) and [Observability 2.0 and wide events](/user-guide/concepts/observability-2.md).
 
 Before getting started, please read the following documents that include instructions for setting up, fundamental concepts, architectural designs, and tutorials:
 

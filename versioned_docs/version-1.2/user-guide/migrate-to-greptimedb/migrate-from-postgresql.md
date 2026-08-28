@@ -40,7 +40,7 @@ your create table SQL:
    time index either.
 3. It's vital to set the most fit timestamp precision for your time index column, too. Like the chosen of time index
    column, the precision of it cannot be changed as well. Find the most fit timestamp type for your
-   data set [here](/reference/sql/data-types#data-types-compatible-with-mysql-and-postgresql).
+   data set [here](/reference/sql/data-types.md#data-types-compatible-with-mysql-and-postgresql).
 4. Choose a primary key only when it is truly needed. The primary key in GreptimeDB is different from that in PostgreSQL. You should use a primary key only when:
     * Most queries can benefit from the ordering.
     * You need to deduplicate (including delete) rows by the primary key and time index.
@@ -58,8 +58,10 @@ right data types and "ttl" or "compaction" options, etc.
 
 ### Write data to both GreptimeDB and PostgreSQL simultaneously
 
-Writing data to both GreptimeDB and PostgreSQL simultaneously is a practical strategy to avoid data loss during
-migration. By utilizing PostgreSQL's client libraries (JDBC + a PostgreSQL driver), you can set up two client
+Writing to both GreptimeDB and PostgreSQL keeps the two systems in parallel so you can compare them before cutting over.
+It is not a transaction across both databases: a write can succeed on one side and fail on the other, so record failed
+writes, retry each destination independently, and reconcile the two before switching over. Check that a row is actually missing before replaying it — an [append-only table](/user-guide/manage-data/overview.md#avoid-updating-data-by-creating-table-with-append_mode-option) keeps duplicate rows rather than merging them. By utilizing PostgreSQL's
+client libraries (JDBC + a PostgreSQL driver), you can set up two client
 instances - one for GreptimeDB and another for PostgreSQL. For guidance on writing data to GreptimeDB using SQL, please
 refer to the [Ingest Data](/user-guide/ingest-data/for-iot/sql.md) section.
 
@@ -69,6 +71,11 @@ exclusively with GreptimeDB. If a complete migration of all historical data is n
 steps.
 
 ### Export data from PostgreSQL
+
+`pg_dump` takes a consistent snapshot, but that snapshot still contains the rows dual-write has already delivered to
+GreptimeDB. The command below exports them too. Use it as-is only when the destination table deduplicates on its primary
+key and time index. Otherwise export the historical window explicitly, for example with
+`COPY (SELECT ... WHERE ts < '<cutoff>') TO ...` per table.
 
 [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) is a commonly used tool to export data from
 PostgreSQL. Using it, we can export the data that can be later imported into GreptimeDB directly. For example, if we

@@ -125,6 +125,13 @@ When creating or modifying a full-text index, you can specify the following opti
 
 GreptimeDB provides two full-text index backends for efficient log searching:
 
+:::note
+The index sizes and performance multipliers below come from Greptime's testing.
+Use them to compare the two backends against each other, not as absolute figures
+for your data: selectivity, term distribution, and cache state all move these
+numbers.
+:::
+
 1. **Bloom Backend**
    - Best for: General-purpose log searching
    - Features:
@@ -222,7 +229,7 @@ Consider using full-text index only when you need advanced text search capabilit
 
 ## Modify indexes
 
-You can always change the index type of columns by the `ALTER TABLE` statement, read the [reference](/reference/sql/alter/#alter-table) for more info.
+You can always change the index type of columns by the `ALTER TABLE` statement, read the [reference](/reference/sql/alter.md#alter-table) for more info.
 
 ## Best Practices
 

@@ -129,6 +129,14 @@ Returns parent cell at given resolution.
 SELECT h3_cell_parent(h3_latlng_to_cell(37.76938, -122.3889, 8), 6);
 ```
 
+### `h3_cell_center_child`
+
+Returns the center child of a cell at the requested resolution. The target resolution must be greater than or equal to the input cell's resolution.
+
+```sql
+SELECT h3_cell_center_child(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
+```
+
 ### `h3_cell_to_children`
 
 Returns children cells at given resolution.
@@ -309,6 +317,20 @@ SELECT s2_cell_parent(s2_latlng_to_cell(37.76938, -122.3889), 3);
 ```
 
 ## Encodings
+
+### `geo_path`
+
+Aggregates latitude and longitude columns into a struct containing `lat` and `lng` arrays. The coordinates are ordered by the timestamp argument.
+
+Arguments:
+
+- latitude as `Float64`
+- longitude as `Float64`
+- timestamp
+
+```sql
+SELECT geo_path(lat, lon, ts) FROM positions;
+```
 
 ### `json_encode_path`
 

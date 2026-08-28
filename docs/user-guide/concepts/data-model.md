@@ -1,13 +1,15 @@
 ---
-keywords: [data model, time index, tags, timestamps, fields, metrics, logs, traces]
-description: Describes GreptimeDB's relational table model, time index, Tag, Timestamp, and Field semantics, with examples for metrics, logs, and traces.
+keywords: [data model, unified observability data model, time index, tags, timestamps, fields, metrics, logs, traces]
+description: Describes GreptimeDB's unified observability data model, including relational tables, time indexes, and Tag, Timestamp, and Field semantics.
 ---
 
 # Data Model
 
 ## Model
 
-GreptimeDB uses a relational table model extended with a time index and semantic column roles: `Tag`, `Timestamp`, and `Field`. The same model is used for metrics, logs, traces, and event data, while each signal can remain in separate tables.
+GreptimeDB uses a unified observability data model based on relational tables with a time index and `Tag`, `Timestamp`, and `Field` column semantics. Metrics, logs, traces, and events share this model while remaining in separate tables with workload-specific schemas.
+
+![Metrics, logs, and traces remain in separate tables while sharing schema concepts, storage, and query layers.](/unified-observability-model.svg)
 
 Every GreptimeDB table has a name and exactly one time index. Columns have the following roles:
 
@@ -88,4 +90,4 @@ The table model provides several practical properties:
 
 GreptimeDB manages table schemas with SQL. See [Table Management](/user-guide/deployments-administration/manage-data/basic-table-operations.md) and [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
 
-Tables can also carry an optional [table semantic layer](./semantic-layer.md) describing signal identity and ingestion metadata for machine consumers. Read [Unified observability data model](./observability-2.md) for how native signals and wide events use the shared table model without sharing one table.
+Tables can also carry an optional [table semantic layer](./semantic-layer.md) describing signal identity and ingestion metadata for machine consumers. Read [Observability 2.0 and wide events](./observability-2.md) for one optional way to retain more context in this model.

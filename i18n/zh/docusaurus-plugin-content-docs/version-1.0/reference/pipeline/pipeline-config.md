@@ -463,9 +463,7 @@ processors:
 ### `json_path`（废弃）
 
 :::danger 废弃特性
-增加 vrl processor 后，`json_path` 处理器的使用场景已经大大减少。
-如果你需要从 JSON 数据中提取字段，建议使用 `vrl` 处理器来实现更灵活的处理。
-我们计划在未来的版本中废弃 `json_path` 处理器。
+`json_path` 处理器已废弃。`vrl` 覆盖了它的使用场景，并提供更灵活的 JSON 字段提取能力，因此新 pipeline 应使用 `vrl`。
 :::
 
 `json_path` 处理器用于从 JSON 数据中提取字段。以下是一个配置示例：
@@ -814,9 +812,7 @@ processors:
 此实验性功能可能存在预期外的行为，其功能未来可能发生变化。
 :::
 
-`vrl` 处理器使用 pipeline 上下文作为环境来运行 vrl 编程脚本。
-相比于简单的处理器，它功能更加强大，允许你编写编程代码来此操作上下文中的变量；不过执行 vrl 脚本会消耗更多的资源。
-更多的 vrl 语言介绍和使用，请参考[官方网站](https://vector.dev/docs/reference/vrl/)。
+`vrl` 处理器在 pipeline 上下文中运行 VRL 脚本，可以实现内置处理器无法表达的转换，但执行脚本比使用内置处理器消耗更多资源。语言语法参见 [VRL 文档](https://vector.dev/docs/reference/vrl/)。
 
 `vrl` 处理器目前只有一个配置项，就是 `source`（源码）。以下是一个示例：
 ```YAML
@@ -1017,7 +1013,7 @@ GreptimeDB 支持以下四种字段的索引类型：
 - `timestamp`: 用于指定某列是时间索引列
 - `inverted`: 用于指定某列使用 inverted 类型的索引（倒排索引）
 - `fulltext`: 用于指定某列使用 fulltext 类型的索引（全文索引），该列需要是字符串类型
-- `skipping`: 用于指定某列使用 skipping 类型的索引（跳数索引），该列需要是字符串类型
+- `skipping`: 用于指定某列使用 skipping 类型的索引（跳数索引）
 
 
 不提供 `index` 字段时，GreptimeDB 将不会在该字段上建立索引。
@@ -1030,15 +1026,15 @@ GreptimeDB 支持以下四种字段的索引类型：
 
 #### Inverted 索引
 
-通过 `index: inverted` 指定在哪个列上建立倒排索引，写法请参考下方的 [Transform 示例](#transform-示例)。
+通过 `index: inverted` 指定要在哪一列上建立倒排索引，写法请参考下方的 [Transform 示例](#transform-示例)。
 
 #### Fulltext 索引
 
-通过 `index: fulltext` 指定在哪个列上建立全文索引，该索引可大大提升 [日志搜索](/user-guide/logs/fulltext-search.md) 的性能，写法请参考下方的 [Transform 示例](#transform-示例)。
+通过 `index: fulltext` 指定要在哪一列上建立全文索引。全文索引可以提高[日志搜索](/user-guide/logs/fulltext-search.md)的性能，写法参见下方的 [Transform 示例](#transform-示例)。
 
 #### Skipping 索引
 
-通过 `index: skipping` 指定在哪个列上建立跳数索引，该索引只需少量存储空间的索引文件即可以加速在高基数列上的查询，写法请参考下方的 [Transform 示例](#transform-示例)。
+通过 `index: skipping` 指定要在哪一列上建立跳数索引。跳数索引只需较少的索引存储空间，即可加速高基数列查询，写法参见下方的 [Transform 示例](#transform-示例)。
 
 ### `tag` 字段
 

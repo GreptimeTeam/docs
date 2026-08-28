@@ -20,7 +20,7 @@ DESC TABLE INFORMATION_SCHEMA.VIEWS;
 | table_name           | String  |      | NO   |         | FIELD         |
 | view_definition      | String  |      | NO   |         | FIELD         |
 | check_option         | String  |      | YES  |         | FIELD         |
-| is_updatable         | Boolean |      | YES  |         | FIELD         |
+| is_updatable         | String  |      | YES  |         | FIELD         |
 | definer              | String  |      | YES  |         | FIELD         |
 | security_type        | String  |      | YES  |         | FIELD         |
 | character_set_client | String  |      | YES  |         | FIELD         |
@@ -36,7 +36,7 @@ DESC TABLE INFORMATION_SCHEMA.VIEWS;
 * `view_definition`: 视图的定义，即创建视图时的 `SELECT` 语句。
 * `check_option`: 不支持，始终为 `NULL`。
 * `is_updatable`: 视图是否可以进行 `UPDATE/INSERT/DELETE` 操作，始终为 `NO`。
-* `definer`: 创建视图的用户的名称。
+* `definer`: 为定义视图的账号保留，始终为 `NULL`。
 * `security_type`: 不支持，始终为 `NULL`。
 * `character_set_client`: 创建视图时 `character_set_client` 会话变量的值，始终为 `utf8`。
 * `collation_connection`: 创建视图时 `collation_connection` 会话变量的值，始终为 `utf8_bin`。

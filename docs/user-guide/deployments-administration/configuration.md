@@ -391,13 +391,13 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | account_name              | String  | The account name of Azure Blob Storage                                           |
 |         | account_key               | String  | The access key                                                                   |
 |         | sas_token                 | String  | The shared access signature                                                      |
-| Gsc     |                           |         | Google Cloud Storage options, valid when type="Gsc"                              |
-|         | name                      | String  | The storage provider name, default is `Gsc`                                      |
-|         | root                      | String  | The root path in Gsc bucket                                                      |
-|         | bucket                    | String  | The Gsc bucket name                                                              |
-|         | scope                     | String  | The Gsc service scope                                                            |
-|         | credential_path           | String  | The Gsc credentials path                                                         |
-|         | endpoint                  | String  | The API endpoint of Gsc                                                          |
+| Gcs     |                           |         | Google Cloud Storage options, valid when type="Gcs"                              |
+|         | name                      | String  | The storage provider name, default is `Gcs`                                      |
+|         | root                      | String  | The root path in the GCS bucket                                                      |
+|         | bucket                    | String  | The GCS bucket name                                                              |
+|         | scope                     | String  | The GCS service scope                                                            |
+|         | credential_path           | String  | The GCS credentials path                                                         |
+|         | endpoint                  | String  | The API endpoint of GCS                                                          |
 
 A file storage sample configuration:
 
@@ -584,6 +584,7 @@ scan_memory_on_exhausted = "fail"
 min_compaction_interval = "0m"
 schedule_compaction_after_edit = true
 default_flat_format = true
+experimental_series_scan_v2 = true
 sst_write_buffer_size = "8MB"
 max_concurrent_scan_files = 384
 
@@ -651,6 +652,7 @@ Available options:
 | `min_compaction_interval`           | String  | `0m`         | Minimum time interval between two compactions. Set to "0m" (default) to allow compactions to run immediately without restriction.                                                                                                                                                                                                                                             |
 | `schedule_compaction_after_edit`    | Bool    | `true`       | Whether to allow scheduling a compaction after a successful region edit.<br/>Setting this to `true` is a necessary but not sufficient condition for scheduling compaction after a region edit. Other constraints, such as `min_compaction_interval`, may still prevent compaction from being scheduled.<br/>Setting this to `false` guarantees that compaction will not be scheduled after a region edit. |
 | `default_flat_format`                | Bool    | `true`       | Whether to enable flat format as the default SST format.                                                                                                                                                                                                                                                                                                             |
+| `experimental_series_scan_v2`       | Bool    | `true`       | Whether to enable the experimental two-phase mode for series scans of metric engine physical regions. Set to `false` to use the legacy mode. Other series scans also use the legacy mode.                                                                                                                                                                                                                                           |
 | `scan_parallelism`                       | Integer | `0`           | (Deprecated, use `max_concurrent_scan_files` instead) Legacy option for scan parallelism.                                                                                                                                                                                                                                                                                                              |
 | `index`                                  | --      | --            | The options for index in Mito engine.                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `index.aux_path`                         | String  | `""`          | Auxiliary directory path for the index in the filesystem. This path is used to store intermediate files for creating the index and staging files for searching the index. It defaults to `{data_home}/index_intermediate`. The default name for this directory is `index_intermediate` for backward compatibility. This path contains two subdirectories: `__intm` for storing intermediate files used during index creation, and `staging` for storing staging files used during index searching. |

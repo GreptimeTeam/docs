@@ -356,6 +356,41 @@ auth:
       password: "1fa44bbc-5ded-42bd-a3f1-c3621affce63"
       permission: "admin"       
 
+# 审计日志配置（仅企业版）
+# 审计日志记录在数据库上执行的操作，帮助监控用户活动、检测可疑操作并确保合规。
+# 参见 https://docs.greptime.cn/enterprise/deployments-administration/monitoring/audit-logging/
+auditLog:
+  # 启用审计日志插件。默认：false。
+  enabled: true
+
+  # 允许审计的来源。该选项作为过滤器使用。
+  # 多个来源用逗号（","）分隔。
+  # 可用来源："unknown"、"http"、"grpc"、"mysql"、"postgres"。
+  # 特殊值 "all"（默认）表示所有来源。
+  sources: "all"
+
+  # 允许审计的语句类别。该选项作为过滤器使用。
+  # 多个类别用逗号（","）分隔。
+  # 可用类别："read"、"write"、"admin"、"ddl"、"misc"。
+  # 特殊值 "all" 表示所有类别。默认："ddl,admin"。
+  classes: "ddl,admin"
+
+  # 允许审计的语句命令。该选项作为过滤器使用。
+  # 多个命令用逗号（","）分隔。
+  # 可用命令："promql"、"select"、"copy"、"insert"、"delete"、"create"、
+  # "alter"、"truncate"、"drop"、"admin"、"misc"。
+  # 特殊值 "all"（默认）表示所有命令。
+  commands: "all"
+
+  # 允许审计的对象类型。该选项作为过滤器使用。
+  # 多个对象类型用逗号（","）分隔。
+  # 可用对象类型："database"、"table"、"view"、"flow"、"index"、"misc"、"trigger"。
+  # 特殊值 "all"（默认）表示所有对象类型。
+  objectTypes: "all"
+
+  # 最多保留的审计日志文件数量。默认：30。
+  maxLogFiles: 30
+
 # Remote WAL相关配置，按需打开
 # remoteWal:
 #   enabled: true

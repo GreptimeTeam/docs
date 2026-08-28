@@ -391,13 +391,13 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 |         | account_name      | 字符串 | Azure Blob 存储的账户名                             |
 |         | account_key       | 字符串 | 访问密钥                                            |
 |         | sas_token         | 字符串 | 共享访问签名                                        |
-| Gsc     |                   |        | Google Cloud Storage 存储选项，当 type="Gsc" 时有效 |
-|         | name            | 字符串 |  存储提供商名字，默认为 `Gsc`               |
-|         | root              | 字符串 | Gsc 桶中的根路径                                    |
-|         | bucket            | 字符串 | Gsc 桶名称                                          |
-|         | scope             | 字符串 | Gsc 权限                                            |
-|         | credential_path   | 字符串 | Gsc 访问证书                                        |
-|         | endpoint          | 字符串 | GSC 的 API 端点                                     |
+| Gcs     |                   |        | Google Cloud Storage 存储选项，当 type="Gcs" 时有效 |
+|         | name            | 字符串 |  存储提供商名字，默认为 `Gcs`               |
+|         | root              | 字符串 | GCS 桶中的根路径                                    |
+|         | bucket            | 字符串 | GCS 桶名称                                          |
+|         | scope             | 字符串 | GCS 权限                                            |
+|         | credential_path   | 字符串 | GCS 访问证书                                        |
+|         | endpoint          | 字符串 | GCS 的 API 端点                                     |
 
 文件存储配置范例：
 
@@ -588,6 +588,7 @@ scan_memory_on_exhausted = "fail"
 min_compaction_interval = "0m"
 schedule_compaction_after_edit = true
 default_flat_format = true
+experimental_series_scan_v2 = true
 sst_write_buffer_size = "8MB"
 max_concurrent_scan_files = 384
 
@@ -655,6 +656,7 @@ fork_dictionary_bytes = "1GiB"
 | `min_compaction_interval`           | 字符串 | `0m`          | 两次 compaction 之间的最小时间间隔。设为 "0m"（默认）允许 compactions 立即运行，无限制。                              |
 | `schedule_compaction_after_edit`    | 布尔值 | `true`        | 是否允许在成功的 region edit 之后调度 compaction。<br/>设为 `true` 是在 region edit 后调度 compaction 的必要但不充分条件，`min_compaction_interval` 等其他约束仍可能阻止 compaction 被调度。<br/>设为 `false` 则保证 region edit 后不会调度 compaction。 |
 | `default_flat_format`                | 布尔值 | `true`        | 是否启用 Flat 格式作为默认 SST 格式。                                                                                |
+| `experimental_series_scan_v2`       | 布尔值 | `true`        | 是否为 metric 引擎物理 region 的 series scan 启用实验性的 two-phase 模式。设为 `false` 时使用 legacy 模式，其他 series scan 也使用 legacy 模式。 |
 | `scan_parallelism`                       | 整数   | `0`           | （已弃用，请使用 `max_concurrent_scan_files`）旧版扫描并发度选项。                                                |
 | `index` | -- | -- | Mito 引擎中索引的选项。 |
 | `index.aux_path` | 字符串 | `""` | 文件系统中索引的辅助目录路径，用于存储创建索引的中间文件和搜索索引的暂存文件，默认为 `{data_home}/index_intermediate`。为了向后兼容，该目录的默认名称为 `index_intermediate`。此路径包含两个子目录：- `__intm`: 用于存储创建索引时使用的中间文件。- `staging`: 用于存储搜索索引时使用的暂存文件。 |

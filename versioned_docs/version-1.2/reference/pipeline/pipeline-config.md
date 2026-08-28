@@ -444,9 +444,7 @@ In the above example, the configuration of the `csv` processor includes the foll
 ### `json_path` (deprecated)
 
 :::danger Deprecated Feature
-With the addition of the vrl processor, the use cases for the `json_path` processor have been greatly reduced.
-If you need to extract fields from JSON data, it is recommended to use the `vrl` processor for more flexible processing.
-We plan to deprecate the `json_path` processor in future versions.
+The `json_path` processor is deprecated. The `vrl` processor covers its use cases and provides more flexible JSON field extraction, so use `vrl` in new pipelines.
 :::
 
 The `json_path` processor is used to extract fields from JSON data. Here's an example configuration:
@@ -598,9 +596,14 @@ processors:
   - json_parse:
       fields:
         - product_object
+
+transform:
+  - fields:
+      - product_object
+    type: json
 ```
 
-The result will be:
+After the `json_parse` processor runs, the `product_object` field in the context becomes a JSON object:
 
 ```json
 {
@@ -609,6 +612,8 @@ The result will be:
   }
 }
 ```
+
+The `transform` section then maps the parsed object to the `json` type, so it is stored as a JSON column named `product_object` in the table.
 
 ### `simple_extract`
 
@@ -795,11 +800,9 @@ The above example can also be done in the following `select` processor's configu
 This experimental feature may contain unexpected behavior, have its functionality change in the future.
 :::
 
-The `vrl` processor run the vrl programming script against the pipeline context.
-It's more powerful than simple processors, for it allows you to write actual programming codes to manipulate the context; however, it also costs more resource to execute.
-Refer to the [official website](https://vector.dev/docs/reference/vrl/) for more language introduction and usage.
+The `vrl` processor runs a VRL script against the pipeline context. It supports transformations that cannot be expressed with the built-in processors, but executing a script uses more resources than a built-in processor. See the [VRL reference](https://vector.dev/docs/reference/vrl/) for language syntax.
 
-The `vrl` processor only takes one configuration, that is the `source` field. Here's an example:
+The `vrl` processor takes one configuration field, `source`:
 ```YAML
 processors:
   - date:
@@ -1056,9 +1059,11 @@ GreptimeDB currently provides the following built-in transformation types:
 - `int8`, `int16`, `int32`, `int64`: Integer types.
 - `uint8`, `uint16`, `uint32`, `uint64`: Unsigned integer types.
 - `float32`, `float64`: Floating-point types.
+- `boolean`: Boolean type.
 - `string`: String type.
 - `time`: Time type, which will be converted to GreptimeDB `timestamp(9)` type.
 - `epoch`: Timestamp type, which will be converted to GreptimeDB `timestamp(n)` type. The value of `n` depends on the precision of the epoch. When the precision is `s`, `n` is 0; when the precision is `ms`, `n` is 3; when the precision is `us`, `n` is 6; when the precision is `ns`, `n` is 9.
+- `json`: JSON type. The field value must be a JSON object or array, such as one produced by the [`json_parse`](#json_parse) processor, and it is stored as a JSON column in the table. Scalar values (for example, strings, numbers) cannot be converted to the `json` type.
 
 If a field obtains an illegal value during the transformation process, the Pipeline will throw an exception. For example, when converting a string `abc` to an integer, an exception will be thrown because the string is not a valid integer.
 
@@ -1108,7 +1113,7 @@ Specify which field uses the inverted index. Refer to the [Transform Example](#t
 
 #### The Fulltext Index
 
-Specify which field will be used for full-text search using `index: fulltext`. This index greatly improves the performance of [log search](/user-guide/logs/fulltext-search.md).
+Specify which field will be used for full-text search using `index: fulltext`. This index improves the performance of [log search](/user-guide/logs/fulltext-search.md).
 Use the detailed form when you need to set fulltext index options:
 
 ```yaml

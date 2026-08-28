@@ -5,20 +5,15 @@ description: Learn how to use GreptimeDB's continuous aggregation for real-time 
 
 # Continuous Aggregation
 
-Continuous aggregation is a crucial aspect of processing time-series data to deliver real-time insights.
-The Flow engine empowers developers to perform continuous aggregations,
-such as calculating sums, averages, and other metrics, seamlessly.
-It efficiently updates the aggregated data within specified time windows, making it an invaluable tool for analytics.
+The Flow engine maintains aggregates such as sums, averages, and counts over time windows, updating the sink table as new rows arrive. Queries then read the sink table instead of scanning the source table.
 
-Following are three major usecase examples for continuous aggregation:
+The three examples below cover the common cases:
 
-1. **Real-time Analytics**: A real-time analytics platform that continuously aggregates data from a stream of events, delivering immediate insights while optionally downsampling the data to a lower resolution. For instance, this system can compile data from a high-frequency stream of log events (e.g., occurring every millisecond) to provide up-to-the-minute insights such as the number of requests per minute, average response times, and error rates per minute.
+1. **Real-time Analytics**: downsample a high-frequency event stream into a lower resolution. For instance, compile per-millisecond log events into requests per minute, average response times, and error rates per minute.
 
-2. **Real-time Monitoring**: A real-time monitoring system that continuously aggregates data from a stream of events and provides real-time alerts based on the aggregated data. For example, a system that aggregates data from a stream of sensor events and provides real-time alerts when the temperature exceeds a certain threshold.
+2. **Real-time Monitoring**: aggregate a stream and use the aggregated rows as alerts, for example emitting a row when the maximum temperature in a window exceeds a threshold.
 
-3. **Real-time Dashboard**: A real-time dashboard that shows the number of requests per minute, the average response time, and the number of errors per minute. This dashboard can be used to monitor the health of the system and to detect any anomalies in the system.
-
-In all these usecases, the continuous aggregation system continuously aggregates data from a stream of events and provides real-time insights and alerts based on the aggregated data. The system can also downsample the data to a lower resolution to reduce the amount of data stored and processed. This allows the system to provide real-time insights and alerts while keeping the data storage and processing costs low.
+3. **Real-time Dashboard**: precompute the counters a dashboard renders, such as request counts, average response time, and error counts per minute.
 
 
 ## Real-time Analytics Example
@@ -62,7 +57,7 @@ CREATE TABLE `ngx_statistics` (
 );
 ```
 
-Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. So you can be made aware in real time the information about packet size and action upon it, i.e. if the `high_size_count` became too high at a certain point, you can further examine if anything goes wrong, or if the `max_size` column suddenly spike in a 1 minute time window, you can then trying to locate that packet and further inspect it.
+Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the number of packets with a size greater than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. A spike in `high_size_count` or `max_size` within a single window then points you at the minute to inspect.
 
 The `EXPIRE AFTER '6h'` in the following SQL ensures that the flow computation only uses source data from the last 6 hours. Data older than 6 hours in the sink table will not be modified by this flow. For more details, see [manage-flow](manage-flow.md#expire-after).
 
@@ -370,7 +365,6 @@ The query aggregates data from the `ngx_access_log` table into the `ngx_distribu
 It computes the total number of logs for each status code and packet size bucket (bucket size of 10, as specified by `trunc` with a second argument of -1) within each time window.
 The `date_bin` function groups the data into one-minute intervals.
 The `EXPIRE AFTER '6h'` ensures that the flow computation only uses source data from the last 6 hours. See more details in [manage-flow](manage-flow.md#expire-after).
-Consequently, the `ngx_distribution` table is continuously updated, offering real-time insights into the distribution of packet sizes per status code.
 
 Now that we have created the flow task, we can insert some data into the source table `ngx_access_log`:
 
@@ -413,7 +407,7 @@ SELECT * FROM ngx_distribution;
 This experimental feature may contain unexpected behavior and have its functionality change in the future.
 :::
 
-TQL (Time Query Language) can be seamlessly integrated with Flow to perform advanced time-series computations like rate calculations, moving averages, and other complex time-window operations. This combination allows you to create continuous aggregation flows that leverage TQL's powerful analytical functions for real-time insights.
+A Flow query can wrap TQL (Time Query Language), which gives you rate calculations, moving averages, and other time-window operations that are awkward to express in plain SQL.
 
 
 ### Understanding TQL Flow Components

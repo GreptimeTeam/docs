@@ -71,6 +71,14 @@ const point1 = new Point('temperature')
   .floatField('value', 24.0)
 writeApi.writePoint(point1)
 
+// 写入 API 会把数据点攒成批次，在 flush 之前不会真正发送。
+// close() 会 flush 剩余数据并取消待重试的请求；不调用它可能丢掉已缓冲的数据点。
+try {
+  await writeApi.close()
+} catch (e) {
+  console.error('写入失败', e)
+  process.exitCode = 1
+}
 ```
 
 </TabItem>
@@ -187,9 +195,12 @@ $writeApi->write($point);
 
 ```shell
 for file in data.*; do
-  curl -i --retry 3 \
+  if ! curl -sS --fail-with-body --retry 3 \
     -X POST "http://${GREPTIME_HOST}:4000/v1/influxdb/write?db=${GREPTIME_DB}&u=${GREPTIME_USERNAME}&p=${GREPTIME_PASSWORD}" \
-    --data-binary @"${file}"
+    --data-binary @"${file}"; then
+    echo "import failed on ${file}" >&2
+    exit 1
+  fi
   sleep 1
 done
 ```

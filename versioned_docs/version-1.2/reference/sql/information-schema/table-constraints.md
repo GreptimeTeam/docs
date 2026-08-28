@@ -30,9 +30,10 @@ The columns in the table:
 * `CONSTRAINT_CATALOG`: The name of the catalog to which the constraint belongs. This value is always `def`.
 * `CONSTRAINT_SCHEMA`: The name of the database to which the constraint belongs.
 * `CONSTRAINT_NAME`: The name of the constraint, `TIME INDEX` or `PRIMARY`.
+* `TABLE_SCHEMA`: The name of the schema that contains the table.
 * `TABLE_NAME`: The name of the table.
 * `CONSTRAINT_TYPE`: The type of the constraint. The value can be `TIME INDEX` or `PRIMARY KEY`. These key constraints are also visible in [`STATISTICS`](./statistics.md), which backs `SHOW INDEX`.
-* `enforced`:  Doesn't support `CHECK` constraints, the value is always` YES`.
+* `ENFORCED`: Whether the constraint is enforced. GreptimeDB reports `YES` for time-index and primary-key constraints.
 
 ```sql
 select * from INFORMATION_SCHEMA.table_constraints WHERE table_name = 'monitor'\G;

@@ -1,6 +1,6 @@
 ---
-keywords: [管理函数, ADMIN 语句, SQL ADMIN, 数据库管理, 表管理, 数据管理, 构建索引]
-description: ADMIN 语句用于运行管理函数来管理数据库和数据。
+keywords: [管理函数, ADMIN 语句, SQL ADMIN, 数据库管理, 表管理, 数据管理, 丢弃未刷盘数据, 构建索引]
+description: ADMIN 语句用于运行管理函数，包括刷盘、丢弃未刷盘数据、压缩和构建索引等数据库管理操作。
 ---
 
 # ADMIN
@@ -17,6 +17,7 @@ GreptimeDB 提供了一些管理函数来管理数据库和数据：
 
 * `flush_table(table_name)` 根据表名将表的 Memtable 刷新到 SST 文件中。
 * `flush_region(region_id)` 根据 Region ID 将 Region 的 Memtable 刷新到 SST 文件中。通过 [PARTITIONS](./information-schema/partitions.md) 表查找 Region ID。
+* `discard_unflushed(table_name_or_region_id)` 永久丢弃表中所有物理 Region 或指定 Region 的未刷盘数据。
 * `compact_table(table_name, [type], [options])` 为表启动一个 compaction 任务，详细信息请阅读 [compaction](/user-guide/deployments-administration/manage-data/compaction.md#严格窗口压缩策略swcs和手动压缩)。
 * `compact_region(region_id)` 为 Region 启动一个 compaction 任务。
 * `build_index(table_name)` 在新增或修改索引定义后，为表已有的 SST 文件补建缺失的物理索引。
@@ -34,6 +35,12 @@ GreptimeDB 提供了一些管理函数来管理数据库和数据：
 ```sql
 -- 刷新表 test --
 admin flush_table("test");
+
+-- 丢弃表 test 所有物理 Region 中的未刷盘数据 --
+admin discard_unflushed("test");
+
+-- 丢弃指定 Region 中的未刷盘数据 --
+admin discard_unflushed(4398046511104);
 
 -- 为表 test 启动 compaction 任务，默认并行度为 1 --
 admin compact_table("test");
@@ -71,6 +78,31 @@ admin gc_regions(1, 2, 3, true);
 -- 永久 purge 一个 soft-dropped table --
 admin purge_table("test");
 ```
+
+## 丢弃未刷盘数据
+
+当 Memtable 中的数据导致 flush 反复失败、写缓冲区被占满并阻塞后续写入时，可以使用 `admin discard_unflushed` 进行紧急恢复。
+
+:::danger 危险操作
+
+该操作会永久删除目标 Region 中尚未持久化到 SST 文件的所有数据，并将对应的 WAL 条目标记为过期，因此重启 Datanode 也无法恢复这些数据。已经持久化到 SST 文件的数据不受影响。
+
+:::
+
+该函数只接受一个表名或 Region ID：
+
+```sql
+ADMIN discard_unflushed('table_name');
+ADMIN discard_unflushed(region_id);
+```
+
+使用表名时，该操作会作用于表的所有物理 Region。表名可以是未限定名、schema 限定名或完整限定名；省略的限定部分将根据当前查询上下文解析。
+
+使用数值类型的 Region ID 时，该操作只作用于指定 Region。可以查询 [`information_schema.PARTITIONS`](./information-schema/partitions.md) 表获取 Region ID。
+
+Metric Engine 逻辑表不支持该操作，因为多个逻辑表共享相同的物理 Region。使用 Metric Engine 物理表名或物理 Region ID 会丢弃其逻辑表共享的未刷盘数据，因此请仔细确认操作目标。
+
+该函数只能通过 `ADMIN` 语句调用，在 `SELECT` 语句中调用会被拒绝。如果目标中已没有未刷盘数据，重复执行该操作是安全的，不会产生影响。
 
 ## 构建索引
 

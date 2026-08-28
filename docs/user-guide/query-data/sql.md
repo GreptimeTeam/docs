@@ -306,7 +306,7 @@ For more information, please refer to [CASE](/reference/sql/case.md).
 ## Aggregate data by tag
 
 You can use the `GROUP BY` clause to group rows that have the same values into summary rows.
-The average memory usage grouped by idc:
+The average CPU usage grouped by host:
 
 ```sql
 SELECT host, avg(cpu) FROM monitor GROUP BY host;
@@ -398,7 +398,7 @@ The Response is shown below:
 ### Time range window
 
 The origin time range window steps forward and backward in the time series to generate all time range windows.
-In the example above, the origin alignment time is set to `2023-12-01T00:00:00`, which is also the end time of the origin time window.
+In the example above, the origin alignment time is set to `2023-12-01T00:00:00`, which is also the start time of the origin time window.
 
 The `RANGE` option, along with the origin alignment time, defines the origin time range window that starts from `origin alignment timestamp` and ends at `origin alignment timestamp + range`.
 

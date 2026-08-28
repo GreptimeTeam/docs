@@ -127,6 +127,12 @@ CREATE TABLE logs (
 
 GreptimeDB 提供两种全文索引后端用于高效日志搜索：
 
+:::note
+下面的索引体积和性能倍数来自 Greptime 的测试。
+这些数字可以用来横向比较两种后端，但不能直接当作你自己数据上的绝对值：
+选择率、词项分布和缓存状态都会明显改变结果。
+:::
+
 1. **Bloom 后端**
    - 最适合：通用日志搜索
    - 特点：
@@ -216,7 +222,7 @@ SET FULLTEXT INDEX WITH (
 
 ## 修改索引
 
-你可以随时通过`ALTER TABLE`语句来更改列的索引类型，阅读[文档](/reference/sql/alter#alter-table)以获取更多信息。
+你可以随时通过`ALTER TABLE`语句来更改列的索引类型，阅读[文档](/reference/sql/alter.md#alter-table)以获取更多信息。
 
 ## 最佳实践
 

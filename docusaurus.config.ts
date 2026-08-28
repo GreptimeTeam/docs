@@ -312,6 +312,10 @@ const config: Config = {
     ],
   ],
   trailingSlash: true,
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
   plugins: [
     'docusaurus-plugin-image-zoom',
     // Only load docusaurus-biel plugin if biel_project_id is defined

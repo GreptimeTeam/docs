@@ -5,10 +5,7 @@ description: Describes the `CASE` statement used for conditional logic within qu
 
 # CASE
 
-The `CASE` statement allows you to perform conditional logic within your queries,
-similar to an IF-THEN-ELSE structure in programming languages.
-It enables you to return specific values based on evaluated conditions,
-making data retrieval and manipulation more dynamic.
+The `CASE` expression evaluates conditions in order and returns the result for the first condition that is true. If no condition is true, it returns the `ELSE` result, or `NULL` when `ELSE` is omitted.
 
 ## Syntax
 
@@ -79,10 +76,7 @@ GROUP BY
 
 ### Use `CASE` in `ORDER BY`
 
-According to GreptimeDB's [data model](/user-guide/concepts/data-model.md),
-the `Tag` columns are indexed and can be used in the `ORDER BY` clause to enhance query performance.
-For instance, if the `status_code` and `http_method` columns in the `nginx_logs` table are `Tag` columns storing string values,
-you can utilize the `CASE` statement to sort the data based on these columns as follows:
+The following query sorts rows by `status_code` when it is not `NULL`, and by `http_method` otherwise:
 
 ```sql
 SELECT *
@@ -93,4 +87,3 @@ ORDER BY
         ELSE http_method
     END;
 ```
-

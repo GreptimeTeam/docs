@@ -1,6 +1,6 @@
 ---
 keywords: [SQL views, create view, query view, update view, manage views, data security, complex queries]
-description: Explanation of SQL views in GreptimeDB, including how to create, query, update, and manage views for simplifying complex queries and ensuring data security.
+description: Explanation of SQL views in GreptimeDB, including how to create, query, update, and manage views for simplifying complex queries, and how a view can confine a user to a subset of columns and rows when paired with a permission model that supports it.
 ---
 
 # View
@@ -12,7 +12,11 @@ The query of a view is run every time the view is referenced in a query.
 In the following situations, you can use views:
 
 * Simplifying complex queries, avoiding the need to repeatedly write and send complex statements for every query.
-* Granting read permissions to specific users while restricting access to certain columns and rows to ensure data security and isolation.
+* Restricting a user to a subset of columns and rows, when combined with a permission model that can grant the view without granting its base tables.
+
+:::note
+A view is not a permission model on its own. The [static user provider](/user-guide/deployments-administration/authentication/static.md) grants privileges per user rather than per object, so a view alone isolates nothing there. GreptimeDB Enterprise [matches its ACLs against the object names that appear in the query](/enterprise/user.md#access-control-lists-acls), which makes it possible to grant a view without granting the tables it reads, confining the user to the columns and rows the view selects.
+:::
 
 A view is created with the `CREATE VIEW` statement.
 

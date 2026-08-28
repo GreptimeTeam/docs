@@ -133,8 +133,7 @@ The table constraints contain the following:
 - The Other columns are `Field` columns in the [data model](/user-guide/concepts/data-model.md) of GreptimeDB.
 
 :::tip NOTE
-The `PRIMARY KEY` specified in the `CREATE` statement is **not** the primary key in traditional relational databases.
-Actually, The `PRIMARY KEY` in traditional relational databases is equivalent to the combination of `PRIMARY KEY` and `TIME INDEX` in GreptimeDB. In other words, the `PRIMARY KEY` and `TIME INDEX` together constitute the unique identifier of a row in GreptimeDB.
+The `PRIMARY KEY` columns and `TIME INDEX` together form the storage key used to order and merge rows. Unlike a primary key in a relational database, this storage key does not enforce uniqueness. The [`merge_mode`](#create-a-table-with-merge-mode) and [`append_mode`](#create-an-append-only-table) options determine how GreptimeDB handles rows with the same storage key.
 :::
 
 The statement won't do anything if the table already exists and `IF NOT EXISTS` is presented; otherwise returns an error.
@@ -297,7 +296,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 
 #### Create a physical table with metric engine
 
-The metric engine use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. For details, please refer to the [metric engine document](/contributor-guide/datanode/metric-engine) and [Table Engines](/reference/about-greptimedb-engines.md)  introduction.
+The Metric Engine stores many logical metric tables in shared physical wide tables. This design reuses columns and metadata across logical tables. See the [Metric Engine architecture](/contributor-guide/datanode/metric-engine.md) and [Table Engines](/reference/about-greptimedb-engines.md).
 
 Create a physical table with the metric engine.
 ```sql
@@ -407,7 +406,7 @@ For more information on the `INDEX` column option, please refer to the [Data Ind
 
 ### Region partition rules
 
-Please refer to [Partition](/contributor-guide/frontend/table-sharding.md#partition) for more details.
+Please refer to [Partition](/user-guide/deployments-administration/manage-data/table-sharding.md#partition) for more details.
 
 ## CREATE EXTERNAL TABLE
 

@@ -25,8 +25,8 @@ SELECT * FROM BUILD_INFO;
 
 结果中的列：
 
-* `branch`：构建的 git 分支名称。
+* `git_branch`：构建时的 git 分支名称。
 * `git_commit`：提交构建的 `commit`。
 * `git_commit_short`：提交构建的 `commit` 缩写。
-* `git_clean`：如果构建源目录包含了所有提交的更改，则为 `true`。
+* `git_clean`：构建时源码工作区没有未提交的更改则为 `true`。
 * `pkg_version`：GreptimeDB 版本。

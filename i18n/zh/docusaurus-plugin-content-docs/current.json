@@ -11,9 +11,9 @@
     "message": "核心函数",
     "description": "The ZH label for Core Functions"
   },
-  "sidebar.docs.doc.Unified observability data model": {
-    "message": "统一的可观测数据模型",
-    "description": "The ZH label for Unified observability data model"
+  "sidebar.docs.doc.Observability 2.0 and wide events": {
+    "message": "Observability 2.0 与宽事件",
+    "description": "The ZH label for Observability 2.0 and wide events"
   },
   "sidebar.docs.doc.Migrate from Loki": {
     "message": "从 Loki 迁移",

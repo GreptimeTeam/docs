@@ -10,7 +10,7 @@ GreptimeDB 可以部署在你自己的基础设施上，也可以通过全托管
 
 ## GreptimeDB 架构
 
-在进行 GreptimeDB 的部署和管理之前，有必要了解其[架构](/user-guide/concepts/architecture.md)。
+先了解 GreptimeDB 的[架构](/user-guide/concepts/architecture.md)，明确需要部署和运维哪些组件。
 
 ## 自托管 GreptimeDB 部署
 
@@ -26,7 +26,7 @@ GreptimeDB 可以部署在你自己的基础设施上，也可以通过全托管
 ### 组件管理
 
 - **Cluster Failover：** 通过设置 [Remote WAL](./wal/remote-wal/configuration.md) 以实现高可用性。
-- **管理元数据：** 为 GreptimeDB 设置[元数据存储](./manage-data/overview.md)。
+- **管理元数据：** 为 GreptimeDB 设置[元数据存储](./manage-metadata/overview.md)。
 
 ### 监控
 
@@ -35,11 +35,11 @@ GreptimeDB 可以部署在你自己的基础设施上，也可以通过全托管
 ### 数据管理和性能
 
 - **数据管理：** 通过[管理数据策略](/user-guide/deployments-administration/manage-data/overview.md) 以防止数据丢失、降低成本并优化性能。
-- **性能调优：** 查看[性能调优技巧](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md)并学习如何[设计表结构](/user-guide/deployments-administration/performance-tuning/design-table.md)以提高性能。
+- **性能调优：** 查看[性能调优技巧](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md)并学习如何[设计表结构](/user-guide/deployments-administration/performance-tuning/design-table.md)。
 
 ### 灾难恢复
 
-- **灾难恢复：** 实施[灾难恢复策略](/user-guide/deployments-administration/disaster-recovery/overview.md)以保护你的数据并确保业务连续性。
+- **灾难恢复：** 实施[灾难恢复策略](/user-guide/deployments-administration/disaster-recovery/overview.md)以保护你的数据。
 
 ### 其他
 

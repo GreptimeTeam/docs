@@ -5,9 +5,9 @@ description: Instructions for configuring GreptimeDB as a data source in Metabas
 
 # Metabase
 
-[Metabase](https://github.com/metabase/metabase) is an open source BI tool that
-written in Clojure. You can configure GreptimeDB as a metabase data source from
-a community driver plugin.
+[Metabase](https://github.com/metabase/metabase) is an open source BI tool written
+in Clojure. You can configure GreptimeDB as a Metabase data source through a
+community driver plugin.
 
 ## Installation
 
@@ -25,8 +25,8 @@ click *Add Database* button and select GreptimeDB from *Database type*.
 You will be asked to provide host, port, database name and authentication
 information.
 
-- Use Greptime's Postgres protocol port `4003` as port. If you changed the
-  defaults, use you own settings.
+- Use GreptimeDB's PostgreSQL protocol port `4003` as port. If you changed the
+  defaults, use your own settings.
 - Username and password are optional if you didn't enable
   [authentication](/user-guide/deployments-administration/authentication/overview.md).
 - Use `public` as default *Database name*. When using GreptimeCloud instance,

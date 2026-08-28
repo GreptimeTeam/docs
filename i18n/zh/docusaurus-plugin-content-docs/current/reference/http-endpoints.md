@@ -1,6 +1,6 @@
 ---
 keywords: [HTTP API, 管理 API, 健康检查, 状态, 指标, 配置, 仪表盘, 日志级别, 性能分析]
-description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表。
+description: 介绍 GreptimeDB 常用的 HTTP 路径，包括管理 API、查询端点和协议端点。
 ---
 
 # HTTP API 端点列表
@@ -10,23 +10,27 @@ GreptimeDB 提供两个 HTTP Server：
 | Server | 默认地址 | 用途 |
 |--------|---------|------|
 | **主 HTTP Server** | `127.0.0.1:4000` | 内部/运维使用。提供所有路径，包括 `/health`、`/metrics`、`/config`、`/debug/*` 等管理端点，以及全部 `/v1` 和 `/dashboard` 路径。该端口应保持私有，仅对可信运维人员开放。 |
-| **公共 HTTP API Server** | `127.0.0.1:4006` | 面向用户的访问。仅提供 `/v1` API 和 `/dashboard`，可安全地暴露给数据库终端用户。默认禁用；可在配置文件中设置 `http.enable_api_server = true` 来启用。 |
+| **公共 HTTP API Server** | `127.0.0.1:4006` | 面向用户的 API 流量。仅提供 `/v1` API 和 `/dashboard`，不提供管理端点。默认禁用；可在配置文件中设置 `http.enable_api_server = true` 来启用。 |
 
-建议仅在内部/运维场景下使用主 HTTP Server 端口。或者也可以通过 HTTP 代理安全地暴露该端口，前提是限制直接访问，并且代理仅允许所需的协议。但是如需将 GreptimeDB 作为服务对外暴露给终端用户，我们更推荐启用专用公共 API Server，并仅对外暴露该端口。
+主 HTTP Server 应保持私有。如需向终端用户开放 GreptimeDB API，请启用公共 API Server，并只对外开放该端口。
+
+:::warning
+公共 API Server 可以缩小对外路由面，但路由过滤不提供身份认证或传输加密。未配置 `user_provider` 时，GreptimeDB 会接受未认证的请求。允许外部访问前，应直接配置或通过反向代理提供身份认证、TLS 和网络访问控制。
+:::
 
 ```toml
 [http]
 # 主 HTTP Server — 保持内部访问
 addr = "127.0.0.1:4000"
 
-# 启用公共 API Server 并将其绑定到可外部访问的地址
+# 启用公共 API Server，并绑定到可供外部访问的地址
 enable_api_server = true
 api_server_addr = "0.0.0.0:4006"
 ```
 
 详见[配置文档](/user-guide/deployments-administration/configuration.md#协议选项)中的 `[http]` 选项。
 
-以下是 GreptimeDB 中各种 HTTP 路径及其用法的完整列表：
+以下各节介绍常用的 HTTP 路径：
 
 ## 管理 API
 
@@ -129,7 +133,7 @@ is_strict_mode = false
 - **描述**: 提供对服务器仪表盘界面的访问。
 - **用法**: 访问这些端点以与基于 Web 的仪表盘进行交互。
 
-此仪表盘与 GreptimeDB 服务器一起打包，并提供一个用户友好的界面与服务器进行交互。构建 GreptimeDB 时需要启用相应的编译标志。仪表盘的原始源代码在 https://github.com/GreptimeTeam/dashboard。
+构建 GreptimeDB 时启用对应 feature 后，二进制会包含 Dashboard。源代码位于 [GreptimeDB Dashboard 仓库](https://github.com/GreptimeTeam/dashboard)。
 
 ### 日志级别
 
@@ -204,7 +208,7 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 
 ## 查询端点
 
-用于向 GreptimeDB 发送查询的各种查询 API。
+这些端点用于执行 SQL、PromQL 或结构化日志查询。
 
 ### SQL API
 
@@ -224,6 +228,13 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 
 有关格式化 SQL API 的更多信息，请参阅用户指南中的 [HTTP API 文档](/user-guide/protocols/http.md#使用-greptimedb-的-sql-方言格式化-sql)。
 
+### 解析 SQL API
+
+- **路径**: `/v1/sql/parse`
+- **方法**: `GET`, `POST`
+- **描述**: 解析 SQL 并返回 GreptimeDB statement 表示，不执行语句。
+- **用法**: 通过 `sql` 查询参数或 `application/x-www-form-urlencoded` 表单请求体传入 SQL。
+
 ### PromQL API
 
 - **路径**: `/v1/promql`
@@ -235,7 +246,7 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 
 ## 协议端点
 
-与 GreptimeDB 兼容的各种协议的端点。如 InfluxDB、Prometheus、OpenTelemetry 等。
+这些端点实现 InfluxDB、Prometheus、OpenTelemetry、Loki、Splunk HEC 和 OpenTSDB 的部分 API。
 
 ### InfluxDB 兼容性
 
@@ -274,6 +285,7 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
   - `/query`
   - `/query_range`
   - `/labels`
+  - `/metadata`
   - `/series`
   - `/parse_query`
   - `/label/{label_name}/values`
@@ -314,18 +326,16 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 - **描述**: 支持使用 OpenTSDB 协议写入数据。
 - **用法**: 使用 OpenTSDB 的 JSON 格式写入时间序列数据。
 
-## 日志写入端点
+## 日志与 Pipeline 端点
 
-- **路径**:
-  - `/v1/ingest`
-  - `/v1/pipelines/{pipeline_name}`
-  - `/v1/pipelines/_dryrun`
-- **方法**:
-  - `POST` 写入日志和添加 Pipeline。
-  - `DELETE` 用于删除 Pipeline。
-- **描述**: 提供日志写入和 Pipeline 管理的端点。
-- **用法**:
-  - 通过 `/logs` 端点写入日志。
-  - 使用 `/pipelines` 端点管理日志 Pipeline。
+| 路径 | 方法 | 描述 |
+| --- | --- | --- |
+| `/v1/ingest` | `POST` | 通过 Pipeline 写入日志。 |
+| `/v1/logs` | `GET`, `POST` | 执行结构化日志查询。请求使用 JSON body，通常使用 `POST`。 |
+| `/v1/pipelines/{pipeline_name}` | `GET` | 返回 Pipeline 定义。 |
+| `/v1/pipelines/{pipeline_name}` | `POST` | 创建或替换 Pipeline。 |
+| `/v1/pipelines/{pipeline_name}` | `DELETE` | 删除 Pipeline。 |
+| `/v1/pipelines/{pipeline_name}/ddl` | `GET` | 返回根据 Pipeline 推断出的建表 DDL。 |
+| `/v1/pipelines/_dryrun` | `POST` | 使用样例输入运行 Pipeline，但不写入结果。 |
 
-有关日志写入和 Pipeline 管理的更多信息，请参阅[日志概述](/user-guide/logs/overview.md)。
+参见[日志概述](/user-guide/logs/overview.md)、[日志查询](/user-guide/query-data/log-query.md)和 [Pipeline 配置](/reference/pipeline/pipeline-config.md)。

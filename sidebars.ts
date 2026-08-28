@@ -57,7 +57,7 @@ const sidebars: SidebarsConfig = {
             {
               type: 'doc',
               id: 'user-guide/concepts/observability-2',
-              label: 'Unified observability data model',
+              label: 'Observability 2.0 and wide events',
             },
             'user-guide/concepts/semantic-layer',
             'user-guide/concepts/storage-location',

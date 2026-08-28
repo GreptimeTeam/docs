@@ -1,15 +1,13 @@
 ---
 keywords: [enterprise, features, solutions, cloud, edge, IoT, observability, LDAP, audit logging]
-description: Overview of GreptimeDB Enterprise, detailing its advanced features, solutions, and enhancements over the open-source version to optimize data efficiency and reduce costs.
+description: Overview of GreptimeDB Enterprise deployment options and features for security, availability, operations, and workload management.
 ---
 
 # Enterprise
 
-GreptimeDB Enterprise is a powerful time-series database solution designed to meet the specific needs of enterprises.
-In addition to the features available in the open-source version of GreptimeDB,
-the Enterprise edition offers enhancements that help businesses optimize data efficiency and significantly reduce costs, enabling smarter and faster decision-making with time-series data.
+GreptimeDB Enterprise extends the open-source observability database with features for enterprise deployment, security, availability, operations, and workload management.
 
-GreptimeDB Enterprise solutions include:
+Available deployment options and solutions include:
 
 - **Bring Your Own Cloud (BYOC)**: Leverage your own cloud infrastructure to host GreptimeDB, offering extensive customization and flexibility tailored to your business needs. This service includes comprehensive management of your cloud resources and robust security measures to protect your infrastructure.
 - **Fully Managed Dedicated Cloud**: GreptimeDB team offers a fully managed, dedicated cloud environment, ensuring peak performance, enhanced security, and exceptional reliability tailored to your enterprise needs.
@@ -30,8 +28,9 @@ which are described in detail in the documentation in this section:
 - [LDAP Authentication](./deployments-administration/authentication.md): Secure your system with LDAP-based authentication for access management.
 - [Audit Logging](./deployments-administration/monitoring/audit-logging.md): Track and monitor
   user activity with detailed audit logs.
-- [Query Guard](./deployments-administration/query-guard.md): Ban `DROP TABLE` / `DROP DATABASE`
-  statements for all users and reject cross-catalog access.
+- [Query Guard](./deployments-administration/query-guard.md): Ban destructive
+  operations such as `DROP TABLE`, `DELETE`, and `ALTER TABLE DROP COLUMN` for
+  all users and reject cross-catalog access.
 - [Soft-Drop Tables](./soft-drop.md): Protect tables from accidental `DROP TABLE`
   operations and restore them from the recycle bin within the retention period.
 - [Automatic region load balance](./autopilot/region-balancer.md): Auto balance

@@ -1,21 +1,25 @@
 ---
 keywords: [GreptimeDB flownode, command-line interface, flownode configuration, flownode startup, flownode options, flownode examples]
-description: Comprehensive guide to GreptimeDB flownode command-line interface, including configuration options, startup commands, and practical examples for deploying flownode instances.
+description: Describes the GreptimeDB Flownode command-line options and startup examples.
 ---
 
 # Flownode
 
 ## Subcommand options
 
-You can list all the options from the following command:
+Print the options supported by the current binary:
 
 ```
 greptime flownode start --help
 ```
 | Option                                | Description                                                                                                                                                                                                                                                                   |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-c`/`--config-file`                  | The configuration file for flownode                                                                                                                                                                                                                                           |
+| `-c`/`--config-file <CONFIG_FILE>`    | The configuration file for Flownode                                                                                                                                                                                                                                           |
 | `--env-prefix <ENV_PREFIX>`           | The prefix of environment variables, default is `GREPTIMEDB_FLOWNODE`                                                                                                                                                                                                         |
+| `--http-addr <HTTP_ADDR>`             | HTTP server address                                                                                                                                                                                                                                                           |
+| `--http-timeout <HTTP_TIMEOUT>`       | HTTP request timeout in seconds                                                                                                                                                                                                                                               |
+| `--log-dir <LOG_DIR>`                 | Log directory                                                                                                                                                                                                                                                                 |
+| `--log-level <LOG_LEVEL>`             | Log level                                                                                                                                                                                                                                                                     |
 | `--metasrv-addrs <METASRV_ADDRS>...`  | Metasrv address list                                                                                                                                                                                                                                                          |
 | `--node-id <NODE_ID>`                 | Flownode's id                                                                                                                                                                                                                                                                 |
 | `--grpc-bind-addr <GRPC_BIND_ADDR>`     | The address to bind the gRPC server                                                                                                                                                                                                                                           |
@@ -31,16 +35,16 @@ Flownode connects to frontends through addresses discovered from metasrv and doe
 
 ### Start service with configurations
 
-Starts a flownode instance with customized configurations:
+Start a Flownode instance from a configuration file:
 
 ```sh
 greptime flownode start -c config/flownode.example.toml
 ```
 
-Starts a flownode instance with command line arguments specifying the address of the metasrv:
+Start a Flownode instance and specify its node ID, gRPC address, and Metasrv address on the command line:
 
 ```sh
 greptime flownode start --node-id=0 --grpc-bind-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002
 ```
 
-The `flownode.example.toml` configuration file comes from the `config` directory of the `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` repository. You can find more example configuration files there. The `-c` option specifies the configuration file, for more information check [Configuration](/user-guide/deployments-administration/configuration.md).
+The [`flownode.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.1.4/config/flownode.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md) for details.
