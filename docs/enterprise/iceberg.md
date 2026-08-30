@@ -19,6 +19,34 @@ The Iceberg integration does **not** re-write, duplicate, or export the data. In
 **metadata** — manifests, manifest-lists, and table-metadata snapshots — that point at the existing Parquet files.
 Any engine that speaks Iceberg can then read those files through the REST catalog.
 
+The following diagram shows how the pieces fit together:
+
+```mermaid
+flowchart LR
+    APP["Client applications<br/>(MySQL / PostgreSQL protocol)"]
+
+    subgraph GT["GreptimeDB Enterprise"]
+        direction TB
+        FE["Frontend<br/>Iceberg REST catalog (/v1/iceberg)"]
+        DN["Datanode / standalone<br/>(the writer)"]
+    end
+
+    subgraph OS["Object storage<br/>(S3 / OSS / GCS / Azure Blob)"]
+        DATA["Parquet SST data files"]
+        META["Iceberg metadata<br/>(manifests, snapshots)<br/>under warehouse_root"]
+    end
+
+    ENG["pyiceberg / Spark / Trino / DuckDB<br/>(any Iceberg-compatible engine)"]
+
+    APP -->|"writes"| FE
+    FE --> DN
+    DN -->|"writes SST files on<br/>flush / compaction"| DATA
+    DN -->|"publishes metadata,<br/>commits a new snapshot"| META
+    ENG -->|"1. load table metadata"| FE
+    ENG -->|"2. read Parquet files directly"| DATA
+    META -.->|"points at"| DATA
+```
+
 This is split across the GreptimeDB processes you already run:
 
 - **Datanode / standalone (the writer).** Whenever SST files are written — on flush, compaction, bulk ingestion,
@@ -103,7 +131,7 @@ For example, with a frontend listening on the default HTTP port `4000`, the cata
 
 ## Make a table readable
 
-GreptimeDB publishes Iceberg metadata on flush, so the export of newly-written data appears after the next flush
+GreptimeDB publishes Iceberg metadata on flush, so the export of recently written data appears after the next flush
 (or compaction). To expose freshly-ingested rows immediately, flush the table manually:
 
 ```sql

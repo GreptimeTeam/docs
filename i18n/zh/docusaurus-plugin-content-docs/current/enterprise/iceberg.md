@@ -13,6 +13,34 @@ GreptimeDB Enterprise 可以通过 [Apache Iceberg](https://iceberg.apache.org/)
 
 关键在于：GreptimeDB 本身就已将 SST（sorted string table）数据文件以 Parquet 格式存储在对象存储中。Iceberg 集成**不会**重新写入、复制或导出数据，而是发布指向现有 Parquet 文件的 Iceberg **元数据**——manifest、manifest-list 以及 table-metadata snapshot。任何支持 Iceberg 的引擎都能通过 REST catalog 读取这些文件。
 
+整体流程如下图所示：
+
+```mermaid
+flowchart LR
+    APP["客户端应用<br/>(MySQL / PostgreSQL 协议)"]
+
+    subgraph GT["GreptimeDB Enterprise"]
+        direction TB
+        FE["Frontend<br/>Iceberg REST catalog (/v1/iceberg)"]
+        DN["Datanode / standalone<br/>(写入端)"]
+    end
+
+    subgraph OS["对象存储<br/>(S3 / OSS / GCS / Azure Blob)"]
+        DATA["Parquet SST 数据文件"]
+        META["Iceberg 元数据<br/>(manifests、snapshots)<br/>位于 warehouse_root 下"]
+    end
+
+    ENG["pyiceberg / Spark / Trino / DuckDB<br/>(任何兼容 Iceberg 的引擎)"]
+
+    APP -->|"写入"| FE
+    FE --> DN
+    DN -->|"在 flush / compaction 时<br/>写入 SST 文件"| DATA
+    DN -->|"发布元数据、<br/>提交新的 snapshot"| META
+    ENG -->|"1. 加载表元数据"| FE
+    ENG -->|"2. 直接读取 Parquet 文件"| DATA
+    META -.->|"指向"| DATA
+```
+
 这项工作分布在 GreptimeDB 已有的进程之间：
 
 - **Datanode / standalone（写入端）。** 每当写入 SST 文件时——包括 flush、compaction、批量写入和 truncate——GreptimeDB 都会将当前存活的 Parquet 文件集合转换为 Iceberg manifest 条目，并提交一个新的 Iceberg snapshot。Iceberg 元数据写入到 datanode 已使用的同一对象存储 bucket 下的 `warehouse_root` 前缀中。
