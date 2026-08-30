@@ -1,12 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title description">
   <title id="title">GreptimeDB single cluster deployed in a single region</title>
-  <desc id="description">A cluster in one region: stateless Frontend replicas and Metasrv replicas above two availability zones, each of which can be a data center or a compartment of one. Datanode 1 in AZ A is unavailable, and Region Failover reopens its regions on the healthy Datanode 2 in AZ B. Remote WAL, object storage and the metadata backend are shared below. The loss of the whole region is not covered.</desc>
+  <desc id="description">A cluster in one region: stateless Frontend replicas and Metasrv replicas above two availability zones, each of which can be a data center or a compartment of one. Datanode 1 in AZ A is unavailable, and Region Failover reopens its regions on the healthy Datanode 2 in AZ B. The Datanodes share the remote WAL and the object storage below them, while Metasrv keeps its state in the metadata backend. The loss of the whole region is not covered.</desc>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
     </marker>
     <marker id="failover-arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L9,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="arrow-left" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
     </marker>
     <style>
       .title { font: 600 20px Arial, sans-serif; fill: #170128; }
@@ -25,6 +28,7 @@
       .infra { fill: #eefaff; stroke: #2491ad; stroke-width: 2; }
       .flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#arrow); }
       .bus { fill: none; stroke: #6f6fff; stroke-width: 2.5; }
+      .meta-flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#arrow-left); }
       .failover { fill: none; stroke: #2a9d5c; stroke-width: 3; marker-end: url(#failover-arrow); }
       .failover-label { font: 600 16px Arial, sans-serif; fill: #2a9d5c; }
     </style>
@@ -73,8 +77,12 @@
   <text class="failover-label" x="580" y="312" text-anchor="middle">Region</text>
   <text class="failover-label" x="580" y="374" text-anchor="middle">Failover</text>
 
-  <path class="flow" d="M320 440 L320 478"/>
-  <path class="flow" d="M840 440 L840 478"/>
+  <path class="bus" d="M320 440 L320 458 L840 458 L840 440"/>
+  <path class="bus" d="M240 458 L840 458"/>
+  <path class="flow" d="M240 458 L240 478"/>
+  <path class="flow" d="M580 458 L580 478"/>
+  <path class="bus" d="M1070 125 L1110 125 L1110 530"/>
+  <path class="meta-flow" d="M1110 530 L1072 530"/>
 
   <rect class="infra" x="90" y="480" width="300" height="100" rx="12"/>
   <text class="title" x="240" y="518" text-anchor="middle">Remote WAL</text>
