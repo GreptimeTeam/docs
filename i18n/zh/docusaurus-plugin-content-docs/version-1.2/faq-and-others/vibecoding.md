@@ -56,6 +56,14 @@ flow、trigger——安装一个 Skill 能把完整工作流教给 agent，效�
   `CREATE TRIGGER`（企业版）。
 - **`self-monitoring-export`** —— 用于集群故障排查：从用户描述中推断日志导出的时间范围，
   然后导出集群自监控日志和指标供工程排查。
+- **`greptimedb-performance-diagnosis`** —— 定位查询缓慢、写入延迟或停滞，以及 CPU、
+  内存占用过高等性能问题的瓶颈。
+- **`greptimedb-performance-tuning`** —— 调整服务端配置和表选项，包括缓存、写缓冲、
+  WAL 和写入吞吐量。
+- **`greptimedb-table-design`** —— 设计或优化表结构、主键、索引、仅追加或合并模式，
+  以及分区策略。
+- **`greptimedb-cluster-health-check`** —— 部署或重启后检查服务就绪状态、对象存储访问、
+  日志和关键指标，确认集群健康。
 - **`influxql-to-greptimedb-sql`** —— 将 InfluxQL 查询转换为 GreptimeDB SQL，
   同时识别时间窗口、填充和逐序列 `LIMIT` 的语义差异。
 

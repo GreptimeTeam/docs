@@ -66,6 +66,14 @@ skill uses `dryrun_pipeline` to verify a config before applying it).
 - **`self-monitoring-export`** — for cluster incidents: infer the log export
   time range from the user's description, then export cluster self-monitoring
   logs and metrics for investigation.
+- **`greptimedb-performance-diagnosis`** — find the bottleneck behind slow
+  queries, lagging or stalled ingestion, or high CPU and memory usage.
+- **`greptimedb-performance-tuning`** — tune server configuration and table
+  options, including caches, write buffers, WAL, and ingestion throughput.
+- **`greptimedb-table-design`** — design or improve table schemas, primary
+  keys, indexes, append-only or merge mode, and partitioning.
+- **`greptimedb-cluster-health-check`** — verify a deployment after a deploy or
+  restart by checking readiness, object-store access, logs, and key metrics.
 - **`influxql-to-greptimedb-sql`** — convert InfluxQL queries to GreptimeDB SQL
   while identifying semantic differences in windows, fills, and series limits.
 
