@@ -108,15 +108,15 @@ span_attributes.user_agent.original        | python-requests/2.32.3
 span_attributes.http.route                 | todos/
 ```
 
-To check the table definition, you can use `show create table opentelemetry_traces`
-statement. An output like this is expected:
+To check the table definition, you can use the `show create table opentelemetry_traces`
+statement. For a newly created table, an output like this is expected:
 
 ```
 Table        | opentelemetry_traces
 Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (                                           +
              |   "timestamp" TIMESTAMP(9) NOT NULL,                                                    +
              |   "timestamp_end" TIMESTAMP(9) NULL,                                                    +
-             |   "duration_nano" BIGINT UNSIGNED NULL,                                                 +
+             |   "duration_nano" BIGINT NULL,                                                          +
              |   "trace_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),    +
              |   "span_id" STRING NULL,                                                                +
              |   "span_kind" STRING NULL,                                                              +

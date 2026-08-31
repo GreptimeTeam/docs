@@ -11,7 +11,7 @@ GreptimeDB 支持通过 SQL 语句灵活查询数据。本节将介绍特定的�
 
 ## 使用 `matches_term` 函数进行精确匹配
 
-在 SQL 查询中，你可以使用 `matches_term` 函数执行精确的词语/短语匹配，这在日志分析中尤其实用。`matches_term` 函数支持对 `String` 类型列进行精确匹配。你也可以使用 `@@` 操作符作为 `matches_term` 的简写形式。下面是一个典型示例：
+在 SQL 查询中，你可以使用 `matches_term` 函数执行根据字符类型应用边界规则的词语/短语匹配，这在日志分析中尤其实用。`matches_term` 函数支持对 `String` 类型列进行匹配。你也可以使用 `@@` 操作符作为 `matches_term` 的简写形式。下面是一个典型示例：
 
 ```sql
 -- 使用 matches_term 函数
@@ -21,19 +21,20 @@ SELECT * FROM logs WHERE matches_term(message, 'error') OR matches_term(message,
 SELECT * FROM logs WHERE message @@ 'error' OR message @@ 'fail';
 ```
 
-`matches_term` 函数专门用于精确匹配，使用方式如下：
+`matches_term` 函数查找完全相同的字符序列，并根据搜索词中的字符应用边界规则：
 
 - `text`：需要进行匹配的文本列，该列应包含 `String` 类型的文本数据。
 - `term`：要匹配的词语或短语，遵循以下规则：
   - 区分大小写
-  - 匹配项必须由非字母数字字符（包括空格、标点符号等）或文本开头/结尾界定
+  - 对于不包含汉字的搜索词，需要满足词边界规则。如果搜索词的首尾字符是 ASCII 字母或数字，则相邻字符不能是 ASCII 字母或数字；如果首尾字符是其他 Unicode 字母或数字，则相邻字符不能是字母、数字或汉字。
+  - 包含汉字的搜索词按连续子串匹配，不要求词边界。
   - 支持完整词语匹配和短语匹配
 
 ## 查询语句示例
 
 ### 简单词语匹配
 
-`matches_term` 函数执行精确词语匹配，这意味着它只会匹配由非字母数字字符或文本开头/结尾界定的完整词语。这对于在日志中查找特定的错误消息或状态码特别有用。
+对于不包含汉字的搜索词，`matches_term` 执行精确词语匹配。匹配项必须满足上述边界规则，或者位于文本开头或结尾。这对于在日志中查找特定的错误消息或状态码特别有用。
 
 ```sql
 -- 使用 matches_term 函数
@@ -52,6 +53,18 @@ SELECT * FROM logs WHERE message @@ 'error';
 - ❌ "errors" - 不匹配，因为 "error" 是更大词语的一部分
 - ❌ "error123" - 不匹配，因为 "error" 后面跟着数字
 - ❌ "errorLogs" - 不匹配，因为 "error" 是驼峰命名词语的一部分
+
+### 汉字搜索词匹配
+
+包含汉字的搜索词按连续子串匹配，不要求词边界。
+
+```sql
+SELECT * FROM logs WHERE matches_term(message, '手机');
+```
+
+匹配和不匹配的示例：
+- ✅ "登录手机号18888888888的动态key" - 匹配，因为其中包含完全相同的子串 "手机"
+- ❌ "手持设备" - 不匹配，因为其中不包含完全相同的子串 "手机"
 
 ### 多关键词搜索
 
@@ -72,7 +85,7 @@ SELECT * FROM logs WHERE message @@ 'critical' OR message @@ 'error';
 - ✅ "An error occurred!" - 匹配 "error"
 - ✅ "critical failure detected" - 匹配 "critical"
 - ❌ "errors" - 不匹配，因为 "error" 是更大词语的一部分
-- ❌ "critical_errors" - 不匹配，因为词语是更大词语的一部分
+- ✅ "critical_errors" - 匹配 "critical"，因为下划线属于非字母数字边界
 
 ### 排除条件搜索
 
