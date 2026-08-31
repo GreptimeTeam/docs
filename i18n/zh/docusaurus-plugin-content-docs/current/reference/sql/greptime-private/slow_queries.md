@@ -6,7 +6,7 @@ description: greptime_private 数据库中的慢查询表。
 # slow_queries
 
 `slow_queries` 表记录被慢查询记录器选中的 SQL 和 PromQL 查询。
-慢查询记录器写入此表时，即使服务端全局配置或请求级 `auto_create_table` hint 禁用了自动建表，仍可创建此表并以添加缺失列的方式协调其表结构。白名单中的表不会使同一写入请求中的其他表获得此例外。
+慢查询记录器写入 `greptime_private.slow_queries` 时，如果表不存在会创建表；如果现有表缺少列，则会补齐这些列。即使自动建表已禁用，仍会执行这两项操作。
 
 :::tip 注意
 `slow_queries` 表需要开启慢查询日志功能。详见[慢查询](/user-guide/deployments-administration/monitoring/slow-query.md)配置说明。
