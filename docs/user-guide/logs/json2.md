@@ -70,6 +70,11 @@ VALUES
     );
 ```
 
+Custom pipelines can also write JSON2 columns by using `type: json2` in the
+transform configuration. See the
+[pipeline configuration reference](/reference/pipeline/pipeline-config.md#the-type-field)
+for the supported type-hint options.
+
 ### Query JSON fields
 
 You can read fields from JSON2 directly with dot paths:
@@ -259,4 +264,4 @@ releases will continue to improve these capabilities:
   `TIMESTAMP`.
 - Support index options such as `INVERTED INDEX` and `SKIPPING INDEX` for type
   hints.
-- Support writing JSON2 through OTLP and other ingestion paths.
+- Support writing JSON2 through OTLP without a custom pipeline.
