@@ -15,11 +15,14 @@ Configure GreptimeDB as remote write target:
 ```hcl
 prometheus.remote_write "greptimedb" {
     endpoint {
-        url = "${GREPTIME_SCHEME:=http}://${GREPTIME_HOST:=greptimedb}:${GREPTIME_PORT:=4000}/v1/prometheus/write?db=${GREPTIME_DB:=public}"
+        url = coalesce(sys.env("GREPTIME_SCHEME"), "http") + "://" +
+          coalesce(sys.env("GREPTIME_HOST"), "greptimedb") + ":" +
+          coalesce(sys.env("GREPTIME_PORT"), "4000") +
+          "/v1/prometheus/write?db=" + coalesce(sys.env("GREPTIME_DB"), "public")
 
         basic_auth {
-            username = "${GREPTIME_USERNAME}"
-            password = "${GREPTIME_PASSWORD}"
+            username = sys.env("GREPTIME_USERNAME")
+            password = sys.env("GREPTIME_PASSWORD")
         }
     }
 }
@@ -40,17 +43,19 @@ GreptimeDB can also be configured as OpenTelemetry collector.
 ```hcl
 otelcol.exporter.otlphttp "greptimedb" {
   client {
-    endpoint = "${GREPTIME_SCHEME:=http}://${GREPTIME_HOST:=greptimedb}:${GREPTIME_PORT:=4000}/v1/otlp/"
+    endpoint = coalesce(sys.env("GREPTIME_SCHEME"), "http") + "://" +
+      coalesce(sys.env("GREPTIME_HOST"), "greptimedb") + ":" +
+      coalesce(sys.env("GREPTIME_PORT"), "4000") + "/v1/otlp/"
     headers  = {
-      "X-Greptime-DB-Name" = "${GREPTIME_DB:=public}",
+      "X-Greptime-DB-Name" = coalesce(sys.env("GREPTIME_DB"), "public"),
     }
     auth     = otelcol.auth.basic.credentials.handler
   }
 }
 
 otelcol.auth.basic "credentials" {
-  username = "${GREPTIME_USERNAME}"
-  password = "${GREPTIME_PASSWORD}"
+  username = sys.env("GREPTIME_USERNAME")
+  password = sys.env("GREPTIME_PASSWORD")
 }
 ```
 
@@ -90,16 +95,18 @@ otelcol.processor.batch "greptimedb_logs" {
 }
 
 otelcol.auth.basic "credentials" {
-  username = "${GREPTIME_USERNAME}"
-  password = "${GREPTIME_PASSWORD}"
+  username = sys.env("GREPTIME_USERNAME")
+  password = sys.env("GREPTIME_PASSWORD")
 }
 
 otelcol.exporter.otlphttp "greptimedb_logs" {
   client {
-    endpoint = "${GREPTIME_SCHEME:=http}://${GREPTIME_HOST:=greptimedb}:${GREPTIME_PORT:=4000}/v1/otlp/"
+    endpoint = coalesce(sys.env("GREPTIME_SCHEME"), "http") + "://" +
+      coalesce(sys.env("GREPTIME_HOST"), "greptimedb") + ":" +
+      coalesce(sys.env("GREPTIME_PORT"), "4000") + "/v1/otlp/"
     headers = {
-      "X-Greptime-DB-Name"          = "${GREPTIME_DB:=public}",
-      "X-Greptime-Log-Table-Name"   = "${GREPTIME_LOG_TABLE_NAME:=demo_logs}",
+      "X-Greptime-DB-Name"          = coalesce(sys.env("GREPTIME_DB"), "public"),
+      "X-Greptime-Log-Table-Name"   = coalesce(sys.env("GREPTIME_LOG_TABLE_NAME"), "demo_logs"),
       "X-Greptime-Log-Extract-Keys" = "filename,log.file.name,loki.attribute.labels",
     }
     auth = otelcol.auth.basic.credentials.handler
@@ -151,15 +158,17 @@ loki.process "greptime" {
 
 loki.write "greptimedb" {
   endpoint {
-    url = "${GREPTIME_SCHEME:=http}://${GREPTIME_HOST:=greptimedb}:${GREPTIME_PORT:=4000}/v1/loki/api/v1/push"
+    url = coalesce(sys.env("GREPTIME_SCHEME"), "http") + "://" +
+      coalesce(sys.env("GREPTIME_HOST"), "greptimedb") + ":" +
+      coalesce(sys.env("GREPTIME_PORT"), "4000") + "/v1/loki/api/v1/push"
     headers = {
-      "X-Greptime-DB-Name"        = "${GREPTIME_DB:=public}",
-      "X-Greptime-Log-Table-Name" = "${GREPTIME_LOG_TABLE_NAME:=loki_demo_logs}",
+      "X-Greptime-DB-Name"        = coalesce(sys.env("GREPTIME_DB"), "public"),
+      "X-Greptime-Log-Table-Name" = coalesce(sys.env("GREPTIME_LOG_TABLE_NAME"), "loki_demo_logs"),
     }
 
     basic_auth {
-      username = "${GREPTIME_USERNAME}"
-      password = "${GREPTIME_PASSWORD}"
+      username = sys.env("GREPTIME_USERNAME")
+      password = sys.env("GREPTIME_PASSWORD")
     }
   }
 }
