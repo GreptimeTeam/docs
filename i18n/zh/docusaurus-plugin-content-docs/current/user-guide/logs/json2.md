@@ -63,6 +63,9 @@ VALUES
     );
 ```
 
+自定义 pipeline 也可以在 transform 配置中使用 `type: json2` 写入 JSON2 列。
+支持的 type hint 选项请参考 [pipeline 配置](/reference/pipeline/pipeline-config.md#type-字段)。
+
 ### 查询 JSON 字段
 
 可以直接通过点号路径读取 JSON2 中的字段：
@@ -232,4 +235,4 @@ JSON2 目前处于 Beta 阶段，仍有以下限制。后续版本会继续完�
 - 支持 `json_get_string`、`json_get_int`、`json_get_float` 和 `json_get_bool` 等函数处理 JSON2 类型。
 - 扩展 type hint 支持的类型，例如 `TIMESTAMP` 等时间类型。
 - 为 type hint 支持 `INVERTED INDEX`、`SKIPPING INDEX` 等索引选项。
-- 支持通过 OTLP 和其他 ingestion path 写入 JSON2。
+- 支持在不使用自定义 pipeline 的情况下通过 OTLP 写入 JSON2。

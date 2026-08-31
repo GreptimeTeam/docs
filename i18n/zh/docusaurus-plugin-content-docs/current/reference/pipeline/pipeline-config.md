@@ -1082,8 +1082,47 @@ GreptimeDB 目前内置了以下几种转换类型：
 - `time`: 时间类型。将被转换为 GreptimeDB `timestamp(9)` 类型。
 - `epoch`: 时间戳类型。将被转换为 GreptimeDB `timestamp(n)` 类型。n 为时间戳精度，n 的值视 epoch 精度而定。当精度为 `s` 时，n 为 0；当精度为 `ms` 时，n 为 3；当精度为 `us` 时，n 为 6；当精度为 `ns` 时，n 为 9。
 - `json`: JSON 类型。字段值必须是 JSON 对象或数组（例如由 [`json_parse`](#json_parse) 处理器生成），将被存储为表中的 JSON 列。标量值（例如字符串、数字）无法转换为 `json` 类型。
+- `json2`: [JSON2](/user-guide/logs/json2.md) 类型。字段可以不存在或为 `null`；存在且非 `null` 时，字段值必须是非空 JSON 对象（例如由 [`json_parse`](#json_parse) 处理器生成）。以数组为 root 的 JSON 和标量值无法转换为 `json2`。
 
 如果字段在转换过程中获得了非法值，Pipeline 将会抛出异常。例如将一个字符串 `abc` 转换为整数时，由于该字符串不是一个合法的整数，Pipeline 将会抛出异常。
+
+#### JSON2 type hint
+
+:::note
+JSON2 目前处于 Beta 阶段，部分功能仍在持续完善中。
+:::
+
+关于 JSON2 的行为、查询语法和当前限制，请参考 [JSON2 类型文档](/user-guide/logs/json2.md)。
+
+当 pipeline 创建目标列时，简写形式会创建一个不包含 type hint 的 JSON2 列：
+
+```yaml
+transform:
+  - field: payload
+    type: json2
+```
+
+如需为新建的 JSON2 列声明 type hint，请使用对象形式：
+
+```yaml
+transform:
+  - field: payload
+    type:
+      json2:
+        - path: user.id
+          type: int64
+        - path: 'attrs."http.status_code"'
+          type: string
+```
+
+每个 type hint 支持以下字段：
+
+- `path`（必填）：使用点号语法表示 JSON 子路径。如果 JSON key 本身包含点号，请使用双引号包裹对应的路径段。
+- `type`（必填）：支持 `string`、`int64`、`uint64`、`float64` 或 `boolean`。
+- `nullable`（可选）：该路径是否可以缺失或为 `null`，默认为 `true`。
+- `default`（可选）：路径缺失时使用的默认值，必须是声明类型对应的标量值。
+
+如果目标 JSON2 列已存在，GreptimeDB 会使用该列中保存的配置编码字段值，而不是 pipeline 中的内联 type hint。通过 [`table_suffix`](#table-suffix) 将数据路由到不同表时也是如此。如果字段值不符合实际使用的 type hint，transform 会按照 [`on_failure`](#on_failure-字段) 配置进行处理。
 
 ### `index` 字段
 
