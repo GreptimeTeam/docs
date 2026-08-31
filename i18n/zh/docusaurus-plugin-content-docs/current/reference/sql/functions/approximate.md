@@ -263,3 +263,91 @@ GROUP BY
 
 以下流程图说明了 UDDSketch 函数的上述用法。首先，原始事件数据按时间窗口分组，然后使用 `uddsketch_state` 函数为每个时间窗口创建一个 UDDSketch 状态，接着使用 `uddsketch_calc` 函数检索每个时间窗口的近似第 99 分位数。最后，使用 `uddsketch_merge` 函数合并每个时间窗口的 UDDSketch 状态，然后再次使用 `uddsketch_calc` 函数检索 1 分钟时间窗口的近似第 99 分位数。
 ![UDDSketch 用例流程图](/udd.svg)
+
+## 可合并的总体标准差（Welford）
+
+以下函数通过可合并的中间状态计算总体标准差。它们使用 [Welford 在线算法](https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_online_algorithm)，适用于先持久化较小时间窗口的统计状态，再在不读取原始样本的情况下合并计算。与上文的近似算法不同，在浮点数精度范围内，这些函数的计算结果与直接使用 `stddev_pop` 相同。
+
+二进制状态应视为不透明值，只使用本节所述函数创建、合并和读取。
+
+### `stddev_pop_state`
+
+`stddev_pop_state(value)` 是聚合函数，它基于 `DOUBLE` 表达式创建可合并状态，并以 `BINARY` 类型返回。
+
+- 函数忽略值为 `NULL` 的样本。
+- 输入值和所有中间计算结果都必须是有限值。输入或计算产生非有限值时，查询将失败。
+- 如果没有非 `NULL` 样本，函数返回空状态。将空状态传给 `stddev_pop_calc` 会返回 `NULL`。
+
+### `stddev_pop_merge`
+
+`stddev_pop_merge(state)` 是聚合函数，它合并由 `stddev_pop_state` 创建的多个 `BINARY` 状态，并返回合并后的 `BINARY` 状态。函数忽略值为 `NULL` 的状态；如果状态格式错误或不兼容，查询将失败。
+
+在计算最终标准差之前，可使用此函数合并来自不同时间窗口、分区或数据源的持久化状态。
+
+### `stddev_pop_calc`
+
+`stddev_pop_calc(state)` 是标量函数，它读取由 `stddev_pop_state` 或 `stddev_pop_merge` 创建的状态，并以 `DOUBLE` 类型返回总体标准差。
+
+函数返回值如下：
+
+- 状态仅包含一个样本时返回 `0.0`；
+- 状态为空、值为 `NULL`、格式错误或不兼容时返回 `NULL`；
+- 其他有效状态返回总体标准差。
+
+### 完整使用示例
+
+以下示例为每分钟的数据持久化一个状态，然后合并三个分钟级状态。合并结果与直接对原始样本使用 `stddev_pop` 的结果相同。
+
+```sql
+CREATE TABLE welford_raw (
+    id INT PRIMARY KEY,
+    value DOUBLE,
+    ts TIMESTAMP TIME INDEX
+);
+
+INSERT INTO welford_raw VALUES
+    (1, 1.0,  '2024-01-01 00:01:05'),
+    (2, 2.0,  '2024-01-01 00:01:20'),
+    (3, 3.0,  '2024-01-01 00:01:50'),
+    (4, 10.0, '2024-01-01 00:02:10'),
+    (5, 20.0, '2024-01-01 00:02:40'),
+    (6, 4.0,  '2024-01-01 00:03:05'),
+    (7, 8.0,  '2024-01-01 00:03:15'),
+    (8, 12.0, '2024-01-01 00:03:35'),
+    (9, 16.0, '2024-01-01 00:03:55');
+
+CREATE TABLE welford_minute_states (
+    minute_ts TIMESTAMP TIME INDEX,
+    state BINARY
+);
+
+INSERT INTO welford_minute_states (minute_ts, state)
+SELECT
+    date_bin(INTERVAL '1 minute', ts) AS minute_ts,
+    stddev_pop_state(value) AS state
+FROM welford_raw
+GROUP BY minute_ts;
+
+WITH direct AS (
+    SELECT stddev_pop(value) AS stddev
+    FROM welford_raw
+    WHERE ts >= '2024-01-01 00:01:00'
+      AND ts <  '2024-01-01 00:04:00'
+), merged AS (
+    SELECT stddev_pop_calc(stddev_pop_merge(state)) AS stddev
+    FROM welford_minute_states
+    WHERE minute_ts >= '2024-01-01 00:01:00'
+      AND minute_ts <  '2024-01-01 00:04:00'
+)
+SELECT
+    direct.stddev AS direct_stddev,
+    merged.stddev AS merged_stddev,
+    abs(direct.stddev - merged.stddev) AS difference
+FROM direct CROSS JOIN merged;
+
++------------------+------------------+------------+
+| direct_stddev    | merged_stddev    | difference |
++------------------+------------------+------------+
+| 6.25586144900411 | 6.25586144900411 | 0.0        |
++------------------+------------------+------------+
+```
