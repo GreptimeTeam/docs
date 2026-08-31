@@ -15,7 +15,7 @@ GreptimeDB 会异步写入事件记录，通常每 5 秒刷新一次。刚完成
 
 ## 查询事件
 
-即使服务端全局 `auto_create_table` 配置为 `false`，首次记录事件仍会创建内部的 `greptime.greptime_private.events` 表。记录事件还会补齐现有 events 表缺少的列。该例外只适用于内部 events 表；`auto_create_table=false` 仍会阻止用户表自动创建和自动变更表结构。尚未记录任何事件，或已禁用事件记录时，下面的查询会报表不存在。
+事件记录器首次写入事件时会创建 `greptime_private.events` 系统表。此表以及 `greptime_private.slow_queries` 和 `greptime_private.region_statistics_history` 都是内部系统表；即使服务端全局配置或请求级 `auto_create_table` hint 禁用了自动建表，内部写入仍可创建这些表并以添加缺失列的方式协调表结构。白名单中的表不会使同一写入请求中的其他表获得此例外。尚未记录任何事件，或已禁用事件记录时，下面的查询会报表不存在。
 
 排查最近的操作时，可以先查询最近一小时的事件，并将结果限制为 20 条：
 

@@ -18,13 +18,15 @@ See [Event recording](/user-guide/deployments-administration/configuration.md#ev
 
 ## Query events
 
-The first event creates the internal `greptime.greptime_private.events` table, even
-when the server-side global `auto_create_table` setting is `false`. Recording an event
-also adds columns missing from an existing events table. This exception applies
-only to the internal events table; `auto_create_table=false` still prevents
-automatic creation and schema changes for user tables. If no event has been
-recorded yet, or event recording is disabled, this query returns a table-not-found
-error.
+When the event recorder writes its first event, it creates the
+`greptime_private.events` system table. During internal writes, this table,
+`greptime_private.slow_queries`, and `greptime_private.region_statistics_history`
+may be created or additively reconciled when automatic table creation is disabled
+by the server-side global setting or a request-level `auto_create_table` hint.
+An entry in the whitelist does not apply to other tables in the same write
+request.
+If no event has been recorded yet, or event recording is disabled, this query
+returns a table-not-found error.
 
 Start with a bounded query while investigating a recent operation:
 

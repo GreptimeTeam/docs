@@ -6,6 +6,10 @@ description: The slow queries table in the `greptime_private` database.
 # slow_queries
 
 The `slow_queries` table records SQL and PromQL queries selected by the slow-query recorder.
+When the slow-query recorder writes to this table, it may create or additively
+reconcile it even when automatic table creation is disabled by the server-side
+global setting or a request-level `auto_create_table` hint. An entry in the
+whitelist does not apply to other tables in the same write request.
 
 :::tip NOTE
 The `slow_queries` table requires slow query logging to be enabled. See [Slow Query](/user-guide/deployments-administration/monitoring/slow-query.md) for configuration details.

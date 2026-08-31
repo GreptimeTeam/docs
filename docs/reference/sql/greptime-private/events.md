@@ -11,13 +11,16 @@ with Metasrv can additionally record operational event types. Event recording is
 asynchronous and best-effort, so rows are not an acknowledgement that an
 operation succeeded.
 
-The first event creates the internal `greptime.greptime_private.events` table, even
-when the server-side global `auto_create_table` setting is `false`. When an existing
-events table is missing columns from the current event schema, recording an event
-adds the missing columns. This exception applies only to the internal events table;
-`auto_create_table=false` still prevents automatic creation and schema changes for
-user tables. If no event has been recorded, or event recording is disabled,
-querying it returns a table-not-found error. Configure recording in [Event recording](/user-guide/deployments-administration/configuration.md#event-recording).
+When the event recorder writes its first event, it creates the
+`greptime_private.events` system table. During internal writes, this table,
+`greptime_private.slow_queries`, and `greptime_private.region_statistics_history`
+may be created or additively reconciled when automatic table creation is disabled
+by the server-side global setting or a request-level `auto_create_table` hint.
+An entry in the whitelist does not apply to other tables in the same write
+request.
+For `events`, reconciliation adds columns missing from the current event schema. If
+no event has been recorded, or event recording is disabled, querying it returns a
+table-not-found error. Configure recording in [Event recording](/user-guide/deployments-administration/configuration.md#event-recording).
 
 ```sql
 USE greptime_private;
