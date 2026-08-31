@@ -1,0 +1,24 @@
+docs/reference/sql/greptime-private/events.md
+  h_623774b620da8e 14-23
+docs/reference/sql/greptime-private/slow_queries.md
+  h_623774b620da8e 9-12
+docs/user-guide/deployments-administration/monitoring/events/overview.md
+  h_623774b620da8e 21-29
+i18n/zh/docusaurus-plugin-content-docs/current/reference/sql/greptime-private/events.md
+  h_623774b620da8e 10
+i18n/zh/docusaurus-plugin-content-docs/current/reference/sql/greptime-private/slow_queries.md
+  h_623774b620da8e 9
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/overview.md
+  h_623774b620da8e 18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "94543596e6e833b35fafee27703f7d8e1cb69c7e",
+  "prompts": {},
+  "humans": {
+    "h_623774b620da8e": {
+      "author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
