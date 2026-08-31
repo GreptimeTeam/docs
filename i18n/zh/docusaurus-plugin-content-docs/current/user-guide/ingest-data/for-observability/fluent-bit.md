@@ -50,42 +50,27 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
 
 GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [OpenTelemetry 输出插件](https://docs.fluentbit.io/manual/pipeline/outputs/opentelemetry)，你可以将指标、日志和跟踪发送到 GreptimeDB。
 
-```
-[OUTPUT]
-    Name                 opentelemetry
-    Match                *
-    Host                 127.0.0.1
-    Port                 4000
-    Metrics_uri          /v1/otlp/v1/metrics
-    Logs_uri             /v1/otlp/v1/logs
-    Traces_uri           /v1/otlp/v1/traces
-    Log_response_payload True
-    Tls                  Off
-    Tls.verify           Off
-```
-
-- `Metrics_uri`, `Logs_uri`, 和 `Traces_uri`: 发送指标、日志和跟踪的端点。
-
-我们建议不要在一个 output 同时写入 metrics log 和 trace，因为我们的写入接口它们各自有一些特殊的 header 选项用于指定一些参数，我们建议一个为 metrics log 和 trace 单独创建一个 opentelemetry output 例如：
+由于 GreptimeDB 会为不同 signal 使用不同的 header，请为每种 signal 配置独立的 output。在 Fluent Bit input 中为每种 signal 设置不同的 tag，然后在对应的 output 中匹配该 tag：
 
 ```
-# Only for metrics
+# 仅用于 metrics
 [OUTPUT]
     Name                 opentelemetry
     Alias                opentelemetry_metrics
-    Match                *
+    Match                <metrics_tag>
     Host                 127.0.0.1
     Port                 4000
     Metrics_uri          /v1/otlp/v1/metrics
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
+    Header X-Greptime-DB-Name "<dbname>"
 
-# Only for logs
+# 仅用于 logs
 [OUTPUT]
     Name                 opentelemetry
     Alias                opentelemetry_logs
-    Match                *
+    Match                <logs_tag>
     Host                 127.0.0.1
     Port                 4000
     Logs_uri             /v1/otlp/v1/logs
@@ -93,9 +78,27 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Tls                  Off
     Tls.verify           Off
     Header X-Greptime-Log-Table-Name "<log_table_name>"
-    Header X-Greptime-Log-Pipeline-Name "<pipeline_name>"
+    Header X-Greptime-Pipeline-Name "<pipeline_name>"
+    Header X-Greptime-DB-Name "<dbname>"
+
+# 仅用于 traces
+[OUTPUT]
+    Name                 opentelemetry
+    Alias                opentelemetry_traces
+    Match                <traces_tag>
+    Host                 127.0.0.1
+    Port                 4000
+    Traces_uri           /v1/otlp/v1/traces
+    Log_response_payload True
+    Tls                  Off
+    Tls.verify           Off
+    Header X-Greptime-Pipeline-Name "greptime_trace_v1"
     Header X-Greptime-DB-Name "<dbname>"
 ```
+
+- `Metrics_uri`、`Logs_uri` 和 `Traces_uri`：分别用于发送 metrics、logs 和 traces 的端点。
+- `Match`：在对应 Fluent Bit input 中配置的 signal tag。
+- `http_user` 和 `http_passwd`：GreptimeDB 的[认证凭据](/user-guide/deployments-administration/authentication/static.md)。启用鉴权时，请将它们添加到每个 output 中。
 
 本示例使用的是 OpenTelemetry OTLP/HTTP API。不同 signal 支持的 header 和选项不同，具体请分别参考 OpenTelemetry API 的 [metrics](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api)、[logs](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-1) 和 [traces](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-2) 部分。
 

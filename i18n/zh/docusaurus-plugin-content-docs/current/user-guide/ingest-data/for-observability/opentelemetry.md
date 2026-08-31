@@ -120,8 +120,13 @@ exporter = OTLPMetricExporter(
 GreptimeDB 支持以 Prometheus 兼容模式写入 OTLP 指标。
 如果指标以这种兼容模式写入，你可以像查询 Prometheus 原生指标一样使用 PromQL 直接查询这些指标。
 
-如果你之前没有使用过 OTLP 指标写入，那么 GreptimeDB 会默认使用新的兼容模式。
-否则，GreptimeDB 会对已经存在的表保留原有的数据模型，只有对新创建的指标表使用兼容模式写入。
+GreptimeDB 会为每个 OTLP 导出请求统一选择写入格式：
+
+- 如果请求涉及的指标表都不存在，GreptimeDB 使用 Prometheus 兼容格式。
+- 如果请求涉及的已有表都使用同一种格式，GreptimeDB 对请求中的所有指标使用该格式，包括由该请求新建的表。
+- 如果请求同时涉及两种格式的已有表，GreptimeDB 会拒绝该请求。
+
+如需同时写入旧格式和 Prometheus 兼容格式的指标，请将它们拆分到不同的 OTLP 导出请求中。
 
 GreptimeDB 会首先对数据进行预处理，包括：
 1. 将指标名（表名）和标签名转换成 Prometheus 风格的命名（例如：将 `.` 替换为 `_`）。默认情况下，GreptimeDB 还会根据指标单位和类型添加 Prometheus 风格的后缀。具体信息请参考[这里](https://opentelemetry.io/docs/specs/otel/compatibility/prometheus_and_openmetrics/#metric-metadata-1)
@@ -134,7 +139,7 @@ GreptimeDB 会首先对数据进行预处理，包括：
    | `memory.usage` | Gauge / `By` | `memory_usage_bytes` |
    | `queue.length` | Gauge / `{item}` | `queue_length` |
    | `http.server.request.duration` | Histogram / `s` | `http_server_request_duration_seconds` |
-   | `rpc.server.duration` | Histogram / `ms` | `rpc_server_duration_seconds` |
+   | `rpc.server.duration` | Histogram / `ms` | `rpc_server_duration_milliseconds` |
    | `http.client.request.size` | Sum (Monotonic) / `By` | `http_client_request_size_bytes_total` |
    | `system.network.io` | Sum (Monotonic) / `By` | `system_network_io_bytes_total` |
    | `http.status_code` (属性) | - | `http_status_code` |
@@ -229,7 +234,7 @@ GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/
 
 OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
-默认表结构：
+新建表的默认表结构：
 
 ```sql
 +-----------------------+---------------------+------+------+---------+---------------+
@@ -242,7 +247,7 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 | severity_number       | Int32               |      | YES  |         | FIELD         |
 | body                  | String              |      | YES  |         | FIELD         |
 | log_attributes        | Json                |      | YES  |         | FIELD         |
-| trace_flags           | UInt32              |      | YES  |         | FIELD         |
+| trace_flags           | Int32               |      | YES  |         | FIELD         |
 | scope_name            | String              | PRI  | YES  |         | TAG           |
 | scope_version         | String              |      | YES  |         | FIELD         |
 | scope_attributes      | Json                |      | YES  |         | FIELD         |
@@ -291,7 +296,7 @@ GreptimeDB 会通过 **HTTP 协议** 接受 **protobuf 编码的 traces 数据**
 
 ### 数据模型
 
-GreptimeDB 将 OTLP traces 数据模型映射到表结构。默认情况下，Trace 数据存储在 `opentelemetry_traces` 表中。
+GreptimeDB 将 OTLP traces 数据模型映射到表结构。默认情况下，Trace 数据存储在 `opentelemetry_traces` 表中。以下示例展示了新建 trace 表的表结构：
 
 ```sql
 +------------------------------------+---------------------+------+------+---------+---------------+
@@ -299,7 +304,7 @@ GreptimeDB 将 OTLP traces 数据模型映射到表结构。默认情况下，Tr
 +------------------------------------+---------------------+------+------+---------+---------------+
 | timestamp                          | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
 | timestamp_end                      | TimestampNanosecond |      | YES  |         | FIELD         |
-| duration_nano                      | UInt64              |      | YES  |         | FIELD         |
+| duration_nano                      | Int64               |      | YES  |         | FIELD         |
 | parent_span_id                     | String              |      | YES  |         | FIELD         |
 | trace_id                           | String              |      | YES  |         | FIELD         |
 | span_id                            | String              |      | YES  |         | FIELD         |

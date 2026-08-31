@@ -11,7 +11,7 @@ GreptimeDB allows for flexible querying of data using SQL statements. This secti
 
 ## Pattern Matching Using the `matches_term` Function
 
-In SQL statements, you can use the `matches_term` function to perform exact term/phrase matching, which is especially useful for log analysis. The `matches_term` function supports pattern matching on `String` type columns. You can also use the `@@` operator as a shorthand for `matches_term`. Here's an example of how it can be used:
+In SQL statements, you can use the `matches_term` function to perform script-aware term/phrase matching, which is especially useful for log analysis. The `matches_term` function supports pattern matching on `String` type columns. You can also use the `@@` operator as a shorthand for `matches_term`. Here's an example of how it can be used:
 
 ```sql
 -- Using matches_term function
@@ -21,19 +21,20 @@ SELECT * FROM logs WHERE matches_term(message, 'error') OR matches_term(message,
 SELECT * FROM logs WHERE message @@ 'error' OR message @@ 'fail';
 ```
 
-The `matches_term` function is designed for exact term/phrase matching and uses the following syntax:
+The `matches_term` function finds an exact character sequence and applies boundary rules based on the characters in the search term:
 
 - `text`: The text column to search, which should contain textual data of type `String`.
-- `term`: The search term or phrase to match exactly, following these rules:
+- `term`: The search term or phrase, following these rules:
   - Case-sensitive matching
-  - Matches must have non-alphanumeric boundaries (start/end of text or any non-alphanumeric character)
+  - For terms without Han characters, word-boundary rules apply. ASCII alphanumeric edges cannot be adjacent to ASCII alphanumeric characters; other Unicode alphanumeric edges cannot be adjacent to alphanumeric or Han characters.
+  - Terms containing Han characters match as contiguous substrings without requiring word boundaries.
   - Supports whole-word matching and phrase matching
 
 ## Query Statements
 
 ### Simple Term Matching
 
-The `matches_term` function performs exact word matching, which means it will only match complete words that are properly bounded by non-alphanumeric characters or the start/end of the text. This is particularly useful for finding specific error messages, status codes, version numbers, or paths in logs.
+For terms without Han characters, `matches_term` performs exact word matching. The match must have the boundaries described above or occur at the start or end of the text. This is particularly useful for finding specific error messages, status codes, version numbers, or paths in logs.
 
 Error messages:
 ```sql
@@ -65,6 +66,18 @@ Examples of matches and non-matches for '/start':
 - ❌ "start" - no match because it's missing the leading slash
 - ❌ "start/stop" - no match because "/start" is not a complete term
 
+### Han Term Matching
+
+Terms containing Han characters use contiguous substring matching and do not require word boundaries.
+
+```sql
+SELECT * FROM logs WHERE matches_term(message, '手机');
+```
+
+Examples of matches and non-matches:
+- ✅ "登录手机号18888888888的动态key" - matches because it contains the exact substring "手机"
+- ❌ "手持设备" - no match because it does not contain the exact substring "手机"
+
 ### Multiple Term Searches
 
 You can combine multiple `matches_term` conditions using the `OR` operator to search for logs containing any of several terms. This is useful when you want to find logs that might contain different variations of an error or different types of issues.
@@ -84,7 +97,7 @@ Examples of matches and non-matches:
 - ✅ "An error occurred!" - matches "error"
 - ✅ "critical failure detected" - matches "critical"
 - ❌ "errors" - no match because "error" is part of a larger word
-- ❌ "critical_errors" - no match because terms are part of larger words
+- ✅ "critical_errors" - matches "critical" because an underscore is a non-alphanumeric boundary
 
 ### Exclusion Searches
 
