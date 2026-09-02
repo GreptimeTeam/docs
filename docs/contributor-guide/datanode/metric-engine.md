@@ -35,6 +35,8 @@ The `Metric` engine delegates physical storage and queries to the `Mito` engine.
 
 Logical tables associated with the same physical table share its partition layout. During writes, the engine records the logical table identity with each row. During reads, it adds a logical-table filter before scanning the physical Region.
 
+A logical table's route stores only the ID of its physical table; the physical table route resolves that to the Datanodes holding the Regions. Because logical routes do not name peers, migrating a physical Region rewrites one physical route instead of every logical route that maps to it.
+
 Logical tables support normal INSERT, DELETE, and SELECT operations. Direct writes to a physical Region are rejected because they would bypass the logical-table mapping; querying a physical table remains supported.
 
 Batch DDL operations reduce metadata work when many logical tables are created or updated together, such as during Prometheus Remote Write auto-creation or physical Region migration.

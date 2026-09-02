@@ -5,7 +5,7 @@ description: Overview of GreptimeDB's architecture, key components, and how they
 
 # Contributor Guide
 
-This guide explains the internal design of GreptimeDB for contributors. Build, test, and submission instructions are maintained in the source repository's [CONTRIBUTING.md](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md).
+This guide explains the internal design of GreptimeDB for contributors. Start with [Getting Started](/contributor-guide/getting-started.md) to build and run it from source. Submission requirements, including the CLA, license headers, formatting, and the checks a pull request must pass, are maintained in the source repository's [CONTRIBUTING.md](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md).
 
 ## Architecture
 

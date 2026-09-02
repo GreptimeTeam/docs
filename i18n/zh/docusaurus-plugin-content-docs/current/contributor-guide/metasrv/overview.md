@@ -14,7 +14,8 @@ Metasrv 是 GreptimeDB 分布式集群中的元数据和协调服务，不参与
 - 选举一个 Metasrv leader 负责协调元数据变更；
 - 通过可恢复的 Procedure 执行 DDL、Region 迁移、故障转移和重分区；
 - 通过心跳维护节点租约和 Region 统计信息；
-- 在缓存元数据或 Region 状态变化时通知 Frontend 和 Datanode。
+- 元数据变更时向 Frontend、Datanode 和 Flownode 广播缓存失效；
+- 向 Datanode 下发 Region 生命周期指令。
 
 ## 前端如何与 Metasrv 交互
 
@@ -28,8 +29,8 @@ Frontend
   `-- Region 读写 ------------------------> Datanode
 
 Metasrv leader
-  |-- Region 生命周期 Procedure ----------> Datanode
-  `-- 缓存和 Region 状态通知 -------------> Frontend / Datanode
+  |-- Region 生命周期指令 ----------------> Datanode
+  `-- 缓存失效 --------------------------> Frontend / Datanode / Flownode
 
 Datanode
   `-- 心跳、租约续期和 Region 统计信息 ----> Metasrv leader
@@ -86,10 +87,15 @@ Metasrv leader
 
 Metasrv 将 leader 选举与元数据存储分开。只有选出的 Metasrv leader 执行协调和元数据变更操作，其他 Metasrv 节点会把 client 引导到当前 leader。
 
-Key-value backend 保存表元数据、路由、Procedure 状态以及其他必须跨 leader 切换保留的信息。Metasrv 不使用这套选举为 Datanode Region 创建读写副本；Region 可用性由租约、心跳和故障转移 Procedure 管理。
+Key-value backend 保存表元数据、路由、Procedure 状态以及其他必须跨 leader 切换保留的信息。Metasrv 不使用这套选举为 Datanode Region 创建读写副本；Region 可用性由心跳、Region 故障检测和故障转移 Procedure 管理。
 
 ## 心跳管理
 
 Datanode 与 Metasrv leader 保持心跳流。心跳请求报告节点身份、租约、Region 统计信息以及放置和监控所需的其他状态；响应则携带 Region 生命周期指令、缓存失效等控制消息。
 
-对 Metasrv 而言，心跳不仅是指标上报，也是租约续期。租约过期会参与故障检测，并可能触发 Region 故障转移。因此，修改心跳周期时必须同时考虑租约和监控周期。
+心跳驱动两套相互独立的机制，调整心跳周期会同时影响两者：
+
+- **节点租约**：keep-lease handler 为发送心跳的 Datanode 续期。Selector 和 `/node-lease` 端点据此判断 Datanode 是否仍然存活。
+- **Region 故障检测**：Region supervisor 为每个 Region 维护一个基于心跳到达间隔的 Phi Accrual 检测器，其判定与租约是否过期无关。
+
+只有开启 Region 故障转移时，故障判定才会提交故障转移迁移。该功能默认关闭，并且要求使用 remote WAL，除非显式允许在本地 WAL 上执行。维护模式同样会抑制故障转移。前置条件和开启方式参见 [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md)。

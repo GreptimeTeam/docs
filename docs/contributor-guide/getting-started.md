@@ -15,12 +15,13 @@ At the moment, GreptimeDB supports Linux (both amd64 and arm64), macOS (both amd
 
 ### Build Dependencies
 
-- [Git](https://git-scm.com/book/en/v2/Getting-Started-The-Command-Line)
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-The-Command-Line) (optional; needed to clone the repository, not to build it)
 - C/C++ Toolchain: provides essential tools for compiling and linking. This is available either as `build-essential` on ubuntu or a similar name on other platforms.
 - [Rustup][1]. The repository pins the required nightly toolchain in `rust-toolchain.toml`.
 - Protobuf ([guide][2])
   - Compile the proto file
   - Note that the version needs to be >= 3.15. You can check it with `protoc --version`
+- Machine: 16GB of memory or more is recommended. On a smaller machine, use [mold](https://github.com/rui314/mold) to reduce memory usage during linking.
 
 [1]: <https://www.rust-lang.org/tools/install/>
 [2]: <https://grpc.io/docs/protoc-installation/>

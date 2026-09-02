@@ -17,7 +17,7 @@ Users do not select the mode directly. When a Flow is created, GreptimeDB choose
 Batching mode reuses GreptimeDB's query engine instead of maintaining an operator graph for every incoming row. For a time-windowed Flow, its main loop is:
 
 1. A source-table write marks the affected time windows as dirty.
-2. A `BatchingTask` wakes on its schedule or after a notification and collects pending dirty windows.
+2. A `BatchingTask` runs on its evaluation schedule or adaptive polling cadence and collects the pending dirty windows at that evaluation. Marking a window dirty does not wake the task.
 3. The task adds time predicates for those windows to the Flow query and asks Frontend to execute it against the source tables.
 4. The query result is inserted into the sink table, updating the materialized result for windows that were evaluated.
 5. Successfully processed windows are removed from the dirty set. Failed work remains available for a later evaluation.

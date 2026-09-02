@@ -14,7 +14,8 @@ Metasrv is the metadata and coordination service in a distributed GreptimeDB clu
 - electing one Metasrv leader to coordinate metadata changes;
 - running recoverable procedures for DDL, Region migration, failover, and repartitioning;
 - tracking node leases and Region statistics through heartbeats;
-- notifying Frontends and Datanodes when cached metadata or Region state changes.
+- broadcasting cache invalidations to Frontends, Datanodes, and Flownodes when metadata changes;
+- sending Region lifecycle instructions to Datanodes.
 
 ## How the Frontend interacts with Metasrv
 
@@ -28,8 +29,8 @@ Frontend
   `-- Region reads and writes ------------> Datanode
 
 Metasrv leader
-  |-- Region lifecycle procedures --------> Datanode
-  `-- cache and Region-state notifications -> Frontend / Datanode
+  |-- Region lifecycle instructions ------> Datanode
+  `-- cache invalidations ----------------> Frontend / Datanode / Flownode
 
 Datanode
   `-- heartbeat, lease renewal, Region stats -> Metasrv leader
@@ -86,10 +87,15 @@ These mechanisms share metadata, but they have different failure boundaries. A p
 
 Metasrv separates leader election from metadata storage. Only the elected Metasrv leader performs coordination and metadata-changing operations. Other Metasrv nodes direct clients to the current leader.
 
-The key-value backend stores table metadata, routes, procedure state, and other information that must survive a leader change. Metasrv does not use this election to create leader and follower replicas for Datanode Regions; Region availability is managed through leases, heartbeats, and failover procedures.
+The key-value backend stores table metadata, routes, procedure state, and other information that must survive a leader change. Metasrv does not use this election to create leader and follower replicas for Datanode Regions; Region availability is managed through heartbeats, Region failure detection, and failover procedures.
 
 ## Heartbeat Management
 
 Datanodes maintain heartbeat streams to the Metasrv leader. Heartbeat requests report node identity, lease information, Region statistics, and other state used for placement and supervision. Responses carry control messages such as Region lifecycle instructions and cache invalidations.
 
-Metasrv treats a heartbeat as a lease renewal, not merely as a metrics sample. Lease expiration is therefore part of failure detection and can lead to a Region failover procedure. Changes to heartbeat timing must remain consistent with the lease and supervision intervals.
+A heartbeat drives two independent mechanisms, and a change to heartbeat timing affects both:
+
+- **Node lease.** The keep-lease handler renews the sending Datanode's lease. Selectors and the `/node-lease` endpoint use these leases to decide whether a Datanode is still active.
+- **Region failure detection.** The Region supervisor keeps a per-Region Phi Accrual detector over heartbeat arrival intervals. Its verdict is independent of lease expiry.
+
+A failure verdict submits a failover migration only when Region failover is enabled; it is disabled by default and requires remote WAL unless explicitly allowed on local WAL. Maintenance mode also suppresses failover. See [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) for the prerequisites and how to enable it.

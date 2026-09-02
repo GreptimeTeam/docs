@@ -15,12 +15,13 @@ description: 介绍如何在本地环境中从源代码编译和运行 GreptimeD
 
 ### 构建依赖项
 
-- [Git](https://git-scm.com/book/en/v2/Getting-Started-The-Command-Line)
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-The-Command-Line)（可选；克隆仓库需要，构建本身不需要）
 - C/C++ 工具链：提供编译和链接的基本工具。在 Ubuntu 上，这可用作 `build-essential`。在其他平台上，也有类似的命令。
 - [Rustup][1]。仓库通过 `rust-toolchain.toml` 指定所需的 nightly 工具链。
 - Protobuf（[指南][2]）
   - 编译 proto 文件
   - 请注意，版本需要 >= 3.15。你可以使用 `protoc --version` 检查它。
+- 机器：建议 16GB 以上内存。内存较小时，可使用 [mold](https://github.com/rui314/mold) 降低链接阶段的内存占用。
 
 [1]: <https://www.rust-lang.org/tools/install/>
 [2]: <https://grpc.io/docs/protoc-installation/>

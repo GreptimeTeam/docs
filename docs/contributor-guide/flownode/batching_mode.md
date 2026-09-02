@@ -15,7 +15,7 @@ The core idea is to:
 1.  Define a `flow` with a SQL query that aggregates data from a source table into a sink table.
 2.  The query typically includes a time window function (e.g., `date_bin`) on a timestamp column.
 3.  When new data is inserted into the source table, the system marks the corresponding time windows as "dirty."
-4.  A background task periodically wakes up, identifies these dirty windows, and re-runs the aggregation query for those specific time ranges.
+4.  A background task runs on its own cadence, consumes the pending dirty windows at its next evaluation, and re-runs the aggregation query for those time ranges.
 5.  The results are then inserted into the sink table, effectively updating the aggregated view.
 
 ## Architecture
@@ -39,7 +39,7 @@ A `BatchingTask` represents a single, independent data flow. Each task is associ
 -   **State (`TaskState`)**: This contains the dynamic, mutable state of the task, most importantly the `DirtyTimeWindows`.
 -   **Execution Loop**: The task runs an infinite loop (`start_executing_loop`) that:
     1.  Checks for a shutdown signal.
-    2.  Waits for a scheduled interval or until it's woken up.
+    2.  Sleeps until its next evaluation time. A task with an evaluation schedule sleeps until the next scheduled time; an adaptive task sleeps for a polling interval derived from the time window size and the minimum refresh duration.
     3.  Generates a new query plan (`gen_insert_plan`) based on the current set of dirty time windows.
     4.  Executes the query (`execute_logical_plan`) against the database.
     5.  Cleans up the processed dirty windows.
@@ -63,8 +63,8 @@ The same calculation is used to mark dirty windows and generate the source-table
 Here's a simplified step-by-step walkthrough of how a query is executed in batch mode:
 
 1.  **Data Ingestion**: New data is written to a source table.
-2.  **Marking Dirty**: The `BatchingEngine` receives a notification about the new data. It uses the `TimeWindowExpr` associated with each relevant flow to determine which time windows are affected by the new data points. These windows are then added to the `DirtyTimeWindows` set in the corresponding `TaskState`.
-3.  **Task Wake-up**: The `BatchingTask`'s execution loop wakes up, either due to its periodic schedule or because it was notified of a large backlog of dirty windows.
+2.  **Marking Dirty**: The `BatchingEngine` receives a notification about the new data. It uses the `TimeWindowExpr` associated with each relevant flow to determine which time windows are affected by the new data points. These windows are then added to the `DirtyTimeWindows` set in the corresponding `TaskState`. Marking a window dirty does not wake the task.
+3.  **Next Evaluation**: The `BatchingTask`'s execution loop reaches its next evaluation, either at a scheduled time or after its adaptive polling interval, and consumes the pending dirty windows.
 4.  **Plan Generation**: The task calls `gen_insert_plan`. This method:
     -   Inspects the `DirtyTimeWindows`.
     -   Generates a series of `OR`'d `WHERE` clauses (e.g., `(ts >= 't1' AND ts < 't2') OR (ts >= 't3' AND ts < 't4') ...`) that cover the dirty windows.

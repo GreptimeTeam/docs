@@ -17,7 +17,7 @@ Flownode 内部有两条执行路径：
 Batching mode 复用 GreptimeDB 的查询引擎，不需要为每一行输入维护一张算子图。对于基于时间窗口的 Flow，主循环如下：
 
 1. Source table 收到写入后，把受影响的时间窗口标记为 dirty。
-2. `BatchingTask` 按调度周期或通知唤醒，并收集待处理的 dirty window。
+2. `BatchingTask` 按求值调度或自适应轮询节奏运行，并在该次求值时收集待处理的 dirty window。标记 dirty window 不会唤醒任务。
 3. 任务把这些窗口转换成时间谓词，加入 Flow 查询，再请求 Frontend 查询 source table。
 4. 查询结果写入 sink table，更新已重新计算窗口对应的物化结果。
 5. 成功处理的窗口从 dirty set 中移除；执行失败的工作仍可在后续调度中处理。

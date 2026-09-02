@@ -5,7 +5,7 @@ description: 介绍 GreptimeDB 的架构、关键概念和工作原理，包括�
 
 # 贡献者指南
 
-本指南面向 GreptimeDB 贡献者，介绍理解内部实现所需的设计机制。构建、测试和提交要求以源码仓库的 [CONTRIBUTING.md](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md) 为准。
+本指南面向 GreptimeDB 贡献者，介绍理解内部实现所需的设计机制。从源码构建和运行参见[快速开始](/contributor-guide/getting-started.md)。提交要求（CLA、license header、代码格式，以及 PR 必须通过的检查）以源码仓库的 [CONTRIBUTING.md](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md) 为准。
 
 ## 架构
 
