@@ -3,7 +3,7 @@ keywords: [streaming process, flow management, Flownode components, Flownode lim
 description: Overview of Flownode's batching mode, a component providing continuous data aggregation capabilities to the database, including its architecture and query execution flow.
 ---
 
-# Flownode Batching Mode Developer Guide
+# Batching Mode
 
 This guide provides a brief overview of the batching mode in `flownode`. It's intended for developers who want to understand the internal workings of this mode.
 
@@ -22,7 +22,16 @@ The core idea is to:
 
 The batching mode consists of several key components that work together to achieve this continuous aggregation. As shown in the diagram below:
 
-![batching mode architecture](/batching_mode_arch.png)
+```mermaid
+flowchart TB
+    SRC["Source table"] -->|"write"| ENG["BatchingEngine"]
+    ENG -->|"mark affected windows"| DTW("DirtyTimeWindows<br/>pending ranges per task")
+    DTW -->|"read at next evaluation"| RUN["BatchingTask<br/>schedule or polling cadence"]
+    RUN -.->|"clear processed"| DTW
+    RUN -->|"INSERT INTO sink SELECT<br/>with time predicates"| FE["Frontend"]
+    FE -->|"scan"| SRC
+    FE -->|"upsert by time window"| SINK["Sink table"]
+```
 
 ### `BatchingEngine`
 
