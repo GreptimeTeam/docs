@@ -8,25 +8,26 @@ description: Guide on writing and running unit tests in GreptimeDB using Rust's 
 ## Introduction
 
 Unit tests are embedded into the codebase, usually placed next to the logic being tested.
-They are written using Rust's `#[test]` attribute and can run with `cargo nextest run`.
+They are written using Rust's `#[test]` attribute. GreptimeDB uses [`cargo-nextest`](https://nexte.st/) as its primary Rust test runner.
 
-The default test runner ships with `cargo` is not supported in GreptimeDB codebase. It's recommended
-to use [`nextest`](https://nexte.st/) instead. You can install it with
+Install it with:
 
 ```shell
 cargo install cargo-nextest --locked
 ```
 
-And run the tests (here the `--workspace` is not necessary)
+Run the package you changed first:
 
 ```shell
-cargo nextest run
+cargo nextest run -p <package>
 ```
 
-Notes if your Rust is installed via `rustup`, be sure to install `nextest` with `cargo` rather
-than the package manager like `homebrew`. Otherwise it will mess up your local environment.
+Use a test name or nextest filter to narrow the run further while developing. Before submitting a change with broad effects, run the full workspace suite:
+
+```shell
+make test
+```
 
 ## Coverage
 
-Our continuous integration (CI) jobs have a "coverage checking" step. It will report how many
-codes are covered by unit tests. Please add the necessary unit test to your patch.
+CI reports unit-test coverage. Add tests for changed behavior and failure cases that could otherwise regress; coverage percentage alone is not the goal.

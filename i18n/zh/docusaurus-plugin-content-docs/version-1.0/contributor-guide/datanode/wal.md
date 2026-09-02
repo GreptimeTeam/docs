@@ -9,20 +9,26 @@ description: 介绍了 GreptimeDB 的预写日志（WAL）机制，包括其命�
 
 ## 介绍
 
-我们的存储引擎受到了日志结构合并树（Log-structured Merge Tree，LSMT）的启发。对数据的变更操作直接应用于 MemTable 而不是持久化到磁盘上的数据页，这显著提高了性能，但也带来了持久化相关的问题，特别是在 Datanode 意外崩溃时。与所有类似 LSMT 的存储引擎一样，GreptimeDB 使用预写日志（Write-Ahead Log，WAL）来确保数据被可靠地持久化，并且保证崩溃时的数据完整性。
+Mito 在将数据 flush 为 SST 文件前，先在 memtable 中缓冲写入。每个 Region 的 mutation 会先追加到预写日志（WAL），从而恢复尚未进入 SST 的数据。
 
-预写日志是一个仅提供追加写的文件组。所有的 INSERT 和 DELETE 操作都被转换为操作日志，然后追加到 WAL。一旦操作日志被持久化到底层文件，该操作才可以进一步应用到 MemTable。
+WAL 通过统一的 log-store 抽象访问，可以使用本地 raft-engine 或远端 Kafka。
 
-当数据节点重新启动时，WAL 中的操作条目将被重放，以重建正确的 MemTable 状态。
+## 写入与恢复流程
 
-![WAL in Datanode](/wal.png)
+正常写入遵循以下顺序：
+
+1. Region worker 分配 sequence number 和 WAL entry ID。
+2. 将 mutation 追加到 WAL。追加失败时，不会把 mutation 写入 memtable。
+3. WAL 追加成功后，Mito 将 mutation 写入 memtable，并发布新的 committed sequence。
+4. Flush 将不可变 memtable 写为 SST 文件，并持久化包含新文件和 `flushed_entry_id` 的 manifest edit。
+5. Manifest edit 持久化后，`flushed_entry_id` 及以前的 WAL entry 被标记为 obsolete；log store 可以稍后再回收物理空间。
+
+Manifest 是恢复边界。正常重新打开 Region 时，Mito 根据 manifest 重建 Region，并从 `flushed_entry_id + 1` 开始重放 WAL。Region 状态切换可以指定更晚的 replay checkpoint，但不会重放早于已持久化 flush 边界的 entry。
 
 ## 命名空间
 
-WAL 的命名空间用于区分来自不同 region 的条目。追加和读取操作必须提供一个命名空间。目前，region ID 被用作命名空间，因为每个 region 都有一个在数据节点重新启动时需要重构的 MemTable。
+WAL entry 按 Region 隔离，而不是按表隔离。追加和读取都需要指定 Region namespace，使单个 Region 可以独立重放或截断。本地 raft-engine 使用 Region ID 作为 namespace ID；Kafka provider 则在基于 topic 的日志中保留 Region 标识。
 
 ## 同步/异步刷盘
 
-默认情况下，WAL 的追加写是异步的，这意味着写入方不会等待操作日志被刷入到磁盘并持久化。这个默认设置提供了更高的性能，但在服务器意外关闭时可能会丢失数据。另一方面，同步刷新提供了更高的可靠性，但其代价是性能更低。
-
-在 v0.4 版本中，新的 region worker 架构可以使用批处理来减轻同步刷盘的开销。
+对于本地 raft-engine，`sync_write` 控制追加写是否等待日志同步到持久化存储，默认值为 `false`。异步写入延迟较低，但主机在缓冲数据同步前故障时，可能丢失最近确认的 entry。Kafka WAL 的持久性由 producer 和集群配置决定，不受这个本地选项控制。
