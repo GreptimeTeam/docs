@@ -1,20 +1,25 @@
 ---
-keywords: [Admin API, 健康检查, leader 查询, 心跳检测, 维护模式]
-description: 介绍 Metasrv 的 Admin API，包括健康检查、leader 查询、心跳检测、维护模式和 Procedure Manager 控制等功能。
+keywords: [Admin API, 健康检查, leader 查询, 心跳检测, 维护模式, 恢复模式, table id sequence]
+description: 介绍 Metasrv 用于状态检查、集群控制和元数据恢复的 Admin API。
 ---
 
 # Admin API
 
-Admin 提供了一种简单的方法来查看和管理集群信息，包括 metasrv 健康检测、metasrv leader 查询、数据节点心跳检测、维护模式和 Procedure Manager 控制。
+:::tip
+本页所有 Admin API 都监听 Metasrv 的 `HTTP_PORT`，默认值为 `4000`。
+:::
 
-Admin API 是一个 HTTP 服务，提供一组可以通过 HTTP 请求调用的 RESTful API。Admin API 简单、用户友好且安全。
+Admin API 通过 HTTP 提供 Metasrv 状态、集群控制和元数据恢复操作。该 API 不提供认证，且部分端点会改变集群行为或元数据分配，部署时必须通过网络策略保护 HTTP 端口。
 本页介绍以下 API：
 
 - /health
 - /leader
 - /heartbeat
+- /node-lease
 - /maintenance
 - /procedure-manager
+- /recovery
+- /sequence/table
 
 所有这些 API 都在父资源 `/admin` 下。
 
@@ -22,7 +27,7 @@ Admin API 是一个 HTTP 服务，提供一组可以通过 HTTP 请求调用的 
 
 ## /health HTTP 端点
 
-`/health` 端点接受 GET HTTP 请求，你可以使用此端点检查你的 metasrv 实例的健康状况。
+`/health` 端点接受 GET 请求。HTTP 服务运行时返回 `OK`，但不会检查当前 Metasrv 是否为 leader，也不会检查外部依赖是否可用。
 
 ### 定义
 
@@ -116,9 +121,17 @@ curl -X GET 'http://localhost:4000/admin/heartbeat?addr=127.0.0.1:4100'
 ]
 ```
 
+## /node-lease HTTP 端点
+
+`/node-lease` 返回 Metasrv 当前记录的 Datanode lease，可用于判断 Metasrv 是否仍将某个 Datanode 视为存活。
+
+```bash
+curl -X GET http://localhost:4000/admin/node-lease
+```
+
 ## /maintenance HTTP 端点
 
-集群维护模式是 GreptimeDB 中的一项安全功能，它可以临时禁用自动集群管理操作。此模式在集群升级、计划停机以及任何可能暂时影响集群稳定性的操作期间特别有用。有关更多详细信息，请参阅[集群维护模式](/user-guide/deployments-administration/maintenance/maintenance-mode.md)。
+维护模式在升级、计划停机等操作期间临时禁用自动集群管理。它对集群的具体影响参见[集群维护模式](/user-guide/deployments-administration/maintenance/maintenance-mode.md)。
 
 `/maintenance` 端点支持以下 HTTP 请求：
 
@@ -151,3 +164,39 @@ curl -X GET 'http://localhost:4000/admin/heartbeat?addr=127.0.0.1:4100'
   "status": "running"
 }
 ```
+
+## /recovery HTTP 端点
+
+Recovery mode 控制手动修改 table ID sequence 等元数据修复端点。它只用于恢复工作，不用于常规维护。
+
+- `GET /admin/recovery/status`：查询 recovery mode 是否开启。
+- `POST /admin/recovery/enable`：开启 recovery mode。
+- `POST /admin/recovery/disable`：关闭 recovery mode。
+
+响应体格式如下：
+
+```json
+{
+  "enabled": true
+}
+```
+
+修复完成后应关闭 recovery mode。如果只是计划暂停自动集群操作，应使用[维护模式](/user-guide/deployments-administration/maintenance/maintenance-mode.md)。
+
+## /sequence/table HTTP 端点
+
+这些端点用于检查或修复 table ID sequence：
+
+- `GET /admin/sequence/table/next-id`：返回下一个 table ID，但不执行分配。
+- `POST /admin/sequence/table/set-next-id`：推进下一个 table ID。
+
+设置 sequence 前必须开启 recovery mode。新值必须大于当前值，不能通过该 API 回退 sequence。Recovery mode 只是该 API 的前置条件，不能阻止 DDL。执行该操作时，必须遵循[管理 Table ID Sequence](/user-guide/deployments-administration/maintenance/sequence-management.md)中的完整集群操作流程。
+
+```bash
+curl -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{"next_table_id": 2048}' \
+  http://localhost:4000/admin/sequence/table/set-next-id
+```
+
+该操作会影响后续新表分配到的 ID。

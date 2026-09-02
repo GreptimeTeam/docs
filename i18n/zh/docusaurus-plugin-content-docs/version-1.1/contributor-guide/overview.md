@@ -5,9 +5,7 @@ description: 介绍 GreptimeDB 的架构、关键概念和工作原理，包括�
 
 # 贡献者指南
 
-DeepWiki 对 GreptimeDB 的架构和实现进行了详细且清晰的描述，强烈推荐阅读：
-
-[https://deepwiki.com/GreptimeTeam/greptimedb](https://deepwiki.com/GreptimeTeam/greptimedb)
+本指南面向 GreptimeDB 贡献者，介绍理解内部实现所需的设计机制。从源码构建和运行参见[快速开始](/contributor-guide/getting-started.md)。提交要求（CLA、license header、代码格式，以及 PR 必须通过的检查）以源码仓库的 [CONTRIBUTING.md](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md) 为准。
 
 ## 架构
 
@@ -18,7 +16,13 @@ DeepWiki 对 GreptimeDB 的架构和实现进行了详细且清晰的描述，�
 - [frontend][1]
 - [datanode][2]
 - [metasrv][3]
+- [flownode][4]
 
 [1]: /contributor-guide/frontend/overview.md
 [2]: /contributor-guide/datanode/overview.md
 [3]: /contributor-guide/metasrv/overview.md
+[4]: /contributor-guide/flownode/overview.md
+
+## 补充参考
+
+[DeepWiki](https://deepwiki.com/GreptimeTeam/greptimedb) 提供了自动生成的 GreptimeDB 源码导读，可用于了解不熟悉的模块。它属于辅助资料；涉及具体版本的行为时，仍应以对应源码为准。

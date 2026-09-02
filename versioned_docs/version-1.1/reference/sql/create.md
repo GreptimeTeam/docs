@@ -26,7 +26,7 @@ If the `db_name` database already exists, then GreptimeDB has the following beha
 The database can also carry options similar to the `CREATE TABLE` statement by using the `WITH` keyword. The following options are available for databases:
 
 - `ttl` - Time-To-Live for data in all tables within the database (cannot be set to `instant`)
-- `memtable.type` - Type of memtable (`time_series`, `partition_tree`)
+- `memtable.type` - Type of memtable (`bulk`, `time_series`)
 - `append_mode` - Whether tables in the database should be append-only (`true`/`false`)
 - `merge_mode` - Strategy for merging duplicate rows (`last_row`, `last_non_null`)
 - `skip_wal` - Whether to disable Write-Ahead-Log for tables in the database (`'true'`/`'false'`)
@@ -74,7 +74,7 @@ Create a database with multiple options, including append mode and custom memtab
 ```sql
 CREATE DATABASE test WITH (
   ttl='30d',
-  'memtable.type'='partition_tree',
+  'memtable.type'='bulk',
   'append_mode'='true'
 );
 ```
@@ -154,7 +154,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `compaction.twcs.trigger_file_num`          | Number of files in a specific time window to trigger a compaction | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
 | `compaction.twcs.time_window`               | Compaction time window                                          | String value, such as '1d' for 1 day. The table usually partitions rows into different time windows by their timestamps. Only available when `compaction.type` is `twcs`.                                                                                   |
 | `compaction.twcs.max_output_file_size`      | Maximum allowed output file size for TWCS compaction           | String value, such as '1GB', '512MB'. Sets the maximum size for files produced by TWCS compaction. Only available when `compaction.type` is `twcs`.                                                                                                        |
-| `memtable.type`                             | Type of the memtable.                                           | String value, supports `time_series`, `partition_tree`.                                                                                                                                                                                                     |
+| `memtable.type`                             | Type of the memtable                                            | String value: `bulk` or `time_series`. If omitted, Mito selects the implementation from the SST format; the default flat format uses `bulk`. Setting `bulk` forces `sst_format=flat`, and flat SSTs use the bulk implementation even if `time_series` is specified. The legacy value `partition_tree` is accepted for compatibility and maps to the bulk and flat path. |
 | `append_mode`                               | Whether the table is append-only                                | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.                         |
 | `merge_mode`                                | The strategy to merge duplicate rows                            | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.   |
 | `sst_format`                                | The format of SST files                            | String value, supports `primary_key`, `flat`. Default is `flat`. `flat` is recommended for tables which have a large number of unique primary keys.   |

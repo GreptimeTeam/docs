@@ -7,7 +7,7 @@ description: Overview of the storage engine in GreptimeDB, its architecture, com
 
 ## Introduction
 
-The `storage engine` is responsible for storing the data of the database. Mito, based on [LSMT][1] (Log-structured Merge-tree), is the storage engine we use by default. We have made significant optimizations for handling time-series data scenarios, so mito engine is not suitable for general purposes.
+Mito is GreptimeDB's default storage engine. It uses an [LSM tree][1] and is designed for time-series workloads rather than as a general-purpose embedded storage engine.
 
 ## Architecture
 
@@ -24,8 +24,8 @@ The architecture is the same as a traditional LSMT engine:
   - Log records of the WAL can be stored on the local disk, or in a remote log service such as
     Kafka (remote WAL) that implements the `Log Store` API.
 - Memtables:
-  - Data is written into the `active memtable`, aka `mutable memtable` first.
-  - When a `mutable memtable` is full, it will be changed to a `read-only memtable`, aka `immutable memtable`.
+  - Mito routes rows by time index into mutable memtables.
+  - A flush freezes the mutable memtables, installs a new mutable set for writes, and writes the frozen memtables to SST files.
 - SST
   - The full name of SST, aka SSTable is `Sorted String Table`.
   - `Immutable memtable` is flushed to persistent storage and produces an SST file.
@@ -103,7 +103,9 @@ Each Parquet SST is split into row groups, the unit that Parquet can read or ski
 
 Mito supports two SST formats: `flat` and `primary_key`. `flat` is the default for new tables and works well across primary-key cardinalities, including high-cardinality keys. `primary_key` is the legacy format kept for compatibility with older tables. See [SST format](/reference/sql/create.md#create-a-table-with-sst-format) and the [table design guide](/user-guide/deployments-administration/performance-tuning/design-table.md#sst-format) for more details.
 
-<img src="/sst-layout.svg" alt="SST layout" style={{width: '80%', margin: '0 auto'}}/>
+![The default flat Mito SST layout combines file-level metadata with Parquet row groups containing data columns and merge metadata.](/mito-sst-layout.svg)
+
+An SST may span more than one compaction time window.
 
 ## Scan Pruning
 

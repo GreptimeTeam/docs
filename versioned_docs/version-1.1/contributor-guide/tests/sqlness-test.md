@@ -7,42 +7,34 @@ description: Instructions for running SQL tests in GreptimeDB using the `sqlness
 
 ## Introduction
 
-SQL is an important user interface for `GreptimeDB`. We have a separate test suite for it (named `sqlness`).
+Sqlness is GreptimeDB's end-to-end regression suite for SQL and protocol behavior. A case sends statements to a running GreptimeDB instance and compares the output with a checked-in result file.
 
 ## Sqlness manual
 
 ### Case file
 
-Sqlness has two types of file
+Each case uses two files:
 
 - `.sql`: test input, SQL only
 - `.result`: expected test output, SQL and its results
 
-The `.result` file is the expected execution output. If you see `.result` files changed,
-it means the test gets a different result and indicates it may fail. You should
-check the change logs to solve the problem.
-
-You only need to write test SQL in the `.sql` file, and run the test.
+Write the input in the `.sql` file and run the test to generate or update `.result`. Review every result diff: accept it only when the behavior change is intended.
 
 ### Case organization
 
-The root dir of input cases is `tests/cases`. It contains several sub-directories stand for different test
-modes. E.g., `standalone/` contains all the tests to run under `greptimedb standalone start` mode.
+Input cases live under `tests/cases`. The first directory level selects an environment. For example, `standalone/` runs against a standalone GreptimeDB instance.
 
-Under the first level of sub-directory (e.g. the `cases/standalone`), you can organize your cases as you like.
-Sqlness walks through every file recursively and runs them.
+Within an environment, group a new case with the feature it exercises. Sqlness discovers case files recursively.
 
 ## Run the test
 
-Unlike other tests, this harness is in a binary target form. You can run it with
+Run the suite with:
 
 ```shell
-cargo run --bin sqlness-runner bare
+cargo sqlness bare
 ```
 
-It automatically finishes the following procedures: compile `GreptimeDB`, start it, grab tests and feed it to
-the server, then collect and compare the results. You only need to check whether any `.result` files changed.
-If not, congratulations, the test is passed 🥳!
+The command builds and starts GreptimeDB, runs the selected cases, and compares their output. A changed `.result` file is part of the review, not proof that the new output is correct.
 
 ### Run a specific test
 

@@ -5,19 +5,23 @@ description: Explanation of data persistence and indexing in GreptimeDB, includi
 
 # Data Persistence and Indexing
 
-Similar to all LSMT-like storage engines, data in MemTables is persisted to durable storage, for example, the local disk file system or object storage service. GreptimeDB adopts [Apache Parquet][1] as its persistent file format.
+Like other LSM-tree storage engines, GreptimeDB persists data from memtables to durable storage such as a local filesystem or object storage. It uses [Apache Parquet][1] as the persistent file format.
 
 ## SST File Format
 
 Parquet is an open source columnar format that provides fast data querying and has already been adopted by many projects, such as Delta Lake.
 
-Parquet has a hierarchical structure like "row groups-columns-data pages". Data in a Parquet file is horizontally partitioned into row groups, in which all values of the same column are stored together to form a data page. Data page is the minimal storage unit. This structure greatly improves performance.
+Parquet organizes data as row groups, column chunks, and pages. A row group contains one column chunk for each column, and each column chunk contains one or more pages. Pages are the units of encoding and compression; column chunks are the I/O units for reading selected columns.
 
 First, clustering data by column makes file scanning more efficient, especially when only a few columns are queried, which is very common in analytical systems.
 
-Second, data of the same column tends to be homogeneous which helps with compression when apply techniques like dictionary and Run-Length Encoding (RLE).
+Second, values within a column tend to be similar, which improves compression with techniques such as dictionary encoding and run-length encoding (RLE).
 
-<img src="/parquet-file-format.png" alt="Parquet file format" width="500"/>
+The following diagram from the Apache Parquet specification also shows the physical file layout: column chunks are stored by row group, while file metadata and its length are written in the footer.
+
+<img src="/parquet-file-layout.gif" alt="Apache Parquet file layout" width="601"/>
+
+*Source: Apache Parquet [FileLayout.gif](https://github.com/apache/parquet-format/blob/master/doc/images/FileLayout.gif). Copyright 2014 The Apache Software Foundation, licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).*
 
 ## Data Persistence
 
@@ -27,17 +31,17 @@ When the size of data buffered in MemTables reaches that threshold, GreptimeDB w
 
 ## Indexing Data in SST Files
 
-Apache Parquet file format provides inherent statistics in headers of column chunks and data pages, which are used for pruning and skipping.
+Parquet stores row-group column statistics such as minimum, maximum, and null count in each column chunk's metadata. Page metadata and optional column indexes can provide finer-grained statistics.
 
-<img src="/column-chunk-header.png" alt="Column chunk header" width="350"/>
+![A name predicate uses Parquet column statistics to skip one row group while retaining another as a read candidate.](/parquet-row-group-statistics.svg)
 
-For example, in the above Parquet file, if you want to filter rows where `name` = `Emily`, you can easily skip row group 0 because the max value for `name` field is `Charlie`. This statistical information reduces IO operations.
+For example, a query filtering for `name` = `Emily` can skip row group 0 because the maximum `name` value is `Charlie`. This avoids reading that row group.
 
 ## Index Files
 
-For each SST file, GreptimeDB not only maintains an internal index but also generates a separate file to store the index structures specific to that SST file.
+When an SST has one or more configured index outputs, GreptimeDB writes them to a Puffin file associated with that SST. An SST with no applicable index does not need a Puffin file.
 
-The index files utilize the [Puffin][3] format, which offers significant flexibility, allowing for the storage of additional metadata and supporting a broader range of index structures.
+Puffin provides a container for index blobs and their metadata, allowing different index structures to share one file.
 
 ![Puffin](/puffin.png)
 
@@ -57,13 +61,13 @@ The inverted index enables GreptimeDB to skip data segments that do not meet que
 
 ![Inverted index searching](/inverted-index-searching.png)
 
-For instance, the query above uses the inverted index to identify data segments where `job` equals `apiserver`, `handler` matches the regex `.*users`, and `status` matches the regex `4...`. It then scans these data segments to produce the final results that meet all conditions, significantly reducing the number of IO operations.
+The query above uses the inverted index to identify data segments where `job` equals `apiserver`, `handler` matches `.*users`, and `status` matches `4..`. It scans only those segments before applying the remaining filters.
 
 ### Inverted Index Format
 
-![Inverted index format](/inverted-index-format.png)
+![An inverted-index blob contains one index per column followed by footer metadata; each column index contains a null bitmap, posting bitmaps, and an FST.](/inverted-index-blob-layout.svg)
 
-GreptimeDB builds inverted indexes by column, with each inverted index consisting of an FST and multiple Bitmaps.
+GreptimeDB builds inverted indexes by column. Each column index contains a null bitmap, multiple posting bitmaps, and an FST. The blob footer records the offsets, sizes, and metadata needed to locate and decode the column indexes.
 
 The FST (Finite State Transducer) enables GreptimeDB to store mappings from column values to Bitmap positions in a compact format and provides excellent search performance and supports complex search capabilities (such as regular expression matching). The Bitmaps maintain a list of data segment IDs, with each bit representing a data segment.
 
@@ -77,7 +81,7 @@ The number of rows in a data segment is controlled by the engine option `index.i
 
 ## Unified Data Access Layer: OpenDAL
 
-GreptimeDB uses [OpenDAL][2] to provide a unified data access layer, thus, the storage engine does not need to interact with different storage APIs, and data can be migrated to cloud-based storage like AWS S3 seamlessly.
+GreptimeDB uses [OpenDAL][2] to provide a common access layer for local filesystems and object stores. Changing the configured storage backend does not migrate existing data.
 
 [1]: https://parquet.apache.org
 [2]: https://github.com/datafuselabs/opendal
