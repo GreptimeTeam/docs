@@ -48,13 +48,12 @@ Mito 根据 time index 的值把每行数据路由到对应分区。分区使用
 Mito 根据 Region 的 SST format、primary key encoding 和 memtable 选项选择实现：
 
 ```text
-memtable.type=bulk                              -> BulkMemtable 和 flat SST
-flat SST format 或 sparse primary-key encoding -> BulkMemtable
-primary_key SST、dense encoding、有 primary key -> TimeSeriesMemtable
-primary_key SST、dense encoding、无 primary key -> SimpleBulkMemtable
+flat SST format（默认）或 sparse primary-key encoding -> BulkMemtable
+memtable.type=bulk                                   -> BulkMemtable，并强制 flat SST
+primary_key SST + dense encoding（遗留）             -> 遗留实现
 ```
 
-使用默认 engine 配置时，没有显式指定 SST format 的 Region 会使用 `flat`，因此通常走 `BulkMemtable` 路径。这些规则会排除不兼容的组合：flat format 或 sparse primary key encoding 必须使用 `BulkMemtable`；显式选择 bulk 实现则会强制使用 flat format。
+使用默认 engine 配置时，没有显式指定 SST format 的 Region 会使用 `flat`，因此通常走 `BulkMemtable` 路径，本页其余内容也以它为准。这些规则用于排除不兼容的组合：flat format 或 sparse primary key encoding 必须使用 `BulkMemtable`；显式选择 bulk 实现则会强制使用 flat format。
 
 ### BulkMemtable
 
@@ -72,11 +71,9 @@ BulkMemtable
 
 小 part 先积累在 `unordered_part` 中，较大的 part 则直接进入 `parts`。后台 memtable compaction 对符合条件的 part 执行 merge sort，生成 `MultiBulkPart` 或编码为 `EncodedBulkPart`。Scan 利用 part 的统计信息裁剪 range；flush 可以将已编码的 range 写入 SST，无需再次解码和编码数据行。设计动机和性能数据见 [Scaling Time Series to Millions of Cardinalities: GreptimeDB's Flat Format](https://www.greptime.com/blogs/2025-12-22-flat-format)。
 
-### TimeSeriesMemtable
+### 遗留实现
 
-`TimeSeriesMemtable` 按编码后的 primary key 对数据行分组。每条时间序列分别保存 timestamp、sequence number、operation type 和 field value 的列构建器。Reader 读取时间序列时，memtable 按 timestamp 和 sequence 构造 batch，并应用 Region 的去重或 merge mode。
-
-除非 Region 显式选择 bulk 实现，否则使用 dense primary key encoding 的 `primary_key` SST format 会选择该实现。如果 Region 没有 primary key 列，同一个 builder 会创建 `SimpleBulkMemtable`，而不创建 series map。
+使用遗留 `primary_key` SST format 且为 dense primary key encoding 的 Region 仍然使用 `TimeSeriesMemtable`，它按编码后的 primary key 对数据行分组，而不是保存 flat part。如果 Region 没有 primary key 列，同一个 builder 会创建 `SimpleBulkMemtable`。两者都是为已有表保留的兼容代码，`primary_key` format 退役后可能一并移除；新的工作应面向 bulk 和 flat 路径。
 
 已经删除的 `partition_tree` memtable 不是第三种实现。Option parser 仍接受 `memtable.type=partition_tree` 以兼容旧配置，但不会恢复该实现。Region 最终使用 bulk 和 flat 路径。
 

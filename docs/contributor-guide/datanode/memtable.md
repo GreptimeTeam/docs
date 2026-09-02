@@ -48,13 +48,12 @@ Freezing a Region freezes all mutable time partitions together. Mito moves their
 Mito selects a memtable implementation from the Region's SST format, primary-key encoding, and memtable options:
 
 ```text
-memtable.type=bulk                                  -> BulkMemtable and flat SST
-flat SST format or sparse primary-key encoding      -> BulkMemtable
-primary_key SST, dense encoding, primary key exists -> TimeSeriesMemtable
-primary_key SST, dense encoding, no primary key     -> SimpleBulkMemtable
+flat SST format (the default) or sparse primary-key encoding -> BulkMemtable
+memtable.type=bulk                                           -> BulkMemtable, and forces flat SST
+primary_key SST with dense encoding (legacy)                 -> a legacy implementation
 ```
 
-With the default engine configuration, a Region without an explicit SST format uses `flat`, so `BulkMemtable` is the normal path. The rules prevent incompatible combinations: flat format or sparse primary-key encoding requires `BulkMemtable`, while explicitly selecting the bulk implementation forces flat format.
+With the default engine configuration, a Region without an explicit SST format uses `flat`, so `BulkMemtable` is the normal path and the rest of this page describes it. The rules exist to prevent incompatible combinations: flat format or sparse primary-key encoding requires `BulkMemtable`, and explicitly selecting the bulk implementation forces flat format.
 
 ### BulkMemtable
 
@@ -72,11 +71,9 @@ BulkMemtable
 
 Small parts accumulate in `unordered_part`; larger parts enter `parts` directly. Background memtable compaction merge-sorts eligible parts into a `MultiBulkPart` or encodes them as an `EncodedBulkPart`. Scans use part statistics to prune ranges, and flush can write encoded ranges to SST without decoding and encoding the rows again. For the design rationale and performance results, see [Scaling Time Series to Millions of Cardinalities: GreptimeDB's Flat Format](https://www.greptime.com/blogs/2025-12-22-flat-format).
 
-### TimeSeriesMemtable
+### Legacy implementations
 
-`TimeSeriesMemtable` groups rows by encoded primary key. Each series stores its timestamps, sequence numbers, operation types, and field values in column builders. When a reader requests the series, the memtable builds a batch ordered by timestamp and sequence and applies the Region's deduplication or merge mode.
-
-This implementation is used for the `primary_key` SST format with dense primary-key encoding unless the Region explicitly selects the bulk implementation. If the Region has no primary-key columns, the same builder creates a `SimpleBulkMemtable` instead of a series map.
+Regions on the legacy `primary_key` SST format with dense primary-key encoding still use `TimeSeriesMemtable`, which groups rows by encoded primary key rather than storing flat parts. A Region with no primary-key columns gets `SimpleBulkMemtable` from the same builder. Both are compatibility code for existing tables and may be removed once the `primary_key` format is retired; new work targets the bulk and flat path.
 
 The removed `partition_tree` memtable is not a third implementation. The option parser accepts `memtable.type=partition_tree` for compatibility, but it does not recreate that implementation. The Region uses the bulk and flat path.
 
