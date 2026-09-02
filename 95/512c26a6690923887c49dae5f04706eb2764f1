@@ -1,0 +1,20 @@
+docs/reference/sql/greptime-private/events.md
+  h_623774b620da8e 17-20
+docs/user-guide/deployments-administration/monitoring/events/overview.md
+  h_623774b620da8e 24-27
+i18n/zh/docusaurus-plugin-content-docs/current/reference/sql/greptime-private/events.md
+  h_623774b620da8e 10
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/overview.md
+  h_623774b620da8e 18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "95512c26a6690923887c49dae5f04706eb2764f1",
+  "prompts": {},
+  "humans": {
+    "h_623774b620da8e": {
+      "author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
