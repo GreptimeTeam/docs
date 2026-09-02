@@ -39,11 +39,11 @@
   <text x="650" y="247" text-anchor="middle" class="label teal">Time</text>
   <text x="650" y="271" text-anchor="middle" class="mono">ts</text>
 
-  <rect x="730" y="220" width="175" height="64" rx="10" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2"/>
-  <text x="817.5" y="247" text-anchor="middle" class="label blue">Encoded key</text>
-  <text x="817.5" y="271" text-anchor="middle" class="mono">__primary_key</text>
+  <rect x="730" y="220" width="160" height="64" rx="10" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2"/>
+  <text x="810" y="247" text-anchor="middle" class="label blue">Encoded key</text>
+  <text x="810" y="271" text-anchor="middle" class="mono">__primary_key</text>
 
-  <rect x="925" y="220" width="180" height="64" rx="10" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2"/>
+  <rect x="910" y="220" width="210" height="64" rx="10" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2"/>
   <text x="1015" y="247" text-anchor="middle" class="label">Merge metadata</text>
   <text x="1015" y="271" text-anchor="middle" class="mono">__sequence · __op_type</text>
 
