@@ -1,0 +1,25 @@
+docs/reference/sql/greptime-private/events.md
+  s_0d872f39c89c6f::t_03d1c79dc645cd 19-21
+docs/user-guide/deployments-administration/monitoring/events/overview.md
+  s_0d872f39c89c6f::t_adaf7317d99a4f 26-28
+i18n/zh/docusaurus-plugin-content-docs/current/reference/sql/greptime-private/events.md
+  s_0d872f39c89c6f::t_a93fc3971ac368 10
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/monitoring/events/overview.md
+  s_0d872f39c89c6f::t_ee9adf67f7844f 18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "2fdc8955df1d723f271177f4aae8b8044703b363",
+  "prompts": {},
+  "sessions": {
+    "s_0d872f39c89c6f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a06000-f089-75d0-a34b-cafec6125bff",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
