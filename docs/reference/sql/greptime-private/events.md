@@ -14,9 +14,10 @@ operation succeeded.
 When the event recorder writes its first event, it creates the
 `greptime_private.events` system table. If an existing table is missing columns
 from the current event schema, the recorder adds them. It performs both actions
-even when automatic table creation is disabled. If no event has been recorded, or
-event recording is disabled, querying it returns a table-not-found error. Configure
-recording in [Event recording](/user-guide/deployments-administration/configuration.md#event-recording).
+even when automatic table creation is disabled. Disabling event recording does
+not remove an existing table. A query returns a table-not-found error only if the
+table has never been created, for example because event recording was disabled
+before any event was recorded. Configure recording in [Event recording](/user-guide/deployments-administration/configuration.md#event-recording).
 
 ```sql
 USE greptime_private;
