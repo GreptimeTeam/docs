@@ -23,8 +23,9 @@ When the event recorder writes its first event, it creates the
 from the current event schema, the recorder adds them. It performs both actions
 even when automatic table creation is disabled. Disabling event recording does
 not remove an existing table. This query returns a table-not-found error only if
-the table has never been created, for example because event recording was
-disabled before any event was recorded.
+the table does not currently exist, for example because event recording was
+disabled before any event was recorded or the table was dropped. The recorder
+recreates the table when it writes another event.
 
 Start with a bounded query while investigating a recent operation:
 

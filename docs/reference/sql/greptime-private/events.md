@@ -16,8 +16,9 @@ When the event recorder writes its first event, it creates the
 from the current event schema, the recorder adds them. It performs both actions
 even when automatic table creation is disabled. Disabling event recording does
 not remove an existing table. A query returns a table-not-found error only if the
-table has never been created, for example because event recording was disabled
-before any event was recorded. Configure recording in [Event recording](/user-guide/deployments-administration/configuration.md#event-recording).
+table does not currently exist, for example because event recording was disabled
+before any event was recorded or the table was dropped. The recorder recreates the
+table when it writes another event. Configure recording in [Event recording](/user-guide/deployments-administration/configuration.md#event-recording).
 
 ```sql
 USE greptime_private;
