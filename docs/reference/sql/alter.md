@@ -155,7 +155,15 @@ Modify the date type of a column
 ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
-The modified column cannot be a tag (primary key) or time index, and it must be nullable to ensure that the data can be safely converted (returns `NULL` on cast failures).
+A modified field column cannot be a tag (primary key), and it must be nullable to ensure that the data can be safely converted (returns `NULL` on cast failures).
+
+The time index column is the exception: you can widen its timestamp unit to a finer one, for example, from `TIMESTAMP` (milliseconds) to `TIMESTAMP_US` (microseconds):
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
+```
+
+Widening the time index unit is lossless — existing data is read in the new unit without rewriting, and new writes can use the finer precision. Narrowing the unit (for example, from microseconds back to milliseconds) or changing the time index to a non-timestamp type is not allowed. This operation is not supported on tables using the [metric engine](/reference/about-greptimedb-engines.md).
 
 ### Set column default value
 
