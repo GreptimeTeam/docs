@@ -28,7 +28,8 @@ flowchart TB
     ENG -->|"mark affected windows"| DTW("DirtyTimeWindows<br/>pending ranges per task")
     DTW -->|"read at next evaluation"| RUN["BatchingTask<br/>schedule or polling cadence"]
     RUN -.->|"clear processed"| DTW
-    RUN -->|"INSERT INTO sink SELECT<br/>with time predicates"| FE["Frontend"]
+    RUN -->|"windowed: INSERT INTO sink SELECT<br/>with time predicates"| FE["Frontend"]
+    RUN -->|"TQL or unprunable plan:<br/>unfiltered full query"| FE
     FE -->|"scan"| SRC
     FE -->|"upsert by time window"| SINK["Sink table"]
 ```

@@ -35,7 +35,7 @@ Batching mode 复用 GreptimeDB 的查询引擎，不需要为每一行输入维
 4. 查询结果写入 sink table，更新已重新计算窗口对应的物化结果。
 5. 成功处理的窗口从 dirty set 中移除；执行失败的工作仍可在后续调度中处理。
 
-设置了 evaluation interval、但查询中没有时间窗口表达式的 Flow，会在每次调度时执行完整查询。这条路径还可以使用 streaming renderer 尚未实现的查询引擎能力。任务和 dirty window 组件的进一步说明见[批处理模式](./batching_mode.md)。
+TQL Flow，以及设置了 evaluation interval、但查询中没有时间窗口表达式的 SQL Flow，执行的是完整查询，而不是按时间过滤的查询；其中 SQL 的那种情况在没有 dirty 数据时会跳过该次调度。这条路径还可以使用 streaming renderer 尚未实现的查询引擎能力。任务和 dirty window 组件的进一步说明见[批处理模式](./batching_mode.md)。
 
 ## Streaming mode
 

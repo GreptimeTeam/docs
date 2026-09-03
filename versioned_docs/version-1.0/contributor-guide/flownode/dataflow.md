@@ -35,7 +35,7 @@ Batching mode reuses GreptimeDB's query engine instead of maintaining an operato
 4. The query result is inserted into the sink table, updating the materialized result for windows that were evaluated.
 5. Successfully processed windows are removed from the dirty set. Failed work remains available for a later evaluation.
 
-Flows with an evaluation interval but without a time-window expression run the complete query on each scheduled evaluation. This path also lets Flow use query-engine features that the streaming renderer does not implement. See [Batching Mode](./batching_mode.md) for the task and dirty-window components.
+TQL Flows, and SQL Flows with an evaluation interval but without a time-window expression, run the complete query rather than a time-filtered one. For the SQL case, an evaluation that finds nothing dirty is skipped. This path also lets Flow use query-engine features that the streaming renderer does not implement. See [Batching Mode](./batching_mode.md) for the task and dirty-window components.
 
 ## Streaming mode
 

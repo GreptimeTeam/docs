@@ -28,7 +28,8 @@ flowchart TB
     ENG -->|"标记受影响的时间窗口"| DTW("DirtyTimeWindows<br/>每个任务的待处理区间")
     DTW -->|"在下次求值时读取"| RUN["BatchingTask<br/>按调度或轮询节奏运行"]
     RUN -.->|"清除已处理窗口"| DTW
-    RUN -->|"INSERT INTO sink SELECT<br/>带时间谓词"| FE["Frontend"]
+    RUN -->|"按窗口：INSERT INTO sink SELECT<br/>带时间谓词"| FE["Frontend"]
+    RUN -->|"TQL 或无法裁剪的计划：<br/>非过滤全量查询"| FE
     FE -->|"扫描"| SRC
     FE -->|"按时间窗口 upsert"| SINK["目标表"]
 ```
