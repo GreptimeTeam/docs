@@ -1,0 +1,128 @@
+---
+keywords: [Fluent bit, Prometheus Remote Write, OpenTelemetry, 数据管道]
+description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Write 和 OpenTelemetry 的说明。
+---
+
+# Fluent Bit
+
+[Fluent Bit](http://fluentbit.io/) 是一个快速且轻量级的遥测代理，用于 Linux、macOS、Windows 和 BSD 系列操作系统的日志、指标和跟踪。Fluent Bit 专注于性能，允许从不同来源收集和处理遥测数据而不增加复杂性。
+
+你可以将 Fluent Bit 数据转发到 GreptimeDB。本文档介绍如何配置 Fluent Bit 以将日志、指标和跟踪发送到 GreptimeDB。
+
+## HTTP
+
+使用 Fluent Bit 的 [HTTP 输出插件](https://docs.fluentbit.io/manual/pipeline/outputs/http)，你可以将日志发送到 GreptimeDB。Http 接口目前支持日志的写入。
+在配置 Fluent Bit 之前，请确保你已经了解[日志写入流程](/user-guide/logs/overview.md)和[如何使用 pipelines](/user-guide/logs/use-custom-pipelines.md)。
+
+```
+[OUTPUT]
+    Name             http
+    Match            *
+    Host             greptimedb
+    Port             4000
+    Uri              /v1/ingest?db=public&table=your_table&pipeline_name=greptime_identity
+    Format           json
+    Json_date_key    scrape_timestamp
+    Json_date_format iso8601
+    compress         gzip
+    http_User        <username>
+    http_Passwd      <password>
+```
+
+- `uri`: **发送日志的端点。**
+- `format`: 日志的格式，需要是 `json`。
+- `json_date_key`: JSON 对象中包含时间戳的键。
+- `json_date_format`: 时间戳的格式。
+- `compress`: 使用的压缩方法，例如 `gzip`。
+- `header`: 发送请求时的头部信息，例如用于认证的 `Authorization`。如果没有，不要增加 Authorization 头部。
+- `http_user` 和 `http_passwd`: GreptimeDB 的 [认证凭据](/user-guide/deployments-administration/authentication/static.md)。
+
+在 `uri` 参数中：
+
+- `db` 是你要写入日志的数据库名称。
+- `table` 是你要写入日志的表名称。
+- `pipeline_name` 是你要用于处理日志的管道名称。
+- `custom_time_index` 是可选参数。当输入数据中的某个字段需要作为 GreptimeDB 的 time index 时，可以使用它。支持的格式为 `<field_name>;epoch;<resolution>` 和 `<field_name>;datestr;<format>`。
+
+`greptime_identity` pipeline 会直接根据 JSON 字段创建表。如果你希望 `scrape_timestamp` 这样的字段成为 GreptimeDB 的 time index，而不是普通列，可以在请求 URI 中设置 `custom_time_index`，也可以使用自定义 pipeline 来解析和映射该字段。
+
+## OpenTelemetry
+
+GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [OpenTelemetry 输出插件](https://docs.fluentbit.io/manual/pipeline/outputs/opentelemetry)，你可以将指标、日志和跟踪发送到 GreptimeDB。
+
+由于 GreptimeDB 会为不同 signal 使用不同的 header，请为每种 signal 配置独立的 output。在 Fluent Bit input 中为每种 signal 设置不同的 tag，然后在对应的 output 中匹配该 tag：
+
+```
+# 仅用于 metrics
+[OUTPUT]
+    Name                 opentelemetry
+    Alias                opentelemetry_metrics
+    Match                <metrics_tag>
+    Host                 127.0.0.1
+    Port                 4000
+    Metrics_uri          /v1/otlp/v1/metrics
+    Log_response_payload True
+    Tls                  Off
+    Tls.verify           Off
+    Header X-Greptime-DB-Name "<dbname>"
+
+# 仅用于 logs
+[OUTPUT]
+    Name                 opentelemetry
+    Alias                opentelemetry_logs
+    Match                <logs_tag>
+    Host                 127.0.0.1
+    Port                 4000
+    Logs_uri             /v1/otlp/v1/logs
+    Log_response_payload True
+    Tls                  Off
+    Tls.verify           Off
+    Header X-Greptime-Log-Table-Name "<log_table_name>"
+    Header X-Greptime-Pipeline-Name "<pipeline_name>"
+    Header X-Greptime-DB-Name "<dbname>"
+
+# 仅用于 traces
+[OUTPUT]
+    Name                 opentelemetry
+    Alias                opentelemetry_traces
+    Match                <traces_tag>
+    Host                 127.0.0.1
+    Port                 4000
+    Traces_uri           /v1/otlp/v1/traces
+    Log_response_payload True
+    Tls                  Off
+    Tls.verify           Off
+    Header X-Greptime-Pipeline-Name "greptime_trace_v1"
+    Header X-Greptime-DB-Name "<dbname>"
+```
+
+- `Metrics_uri`、`Logs_uri` 和 `Traces_uri`：分别用于发送 metrics、logs 和 traces 的端点。
+- `Match`：在对应 Fluent Bit input 中配置的 signal tag。
+- `http_user` 和 `http_passwd`：GreptimeDB 的[认证凭据](/user-guide/deployments-administration/authentication/static.md)。启用鉴权时，请将它们添加到每个 output 中。
+
+本示例使用的是 OpenTelemetry OTLP/HTTP API。不同 signal 支持的 header 和选项不同，具体请分别参考 OpenTelemetry API 的 [metrics](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api)、[logs](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-1) 和 [traces](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-2) 部分。
+
+## Prometheus Remote Write
+
+将 GreptimeDB 配置为远程写入目标：
+
+```
+[OUTPUT]
+    Name                 prometheus_remote_write
+    Match                internal_metrics
+    Host                 127.0.0.1
+    Port                 4000
+    Uri                  /v1/prometheus/write?db=<dbname>
+    Tls                  Off
+    http_user            <username>
+    http_passwd          <password>
+```
+
+- `Uri`: 发送指标的端点。
+- `http_user` 和 `http_passwd`: GreptimeDB 的 [认证凭据](/user-guide/deployments-administration/authentication/static.md)。
+
+在 `Uri` 参数中：
+
+- `db` 是你要写入指标的数据库名称。
+
+有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](/user-guide/ingest-data/for-observability/prometheus.md#数据模型)部分。
