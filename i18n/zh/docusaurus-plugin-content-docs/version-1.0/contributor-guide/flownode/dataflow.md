@@ -10,7 +10,20 @@ Flownode 内部有两条执行路径：
 - **Batching mode** 是聚合和 TQL workload 的主要执行路径。它查询已经持久化的 source 数据，并将物化结果写入 sink table。
 - **Streaming mode** 是为兼容已有 workload 而保留的旧执行路径，不推荐新 workload 使用。Frontend 会把新到达的行同步给它进行增量处理。
 
-用户不能直接选择执行模式。创建 Flow 时，GreptimeDB 根据查询和 source table 的属性选择执行路径。聚合、`DISTINCT` 和 TQL 查询使用 batching mode；简单的非聚合查询，以及任何 source table 使用 `ttl = 'instant'` 的 Flow，目前仍使用 streaming mode。
+用户不能直接选择执行模式。创建 Flow 时，GreptimeDB 先根据 source table、再根据查询判定执行路径，顺序如下：
+
+```mermaid
+flowchart LR
+    TTL{"存在 ttl = 'instant'<br/>的源表？"}
+    TTL -->|"是"| STREAM["Streaming mode"]
+    TTL -->|"否"| TQL{"TQL 查询？"}
+    TQL -->|"是"| BATCH["Batching mode"]
+    TQL -->|"否"| AGG{"计划含 Aggregate<br/>或 Distinct？"}
+    AGG -->|"是"| BATCH
+    AGG -->|"否"| STREAM
+```
+
+source table 的判定在前，因此聚合 `ttl = 'instant'` source table 的 Flow 走的是 streaming mode，而不是 batching mode。
 
 ## Batching mode
 

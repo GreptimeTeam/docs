@@ -10,7 +10,23 @@ Flownode has two internal execution paths:
 - **Batching mode** is the primary path for aggregation and TQL workloads. It evaluates queries over persisted source data and writes materialized results to a sink table.
 - **Streaming mode** is the legacy path retained for compatibility and deprecated for new workloads. It incrementally processes rows mirrored from Frontend as they arrive.
 
-Users do not select the mode directly. When a Flow is created, GreptimeDB chooses the path from the query and source-table properties. Aggregation, `DISTINCT`, and TQL queries use batching mode. Simple non-aggregation queries, and any Flow whose source table has `ttl = 'instant'`, currently use streaming mode. A Flow deferred because its source table does not yet exist starts as a pending batching Flow.
+Users do not select the mode directly. When a Flow is created, GreptimeDB derives the path from the source tables and then the query, in this order:
+
+```mermaid
+flowchart LR
+    MISS{"any source table<br/>missing?"}
+    MISS -->|"yes, deferred"| PEND["pending<br/>batching Flow"]
+    MISS -->|"yes, otherwise"| ERR["rejected"]
+    MISS -->|"no"| TTL{"any source table<br/>ttl = 'instant'?"}
+    TTL -->|"yes"| STREAM["Streaming mode"]
+    TTL -->|"no"| TQL{"TQL query?"}
+    TQL -->|"yes"| BATCH["Batching mode"]
+    TQL -->|"no"| AGG{"plan has Aggregate<br/>or Distinct?"}
+    AGG -->|"yes"| BATCH
+    AGG -->|"no"| STREAM
+```
+
+The source-table checks come first, so a Flow that aggregates a source table with `ttl = 'instant'` runs in streaming mode rather than batching mode. A Flow whose source table does not exist yet is rejected unless it is created with `WITH (defer_on_missing_source = true)`, which produces a pending batching Flow.
 
 ## Batching mode
 

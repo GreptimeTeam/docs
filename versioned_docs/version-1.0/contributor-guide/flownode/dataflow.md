@@ -10,7 +10,20 @@ Flownode has two internal execution paths:
 - **Batching mode** is the primary path for aggregation and TQL workloads. It evaluates queries over persisted source data and writes materialized results to a sink table.
 - **Streaming mode** is the legacy path retained for compatibility and deprecated for new workloads. It incrementally processes rows mirrored from Frontend as they arrive.
 
-Users do not select the mode directly. When a Flow is created, GreptimeDB chooses the path from the query and source-table properties. Aggregation, `DISTINCT`, and TQL queries use batching mode. Simple non-aggregation queries, and any Flow whose source table has `ttl = 'instant'`, currently use streaming mode.
+Users do not select the mode directly. When a Flow is created, GreptimeDB derives the path from the source tables and then the query, in this order:
+
+```mermaid
+flowchart LR
+    TTL{"any source table<br/>ttl = 'instant'?"}
+    TTL -->|"yes"| STREAM["Streaming mode"]
+    TTL -->|"no"| TQL{"TQL query?"}
+    TQL -->|"yes"| BATCH["Batching mode"]
+    TQL -->|"no"| AGG{"plan has Aggregate<br/>or Distinct?"}
+    AGG -->|"yes"| BATCH
+    AGG -->|"no"| STREAM
+```
+
+The source-table check comes first, so a Flow that aggregates a source table with `ttl = 'instant'` runs in streaming mode rather than batching mode.
 
 ## Batching mode
 
