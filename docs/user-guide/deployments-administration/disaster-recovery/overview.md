@@ -1,6 +1,6 @@
 ---
-keywords: [disaster recovery, GreptimeDB, DR solutions, backup and restore, active-active failover, cross-region deployment, RTO, RPO]
-description: Overview of disaster recovery (DR) solutions in GreptimeDB, including basic concepts, component architecture, and various DR solutions such as standalone, active-active failover, cross-region deployment, and backup & restore.
+keywords: [disaster recovery, GreptimeDB, DR solutions, backup and restore, single-region deployment, region failover, active-active failover, cross-region deployment, RTO, RPO]
+description: Overview of disaster recovery (DR) solutions in GreptimeDB, including basic concepts, component architecture, and various DR solutions such as standalone, single-region deployment in a single cluster, active-active failover, cross-region deployment, and backup & restore.
 ---
 
 # Disaster Recovery
@@ -74,6 +74,35 @@ The node is not fully stateless, though: a standalone instance keeps its metadat
 
 **RPO=0** and an **RTO in minutes** are the design targets of this topology. They hold as long as the Kafka cluster and the object storage both survive the failure you are planning for, the WAL covering unflushed writes is still present, and the metadata can be restored. Verify them with a failure drill against your own deployment.
 
+### DR solution based on single-region deployment in a single cluster
+
+![Single-region-single-cluster](/Single-region-single-cluster.svg)
+
+Before a cluster spans regions, it has to survive the loss of a single node or of a single AZ inside one region. An AZ here is the same logical unit of disaster recovery used in the cross-region solutions: a data center, or a compartment of a data center. This topology is the common production baseline, and the cross-region solutions below are built on top of it.
+
+The cluster lives in one region, with its roles spread over the AZs that region offers:
+
+* **Frontend** is stateless. Run several replicas behind a load balancer so that a failed replica only affects the requests in flight on it. See [Role Replicas Configuration](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#role-replicas-configuration).
+* **Metasrv** runs as several replicas that elect a leader; losing a follower is transparent, and losing the leader costs a re-election. The metadata itself lives in an external backend — etcd, MySQL or PostgreSQL — that Metasrv does not replicate for you, so give that backend its own high availability and its own backups. See [Metadata Management](/user-guide/deployments-administration/manage-metadata/overview.md) and [Metadata Export & Import](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md).
+* **Datanode** holds the regions. When one fails, [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) reopens its regions on the surviving Datanodes. It is **disabled by default**, and it requires [shared storage](/user-guide/deployments-administration/configuration.md#storage-options) together with remote WAL. Enabling it on local WAL with `allow_region_failover_on_local_wal=true` is possible but may lose data, because the WAL of the failed node stays on that node's disk.
+* **Kafka** (remote WAL) and the **object storage** hold the state that has to outlive the node. Give Kafka a replication factor that tolerates the broker loss you are planning for, and spread brokers and Datanodes over the AZs instead of packing them into one.
+
+Latencies:
+- Same-region round trips only; neither writes nor replication pay a cross-region penalty
+
+Supports High Availability:
+- A single node is unavailable with almost the same performance, once its regions are reopened elsewhere
+- A single AZ is unavailable with degraded performance, unless the surviving AZs were sized to absorb its share of the load
+- The region itself is not covered; it is a single failure domain in this topology
+
+This solution targets zero RPO and a minute-level RTO for a node or AZ failure. As with the other solutions, the numbers depend on conditions you have to check:
+
+- Region Failover is **disabled by default** and must be enabled explicitly.
+- The surviving Datanodes need spare capacity to carry the failed node's regions, otherwise failover only moves the overload.
+- The recovery time is dominated by WAL replay: the more regions share one Kafka topic, the more redundant data has to be read before those regions serve again. Read [The recovery time of Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md#the-recovery-time-of-region-failover) for the model behind that.
+
+Confirm the resulting RPO and RTO with a failure drill. If the region as a whole, the Kafka cluster or the object storage becomes unavailable, you need one of the solutions below, or regular backups kept in another region.
+
 ### DR solution based on Active-Active Failover
 
 ![Active-active failover](/active-active-failover.png)
@@ -126,6 +155,7 @@ By comparing these DR solutions, you can decide on the final option based on the
 |     DR solution | Error Tolerance Objective |  RPO | RTO | TCO | Scenarios | Remote WAL & Object Storage | Notes |
 | ------------- | ------------------------- | ----- | ----- | ----- | ---------------- | --------- | --------|
 |  DR solution for Standalone| Single-Region | Backup Interval | Minute or Hour level | Low | Low requirements for availability and reliability in small scenarios |  Optional | |
+|  DR solution based on single-region deployment in a single cluster | Single-Region, node and AZ level | 0 | Minute level | Medium | The common production baseline for a cluster that lives in one region | Required | Region Failover is disabled by default |
 |  DR solution based on Active-Active Failover | Cross-Region | Depends on pending changes and the failure mode | Depends on external failover | Low | High requirements for availability and reliability in small-to-medium scenarios |  Optional | Commercial feature |
 |  DR solution based on cross-region deployment in a single cluster| Multi-Regions | 0 | Minute level | High | High requirements for availability and reliability in medium-to-large scenarios |  Required | |
 |  DR solution based on BR | Single-Region | Backup Interval | Minute or Hour level | Low | Acceptable requirements for availability and reliability | Optional | |

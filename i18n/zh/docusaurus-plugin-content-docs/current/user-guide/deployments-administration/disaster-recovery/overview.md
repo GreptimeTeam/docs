@@ -1,6 +1,6 @@
 ---
-keywords: [灾难恢复, DR 解决方案, 备份与恢复, RTO, RPO, 组件架构, 双活互备, 跨区域部署, 数据恢复]
-description: 介绍 GreptimeDB 的灾难恢复（DR）解决方案，包括基本概念、组件架构、不同的 DR 解决方案及其比较。
+keywords: [灾难恢复, DR 解决方案, 备份与恢复, RTO, RPO, 组件架构, 单区域部署, Region Failover, 双活互备, 跨区域部署, 数据恢复]
+description: 介绍 GreptimeDB 的灾难恢复（DR）解决方案，包括基本概念、组件架构、单集群单区域部署等不同的 DR 解决方案及其比较。
 ---
 
 # 灾难恢复
@@ -83,6 +83,35 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 
 RPO=0 和分钟级 RTO 是该拓扑的设计目标，成立需要三个前提：Kafka 集群与对象存储都在你要防范的故障中幸存、尚未 flush 的那部分写入所对应的 WAL 仍在、元数据能够恢复。请在自己的部署上通过故障演练验证。
 
+### 基于单集群单区域部署的 DR 解决方案
+
+![Single-region-single-cluster](/Single-region-single-cluster.svg)
+
+在跨区域之前，集群首先要能扛住一个区域内单个节点或单个 AZ 的故障。这里的 AZ 与跨区域方案中的定义一致，是灾难恢复的逻辑单元：一个机房，或机房中的一部分。这套拓扑是常见的生产基线，下面的跨区域方案都建立在它之上。
+
+集群部署在一个区域内，各角色分散在该区域的多个 AZ 上：
+
+* **Frontend** 是无状态的。在负载均衡后面部署多个副本，某个副本挂掉只影响它上面正在处理的请求。参见[服务运行副本数配置](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#服务运行副本数配置)。
+* **Metasrv** 以多副本运行并选举 leader，丢一个 follower 对上层透明，丢掉 leader 的代价是一次重新选举。元数据本身存放在外部后端（etcd、MySQL 或 PostgreSQL），Metasrv 不会替你复制它，因此该后端需要自己的高可用和备份。参见[元数据管理](/user-guide/deployments-administration/manage-metadata/overview.md)与[元数据导出与导入](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md)。
+* **Datanode** 承载 Region。某个 Datanode 故障时，[Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) 会把它的 Region 在存活节点上重新打开。该功能**默认关闭**，且要求集群使用[共享存储](/user-guide/deployments-administration/configuration.md#storage-options)配合 Remote WAL。在本地 WAL 上通过 `allow_region_failover_on_local_wal=true` 也能开启，但可能丢数据，因为故障节点的 WAL 仍留在它自己的磁盘上。
+* **Kafka**（Remote WAL）和**对象存储**保存着必须比节点活得更久的状态。Kafka 的副本数要能容忍你所防范的 broker 故障，并把 broker 和 Datanode 分散到多个 AZ，而不是堆在同一个 AZ 里。
+
+延迟：
+- 只有区域内的往返；写入和复制都不需要付跨区域的延迟代价
+
+支持的高可用能力：
+- 单个节点不可用，其 Region 在别处重新打开后，性能几乎不受影响
+- 单个 AZ 不可用，性能会下降，除非存活 AZ 在容量上就按接管它的负载来规划
+- 区域本身不在覆盖范围内；在这套拓扑里，它是单一故障域
+
+此解决方案面向节点或 AZ 故障场景下的零 RPO 和分钟级 RTO。和其他方案一样，这些指标取决于你需要逐项确认的前提：
+
+- Region Failover **默认关闭**，需要显式开启。
+- 存活的 Datanode 需要预留出接管故障节点 Region 的容量，否则故障转移只是把过载搬了个地方。
+- 恢复时间主要由 WAL 回放决定：共享同一个 Kafka topic 的 Region 越多，这些 Region 重新提供服务前需要读取的冗余数据就越多。相关模型参见 [Region Failover 的恢复用时](/user-guide/deployments-administration/manage-data/region-failover.md)。
+
+最终的 RPO 和 RTO 请通过故障演练确认。如果区域整体、Kafka 集群或对象存储不可用，仍然需要下面的方案之一，或者把备份定期存放到另一个区域。
+
 ### 基于双活互备的 DR 解决方案
 
 ![Active-active failover](/active-active-failover.png)
@@ -141,6 +170,7 @@ BR 进程持续定期将数据从 Cluster 1 备份到 Region 2。
 |     DR 解决方案 | 容错目标 |  RPO | RTO | TCO | 场景 | 远程 WAL 和对象存储 | 备注 |
 | ------------- | ------------------------- | ----- | ----- | ----- | ---------------- | --------- | --------|
 |  独立模式的 DR 解决方案 | 单区域 | 备份间隔 | 分钟或小时级 | 低 | 小型场景中对可用性和可靠性要求较低 |  可选 | |
+|  基于单集群单区域部署的 DR 解决方案 | 单区域，节点与 AZ 级 | 0 | 分钟级 | 中 | 部署在单个区域内的集群，常见的生产基线 | 必需 | Region Failover 默认关闭 |
 |  基于双活互备的 DR 解决方案 | 跨区域 | 取决于待同步的数据变更和故障类型 | 取决于外部故障切换 | 低 | 中小型场景中对可用性和可靠性要求较高 |  可选 | 商业功能 |
 |  基于单集群跨区域部署的 DR 解决方案 | 多区域 | 0 | 分钟级 | 高 | 中大型场景中对可用性和可靠性要求较高 |  必需 | |
 |  基于 BR 的 DR 解决方案 | 单区域 | 备份间隔 | 分钟或小时级 | 低 | 可接受的可用性和可靠性要求 | 可选 | |
