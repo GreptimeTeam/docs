@@ -10,7 +10,20 @@ Flownode has two internal execution paths:
 - **Batching mode** is the primary path for aggregation and TQL workloads. It evaluates queries over persisted source data and writes materialized results to a sink table.
 - **Streaming mode** is the legacy path retained for compatibility and deprecated for new workloads. It incrementally processes rows mirrored from Frontend as they arrive.
 
-Users do not select the mode directly. When a Flow is created, GreptimeDB chooses the path from the query and source-table properties. Aggregation, `DISTINCT`, and TQL queries use batching mode. Simple non-aggregation queries, and any Flow whose source table has `ttl = 'instant'`, currently use streaming mode.
+Users do not select the mode directly. When a Flow is created, GreptimeDB derives the path from the source tables and then the query, in this order:
+
+```mermaid
+flowchart LR
+    TTL{"any source table<br/>ttl = 'instant'?"}
+    TTL -->|"yes"| STREAM["Streaming mode"]
+    TTL -->|"no"| TQL{"TQL query?"}
+    TQL -->|"yes"| BATCH["Batching mode"]
+    TQL -->|"no"| AGG{"plan has Aggregate<br/>or Distinct?"}
+    AGG -->|"yes"| BATCH
+    AGG -->|"no"| STREAM
+```
+
+The source-table check comes first, so a Flow that aggregates a source table with `ttl = 'instant'` runs in streaming mode rather than batching mode.
 
 ## Batching mode
 
@@ -22,7 +35,7 @@ Batching mode reuses GreptimeDB's query engine instead of maintaining an operato
 4. The query result is inserted into the sink table, updating the materialized result for windows that were evaluated.
 5. Successfully processed windows are removed from the dirty set. Failed work remains available for a later evaluation.
 
-Flows with an evaluation interval but without a time-window expression run the complete query on each scheduled evaluation. This path also lets Flow use query-engine features that the streaming renderer does not implement. See [Flownode Batching Mode Developer Guide](./batching_mode.md) for the task and dirty-window components.
+TQL Flows, and SQL Flows with an evaluation interval but without a time-window expression, run the complete query rather than a time-filtered one. For the SQL case, an evaluation that finds nothing dirty is skipped. This path also lets Flow use query-engine features that the streaming renderer does not implement. See [Batching Mode](./batching_mode.md) for the task and dirty-window components.
 
 ## Streaming mode
 

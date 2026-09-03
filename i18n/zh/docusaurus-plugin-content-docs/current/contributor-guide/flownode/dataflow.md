@@ -10,7 +10,23 @@ Flownode 内部有两条执行路径：
 - **Batching mode** 是聚合和 TQL workload 的主要执行路径。它查询已经持久化的 source 数据，并将物化结果写入 sink table。
 - **Streaming mode** 是为兼容已有 workload 而保留的旧执行路径，不推荐新 workload 使用。Frontend 会把新到达的行同步给它进行增量处理。
 
-用户不能直接选择执行模式。创建 Flow 时，GreptimeDB 根据查询和 source table 的属性选择执行路径。聚合、`DISTINCT` 和 TQL 查询使用 batching mode；简单的非聚合查询，以及任何 source table 使用 `ttl = 'instant'` 的 Flow，目前仍使用 streaming mode。如果 source table 尚不存在并选择延迟创建，Flow 会先成为 pending batching Flow。
+用户不能直接选择执行模式。创建 Flow 时，GreptimeDB 先根据 source table、再根据查询判定执行路径，顺序如下：
+
+```mermaid
+flowchart LR
+    MISS{"存在缺失的源表？"}
+    MISS -->|"是，已声明延迟创建"| PEND["pending<br/>batching Flow"]
+    MISS -->|"是，其余情况"| ERR["拒绝创建"]
+    MISS -->|"否"| TTL{"存在 ttl = 'instant'<br/>的源表？"}
+    TTL -->|"是"| STREAM["Streaming mode"]
+    TTL -->|"否"| TQL{"TQL 查询？"}
+    TQL -->|"是"| BATCH["Batching mode"]
+    TQL -->|"否"| AGG{"计划含 Aggregate<br/>或 Distinct？"}
+    AGG -->|"是"| BATCH
+    AGG -->|"否"| STREAM
+```
+
+source table 的判定在前，因此聚合 `ttl = 'instant'` source table 的 Flow 走的是 streaming mode，而不是 batching mode。source table 尚不存在时，Flow 会被拒绝创建，除非建表时声明 `WITH (defer_on_missing_source = true)`，此时会得到一个 pending batching Flow。
 
 ## Batching mode
 
@@ -22,7 +38,7 @@ Batching mode 复用 GreptimeDB 的查询引擎，不需要为每一行输入维
 4. 查询结果写入 sink table，更新已重新计算窗口对应的物化结果。
 5. 成功处理的窗口从 dirty set 中移除；执行失败的工作仍可在后续调度中处理。
 
-设置了 evaluation interval、但查询中没有时间窗口表达式的 Flow，会在每次调度时执行完整查询。这条路径还可以使用 streaming renderer 尚未实现的查询引擎能力。任务和 dirty window 组件的进一步说明见 [Flownode 批处理模式开发者指南](./batching_mode.md)。
+TQL Flow，以及计划无法按 dirty window 安全裁剪的 evaluation interval Flow，执行的是完整查询，而不是按时间过滤的查询；这条路径上 dirty set 只作为调度信号。这条路径还可以使用 streaming renderer 尚未实现的查询引擎能力。任务和 dirty window 组件的进一步说明见[批处理模式](./batching_mode.md)。
 
 ## Streaming mode
 
