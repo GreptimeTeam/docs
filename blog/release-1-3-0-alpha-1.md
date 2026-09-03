@@ -1,10 +1,10 @@
 ---
-keywords: [release, GreptimeDB, changelog, v1.3.0]
-description: GreptimeDB v1.3.0 Changelog
+keywords: [release, GreptimeDB, changelog, v1.3.0-alpha.1]
+description: GreptimeDB v1.3.0-alpha.1 Changelog
 date: 2026-09-03
 ---
 
-# v1.3.0
+# v1.3.0-alpha.1
 
 Release date: September 03, 2026
 ### Breaking changes
