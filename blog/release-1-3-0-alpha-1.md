@@ -8,15 +8,10 @@ date: 2026-09-03
 
 Release date: September 03, 2026
 
-GreptimeDB v1.3.0-alpha.1 adds end-to-end Native Histogram support, a telemetry entity-relationships graph, and Dashboard updates for early validation.
+GreptimeDB v1.3.0-alpha.1 adds a telemetry entity-relationships graph, expands Native Histogram query coverage, and updates Dashboard for early validation.
 
 ### 👍 Highlights
 
-- **Native Histograms.** PromQL now supports Native Histogram selection, range functions, vector operations, aggregations, metadata, and Prometheus HTTP responses. For example:
-
-  ```promql
-  sum by (job) (rate(http_request_duration_seconds[5m]))
-  ```
 
 - **Telemetry entity relationships graph.** GreptimeDB derives service-call relationships from OTLP traces at query time. To add application entities, declare their identity columns on the source table:
 
@@ -37,8 +32,9 @@ GreptimeDB v1.3.0-alpha.1 adds end-to-end Native Histogram support, a telemetry 
      'declared', '', '', 1.0);
   ```
 
-  Query derived and declared relationships together from
-  `greptime_private.semantic_relationships`.
+  Query derived and declared relationships together from `greptime_private.semantic_relationships`.
+
+- **Native Histogram query support and experimental OTLP ingestion.** PromQL supports Native Histogram selection, functions including `rate()` and `delta()`, vector operators, aggregations, and `histogram_quantile` / `histogram_fraction` across classic, Native, and mixed inputs. Prometheus HTTP returns Native Histogram query results and annotations. Experimental, opt-in ingestion of cumulative OTLP `ExponentialHistogram` metrics is available through `otlp.experimental_enable_exponential_histogram`; OTLP delta temporality remains unsupported.
 
 - **Dashboard.** Bundled Dashboard v0.13.14 adds full snapshot export and configurable table widths, and updates Perses to v0.54.
 
