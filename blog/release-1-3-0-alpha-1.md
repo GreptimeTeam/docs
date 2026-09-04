@@ -8,7 +8,7 @@ date: 2026-09-03
 
 Release date: September 03, 2026
 
-GreptimeDB v1.3.0-alpha.1 adds end-to-end Native Histogram support, an initial telemetry entity-relationships graph, and Dashboard updates for early validation.
+GreptimeDB v1.3.0-alpha.1 adds end-to-end Native Histogram support, a telemetry entity-relationships graph, and Dashboard updates for early validation.
 
 ### 👍 Highlights
 
@@ -18,13 +18,27 @@ GreptimeDB v1.3.0-alpha.1 adds end-to-end Native Histogram support, an initial t
   sum by (job) (rate(http_request_duration_seconds[5m]))
   ```
 
-- **Telemetry entity relationships graph.** Query read-time entities and relationships derived from OTLP telemetry without a separate pipeline:
+- **Telemetry entity relationships graph.** GreptimeDB derives service-call relationships from OTLP traces at query time. To add application entities, declare their identity columns on the source table:
 
   ```sql
-  SELECT src_type, src_id, dst_type, dst_id, rel_type, provenance, confidence
-  FROM greptime_private.semantic_relationships
-  ORDER BY rel_type, src_id;
+  ALTER TABLE app_metrics SET
+    'greptime.semantic.entity.service.id' = 'service_name',
+    'greptime.semantic.entity.service.scope' = 'env';
   ```
+
+  To maintain dependencies that traces do not observe, insert a declared edge:
+
+  ```sql
+  INSERT INTO greptime_private.semantic_relationships_declared
+    (observed_at, src_type, src_id, rel_type, dst_type, dst_id,
+     provenance, scope, generation_id, confidence)
+  VALUES
+    (now(), 'service', 'frontend', 'depends_on', 'service', 'users-db',
+     'declared', '', '', 1.0);
+  ```
+
+  Query derived and declared relationships together from
+  `greptime_private.semantic_relationships`.
 
 - **Dashboard.** Bundled Dashboard v0.13.14 adds full snapshot export and configurable table widths, and updates Perses to v0.54.
 
