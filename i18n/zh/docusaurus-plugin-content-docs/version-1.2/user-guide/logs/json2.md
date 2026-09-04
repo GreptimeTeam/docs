@@ -88,6 +88,14 @@ ORDER BY ts;
 | 1970-01-01 00:00:00.002 | checkout | 8f3a1d | Bob | 200 | 386.4 | NULL |
 | 1970-01-01 00:00:00.003 | checkout | 8f3a1e | NULL | 500 | 71.2 | true |
 
+也可以直接查询完整的 JSON2 值：
+
+```sql
+SELECT ts, attrs
+FROM application_logs
+ORDER BY ts;
+```
+
 也可以使用 JSON 函数直接指定返回类型：
 
 ```sql
@@ -202,6 +210,8 @@ FROM application_logs
 WHERE json_get(attrs, 'http.status')::BIGINT >= 500;
 ```
 
+类型明确的提取函数 `json_get_string`、`json_get_int`、`json_get_float` 和 `json_get_bool` 也支持 JSON2 值。详细说明请参考 [JSON 函数](/reference/sql/functions/json.md#提取)。
+
 ### 点号语法
 
 可以直接通过点号语法读取 JSON2 中的子路径：
@@ -221,15 +231,32 @@ FROM application_logs
 WHERE attrs.http.status >= 500;
 ```
 
-## 未来规划
+### 控制路径自动展开
 
-JSON2 目前处于 Beta 阶段，仍有以下限制。后续版本会继续完善相关能力：
+JSON2 默认会将类型兼容且未声明 type hint 的 leaf path 自动展开为结构化列。可以通过 `max_auto_expanded_paths` 限制展开的路径数量：
 
-- 支持在非 append-only 表中使用 JSON2。
-- 支持写入 array、string、number、boolean、`null` 和 `{}` 等非 object 或空 object 的 JSON root 值。
-- 支持查询 JSON2 root 列本身。目前请查询具体子路径，例如 `attrs.http.status` 或 `json_get(attrs, 'http.status')`。
-- 支持通过下标访问 JSON array 中的元素。目前可以查询 `attrs.items`，但暂不支持 `attrs.items[0]` 或 `json_get(attrs, 'items[0]')`。
-- 支持 `json_get_string`、`json_get_int`、`json_get_float` 和 `json_get_bool` 等函数处理 JSON2 类型。
-- 扩展 type hint 支持的类型，例如 `TIMESTAMP` 等时间类型。
-- 为 type hint 支持 `INVERTED INDEX`、`SKIPPING INDEX` 等索引选项。
-- 支持通过 OTLP 和其他 ingestion path 写入 JSON2。
+```sql
+CREATE TABLE application_logs (
+    ts TIMESTAMP TIME INDEX,
+    attrs JSON2 (
+        max_auto_expanded_paths = 20,
+        trace_id STRING
+    )
+) WITH (
+    'append_mode' = 'true'
+);
+```
+
+将该选项设为 `0` 可以关闭自动展开。声明了 type hint 的路径不占用这一数量。超出限制的字段仍会保留在特殊的 `remainder` 字段中并可正常查询，因此该选项控制的是存储布局和性能，而不是 JSON 的逻辑 schema。
+
+<AnchorAlias id="未来规划" />
+
+## 当前限制
+
+JSON2 目前处于 Beta 阶段，存在以下限制：
+
+- JSON2 列只能用于 append-only 表。
+- 每个非 `NULL` JSON root 必须是非空 object，不支持以 array、string、number、boolean、JSON literal `null` 或空 object 作为 root。
+- 无法使用下标语法访问 array 元素。
+- Type hint 仅支持上文列出的类型，且路径不能穿过 array。
+- 结构化展开和 type hint path 最多支持 50 层嵌套。更深且未声明 type hint 的值仍保留在特殊的 `remainder` 字段中并可查询。
