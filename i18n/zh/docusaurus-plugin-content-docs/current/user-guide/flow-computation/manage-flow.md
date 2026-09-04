@@ -138,9 +138,7 @@ GROUP BY time_window;
 
 对于包含可用时间窗口表达式的 Flow，source 表中早于指定间隔的数据会被排除在计算之外，sink 表中较早的行也不会被更新。这会限制时间窗口 Flow 的状态和重新计算范围，包括涉及 `GROUP BY` 的有状态查询。
 
-带 `EVAL INTERVAL` 的 batching SQL Flow 和 TQL Flow 会执行未过滤的快照，除非查询本身包含时间谓词；`EXPIRE AFTER` 不会额外添加时间过滤。它不会删除 source 表或 sink 表中的数据。若需删除表数据，请在创建表时通过 [`TTL` 策略](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)实现。
-
-为 `EXPIRE AFTER` 设置合理的时间间隔，有助于限制 batching 引擎需要向前重新计算结果的时间范围，并避免过度占用资源。它与流处理系统中限制迟到数据范围的机制有相似目的，但新的 Flow workload 应使用 batching mode。
+不包含可用时间窗口表达式、且通过 `EVAL INTERVAL` 运行的 TQL 和 batching SQL 计划会执行未过滤的快照，除非查询本身包含时间谓词；`EXPIRE AFTER` 不会额外添加时间过滤。它不会删除 source 表或 sink 表中的数据。若需删除表数据，请在创建表时通过 [`TTL` 策略](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)实现。
 
 例如，如果 flow 引擎在 10:00:00 处理聚合，并且设置了 `'1 hour'::INTERVAL`，
 当前时刻若输入数据的 Time Index 超过 1 小时（即早于 09:00:00），则会被判定为过期数据并被忽略。

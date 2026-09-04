@@ -142,9 +142,7 @@ The `EXPIRE AFTER` clause specifies the interval after which data will expire fr
 
 For a Flow with a usable time-window expression, data in the source table older than the specified interval is excluded from calculations, and older sink rows are not updated. This limits the state and recomputation range for time-window flows, including stateful queries such as those involving `GROUP BY`.
 
-Batching SQL and TQL flows with `EVAL INTERVAL` execute unfiltered snapshots unless the query contains its own time predicate; `EXPIRE AFTER` does not add a time filter. It does not delete data from either table. If you want to delete data from the source or sink table, please [set the `TTL` option](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) when creating tables.
-
-Setting a reasonable time interval for `EXPIRE AFTER` is helpful to limit how far back the batching engine needs to recompute results and to avoid excessive resource usage. It serves a similar purpose to bounding lateness in stream processing systems, but new Flow workloads should use batching mode.
+TQL and batching SQL plans without a usable time-window expression that run with `EVAL INTERVAL` execute unfiltered snapshots unless their query has a time predicate; `EXPIRE AFTER` does not add a time filter. It does not delete data from either table. If you want to delete data from the source or sink table, please [set the `TTL` option](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) when creating tables.
 
 For example, if the flow engine processes the aggregation at 10:00:00 and the `'1 hour'::INTERVAL` is set,
 any input data that arrive now with a time index older than 1 hour (before 09:00:00) will expire and be ignored.
