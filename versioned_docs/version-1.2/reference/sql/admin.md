@@ -37,12 +37,6 @@ For example:
 -- Flush the table test --
 admin flush_table("test");
 
--- Discard unflushed data from all physical regions of table test --
-admin discard_unflushed("test");
-
--- Discard unflushed data from one region --
-admin discard_unflushed(4398046511104);
-
 -- Schedule a compaction for table test with default parallelism (1) --
 admin compact_table("test");
 

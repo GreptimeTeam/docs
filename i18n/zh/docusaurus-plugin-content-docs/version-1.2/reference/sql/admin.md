@@ -36,12 +36,6 @@ GreptimeDB 提供了一些管理函数来管理数据库和数据：
 -- 刷新表 test --
 admin flush_table("test");
 
--- 丢弃表 test 所有物理 Region 中的未刷盘数据 --
-admin discard_unflushed("test");
-
--- 丢弃指定 Region 中的未刷盘数据 --
-admin discard_unflushed(4398046511104);
-
 -- 为表 test 启动 compaction 任务，默认并行度为 1 --
 admin compact_table("test");
 

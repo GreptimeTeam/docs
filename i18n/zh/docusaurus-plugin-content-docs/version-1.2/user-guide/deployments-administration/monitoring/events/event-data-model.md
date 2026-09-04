@@ -12,7 +12,16 @@ description: 了解 GreptimeDB events 表的数据模型。
 | `type`          | 事件类型，例如 `create_table` 或 `region_migration`。 |
 | `timestamp`     | 记录该行的时间。                                      |
 | `payload`       | 与事件类型相关的 JSON 数据。                          |
+| `actor`         | 记录为操作发起人的数据库用户；事件没有关联用户请求时为 SQL `NULL`。 |
 | `event_context` | 有上下文时，用于描述事件触发原因的 JSON。             |
+
+## 事件发起人（actor） {#actor}
+
+`actor` 是 GreptimeDB 记录的操作发起数据库用户，可用于查找谁执行了
+`ADMIN` 语句或提交了 Procedure。当操作启动 Procedure 时，该 Procedure 及其子
+Procedure 在整个生命周期中保留相同的 `actor`。没有关联用户请求的事件，其
+`actor` 为 SQL `NULL`。启用鉴权时，该字段是通过鉴权的数据库用户；未启用鉴权时，
+它不能用于确认实际发送请求的用户。
 
 ## Procedure 事件列
 
@@ -45,6 +54,19 @@ Procedure 事件还有以下列：
 | `RollingBack`    | 开始回滚 Procedure。                                                                                                                                                |
 | `Failed`         | Procedure 到达失败终态。请检查 `procedure_error` 中的失败详情。                                                                                                     |
 | `Poisoned`       | Procedure 无法继续。请检查 `procedure_error` 中的失败详情。                                                                                                         |
+
+## ADMIN 函数事件列
+
+`admin_function` 事件记录 `ADMIN` 语句返回的结果。
+
+| 列                       | 含义                                                                                         |
+| ------------------------ | -------------------------------------------------------------------------------------------- |
+| `admin_function_name`    | 执行的 ADMIN 函数名称。                                                                      |
+| `admin_function_status`  | 执行状态：`Succeeded` 或 `Failed`。                                                          |
+| `admin_function_output`  | JSON 数据。函数成功时包含 `result`，函数失败时包含 `error`。                                 |
+
+事件的 `payload` 包含函数参数。如果返回结果是 Procedure ID，可使用该 ID 查询相关
+Procedure 事件以查看执行进度。
 
 ## 查询 JSON 字段
 

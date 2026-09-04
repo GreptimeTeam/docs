@@ -87,7 +87,7 @@ There are three ways to control table options such as `ttl`, `append_mode`, `mer
    ALTER TABLE my_table SET 'ttl' = '7d';
    ALTER TABLE my_table SET 'append_mode' = 'true';
    ```
-   Note that `merge_mode` and `skip_wal` cannot be altered after creation — they must be set at table creation time. See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for all supported options and constraints.
+   `merge_mode` cannot be altered after creation and must be set when the table is created. `skip_wal` can be changed after creation only from `false` to `true` with `ALTER TABLE`; this is a one-way change and cannot be reverted or unset. It can only be set by itself on physical Mito or Metric tables, not on Metric logical tables or tables using other engines. See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for all supported options and constraints.
 
 3. **Set database-level defaults**: Create or alter the database with default options. New auto-created tables will inherit these values:
    ```sql

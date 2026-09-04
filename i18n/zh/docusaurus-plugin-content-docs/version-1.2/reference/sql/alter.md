@@ -195,6 +195,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
 - `sst_format`: 表的 SST 格式。值可以是 `flat` 或 `primary_key`。表支持双向格式转换：`primary_key` 转换为 `flat`，以及 `flat` 转换为 `primary_key`。
 - `write_buffer_size`: 表的单 region 写缓冲区阻塞阈值。设置为 `512MB` 等正值后，mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入。该表选项会覆盖 `region_engine.mito.default_region_write_buffer_size`。即使引擎默认值非零，显式设置为 `0` 也会禁用单 region 限制。取消设置会移除表级覆盖，并回退到引擎默认值。
 - `auto_flush_interval`: 该表的 region 最长多久没有 flush 就触发一次 flush。值是一个[时间范围字符串](/reference/time-durations.md)，必须大于 0。该表选项会覆盖引擎级的 `region_engine.mito.auto_flush_interval`。
+- `skip_wal`：是否为该表禁用预写日志（WAL）。设置为 `'true'` 后，写入不会持久化到 WAL，可以提升写入吞吐；但进程重启时，所有尚未 flush 的数据都可能丢失。仅当数据源本身能够确保可靠性时使用此选项。该修改是单向的：可以将 `skip_wal` 从 `false` 改为 `true`，但不能改回 `false` 或执行 `UNSET`。`ALTER TABLE` 只能单独设置 `skip_wal`，不能与其他表选项组合。该表必须是使用 Mito 或 Metric 引擎的物理表；Metric 引擎逻辑表和其他引擎均不支持。
 - `max_row_group_row_count`: Parquet row group 的最大行数。取值必须在 `1` 到 `10485760`（`10 * 1024 * 1024`）之间，设置为零会被拒绝。修改或取消该选项时，GreptimeDB 会先使用旧的 row group 大小 flush 尚未落盘的数据，再应用新值。新值，或取消设置后的默认值 `102400`（`100 * 1024`），会应用于后续生成的 SST。ALTER 操作不会立即重写已有 SST；后续 compaction 可能会使用当前的 row group 大小重写这些 SST。
 
 ```sql
@@ -215,6 +216,8 @@ ALTER TABLE monitor SET 'sst_format'='primary_key';
 ALTER TABLE monitor SET 'write_buffer_size'='512MB';
 
 ALTER TABLE monitor SET 'auto_flush_interval'='5m';
+
+ALTER TABLE monitor SET 'skip_wal'='true';
 
 ALTER TABLE monitor SET 'max_row_group_row_count'='2048';
 ```
