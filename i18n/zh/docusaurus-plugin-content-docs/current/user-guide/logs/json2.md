@@ -45,21 +45,21 @@ VALUES
         'checkout',
         'INFO',
         'request completed',
-        '{"trace_id":"8f3a1c","user":{"id":1001,"name":"Alice"},"http":{"method":"POST","path":"/v1/orders","status":200},"latency_ms":42.8}'
+        '{"trace_id":"8f3a1c","user":{"id":1001,"name":"Alice"},"http":{"method":"POST","path":"/v1/orders","status":200},"items":[{"name":"book"}],"latency_ms":42.8}'
     ),
     (
         2,
         'checkout',
         'WARN',
         'slow request',
-        '{"trace_id":"8f3a1d","user":{"id":1002,"name":"Bob"},"http":{"method":"POST","path":"/v1/orders","status":200},"latency_ms":386.4}'
+        '{"trace_id":"8f3a1d","user":{"id":1002,"name":"Bob"},"http":{"method":"POST","path":"/v1/orders","status":200},"items":[{"name":"pen"}],"latency_ms":386.4}'
     ),
     (
         3,
         'checkout',
         'ERROR',
         'request failed',
-        '{"trace_id":"8f3a1e","user":{"id":1003},"http":{"method":"POST","path":"/v1/orders","status":500},"latency_ms":71.2,"error":true}'
+        '{"trace_id":"8f3a1e","user":{"id":1003},"http":{"method":"POST","path":"/v1/orders","status":500},"items":[{"name":"notebook"}],"latency_ms":71.2,"error":true}'
     );
 ```
 
