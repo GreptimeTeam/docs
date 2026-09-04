@@ -148,23 +148,12 @@ GreptimeDB v1.3.0-alpha.1 adds end-to-end Native Histogram support, a telemetry 
 * fix: cap default runtime sizes to a minimum of 2 threads by [@v0y4g3r](https://github.com/v0y4g3r) in [#8908](https://github.com/GreptimeTeam/greptimedb/pull/8908)
 * fix(meta): avoid blocking runtime on stats cache lock by [@WenyXu](https://github.com/WenyXu) in [#8910](https://github.com/GreptimeTeam/greptimedb/pull/8910)
 * fix(query): restore columnar group-by for dictionary-encoded tags by [@discord9](https://github.com/discord9) in [#8902](https://github.com/GreptimeTeam/greptimedb/pull/8902)
-* fix(mito2): fence checkpoints during region transitions by [@WenyXu](https://github.com/WenyXu) in [#8847](https://github.com/GreptimeTeam/greptimedb/pull/8847)
-* fix(mito2): split SSTs at primary key series boundaries by [@v0y4g3r](https://github.com/v0y4g3r) in [#8888](https://github.com/GreptimeTeam/greptimedb/pull/8888)
-* fix(meta): allow manual migration from offline datanodes by [@WenyXu](https://github.com/WenyXu) in [#8934](https://github.com/GreptimeTeam/greptimedb/pull/8934)
-* fix(flight): bound DoGet response wait by [@WenyXu](https://github.com/WenyXu) in [#8943](https://github.com/GreptimeTeam/greptimedb/pull/8943)
-* fix(query): keep INSERT timestamp conversion out of the source query by [@killme2008](https://github.com/killme2008) in [#8911](https://github.com/GreptimeTeam/greptimedb/pull/8911)
-* fix: update tokio-postgres and correct explain/fetch cursor output schema by [@sunng87](https://github.com/sunng87) in [#8955](https://github.com/GreptimeTeam/greptimedb/pull/8955)
 * fix(flow): restore FrontendClient::sql API by [@WenyXu](https://github.com/WenyXu) in [#8963](https://github.com/GreptimeTeam/greptimedb/pull/8963)
-* fix(flow): avoid insert select HTTP/2 stalls by [@discord9](https://github.com/discord9) in [#8962](https://github.com/GreptimeTeam/greptimedb/pull/8962)
-* fix(mysql): interpret prepared statement datetime params in session timezone by [@wy471x](https://github.com/wy471x) in [#8923](https://github.com/GreptimeTeam/greptimedb/pull/8923)
-* fix(mito2): use target sequence for foreign SSTs by [@discord9](https://github.com/discord9) in [#8946](https://github.com/GreptimeTeam/greptimedb/pull/8946)
 * fix(operator): whitelist private system table auto create by [@WenyXu](https://github.com/WenyXu) in [#8930](https://github.com/GreptimeTeam/greptimedb/pull/8930)
 * fix(cmd): configure meta client in frontend plugin test by [@v0y4g3r](https://github.com/v0y4g3r) in [#8977](https://github.com/GreptimeTeam/greptimedb/pull/8977)
-* fix: postgres describe for more statements by [@sunng87](https://github.com/sunng87) in [#8974](https://github.com/GreptimeTeam/greptimedb/pull/8974)
 * fix: increase system disk size to 50 GiB for ECS instances by [@paomian](https://github.com/paomian) in [#8986](https://github.com/GreptimeTeam/greptimedb/pull/8986)
 * fix(cmd): gate daemon integration test on Unix by [@discord9](https://github.com/discord9) in [#8987](https://github.com/GreptimeTeam/greptimedb/pull/8987)
 * fix(mito2): avoid chained L1 rewrites in TWCS by [@v0y4g3r](https://github.com/v0y4g3r) in [#8981](https://github.com/GreptimeTeam/greptimedb/pull/8981)
-* fix(promql): resolve derived labels in aggregation arithmetic by [@shuiyisong](https://github.com/shuiyisong) in [#8994](https://github.com/GreptimeTeam/greptimedb/pull/8994)
 * fix: add disk usage logging to GitHub step summary in query regression workflow by [@paomian](https://github.com/paomian) in [#9005](https://github.com/GreptimeTeam/greptimedb/pull/9005)
 
 ### 🚜 Refactor
@@ -236,7 +225,6 @@ GreptimeDB v1.3.0-alpha.1 adds end-to-end Native Histogram support, a telemetry 
 
 * [@tian1220A](https://github.com/tian1220A) made their first contribution in [#8960](https://github.com/GreptimeTeam/greptimedb/pull/8960)
 * [@dhruvxvaishnav](https://github.com/dhruvxvaishnav) made their first contribution in [#8935](https://github.com/GreptimeTeam/greptimedb/pull/8935)
-* [@wy471x](https://github.com/wy471x) made their first contribution in [#8923](https://github.com/GreptimeTeam/greptimedb/pull/8923)
 * [@grezzko](https://github.com/grezzko) made their first contribution in [#8659](https://github.com/GreptimeTeam/greptimedb/pull/8659)
 * [@xhwhis](https://github.com/xhwhis) made their first contribution in [#8722](https://github.com/GreptimeTeam/greptimedb/pull/8722)
 
