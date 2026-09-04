@@ -10,7 +10,7 @@ It continuously updates the aggregated data based on the incoming data.
 This document describes how to create, and delete a flow.
 
 :::note
-Flow uses batching mode for TQL workloads and SQL plans containing `Aggregate` or `Distinct`. However, source-table properties such as `WITH ('ttl' = 'instant')` can force the legacy streaming mode.
+`EVAL INTERVAL` forces batching regardless of SQL shape, and TQL workloads require it. Without `EVAL INTERVAL`, SQL plans containing `Aggregate` or `Distinct` use batching, while ordinary projections and non-aggregate joins use legacy streaming. A source table with `WITH ('ttl' = 'instant')` cannot be combined with `EVAL INTERVAL`; without it, Flow uses legacy streaming.
 :::
 
 ## Create a Source Table
@@ -95,10 +95,10 @@ AS
 ```
 
 The clauses must appear in the order shown: `EXPIRE AFTER` comes before `EVAL INTERVAL`.
-`EVAL INTERVAL` schedules full-query evaluation only for batching Flow plans: TQL flows require it, and SQL
-plans containing `Aggregate` or `Distinct` use batching. For these batching SQL plans, planner-valid joins,
-subqueries, and SQL CTEs are supported. Source-table properties such as `WITH ('ttl' = 'instant')` can force
-legacy streaming instead. Ordinary projections and non-aggregate joins are not scheduled as batching workloads.
+`EVAL INTERVAL` forces batching and schedules full-query evaluation regardless of the SQL shape. TQL flows require
+it. A source table with `WITH ('ttl' = 'instant')` cannot be combined with `EVAL INTERVAL`. Without
+`EVAL INTERVAL`, SQL plans containing `Aggregate` or `Distinct` use batching, while ordinary projections and
+non-aggregate joins use legacy streaming. An instant-TTL source without `EVAL INTERVAL` also uses legacy streaming.
 Batching time-window aggregate flows can run without `EVAL INTERVAL`.
 
 When `OR REPLACE` is specified, any existing flow with the same name will be updated to the new version. It's important to note that this only affects the flow task itself; the source and sink tables will remain unchanged.
@@ -110,7 +110,7 @@ Conversely, when `IF NOT EXISTS` is specified, the command will have no effect i
 - `sink-table-name` is the table name where the materialized aggregated data is stored.
   It can be an existing table or a new one; see [Create a Sink Table](#create-a-sink-table) for creation and validation behavior.
 - `EXPIRE AFTER` is an optional interval to expire data from the Flow engine. For more details, please refer to the [`EXPIRE AFTER`](#expire-after) section.
-- `EVAL INTERVAL` is an optional interval for scheduled full-query evaluation in batching Flow plans.
+- `EVAL INTERVAL` is an optional interval that forces batching and schedules full-query evaluation.
 - `COMMENT` is the description of the flow.
 - `WITH` specifies flow options.
   The user-facing options documented below are `defer_on_missing_source` and the experimental `experimental_enable_incremental_read`.
@@ -142,7 +142,7 @@ The `EXPIRE AFTER` clause specifies the interval after which data will expire fr
 
 For a Flow with a usable time-window expression, data in the source table older than the specified interval is excluded from calculations, and older sink rows are not updated. This limits the state and recomputation range for time-window flows, including stateful queries such as those involving `GROUP BY`.
 
-TQL and batching SQL plans without a usable time-window expression that run with `EVAL INTERVAL` execute unfiltered snapshots unless their query has a time predicate; `EXPIRE AFTER` does not add a time filter. It does not delete data from either table. If you want to delete data from the source or sink table, please [set the `TTL` option](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) when creating tables.
+Batching plans without a usable time-window expression that run with `EVAL INTERVAL` execute unfiltered snapshots unless their query has a time predicate; `EXPIRE AFTER` does not add a time filter. It does not delete data from either table. If you want to delete data from the source or sink table, please [set the `TTL` option](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) when creating tables.
 
 For example, if the flow engine processes the aggregation at 10:00:00 and the `'1 hour'::INTERVAL` is set,
 any input data that arrive now with a time index older than 1 hour (before 09:00:00) will expire and be ignored.
@@ -228,12 +228,14 @@ FROM <source_table>
 GROUP BY {time_window | column1, column2,.. };
 ```
 
-The query engine and Flow plan determine which SQL expressions and clauses are supported. For a batching SQL
-Flow with `EVAL INTERVAL`, planner-valid joins, subqueries, and SQL CTEs are supported when the plan contains
-`Aggregate` or `Distinct`; an unsupported plan fails when the Flow is created. For batching time-window aggregates,
-`GROUP BY` commonly includes the time-window expression. See
-[Expressions](expressions.md) for functions commonly used in Flow queries, and [Define time window](#define-time-window)
-for fixed windows.
+The query engine and Flow plan determine which SQL expressions and clauses are supported. `EVAL INTERVAL`
+forces batching for any SQL shape, including ordinary projections and non-aggregate joins; planner-valid joins,
+subqueries, and SQL CTEs are supported. Without `EVAL INTERVAL`, SQL plans containing `Aggregate` or `Distinct` use
+batching, while ordinary projections and non-aggregate joins use legacy streaming. An instant-TTL source cannot be
+combined with `EVAL INTERVAL`; without it, the Flow uses legacy streaming. The query planner must still produce a valid
+plan; unsupported queries fail when the Flow is created. For batching time-window aggregates, `GROUP BY` commonly
+includes the time-window expression. See [Expressions](expressions.md) for functions commonly used in Flow queries,
+and [Define time window](#define-time-window) for fixed windows.
 
 Refer to [Continuous Aggregation](continuous-aggregation.md) for more examples of how to use continuous aggregation in real-time analytics, monitoring, and dashboards.
 

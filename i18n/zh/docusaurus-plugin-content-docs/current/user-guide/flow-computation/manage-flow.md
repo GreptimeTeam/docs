@@ -10,7 +10,7 @@ description: 介绍如何在 GreptimeDB 中创建和删除 flow，包括创建 s
 本文档描述了如何创建和删除一个 flow。
 
 :::note
-Flow 对 TQL workload 以及包含 `Aggregate` 或 `Distinct` 的 SQL 计划使用 batching mode。不过，`WITH ('ttl' = 'instant')` 等 source 表属性可能会强制使用旧的 streaming mode。
+`EVAL INTERVAL` 无论 SQL 形状如何都会强制使用 batching，TQL workload 必须使用该子句。未指定 `EVAL INTERVAL` 时，包含 `Aggregate` 或 `Distinct` 的 SQL 计划使用 batching，普通投影和非聚合 join 使用旧的 streaming。包含 `WITH ('ttl' = 'instant')` 的 source 表不能与 `EVAL INTERVAL` 组合；未指定该子句时，Flow 使用旧的 streaming。
 :::
 
 <AnchorAlias id="创建输入表" />
@@ -94,10 +94,10 @@ AS
 ```
 
 子句必须按上述顺序出现：`EXPIRE AFTER` 在 `EVAL INTERVAL` 之前。
-`EVAL INTERVAL` 只为 batching Flow 计划按计划执行完整查询：TQL Flow 必须使用它，包含 `Aggregate` 或 `Distinct` 的 SQL
-计划使用 batching。对于这些 batching SQL 计划，查询规划器能够生成有效计划时支持 join、子查询和 SQL CTE。
-`WITH ('ttl' = 'instant')` 等 source 表属性可能会强制改用旧的 streaming mode。普通投影和非聚合 join 不属于 batching 调度范围。
-批处理时间窗口聚合 Flow 可以不使用 `EVAL INTERVAL`。
+`EVAL INTERVAL` 无论 SQL 形状如何都会强制使用 batching，并按计划执行完整查询；TQL Flow 必须使用该子句。
+包含 `WITH ('ttl' = 'instant')` 的 source 表不能与 `EVAL INTERVAL` 组合。未指定 `EVAL INTERVAL` 时，包含
+`Aggregate` 或 `Distinct` 的 SQL 计划使用 batching，普通投影和非聚合 join 使用旧的 streaming。
+未指定 `EVAL INTERVAL` 时，instant-TTL source 也使用旧的 streaming。批处理时间窗口聚合 Flow 可以不使用 `EVAL INTERVAL`。
 
 当指定 `OR REPLACE` 时，如果已经存在同名的 flow，它将被更新为新 flow。请注意，这仅影响 flow 任务本身，source 表和 sink 表将不会被更改。当指定 `IF NOT EXISTS` 时，如果 flow 已经存在，它将不执行任何操作，而不是报告错误。还需要注意的是，`OR REPLACE` 不能与 `IF NOT EXISTS` 一起使用。
 
@@ -105,7 +105,7 @@ AS
 - `sink-table-name` 是存储聚合数据的表名。
   它可以是一个现有的表或一个新表；有关创建和校验行为，请参阅[创建 sink 表](#创建-sink-表)。
 - `EXPIRE AFTER` 是一个可选的时间间隔，用于使 Flow 引擎中的数据过期。有关详细信息，请参考 [`EXPIRE AFTER`](#expire-after) 部分。
-- `EVAL INTERVAL` 是 batching Flow 计划用于按计划执行完整查询的可选时间间隔。
+- `EVAL INTERVAL` 是一个可选的时间间隔，用于强制使用 batching 并按计划执行完整查询。
 - `COMMENT` 是 flow 的描述。
 - `WITH` 指定 flow 选项。
   本文档介绍的用户 Flow 选项为 `defer_on_missing_source` 和实验性的 `experimental_enable_incremental_read`。
@@ -138,7 +138,7 @@ GROUP BY time_window;
 
 对于包含可用时间窗口表达式的 Flow，source 表中早于指定间隔的数据会被排除在计算之外，sink 表中较早的行也不会被更新。这会限制时间窗口 Flow 的状态和重新计算范围，包括涉及 `GROUP BY` 的有状态查询。
 
-不包含可用时间窗口表达式、且通过 `EVAL INTERVAL` 运行的 TQL 和 batching SQL 计划会执行未过滤的快照，除非查询本身包含时间谓词；`EXPIRE AFTER` 不会额外添加时间过滤。它不会删除 source 表或 sink 表中的数据。若需删除表数据，请在创建表时通过 [`TTL` 策略](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)实现。
+不包含可用时间窗口表达式、且通过 `EVAL INTERVAL` 运行的 batching 计划会执行未过滤的快照，除非查询本身包含时间谓词；`EXPIRE AFTER` 不会额外添加时间过滤。它不会删除 source 表或 sink 表中的数据。若需删除表数据，请在创建表时通过 [`TTL` 策略](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)实现。
 
 例如，如果 flow 引擎在 10:00:00 处理聚合，并且设置了 `'1 hour'::INTERVAL`，
 当前时刻若输入数据的 Time Index 超过 1 小时（即早于 09:00:00），则会被判定为过期数据并被忽略。
@@ -221,10 +221,11 @@ FROM <source_table>
 GROUP BY {time_window | column1, column2,.. };
 ```
 
-具体支持哪些 SQL 表达式和子句取决于 SQL 查询引擎和 Flow 计划。对于带 `EVAL INTERVAL` 的 batching SQL Flow，查询计划包含
-`Aggregate` 或 `Distinct` 且查询规划器能够生成有效计划时，支持 join、子查询和 SQL CTE；不受支持的计划会在创建 Flow 时失败。
-对于 batching 时间窗口聚合，`GROUP BY` 通常包含时间窗口表达式。
-有关 Flow 查询中常用的函数，请参阅[表达式](./expressions.md)；有关固定时间窗口，请参阅[定义时间窗口](#define-time-window)。
+具体支持哪些 SQL 表达式和子句取决于 SQL 查询引擎和 Flow 计划。`EVAL INTERVAL` 会让任何 SQL 形状都使用 batching，
+包括普通投影和非聚合 join；查询规划器能够生成有效计划时支持 join、子查询和 SQL CTE。未指定 `EVAL INTERVAL` 时，包含
+`Aggregate` 或 `Distinct` 的 SQL 计划使用 batching，普通投影和非聚合 join 使用旧的 streaming。包含 instant-TTL source
+的 Flow 不能与 `EVAL INTERVAL` 组合；未指定该子句时使用旧的 streaming。查询规划器仍必须生成有效计划；不受支持的查询会在创建 Flow 时失败。
+对于 batching 时间窗口聚合，`GROUP BY` 通常包含时间窗口表达式。有关 Flow 查询中常用的函数，请参阅[表达式](./expressions.md)；有关固定时间窗口，请参阅[定义时间窗口](#define-time-window)。
 
 有关如何在实时分析、监控和仪表板中使用持续聚合的更多示例，请参阅[持续聚合](./continuous-aggregation.md)。
 
