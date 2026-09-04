@@ -51,46 +51,27 @@ The `greptime_identity` pipeline creates the table directly from the JSON fields
 
 GreptimeDB can also be configured as OpenTelemetry collector. Using Fluent Bit's [OpenTelemetry Output Plugin](https://docs.fluentbit.io/manual/pipeline/outputs/opentelemetry), you can send metrics, logs, and traces to GreptimeDB.
 
-```
-[OUTPUT]
-    Name                 opentelemetry
-    Match                *
-    Host                 127.0.0.1
-    Port                 4000
-    Metrics_uri          /v1/otlp/v1/metrics
-    Logs_uri             /v1/otlp/v1/logs
-    Traces_uri           /v1/otlp/v1/traces
-    Log_response_payload True
-    Tls                  Off
-    Tls.verify           Off
-    logs_body_key message
-    http_User <username>
-    http_Passwd <password>
-```
-
-- `Metrics_uri`, `Logs_uri`, and `Traces_uri`: The endpoint to send metrics, logs, and traces to.
-- `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments-administration/authentication/static.md) for GreptimeDB.
-
-We recommend not writing metrics, logs, and traces to a single output simultaneously, as each has specific header options for specifying parameters. We suggest creating a separate OpenTelemetry output for metrics, logs, and traces. for example:
+Use a separate output for each signal because GreptimeDB uses signal-specific headers. Assign a distinct tag to each signal in the Fluent Bit inputs, then match that tag in the corresponding output:
 
 ```
 # Only for metrics
 [OUTPUT]
     Name                 opentelemetry
     Alias                opentelemetry_metrics
-    Match                *
+    Match                <metrics_tag>
     Host                 127.0.0.1
     Port                 4000
     Metrics_uri          /v1/otlp/v1/metrics
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
+    Header X-Greptime-DB-Name "<dbname>"
 
 # Only for logs
 [OUTPUT]
     Name                 opentelemetry
     Alias                opentelemetry_logs
-    Match                *
+    Match                <logs_tag>
     Host                 127.0.0.1
     Port                 4000
     Logs_uri             /v1/otlp/v1/logs
@@ -98,10 +79,27 @@ We recommend not writing metrics, logs, and traces to a single output simultaneo
     Tls                  Off
     Tls.verify           Off
     Header X-Greptime-Log-Table-Name "<log_table_name>"
-    Header X-Greptime-Log-Pipeline-Name "<pipeline_name>"
+    Header X-Greptime-Pipeline-Name "<pipeline_name>"
+    Header X-Greptime-DB-Name "<dbname>"
+
+# Only for traces
+[OUTPUT]
+    Name                 opentelemetry
+    Alias                opentelemetry_traces
+    Match                <traces_tag>
+    Host                 127.0.0.1
+    Port                 4000
+    Traces_uri           /v1/otlp/v1/traces
+    Log_response_payload True
+    Tls                  Off
+    Tls.verify           Off
+    Header X-Greptime-Pipeline-Name "greptime_trace_v1"
     Header X-Greptime-DB-Name "<dbname>"
 ```
 
+- `Metrics_uri`, `Logs_uri`, and `Traces_uri`: The endpoints for metrics, logs, and traces.
+- `Match`: The signal-specific tag configured on the corresponding Fluent Bit input.
+- `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments-administration/authentication/static.md) for GreptimeDB. Add them to each output when authentication is enabled.
 
 In this example, the OpenTelemetry OTLP/HTTP API is used. For signal-specific headers and options, see the OpenTelemetry API sections for [metrics](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api), [logs](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-1), and [traces](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-2).
 

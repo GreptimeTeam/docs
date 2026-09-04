@@ -18,9 +18,14 @@ See [Event recording](/user-guide/deployments-administration/configuration.md#ev
 
 ## Query events
 
-The table is created when the first event is recorded. If no event has been
-recorded yet, or event recording is disabled, this query returns a table-not-found
-error.
+When the event recorder writes its first event, it creates the
+`greptime_private.events` system table. If an existing table is missing columns
+from the current event schema, the recorder adds them. It performs both actions
+even when automatic table creation is disabled. Disabling event recording does
+not remove an existing table. This query returns a table-not-found error only if
+the table does not currently exist, for example because event recording was
+disabled before any event was recorded or the table was dropped. The recorder
+recreates the table when it writes another event.
 
 Start with a bounded query while investigating a recent operation:
 

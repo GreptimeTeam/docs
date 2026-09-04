@@ -11,9 +11,14 @@ with Metasrv can additionally record operational event types. Event recording is
 asynchronous and best-effort, so rows are not an acknowledgement that an
 operation succeeded.
 
-The table is created when the first event is recorded. If no event has been
-recorded, or event recording is disabled, querying it returns a table-not-found
-error. Configure recording in [Event recording](/user-guide/deployments-administration/configuration.md#event-recording).
+When the event recorder writes its first event, it creates the
+`greptime_private.events` system table. If an existing table is missing columns
+from the current event schema, the recorder adds them. It performs both actions
+even when automatic table creation is disabled. Disabling event recording does
+not remove an existing table. A query returns a table-not-found error only if the
+table does not currently exist, for example because event recording was disabled
+before any event was recorded or the table was dropped. The recorder recreates the
+table when it writes another event. Configure recording in [Event recording](/user-guide/deployments-administration/configuration.md#event-recording).
 
 ```sql
 USE greptime_private;

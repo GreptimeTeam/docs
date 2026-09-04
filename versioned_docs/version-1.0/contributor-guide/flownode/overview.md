@@ -15,7 +15,7 @@ description: Overview of Flownode, a component providing streaming process capab
 
 There are two execution modes for a flow:
 - **Streaming Mode**: The original mode where data is processed as it arrives.
-- **Batching Mode**: A newer mode designed for continuous data aggregation. It periodically executes a user-defined SQL query over small, discrete time windows. All aggregation queries now use this mode. For more details, see the [Batching Mode Developer Guide](./batching_mode.md).
+- **Batching Mode**: A newer mode designed for continuous data aggregation. It periodically executes a user-defined SQL query over small, discrete time windows. All aggregation queries now use this mode. For more details, see [Batching Mode](./batching_mode.md).
 
 ## Components
 

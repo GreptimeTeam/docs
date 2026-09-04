@@ -49,7 +49,7 @@ docker run --rm \
   -p 4317:4317 \
   -p 4318:4318 \
   -v $(pwd)/config.yaml:/etc/otelcol-contrib/config.yaml \
-  otel/opentelemetry-collector-contrib:0.123.0
+  otel/opentelemetry-collector-contrib:0.159.0
 ```
 
 The content of the `config.yaml` file is as follows:
@@ -64,7 +64,7 @@ receivers:
         endpoint: 0.0.0.0:4318
 
 exporters:
-  otlphttp:
+  otlp_http:
     endpoint: "http://greptimedb:4000/v1/otlp" # Replace greptimedb with your setup
     headers:
       x-greptime-pipeline-name: "greptime_trace_v1"
@@ -76,7 +76,7 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [otlphttp]
+      exporters: [otlp_http]
 ```
 
 #### Write Trace Data to OpenTelemetry Collector

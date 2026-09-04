@@ -1,6 +1,6 @@
 ---
-keywords: [ADMIN statement, SQL, administration functions, flush table, compact table, build index, migrate region, gc table, gc regions]
-description: Describes the `ADMIN` statement used to run administration functions, including examples for flushing tables, scheduling compactions, building indexes, migrating regions, querying procedure states, and garbage collecting orphaned files.
+keywords: [ADMIN statement, SQL, administration functions, flush table, discard unflushed data, compact table, build index, migrate region, gc table, gc regions]
+description: Describes the `ADMIN` statement used to run administration functions, including examples for flushing tables, discarding unflushed data, scheduling compactions, building indexes, migrating regions, querying procedure states, and garbage collecting orphaned files.
 ---
 
 # ADMIN
@@ -18,6 +18,7 @@ GreptimeDB provides some administration functions to manage the database and dat
 
 * `flush_table(table_name)` to flush a table's memtables into SST file by table name.
 * `flush_region(region_id)` to flush a region's memtables into SST file by region id. Find the region id through [PARTITIONS](./information-schema/partitions.md) table.
+* `discard_unflushed(table_name_or_region_id)` to permanently discard unflushed data from every physical region of a table or from one region.
 * `compact_table(table_name, [type], [options])` to schedule a compaction task for a table by table name, read [compaction](/user-guide/deployments-administration/manage-data/compaction.md#strict-window-compaction-strategy-swcs-and-manual-compaction) for more details.
 * `compact_region(region_id)` to schedule a compaction task for a region by region id.
 * `build_index(table_name)` to build missing physical indexes for a table's existing SST files after adding or changing index definitions.
@@ -35,6 +36,12 @@ For example:
 ```sql
 -- Flush the table test --
 admin flush_table("test");
+
+-- Discard unflushed data from all physical regions of table test --
+admin discard_unflushed("test");
+
+-- Discard unflushed data from one region --
+admin discard_unflushed(4398046511104);
 
 -- Schedule a compaction for table test with default parallelism (1) --
 admin compact_table("test");
@@ -72,6 +79,31 @@ admin gc_regions(1, 2, 3, true);
 -- Permanently purge a soft-dropped table --
 admin purge_table("test");
 ```
+
+## Discard Unflushed Data
+
+Use `admin discard_unflushed` as an emergency recovery operation when data in a Memtable repeatedly prevents flushing, fills the write buffer, and blocks further writes.
+
+:::danger
+
+This operation permanently deletes all data in the target regions that has not been persisted to SST files. It also makes the corresponding WAL entries obsolete, so restarting a Datanode does not restore the discarded data. Data already persisted in SST files remains available.
+
+:::
+
+The function takes exactly one table name or Region ID:
+
+```sql
+ADMIN discard_unflushed('table_name');
+ADMIN discard_unflushed(region_id);
+```
+
+A table name targets all physical regions of the table. It can be unqualified, schema-qualified, or fully qualified; omitted qualifiers are resolved from the current query context.
+
+A numeric Region ID targets only that Region. Query the [`information_schema.PARTITIONS`](./information-schema/partitions.md) table to find Region IDs.
+
+Metric Engine logical tables are not supported because multiple logical tables share the same physical regions. Using a physical Metric Engine table name or physical Region ID discards unflushed data shared by its logical tables, so verify the target carefully.
+
+This function is available only through the `ADMIN` statement. Calling it in a `SELECT` statement is rejected. Repeating the same operation when no unflushed data remains is safe and has no effect.
 
 ## Build Index
 

@@ -5,19 +5,23 @@ description: 介绍了 GreptimeDB 的数据持久化和索引机制，包括 SST
 
 # 数据持久化与索引
 
-与所有类似 LSMT 的存储引擎一样，MemTables 中的数据被持久化到耐久性存储，例如本地磁盘文件系统或对象存储服务。GreptimeDB 采用 [Apache Parquet][1] 作为其持久文件格式。
+与其他 LSM-tree 存储引擎类似，GreptimeDB 将 memtable 中的数据持久化到本地文件系统或对象存储，并使用 [Apache Parquet][1] 作为持久化文件格式。
 
 ## SST 文件格式
 
 Parquet 是一种提供快速数据查询的开源列式存储格式，已经被许多项目采用，例如 Delta Lake。
 
-Parquet 具有层次结构，类似于“行组 - 列-数据页”。Parquet 文件中的数据被水平分区为行组（row group），在其中相同列的所有值一起存储以形成数据页（data pages）。数据页是最小的存储单元。这种结构极大地提高了性能。
+Parquet 按 row group、column chunk 和 page 组织数据。每个 row group 为每一列保存一个 column chunk，每个 column chunk 再包含一个或多个 page。Page 是编码和压缩单元，读取指定列时则以 column chunk 为 I/O 单元。
 
 首先，数据按列聚集，这使得文件扫描更加高效，特别是当查询只涉及少数列时，这在分析系统中非常常见。
 
-其次，相同列的数据往往是同质的（比如具备近似的值），这有助于在采用字典和 Run-Length Encoding（RLE）等技术进行压缩。
+其次，同一列中的值通常比较相似，有利于字典编码和 Run-Length Encoding（RLE）等压缩技术发挥作用。
 
-<img src="/parquet-file-format.png" alt="Parquet file format" width="500"/>
+下面这张来自 Apache Parquet 规范的图进一步展示了物理文件布局：column chunk 按 row group 写入，文件元数据及其长度则保存在 footer 中。
+
+<img src="/parquet-file-layout.gif" alt="Apache Parquet 文件布局" width="601"/>
+
+*来源：Apache Parquet [FileLayout.gif](https://github.com/apache/parquet-format/blob/master/doc/images/FileLayout.gif)。Copyright 2014 The Apache Software Foundation，依据 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) 使用。*
 
 ## 数据持久化
 
@@ -26,18 +30,18 @@ GreptimeDB 提供了 `region_engine.mito.global_write_buffer_size` 的配置项�
 
 ## SST 文件中的索引数据
 
-Apache Parquet 文件格式在列块和数据页的头部提供了内置的统计信息，用于剪枝和跳过。
+Parquet 在每个 column chunk 的元数据中保存 row group 级列统计信息，例如最小值、最大值和 null 数量。Page 元数据和可选的 column index 可以提供粒度更细的统计信息。
 
-<img src="/column-chunk-header.png" alt="Column chunk header" width="350"/>
+![查询 name 列时，Parquet 列统计信息排除了一个 row group，并将另一个保留为待读取对象。](/parquet-row-group-statistics.zh.svg)
 
-例如，在上述 Parquet 文件中，如果你想要过滤 `name` 等于 `Emily` 的行，你可以轻松跳过行组 0，因为 `name` 字段的最大值是 `Charlie`。这些统计信息减少了 IO 操作。
+例如，查询 `name` 等于 `Emily` 的行时，可以跳过 row group 0，因为其中 `name` 的最大值是 `Charlie`，无需读取该 row group。
 
 
 ## 索引文件
 
-对于每个 SST 文件，GreptimeDB 不但维护 SST 文件内部索引，还会单独生成一个文件用于存储针对该 SST 文件的索引结构。
+当一个 SST 存在已配置且适用的索引输出时，GreptimeDB 将这些索引写入与该 SST 关联的 Puffin 文件。没有适用索引的 SST 不需要生成 Puffin 文件。
 
-索引文件采用 [Puffin][3] 格式，这种格式具有较大的灵活性，能够存储更多的元数据，并支持更多的索引结构。
+Puffin 是索引 Blob 及其元数据的容器，使不同索引结构可以共用一个文件。
 
 ![Puffin](/puffin.png)
 
@@ -58,13 +62,13 @@ GreptimeDB 会将多种索引结构作为 Blob 存储在 Puffin 文件中，包�
 
 ![Inverted index searching](/inverted-index-searching.png)
 
-例如，上述查询使用倒排索引来定位数据段，数据段满足条件：`job` 等于 `apiserver`，`handler` 符合正则匹配 `.*users` 及 `status` 符合正则匹配 `4..`，然后扫描这些数据段以产生满足所有条件的最终结果，从而显着减少 IO 操作的次数。
+上述查询使用倒排索引定位 `job` 等于 `apiserver`、`handler` 匹配 `.*users` 且 `status` 匹配 `4..` 的数据段。Mito 只扫描这些数据段，再应用剩余过滤条件。
 
 ### 倒排索引格式
 
-![Inverted index format](/inverted-index-format.png)
+![倒排索引 Blob 先保存各列索引，再保存 footer 元数据；每个列索引包含 null bitmap、posting bitmap 和 FST。](/inverted-index-blob-layout.zh.svg)
 
-GreptimeDB 按列构建倒排索引，每个倒排索引包含一个 FST 和多个 Bitmap。
+GreptimeDB 按列构建倒排索引。每个列索引包含一个 null bitmap、多个 posting bitmap 和一个 FST。Blob footer 记录定位和解码各列索引所需的 offset、size 和元数据。
 
 FST（Finite State Transducer）允许 GreptimeDB 以紧凑的格式存储列值到 Bitmap 位置的映射，并且提供了优秀的搜索性能和支持复杂搜索（例如正则表达式匹配）；Bitmap 则维护了数据段 ID 列表，每个位表示一个数据段。
 
@@ -80,7 +84,7 @@ GreptimeDB 把一个 SST 文件分割成多个索引数据段，每个数据段�
 
 ## 统一数据访问层：OpenDAL
 
-GreptimeDB 使用 [OpenDAL][2] 提供统一的数据访问层，因此，存储引擎无需与不同的存储 API 交互，数据可以无缝迁移到基于云的存储，如 AWS S3。
+GreptimeDB 使用 [OpenDAL][2] 为本地文件系统和对象存储提供统一访问层。修改配置的存储 backend 不会迁移已有数据。
 
 [1]: https://parquet.apache.org
 [2]: https://github.com/datafuselabs/opendal

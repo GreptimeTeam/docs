@@ -87,14 +87,14 @@ span_attributes.user_agent.original        | python-requests/2.32.3
 span_attributes.http.route                 | todos/
 ```
 
-可以通过执行 `show create table opentelemetry_traces` 来查看表建表语句：
+对于新建的表，可以通过执行 `show create table opentelemetry_traces` 来查看建表语句：
 
 ```
 Table        | opentelemetry_traces
 Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (                                           +
              |   "timestamp" TIMESTAMP(9) NOT NULL,                                                    +
              |   "timestamp_end" TIMESTAMP(9) NULL,                                                    +
-             |   "duration_nano" BIGINT UNSIGNED NULL,                                                 +
+             |   "duration_nano" BIGINT NULL,                                                          +
              |   "trace_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),    +
              |   "span_id" STRING NULL,                                                                +
              |   "span_kind" STRING NULL,                                                              +

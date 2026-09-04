@@ -17,7 +17,10 @@ description: 介绍如何使用 Loki 将日志数据发送到 GreptimeDB，包�
   * `Authorization`: `Basic` 认证，这是一个 Base64 编码的 `<username>:<password>` 字符串。更多信息，请参考 [认证](https://docs.greptime.com/user-guide/deployments-administration/authentication/static/) 和 [HTTP API](https://docs.greptime.com/user-guide/protocols/http#authentication)。
   * `X-Greptime-Log-Table-Name`: `<table_name>`（可选）- 存储日志的表名。如果未提供，默认表名为 `loki_logs`。
 
-请求使用二进制 protobuf 编码负载。定义的格式与 [logproto.proto](https://github.com/grafana/loki/blob/main/pkg/logproto/logproto.proto) 相同。
+GreptimeDB 支持 Loki Push API 的以下两种负载编码：
+
+* **Protobuf**：发送符合 [logproto.proto](https://github.com/grafana/loki/blob/main/pkg/logproto/logproto.proto) 定义、经过 Snappy 压缩的 `PushRequest`，并设置 `Content-Type: application/x-protobuf`。
+* **JSON**：发送 Loki JSON Push 请求体，并设置 `Content-Type: application/json`。
 
 ### 示例代码
 
@@ -35,10 +38,12 @@ loki.source.file "greptime" {
 
 loki.write "greptime_loki" {
     endpoint {
-        url = "${GREPTIME_SCHEME:=http}://${GREPTIME_HOST:=greptimedb}:${GREPTIME_PORT:=4000}/v1/loki/api/v1/push"
+        url = coalesce(sys.env("GREPTIME_SCHEME"), "http") + "://" +
+          coalesce(sys.env("GREPTIME_HOST"), "greptimedb") + ":" +
+          coalesce(sys.env("GREPTIME_PORT"), "4000") + "/v1/loki/api/v1/push"
         headers  = {
-          "x-greptime-db-name" = "${GREPTIME_DB:=public}",
-          "x-greptime-log-table-name" = "${GREPTIME_LOG_TABLE_NAME:=loki_demo_logs}",
+          "x-greptime-db-name" = coalesce(sys.env("GREPTIME_DB"), "public"),
+          "x-greptime-log-table-name" = coalesce(sys.env("GREPTIME_LOG_TABLE_NAME"), "loki_demo_logs"),
         }
     }
     external_labels = {
@@ -56,11 +61,11 @@ loki.write "greptime_loki" {
 
 ```sql
 SELECT * FROM loki_demo_logs;
-+----------------------------+------------------------+--------------+-------+----------+
-| greptime_timestamp         | line                   | filename     | from  | job      |
-+----------------------------+------------------------+--------------+-------+----------+
-| 2024-11-25 11:02:31.256251 | Greptime is very cool! | /tmp/foo.txt | alloy | greptime |
-+----------------------------+------------------------+--------------+-------+----------+
++----------------------------+------------------------+---------------------+--------------+-------+----------+
+| greptime_timestamp         | line                   | structured_metadata | filename     | from  | job      |
++----------------------------+------------------------+---------------------+--------------+-------+----------+
+| 2024-11-25 11:02:31.256251 | Greptime is very cool! | {}                  | /tmp/foo.txt | alloy | greptime |
++----------------------------+------------------------+---------------------+--------------+-------+----------+
 1 row in set (0.01 sec)
 ```
 
@@ -118,6 +123,7 @@ SHOW CREATE TABLE loki_demo_logs\G
 Create Table: CREATE TABLE IF NOT EXISTS `loki_demo_logs` (
   `greptime_timestamp` TIMESTAMP(9) NOT NULL,
   `line` STRING NULL,
+  `structured_metadata` JSON NULL,
   `filename` STRING NULL,
   `from` STRING NULL,
   `job` STRING NULL,
@@ -127,7 +133,10 @@ Create Table: CREATE TABLE IF NOT EXISTS `loki_demo_logs` (
 
 ENGINE=mito
 WITH(
-  append_mode = 'true'
+  'comment' = 'Created on insertion',
+  append_mode = 'true',
+  'greptime.semantic.signal_type' = 'log',
+  'greptime.semantic.source' = 'loki'
 )
 1 row in set (0.00 sec)
 ```

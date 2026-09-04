@@ -95,6 +95,14 @@ The query result is:
 | 1970-01-01 00:00:00.002 | checkout | 8f3a1d | Bob | 200 | 386.4 | NULL |
 | 1970-01-01 00:00:00.003 | checkout | 8f3a1e | NULL | 500 | 71.2 | true |
 
+You can also select the complete JSON2 value:
+
+```sql
+SELECT ts, attrs
+FROM application_logs
+ORDER BY ts;
+```
+
 You can also use JSON functions and cast the return type explicitly:
 
 ```sql
@@ -221,6 +229,10 @@ FROM application_logs
 WHERE json_get(attrs, 'http.status')::BIGINT >= 500;
 ```
 
+The typed extraction functions `json_get_string`, `json_get_int`,
+`json_get_float`, and `json_get_bool` also accept JSON2 values. See
+[JSON functions](/reference/sql/functions/json.md#extraction) for details.
+
 ### Dot syntax
 
 You can read JSON2 subpaths directly with dot syntax:
@@ -241,22 +253,40 @@ FROM application_logs
 WHERE attrs.http.status >= 500;
 ```
 
-## Roadmap
+### Control automatic path expansion
 
-JSON2 is currently in Beta and still has the following limitations. Future
-releases will continue to improve these capabilities:
+By default, JSON2 expands compatible unhinted leaf paths into structured
+columns. Use `max_auto_expanded_paths` to limit how many paths are expanded:
 
-- Support JSON2 in non-append-only tables.
-- Support writing non-object or empty-object JSON root values such as arrays,
-  strings, numbers, booleans, `null`, and `{}`.
-- Support querying the JSON2 root column itself. For now, query specific
-  subpaths such as `attrs.http.status` or `json_get(attrs, 'http.status')`.
-- Support subscript access to elements inside JSON arrays. For now, you can
-  query `attrs.items`, but not `attrs.items[0]` or `json_get(attrs, 'items[0]')`.
-- Support functions such as `json_get_string`, `json_get_int`,
-  `json_get_float`, and `json_get_bool` for JSON2.
-- Extend supported type hint data types, such as time-related types like
-  `TIMESTAMP`.
-- Support index options such as `INVERTED INDEX` and `SKIPPING INDEX` for type
-  hints.
-- Support writing JSON2 through OTLP and other ingestion paths.
+```sql
+CREATE TABLE application_logs (
+    ts TIMESTAMP TIME INDEX,
+    attrs JSON2 (
+        max_auto_expanded_paths = 20,
+        trace_id STRING
+    )
+) WITH (
+    'append_mode' = 'true'
+);
+```
+
+Set the option to `0` to disable automatic expansion. Type-hinted paths do not
+count against this limit. Fields beyond the limit remain in a special
+`remainder` field and can still be queried, so the option controls storage
+layout and performance, not the logical JSON schema.
+
+<AnchorAlias id="roadmap" />
+
+## Current limitations
+
+JSON2 is currently in Beta and has the following limitations:
+
+- JSON2 columns can only be used in append-only tables.
+- Each non-NULL JSON root must be a non-empty object. Root arrays, strings,
+  numbers, booleans, the JSON literal `null`, and empty objects are not
+  supported.
+- Array elements cannot be accessed with subscript syntax.
+- Type hints support only the types listed above and cannot traverse arrays.
+- Structured expansion and type hint paths support at most 50 nested path
+  segments. Deeper unhinted values remain queryable in the special `remainder`
+  field.

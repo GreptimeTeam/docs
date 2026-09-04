@@ -35,3 +35,6 @@ static/skills/
 
 # Used by Codex to store temporary artifacts
 tmp/
+
+# Local MCP server configuration. Contains connection credentials.
+/.mcp.json

@@ -7,9 +7,9 @@ description: Overview of the Metric engine in GreptimeDB, its concepts, architec
 
 ## Overview
 
-The `Metric` engine is a component of GreptimeDB, and it's an implementation of the storage engine. It mainly targets scenarios with a large number of small tables for observable metrics.
+The `Metric` engine stores workloads with many small metric tables.
 
-Its main feature is to use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. This reduces storage overhead for small tables and improves columnar compression efficiency. The concept of a table becomes even more lightweight under the `Metric` engine.
+It maps those logical tables onto shared physical wide tables so they can reuse columns and metadata. This reduces per-table storage overhead and improves columnar compression.
 
 ## Concepts
 
@@ -19,7 +19,7 @@ The `Metric` engine introduces two new concepts: "logical table" and "physical t
 
 A logical table refers to user-defined tables. Just like any other ordinary table, its definition includes the name of the table, column definitions, index definitions etc. All operations such as queries or write-ins by users are based on these logical tables. Users don't need to worry about differences between logical and ordinary tables during usage.
 
-From an implementation standpoint, a logical table is virtual; it doesn't directly read or write physical data but maps read/write requests into corresponding requests for physical tables in order to implement data storage and querying.
+A logical table is virtual. The engine maps its read and write requests to the corresponding physical table instead of storing data for it directly.
 
 ### Physical Table
 
@@ -29,16 +29,14 @@ A physical table is a table that actually stores data, possessing several physic
 
 The main design architecture of the `Metric` engine is as follows:
 
-![Arch](/metric-engine-arch.png)
+![Multiple logical tables map through the Metric engine to shared data and metadata Regions managed by Mito.](/metric-engine-architecture.svg)
 
-In the current version implementation, the `Metric` engine reuses the `Mito` engine to achieve storage and query capabilities for physical data. It also provides access to both physical tables and logical tables simultaneously.
+The `Metric` engine delegates physical storage and queries to the `Mito` engine. Each physical Region group contains a data Region, which stores rows from its mapped logical tables, and a metadata Region, which stores the logical-table and logical-column mappings.
 
-Regarding partitioning, logical tables have identical partition rules and Region distribution as physical tables. This makes sense because the data of logical tables are directly stored in physical tables, so their partition rules are consistent.
+Logical tables associated with the same physical table share its partition layout. During writes, the engine records the logical table identity with each row. During reads, it adds a logical-table filter before scanning the physical Region.
 
-Concerning routing metadata, the routing address of a logical table is a logical address - what its corresponding physical table is - then through this physical table for secondary routing to obtain the real physical address. This indirect routing method can significantly reduce the number of metadata modifications required when Region migration scheduling occurs in Metric engines.
+A logical table's route stores only the ID of its physical table; the physical table route resolves that to the Datanodes holding the Regions. Because logical routes do not name peers, migrating a physical Region rewrites one physical route instead of every logical route that maps to it.
 
-Operationally speaking, The `Metric` engine supports standard DML operations (INSERT, DELETE, SELECT) on logical tables. However, it only supports limited operations on physical tables to prevent misoperations - for example, writing directly to a physical table is prohibited as it could affect user's logical table data. Generally speaking, users can consider that they have read-only access to these physical tables.
+Logical tables support normal INSERT, DELETE, and SELECT operations. Direct writes to a physical Region are rejected because they would bypass the logical-table mapping; querying a physical table remains supported.
 
-To improve performance during simultaneous DDL (Data Definition Language) operations on many tables, the 'Metric' engine has introduced some batch DDL operations. These batch DDL operations can merge lots of DDL actions into one request thereby reducing queries and modifications times for metadata thus enhancing performance. This feature is particularly beneficial in scenarios such as the automatic creation requests brought about by large amounts of metrics during Prometheus Remote Write cold start-up, as well as the modification requests for numerous route-tables mentioned earlier during migration of many physical regions.
- 
-Apart from physical data regions belonging to physical tables, the 'Metric' engine creates an additional metadata region physically for each individual physical data region used in storing some metadata needed by itself while maintaining mapping and other states. This metadata includes the mapping relationship between logical tables and physical tables, the mapping relationship between logical columns and physical columns etc.
+Batch DDL operations reduce metadata work when many logical tables are created or updated together, such as during Prometheus Remote Write auto-creation or physical Region migration.
