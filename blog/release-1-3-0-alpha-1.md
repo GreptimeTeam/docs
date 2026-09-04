@@ -8,6 +8,26 @@ date: 2026-09-03
 
 Release date: September 03, 2026
 
+GreptimeDB v1.3.0-alpha.1 adds end-to-end Native Histogram support, an initial telemetry entity-relationships graph, and Dashboard updates for early validation.
+
+### 👍 Highlights
+
+- **Native Histograms.** PromQL now supports Native Histogram selection, range functions, vector operations, aggregations, metadata, and Prometheus HTTP responses. For example:
+
+  ```promql
+  sum by (job) (rate(http_request_duration_seconds[5m]))
+  ```
+
+- **Telemetry entity relationships graph.** Query read-time entities and relationships derived from OTLP telemetry without a separate pipeline:
+
+  ```sql
+  SELECT src_type, src_id, dst_type, dst_id, rel_type, provenance, confidence
+  FROM greptime_private.semantic_relationships
+  ORDER BY rel_type, src_id;
+  ```
+
+- **Dashboard.** Bundled Dashboard v0.13.14 adds full snapshot export and configurable table widths, and updates Perses to v0.54.
+
 ### Breaking changes
 
 * chore!: gate soft-drop table behind the enterprise feature by [@v0y4g3r](https://github.com/v0y4g3r) in [#8747](https://github.com/GreptimeTeam/greptimedb/pull/8747)
