@@ -10,7 +10,7 @@ It continuously updates the aggregated data based on the incoming data.
 This document describes how to create, and delete a flow.
 
 :::note
-Flow uses batching mode for aggregation and TQL workloads. Simple non-aggregation Flow queries currently use the deprecated streaming mode and are not recommended for new workloads.
+Flow uses batching mode for TQL workloads and SQL plans containing `Aggregate` or `Distinct`. However, source-table properties such as `WITH ('ttl' = 'instant')` can force the legacy streaming mode.
 :::
 
 ## Create a Source Table
@@ -95,8 +95,10 @@ AS
 ```
 
 The clauses must appear in the order shown: `EXPIRE AFTER` comes before `EVAL INTERVAL`.
-`EVAL INTERVAL` schedules repeated evaluation of the full query. Scheduled SQL flows can use joins,
-subqueries, and SQL CTEs when the SQL query engine can plan the query. TQL flows require `EVAL INTERVAL`.
+`EVAL INTERVAL` schedules full-query evaluation only for batching Flow plans: TQL flows require it, and SQL
+plans containing `Aggregate` or `Distinct` use batching. For these batching SQL plans, planner-valid joins,
+subqueries, and SQL CTEs are supported. Source-table properties such as `WITH ('ttl' = 'instant')` can force
+legacy streaming instead. Ordinary projections and non-aggregate joins are not scheduled as batching workloads.
 Batching time-window aggregate flows can run without `EVAL INTERVAL`.
 
 When `OR REPLACE` is specified, any existing flow with the same name will be updated to the new version. It's important to note that this only affects the flow task itself; the source and sink tables will remain unchanged.
@@ -108,7 +110,7 @@ Conversely, when `IF NOT EXISTS` is specified, the command will have no effect i
 - `sink-table-name` is the table name where the materialized aggregated data is stored.
   It can be an existing table or a new one; see [Create a Sink Table](#create-a-sink-table) for creation and validation behavior.
 - `EXPIRE AFTER` is an optional interval to expire data from the Flow engine. For more details, please refer to the [`EXPIRE AFTER`](#expire-after) section.
-- `EVAL INTERVAL` is an optional interval for scheduled full-query evaluation. TQL flows require it.
+- `EVAL INTERVAL` is an optional interval for scheduled full-query evaluation in batching Flow plans.
 - `COMMENT` is the description of the flow.
 - `WITH` specifies flow options.
   The user-facing options documented below are `defer_on_missing_source` and the experimental `experimental_enable_incremental_read`.
@@ -140,7 +142,7 @@ The `EXPIRE AFTER` clause specifies the interval after which data will expire fr
 
 For a Flow with a usable time-window expression, data in the source table older than the specified interval is excluded from calculations, and older sink rows are not updated. This limits the state and recomputation range for time-window flows, including stateful queries such as those involving `GROUP BY`.
 
-Scheduled full-query SQL and TQL flows execute unfiltered snapshots unless the query contains its own time predicate; `EXPIRE AFTER` does not add a time filter. It does not delete data from either table. If you want to delete data from the source or sink table, please [set the `TTL` option](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) when creating tables.
+Batching SQL and TQL flows with `EVAL INTERVAL` execute unfiltered snapshots unless the query contains its own time predicate; `EXPIRE AFTER` does not add a time filter. It does not delete data from either table. If you want to delete data from the source or sink table, please [set the `TTL` option](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) when creating tables.
 
 Setting a reasonable time interval for `EXPIRE AFTER` is helpful to limit how far back the batching engine needs to recompute results and to avoid excessive resource usage. It serves a similar purpose to bounding lateness in stream processing systems, but new Flow workloads should use batching mode.
 
@@ -152,12 +154,23 @@ Only data timestamped from 09:00:00 onwards will be used in the aggregation and 
 
 By default, creating a Flow fails if one of its source tables does not exist. Set
 `defer_on_missing_source` to `true` to persist a pending Flow instead of failing. The Flow is not scheduled while its
-sources remain unresolved.
+sources remain unresolved, and it is not activated automatically when those tables are created. `CREATE OR REPLACE`
+cannot activate a pending Flow.
 
 ```sql
 CREATE FLOW pending_flow
 SINK TO pending_sink
 WITH (defer_on_missing_source = 'true')
+AS
+SELECT * FROM source_created_later;
+```
+
+After all source tables have been created, drop and recreate the Flow to activate it.
+
+```sql
+DROP FLOW pending_flow;
+CREATE FLOW pending_flow
+SINK TO pending_sink
 AS
 SELECT * FROM source_created_later;
 ```
@@ -217,9 +230,10 @@ FROM <source_table>
 GROUP BY {time_window | column1, column2,.. };
 ```
 
-The query engine and Flow plan determine which SQL expressions and clauses are supported. For a scheduled full-query
-SQL Flow, planner-valid joins, subqueries, and SQL CTEs are supported; an unsupported plan fails when the Flow is
-created. For batching time-window aggregates, `GROUP BY` commonly includes the time-window expression. See
+The query engine and Flow plan determine which SQL expressions and clauses are supported. For a batching SQL
+Flow with `EVAL INTERVAL`, planner-valid joins, subqueries, and SQL CTEs are supported when the plan contains
+`Aggregate` or `Distinct`; an unsupported plan fails when the Flow is created. For batching time-window aggregates,
+`GROUP BY` commonly includes the time-window expression. See
 [Expressions](expressions.md) for functions commonly used in Flow queries, and [Define time window](#define-time-window)
 for fixed windows.
 

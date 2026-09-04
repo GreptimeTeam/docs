@@ -10,7 +10,7 @@ description: 介绍如何在 GreptimeDB 中创建和删除 flow，包括创建 s
 本文档描述了如何创建和删除一个 flow。
 
 :::note
-Flow 对聚合和 TQL workload 使用 batching mode。简单的非聚合 Flow 查询当前会使用已废弃的 streaming mode，不推荐新 workload 使用。
+Flow 对 TQL workload 以及包含 `Aggregate` 或 `Distinct` 的 SQL 计划使用 batching mode。不过，`WITH ('ttl' = 'instant')` 等 source 表属性可能会强制使用旧的 streaming mode。
 :::
 
 <AnchorAlias id="创建输入表" />
@@ -94,8 +94,10 @@ AS
 ```
 
 子句必须按上述顺序出现：`EXPIRE AFTER` 在 `EVAL INTERVAL` 之前。
-`EVAL INTERVAL` 会按计划重复执行完整查询。只要 SQL 查询引擎能够生成有效计划，带调度的 SQL Flow
-就支持 join、子查询和 SQL CTE。TQL Flow 必须使用 `EVAL INTERVAL`；批处理时间窗口聚合 Flow 可以不使用它。
+`EVAL INTERVAL` 只为 batching Flow 计划按计划执行完整查询：TQL Flow 必须使用它，包含 `Aggregate` 或 `Distinct` 的 SQL
+计划使用 batching。对于这些 batching SQL 计划，查询规划器能够生成有效计划时支持 join、子查询和 SQL CTE。
+`WITH ('ttl' = 'instant')` 等 source 表属性可能会强制改用旧的 streaming mode。普通投影和非聚合 join 不属于 batching 调度范围。
+批处理时间窗口聚合 Flow 可以不使用 `EVAL INTERVAL`。
 
 当指定 `OR REPLACE` 时，如果已经存在同名的 flow，它将被更新为新 flow。请注意，这仅影响 flow 任务本身，source 表和 sink 表将不会被更改。当指定 `IF NOT EXISTS` 时，如果 flow 已经存在，它将不执行任何操作，而不是报告错误。还需要注意的是，`OR REPLACE` 不能与 `IF NOT EXISTS` 一起使用。
 
@@ -103,7 +105,7 @@ AS
 - `sink-table-name` 是存储聚合数据的表名。
   它可以是一个现有的表或一个新表；有关创建和校验行为，请参阅[创建 sink 表](#创建-sink-表)。
 - `EXPIRE AFTER` 是一个可选的时间间隔，用于使 Flow 引擎中的数据过期。有关详细信息，请参考 [`EXPIRE AFTER`](#expire-after) 部分。
-- `EVAL INTERVAL` 是用于按计划执行完整查询的可选时间间隔。TQL Flow 必须使用它。
+- `EVAL INTERVAL` 是 batching Flow 计划用于按计划执行完整查询的可选时间间隔。
 - `COMMENT` 是 flow 的描述。
 - `WITH` 指定 flow 选项。
   本文档介绍的用户 Flow 选项为 `defer_on_missing_source` 和实验性的 `experimental_enable_incremental_read`。
@@ -136,7 +138,7 @@ GROUP BY time_window;
 
 对于包含可用时间窗口表达式的 Flow，source 表中早于指定间隔的数据会被排除在计算之外，sink 表中较早的行也不会被更新。这会限制时间窗口 Flow 的状态和重新计算范围，包括涉及 `GROUP BY` 的有状态查询。
 
-调度的完整 SQL Flow 和 TQL Flow 会执行未过滤的快照，除非查询本身包含时间谓词；`EXPIRE AFTER` 不会额外添加时间过滤。它不会删除 source 表或 sink 表中的数据。若需删除表数据，请在创建表时通过 [`TTL` 策略](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)实现。
+带 `EVAL INTERVAL` 的 batching SQL Flow 和 TQL Flow 会执行未过滤的快照，除非查询本身包含时间谓词；`EXPIRE AFTER` 不会额外添加时间过滤。它不会删除 source 表或 sink 表中的数据。若需删除表数据，请在创建表时通过 [`TTL` 策略](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)实现。
 
 为 `EXPIRE AFTER` 设置合理的时间间隔，有助于限制 batching 引擎需要向前重新计算结果的时间范围，并避免过度占用资源。它与流处理系统中限制迟到数据范围的机制有相似目的，但新的 Flow workload 应使用 batching mode。
 
@@ -147,12 +149,23 @@ GROUP BY time_window;
 ### 缺少 source 时延迟创建
 
 默认情况下，如果任一 source 表不存在，创建 Flow 会失败。将 `defer_on_missing_source` 设置为 `true`，
-可以在不失败的情况下持久化一个 pending Flow；当 source 仍未解析时，该 Flow 不会被调度。
+可以在不失败的情况下持久化一个 pending Flow；当 source 仍未解析时，该 Flow 不会被调度。即使这些表后来创建，
+该 Flow 也不会自动激活。`CREATE OR REPLACE` 无法激活 pending Flow。
 
 ```sql
 CREATE FLOW pending_flow
 SINK TO pending_sink
 WITH (defer_on_missing_source = 'true')
+AS
+SELECT * FROM source_created_later;
+```
+
+所有 source 表创建完成后，先删除再重新创建 Flow 来激活它。
+
+```sql
+DROP FLOW pending_flow;
+CREATE FLOW pending_flow
+SINK TO pending_sink
 AS
 SELECT * FROM source_created_later;
 ```
@@ -210,8 +223,9 @@ FROM <source_table>
 GROUP BY {time_window | column1, column2,.. };
 ```
 
-具体支持哪些 SQL 表达式和子句取决于 SQL 查询引擎和 Flow 计划。带调度的完整 SQL Flow 支持查询规划器能够生成有效计划的
-join、子查询和 SQL CTE；不受支持的计划会在创建 Flow 时失败。对于 batching 时间窗口聚合，`GROUP BY` 通常包含时间窗口表达式。
+具体支持哪些 SQL 表达式和子句取决于 SQL 查询引擎和 Flow 计划。对于带 `EVAL INTERVAL` 的 batching SQL Flow，查询计划包含
+`Aggregate` 或 `Distinct` 且查询规划器能够生成有效计划时，支持 join、子查询和 SQL CTE；不受支持的计划会在创建 Flow 时失败。
+对于 batching 时间窗口聚合，`GROUP BY` 通常包含时间窗口表达式。
 有关 Flow 查询中常用的函数，请参阅[表达式](./expressions.md)；有关固定时间窗口，请参阅[定义时间窗口](#define-time-window)。
 
 有关如何在实时分析、监控和仪表板中使用持续聚合的更多示例，请参阅[持续聚合](./continuous-aggregation.md)。
