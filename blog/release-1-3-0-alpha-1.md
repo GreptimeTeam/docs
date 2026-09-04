@@ -58,7 +58,6 @@ GreptimeDB v1.3.0-alpha.1 adds end-to-end Native Histogram support, a telemetry 
 * feat(grafana): add events dashboard by [@WenyXu](https://github.com/WenyXu) in [#8725](https://github.com/GreptimeTeam/greptimedb/pull/8725)
 * feat: add admin function registrar by [@fengjiachun](https://github.com/fengjiachun) in [#8762](https://github.com/GreptimeTeam/greptimedb/pull/8762)
 * feat(promql): define native histogram semantics by [@shuiyisong](https://github.com/shuiyisong) in [#8758](https://github.com/GreptimeTeam/greptimedb/pull/8758)
-* feat: support enabling skip_wal with ALTER TABLE by [@fengjiachun](https://github.com/fengjiachun) in [#8730](https://github.com/GreptimeTeam/greptimedb/pull/8730)
 * feat(mito2): add range-based metric series reader by [@evenyag](https://github.com/evenyag) in [#8703](https://github.com/GreptimeTeam/greptimedb/pull/8703)
 * feat: read-time entity relationships graph over telemetry (M0+M1) by [@killme2008](https://github.com/killme2008) in [#8614](https://github.com/GreptimeTeam/greptimedb/pull/8614)
 * feat(protocol): validate native histogram ingestion by [@shuiyisong](https://github.com/shuiyisong) in [#8775](https://github.com/GreptimeTeam/greptimedb/pull/8775)
@@ -121,7 +120,6 @@ GreptimeDB v1.3.0-alpha.1 adds end-to-end Native Histogram support, a telemetry 
 * fix(query): preserve remote dynamic filter target by [@discord9](https://github.com/discord9) in [#8615](https://github.com/GreptimeTeam/greptimedb/pull/8615)
 * fix(operator): invalidate local cache after dropping view by [@WenyXu](https://github.com/WenyXu) in [#8748](https://github.com/GreptimeTeam/greptimedb/pull/8748)
 * fix(ci): render query regression bot comment as compact table plus threshold details by [@discord9](https://github.com/discord9) in [#8774](https://github.com/GreptimeTeam/greptimedb/pull/8774)
-* fix(object-store): fix unused import on Windows after #8735 by [@discord9](https://github.com/discord9) in [#8752](https://github.com/GreptimeTeam/greptimedb/pull/8752)
 * fix(mito2): avoid region worker panic when building a WAL entry fails by [@fengjiachun](https://github.com/fengjiachun) in [#8810](https://github.com/GreptimeTeam/greptimedb/pull/8810)
 * fix(ci): identify team members by repository permission by [@killme2008](https://github.com/killme2008) in [#8822](https://github.com/GreptimeTeam/greptimedb/pull/8822)
 * fix(tests): make two Windows CI failures deterministic (Nightly CI #8837) by [@discord9](https://github.com/discord9) in [#8840](https://github.com/GreptimeTeam/greptimedb/pull/8840)
@@ -173,7 +171,6 @@ GreptimeDB v1.3.0-alpha.1 adds end-to-end Native Histogram support, a telemetry 
 
 ### 🧪 Testing
 
-* test(object-store): fix racy SecureFs abort test by [@v0y4g3r](https://github.com/v0y4g3r) in [#8720](https://github.com/GreptimeTeam/greptimedb/pull/8720)
 * test: rename internal bug numbers in tests to semantic names by [@discord9](https://github.com/discord9) in [#8779](https://github.com/GreptimeTeam/greptimedb/pull/8779)
 * test(mito2): isolate sequence publication barrier by [@discord9](https://github.com/discord9) in [#8876](https://github.com/GreptimeTeam/greptimedb/pull/8876)
 * test: renew etcd TLS certificates by [@WenyXu](https://github.com/WenyXu) in [#8956](https://github.com/GreptimeTeam/greptimedb/pull/8956)
@@ -191,7 +188,6 @@ GreptimeDB v1.3.0-alpha.1 adds end-to-end Native Histogram support, a telemetry 
 * chore: update mysql test drivers and lru by [@sunng87](https://github.com/sunng87) in [#8868](https://github.com/GreptimeTeam/greptimedb/pull/8868)
 * chore: add v2 version label to prom metrics by [@shuiyisong](https://github.com/shuiyisong) in [#8885](https://github.com/GreptimeTeam/greptimedb/pull/8885)
 * chore(mito2): reduce default auto flush interval by [@evenyag](https://github.com/evenyag) in [#8971](https://github.com/GreptimeTeam/greptimedb/pull/8971)
-* chore(deps): bump datafusion to 452cb4b (support Dictionary literals in substrait) by [@discord9](https://github.com/discord9) in [#8839](https://github.com/GreptimeTeam/greptimedb/pull/8839)
 * chore(deps): bump postgres-protocol from 0.6.8 to 0.6.12 by [@dependabot](https://github.com/dependabot) in [#8948](https://github.com/GreptimeTeam/greptimedb/pull/8948)
 * ci: trigger downstream updates for prereleases by [@WenyXu](https://github.com/WenyXu) in [#9008](https://github.com/GreptimeTeam/greptimedb/pull/9008)
 * chore: bump version to 1.3.0-alpha.1 by [@WenyXu](https://github.com/WenyXu) in [#9014](https://github.com/GreptimeTeam/greptimedb/pull/9014)
