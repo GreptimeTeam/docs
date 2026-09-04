@@ -1,6 +1,6 @@
 ---
-keywords: [SQL 数据类型, 字符串类型, 数值类型, 日期和时间类型, 布尔类型, JSON 类型]
-description: SQL 数据类型定义了列可以存储的数据类型，包括字符串、二进制、数值、日期和时间、布尔和 JSON 类型。
+keywords: [SQL 数据类型, 字符串类型, 数值类型, 日期和时间类型, 布尔类型, JSON 类型, JSON2]
+description: SQL 数据类型定义了列可以存储的数据类型，包括字符串、二进制、数值、日期和时间、布尔、JSON 和 JSON2 类型。
 ---
 
 # 数据类型
@@ -285,6 +285,12 @@ SELECT json_get_string(my_json, '$.name') as name FROM json_data;
 | GreptimeDB                                        |
 +---------------------------------------------------+
 ```
+
+## JSON2 类型（Beta）
+
+`JSON2` 将 JSON object 中的字段以结构化列式布局存储，同时保留动态 schema 的字段，适合需要频繁查询的日志和其他半结构化数据。JSON2 列目前只能用于 append-only 表，且每个非 `NULL` root 值都必须是 JSON object。
+
+建表语法、type hint、路径访问、array 下标、存储配置和当前限制请参考 [JSON2 类型文档](/user-guide/logs/json2.md)。
 
 
 ## 布尔类型

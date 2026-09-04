@@ -1064,7 +1064,7 @@ GreptimeDB currently provides the following built-in transformation types:
 - `time`: Time type, which will be converted to GreptimeDB `timestamp(9)` type.
 - `epoch`: Timestamp type, which will be converted to GreptimeDB `timestamp(n)` type. The value of `n` depends on the precision of the epoch. When the precision is `s`, `n` is 0; when the precision is `ms`, `n` is 3; when the precision is `us`, `n` is 6; when the precision is `ns`, `n` is 9.
 - `json`: JSON type. The field value must be a JSON object or array, such as one produced by the [`json_parse`](#json_parse) processor, and it is stored as a JSON column in the table. Scalar values (for example, strings, numbers) cannot be converted to the `json` type.
-- `json2`: [JSON2](/user-guide/logs/json2.md) type. The field may be missing or `null`. A non-null value must be a non-empty JSON object, such as one produced by the [`json_parse`](#json_parse) processor. Root arrays and scalar values cannot be converted to `json2`.
+- `json2`: [JSON2](/user-guide/logs/json2.md) type. The field may be missing or `null`. A non-null value must be a JSON object, including an empty object, such as one produced by the [`json_parse`](#json_parse) processor. Root arrays and scalar values cannot be converted to `json2`.
 
 If a field obtains an illegal value during the transformation process, the Pipeline will throw an exception. For example, when converting a string `abc` to an integer, an exception will be thrown because the string is not a valid integer.
 

@@ -1,5 +1,5 @@
 ---
-keywords: [JSON函数, 数据转换, SQL 查询, 数据库 JSON, JSON 操作]
+keywords: [JSON函数, JSON2, 数据转换, SQL 查询, 数据库 JSON, JSON 操作]
 description: 列出了 GreptimeDB 中的所有 JSON 函数，包括函数的定义、使用方法和相关的 SQL 查询示例。
 ---
 
@@ -40,6 +40,8 @@ SELECT json_to_string(parse_json('{"a": 1, "b": 2}'));
 * `json_get(json, path)` 以字符串形式提取值。要提取为其他 SQL 标量类型，可转换函数结果，例如 `json_get(value, 'a')::INT`。
 
 `json_get` 的 `path` 参数必须是字符串字面量。路径未选中值或选中的值无法转换为目标类型时返回 NULL。
+
+`json_to_string`、`json_get`、`json_get_string`、`json_get_int`、`json_get_float` 和 `json_get_bool` 也支持 [JSON2](/user-guide/logs/json2.md) 列。
 
 `path` 是一个用于从 JSON 值中选择和提取元素的字符串。`path` 中支持的操作符有：
 
