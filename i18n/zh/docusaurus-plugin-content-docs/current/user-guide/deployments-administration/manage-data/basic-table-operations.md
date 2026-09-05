@@ -111,8 +111,9 @@ CREATE TABLE monitor (
 
 
 :::warning NOTE
-GreptimeDB 目前不支持在创建表后更改 TIME INDEX 约束，
+GreptimeDB 目前不支持在创建表后将 TIME INDEX 约束更改为其他列，
 因此，在创建表之前，仔细选择适当的 TIME INDEX 列。
+但对于未使用 metric engine 的表，你可以使用 `ALTER TABLE ... MODIFY COLUMN` 将时间索引的时间戳单位拓宽为更精细的单位（例如从毫秒拓宽为微秒）。更多信息参见 [ALTER 参考](/reference/sql/alter.md#修改列类型)。
 :::
 
 ### `CREATE TABLE` 语法

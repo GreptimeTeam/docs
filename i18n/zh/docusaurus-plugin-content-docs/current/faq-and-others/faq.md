@@ -121,7 +121,13 @@ default_column_prefix = ""
 ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
-目标列必须是 Field 列（不能是 Tag 或时间索引），且必须可为空（nullable），这样类型转换失败时返回 `NULL` 而非报错。
+目标列必须是 Field 列（不能是 Tag），且必须可为空（nullable），这样类型转换失败时返回 `NULL` 而非报错。
+
+时间索引列是个例外：对于未使用 metric engine 的表，可以将其时间戳单位拓宽为更精细的单位（例如从毫秒拓宽为微秒）：
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
+```
 
 完整的 `ALTER TABLE` 语法参见 [SQL 参考](/reference/sql/alter.md)。
 
