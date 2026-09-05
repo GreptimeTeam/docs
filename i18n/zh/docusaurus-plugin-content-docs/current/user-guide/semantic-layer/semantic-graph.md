@@ -16,7 +16,7 @@ description: semantic_entities 与 semantic_relationships 两张表的 schema、
 | `semantic_entities` | 节点集合：遥测数据所描述的实体。 |
 | `semantic_relationships` | 边集合：这些实体之间带类型的关系。 |
 
-两张表都在查询时计算。扫描其中任何一张，都会收集各表携带的实体声明，为每张声明表构建查询计划，并在查询时间窗口内对遥测数据执行。除人工声明的边以外，不存储任何内容。
+两张表都在查询时计算。扫描其中任何一张，都会收集当前生效的实体声明——既包括 `greptime.semantic.entity.*` 选项，也包括内置约定解析出的——为每张声明表构建查询计划，并在查询时间窗口内对遥测数据执行。除人工声明的边以外，不存储任何内容。
 
 针对这两张表的所有写入路径都会被拒绝：`INSERT`、`CREATE`、`ALTER`、`TRUNCATE`、`DROP` 都会返回只读错误。把别的表改名成这两个名字同样会被拒绝。
 

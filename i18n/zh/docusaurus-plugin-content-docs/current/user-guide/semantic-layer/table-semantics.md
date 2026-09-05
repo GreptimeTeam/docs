@@ -65,6 +65,8 @@ Remote write 2.0 在每条 series 上内联携带元数据。当 series 声明�
 
 语义选项在建表时设置，后续写入不会更新。例如，后续写入不会把 `metadata_quality` 从 `inferred` 改为 `declared`，也不会修订 `trace.conventions`。
 
+<AnchorAlias id="用-ddl-手动打标" />
+
 ## 自己设置选项
 
 在 `CREATE TABLE ... WITH (...)` 里设置同样的选项，只接受白名单内、且取值合法的 key：

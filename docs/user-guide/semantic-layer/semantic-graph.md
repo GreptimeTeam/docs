@@ -16,7 +16,7 @@ The semantic graph is two read-only tables under `greptime_private`:
 | `semantic_entities` | The node set: the entities the telemetry describes. |
 | `semantic_relationships` | The edge set: typed relationships between those entities. |
 
-Both are computed when you query them. Scanning either one collects the entity declarations that tables carry, builds a query plan per declaring table, and runs it over the telemetry within the queried time window. Nothing is stored, except edges you declare by hand.
+Both are computed when you query them. Scanning either one collects the entity declarations in effect — from `greptime.semantic.entity.*` options and from the built-in conventions — builds a query plan per declaring table, and runs it over the telemetry within the queried time window. Nothing is stored, except edges you declare by hand.
 
 Every write path against the two tables is rejected: `INSERT`, `CREATE`, `ALTER`, `TRUNCATE`, and `DROP` all fail with a read-only error. Renaming another table into either name is rejected too.
 

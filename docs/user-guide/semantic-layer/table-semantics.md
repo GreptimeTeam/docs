@@ -65,6 +65,8 @@ Remote write 2.0 carries per-series metadata inline. When a series declares its 
 
 Semantic options are set when the table is created and are not updated by later writes. For example, later writes do not change `metadata_quality` from `inferred` to `declared` or revise `trace.conventions`.
 
+<AnchorAlias id="manual-tagging-with-ddl" />
+
 ## Setting the options yourself
 
 Set the same options in `CREATE TABLE ... WITH (...)`. Only whitelisted keys with a valid value are accepted:

@@ -7,7 +7,7 @@ description: The computed semantic_entities table in the `greptime_private` data
 
 `semantic_entities` is the node set of the [semantic graph](/user-guide/semantic-layer/semantic-graph.md): the entities that the stored telemetry describes.
 
-The table is computed, not stored. Scanning it derives rows at read time from the tables that declare `greptime.semantic.entity.*` identities, within the queried time window. It is read-only: `INSERT`, `CREATE`, `ALTER`, `TRUNCATE`, and `DROP` are rejected.
+The table is computed, not stored. Scanning it derives rows at read time, within the queried time window, from every table that contributes an entity declaration — set through `greptime.semantic.entity.*` options or resolved from a built-in convention. An OTLP trace table, `target_info`, and the kube-state-metrics descriptors contribute without carrying any option of their own. It is read-only: `INSERT`, `CREATE`, `ALTER`, `TRUNCATE`, and `DROP` are rejected.
 
 ```sql
 SELECT entity_type, entity_id, scope, source_tables

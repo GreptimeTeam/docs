@@ -45,7 +45,7 @@ An **entity** is a thing the telemetry describes: a service, a service instance,
 
 A **relationship** is a typed, directed edge between two entities, valid over a time window: `calls`, `runs_on`, `contains`, `part_of`, `depends_on`, `uses`, `invokes`. Every edge carries a `provenance` recording how it was obtained — derived from paired trace spans, derived from two identities appearing on the same row, or declared by hand — and a `confidence`. Call edges also carry RED metrics (request count, error count, duration) for the window they were observed in.
 
-Edges are time-ranged facts rather than current state: a row asserts that an edge existed during a 60-second window. "The topology now" is a query over the recent windows, and an entity or edge that stopped producing telemetry stops appearing without an expiry mechanism.
+Edges are time-ranged facts rather than current state. A derived edge covers a 60-second window, so "the topology now" is a query over the recent windows, and an entity or edge that stopped producing telemetry stops appearing without an expiry mechanism. A hand-declared edge instead covers the validity period you gave it, and is stored until you retire it or its retention expires.
 
 ## Derived at read time
 

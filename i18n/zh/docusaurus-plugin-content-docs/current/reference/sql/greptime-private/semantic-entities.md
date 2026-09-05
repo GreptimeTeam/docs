@@ -7,7 +7,7 @@ description: greptime_private 数据库中读时计算的 semantic_entities 表�
 
 `semantic_entities` 是[语义图](/user-guide/semantic-layer/semantic-graph.md)的节点集合：所存遥测数据描述的实体。
 
-这张表是计算出来的，不是存储的。扫描它时，会在查询时间窗口内，从声明了 `greptime.semantic.entity.*` 身份的表读时派生出行。它是只读的：`INSERT`、`CREATE`、`ALTER`、`TRUNCATE`、`DROP` 都会被拒绝。
+这张表是计算出来的，不是存储的。扫描它时，会在查询时间窗口内，从所有贡献了实体声明的表读时派生出行——声明既可以来自 `greptime.semantic.entity.*` 选项，也可以由内置约定解析得到。OTLP trace 表、`target_info` 和 kube-state-metrics 描述性指标本身不带任何选项，同样会贡献实体。它是只读的：`INSERT`、`CREATE`、`ALTER`、`TRUNCATE`、`DROP` 都会被拒绝。
 
 ```sql
 SELECT entity_type, entity_id, scope, source_tables
