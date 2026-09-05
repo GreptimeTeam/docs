@@ -29,13 +29,13 @@ description: 哪些数据无需配置即可进入语义图、如何在自己的�
 | `k8s.container` | `resource_attributes.k8s.pod.uid`、`resource_attributes.k8s.container.name` | `resource_attributes.container.id`、`resource_attributes.container.name` |
 | `container` | `resource_attributes.container.id` | `resource_attributes.container.name` |
 
-只有当一行上某个声明的全部标识列都存在且非空时，该声明才在这一行生效。在携带完整 `k8s.container` 身份的行上，通用的 `container` 声明让位，因此 pod 里的容器是一个节点，而不是两个。
+只有当一行上某个声明的全部标识列都存在且非空时，该声明才在这一行生效。在携带完整 `k8s.container` 身份的行上，通用的 `container` 声明不再生效，因此 pod 里的容器是一个节点，而不是两个。
 
 OTLP trace 接入路径在建表时还会写入 `greptime.semantic.entity.service.id` = `service_name`。这个显式选项优先于约定的 `service` 声明，因此从 trace 派生的 `service` id 就是不带前缀的服务名。
 
-`service.instance` 没有这个写入，走约定：`resource_attributes.service.namespace` 存在时，id 渲染为 `<namespace>/<service_name>,<instance.id>`。其中的首个分量与 Prometheus 的 `job` 标签一致——OpenTelemetry 兼容性规范把 `job` 定义为 `<service.namespace>/<service.name>`。
+`service.instance` 没有被写入显式选项，因此适用约定：`resource_attributes.service.namespace` 存在时，id 渲染为 `<namespace>/<service_name>,<instance.id>`。其中的首个分量与 Prometheus 的 `job` 标签一致——OpenTelemetry 兼容性规范把 `job` 定义为 `<service.namespace>/<service.name>`。
 
-两条规则在 `service` 这一层对不齐。当 `service.namespace` 为 `shop`、`service.name` 为 `api` 时，同一个服务会以两个节点进入图：
+两条规则在 `service` 这一层并不一致。当 `service.namespace` 为 `shop`、`service.name` 为 `api` 时，同一个服务会以两个节点进入图：
 
 | 来源 | `entity_type` | `entity_id` |
 | --- | --- | --- |
@@ -61,7 +61,7 @@ OTLP trace 接入路径在建表时还会写入 `greptime.semantic.entity.servic
 
 这些表同时贡献描述属性——pod 名和 namespace、节点内核版本、容器镜像——并按表上实际存在的列过滤，因为 kube-state-metrics 的标签集随版本变化。`target_info` 还会把剩余的全部 tag 列快照到 `service.instance` 实体上。
 
-普通指标表不会被扫描出实体：带 `job` 和 `instance` 标签的指标本身不贡献任何东西，是 `target_info` 把这些 service 放进图里的。
+普通指标表不会被扫描出实体：带 `job` 和 `instance` 标签的指标本身不贡献实体，这些 service 由 `target_info` 引入。
 
 ### OTLP 资源描述表
 
@@ -72,7 +72,7 @@ GreptimeDB 可以从写入的 OTLP metrics 的 resource attributes 中合成一�
 experimental_enable_resource_info = true
 ```
 
-开启后，该表声明 `service`（`job`）、`service.instance`（`job`、`instance`）、`host`（`host.id`）、`k8s.pod`（`k8s.pod.uid`）、`k8s.node`（`k8s.node.name`）、`k8s.container`（`k8s.pod.uid`、`k8s.container.name`）和 `container`（`container.id`），让位规则与 trace 侧相同。
+开启后，该表声明 `service`（`job`）、`service.instance`（`job`、`instance`）、`host`（`host.id`）、`k8s.pod`（`k8s.pod.uid`）、`k8s.node`（`k8s.node.name`）、`k8s.container`（`k8s.pod.uid`、`k8s.container.name`）和 `container`（`container.id`），取代规则与 trace 侧相同。
 
 ## 在自己的表上声明实体
 
@@ -152,7 +152,7 @@ ALTER TABLE app_request_latency UNSET 'greptime.semantic.entity.process.id';
 | `gen_ai.agent` | `gen_ai.model` | `uses` |
 | `gen_ai.agent` | `gen_ai.tool` | `invokes` |
 
-这样派生出的边 `provenance` 为 `attribute`，agent 边除外——它们是 span 结构的观测，`provenance` 为 `trace`。仅仅共享一个列值不会派生出任何东西：组合必须在上述词汇内，且两个身份必须声明在同一张表上。
+这样派生出的边 `provenance` 为 `attribute`，agent 边除外——它们是 span 结构的观测，`provenance` 为 `trace`。仅仅共享一个列值不会派生出任何边：组合必须在上述词汇内，且两个身份必须声明在同一张表上。
 
 以上两张表就是完整的规则集。要关联没有任何一张表共同声明的实体，需要人工声明边。
 

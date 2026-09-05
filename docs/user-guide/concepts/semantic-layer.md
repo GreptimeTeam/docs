@@ -12,13 +12,13 @@ The semantic layer is experimental and may change in future releases. Tables wit
 The semantic layer describes the observability meaning of what GreptimeDB stores, so machine consumers such as LLM agents, alert and dashboard builders, [MCP servers](/user-guide/integrations/mcp.md), and ETL pipelines do not have to infer it from column names. It has two parts:
 
 - **Table semantics** record what a single table represents: the telemetry signal, the ingestion source, and signal-specific metadata such as a metric's unit and instrument type.
-- **The semantic graph** records what the telemetry describes: the entities behind the rows (services, hosts, pods, containers, AI agents) and the relationships between them (which service calls which, which pod runs on which node).
+- **The semantic graph** records what the telemetry describes: the entities the rows describe (services, hosts, pods, containers, AI agents) and the relationships between them (which service calls which, which pod runs on which node).
 
 The option vocabulary, the graph table schemas, and the queries live in the [Semantic Layer user guide](/user-guide/semantic-layer/overview.md).
 
 ## Why it exists
 
-GreptimeDB ingests OTLP metrics, traces, and logs, plus Prometheus remote write, InfluxDB Line Protocol, OpenTSDB, Loki Push API, and Elasticsearch Bulk API data. Two kinds of information travel with that data and survive nowhere in the resulting rows.
+GreptimeDB ingests OTLP metrics, traces, and logs, plus Prometheus remote write, InfluxDB Line Protocol, OpenTSDB, Loki Push API, and Elasticsearch Bulk API data. Two kinds of information arrive with that data and are not written into the resulting rows.
 
 The first is per-table metadata that the ingestion protocol carries and the row encoders drop:
 
@@ -49,7 +49,7 @@ Edges are time-ranged facts rather than current state. A derived edge covers a 6
 
 ## Derived at read time
 
-The graph tables are computed, not stored. Scanning them enumerates the entity declarations, builds a query plan per declaring table, and executes it against the telemetry that is already there. Only hand-declared edges are persisted, in `greptime_private.semantic_relationships_declared`.
+The graph tables are computed, not stored. Scanning them enumerates the entity declarations, builds a query plan per declaring table, and executes it against the telemetry already stored. Only hand-declared edges are persisted, in `greptime_private.semantic_relationships_declared`.
 
 ```mermaid
 flowchart TB
@@ -62,7 +62,7 @@ flowchart TB
 
     DECL["semantic_relationships_declared<br/>stored, you write it"]
     DER["Derivation, at query time<br/>runs as the caller,<br/>bounded by the observed_at window"]
-    RES["Latest revision in the window,<br/>validity filtered,<br/>time columns recomputed"]
+    RES["Latest revision as of the window end,<br/>validity filtered,<br/>time columns recomputed"]
 
     subgraph OUT["Computed, read-only"]
         direction LR

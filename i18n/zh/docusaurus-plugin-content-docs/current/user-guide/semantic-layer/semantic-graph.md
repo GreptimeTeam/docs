@@ -38,7 +38,7 @@ WHERE observed_at >= now() - INTERVAL '15' MINUTE;
 | `fresh_until` | `TimestampMillisecond` | 实体被视为存在的截止时间。派生行等于 `window_end`。 |
 | `entity_type` | `String` | 实体类型，例如 `service`、`host`、`k8s.pod`、`gen_ai.agent`。 |
 | `entity_id` | `String` | 规范化标识：标识列的值按声明顺序转义后用 `,` 连接。 |
-| `entity_id_attrs` | `Json` | 标识属性对象，便于消费者从 id 反查它由哪些列组成。 |
+| `entity_id_attrs` | `Json` | 标识属性对象，便于从 id 反查它由哪些列组成。 |
 | `scope` | `String` | id 所属的命名空间或环境；声明中没有 scope 列时为空。 |
 | `descriptive` | `Json` | 已声明的非标识属性快照；未声明时为 `NULL`。 |
 | `source_tables` | `Json` | 贡献这条观测的遥测表数组，格式为 `schema.table`。 |
@@ -103,7 +103,7 @@ ORDER BY entity_type, entity_id;
 | `depends_on` | 逻辑依赖 | 人工声明 |
 | `owns` | 团队或 service 拥有目标端 | 人工声明 |
 
-只存储一个方向。反向关系（`called_by`、`hosts`、`dependency_of`）是查询侧的事：把过滤条件换到另一端即可。声明边中的自定义 `rel_type` 只是一个字符串，内置的只有派生规则和上表的词汇。
+只存储一个方向。反向关系（`called_by`、`hosts`、`dependency_of`）由查询决定：把过滤条件换到另一端。声明边中的自定义 `rel_type` 只是一个字符串，内置的只有派生规则和上表的词汇。
 
 `provenance` 是边身份的一部分，因此同一对端点上人工声明的边和派生出的边可以共存，声明的边在没有任何派生结果时也不会消失。
 
@@ -298,7 +298,7 @@ WHERE hop1.src_type = 'service' AND hop1.src_id = 'frontend'
 ORDER BY depth1, depth2;
 ```
 
-图表不支持递归 CTE：`WITH RECURSIVE` 的递归项如果扫描 `semantic_entities` 或 `semantic_relationships`，会以 `Execution error: Stream already exhausted` 失败。
+这两张表不支持递归 CTE：`WITH RECURSIVE` 的递归项如果扫描 `semantic_entities` 或 `semantic_relationships`，会以 `Execution error: Stream already exhausted` 失败。
 
 ## 限制
 
