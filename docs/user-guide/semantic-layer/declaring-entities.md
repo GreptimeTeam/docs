@@ -31,7 +31,19 @@ Any table with `table_data_model` = `greptime_trace_v1` gets these declarations 
 
 A declaration applies only on rows where all of its identifying columns are present and non-empty. On rows that carry the full `k8s.container` identity, the generic `container` declaration withdraws, so a container inside a pod is one node rather than two.
 
-When `resource_attributes.service.namespace` is present, `service` and `service.instance` ids are rendered as `<namespace>/<service_name>`. That matches the Prometheus `job` label, which the OpenTelemetry compatibility specification defines as `<service.namespace>/<service.name>`, so a service reaching the graph from both traces and metrics is one node.
+The OTLP trace ingestion path also stamps `greptime.semantic.entity.service.id` = `service_name` on the table it creates. That explicit option takes precedence over the conventional `service` declaration, so a trace-derived `service` id is the bare service name.
+
+`service.instance` has no such stamp, so the convention applies: when `resource_attributes.service.namespace` is present, the id is rendered as `<namespace>/<service_name>,<instance.id>`. That leading component matches the Prometheus `job` label, which the OpenTelemetry compatibility specification defines as `<service.namespace>/<service.name>`.
+
+The two rules do not line up at the `service` level. With `service.namespace` = `shop` and `service.name` = `api`, the same service reaches the graph as two nodes:
+
+| Source | `entity_type` | `entity_id` |
+| --- | --- | --- |
+| OTLP trace table | `service` | `api` |
+| `target_info` or `greptime_otel_resource_info` | `service` | `shop/api` |
+| OTLP trace table | `service.instance` | `shop/api,<instance.id>` |
+
+They coincide only when `service.namespace` is empty, so that `job` equals the bare service name. To merge them while the mismatch stands, declare the identity explicitly on one side with a column that carries the other's value.
 
 ### Prometheus descriptor metrics
 
@@ -94,10 +106,12 @@ CREATE TABLE app_request_latency (
   'greptime.semantic.signal_type' = 'metric',
   'greptime.semantic.entity.service.id' = 'service_name',
   'greptime.semantic.entity.service.scope' = 'env',
-  'greptime.semantic.entity.service.instance.id' = 'instance',
+  'greptime.semantic.entity.service.instance.id' = 'service_name,instance',
   'greptime.semantic.entity.host.id' = 'host'
 );
 ```
+
+`service.instance` lists `service_name` before `instance` to match the built-in identity for that type. An instance name alone is not unique: two services that both name an instance `0` would become one node.
 
 Rows whose identifying columns are `NULL` or empty identify nothing and are skipped.
 

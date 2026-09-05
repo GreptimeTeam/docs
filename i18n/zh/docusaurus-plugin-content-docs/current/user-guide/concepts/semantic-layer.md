@@ -14,6 +14,8 @@ description: 介绍语义层——表语义元数据，以及 GreptimeDB 向机�
 - **表语义**记录单张表代表什么：遥测信号类型、接入来源，以及 metric 单位、instrument 类型等信号特定的元数据。
 - **语义图**记录遥测数据描述的对象：行背后的实体（service、host、pod、container、AI agent）以及它们之间的关系（哪个 service 调用哪个、哪个 pod 运行在哪个节点上）。
 
+选项词汇表、图表 schema 和查询写法在[语义层用户指南](/user-guide/semantic-layer/overview.md)。
+
 ## 为什么需要它
 
 GreptimeDB 接收 OTLP metrics、traces、logs，以及 Prometheus remote write、InfluxDB Line Protocol、OpenTSDB、Loki Push API 和 Elasticsearch Bulk API 数据。有两类信息随数据一同到达，但在落库后的行里无处存放。
@@ -55,12 +57,12 @@ GreptimeDB 接收 OTLP metrics、traces、logs，以及 Prometheus remote write�
 
 - 实体在第一行数据落库的那一刻就出现。没有写入期的建索引步骤，没有物化延迟，也没有需要对账的第二份数据。
 - 派生以发起查询的用户身份执行。调用者读不到的源表会被排除在结果之外，而不是借此放大其权限。
-- 每次扫描都会对源表做实际计算，计算量由查询的时间窗口决定。没有 `observed_at` 下界的查询会被拒绝，而不是扫描全部历史。
+- 每次扫描都会对源表做实际计算，计算量由查询的时间窗口决定。完全不带 `observed_at` 谓词时取最近一小时；带了谓词但取不到下界的查询会被拒绝，而不是扫描全部历史。
 
 ## 限制
 
 - `calls` 边上的 RED 指标描述的是实际观测到的 span 配对。在 trace 采样下，计数会低于真实流量；只有当采样与状态、耗时无关时，错误率才有代表性。
-- 图的连通程度取决于各张表共享的标识值。两张表用不同的值指代同一个 service，就会得到两个节点。
+- 图的连通程度取决于各张表共享的标识值。两张表用不同的值指代同一个 service，就会得到两个节点。设置了 `service.namespace` 时默认就会这样：trace 给出的是服务名本身，Prometheus 风格的描述性指标给出的是 `<namespace>/<name>`。
 - `semantic_entities` 每个窗口、每张贡献表返回一行。消费者用 `SELECT DISTINCT entity_type, entity_id` 去重。
 - 在非常大的 trace 表上，读时派生每次扫描的开销都高于物化好的拓扑。
 

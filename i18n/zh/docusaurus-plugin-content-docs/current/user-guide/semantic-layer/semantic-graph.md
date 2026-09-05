@@ -69,25 +69,25 @@ ORDER BY entity_type, entity_id;
 
 ## `semantic_relationships`
 
-每行是一个 60 秒窗口内观测到的一条关系。
+每行是一个 60 秒窗口内观测到的一条关系。声明边例外：一行覆盖你给定的整个有效期。
 
 | 列 | 类型 | 说明 |
 | --- | --- | --- |
-| `observed_at` | `TimestampMillisecond` | 时间索引。观测到该边的 60 秒时间桶。 |
-| `window_start` | `TimestampMillisecond` | 观测窗口的起点。 |
-| `window_end` | `TimestampMillisecond` | 观测窗口的终点（`window_start` + 60 秒）。 |
-| `fresh_until` | `TimestampMillisecond` | 该边被视为有效的截止时间。 |
+| `observed_at` | `TimestampMillisecond` | 时间索引。派生边为观测到它的 60 秒时间桶；声明边为其生效起点与查询窗口下界中较晚的那个。 |
+| `window_start` | `TimestampMillisecond` | 该行覆盖窗口的起点。 |
+| `window_end` | `TimestampMillisecond` | 该窗口的终点。派生边为 `window_start` + 60 秒；声明边为其有效期的终点。 |
+| `fresh_until` | `TimestampMillisecond` | 该边被视为有效的截止时间，等于 `window_end`。 |
 | `src_type` / `src_id` | `String` | 源端的类型和规范化 id。 |
 | `dst_type` / `dst_id` | `String` | 目标端的类型和规范化 id。 |
 | `rel_type` | `String` | 关系类型。方向为 `src` → `dst`。 |
 | `provenance` | `String` | 边的来源方式：`trace`、`attribute`、`declared` 或 `agent`。 |
-| `confidence` | `Float64` | 派生的确定程度，取值在 `[0, 1]`。 |
+| `confidence` | `Float64` | 派生的确定程度。配对成功的边为 `1.0`，虚拟节点边为 `0.5`，声明边为插入时给定的值。 |
 | `request_count` | `Int64` | 窗口内的请求数，仅 `calls` 边。 |
-| `unmatched_count` | `Int64` | 该边上没有匹配到 server span 的 client span 数量。 |
+| `unmatched_count` | `Int64` | 该边上没有匹配到 server span 的 client span 数量。声明边为 `NULL`。 |
 | `error_count` | `Int64` | 窗口内的错误请求数。 |
 | `duration_sum` | `Float64` | 请求耗时之和，单位为秒。 |
 | `duration_count` | `Int64` | 参与求和的耗时个数，与 `duration_sum` 搭配得到均值。 |
-| `duration_max` | `Float64` | 与 `duration_sum` 同一批样本中最长的单次请求耗时，单位为秒。 |
+| `duration_max` | `Float64` | 与 `duration_sum` 同一批样本中最长的单次请求耗时，单位为秒。声明边为 `NULL`。 |
 | `attributes` | `Json` | 边的属性，例如 `{"connection_type":"database"}`。 |
 
 ### 关系类型
@@ -107,15 +107,17 @@ ORDER BY entity_type, entity_id;
 
 `provenance` 是边身份的一部分，因此同一对端点上人工声明的边和派生出的边可以共存，声明的边在没有任何派生结果时也不会消失。
 
-`confidence` 表达的是派生的确定程度，不是统计完整性。配对成功的边和声明的边为 `1.0`，虚拟节点边为 `0.5`。它不修正 trace 采样带来的偏差。
+`confidence` 表达的是派生的确定程度，不是统计完整性。配对成功的边为 `1.0`，虚拟节点边为 `0.5`；声明边原样保留你插入的值，不填就是 `NULL`。它不修正 trace 采样带来的偏差。
 
 ### 派生的调用边
 
-`calls` 的派生把每个 client span 与它的子 server span 配对：`trace_id` 相同，且 server span 的 `parent_span_id` 等于 client span 的 `span_id`。配对成功的结果按 60 秒窗口聚合为 RED 列。这是 Tempo service graph processor 和 OpenTelemetry Collector `service_graph` connector 的 SQL 形式。
+`calls` 的派生把每个 client span 与它的子 server span 配对：`trace_id` 相同，server span 的 `parent_span_id` 等于 client span 的 `span_id`，且 server span 的起始时间不早于 client span 前 5 分钟、不晚于其后 1 小时。配对成功的结果按 60 秒窗口聚合为 RED 列。这是 Tempo service graph processor 和 OpenTelemetry Collector `service_graph` connector 的 SQL 形式。
+
+两种情况不产生边：配对后两端解析为同一个实体，因为自调用不构成两个实体之间的边；以及未匹配且没有指明对端的 client span，见下。
 
 当部署用 `x-greptime-trace-table-name` 做路由时，同一条 trace 的 span 可能落在不同的表里。派生会先把 trace 表 union 起来再配对，跨表的一对 span 同样产生一条边。
 
-没有匹配到 server span 的 client span 指向一个未插桩的对端，它会成为指向**虚拟节点**的边，节点名取自第一个存在的 span 属性，顺序如下：
+没有匹配到 server span 的 client span 指向一个未插桩的对端，它会成为指向**虚拟节点**的边，节点名取自下列 span 属性中第一个有值的：
 
 | 属性列 | `connection_type` |
 | --- | --- |
@@ -125,7 +127,7 @@ ORDER BY entity_type, entity_id;
 | `span_attributes.db.name` | `database` |
 | `span_attributes.server.address` | `virtual_node` |
 
-虚拟节点边的 `confidence` 为 `0.5`，`attributes` 中带 `connection_type`。当一个窗口内某条边存在真实配对时，RED 列只描述配对结果，未匹配的 client 计入同一行的 `unmatched_count`——这正是区分"被调方不再响应"和"流量不再进来"的依据。
+这些属性一个都没有的 client span 不指向任何目标，会被丢弃——未插桩的依赖在调用方记录上述属性之前不会出现在图里。虚拟节点边的 `confidence` 为 `0.5`，`attributes` 中带 `connection_type`。当一个窗口内某条边存在真实配对时，RED 列只描述配对结果，未匹配的 client 计入同一行的 `unmatched_count`——这正是区分"被调方不再响应"和"流量不再进来"的依据。
 
 ```sql
 SELECT src_id, dst_id, rel_type, provenance, confidence,
@@ -254,13 +256,13 @@ WHERE entity_type = 'service' AND entity_id = 'cart'
 
 ### 多跳遍历
 
-每多一跳就多一次自连接。用 `LEFT JOIN` 可以保留没有下一跳的邻居：
+每多一跳就多一次自连接，两个端点列都要匹配：实体由 `(entity_type, entity_id)` 标识，只按 id 连接会把恰好同名的无关实体串起来。用 `LEFT JOIN` 可以保留没有下一跳的邻居：
 
 ```sql
 SELECT DISTINCT hop1.dst_id AS depth1, hop2.dst_id AS depth2
 FROM greptime_private.semantic_relationships AS hop1
 LEFT JOIN greptime_private.semantic_relationships AS hop2
-  ON hop2.src_id = hop1.dst_id
+  ON hop2.src_type = hop1.dst_type AND hop2.src_id = hop1.dst_id
   AND hop2.rel_type = 'calls'
   AND hop2.observed_at >= now() - INTERVAL '15' MINUTE
 WHERE hop1.src_type = 'service' AND hop1.src_id = 'frontend'

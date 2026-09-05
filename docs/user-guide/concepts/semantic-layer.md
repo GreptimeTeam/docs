@@ -14,6 +14,8 @@ The semantic layer describes the observability meaning of what GreptimeDB stores
 - **Table semantics** record what a single table represents: the telemetry signal, the ingestion source, and signal-specific metadata such as a metric's unit and instrument type.
 - **The semantic graph** records what the telemetry describes: the entities behind the rows (services, hosts, pods, containers, AI agents) and the relationships between them (which service calls which, which pod runs on which node).
 
+The option vocabulary, the graph table schemas, and the queries live in the [Semantic Layer user guide](/user-guide/semantic-layer/overview.md).
+
 ## Why it exists
 
 GreptimeDB ingests OTLP metrics, traces, and logs, plus Prometheus remote write, InfluxDB Line Protocol, OpenTSDB, Loki Push API, and Elasticsearch Bulk API data. Two kinds of information travel with that data and survive nowhere in the resulting rows.
@@ -55,12 +57,12 @@ Three consequences follow:
 
 - An entity appears the moment its first row lands. There is no ingestion-time indexing step, no materialization lag, and no second copy of the data to reconcile.
 - Derivation runs with the querying user's permissions. A source table the caller cannot read is excluded from the result rather than widening their access.
-- Every scan does real work over the source tables, bounded by the queried time window. A query without an `observed_at` lower bound is rejected instead of scanning all history.
+- Every scan does real work over the source tables, bounded by the queried time window. A query with no `observed_at` predicate at all falls back to the last hour; one whose predicate has no usable lower bound is rejected rather than scanning all history.
 
 ## Limitations
 
 - RED metrics on `calls` edges describe the span pairs actually observed. Under trace sampling, counts understate real traffic, and error rates are representative only if sampling is unbiased with respect to status and latency.
-- The graph is only as connected as the identity values that tables share. Two tables that name the same service with different values produce two nodes.
+- The graph is only as connected as the identity values that tables share. Two tables that name the same service with different values produce two nodes. This happens by default when `service.namespace` is set: traces yield the bare service name and Prometheus-style descriptors yield `<namespace>/<name>`.
 - `semantic_entities` returns one row per contributing table per window. Consumers deduplicate with `SELECT DISTINCT entity_type, entity_id`.
 - Read-time derivation over very large trace tables costs more on every scan than a materialized topology would.
 

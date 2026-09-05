@@ -5,7 +5,9 @@ description: The overview of system tables in the `greptime_private` database.
 
 # Greptime Private
 
-GreptimeDB stores some important internal information as system tables in the `greptime_private` database. Similar to the normal tables, the system tables will be persistently stored. You can obtain system configurations and statistical information through the system tables.
+GreptimeDB keeps some important internal information as system tables in the `greptime_private` database. You can obtain system configurations and statistical information through them.
+
+Most of these tables are stored like ordinary tables. The two semantic graph tables are computed instead: they hold no data of their own and derive their rows at read time.
 
 ## Tables
 

@@ -5,7 +5,9 @@ description: greptime_private 数据库中系统表的概述。
 
 # Greptime Private
 
-GreptimeDB 将一些重要的内部信息以系统表的形式存储在 `greptime_private` 数据库中。与普通表类似，系统表也会持久化存储。你可以通过系统表获取系统配置和统计信息。
+GreptimeDB 将一些重要的内部信息以系统表的形式放在 `greptime_private` 数据库中，可以通过它们获取系统配置和统计信息。
+
+其中大部分表与普通表一样持久化存储。两张语义图表是计算表，本身不存数据，行在读取时派生。
 
 ## 表
 

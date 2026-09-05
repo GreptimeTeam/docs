@@ -69,25 +69,25 @@ ORDER BY entity_type, entity_id;
 
 ## `semantic_relationships`
 
-One row per relationship observed in a 60-second window.
+One row per relationship observed in a 60-second window. Declared edges are the exception: one row covers the whole validity period you gave it.
 
 | Column | Type | Description |
 | --- | --- | --- |
-| `observed_at` | `TimestampMillisecond` | Time index. The 60-second bucket the edge was observed in. |
-| `window_start` | `TimestampMillisecond` | Start of the observation window. |
-| `window_end` | `TimestampMillisecond` | End of the window (`window_start` + 60s). |
-| `fresh_until` | `TimestampMillisecond` | Time up to which the edge counts as live. |
+| `observed_at` | `TimestampMillisecond` | Time index. For a derived edge, the 60-second bucket it was observed in; for a declared edge, the later of its validity start and the queried window's lower bound. |
+| `window_start` | `TimestampMillisecond` | Start of the window the row covers. |
+| `window_end` | `TimestampMillisecond` | End of that window. `window_start` + 60s for a derived edge; the end of the declared validity period for a declared edge. |
+| `fresh_until` | `TimestampMillisecond` | Time up to which the edge counts as live. Equals `window_end`. |
 | `src_type` / `src_id` | `String` | Type and canonical id of the source endpoint. |
 | `dst_type` / `dst_id` | `String` | Type and canonical id of the destination endpoint. |
 | `rel_type` | `String` | The relationship kind. Direction is `src` → `dst`. |
 | `provenance` | `String` | How the edge was obtained: `trace`, `attribute`, `declared`, or `agent`. |
-| `confidence` | `Float64` | Derivation certainty in `[0, 1]`. |
+| `confidence` | `Float64` | Derivation certainty. `1.0` for a paired edge, `0.5` for a virtual-node edge, and whatever you inserted for a declared one. |
 | `request_count` | `Int64` | Requests over the window. `calls` edges only. |
-| `unmatched_count` | `Int64` | Client spans on this edge with no matching server span. |
+| `unmatched_count` | `Int64` | Client spans on this edge with no matching server span. `NULL` for declared edges. |
 | `error_count` | `Int64` | Errored requests over the window. |
 | `duration_sum` | `Float64` | Sum of request durations in seconds. |
 | `duration_count` | `Int64` | Number of durations summed. Pair with `duration_sum` for an average. |
-| `duration_max` | `Float64` | Longest single request in seconds, over the population `duration_sum` covers. |
+| `duration_max` | `Float64` | Longest single request in seconds, over the population `duration_sum` covers. `NULL` for declared edges. |
 | `attributes` | `Json` | Edge attributes, for example `{"connection_type":"database"}`. |
 
 ### Relationship types
@@ -107,15 +107,17 @@ Only the stored direction exists. The inverse (`called_by`, `hosts`, `dependency
 
 `provenance` is part of an edge's identity, so a hand-declared edge and a derived edge between the same pair coexist, and a declared edge survives even when nothing derives it.
 
-`confidence` expresses derivation certainty, not statistical completeness. It is `1.0` for a paired or declared edge and `0.5` for a virtual-node edge. It does not correct for trace sampling.
+`confidence` expresses derivation certainty, not statistical completeness. A paired edge gets `1.0` and a virtual-node edge `0.5`. A declared edge carries whatever you inserted, so it is `NULL` unless you set it. It does not correct for trace sampling.
 
 ### Derived call edges
 
-The `calls` derivation pairs each client span with its child server span across all trace tables: a match on `trace_id` where the server span's `parent_span_id` equals the client span's `span_id`. Matched pairs are aggregated per 60-second window into the RED columns. This is the SQL form of the Tempo service graph processor and the OpenTelemetry Collector `service_graph` connector.
+The `calls` derivation pairs each client span with its child server span across all trace tables: a match on `trace_id` where the server span's `parent_span_id` equals the client span's `span_id`, and the server span starts no more than 5 minutes before and no more than 1 hour after the client span. Matched pairs are aggregated per 60-second window into the RED columns. This is the SQL form of the Tempo service graph processor and the OpenTelemetry Collector `service_graph` connector.
+
+Two cases produce no edge at all: a span pair whose two endpoints resolve to the same entity, because a self-call is not an edge between two entities, and an unmatched client span that names no peer, covered next.
 
 Spans of one trace can live in different tables when a deployment routes them with `x-greptime-trace-table-name`. The derivation unions the trace tables before pairing, so a cross-table pair still produces one edge.
 
-A client span with no matching server span points at an uninstrumented peer. It becomes an edge to a **virtual node** named from the first span attribute present, in this order:
+A client span with no matching server span points at an uninstrumented peer. It becomes an edge to a **virtual node** named from the first of these span attributes that carries a value:
 
 | Attribute column | `connection_type` |
 | --- | --- |
@@ -125,7 +127,7 @@ A client span with no matching server span points at an uninstrumented peer. It 
 | `span_attributes.db.name` | `database` |
 | `span_attributes.server.address` | `virtual_node` |
 
-Virtual-node edges carry `confidence` `0.5` and the `connection_type` in `attributes`. When a window holds any real pair for an edge, the RED columns describe the pairs alone and the unmatched clients are reported in `unmatched_count` on the same row — which is what separates a callee that stopped responding from traffic that stopped arriving.
+A client span that matches none of them names no destination and is dropped, so an uninstrumented dependency stays invisible until the calling service records one of these attributes. Virtual-node edges carry `confidence` `0.5` and the `connection_type` in `attributes`. When a window holds any real pair for an edge, the RED columns describe the pairs alone and the unmatched clients are reported in `unmatched_count` on the same row — which is what separates a callee that stopped responding from traffic that stopped arriving.
 
 ```sql
 SELECT src_id, dst_id, rel_type, provenance, confidence,
@@ -254,13 +256,13 @@ WHERE entity_type = 'service' AND entity_id = 'cart'
 
 ### Multi-hop traversal
 
-Add one self-join per hop. A `LEFT JOIN` keeps the neighbours that have no further hop:
+Add one self-join per hop, matching on both endpoint columns: an entity is identified by `(entity_type, entity_id)`, and joining on the id alone links unrelated entities that happen to share a name. A `LEFT JOIN` keeps the neighbours that have no further hop:
 
 ```sql
 SELECT DISTINCT hop1.dst_id AS depth1, hop2.dst_id AS depth2
 FROM greptime_private.semantic_relationships AS hop1
 LEFT JOIN greptime_private.semantic_relationships AS hop2
-  ON hop2.src_id = hop1.dst_id
+  ON hop2.src_type = hop1.dst_type AND hop2.src_id = hop1.dst_id
   AND hop2.rel_type = 'calls'
   AND hop2.observed_at >= now() - INTERVAL '15' MINUTE
 WHERE hop1.src_type = 'service' AND hop1.src_id = 'frontend'

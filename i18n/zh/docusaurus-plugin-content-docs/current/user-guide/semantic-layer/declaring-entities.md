@@ -31,7 +31,19 @@ description: 哪些数据无需配置即可进入语义图、如何在自己的�
 
 只有当一行上某个声明的全部标识列都存在且非空时，该声明才在这一行生效。在携带完整 `k8s.container` 身份的行上，通用的 `container` 声明让位，因此 pod 里的容器是一个节点，而不是两个。
 
-当 `resource_attributes.service.namespace` 存在时，`service` 和 `service.instance` 的 id 渲染为 `<namespace>/<service_name>`。这与 Prometheus 的 `job` 标签一致——OpenTelemetry 兼容性规范把 `job` 定义为 `<service.namespace>/<service.name>`——因此同时从 trace 和 metric 进入图的 service 是同一个节点。
+OTLP trace 接入路径在建表时还会写入 `greptime.semantic.entity.service.id` = `service_name`。这个显式选项优先于约定的 `service` 声明，因此从 trace 派生的 `service` id 就是不带前缀的服务名。
+
+`service.instance` 没有这个写入，走约定：`resource_attributes.service.namespace` 存在时，id 渲染为 `<namespace>/<service_name>,<instance.id>`。其中的首个分量与 Prometheus 的 `job` 标签一致——OpenTelemetry 兼容性规范把 `job` 定义为 `<service.namespace>/<service.name>`。
+
+两条规则在 `service` 这一层对不齐。当 `service.namespace` 为 `shop`、`service.name` 为 `api` 时，同一个服务会以两个节点进入图：
+
+| 来源 | `entity_type` | `entity_id` |
+| --- | --- | --- |
+| OTLP trace 表 | `service` | `api` |
+| `target_info` 或 `greptime_otel_resource_info` | `service` | `shop/api` |
+| OTLP trace 表 | `service.instance` | `shop/api,<instance.id>` |
+
+只有 `service.namespace` 为空、`job` 就等于服务名本身时，两者才会重合。在这个差异存在期间要合并它们，需要在其中一侧用携带对方取值的列显式声明身份。
 
 ### Prometheus 描述性指标
 
@@ -94,10 +106,12 @@ CREATE TABLE app_request_latency (
   'greptime.semantic.signal_type' = 'metric',
   'greptime.semantic.entity.service.id' = 'service_name',
   'greptime.semantic.entity.service.scope' = 'env',
-  'greptime.semantic.entity.service.instance.id' = 'instance',
+  'greptime.semantic.entity.service.instance.id' = 'service_name,instance',
   'greptime.semantic.entity.host.id' = 'host'
 );
 ```
+
+`service.instance` 把 `service_name` 排在 `instance` 之前，与该类型的内置身份保持一致。只用实例名不唯一：两个服务都把实例命名为 `0` 时会合并成一个节点。
 
 标识列为 `NULL` 或空字符串的行不标识任何实体，会被跳过。
 
