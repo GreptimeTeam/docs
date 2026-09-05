@@ -15,7 +15,7 @@ GreptimeDB 是开源的可观测性数据库。它用同一个列式引擎处理
 
 **深入了解：**
 - [Observability 2.0 与宽事件](./observability-2.md) — 宽事件与原生信号的关系及工程取舍
-- [表语义层](./semantic-layer.md) — 告诉机器消费者每张表代表什么可观测性概念的可选元数据
+- [语义层](./semantic-layer.md) — 描述每张表代表什么、遥测数据描述了哪些实体和关系的可选元数据
 - [存储位置](./storage-location.md) — 本地存储、对象存储和按表选择的存储后端
 - [核心概念](./key-concepts.md) — 表、Region、时间索引、数据类型、View 和 Flow
 - [常见问题](./features-that-you-concern.md) — 更新、删除、TTL、压缩、高基数等技术边界
