@@ -51,6 +51,31 @@ GreptimeDB 接收 OTLP metrics、traces、logs，以及 Prometheus remote write�
 
 两张图表是计算出来的，不是存储的。扫描它们时，会枚举实体声明、为每张声明表构建查询计划，并在已有的遥测数据上执行。只有人工声明的边是持久化的，存放在 `greptime_private.semantic_relationships_declared`。
 
+```mermaid
+flowchart TB
+    subgraph SRC["你自己的遥测表"]
+        direction LR
+        T1["otel_traces<br/>接入时写入声明"]
+        T2["kube_pod_info<br/>内置约定"]
+        T3["app_metrics<br/>DDL 中声明"]
+    end
+
+    DER["查询时派生<br/>以调用者身份执行，受 observed_at 窗口约束"]
+
+    subgraph OUT["greptime_private（只读）"]
+        direction LR
+        E["semantic_entities"]
+        R["semantic_relationships"]
+    end
+
+    DECL["semantic_relationships_declared<br/>唯一持久化的部分"]
+
+    SRC --> DER
+    DER --> E
+    DER --> R
+    DECL --> R
+```
+
 这来自 GreptimeDB 用一个引擎存储 metrics、logs 和 traces：服务调用图是 trace 表的自连接，把实体和它的遥测数据关联起来是同库内的 join，两者都不需要第二份存储。
 
 由此带来三个结果：

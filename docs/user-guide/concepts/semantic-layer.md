@@ -51,6 +51,31 @@ Edges are time-ranged facts rather than current state: a row asserts that an edg
 
 The graph tables are computed, not stored. Scanning them enumerates the entity declarations, builds a query plan per declaring table, and executes it against the telemetry that is already there. Only hand-declared edges are persisted, in `greptime_private.semantic_relationships_declared`.
 
+```mermaid
+flowchart TB
+    subgraph SRC["Your telemetry tables"]
+        direction LR
+        T1["otel_traces<br/>declared at ingestion"]
+        T2["kube_pod_info<br/>built-in convention"]
+        T3["app_metrics<br/>declared in DDL"]
+    end
+
+    DER["Derivation, at query time<br/>runs as the caller, bounded by the observed_at window"]
+
+    subgraph OUT["greptime_private (read-only)"]
+        direction LR
+        E["semantic_entities"]
+        R["semantic_relationships"]
+    end
+
+    DECL["semantic_relationships_declared<br/>the only stored part"]
+
+    SRC --> DER
+    DER --> E
+    DER --> R
+    DECL --> R
+```
+
 This follows from GreptimeDB storing metrics, logs, and traces in one engine: the service call graph is a self-join over trace tables, and correlating an entity with its telemetry is a join over tables in the same database. Neither needs a second store.
 
 Three consequences follow:

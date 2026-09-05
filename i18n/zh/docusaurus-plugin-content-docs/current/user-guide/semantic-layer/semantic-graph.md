@@ -115,6 +115,18 @@ ORDER BY entity_type, entity_id;
 
 两种情况不产生边：配对后两端解析为同一个实体，因为自调用不构成两个实体之间的边；以及未匹配且没有指明对端的 client span，见下。
 
+```mermaid
+flowchart TB
+    C["Client span"] --> Q1{"配对窗口内<br/>有子 server span？"}
+    Q1 -->|有| Q2{"两端是<br/>同一个实体？"}
+    Q2 -->|不是| EDGE["calls 边，confidence 1.0<br/>RED 指标来自这对 span"]
+    Q2 -->|是| D1["不产生边：自调用"]
+    Q1 -->|没有| Q3{"client span 上<br/>有 peer 属性？"}
+    Q3 -->|有| VN["指向虚拟节点的边<br/>confidence 0.5，带 connection_type<br/>计入 unmatched_count"]
+    Q3 -->|没有| D2["不产生边：目标未知<br/>不计入任何统计"]
+```
+
+
 当部署用 `x-greptime-trace-table-name` 做路由时，同一条 trace 的 span 可能落在不同的表里。派生会先把 trace 表 union 起来再配对，跨表的一对 span 同样产生一条边。
 
 没有匹配到 server span 的 client span 指向一个未插桩的对端，它会成为指向**虚拟节点**的边，节点名取自下列 span 属性中第一个有值的：

@@ -115,6 +115,18 @@ The `calls` derivation pairs each client span with its child server span across 
 
 Two cases produce no edge at all: a span pair whose two endpoints resolve to the same entity, because a self-call is not an edge between two entities, and an unmatched client span that names no peer, covered next.
 
+```mermaid
+flowchart TB
+    C["Client span"] --> Q1{"Child server span<br/>inside the pairing window?"}
+    Q1 -->|yes| Q2{"Both ends the<br/>same entity?"}
+    Q2 -->|no| EDGE["calls edge, confidence 1.0<br/>RED metrics from the pair"]
+    Q2 -->|yes| D1["No edge: self-call"]
+    Q1 -->|no| Q3{"Peer attribute<br/>on the client span?"}
+    Q3 -->|yes| VN["Edge to a virtual node<br/>confidence 0.5, connection_type set<br/>counted in unmatched_count"]
+    Q3 -->|no| D2["No edge: destination unknown,<br/>counted nowhere"]
+```
+
+
 Spans of one trace can live in different tables when a deployment routes them with `x-greptime-trace-table-name`. The derivation unions the trace tables before pairing, so a cross-table pair still produces one edge.
 
 A client span with no matching server span points at an uninstrumented peer. It becomes an edge to a **virtual node** named from the first of these span attributes that carries a value:
