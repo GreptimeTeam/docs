@@ -268,6 +268,20 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
+          label: 'Semantic Layer',
+          items: [
+            {
+              type: 'doc',
+              id: 'user-guide/semantic-layer/overview',
+              label: 'Overview',
+            },
+            'user-guide/semantic-layer/table-semantics',
+            'user-guide/semantic-layer/semantic-graph',
+            'user-guide/semantic-layer/declaring-entities',
+          ],
+        },
+        {
+          type: 'category',
           label: 'Vector Storage',
           items: [
             'user-guide/vectors/vector-type',
@@ -673,6 +687,8 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/greptime-private/events',
                 'reference/sql/greptime-private/slow_queries',
                 'reference/sql/greptime-private/pipelines',
+                'reference/sql/greptime-private/semantic-entities',
+                'reference/sql/greptime-private/semantic-relationships',
               ],
             },
             {

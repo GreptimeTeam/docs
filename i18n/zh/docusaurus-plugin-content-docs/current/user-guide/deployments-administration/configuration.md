@@ -309,6 +309,7 @@ max_inflight_requests = 3000
 | otlp       |                    |        | OpenTelemetry 协议选项                                       |
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 OpenTelemetry 协议，默认为 true       |
 |            | trace_ingest_chunk_size | 整数 | 每个 trace 写入分块的最大 span 数量。设为 `0` 可禁用分块。 |
+|            | experimental_enable_resource_info | 布尔值 | 是否从 OTLP metrics 的 resource attributes 合成 `greptime_otel_resource_info` 表，让只有指标的 service 进入[语义图](/user-guide/semantic-layer/semantic-graph.md)。默认为 `false`。 |
 | prom_store |                              |        | Prometheus 远程存储选项                                                                                                                                                                                         |
 |            | enable                       | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true                                                                                                                                                         |
 |            | with_metric_engine           | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true                                                                                                                                                     |
