@@ -60,20 +60,21 @@ flowchart TB
         T3["app_metrics<br/>DDL 中声明"]
     end
 
-    DER["查询时派生<br/>以调用者身份执行，受 observed_at 窗口约束"]
+    DECL["semantic_relationships_declared<br/>持久化，由你写入"]
+    DER["查询时派生<br/>以调用者身份执行，<br/>受 observed_at 窗口约束"]
+    RES["取窗口内最新 revision<br/>按有效期过滤<br/>重算时间列"]
 
-    subgraph OUT["greptime_private（只读）"]
+    subgraph OUT["计算表，只读"]
         direction LR
         E["semantic_entities"]
         R["semantic_relationships"]
     end
 
-    DECL["semantic_relationships_declared<br/>唯一持久化的部分"]
-
     SRC --> DER
+    DECL --> RES
     DER --> E
     DER --> R
-    DECL --> R
+    RES --> R
 ```
 
 这来自 GreptimeDB 用一个引擎存储 metrics、logs 和 traces：服务调用图是 trace 表的自连接，把实体和它的遥测数据关联起来是同库内的 join，两者都不需要第二份存储。

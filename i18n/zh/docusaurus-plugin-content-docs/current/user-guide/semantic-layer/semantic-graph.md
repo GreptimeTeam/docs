@@ -113,17 +113,32 @@ ORDER BY entity_type, entity_id;
 
 `calls` 的派生把每个 client span 与它的子 server span 配对：`trace_id` 相同，server span 的 `parent_span_id` 等于 client span 的 `span_id`，且 server span 的起始时间不早于 client span 前 5 分钟、不晚于其后 1 小时。配对成功的结果按 60 秒窗口聚合为 RED 列。这是 Tempo service graph processor 和 OpenTelemetry Collector `service_graph` connector 的 SQL 形式。
 
-两种情况不产生边：配对后两端解析为同一个实体，因为自调用不构成两个实体之间的边；以及未匹配且没有指明对端的 client span，见下。
+目标端先解析出来——配对成功取 server span 的 service，没配上则取 peer 属性——之后有两种情况不产生边：目标端解析不出来，以及目标端就是源端自己，因为自调用不构成两个实体之间的边。后一条对 peer 属性指定的目标端同样生效。
 
 ```mermaid
 flowchart TB
-    C["Client span"] --> Q1{"配对窗口内<br/>有子 server span？"}
-    Q1 -->|有| Q2{"两端是<br/>同一个实体？"}
-    Q2 -->|不是| EDGE["calls 边，confidence 1.0<br/>RED 指标来自这对 span"]
-    Q2 -->|是| D1["不产生边：自调用"]
-    Q1 -->|没有| Q3{"client span 上<br/>有 peer 属性？"}
-    Q3 -->|有| VN["指向虚拟节点的边<br/>confidence 0.5，带 connection_type<br/>计入 unmatched_count"]
-    Q3 -->|没有| D2["不产生边：目标未知<br/>不计入任何统计"]
+    subgraph S1["逐条 client span"]
+        P{"配到了子<br/>server span？"}
+        R1["目标端取自<br/>server span"]
+        R2["目标端取自<br/>peer 属性"]
+        CHK{"解析出来了，<br/>且不是源端？"}
+        DROP["不产生边"]
+        P -->|有| R1
+        P -->|没有| R2
+        R1 --> CHK
+        R2 --> CHK
+        CHK -->|否| DROP
+    end
+
+    subgraph S2["按 60 秒桶、<br/>源端、目标端聚合"]
+        W{"这一组里<br/>有真实配对？"}
+        REAL["calls 边<br/>confidence 1.0<br/>RED 来自配对成功的"]
+        VIRT["虚拟节点边<br/>confidence 0.5"]
+        W -->|有| REAL
+        W -->|没有| VIRT
+    end
+
+    CHK -->|是| W
 ```
 
 

@@ -60,20 +60,21 @@ flowchart TB
         T3["app_metrics<br/>declared in DDL"]
     end
 
-    DER["Derivation, at query time<br/>runs as the caller, bounded by the observed_at window"]
+    DECL["semantic_relationships_declared<br/>stored, you write it"]
+    DER["Derivation, at query time<br/>runs as the caller,<br/>bounded by the observed_at window"]
+    RES["Latest revision in the window,<br/>validity filtered,<br/>time columns recomputed"]
 
-    subgraph OUT["greptime_private (read-only)"]
+    subgraph OUT["Computed, read-only"]
         direction LR
         E["semantic_entities"]
         R["semantic_relationships"]
     end
 
-    DECL["semantic_relationships_declared<br/>the only stored part"]
-
     SRC --> DER
+    DECL --> RES
     DER --> E
     DER --> R
-    DECL --> R
+    RES --> R
 ```
 
 This follows from GreptimeDB storing metrics, logs, and traces in one engine: the service call graph is a self-join over trace tables, and correlating an entity with its telemetry is a join over tables in the same database. Neither needs a second store.

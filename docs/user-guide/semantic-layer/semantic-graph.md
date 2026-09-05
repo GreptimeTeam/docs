@@ -113,17 +113,32 @@ Only the stored direction exists. The inverse (`called_by`, `hosts`, `dependency
 
 The `calls` derivation pairs each client span with its child server span across all trace tables: a match on `trace_id` where the server span's `parent_span_id` equals the client span's `span_id`, and the server span starts no more than 5 minutes before and no more than 1 hour after the client span. Matched pairs are aggregated per 60-second window into the RED columns. This is the SQL form of the Tempo service graph processor and the OpenTelemetry Collector `service_graph` connector.
 
-Two cases produce no edge at all: a span pair whose two endpoints resolve to the same entity, because a self-call is not an edge between two entities, and an unmatched client span that names no peer, covered next.
+The destination is resolved first — from the paired server span, or from a peer attribute when there is no pair — and two cases then produce no edge at all: a client span whose destination cannot be resolved, and one whose destination is the source itself, because a self-call is not an edge between two entities. The second check applies to peer-named destinations too.
 
 ```mermaid
 flowchart TB
-    C["Client span"] --> Q1{"Child server span<br/>inside the pairing window?"}
-    Q1 -->|yes| Q2{"Both ends the<br/>same entity?"}
-    Q2 -->|no| EDGE["calls edge, confidence 1.0<br/>RED metrics from the pair"]
-    Q2 -->|yes| D1["No edge: self-call"]
-    Q1 -->|no| Q3{"Peer attribute<br/>on the client span?"}
-    Q3 -->|yes| VN["Edge to a virtual node<br/>confidence 0.5, connection_type set<br/>counted in unmatched_count"]
-    Q3 -->|no| D2["No edge: destination unknown,<br/>counted nowhere"]
+    subgraph S1["Per client span"]
+        P{"Paired with a<br/>child server span?"}
+        R1["Destination from<br/>the server span"]
+        R2["Destination from<br/>a peer attribute"]
+        CHK{"Resolved, and<br/>not the source?"}
+        DROP["No edge"]
+        P -->|yes| R1
+        P -->|no| R2
+        R1 --> CHK
+        R2 --> CHK
+        CHK -->|no| DROP
+    end
+
+    subgraph S2["Per 60s bucket,<br/>source, destination"]
+        W{"Any real pair<br/>in the group?"}
+        REAL["calls edge<br/>confidence 1.0<br/>RED from the pairs"]
+        VIRT["Virtual node<br/>confidence 0.5"]
+        W -->|yes| REAL
+        W -->|no| VIRT
+    end
+
+    CHK -->|yes| W
 ```
 
 
