@@ -132,7 +132,7 @@ flowchart TB
 
     subgraph S2["按 60 秒桶、<br/>源端、目标端聚合"]
         W{"这一组里<br/>有真实配对？"}
-        REAL["calls 边<br/>confidence 1.0<br/>RED 来自配对成功的"]
+        REAL["calls 边<br/>confidence 1.0<br/>RED 来自配对结果"]
         VIRT["虚拟节点边<br/>confidence 0.5"]
         W -->|有| REAL
         W -->|没有| VIRT
@@ -179,7 +179,7 @@ RED 指标描述的是实际存储下来的 span 配对。在采样下，计数�
 
 ### 派生的包含与承载边
 
-一行同时携带两个实体的身份，就见证了它们之间的关系，方向和类型由内置词汇确定。这类边的 `provenance` 为 `attribute`，来自 trace 行的 agent 边除外，它们为 `trace`。完整规则见[由同行共同声明派生的关系](./declaring-entities.md#由同行共同声明派生的关系)。
+一行同时携带两个实体的身份时，系统会根据内置规则派生二者之间的关系。这类边的 `provenance` 为 `attribute`，来自 trace 行的 agent 边除外，它们为 `trace`。完整规则见[由同一行实体身份派生的关系](./declaring-entities.md#由同一行实体身份派生的关系)。
 
 ## 查询窗口
 
@@ -231,7 +231,7 @@ WHERE fresh_until >= now() - INTERVAL '5' MINUTE
   AND observed_at >= now() - INTERVAL '15' MINUTE;
 ```
 
-### 某个 service 的下游依赖，按问题严重程度排序
+### 某个 service 的下游依赖，错误数从高到低
 
 ```sql
 SELECT dst_id,

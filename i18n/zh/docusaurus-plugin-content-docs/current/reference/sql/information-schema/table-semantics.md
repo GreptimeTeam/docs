@@ -67,7 +67,7 @@ DESC TABLE information_schema.table_semantics;
   - `unknown` —— 设置时无法确定。
 - `source`：写入数据的来源生态，取值为 `opentelemetry`、`prometheus`、`influxdb`、`opentsdb`、`elasticsearch`、`loki`、`custom`、`mixed`、`unknown` 之一。`mixed` 表示同一张表接收了多个来源的数据，`unknown` 表示无法确定。
 - `source_version`：来源协议的版本。Prometheus remote write 路径会写入 `1.0` 或 `2.0`，其他路径为空。
-- `pipeline`：内部摄入数据模型的标识，自由格式字符串。当前仅 OTLP trace 路径会自动设置，取值为 `greptime_trace_v1`；其他取值需手动设置。它是 `table_data_model` 选项的后继，不再与具体存储引擎绑定。
+- `pipeline`：内部摄入数据模型的标识，自由格式字符串。当前仅 OTLP trace 路径会自动设置，取值为 `greptime_trace_v1`；其他取值需手动设置。它是 `table_data_model` 的后继选项，不依赖具体信号类型。
 - `metadata_quality`：`metric.type` 标注的来源，即其可信程度，取值为以下之一：
   - `declared` —— 摄入协议显式提供了 instrument 类型（如 OTLP 指标自带类型），可信。
   - `inferred` —— 类型由指标名推断得到（如 Prometheus 的 `_total` 后缀被识别为 counter），对命名不规范的指标可能不准确。

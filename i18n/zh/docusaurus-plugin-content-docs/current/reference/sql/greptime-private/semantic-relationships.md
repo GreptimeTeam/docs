@@ -7,7 +7,7 @@ description: greptime_private 数据库中读时计算的 semantic_relationships
 
 `semantic_relationships` 是[语义图](/user-guide/semantic-layer/semantic-graph.md)的边集合：实体之间带类型、有时间范围的关系。
 
-这张表是计算出来的，不是存储的。扫描它时，会配对 trace span、对声明表应用同行共同声明规则，并把结果与 `semantic_relationships_declared` 的行 union 起来。它是只读的：`INSERT`、`CREATE`、`ALTER`、`TRUNCATE`、`DROP` 都会被拒绝。
+这张表是计算出来的，不是存储的。扫描它时，会配对 trace span、根据声明表同一行中的实体身份派生关系，并把结果与 `semantic_relationships_declared` 的行 union 起来。它是只读的：`INSERT`、`CREATE`、`ALTER`、`TRUNCATE`、`DROP` 都会被拒绝。
 
 ```sql
 SELECT src_id, dst_id, rel_type, provenance, request_count, error_count
@@ -67,7 +67,7 @@ ORDER BY dst_id;
 | `scope` | `String` | 边所属的命名空间或环境。属于主键，计算表不暴露该列。 |
 | `generation_id` | `String` | 自由格式的代次标记。属于主键，计算表不暴露该列。 |
 
-主键为 `(src_type, src_id, rel_type, dst_type, dst_id, provenance, scope, generation_id)`，时间索引为 `observed_at`。用相同主键再次插入会存入新版本，读取时保留查询窗口内的最新版本。
+主键为 `(src_type, src_id, rel_type, dst_type, dst_id, provenance, scope, generation_id)`，时间索引为 `observed_at`。用相同主键再次插入会存入新版本，读取时保留截至查询窗口上界的最新版本。
 
 `window_start`、`window_end`、`fresh_until` 存在于这张表只是为了与计算表保持 schema 对称。读取时会根据 `valid_from` 和 `valid_until` 重新计算，写入这三列不产生任何效果。`confidence` 和 RED 各列则原样透传。
 

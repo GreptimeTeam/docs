@@ -127,9 +127,9 @@ ALTER TABLE app_request_latency UNSET 'greptime.semantic.entity.process.id';
 
 实体在下一次查询图时出现，不回填，也不重写数据。
 
-## 由同行共同声明派生的关系
+## 由同一行实体身份派生的关系
 
-一行同时携带两个实体的身份，就见证了它们之间的关系。哪些组合产生边、方向如何，由内置词汇决定：
+一行同时携带两个实体的身份时，系统会根据内置规则派生二者之间的关系。产生边的实体组合及其方向如下：
 
 | 源端 | 目标端 | `rel_type` |
 | --- | --- | --- |
@@ -181,7 +181,7 @@ VALUES
 
 这条边在下一次查询时出现在 `semantic_relationships` 中，没有填写的列为 `NULL`。
 
-用相同的边主键再次插入会存入一个新版本，读取时保留查询窗口内的最新版本。要下线一条边，把 `valid_until` 设为过去的时间，或者删除该行：
+用相同的边主键再次插入会存入一个新版本，读取时保留截至查询窗口上界的最新版本。要下线一条边，把 `valid_until` 设为过去的时间，或者删除该行：
 
 ```sql
 DELETE FROM greptime_private.semantic_relationships_declared
