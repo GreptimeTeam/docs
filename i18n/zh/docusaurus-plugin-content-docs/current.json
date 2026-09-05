@@ -243,6 +243,10 @@
     "message": "维护",
     "description": "The label for category Maintenance in sidebar docs"
   },
+  "sidebar.docs.category.Semantic Layer": {
+    "message": "语义层",
+    "description": "The label for category Semantic Layer in sidebar docs"
+  },
   "sidebar.docs.category.Vector Storage": {
     "message": "向量存储",
     "description": "The label for category Vector Storage in sidebar docs"

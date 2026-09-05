@@ -32,7 +32,7 @@ The server (v0.5.0) exposes the following tools.
 | `explain_query` | Analyze SQL or TQL query execution plans. |
 | `health_check` | Check database connection status and server version. |
 
-`describe_table` reads the [table semantic layer](/user-guide/concepts/semantic-layer.md), so the assistant learns the signal type, source, and metric metadata of a table instead of guessing from column names.
+`describe_table` reads the [table semantics](/user-guide/semantic-layer/table-semantics.md), so the assistant learns the signal type, source, and metric metadata of a table instead of guessing from column names.
 
 ### Pipeline management
 

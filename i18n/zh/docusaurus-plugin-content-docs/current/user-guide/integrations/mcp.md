@@ -32,7 +32,7 @@ GreptimeDB MCP Server 目前处于实验阶段并在积极开发中。API 和功
 | `explain_query` | 分析 SQL 或 TQL 查询的执行计划。 |
 | `health_check` | 检查数据库连接状态和 server 版本。 |
 
-`describe_table` 会读取[表语义层](/user-guide/concepts/semantic-layer.md)，因此 AI 助手能直接得到表的 signal type、source 和 metric 元数据，而不必从列名去猜。
+`describe_table` 会读取[表语义](/user-guide/semantic-layer/table-semantics.md)，因此 AI 助手能直接得到表的 signal type、source 和 metric 元数据，而不必从列名去猜。
 
 ### Pipeline 管理
 
