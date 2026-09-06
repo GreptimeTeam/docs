@@ -45,6 +45,8 @@ which are described in detail in the documentation in this section:
 - [Built-in User Management](./user.md): Built-in RBAC and fine-grained ACLs
   for data security and isolation.
 - Reliability features for Flow.
+- [Iceberg Metadata](./iceberg.md): Expose GreptimeDB tables through an Apache Iceberg REST catalog
+  so pyiceberg, Spark, Trino, DuckDB, and other engines can read the data directly from object storage.
 
 ## Release Notes
 
