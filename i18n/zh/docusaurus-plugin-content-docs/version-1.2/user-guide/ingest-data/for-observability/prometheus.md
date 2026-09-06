@@ -24,6 +24,9 @@ remote_write:
 #    username: greptime_user
 #    password: greptime_pwd
 
+# Prometheus 默认发送 v1 protobuf 消息。如需选择 Remote Write v2，请显式设置：
+#  protobuf_message: io.prometheus.write.v2.Request
+
 remote_read:
 - url: http://localhost:4000/v1/prometheus/read?db=public
 # 如果启用了身份验证，请取消注释并设置鉴权信息
@@ -35,6 +38,7 @@ remote_read:
 - URL 中的 host 和 port 表示 GreptimeDB 服务器。在此示例中，服务器运行在 `localhost:4000` 上。你可以将其替换为你自己的服务器地址。有关 GreptimeDB 中 HTTP 协议的配置，请参阅 [协议选项](/user-guide/deployments-administration/configuration.md#protocol-options)。
 - URL 中的 `db` 参数表示要写入的数据库。它是可选的。默认情况下，数据库设置为 `public`。
 - `basic_auth` 是身份鉴权配置。如果 GreptimeDB 启用了鉴权，请填写用户名和密码。请参阅 [鉴权认证文档](/user-guide/deployments-administration/authentication/overview.md)。
+- Remote Write v2 的 native histogram 写入是实验性功能，默认禁用。如需启用，请在 `[http]` 配置中设置 `experimental_enable_prometheus_native_histogram = true`；详见[配置参考](/user-guide/deployments-administration/configuration.md#protocol-options)。
 
 ### Grafana Alloy 配置文件
 

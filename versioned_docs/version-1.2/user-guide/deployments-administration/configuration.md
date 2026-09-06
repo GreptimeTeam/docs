@@ -207,6 +207,9 @@ Note that HTTP and gRPC protocols cannot be disabled for the database to functio
 addr = "127.0.0.1:4000"
 timeout = "0s"
 body_limit = "64MB"
+# Experimental: enable Prometheus Remote Write v2 native histogram ingestion.
+# Disabled by default.
+experimental_enable_prometheus_native_histogram = false
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
 experimental_enable_explain_analyze_stream = true
@@ -268,7 +271,7 @@ trace_ingest_chunk_size = 512
 enable = true
 with_metric_engine = true
 prom_validation_mode = "strict"
-experimental_enable_prometheus_native_histogram = false
+
 pending_rows_flush_interval = "0s"
 max_batch_rows = 100000
 max_concurrent_flushes = 256
@@ -284,6 +287,7 @@ The following table describes the options in detail:
 |            | addr                 | String  | Server address, "127.0.0.1:4000" by default                                                                                                                                                                                                                                                                                                                                                |
 |            | timeout              | String  | HTTP request timeout. Set to `0s` to disable timeout (default: "0s"). When Prometheus Remote Write [batching mode](/user-guide/ingest-data/for-observability/prometheus.md#batching-mode) is enabled, a non-zero timeout less than or equal to `prom_store.pending_rows_flush_interval` plus 1 second is adjusted to that value.                                                                                                                                                                                                                                                                                                                                                     |
 |            | body_limit           | String  | HTTP max body size, "64MB" by default                                                                                                                                                                                                                                                                                                                                                      |
+|            | experimental_enable_prometheus_native_histogram | Boolean | Experimental: enable Prometheus Remote Write v2 native histogram ingestion. It is disabled by default; set it to `true` to accept native histograms. |
 |            | enable_cors          | Boolean | Whether to enable HTTP CORS support, true by default. |
 |            | cors_allowed_origins | Array   | Customized allowed origins for HTTP CORS. |
 |            | experimental_enable_explain_analyze_stream | Boolean | Experimental: enable `POST /v1/sql/analyze/stream` for streaming `EXPLAIN ANALYZE VERBOSE` metrics, true by default. |
@@ -314,7 +318,6 @@ The following table describes the options in detail:
 |            | enable                       | Boolean | Whether to enable Prometheus Remote Write and read in HTTP API, true by default                                                                                                                                                                                                                                                                                                            |
 |            | with_metric_engine           | Boolean | Whether to use the metric engine on Prometheus Remote Write, true by default                                                                                                                                                                                                                                                                                                               |
 |            | prom_validation_mode         | String  | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with [UTF-8 REPLACEMENT CHARACTER U+FFFD, which looks like �](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)), `unchecked`(do not validate strings). |
-|            | experimental_enable_prometheus_native_histogram | Boolean | Experimental: enable Prometheus remote write v2 native histogram ingestion, false by default. |
 |            | pending_rows_flush_interval  | String  | Interval between batch flushes for Prometheus Remote Write. Set to a non-zero duration (e.g. `500ms`) to enable [batching mode](/user-guide/ingest-data/for-observability/prometheus.md#batching-mode). `0s` by default (disabled)                                                                                                                                                     |
 |            | max_batch_rows               | Integer | Maximum number of rows per batch before a flush is triggered, 100000 by default                                                                                                                                                                                                                                                                                                            |
 |            | max_concurrent_flushes       | Integer | Maximum number of concurrent flush operations, 256 by default                                                                                                                                                                                                                                                                                                                              |
@@ -530,10 +533,16 @@ create_database, alter_database, drop_database,
 create_flow, drop_flow,
 create_table, create_logical_tables, alter_table, alter_logical_tables,
 drop_table, undrop_table, purge_dropped_table, truncate_table,
-create_view, drop_view
+create_view, drop_view, admin_function
 ```
 
 `undrop_table` and `purge_dropped_table` require GreptimeDB Enterprise.
+
+In distributed deployments, the Frontend supports the following event type:
+
+```text
+admin_function
+```
 
 Metasrv supports the following event types:
 

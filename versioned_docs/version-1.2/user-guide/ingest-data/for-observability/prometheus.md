@@ -23,6 +23,10 @@ remote_write:
 #    username: greptime_user
 #    password: greptime_pwd
 
+# Prometheus sends the v1 protobuf message by default. To select Remote Write
+# v2, set protobuf_message explicitly:
+#  protobuf_message: io.prometheus.write.v2.Request
+
 remote_read:
 - url: http://localhost:4000/v1/prometheus/read?db=public
 # Uncomment and set credentials if authentication is enabled
@@ -34,6 +38,7 @@ remote_read:
 - The host and port in the URL represent the GreptimeDB server. In this example, the server is running on `localhost:4000`. You can replace it with your own server address. For the HTTP protocol configuration in GreptimeDB, please refer to the [protocol options](/user-guide/deployments-administration/configuration.md#protocol-options).
 - The `db` parameter in the URL represents the database to which we want to write data. It is optional. By default, the database is set to `public`.
 - `basic_auth` is the authentication configuration. Fill in the username and password if GreptimeDB authentication is enabled. Please refer to the [authentication document](/user-guide/deployments-administration/authentication/overview.md).
+- Remote Write v2 native histogram ingestion is experimental and disabled by default. To enable it, set `experimental_enable_prometheus_native_histogram = true` in the `[http]` configuration; this option is documented in the [configuration reference](/user-guide/deployments-administration/configuration.md#protocol-options).
 
 ### Grafana Alloy configuration file
 
