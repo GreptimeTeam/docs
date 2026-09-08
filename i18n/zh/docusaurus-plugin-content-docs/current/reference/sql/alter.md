@@ -155,7 +155,15 @@ ALTER TABLE monitor DROP COLUMN load_15;
 ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
-被修改的列不能是 tag 列（primary key）或 time index 列，同时该列必须允许空值 `NULL` 存在来保证数据能够安全地进行转换（转换失败时返回 `NULL`）。
+被修改的列不能是 tag 列（primary key），同时该列必须允许空值 `NULL` 存在来保证数据能够安全地进行转换（转换失败时返回 `NULL`）。
+
+时间索引列是个例外：你可以将时间索引的时间戳单位拓宽为更精细的单位，例如从 `TIMESTAMP`（毫秒）改为 `TIMESTAMP_US`（微秒）：
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
+```
+
+拓宽时间索引单位是无损的——已有数据在读取时按新单位解释，无需重写；新写入的数据可以使用更精细的精度。但收窄单位（例如从微秒改回毫秒）或将时间索引改为非时间戳类型是不允许的。该操作不支持使用 [metric engine](/reference/about-greptimedb-engines.md) 的表。
 
 ### 设置列默认值
 
