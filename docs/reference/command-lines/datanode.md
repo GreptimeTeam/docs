@@ -166,3 +166,97 @@ Example `scanconfig.json`:
 ```sh
 greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir greptime/public/1024 --iterations 5 --pprof-file ./scanbench.svg --pprof-after-warmup
 ```
+
+## parquetbench
+
+The `parquetbench` subcommand benchmarks reads from a single GreptimeDB Parquet SST, either a local file or a file in the object store configured for a datanode or standalone deployment. It is available in normal builds and does not require the `dev-tools` feature.
+
+The file must contain GreptimeDB region metadata. A general Parquet file without this metadata cannot be benchmarked with this command.
+
+### Options
+
+Print the options supported by the current binary:
+
+```sh
+greptime datanode parquetbench --help
+```
+
+| Option | Description |
+| --- | --- |
+| `--file-path <FILE>` | Local GreptimeDB SST file. Supports only the `direct` reader. |
+| `--config <FILE>` | Datanode/standalone TOML configuration for object-store access. Required in region mode. |
+| `--region-id <REGION_ID>` | Region ID as a packed unsigned integer or `<table_id>:<region_number>`, for example `1024:0`. Required in region mode. |
+| `--table-dir <TABLE_DIR>` | Table directory relative to data home, for example `data/greptime/public/1024`. Required in region mode. |
+| `--file-id <FILE_ID>` | SST file UUID. Required in region mode. |
+| `--reader <direct\|flat-prune>` | Reader implementation. Defaults to `direct`. `flat-prune` uses the storage engine's flat pruning reader and is available only in region mode. |
+| `--path-type <bare\|data\|metadata>` | Region path type in region mode. Defaults to `bare`. |
+| `--scan-config <FILE>` | JSON file selecting columns and row groups. |
+| `--iterations <N>` | Number of benchmark iterations. Defaults to `1`. |
+| `--batch-size <ROWS>` | Rows per record batch for the `direct` reader. Must be positive; defaults to `8192`. |
+| `--pk-as-binary` | Read `__primary_key` as binary rather than a dictionary array with the `direct` reader. Disabled by default. |
+| `--pprof-file <FILE>` | Output SVG flamegraph path (Unix only). |
+| `--pprof-after-warmup` | Start profiling after the first iteration. Use with `--pprof-file` and at least two iterations. Disabled by default. |
+| `-v`/`--verbose` | Enable verbose output. |
+
+Local-file mode cannot be combined with `--config`, `--region-id`, `--table-dir`, or `--file-id`. Without `--file-path`, all four region-mode arguments are required.
+
+### Benchmark a local SST
+
+```sh
+greptime datanode parquetbench \
+  --file-path /tmp/source.parquet \
+  --reader direct \
+  --iterations 5 \
+  --batch-size 8192
+```
+
+The command reports row and record-batch counts, elapsed time, and throughput for each iteration. When running multiple iterations, it also reports averages.
+
+### Benchmark an SST in object storage
+
+```sh
+greptime datanode parquetbench \
+  --config ./datanode.toml \
+  --region-id 1024:0 \
+  --table-dir data/greptime/public/1024 \
+  --file-id 00020380-009c-426d-953e-b4e34c15af34 \
+  --path-type bare \
+  --reader flat-prune \
+  --iterations 5
+```
+
+Use the configuration, region ID, table directory, file ID, and path type that correspond to the SST you want to benchmark.
+
+### Select columns and row groups
+
+Save the following as `parquet-scan.json`, adjusting the column names and row-group indexes to match the SST:
+
+```json
+{
+  "projection_names": ["host", "value", "ts"],
+  "row_groups": [0, 2]
+}
+```
+
+Both fields are optional. Omitting `projection_names` reads all columns; omitting `row_groups` reads all row groups. Row-group indexes are zero-based and must exist in the file. Column names are case-sensitive. With the `direct` reader, names refer to the SST schema; with `flat-prune`, names refer to region columns and internal column names are ignored.
+
+```sh
+greptime datanode parquetbench \
+  --file-path /tmp/source.parquet \
+  --scan-config ./parquet-scan.json \
+  --iterations 5
+```
+
+### Profile after a warmup iteration
+
+On Unix, write a flamegraph while excluding the first iteration from profiling:
+
+```sh
+greptime datanode parquetbench \
+  --file-path /tmp/source.parquet \
+  --iterations 5 \
+  --pprof-file ./parquetbench.svg \
+  --pprof-after-warmup
+```
+
+The first iteration still contributes to the reported averages.
