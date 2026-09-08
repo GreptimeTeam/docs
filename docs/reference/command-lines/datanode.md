@@ -169,7 +169,7 @@ greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-
 
 ## parquetbench
 
-The `parquetbench` subcommand benchmarks reads from a single GreptimeDB Parquet SST, either a local file or a file in the object store configured for a datanode or standalone deployment. It is available in normal builds and does not require the `dev-tools` feature.
+The `parquetbench` subcommand benchmarks reads from a single GreptimeDB Parquet SST, either a local file or a file in the object store configured for a datanode or standalone deployment.
 
 The file must contain GreptimeDB region metadata. A general Parquet file without this metadata cannot be benchmarked with this command.
 

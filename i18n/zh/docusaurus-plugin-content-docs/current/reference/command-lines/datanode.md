@@ -169,7 +169,7 @@ greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-
 
 ## parquetbench
 
-`parquetbench` 子命令用于对单个 GreptimeDB Parquet SST 文件的读取性能进行基准测试，支持本地文件和 datanode 或 standalone 配置中指定的对象存储。该命令包含在常规构建中，不需要启用 `dev-tools` feature。
+`parquetbench` 子命令用于对单个 GreptimeDB Parquet SST 文件的读取性能进行基准测试，支持本地文件和 datanode 或 standalone 配置中指定的对象存储。
 
 文件必须包含 GreptimeDB region 元数据。不含这些元数据的普通 Parquet 文件无法使用此命令进行基准测试。
 
