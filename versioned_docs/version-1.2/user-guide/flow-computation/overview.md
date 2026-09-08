@@ -73,6 +73,7 @@ Finally, create the Flow `user_agent_flow` to count the occurrences of each user
 ```sql
 CREATE FLOW user_agent_flow
 SINK TO user_agent_statistics
+EVAL INTERVAL '1s'
 AS
 SELECT
   user_agent,

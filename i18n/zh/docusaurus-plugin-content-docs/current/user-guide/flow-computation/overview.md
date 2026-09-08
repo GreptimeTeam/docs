@@ -73,6 +73,7 @@ CREATE TABLE user_agent_statistics (
 ```sql
 CREATE FLOW user_agent_flow
 SINK TO user_agent_statistics
+EVAL INTERVAL '1s'
 AS
 SELECT
   user_agent,
