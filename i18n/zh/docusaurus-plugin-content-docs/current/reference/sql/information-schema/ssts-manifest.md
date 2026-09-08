@@ -1,11 +1,11 @@
 ---
 keywords: [SST manifest, SST 文件, region 文件, 文件元数据, 表数据文件]
-description: 提供从 manifest 中获取的 SST（排序字符串表）文件信息，包括文件路径、大小、时间范围、行数和编码后的主键范围。
+description: 提供从 manifest 中获取的 SST（排序字符串表）文件信息，包括文件路径、大小、时间范围、行数、编码后的主键范围和分区表达式。
 ---
 
 # SSTS_MANIFEST
 
-`SSTS_MANIFEST` 表提供从清单中收集的 SST（排序字符串表）文件信息。此表显示每个 SST 文件的详细信息，包括文件路径、大小、级别、时间范围、行数和编码后的主键范围。
+`SSTS_MANIFEST` 表提供从清单中收集的 SST（排序字符串表）文件信息。此表显示每个 SST 文件的详细信息，包括文件路径、大小、级别、时间范围、行数、编码后的主键范围、最大未压缩行组大小和分区表达式。
 ```sql
 USE INFORMATION_SCHEMA;
 DESC SSTS_MANIFEST;
@@ -14,32 +14,36 @@ DESC SSTS_MANIFEST;
 输出如下：
 
 ```sql
-+------------------+---------------------+-----+------+---------+---------------+
-| Column           | Type                | Key | Null | Default | Semantic Type |
-+------------------+---------------------+-----+------+---------+---------------+
-| table_dir        | String              |     | NO   |         | FIELD         |
-| region_id        | UInt64              |     | NO   |         | FIELD         |
-| table_id         | UInt32              |     | NO   |         | FIELD         |
-| region_number    | UInt32              |     | NO   |         | FIELD         |
-| region_group     | UInt8               |     | NO   |         | FIELD         |
-| region_sequence  | UInt32              |     | NO   |         | FIELD         |
-| file_id          | String              |     | NO   |         | FIELD         |
-| level            | UInt8               |     | NO   |         | FIELD         |
-| file_path        | String              |     | NO   |         | FIELD         |
-| file_size        | UInt64              |     | NO   |         | FIELD         |
-| index_file_path  | String              |     | YES  |         | FIELD         |
-| index_file_size  | UInt64              |     | YES  |         | FIELD         |
-| num_rows         | UInt64              |     | NO   |         | FIELD         |
-| num_row_groups   | UInt64              |     | NO   |         | FIELD         |
-| min_ts           | TimestampNanosecond |     | YES  |         | FIELD         |
-| max_ts           | TimestampNanosecond |     | YES  |         | FIELD         |
-| sequence         | UInt64              |     | YES  |         | FIELD         |
-| origin_region_id | UInt64              |     | NO   |         | FIELD         |
-| node_id          | UInt64              |     | YES  |         | FIELD         |
-| visible          | Boolean             |     | NO   |         | FIELD         |
-| primary_key_min  | Binary              |     | YES  |         | FIELD         |
-| primary_key_max  | Binary              |     | YES  |         | FIELD         |
-+------------------+---------------------+-----+------+---------+---------------+
++---------------------------------+---------------------+-----+------+---------+---------------+
+| Column                          | Type                | Key | Null | Default | Semantic Type |
++---------------------------------+---------------------+-----+------+---------+---------------+
+| table_dir                       | String              |     | NO   |         | FIELD         |
+| region_id                       | UInt64              |     | NO   |         | FIELD         |
+| table_id                        | UInt32              |     | NO   |         | FIELD         |
+| region_number                   | UInt32              |     | NO   |         | FIELD         |
+| region_group                    | UInt8               |     | NO   |         | FIELD         |
+| region_sequence                 | UInt32              |     | NO   |         | FIELD         |
+| file_id                         | String              |     | NO   |         | FIELD         |
+| index_version                   | UInt64              |     | NO   |         | FIELD         |
+| level                           | UInt8               |     | NO   |         | FIELD         |
+| file_path                       | String              |     | NO   |         | FIELD         |
+| file_size                       | UInt64              |     | NO   |         | FIELD         |
+| index_file_path                 | String              |     | YES  |         | FIELD         |
+| index_file_size                 | UInt64              |     | YES  |         | FIELD         |
+| num_rows                        | UInt64              |     | NO   |         | FIELD         |
+| num_row_groups                  | UInt64              |     | NO   |         | FIELD         |
+| num_series                      | UInt64              |     | YES  |         | FIELD         |
+| min_ts                          | TimestampNanosecond |     | YES  |         | FIELD         |
+| max_ts                          | TimestampNanosecond |     | YES  |         | FIELD         |
+| sequence                        | UInt64              |     | YES  |         | FIELD         |
+| origin_region_id                | UInt64              |     | NO   |         | FIELD         |
+| node_id                         | UInt64              |     | YES  |         | FIELD         |
+| visible                         | Boolean             |     | NO   |         | FIELD         |
+| primary_key_min                 | Binary              |     | YES  |         | FIELD         |
+| primary_key_max                 | Binary              |     | YES  |         | FIELD         |
+| max_row_group_uncompressed_size | UInt64              |     | NO   |         | FIELD         |
+| partition_expr                  | String              |     | YES  |         | FIELD         |
++---------------------------------+---------------------+-----+------+---------+---------------+
 ```
 
 `SSTS_MANIFEST` 表中的字段描述如下：
@@ -51,6 +55,7 @@ DESC SSTS_MANIFEST;
 - `region_group`：Region 的组标识符。
 - `region_sequence`：Region 的序列号。
 - `file_id`：SST 文件的唯一标识符（UUID）。
+- `index_version`：索引版本，重建索引文件时递增。没有索引文件时，Mito 返回 `0`。
 - `level`：LSM 树中的 SST 级别（0 表示未压缩，1 表示已压缩）。
 - `file_path`：对象存储中 SST 文件的完整路径。
 - `file_size`：SST 文件的大小（字节）。
@@ -58,6 +63,7 @@ DESC SSTS_MANIFEST;
 - `index_file_size`：索引文件的大小（字节，如果存在）。
 - `num_rows`：SST 文件中的行数。
 - `num_row_groups`：SST 文件中的行组数。
+- `num_series`：SST 文件中的时间序列数，可以为 `NULL`。
 - `min_ts`：SST 文件中的最小时间戳。
 - `max_ts`：SST 文件中的最大时间戳。
 - `sequence`：与此文件关联的序列号。
@@ -66,6 +72,8 @@ DESC SSTS_MANIFEST;
 - `visible`：该文件在当前版本中是否可见。
 - `primary_key_min`：SST 文件中最小的编码主键。
 - `primary_key_max`：SST 文件中最大的编码主键。
+- `max_row_group_uncompressed_size`：最大的未压缩行组大小，单位为字节。`0` 表示未知。
+- `partition_expr`：SST 文件元数据中保存的分区表达式，以可读字符串形式展示；未保存时为 `NULL`。
 
 ## 示例
 
@@ -100,6 +108,14 @@ FROM INFORMATION_SCHEMA.SSTS_MANIFEST
 ORDER BY table_id, min_ts;
 ```
 
+查看 SST 文件的最大未压缩行组大小和分区表达式：
+
+```sql
+SELECT file_path, max_row_group_uncompressed_size, partition_expr
+FROM INFORMATION_SCHEMA.SSTS_MANIFEST
+ORDER BY max_row_group_uncompressed_size DESC;
+```
+
 计算每个表的 SST 文件总大小：
 
 ```sql
@@ -112,27 +128,31 @@ GROUP BY table_id;
 ```sql
 mysql> SELECT * FROM INFORMATION_SCHEMA.SSTS_MANIFEST LIMIT 1\G;
 *************************** 1. row ***************************
-       table_dir: data/greptime/public/1024/
-       region_id: 4398046511104
-        table_id: 1024
-   region_number: 0
-    region_group: 0
- region_sequence: 0
-         file_id: 01234567-89ab-cdef-0123-456789abcdef
-           level: 0
-       file_path: data/greptime/public/1024/4398046511104_0/01234567-89ab-cdef-0123-456789abcdef.parquet
-       file_size: 1234
- index_file_path: data/greptime/public/1024/4398046511104_0/index/01234567-89ab-cdef-0123-456789abcdef.puffin
- index_file_size: 256
-        num_rows: 100
-  num_row_groups: 1
-          min_ts: 2025-01-01 00:00:00.000000000
-          max_ts: 2025-01-01 00:01:00.000000000
-         sequence: 1
-origin_region_id: 4398046511104
-         node_id: 0
-         visible: true
- primary_key_min: 01800001f4
- primary_key_max: 01800001f4
+                      table_dir: data/greptime/public/1024/
+                      region_id: 4398046511104
+                       table_id: 1024
+                  region_number: 0
+                   region_group: 0
+                region_sequence: 0
+                        file_id: 01234567-89ab-cdef-0123-456789abcdef
+                  index_version: 0
+                          level: 0
+                      file_path: data/greptime/public/1024/4398046511104_0/01234567-89ab-cdef-0123-456789abcdef.parquet
+                      file_size: 1234
+                index_file_path: data/greptime/public/1024/4398046511104_0/index/01234567-89ab-cdef-0123-456789abcdef.puffin
+                index_file_size: 256
+                       num_rows: 100
+                 num_row_groups: 1
+                     num_series: 1
+                         min_ts: 2025-01-01 00:00:00.000000000
+                         max_ts: 2025-01-01 00:01:00.000000000
+                       sequence: 1
+               origin_region_id: 4398046511104
+                        node_id: 0
+                        visible: true
+                primary_key_min: 01800001f4
+                primary_key_max: 01800001f4
+max_row_group_uncompressed_size: 4096
+                 partition_expr: NULL
 1 row in set (0.02 sec)
 ```
