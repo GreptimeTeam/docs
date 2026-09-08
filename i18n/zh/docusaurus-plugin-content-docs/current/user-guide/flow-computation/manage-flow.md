@@ -10,7 +10,7 @@ description: 介绍如何在 GreptimeDB 中创建和删除 flow，包括创建 s
 本文档描述了如何创建和删除一个 flow。
 
 :::note
-`EVAL INTERVAL` 无论 SQL 形状如何都会强制使用 batching，TQL workload 必须使用该子句。未指定 `EVAL INTERVAL` 时，包含 `Aggregate` 或 `Distinct` 的 SQL 计划使用 batching，普通投影和非聚合 join 使用旧的 streaming。包含 `WITH ('ttl' = 'instant')` 的 source 表不能与 `EVAL INTERVAL` 组合；未指定该子句时，Flow 使用旧的 streaming。
+`EVAL INTERVAL` 会强制使用 batching 并调度计算；TQL workload 必须使用该子句。有关执行路由和 instant-TTL 限制，请参阅[创建 flow](#创建-flow)。
 :::
 
 <AnchorAlias id="创建输入表" />
@@ -94,10 +94,10 @@ AS
 ```
 
 子句必须按上述顺序出现：`EXPIRE AFTER` 在 `EVAL INTERVAL` 之前。
-`EVAL INTERVAL` 无论 SQL 形状如何都会强制使用 batching，并按计划执行完整查询；TQL Flow 必须使用该子句。
-包含 `WITH ('ttl' = 'instant')` 的 source 表不能与 `EVAL INTERVAL` 组合。未指定 `EVAL INTERVAL` 时，包含
-`Aggregate` 或 `Distinct` 的 SQL 计划使用 batching，普通投影和非聚合 join 使用旧的 streaming。
-未指定 `EVAL INTERVAL` 时，instant-TTL source 也使用旧的 streaming。批处理时间窗口聚合 Flow 可以不使用 `EVAL INTERVAL`。
+`EVAL INTERVAL` 无论 SQL 形状如何都会强制使用 batching 并调度计算。对于时间窗口 SQL，计算可以是增量的，而不一定执行完整查询。TQL Flow 必须使用该子句。包含
+`WITH ('ttl' = 'instant')` 的 source 表不能与 `EVAL INTERVAL` 组合。未指定 `EVAL INTERVAL` 时，包含 `Aggregate` 或
+`Distinct` 的 SQL 计划使用 batching，普通投影和非聚合 join 使用旧的 streaming。未指定 `EVAL INTERVAL` 时，instant-TTL
+source 也使用旧的 streaming。批处理时间窗口聚合 Flow 可以不使用 `EVAL INTERVAL`。
 
 当指定 `OR REPLACE` 时，如果已经存在同名的 flow，它将被更新为新 flow。请注意，这仅影响 flow 任务本身，source 表和 sink 表将不会被更改。当指定 `IF NOT EXISTS` 时，如果 flow 已经存在，它将不执行任何操作，而不是报告错误。还需要注意的是，`OR REPLACE` 不能与 `IF NOT EXISTS` 一起使用。
 
@@ -105,7 +105,7 @@ AS
 - `sink-table-name` 是存储聚合数据的表名。
   它可以是一个现有的表或一个新表；有关创建和校验行为，请参阅[创建 sink 表](#创建-sink-表)。
 - `EXPIRE AFTER` 是一个可选的时间间隔，用于使 Flow 引擎中的数据过期。有关详细信息，请参考 [`EXPIRE AFTER`](#expire-after) 部分。
-- `EVAL INTERVAL` 是一个可选的时间间隔，用于强制使用 batching 并按计划执行完整查询。
+- `EVAL INTERVAL` 是一个可选的时间间隔，用于强制使用 batching 并调度计算。
 - `COMMENT` 是 flow 的描述。
 - `WITH` 指定 flow 选项。
   本文档介绍的用户 Flow 选项为 `defer_on_missing_source` 和实验性的 `experimental_enable_incremental_read`。
@@ -221,10 +221,8 @@ FROM <source_table>
 GROUP BY {time_window | column1, column2,.. };
 ```
 
-具体支持哪些 SQL 表达式和子句取决于 SQL 查询引擎和 Flow 计划。`EVAL INTERVAL` 会让任何 SQL 形状都使用 batching，
-包括普通投影和非聚合 join；查询规划器能够生成有效计划时支持 join、子查询和 SQL CTE。未指定 `EVAL INTERVAL` 时，包含
-`Aggregate` 或 `Distinct` 的 SQL 计划使用 batching，普通投影和非聚合 join 使用旧的 streaming。包含 instant-TTL source
-的 Flow 不能与 `EVAL INTERVAL` 组合；未指定该子句时使用旧的 streaming。查询规划器仍必须生成有效计划；不受支持的查询会在创建 Flow 时失败。
+具体支持哪些 SQL 表达式和子句取决于 SQL 查询引擎和 Flow 计划。`EVAL INTERVAL` 会强制使用 batching 并调度计算；TQL
+Flow 必须使用该子句。查询规划器能够生成有效计划时支持 join、子查询和 SQL CTE。查询规划器仍必须生成有效计划；不受支持的查询会在创建 Flow 时失败。
 对于 batching 时间窗口聚合，`GROUP BY` 通常包含时间窗口表达式。有关 Flow 查询中常用的函数，请参阅[表达式](./expressions.md)；有关固定时间窗口，请参阅[定义时间窗口](#define-time-window)。
 
 有关如何在实时分析、监控和仪表板中使用持续聚合的更多示例，请参阅[持续聚合](./continuous-aggregation.md)。
@@ -263,19 +261,17 @@ GROUP BY time_window;
 
 ## 检查 Flow
 
-可以使用以下语句和系统表检查 Flow 的定义及运行时信息：
+可以使用以下命令和系统表检查 Flow 的定义及运行时信息：
 
-```sql
-SHOW FLOWS;
-SHOW CREATE FLOW my_flow;
-SHOW FLOW STATUS LIKE 'my%';
-SELECT * FROM information_schema.flows;
-SELECT * FROM information_schema.flow_statistics;
-```
+| 命令 | 用途 |
+| --- | --- |
+| `SHOW FLOWS;` | 列出 Flow。 |
+| `SHOW CREATE FLOW my_flow;` | 返回 Flow 定义。 |
+| `SHOW FLOW STATUS LIKE 'my%';` | 返回匹配 Flow 的运行时统计信息。 |
+| `SELECT * FROM information_schema.flows;` | 查看 Flow 定义。 |
+| `SELECT * FROM information_schema.flow_statistics;` | 查看 Flow 运行时统计信息。 |
 
-`SHOW FLOWS` 列出 Flow，`SHOW CREATE FLOW` 返回 Flow 定义，`SHOW FLOW STATUS` 返回运行时统计信息。
-`information_schema` 中的两张表分别提供定义和统计信息。在分布式部署中，运行时字段初始可能为 `NULL`，
-其值也可能落后于最新状态。
+在分布式部署中，运行时字段初始可能为 `NULL`，其值也可能落后于最新状态。
 
 ## 刷新 flow
 

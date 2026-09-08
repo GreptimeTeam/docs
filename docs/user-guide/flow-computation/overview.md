@@ -17,7 +17,7 @@ Use cases include:
 ## Programming Model
 
 :::note
-Flow uses batching mode for aggregation and TQL workloads. Simple non-aggregation Flow queries currently use the deprecated streaming mode and are not recommended for new workloads.
+Flow uses batching mode for aggregation and TQL workloads. Simple non-aggregation Flow queries without `EVAL INTERVAL` currently use the deprecated streaming mode and are not recommended for new workloads.
 :::
 
 Upon data insertion into the source table, the data is made available to the Flow engine.

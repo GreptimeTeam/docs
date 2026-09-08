@@ -15,7 +15,7 @@ Flow 会在处理 source 数据时将计算结果物化到 sink 表中，因此�
 - 为仪表盘和告警预先算好聚合结果，查询只需读 sink 表，无需扫描原始事件
 
 :::note
-Flow 对聚合和 TQL workload 使用 batching mode。简单的非聚合 Flow 查询当前会使用已废弃的 streaming mode，不推荐新 workload 使用。
+Flow 对聚合和 TQL workload 使用 batching mode。未指定 `EVAL INTERVAL` 的简单非聚合 Flow 查询当前会使用已废弃的 streaming mode，不推荐新 workload 使用。
 :::
 
 ## 程序模型

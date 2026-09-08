@@ -10,7 +10,7 @@ It continuously updates the aggregated data based on the incoming data.
 This document describes how to create, and delete a flow.
 
 :::note
-`EVAL INTERVAL` forces batching regardless of SQL shape, and TQL workloads require it. Without `EVAL INTERVAL`, SQL plans containing `Aggregate` or `Distinct` use batching, while ordinary projections and non-aggregate joins use legacy streaming. A source table with `WITH ('ttl' = 'instant')` cannot be combined with `EVAL INTERVAL`; without it, Flow uses legacy streaming.
+`EVAL INTERVAL` forces batching and schedules evaluations; TQL workloads require it. See [Create a flow](#create-a-flow) for execution routing and instant-TTL restrictions.
 :::
 
 ## Create a Source Table
@@ -95,11 +95,12 @@ AS
 ```
 
 The clauses must appear in the order shown: `EXPIRE AFTER` comes before `EVAL INTERVAL`.
-`EVAL INTERVAL` forces batching and schedules full-query evaluation regardless of the SQL shape. TQL flows require
-it. A source table with `WITH ('ttl' = 'instant')` cannot be combined with `EVAL INTERVAL`. Without
-`EVAL INTERVAL`, SQL plans containing `Aggregate` or `Distinct` use batching, while ordinary projections and
-non-aggregate joins use legacy streaming. An instant-TTL source without `EVAL INTERVAL` also uses legacy streaming.
-Batching time-window aggregate flows can run without `EVAL INTERVAL`.
+`EVAL INTERVAL` forces batching and schedules evaluations regardless of SQL shape. For time-window SQL, an
+evaluation can be incremental rather than a full-query evaluation. TQL flows require it. A source table with
+`WITH ('ttl' = 'instant')` cannot be combined with `EVAL INTERVAL`. Without `EVAL INTERVAL`, SQL plans containing
+`Aggregate` or `Distinct` use batching, while ordinary projections and non-aggregate joins use legacy streaming. An
+instant-TTL source without `EVAL INTERVAL` also uses legacy streaming. Batching time-window aggregate flows can run
+without `EVAL INTERVAL`.
 
 When `OR REPLACE` is specified, any existing flow with the same name will be updated to the new version. It's important to note that this only affects the flow task itself; the source and sink tables will remain unchanged.
 
@@ -110,7 +111,7 @@ Conversely, when `IF NOT EXISTS` is specified, the command will have no effect i
 - `sink-table-name` is the table name where the materialized aggregated data is stored.
   It can be an existing table or a new one; see [Create a Sink Table](#create-a-sink-table) for creation and validation behavior.
 - `EXPIRE AFTER` is an optional interval to expire data from the Flow engine. For more details, please refer to the [`EXPIRE AFTER`](#expire-after) section.
-- `EVAL INTERVAL` is an optional interval that forces batching and schedules full-query evaluation.
+- `EVAL INTERVAL` is an optional interval that forces batching and schedules evaluations.
 - `COMMENT` is the description of the flow.
 - `WITH` specifies flow options.
   The user-facing options documented below are `defer_on_missing_source` and the experimental `experimental_enable_incremental_read`.
@@ -228,14 +229,11 @@ FROM <source_table>
 GROUP BY {time_window | column1, column2,.. };
 ```
 
-The query engine and Flow plan determine which SQL expressions and clauses are supported. `EVAL INTERVAL`
-forces batching for any SQL shape, including ordinary projections and non-aggregate joins; planner-valid joins,
-subqueries, and SQL CTEs are supported. Without `EVAL INTERVAL`, SQL plans containing `Aggregate` or `Distinct` use
-batching, while ordinary projections and non-aggregate joins use legacy streaming. An instant-TTL source cannot be
-combined with `EVAL INTERVAL`; without it, the Flow uses legacy streaming. The query planner must still produce a valid
-plan; unsupported queries fail when the Flow is created. For batching time-window aggregates, `GROUP BY` commonly
-includes the time-window expression. See [Expressions](expressions.md) for functions commonly used in Flow queries,
-and [Define time window](#define-time-window) for fixed windows.
+The query engine and Flow plan determine which SQL expressions and clauses are supported. `EVAL INTERVAL` forces
+batching and schedules evaluations; TQL flows require it. Planner-valid joins, subqueries, and SQL CTEs are supported.
+The query planner must still produce a valid plan; unsupported queries fail when the Flow is created. For batching
+time-window aggregates, `GROUP BY` commonly includes the time-window expression. See [Expressions](expressions.md)
+for functions commonly used in Flow queries, and [Define time window](#define-time-window) for fixed windows.
 
 Refer to [Continuous Aggregation](continuous-aggregation.md) for more examples of how to use continuous aggregation in real-time analytics, monitoring, and dashboards.
 
@@ -274,19 +272,17 @@ depends on the workload and query semantics.
 
 ## Inspect flows
 
-Use the following statements and system tables to inspect Flow definitions and runtime information:
+Use the following commands and system tables to inspect Flow definitions and runtime information:
 
-```sql
-SHOW FLOWS;
-SHOW CREATE FLOW my_flow;
-SHOW FLOW STATUS LIKE 'my%';
-SELECT * FROM information_schema.flows;
-SELECT * FROM information_schema.flow_statistics;
-```
+| Command | Purpose |
+| --- | --- |
+| `SHOW FLOWS;` | List flows. |
+| `SHOW CREATE FLOW my_flow;` | Return a Flow definition. |
+| `SHOW FLOW STATUS LIKE 'my%';` | Return runtime statistics for matching flows. |
+| `SELECT * FROM information_schema.flows;` | View Flow definitions. |
+| `SELECT * FROM information_schema.flow_statistics;` | View Flow runtime statistics. |
 
-`SHOW FLOWS` lists flows, `SHOW CREATE FLOW` returns a Flow definition, and `SHOW FLOW STATUS` returns runtime
-statistics. The `information_schema` tables provide definition and statistics details. Runtime fields can initially be
-`NULL`, and values can lag behind the latest state in distributed deployments.
+Runtime fields can initially be `NULL`, and values can lag behind the latest state in distributed deployments.
 
 ## Flush a flow
 
