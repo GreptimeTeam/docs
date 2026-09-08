@@ -921,9 +921,9 @@ create_topic_timeout = "30s"
 ## **仅在 provider 为 `kafka` 时使用。**
 connect_timeout = "3s"
 
-## kafka 客户端的超时时间。
+## kafka 客户端的总请求超时时间。
 ## **仅在 provider 为 `kafka` 时使用。**
-timeout = "3s"
+timeout = "5s"
 ```
 
 | 键                                            | 类型    | 默认值               | 描述                                                                                                                                 |
@@ -994,7 +994,7 @@ timeout = "3s"
 | wal.replication_factor                        | Integer | `1` | 每个分区的副本数                                                                                                                     |
 | wal.create_topic_timeout                      | String  | `30s` | 超过该时间后，topic 创建操作将被取消                                                                                                 |
 | `wal.connect_timeout`                         | String  | `3s`                 | kafka 客户端的连接超时时间。<br/>**仅在 provider 为 `kafka` 时使用。**                                                               |
-| `wal.timeout`                                 | String  | `3s`                 | kafka 客户端的超时时间。<br/>**仅在 provider 为 `kafka` 时使用。**                                                                   |
+| `wal.timeout`                                 | String  | `5s`                 | kafka 客户端的总请求超时时间。<br/>**仅在 provider 为 `kafka` 时使用。**                                                                   |
 | `wal.sasl`                                    | String  | --                   | Kafka 客户端 SASL 配置                                                                                                               |
 | `wal.sasl.type`                               | String  | --                   | SASL 机制，可选值：`PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`                                                                         |
 | `wal.sasl.username`                           | String  | --                   | SASL 鉴权用户名                                                                                                                      |

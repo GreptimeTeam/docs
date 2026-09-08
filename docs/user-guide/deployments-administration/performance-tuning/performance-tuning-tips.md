@@ -170,6 +170,7 @@ The following metrics help diagnose ingestion issues. Most of these metrics are 
 | greptime_mito_write_stall_total              | counter   | The total number of write requests stalled due to high memory pressure or transient region states.        |
 | greptime_mito_write_reject_total             | counter   | The number of write requests rejected due to high memory pressure.                                         |
 | raft_engine_sync_log_duration_seconds_bucket | histogram | The elapsed time of flushing the WAL to the disk.                                                         |
+| greptime_logstore_op_elapsed_bucket          | histogram | The elapsed time of log-store operations. Finite latency buckets extend through 60 seconds.                 |
 | greptime_mito_flush_requests_total           | counter   | The number of scheduled flush requests.                                                                   |
 | greptime_mito_flush_elapsed                  | histogram | The elapsed time of flushing SST files.                                                                   |
 | greptime_mito_flush_bytes_total              | counter   | The number of bytes flushed to SST files.                                                                 |
