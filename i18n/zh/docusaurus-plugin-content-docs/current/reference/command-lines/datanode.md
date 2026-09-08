@@ -100,13 +100,15 @@ greptime datanode objbench --config ./datanode.toml --source data/greptime/publi
 | `--table-dir <TABLE_DIR>`            | 打开 region 时使用的表目录（例如 `greptime/public/1024`）。                                               |
 | `--scanner <seq\|unordered\|series>` | 扫描策略，默认 `seq`。                                                                                    |
 | `--scan-config <FILE>`               | 用于微调扫描请求的 JSON 文件。                                                                            |
+| `--scan-configs <FILE>` | 带名称的扫描请求 JSON 数组，每个请求执行一次。与 `--scan-config` 互斥。 |
 | `--parallelism <N>`                  | 模拟扫描并行度，默认 `1`。                                                                                |
-| `--iterations <N>`                   | 基准测试迭代次数，默认 `1`。                                                                              |
+| `--iterations <N>` | 单请求模式的迭代次数，默认 `1`；使用 `--scan-configs` 时必须保持为 `1`。 |
 | `--path-type <bare\|data\|metadata>` | Region 路径类型，默认 `bare`。                                                                            |
 | `--enable-wal`                       | 打开 region 时启用 WAL 回放，默认关闭。                                                                   |
 | `--pprof-file <FILE>`                | pprof 火焰图输出路径（仅 Unix）。                                                                         |
+| `--result-file <FILE>` | 在所有扫描成功后，将结构化基准测试结果写入 JSON 文件，并收集详细 scanner 指标。 |
 | `--pprof-after-warmup`               | 在首轮迭代（warmup）后再开始 pprof。需要与 `--pprof-file` 一起使用，默认关闭。                            |
-| `-v`/`--verbose`                     | 启用详细输出。                                                                                            |
+| `-v`/`--verbose` | 输出详细 scanner 指标、各分区统计和分区间的数据倾斜情况。 |
 
 ### `scan-config` JSON
 
@@ -125,6 +127,65 @@ greptime datanode objbench --config ./datanode.toml --source data/greptime/publi
 - `projection_names` 采用精确匹配（区分大小写）。
 - `filters` 应为 SQL 表达式（而非完整 SQL 语句）。
 - `series_row_selector` 当前仅支持 `last_row`。
+
+### 使用 `scan-configs` 执行查询集
+
+使用 `--scan-configs` 执行 JSON 数组中的多个扫描请求。每个元素支持与 `scan-config` 相同的字段，还可以通过可选的 `name` 字段指定名称：
+
+```json
+[
+  {
+    "name": "cold",
+    "projection_names": ["host", "cpu"],
+    "filters": ["host = 'web-1'"]
+  },
+  {
+    "name": "hot-001",
+    "projection_names": ["host", "cpu"],
+    "filters": ["host = 'web-2'"]
+  }
+]
+```
+
+将其保存为 `scan-configs.json`，并根据目标 region 调整列名和过滤条件：
+
+```sh
+greptime datanode scanbench \
+  --config ./datanode.toml \
+  --region-id 1024:0 \
+  --table-dir greptime/public/1024 \
+  --scan-configs ./scan-configs.json \
+  --result-file ./scanbench-results.json \
+  --verbose
+```
+
+查询集规则：
+
+- `--scan-configs` 与 `--scan-config` 互斥。
+- 数组必须包含至少一个请求。每个请求按文件中的顺序执行一次，执行次数由数组长度决定。`--iterations` 必须保持为 `1`。
+- 未指定名称时，按元素在数组中的位置生成 `query-001`、`query-002` 等名称。显式指定的名称会去除首尾空白。所有名称（包括自动生成的名称）都必须非空且唯一。
+- Scanbench 会在开始基准测试前校验所有请求，并输出总体平均值和每个查询的汇总信息。
+- 同时使用 `--pprof-file` 和 `--pprof-after-warmup` 时，第一个请求用于预热，在第二个请求开始前启动性能分析。此时需要至少两个请求。预热请求仍计入输出的统计信息。
+
+不使用 `--scan-configs` 时，仍按现有的单请求模式，根据 `--iterations` 重复执行扫描请求。
+
+### 结构化 JSON 结果
+
+单请求和查询集模式都可以使用 `--result-file <FILE>` 保存基准测试结果。所有扫描成功完成后才会写入结果文件，并覆盖该路径下的已有文件。如果配置校验或任意扫描失败，则不会写入结果文件。即使没有指定 `--verbose`，该选项也会收集详细的 scanner 指标。
+
+JSON 文档包含以下字段：
+
+| 字段 | 描述 |
+| --- | --- |
+| `format_version` | 结果格式版本，当前为 `1`。 |
+| `started_at_unix_ms` | 基准测试开始时间，以 Unix epoch 起算的毫秒数表示。 |
+| `benchmark` | Scanner、region 标识、表目录、路径类型、并行度、WAL 设置、`config_mode`（`single` 或 `suite`）和执行次数。 |
+| `runs` | 按执行顺序记录的结果，包括查询名称、规范化配置、行数和 batch 数、准备/扫描/总耗时、内存大小、分区统计和详细的 `scanner_explain` 输出。 |
+| `summary` | 总执行次数、总行数和总耗时、平均行数和平均耗时，以及 `queries` 中各查询的汇总信息。 |
+
+规范化配置的 `projection` 使用解析后的列索引，即使输入使用的是 `projection_names`。耗时字段以 `_ns` 结尾，单位为纳秒；大小字段以 `_bytes` 结尾。每个分区包含行数和 batch 数、内存大小、耗时以及 `first_batch_elapsed_ns`；如果该分区没有产生 batch，后者为 `null`。
+
+启用详细终端输出时，还会显示每个分区的行数、首个 batch 延迟、耗时以及分区间的数据倾斜情况。
 
 ### 示例
 
