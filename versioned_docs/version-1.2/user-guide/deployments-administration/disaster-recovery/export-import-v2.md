@@ -27,7 +27,9 @@ Before using Export/Import V2, make sure that:
 
 For remote object storage, explicitly enable one supported backend and provide the backend options. Export/Import V2 supports S3-compatible storage, Alibaba Cloud OSS, Google Cloud Storage, and Azure Blob Storage. For example, use `--s3` with `--s3-bucket` and `--s3-region` for S3-compatible storage.
 
-For `file://` snapshots, the path must be accessible from the GreptimeDB server as well as the CLI client. This usually means running the CLI on the same host as a standalone server, or mounting the same filesystem path into the GreptimeDB server. For remote, Kubernetes, or distributed deployments, use object storage such as S3 or MinIO instead of a local `file://` path.
+For `file://` snapshots, the path must be accessible from the GreptimeDB server as well as the CLI client. This usually means running the CLI on the same host as a standalone server, or mounting the same filesystem path into the GreptimeDB server. The parent directory of the snapshot must exist before you create the snapshot. For remote, Kubernetes, or distributed deployments, use object storage such as S3 or MinIO instead of a local `file://` path.
+
+The GreptimeDB server writes snapshot data files with `COPY DATABASE ... TO`, so a `file://` snapshot path must also be inside the server's copy root, which is `storage.copy_root` and defaults to `<storage.data_home>/copy`. The server rejects a path outside the copy root. See [Migrate Local SQL File Access](/user-guide/deployments-administration/migrate-local-sql-file-access.md) for details.
 
 :::note
 
@@ -38,6 +40,21 @@ The snapshot URI, such as `s3://my-bucket/snapshots/prod`, identifies the snapsh
 ## Quick start with local filesystem
 
 Use a local filesystem snapshot only when the path is shared by the CLI client and the GreptimeDB server. For example, this works for a local standalone server when the CLI runs on the same host.
+
+The examples in this guide store snapshots under `/tmp/greptime-snapshots`. Set this directory as the server's copy root in the GreptimeDB configuration file and restart the server:
+
+```toml
+[storage]
+copy_root = "/tmp/greptime-snapshots"
+```
+
+Alternatively, keep the default copy root and use a snapshot path under `<storage.data_home>/copy`, such as `file:///path/to/data_home/copy/demo`.
+
+Create the parent directory so that both the server and the CLI can access it:
+
+```bash
+mkdir -p /tmp/greptime-snapshots
+```
 
 Create a snapshot:
 
@@ -117,6 +134,8 @@ For AWS S3, use the same `--s3` options but omit `--s3-endpoint` unless you use 
 
 ## Export selected schemas
 
+By default, `export-v2 create` exports every schema except `information_schema`. This includes the `greptime_private` schema, and importing such a snapshot restores `greptime_private` as well. To exclude it, list the schemas you want explicitly with `--schemas`.
+
 Export only selected schemas with `--schemas`. You can pass a comma-separated list:
 
 ```bash
@@ -165,6 +184,19 @@ greptime cli data import-v2 \
   --addr 127.0.0.1:4000 \
   --from file:///tmp/greptime-snapshots/schema-only
 ```
+
+## Choose the data file format
+
+Use `--format` to choose the data file format. Supported values are `parquet`, `csv`, and `json`. The default is `parquet`.
+
+```bash
+greptime cli data export-v2 create \
+  --addr 127.0.0.1:4000 \
+  --to file:///tmp/greptime-snapshots/demo-csv \
+  --format csv
+```
+
+The format is recorded in the snapshot manifest. `import-v2` reads the format from the manifest and applies it automatically, so you do not need to specify the format again when importing.
 
 ## Export by time range and chunk window
 
@@ -354,6 +386,18 @@ Check that GreptimeDB is running and that `--addr` points to the HTTP endpoint:
 ```bash
 curl http://127.0.0.1:4000/health
 ```
+
+### `file://` path is outside the configured copy root
+
+If `export-v2 create` fails with an error such as the following, the snapshot path is outside the server's copy root:
+
+```text
+Local filesystem path '/tmp/greptime-snapshots/demo/data/greptime_private/1/' is outside the configured copy root or is unsafe
+```
+
+Set `storage.copy_root` to a directory that contains the snapshot path, or use a snapshot path under `<storage.data_home>/copy`. See [Migrate Local SQL File Access](/user-guide/deployments-administration/migrate-local-sql-file-access.md) for details.
+
+The failed run leaves a partial snapshot on disk, and `export-v2 verify` reports the failed chunk. After fixing the configuration, run the same `export-v2 create` command again to resume, or pass `--force` to recreate the snapshot.
 
 ### `--chunk-time-window` fails validation
 
