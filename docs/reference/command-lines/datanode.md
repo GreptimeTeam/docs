@@ -100,13 +100,15 @@ The `scanbench` subcommand benchmarks region scans directly from storage.
 | `--table-dir <TABLE_DIR>`            | Table directory used in open request (for example, `greptime/public/1024`).                                              |
 | `--scanner <seq\|unordered\|series>` | Scan strategy. Defaults to `seq`.                                                                                        |
 | `--scan-config <FILE>`               | JSON file used to tune the scan request.                                                                                 |
+| `--scan-configs <FILE>` | JSON array of named scan requests, each executed once. Conflicts with `--scan-config`. |
 | `--parallelism <N>`                  | Simulated scan parallelism. Defaults to `1`.                                                                             |
-| `--iterations <N>`                   | Benchmark iterations. Defaults to `1`.                                                                                   |
+| `--iterations <N>` | Single-request benchmark iterations. Defaults to `1`; must remain `1` with `--scan-configs`. |
 | `--path-type <bare\|data\|metadata>` | Region path type. Defaults to `bare`.                                                                                    |
 | `--enable-wal`                       | Enable WAL replay when opening the region. Disabled by default.                                                          |
 | `--pprof-file <FILE>`                | Output file path for pprof flamegraph (Unix only).                                                                       |
+| `--result-file <FILE>` | Write structured benchmark results as JSON after all scans succeed. Collects verbose scanner metrics. |
 | `--pprof-after-warmup`               | Start pprof after the first iteration (use the first iteration as warmup). Requires `--pprof-file`. Disabled by default. |
-| `-v`/`--verbose`                     | Enable verbose output.                                                                                                   |
+| `-v`/`--verbose` | Print verbose scanner metrics, per-partition statistics, and partition skew. |
 
 ### `scan-config` JSON
 
@@ -125,6 +127,65 @@ Notes:
 - `projection_names` uses exact (case-sensitive) column name matching.
 - `filters` should be SQL expressions (not full SQL statements).
 - `series_row_selector` currently supports only `last_row`.
+
+### Query suites with `scan-configs`
+
+Use `--scan-configs` to run a JSON array of scan requests. Each entry supports the same fields as `scan-config`, plus an optional `name`:
+
+```json
+[
+  {
+    "name": "cold",
+    "projection_names": ["host", "cpu"],
+    "filters": ["host = 'web-1'"]
+  },
+  {
+    "name": "hot-001",
+    "projection_names": ["host", "cpu"],
+    "filters": ["host = 'web-2'"]
+  }
+]
+```
+
+Save this as `scan-configs.json`, adjusting the columns and filters to match your region:
+
+```sh
+greptime datanode scanbench \
+  --config ./datanode.toml \
+  --region-id 1024:0 \
+  --table-dir greptime/public/1024 \
+  --scan-configs ./scan-configs.json \
+  --result-file ./scanbench-results.json \
+  --verbose
+```
+
+Suite rules:
+
+- `--scan-configs` and `--scan-config` are mutually exclusive.
+- The array must contain at least one request. Each request runs exactly once in file order; the array length determines the run count. `--iterations` must remain `1`.
+- Omitted names become `query-001`, `query-002`, and so on, based on their position in the array. Explicit names are trimmed of surrounding whitespace. All names, including generated names, must be non-empty and unique.
+- Scanbench validates every request before starting the benchmark and reports both overall averages and per-query summaries.
+- With `--pprof-file` and `--pprof-after-warmup`, the first request is the warmup and profiling starts before the second request. Use at least two requests. The warmup still contributes to the reported statistics.
+
+Without `--scan-configs`, the existing single-request mode continues to repeat the request according to `--iterations`.
+
+### Structured JSON results
+
+Use `--result-file <FILE>` with either a single request or a query suite to save benchmark results. The file is written after all scans complete successfully, replacing an existing file at that path. If configuration validation or any scan fails, the result file is not written. The option collects verbose scanner metrics even without `--verbose`.
+
+The JSON document contains:
+
+| Field | Description |
+| --- | --- |
+| `format_version` | Result format version, currently `1`. |
+| `started_at_unix_ms` | Benchmark start time in milliseconds since the Unix epoch. |
+| `benchmark` | Scanner, region identifiers, table directory, path type, parallelism, WAL setting, `config_mode` (`single` or `suite`), and run count. |
+| `runs` | Results in execution order, including query names, normalized configs, row and batch counts, setup/scan/total timing, memory sizes, partition statistics, and verbose `scanner_explain` output. |
+| `summary` | Overall run count, total rows and elapsed time, mean rows and elapsed time, and per-query summaries in `queries`. |
+
+Normalized configs use resolved column indexes in `projection`, including when the input uses `projection_names`. Duration fields end in `_ns` and use nanoseconds; size fields end in `_bytes`. Each partition includes row and batch counts, memory sizes, elapsed time, and `first_batch_elapsed_ns`, which is `null` if it produced no batch.
+
+Verbose terminal output also reports per-partition row counts, first-batch latency, elapsed time, and partition skew.
 
 ### Examples
 
