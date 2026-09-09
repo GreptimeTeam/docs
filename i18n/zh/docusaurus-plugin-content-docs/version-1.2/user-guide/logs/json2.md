@@ -63,6 +63,9 @@ VALUES
     );
 ```
 
+自定义 pipeline 也可以在 transform 配置中使用 `type: json2` 写入 JSON2 列。
+支持的 type hint 选项请参考 [pipeline 配置](/reference/pipeline/pipeline-config.md#type-字段)。
+
 ### 查询 JSON 字段
 
 可以直接通过点号路径读取 JSON2 中的字段：
