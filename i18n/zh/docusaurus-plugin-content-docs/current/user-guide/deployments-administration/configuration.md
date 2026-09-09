@@ -586,7 +586,7 @@ manifest_checkpoint_distance = 10
 max_background_flushes = 4
 max_background_compactions = 2
 max_background_purges = 4
-auto_flush_interval = "1h"
+auto_flush_interval = "10m"
 global_write_buffer_size = "1GB"
 global_write_buffer_reject_size = "2GB"
 default_region_write_buffer_size = "0"
@@ -633,7 +633,7 @@ Mito 根据表选项和 SST format 为每个 Region 选择 memtable 实现。`de
 | `max_background_flushes`                 | 整数   | `自动` | 后台 flush 任务数（默认：1/2 CPU 核心数）。                                                                              |
 | `max_background_compactions`            | 整数   | `自动` | 后台 compaction 任务数（默认：1/4 CPU 核心数）。                                                                      |
 | `max_background_purges`                | 整数   | `自动` | 后台 purge 任务数（默认：CPU 核心数）。                                                                                  |
-| `auto_flush_interval`                    | 字符串 | `1h`          | 自动 flush 超过 `auto_flush_interval` 没 flush 的 region。可以通过[表选项 `auto_flush_interval`](/reference/sql/create.md#table-options) 按表覆盖 |
+| `auto_flush_interval`                    | 字符串 | `10m`          | 自动 flush 超过 `auto_flush_interval` 没 flush 的 region。可以通过[表选项 `auto_flush_interval`](/reference/sql/create.md#table-options) 按表覆盖 |
 | `global_write_buffer_size`               | 字符串 | `1GB`         | 写入缓冲区大小，默认值为内存总量的 1/8，但不会超过 1GB                                                                 |
 | `global_write_buffer_reject_size`        | 字符串 | `2GB`         | 写入缓冲区内数据的大小超过 `global_write_buffer_reject_size` 后拒绝写入请求，默认为 `global_write_buffer_size` 的 2 倍 |
 | `default_region_write_buffer_size`       | 字符串 | `0`           | 默认的单 region 写缓冲区阻塞阈值。设置为正值后，mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入。设置为 `0` 会禁用默认单 region 限制。表级 `write_buffer_size` 会覆盖该值，包括显式设置为 `0` 以禁用该表的限制。 |
@@ -672,6 +672,8 @@ Mito 根据表选项和 SST format 为每个 Region 选择 memtable 实现。`de
 | `inverted_index.apply_on_query`          | 字符串 | `auto`        | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                          |
 | `inverted_index.mem_threshold_on_create` | 字符串 | `64M`         | 创建索引时如果超过该内存阈值则改为使用外部排序<br/>设置为空会关闭外排，在内存中完成所有排序                            |
 | `inverted_index.intermediate_path`       | 字符串 | `""`          | 存放外排临时文件的路径 (默认 `{data_home}/index_intermediate`).                                                        |
+
+`auto_flush_interval` 默认为 10 分钟。在 Mito 引擎配置中显式设置的值会覆盖默认值；表级 `auto_flush_interval` 设置会覆盖引擎级配置。
 
 `metric` 引擎针对包含大量小表的 metrics 数据进行了优化。
 
