@@ -70,6 +70,11 @@ VALUES
     );
 ```
 
+Custom pipelines can also write JSON2 columns by using `type: json2` in the
+transform configuration. See the
+[pipeline configuration reference](/reference/pipeline/pipeline-config.md#the-type-field)
+for the supported type-hint options.
+
 ### Query JSON fields
 
 You can read fields from JSON2 directly with dot paths:
