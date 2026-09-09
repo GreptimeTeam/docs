@@ -166,3 +166,97 @@ greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-
 ```sh
 greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir greptime/public/1024 --iterations 5 --pprof-file ./scanbench.svg --pprof-after-warmup
 ```
+
+## parquetbench
+
+`parquetbench` 子命令用于对单个 GreptimeDB Parquet SST 文件的读取性能进行基准测试，支持本地文件和 datanode 或 standalone 配置中指定的对象存储。
+
+文件必须包含 GreptimeDB region 元数据。不含这些元数据的普通 Parquet 文件无法使用此命令进行基准测试。
+
+### 选项
+
+查看当前二进制支持的选项：
+
+```sh
+greptime datanode parquetbench --help
+```
+
+| 选项 | 描述 |
+| --- | --- |
+| `--file-path <FILE>` | 本地 GreptimeDB SST 文件。仅支持 `direct` reader。 |
+| `--config <FILE>` | 用于访问对象存储的 datanode/standalone TOML 配置文件。region 模式下必填。 |
+| `--region-id <REGION_ID>` | Region ID，支持打包后的无符号整数或 `<table_id>:<region_number>` 格式，例如 `1024:0`。region 模式下必填。 |
+| `--table-dir <TABLE_DIR>` | 相对于 data home 的表目录，例如 `data/greptime/public/1024`。region 模式下必填。 |
+| `--file-id <FILE_ID>` | SST 文件的 UUID。region 模式下必填。 |
+| `--reader <direct\|flat-prune>` | Reader 实现，默认为 `direct`。`flat-prune` 使用存储引擎的 flat pruning reader，仅支持 region 模式。 |
+| `--path-type <bare\|data\|metadata>` | region 模式下的路径类型，默认为 `bare`。 |
+| `--scan-config <FILE>` | 用于选择列和行组的 JSON 文件。 |
+| `--iterations <N>` | 基准测试迭代次数，默认为 `1`。 |
+| `--batch-size <ROWS>` | `direct` reader 每个 record batch 的行数，必须大于零，默认为 `8192`。 |
+| `--pk-as-binary` | 使用 `direct` reader 时，将 `__primary_key` 读取为二进制数组而非字典数组。默认关闭。 |
+| `--pprof-file <FILE>` | SVG 火焰图的输出路径（仅 Unix）。 |
+| `--pprof-after-warmup` | 在第一次迭代后开始性能分析。需配合 `--pprof-file` 使用，且迭代次数至少为 2。默认关闭。 |
+| `-v`/`--verbose` | 启用详细输出。 |
+
+本地文件模式不能与 `--config`、`--region-id`、`--table-dir` 或 `--file-id` 同时使用。不指定 `--file-path` 时，必须提供这四个 region 模式参数。
+
+### 对本地 SST 进行基准测试
+
+```sh
+greptime datanode parquetbench \
+  --file-path /tmp/source.parquet \
+  --reader direct \
+  --iterations 5 \
+  --batch-size 8192
+```
+
+命令会输出每次迭代的行数、record batch 数、耗时和吞吐量。执行多次迭代时，还会输出平均值。
+
+### 对对象存储中的 SST 进行基准测试
+
+```sh
+greptime datanode parquetbench \
+  --config ./datanode.toml \
+  --region-id 1024:0 \
+  --table-dir data/greptime/public/1024 \
+  --file-id 00020380-009c-426d-953e-b4e34c15af34 \
+  --path-type bare \
+  --reader flat-prune \
+  --iterations 5
+```
+
+请使用与目标 SST 对应的配置文件、Region ID、表目录、文件 ID 和路径类型。
+
+### 选择列和行组
+
+将以下内容保存为 `parquet-scan.json`，并根据 SST 的实际内容调整列名和行组索引：
+
+```json
+{
+  "projection_names": ["host", "value", "ts"],
+  "row_groups": [0, 2]
+}
+```
+
+两个字段都是可选的。不设置 `projection_names` 时读取所有列，不设置 `row_groups` 时读取所有行组。行组索引从 0 开始，且必须在文件中存在。列名区分大小写。使用 `direct` reader 时，列名对应 SST schema 中的列；使用 `flat-prune` 时，列名对应 region 中的列，内部列名会被忽略。
+
+```sh
+greptime datanode parquetbench \
+  --file-path /tmp/source.parquet \
+  --scan-config ./parquet-scan.json \
+  --iterations 5
+```
+
+### 预热后进行性能分析
+
+在 Unix 上生成火焰图，并跳过第一次迭代的性能分析：
+
+```sh
+greptime datanode parquetbench \
+  --file-path /tmp/source.parquet \
+  --iterations 5 \
+  --pprof-file ./parquetbench.svg \
+  --pprof-after-warmup
+```
+
+第一次迭代仍计入输出的平均值。
