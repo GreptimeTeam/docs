@@ -495,6 +495,7 @@ enable_otlp_tracing = false
 enable_per_region_metrics = false
 otlp_endpoint = "localhost:4317"
 append_stdout = true
+max_log_dir_size = "0B"
 [logging.tracing_sample_ratio]
 default_ratio = 1.0
 ```
@@ -505,6 +506,7 @@ default_ratio = 1.0
 - `enable_per_region_metrics`：是否暴露 Prometheus 的 Region 维度查询负载指标，包括 `greptime_mito_region_query_cpu_time` 和 `greptime_mito_region_query_scanned_bytes`。该选项默认关闭，因为它会为每个 Region 产生一条时间序列。通过 heartbeat 上报并在 `INFORMATION_SCHEMA.REGION_STATISTICS` 中暴露的查询统计信息不受该选项控制。
 - `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
 - `append_stdout`：是否将日志打印到 stdout。默认是`true`。
+- `max_log_dir_size`：`dir` 中受管理日志文件的最大总大小。必要时会在写入前删除较旧的已关闭日志文件，但活动文件可能会超过此限制。设置为 `0B` 可禁用此限制。
 - `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
 
 如何使用分布式追踪，请参考 [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)

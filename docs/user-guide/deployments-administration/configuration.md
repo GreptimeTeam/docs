@@ -493,6 +493,7 @@ enable_otlp_tracing = false
 enable_per_region_metrics = false
 otlp_endpoint = "localhost:4317"
 append_stdout = true
+max_log_dir_size = "0B"
 [logging.tracing_sample_ratio]
 default_ratio = 1.0
 ```
@@ -503,6 +504,7 @@ default_ratio = 1.0
 - `enable_per_region_metrics`: whether to expose Prometheus per-region query load metrics, including `greptime_mito_region_query_cpu_time` and `greptime_mito_region_query_scanned_bytes`. This option is disabled by default because it creates one time series per region. Query stats reported through heartbeats and exposed in `INFORMATION_SCHEMA.REGION_STATISTICS` are not controlled by this option.
 - `otlp_endpoint`: Export the target endpoint of tracing using gRPC-based OTLP protocol, the default value is `localhost:4317`.
 - `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
+- `max_log_dir_size`: The maximum total size of managed log files in `dir`. Old closed log files are removed before writing when necessary, while active files may exceed the limit. Set to `0B` to disable.
 - `tracing_sample_ratio`: This field can configure the sampling rate of tracing. How to use `tracing_sample_ratio`, please refer to [How to configure tracing sampling rate](/user-guide/deployments-administration/monitoring/tracing.md#guide-how-to-configure-tracing-sampling-rate).
 
 How to use distributed tracing, please reference [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#tutorial-use-jaeger-to-trace-greptimedb)
