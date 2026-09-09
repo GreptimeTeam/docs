@@ -8,24 +8,11 @@ date: 2026-09-08
 
 Release date: September 8, 2026
 
-GreptimeDB v1.2.0 adds JSON2 storage and query capabilities, Prometheus Remote
-Write v2 ingestion, Flow runtime observability, and dashboard updates, alongside
-query and ingestion improvements.
+GreptimeDB v1.2.0 adds JSON2 storage and query capabilities, Prometheus Remote Write v2 ingestion, Flow runtime observability, and dashboard updates, alongside query and ingestion improvements.
 
 ### 👍 Highlights
 
-**JSON2 v2 storage and SQL access.** JSON2 v2 storage is enabled, with SQL paths
-and functions, list indexing, empty and null handling, and table-aware pipelines
-([#8909](https://github.com/GreptimeTeam/greptimedb/pull/8909),
-[#8928](https://github.com/GreptimeTeam/greptimedb/pull/8928),
-[#8940](https://github.com/GreptimeTeam/greptimedb/pull/8940),
-[#8979](https://github.com/GreptimeTeam/greptimedb/pull/8979),
-[#9007](https://github.com/GreptimeTeam/greptimedb/pull/9007),
-[#9010](https://github.com/GreptimeTeam/greptimedb/pull/9010),
-[#9013](https://github.com/GreptimeTeam/greptimedb/pull/9013),
-[#9027](https://github.com/GreptimeTeam/greptimedb/pull/9027), and
-[#8964](https://github.com/GreptimeTeam/greptimedb/pull/8964)). For example,
-JSON2 fields can be accessed with dot paths or `json_get`:
+**JSON2 v2 storage and SQL access.** JSON2 v2 storage is enabled, with SQL paths and functions, list indexing, empty and null handling, and table-aware pipelines ([#8909](https://github.com/GreptimeTeam/greptimedb/pull/8909), [#8928](https://github.com/GreptimeTeam/greptimedb/pull/8928), [#8940](https://github.com/GreptimeTeam/greptimedb/pull/8940), [#8979](https://github.com/GreptimeTeam/greptimedb/pull/8979), [#9007](https://github.com/GreptimeTeam/greptimedb/pull/9007), [#9010](https://github.com/GreptimeTeam/greptimedb/pull/9010), [#9013](https://github.com/GreptimeTeam/greptimedb/pull/9013), [#9027](https://github.com/GreptimeTeam/greptimedb/pull/9027), and [#8964](https://github.com/GreptimeTeam/greptimedb/pull/8964)). For example, JSON2 fields can be accessed with dot paths or `json_get`:
 
 ```sql
 CREATE TABLE application_logs (
@@ -42,15 +29,7 @@ SELECT
 FROM application_logs;
 ```
 
-**Prometheus Remote Write v2 and experimental native histograms.** GreptimeDB can
-ingest Prometheus Remote Write v2 requests and query native histograms through
-PromQL
-([#8361](https://github.com/GreptimeTeam/greptimedb/pull/8361),
-[#8382](https://github.com/GreptimeTeam/greptimedb/pull/8382),
-[#8654](https://github.com/GreptimeTeam/greptimedb/pull/8654),
-[#8664](https://github.com/GreptimeTeam/greptimedb/pull/8664), and
-[#8693](https://github.com/GreptimeTeam/greptimedb/pull/8693)). Native-histogram
-ingestion is experimental and disabled by default. To enable it in GreptimeDB:
+**Prometheus Remote Write v2 and experimental native histograms.** GreptimeDB can ingest Prometheus Remote Write v2 requests and query native histograms through PromQL ([#8361](https://github.com/GreptimeTeam/greptimedb/pull/8361), [#8382](https://github.com/GreptimeTeam/greptimedb/pull/8382), [#8654](https://github.com/GreptimeTeam/greptimedb/pull/8654), [#8664](https://github.com/GreptimeTeam/greptimedb/pull/8664), and [#8693](https://github.com/GreptimeTeam/greptimedb/pull/8693)). Native-histogram ingestion is experimental and disabled by default. To enable it in GreptimeDB:
 
 ```toml
 [http]
@@ -65,23 +44,11 @@ remote_write:
     protobuf_message: io.prometheus.write.v2.Request
 ```
 
-**More efficient series queries.** Dictionary-encoded series keys, correct
-regex filtering on dictionary-encoded columns, and RangeSelect projection
-pruning improve query efficiency ([#8541](https://github.com/GreptimeTeam/greptimedb/pull/8541),
-[#8688](https://github.com/GreptimeTeam/greptimedb/pull/8688), and
-[#8570](https://github.com/GreptimeTeam/greptimedb/pull/8570)).
+**More efficient series queries.** Dictionary-encoded series keys, correct regex filtering on dictionary-encoded columns, and RangeSelect projection pruning improve query efficiency ([#8541](https://github.com/GreptimeTeam/greptimedb/pull/8541), [#8688](https://github.com/GreptimeTeam/greptimedb/pull/8688), and [#8570](https://github.com/GreptimeTeam/greptimedb/pull/8570)).
 
-**Splunk HEC ingestion.** Send structured events or raw logs directly to
-`/v1/splunk/services/collector/event` or `/v1/splunk/services/collector/raw`
-using Splunk HEC-compatible clients ([#8321](https://github.com/GreptimeTeam/greptimedb/pull/8321)
-and [#8491](https://github.com/GreptimeTeam/greptimedb/pull/8491)).
+**Splunk HEC ingestion.** Send structured events or raw logs directly to `/v1/splunk/services/collector/event` or `/v1/splunk/services/collector/raw` using Splunk HEC-compatible clients ([#8321](https://github.com/GreptimeTeam/greptimedb/pull/8321) and [#8491](https://github.com/GreptimeTeam/greptimedb/pull/8491)).
 
-**Flow runtime status.** `SHOW FLOW STATUS` and
-`information_schema.flow_statistics` expose Flow runtime statistics
-([#8392](https://github.com/GreptimeTeam/greptimedb/pull/8392)); distributed
-Flow reports `start_time` and `uptime_seconds` as `NULL` in this release.
-[#8729](https://github.com/GreptimeTeam/greptimedb/pull/8729) fixes Flow
-statistics aggregation and quoting.
+**Flow runtime status.** `SHOW FLOW STATUS` and `information_schema.flow_statistics` expose Flow runtime statistics ([#8392](https://github.com/GreptimeTeam/greptimedb/pull/8392)); distributed Flow reports `start_time` and `uptime_seconds` as `NULL` in this release. [#8729](https://github.com/GreptimeTeam/greptimedb/pull/8729) fixes Flow statistics aggregation and quoting.
 
 ```sql
 SHOW FLOW STATUS LIKE 'my%';
@@ -90,71 +57,26 @@ SELECT * FROM information_schema.flow_statistics;
 
 #### Dashboard
 
-The bundled GreptimeDB dashboard is updated from **v0.12.2** (bundled with
-v1.1.0) to **v0.13.13**. The update includes:
+The bundled GreptimeDB dashboard is updated from **v0.12.2** (bundled with v1.1.0) to **v0.13.13**. The update includes:
 
 - Dashboard snapshots ([dashboard#627](https://github.com/GreptimeTeam/dashboard/pull/627)).
-- Resizable and expandable tables, and full-screen query results
-  ([dashboard#638](https://github.com/GreptimeTeam/dashboard/pull/638) and
-  [dashboard#639](https://github.com/GreptimeTeam/dashboard/pull/639)).
-- Trace-table selection and edition/build information
-  ([dashboard#640](https://github.com/GreptimeTeam/dashboard/pull/640) and
-  [dashboard#641](https://github.com/GreptimeTeam/dashboard/pull/641)).
-- A command palette and reconnection after changing hosts
-  ([dashboard#642](https://github.com/GreptimeTeam/dashboard/pull/642) and
-  [dashboard#644](https://github.com/GreptimeTeam/dashboard/pull/644)).
+- Resizable and expandable tables, and full-screen query results ([dashboard#638](https://github.com/GreptimeTeam/dashboard/pull/638) and [dashboard#639](https://github.com/GreptimeTeam/dashboard/pull/639)).
+- Trace-table selection and edition/build information ([dashboard#640](https://github.com/GreptimeTeam/dashboard/pull/640) and [dashboard#641](https://github.com/GreptimeTeam/dashboard/pull/641)).
+- A command palette and reconnection after changing hosts ([dashboard#642](https://github.com/GreptimeTeam/dashboard/pull/642) and [dashboard#644](https://github.com/GreptimeTeam/dashboard/pull/644)).
 
-Dashboard integration updates are included in
-[#8687](https://github.com/GreptimeTeam/greptimedb/pull/8687) and
-[#8898](https://github.com/GreptimeTeam/greptimedb/pull/8898).
+Dashboard integration updates are included in [#8687](https://github.com/GreptimeTeam/greptimedb/pull/8687) and [#8898](https://github.com/GreptimeTeam/greptimedb/pull/8898).
 
 ### Breaking changes and upgrade notes
 
-- **Local SQL filesystem access is sandboxed.** In standalone deployments,
-  local `COPY` and external-table paths are limited to the copy root; in
-  distributed deployments, those local paths are disabled. Before upgrading,
-  follow the [local SQL file access migration guide](https://docs.greptime.com/1.2/user-guide/deployments-administration/migrate-local-sql-file-access)
-  to move data, set a dedicated copy root, or move the workflow to object
-  storage ([#8708](https://github.com/GreptimeTeam/greptimedb/pull/8708)) by
-  [@fengjiachun](https://github.com/fengjiachun).
-- **`holt_winters` was removed.** Use `double_exponential_smoothing` instead
-  ([#8457](https://github.com/GreptimeTeam/greptimedb/pull/8457)) by
-  [@shuiyisong](https://github.com/shuiyisong).
-- **`sparse_primary_key_encoding` was removed.** Metric-engine data regions
-  default to sparse primary-key encoding. Existing configurations still load, but
-  this option is ignored. Remove it when updating configuration
-  ([#8470](https://github.com/GreptimeTeam/greptimedb/pull/8470))
-  by [@sunng87](https://github.com/sunng87).
-- **Out-of-range pipeline integer conversions no longer silently wrap.**
-  Integer narrowing now checks the target range and follows the configured
-  `on_failure` behavior when a value does not fit ([#8589](https://github.com/GreptimeTeam/greptimedb/pull/8589))
-  by [@discord9](https://github.com/discord9).
-- **Soft-drop and recovery are Enterprise Edition features.** In beta1, these
-  operations were available in OSS; from beta2 onward, an OSS metasrv rejects
-  `gc.experimental_soft_drop.enable = true`. Before upgrading from beta1,
-  recover any soft-dropped tables you need. OSS cannot recover or purge tables
-  already soft-dropped in beta1 and does not clean up their expired tombstones;
-  Enterprise Edition is required to continue that lifecycle
-  ([#8747](https://github.com/GreptimeTeam/greptimedb/pull/8747)) by
-  [@v0y4g3r](https://github.com/v0y4g3r).
-- **Native histogram persisted fields changed signedness.** Span-length list
-  elements changed from `UInt32` to `Int32`; integer count fields changed from
-  `UInt64` to `Int64`, with `count_u64`/`zero_count_u64` renamed to
-  `count_i64`/`zero_count_i64`. Native-histogram Struct data written by earlier
-  betas with the old schema
-  may be unreadable. This caveat concerns the experimental beta feature, not
-  ordinary v1.1 metric tables. There is no migration, downgrade, or
-  mixed-version compatibility layer; plan migration or reingestion before upgrading
-  ([#8824](https://github.com/GreptimeTeam/greptimedb/pull/8824)) by
-  [@sunng87](https://github.com/sunng87).
-- **Legacy JSON2 tables require upgrade testing.** Existing non-append tables
-  using the legacy `greptime.json` type can fail during flush or compaction
-  after upgrade. This known limitation is not fixed in v1.2.0. Test
-  representative data, retain backups, and plan migration before upgrading.
+- **Local SQL filesystem access is sandboxed.** In standalone deployments, local `COPY` and external-table paths are limited to the copy root; in distributed deployments, those local paths are disabled. Before upgrading, follow the [local SQL file access migration guide](https://docs.greptime.com/1.2/user-guide/deployments-administration/migrate-local-sql-file-access) to move data, set a dedicated copy root, or move the workflow to object storage ([#8708](https://github.com/GreptimeTeam/greptimedb/pull/8708)) by [@fengjiachun](https://github.com/fengjiachun).
+- **`holt_winters` was removed.** Use `double_exponential_smoothing` instead ([#8457](https://github.com/GreptimeTeam/greptimedb/pull/8457)) by [@shuiyisong](https://github.com/shuiyisong).
+- **`sparse_primary_key_encoding` was removed.** Metric-engine data regions default to sparse primary-key encoding. Existing configurations still load, but this option is ignored. Remove it when updating configuration ([#8470](https://github.com/GreptimeTeam/greptimedb/pull/8470)) by [@sunng87](https://github.com/sunng87).
+- **Out-of-range pipeline integer conversions no longer silently wrap.** Integer narrowing now checks the target range and follows the configured `on_failure` behavior when a value does not fit ([#8589](https://github.com/GreptimeTeam/greptimedb/pull/8589)) by [@discord9](https://github.com/discord9).
+- **Soft-drop and recovery are Enterprise Edition features.** In beta1, these operations were available in OSS; from beta2 onward, an OSS metasrv rejects `gc.experimental_soft_drop.enable = true`. Before upgrading from beta1, recover any soft-dropped tables you need. OSS cannot recover or purge tables already soft-dropped in beta1 and does not clean up their expired tombstones; Enterprise Edition is required to continue that lifecycle ([#8747](https://github.com/GreptimeTeam/greptimedb/pull/8747)) by [@v0y4g3r](https://github.com/v0y4g3r).
+- **Native histogram persisted fields changed signedness.** Span-length list elements changed from `UInt32` to `Int32`; integer count fields changed from `UInt64` to `Int64`, with `count_u64`/`zero_count_u64` renamed to `count_i64`/`zero_count_i64`. Native-histogram Struct data written by earlier betas with the old schema may be unreadable. This caveat concerns the experimental beta feature, not ordinary v1.1 metric tables. There is no migration, downgrade, or mixed-version compatibility layer; plan migration or reingestion before upgrading ([#8824](https://github.com/GreptimeTeam/greptimedb/pull/8824)) by [@sunng87](https://github.com/sunng87).
+- **Legacy JSON2 tables require upgrade testing.** Existing non-append tables using the legacy `greptime.json` type can fail during flush or compaction after upgrade. This known limitation is not fixed in v1.2.0. Test representative data, retain backups, and plan migration before upgrading.
 
-The changelog below covers changes since v1.1.0, excluding those already shipped
-in v1.1.1–v1.1.4. Earlier soft-drop work is listed for attribution but is
-Enterprise-only in this release.
+The changelog below covers changes since v1.1.0, excluding those already shipped in v1.1.1–v1.1.4. Earlier soft-drop work is listed for attribution but is Enterprise-only in this release.
 
 ### 🚀 Features
 
