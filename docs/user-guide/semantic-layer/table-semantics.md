@@ -91,6 +91,10 @@ ALTER TABLE my_metrics SET 'greptime.semantic.metric.unit' = 's';
 ALTER TABLE my_metrics UNSET 'greptime.semantic.metric.unit';
 ```
 
+A single `SET` or `UNSET` statement cannot mix `greptime.semantic.*` keys with regular table options such as `ttl`. Changing both takes two statements.
+
+Logical tables of the metric engine accept `SET` and `UNSET` for `greptime.semantic.*` options; they still reject regular table options.
+
 The options appear in `SHOW CREATE TABLE` output and in the `table_semantics` view.
 
 ## Discovering semantic metadata

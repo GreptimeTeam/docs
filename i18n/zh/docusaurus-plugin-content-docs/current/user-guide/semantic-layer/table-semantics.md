@@ -91,6 +91,10 @@ ALTER TABLE my_metrics SET 'greptime.semantic.metric.unit' = 's';
 ALTER TABLE my_metrics UNSET 'greptime.semantic.metric.unit';
 ```
 
+同一条 `SET` 或 `UNSET` 语句不能同时包含 `greptime.semantic.*` 键和 `ttl` 这类常规表选项，两者要分成两条语句修改。
+
+Metric engine 的逻辑表支持对 `greptime.semantic.*` 选项执行 `SET` 和 `UNSET`，但仍然不支持修改常规表选项。
+
 这些选项会出现在 `SHOW CREATE TABLE` 的输出和 `table_semantics` 视图里。
 
 ## 查询语义元数据

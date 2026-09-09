@@ -108,4 +108,5 @@ The description of columns in the `TABLES` table is as follows:
 - `version`:  Version. The value is `11` by default.
 - `create_time`: The table created timestamp.
 - `table_comment`: The table comment.
+- `create_options`: The table options as space-separated `key=value` pairs, covering the options set in `CREATE TABLE ... WITH (...)` or by `ALTER TABLE`. Empty when the table carries no option.
 - Other columns such as `auto_increment`, `row_format` etc. are not supported, just for compatibility with MySQL. GreptimeDB may support some of them in the future.
