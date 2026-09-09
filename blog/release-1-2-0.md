@@ -3,16 +3,15 @@ keywords: [release, GreptimeDB, changelog, v1.2.0]
 description: GreptimeDB v1.2.0 Changelog
 date: 2026-09-08
 ---
-
 # v1.2.0
 
 Release date: September 8, 2026
 
-GreptimeDB v1.2.0 adds JSON2 storage and query capabilities, Prometheus Remote Write v2 ingestion, Flow runtime observability, and dashboard updates, alongside query and ingestion improvements.
+GreptimeDB v1.2.0 adds new structural stored JSON data type ("`JSON2`") and query capabilities, Prometheus Remote Write v2 ingestion, Flow runtime observability, and dashboard updates, alongside query and ingestion improvements.
 
 ### 👍 Highlights
 
-**JSON2 v2 storage and SQL access.** JSON2 v2 storage is enabled, with SQL paths and functions, list indexing, empty and null handling, and table-aware pipelines ([#8909](https://github.com/GreptimeTeam/greptimedb/pull/8909), [#8928](https://github.com/GreptimeTeam/greptimedb/pull/8928), [#8940](https://github.com/GreptimeTeam/greptimedb/pull/8940), [#8979](https://github.com/GreptimeTeam/greptimedb/pull/8979), [#9007](https://github.com/GreptimeTeam/greptimedb/pull/9007), [#9010](https://github.com/GreptimeTeam/greptimedb/pull/9010), [#9013](https://github.com/GreptimeTeam/greptimedb/pull/9013), [#9027](https://github.com/GreptimeTeam/greptimedb/pull/9027), and [#8964](https://github.com/GreptimeTeam/greptimedb/pull/8964)). For example, JSON2 fields can be accessed with dot paths or `json_get`:
+**New structural stored JSON data type and dot-style SQL access.** JSON data can be stored as structs, instead of as a whole blob (JSONB). Featured with SQL paths and functions, list indexing, empty and null handling, and table-aware pipelines ([#8909](https://github.com/GreptimeTeam/greptimedb/pull/8909), [#8928](https://github.com/GreptimeTeam/greptimedb/pull/8928), [#8940](https://github.com/GreptimeTeam/greptimedb/pull/8940), [#8979](https://github.com/GreptimeTeam/greptimedb/pull/8979), [#9007](https://github.com/GreptimeTeam/greptimedb/pull/9007), [#9010](https://github.com/GreptimeTeam/greptimedb/pull/9010), [#9013](https://github.com/GreptimeTeam/greptimedb/pull/9013), [#9027](https://github.com/GreptimeTeam/greptimedb/pull/9027), and [#8964](https://github.com/GreptimeTeam/greptimedb/pull/8964)). For example, JSON2 fields can be accessed with dot paths or `json_get`:
 
 ```sql
 CREATE TABLE application_logs (
