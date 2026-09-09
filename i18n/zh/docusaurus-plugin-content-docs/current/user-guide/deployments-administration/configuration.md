@@ -509,6 +509,17 @@ default_ratio = 1.0
 
 如何使用分布式追踪，请参考 [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
 
+### Pipeline 选项
+
+frontend 和 standalone 会在内存中缓存 Pipeline 定义，缓存配置位于 `[pipeline]` 部分：
+
+```toml
+[pipeline]
+cache_ttl = "10s"
+```
+
+- `cache_ttl`：本地 Pipeline 缓存的存活时间，默认值为 `10s`。在集群中，在某个 Frontend 上创建或删除 Pipeline 后，最多经过该时间才会在其他 Frontend 上生效。调大该值会减少对 `greptime_private.pipelines` 表的读取，同时增加上述延迟。
+
 ### 事件记录配置
 
 记录的事件保存在 `greptime_private.events` 系统表中。
