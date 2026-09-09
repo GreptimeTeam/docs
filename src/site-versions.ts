@@ -43,3 +43,39 @@ export function resolveLastVersion(
   });
   return stable ?? versions[0];
 }
+
+/** Top-level routes that are not documentation pages of the root version. */
+const NON_DOC_SEGMENTS = ['release-notes', 'search', 'nightly'];
+
+function isUnderSegment(routePath: string, segment: string): boolean {
+  return routePath === `/${segment}` || routePath.startsWith(`/${segment}/`);
+}
+
+/**
+ * Maps a route of the root version to its `/<lastVersion>/` alias.
+ *
+ * The version served at the root has no version prefix, so a URL written with
+ * an explicit version number (`/1.2/user-guide/overview`) does not resolve.
+ * The alias is a client-side redirect back to the root path, keeping one
+ * canonical URL per page. When the next version is promoted to the root, the
+ * previous number stops being aliased and becomes a real prefixed version.
+ *
+ * @param routePath a route emitted by the build, with a leading slash
+ * @param lastVersion the version served at the site root
+ * @param otherVersions every version served under a `/<version>/` prefix
+ * @returns the alias path, or null when the route is not a root-version doc
+ */
+export function stableVersionAliasPath(
+  routePath: string,
+  lastVersion: string,
+  otherVersions: string[],
+): string | null {
+  if (routePath === '/404.html') {
+    return null;
+  }
+  const excluded = [...NON_DOC_SEGMENTS, ...otherVersions];
+  if (excluded.some((segment) => isUnderSegment(routePath, segment))) {
+    return null;
+  }
+  return `/${lastVersion}${routePath}`;
+}

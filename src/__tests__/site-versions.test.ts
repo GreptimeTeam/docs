@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-import { resolveLastVersion } from '../site-versions';
+import { resolveLastVersion, stableVersionAliasPath } from '../site-versions';
 
 let rootDir: string;
 
@@ -53,5 +53,34 @@ describe('resolveLastVersion', () => {
     writeVariables('1.2', 'v1.2.0-beta.1');
     writeVariables('1.1', 'v1.1.0-rc.1');
     expect(resolveLastVersion(['1.2', '1.1'], rootDir)).toBe('1.2');
+  });
+});
+
+describe('stableVersionAliasPath', () => {
+  const alias = (routePath: string) =>
+    stableVersionAliasPath(routePath, '1.2', ['1.1', '1.0']);
+
+  it('aliases a root-version doc page', () => {
+    expect(alias('/user-guide/overview/')).toBe('/1.2/user-guide/overview/');
+  });
+
+  it('aliases the root page', () => {
+    expect(alias('/')).toBe('/1.2/');
+  });
+
+  it('skips nightly and prefixed versions', () => {
+    expect(alias('/nightly/user-guide/overview/')).toBeNull();
+    expect(alias('/1.1/user-guide/overview/')).toBeNull();
+    expect(alias('/1.0/')).toBeNull();
+  });
+
+  it('skips non-doc routes', () => {
+    expect(alias('/release-notes/')).toBeNull();
+    expect(alias('/search')).toBeNull();
+    expect(alias('/404.html')).toBeNull();
+  });
+
+  it('matches whole path segments only', () => {
+    expect(alias('/nightly-builds/')).toBe('/1.2/nightly-builds/');
   });
 });
