@@ -52,7 +52,7 @@ greptime datanode start -c config/datanode.example.toml
 greptime datanode start --grpc-bind-addr=0.0.0.0:4001 --metasrv-addrs=0.0.0.0:3002 --node-id=1
 ```
 
-[`datanode.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0-beta.2/config/datanode.example.toml) 位于 GreptimeDB 仓库中。`-c` 选项用于选择配置文件，详见[配置](/user-guide/deployments-administration/configuration.md)。
+[`datanode.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0/config/datanode.example.toml) 位于 GreptimeDB 仓库中。`-c` 选项用于选择配置文件，详见[配置](/user-guide/deployments-administration/configuration.md)。
 
 ## objbench
 

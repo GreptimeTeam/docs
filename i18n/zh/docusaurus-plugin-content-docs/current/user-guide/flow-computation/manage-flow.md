@@ -271,7 +271,7 @@ GROUP BY time_window;
 | `SELECT * FROM information_schema.flows;` | 查看 Flow 定义。 |
 | `SELECT * FROM information_schema.flow_statistics;` | 查看 Flow 运行时统计信息。 |
 
-在分布式部署中，运行时字段初始可能为 `NULL`，其值也可能落后于最新状态。
+在分布式部署中，运行时字段初始可能为 `NULL`，其值也可能落后于最新状态。返回的列参见 [`SHOW FLOW STATUS`](/reference/sql/show.md#show-flow-status) 和 [`INFORMATION_SCHEMA.FLOW_STATISTICS`](/reference/sql/information-schema/flow-statistics.md)。
 
 ## 刷新 flow
 

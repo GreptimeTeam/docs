@@ -61,6 +61,7 @@ The tables below distinguish implemented metadata tables from compatibility tabl
 | [`REGION_STATISTICS`](./region-statistics.md) | Provides details about region statistics info, such as disk size, etc. |
 | [`CLUSTER_INFO`](./cluster-info.md)| Provides the topology information of the cluster.|
 | [`FLOWS`](./flows.md) | Provides the flow information.|
+| [`FLOW_STATISTICS`](./flow-statistics.md) | Provides runtime statistics for flows.|
 | [`PROCEDURE_INFO`](./procedure-info.md) | Procedure information.|
 | [`PROCESS_LIST`](./process-list.md) | Running queries information.|
 | [`RECYCLE_BIN`](./recycle-bin.md) | Provides soft-dropped tables that are still eligible for restore. |

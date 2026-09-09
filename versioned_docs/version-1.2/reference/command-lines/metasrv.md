@@ -41,4 +41,4 @@ Start Metasrv from a configuration file:
 greptime metasrv start -c config/metasrv.example.toml
 ```
 
-The [`metasrv.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0-beta.2/config/metasrv.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md).
+The [`metasrv.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0/config/metasrv.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md).

@@ -61,6 +61,7 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 | [`REGION_STATISTICS`](./region-statistics.md) | 提供 Region 的详细统计信息，例如行数等。 |
 | [`CLUSTER_INFO`](./cluster-info.md)| 提供了集群的节点拓扑信息。|
 | [`FLOWS`](./flows.md) | 提供 Flow 相关信息。|
+| [`FLOW_STATISTICS`](./flow-statistics.md) | 提供 Flow 的运行统计信息。|
 | [`PROCEDURE_INFO`](./procedure-info.md) | 提供 Procedure 相关信息。|
 | [`PROCESS_LIST`](./process-list.md) | 提供集群内正在执行的查询信息。 |
 | [`RECYCLE_BIN`](./recycle-bin.md) | 提供仍可恢复的 soft-dropped table。 |

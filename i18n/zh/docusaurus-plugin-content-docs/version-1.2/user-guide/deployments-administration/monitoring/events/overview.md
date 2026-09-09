@@ -11,7 +11,7 @@ GreptimeDB 会异步写入事件记录，通常每 5 秒刷新一次。刚完成
 
 ## 配置事件记录
 
-配置选项以及 standalone 和 Metasrv 支持的事件类型请参阅[事件记录配置](/user-guide/deployments-administration/configuration.md#事件记录配置)。
+配置选项以及 standalone、Frontend 和 Metasrv 支持的事件类型请参阅[事件记录配置](/user-guide/deployments-administration/configuration.md#事件记录配置)。
 
 单机部署会记录受支持的本地 DDL Procedure 事件。带有 Metasrv 的分布式部署还可以记录更多运维事件。
 
