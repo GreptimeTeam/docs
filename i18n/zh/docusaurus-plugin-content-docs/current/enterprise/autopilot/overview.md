@@ -47,6 +47,8 @@ Autopilot 的配置分为共享配置和策略配置：
 - `plugins.region_balancer`：启用并配置 Region Balancer。
 - `plugins.auto_repartition`：启用并配置 Auto Repartition。
 
+以上配置项都应配置在 Metasrv 的配置文件中，不属于 Datanode 配置文件。
+
 下面的示例展示了同时启用 Region Balancer 和 Auto Repartition 的推荐配置：
 
 ```toml

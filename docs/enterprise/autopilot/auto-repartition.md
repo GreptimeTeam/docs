@@ -77,6 +77,8 @@ For more information about table partitioning and Repartition, see [Table Shardi
 
 Auto Repartition depends on the Autopilot runtime and cluster statistics. The following example includes both shared configuration and Auto Repartition configuration:
 
+Configure these settings in Metasrv's configuration file, not in the Datanode configuration files.
+
 ```toml
 [[plugins]]
 [plugins.autopilot]

@@ -47,6 +47,8 @@ Autopilot configuration includes shared configuration and strategy-specific conf
 - `plugins.region_balancer`: Enables and configures Region Balancer.
 - `plugins.auto_repartition`: Enables and configures Auto Repartition.
 
+All of these settings are configured in Metasrv's configuration file. They do not belong in the Datanode configuration files.
+
 The following example enables both Region Balancer and Auto Repartition:
 
 ```toml

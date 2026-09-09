@@ -24,6 +24,8 @@ Region Balancer requires the number of schedulable Regions to be greater than th
 
 Region Balancer depends on the Autopilot runtime and cluster statistics. The following example includes both shared configuration and Region Balancer configuration:
 
+Configure these settings in Metasrv's configuration file, not in the Datanode configuration files.
+
 ```toml
 [[plugins]]
 [plugins.autopilot]
@@ -82,7 +84,7 @@ The following options usually do not need to be changed. Adjust them only when y
 
 ## Legacy options
 
-Earlier versions supported configuring the following options directly under `plugins.region_balancer`:
+Earlier versions supported configuring the following Metasrv-side options directly under `plugins.region_balancer`:
 
 - `tick_interval`
 - `window_size`

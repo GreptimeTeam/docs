@@ -24,6 +24,8 @@ Region Balancer 要求可调度的 Region 数量大于活跃 Datanode 数量。�
 
 Region Balancer 依赖 Autopilot 运行时和集群统计信息。下面的示例同时包含共享配置和 Region Balancer 配置：
 
+这些配置项应写在 Metasrv 的配置文件中，而不是 Datanode 配置文件中。
+
 ```toml
 [[plugins]]
 [plugins.autopilot]
@@ -82,7 +84,7 @@ write_window_stability_threshold = 2
 
 ## 兼容旧配置
 
-旧版本中，Region Balancer 支持直接在 `plugins.region_balancer` 中配置以下参数：
+旧版本中，Region Balancer 支持直接在 `plugins.region_balancer` 中配置以下 Metasrv 端参数：
 
 - `tick_interval`
 - `window_size`

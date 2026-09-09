@@ -77,6 +77,8 @@ Auto Repartition 支持已分区表，以及设置了 `repartition.column.hint` 
 
 Auto Repartition 依赖 Autopilot 运行时和集群统计信息。下面的示例同时包含共享配置和 Auto Repartition 配置：
 
+这些配置项应写在 Metasrv 的配置文件中，而不是 Datanode 配置文件中。
+
 ```toml
 [[plugins]]
 [plugins.autopilot]
