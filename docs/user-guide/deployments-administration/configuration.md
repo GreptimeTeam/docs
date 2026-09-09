@@ -507,6 +507,17 @@ default_ratio = 1.0
 
 How to use distributed tracing, please reference [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#tutorial-use-jaeger-to-trace-greptimedb)
 
+### Pipeline options
+
+`frontend` and `standalone` cache pipeline definitions in memory. The cache is configured in the `[pipeline]` section:
+
+```toml
+[pipeline]
+cache_ttl = "10s"
+```
+
+- `cache_ttl`: Time to live of the local pipeline cache, `10s` by default. In a cluster, a pipeline created or deleted on one Frontend takes effect on the other Frontends after at most this duration. A longer TTL reduces reads of the `greptime_private.pipelines` table and increases that delay.
+
 ### Event recording
 
 Recorded events are stored in the `greptime_private.events` system table.
