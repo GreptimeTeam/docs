@@ -273,6 +273,7 @@ max_batch_rows = 100000
 max_concurrent_flushes = 256
 worker_channel_capacity = 65526
 max_inflight_requests = 3000
+flow_notification_queue_capacity = 1024
 ```
 
 下表描述了每个选项的详细信息：
@@ -319,6 +320,7 @@ max_inflight_requests = 3000
 |            | max_concurrent_flushes       | 整数   | 同时执行的最大刷写操作数量，默认为 256                                                                                                                                                                          |
 |            | worker_channel_capacity      | 整数   | 内部接收行数据的 worker 通道容量，默认为 65526                                                                                                                                                                  |
 |            | max_inflight_requests        | 整数   | 等待批量完成的最大请求数，默认为 3000                                                                                                                                                                           |
+|            | flow_notification_queue_capacity | 整数 | 共享队列中等待处理的逻辑表 Flow 通知数量上限，默认为 1024。仅在[批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式)下生效，取值必须大于 0。队列满时通知会被丢弃，并计入 `greptime_prom_store_flow_notification_dropped_total` 指标。 |
 | postgres   |                    |        | PostgresSQL 服务器选项                                       |
 |            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                       |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                          |
@@ -543,10 +545,16 @@ create_database, alter_database, drop_database,
 create_flow, drop_flow,
 create_table, create_logical_tables, alter_table, alter_logical_tables,
 drop_table, undrop_table, purge_dropped_table, truncate_table,
-create_view, drop_view
+create_view, drop_view, admin_function
 ```
 
 `undrop_table` 和 `purge_dropped_table` 仅 GreptimeDB 企业版支持。
+
+在分布式部署中，Frontend 支持以下事件类型：
+
+```text
+admin_function
+```
 
 Metasrv 支持以下事件类型：
 

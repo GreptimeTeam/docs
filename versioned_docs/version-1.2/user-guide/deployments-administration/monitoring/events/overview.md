@@ -14,7 +14,7 @@ acknowledgement.
 
 ## Configure event recording
 
-See [Event recording](/user-guide/deployments-administration/configuration.md#event-recording) for configuration options and the event types supported by standalone and Metasrv.
+See [Event recording](/user-guide/deployments-administration/configuration.md#event-recording) for configuration options and the event types supported by standalone, Frontend, and Metasrv.
 
 Standalone deployments record supported local DDL Procedure events. Distributed deployments with Metasrv can additionally record operational event types.
 

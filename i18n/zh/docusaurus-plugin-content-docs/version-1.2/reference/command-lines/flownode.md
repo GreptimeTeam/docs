@@ -50,4 +50,4 @@ greptime flownode start -c config/flownode.example.toml
 greptime flownode start --node-id=0 --grpc-bind-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002
 ```
 
-[`flownode.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0-beta.2/config/flownode.example.toml) 位于 GreptimeDB 仓库中。`-c` 用于指定配置文件，详见[配置文档](/user-guide/deployments-administration/configuration.md)。
+[`flownode.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0/config/flownode.example.toml) 位于 GreptimeDB 仓库中。`-c` 用于指定配置文件，详见[配置文档](/user-guide/deployments-administration/configuration.md)。

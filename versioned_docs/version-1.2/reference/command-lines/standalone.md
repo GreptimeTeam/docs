@@ -41,4 +41,4 @@ Start GreptimeDB in standalone mode from a configuration file:
 greptime --log-dir=greptimedb_data/logs --log-level=info standalone start -c config/standalone.example.toml
 ```
 
-The [`standalone.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0-beta.2/config/standalone.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md).
+The [`standalone.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0/config/standalone.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md).

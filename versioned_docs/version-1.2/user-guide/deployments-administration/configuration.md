@@ -274,6 +274,7 @@ max_batch_rows = 100000
 max_concurrent_flushes = 256
 worker_channel_capacity = 65526
 max_inflight_requests = 3000
+flow_notification_queue_capacity = 1024
 ```
 
 The following table describes the options in detail:
@@ -320,6 +321,7 @@ The following table describes the options in detail:
 |            | max_concurrent_flushes       | Integer | Maximum number of concurrent flush operations, 256 by default                                                                                                                                                                                                                                                                                                                              |
 |            | worker_channel_capacity      | Integer | Capacity of the internal worker channel for receiving rows, 65526 by default                                                                                                                                                                                                                                                                                                               |
 |            | max_inflight_requests        | Integer | Maximum number of in-flight write requests waiting for batch completion, 3000 by default                                                                                                                                                                                                                                                                                                   |
+|            | flow_notification_queue_capacity | Integer | Maximum number of pending logical-table flow notifications in the shared queue, 1024 by default. Only used in [batching mode](/user-guide/ingest-data/for-observability/prometheus.md#batching-mode). The value must be greater than 0. When the queue is full, notifications are dropped and counted by the `greptime_prom_store_flow_notification_dropped_total` metric. |
 | postgres   |                      |         | PostgresSQL server options                                                                                                                                                                                                                                                                                                                                                                 |
 |            | enable               | Boolean | Whether to enable PostgresSQL protocol, true by default                                                                                                                                                                                                                                                                                                                                    |
 |            | addr                 | String  | Server address, "127.0.0.1:4003" by default                                                                                                                                                                                                                                                                                                                                                |
@@ -541,10 +543,16 @@ create_database, alter_database, drop_database,
 create_flow, drop_flow,
 create_table, create_logical_tables, alter_table, alter_logical_tables,
 drop_table, undrop_table, purge_dropped_table, truncate_table,
-create_view, drop_view
+create_view, drop_view, admin_function
 ```
 
 `undrop_table` and `purge_dropped_table` require GreptimeDB Enterprise.
+
+In distributed deployments, the Frontend supports the following event type:
+
+```text
+admin_function
+```
 
 Metasrv supports the following event types:
 

@@ -718,6 +718,7 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/table-semantics',
                 'reference/sql/information-schema/views',
                 'reference/sql/information-schema/flows',
+                'reference/sql/information-schema/flow-statistics',
                 'reference/sql/information-schema/region-peers',
                 'reference/sql/information-schema/region-info',
                 'reference/sql/information-schema/region-statistics',

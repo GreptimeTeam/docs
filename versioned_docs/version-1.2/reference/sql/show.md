@@ -251,6 +251,31 @@ public=> show flows like "filter%";
 (1 row)
 ```
 
+## SHOW FLOW STATUS
+
+Show the runtime statistics of all flows:
+
+```sql
+public=> SHOW FLOW STATUS;
+```
+
+```sql
+ flow_id |   flow_name    |       start_time        |   last_execution_time   | uptime_seconds | state_size
+---------+----------------+-------------------------+-------------------------+----------------+------------
+       1 | filter_numbers | 2026-09-09 02:11:38.512 | 2026-09-09 03:07:41.036 |           3363 |       1024
+(1 row)
+```
+
+`LIKE` matches on the flow name:
+
+```sql
+public=> SHOW FLOW STATUS LIKE 'filter%';
+```
+
+Results are sorted by flow name. The columns are the same as
+[`INFORMATION_SCHEMA.FLOW_STATISTICS`](/reference/sql/information-schema/flow-statistics.md),
+where their meanings are described.
+
 ## SHOW CREATE VIEW
 
 To show the view's definition:

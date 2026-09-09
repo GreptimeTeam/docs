@@ -47,4 +47,4 @@ Start a Flownode instance and specify its node ID, gRPC address, and Metasrv add
 greptime flownode start --node-id=0 --grpc-bind-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002
 ```
 
-The [`flownode.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0-beta.2/config/flownode.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md) for details.
+The [`flownode.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0/config/flownode.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md) for details.

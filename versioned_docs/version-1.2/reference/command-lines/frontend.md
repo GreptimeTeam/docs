@@ -53,4 +53,4 @@ Start a Frontend instance and specify the Metasrv address on the command line:
 greptime frontend start --metasrv-addrs=0.0.0.0:3002
 ```
 
-The [`frontend.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0-beta.2/config/frontend.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md).
+The [`frontend.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0/config/frontend.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md).

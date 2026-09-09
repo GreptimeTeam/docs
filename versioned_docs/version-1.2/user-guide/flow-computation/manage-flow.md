@@ -281,7 +281,7 @@ Use the following commands and system tables to inspect Flow definitions and run
 | `SELECT * FROM information_schema.flows;` | View Flow definitions. |
 | `SELECT * FROM information_schema.flow_statistics;` | View Flow runtime statistics. |
 
-Runtime fields can initially be `NULL`, and values can lag behind the latest state in distributed deployments.
+Runtime fields can initially be `NULL`, and values can lag behind the latest state in distributed deployments. See [`SHOW FLOW STATUS`](/reference/sql/show.md#show-flow-status) and [`INFORMATION_SCHEMA.FLOW_STATISTICS`](/reference/sql/information-schema/flow-statistics.md) for the returned columns.
 
 ## Flush a flow
 
