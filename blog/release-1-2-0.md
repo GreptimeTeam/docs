@@ -55,7 +55,7 @@ SHOW FLOW STATUS LIKE 'my%';
 SELECT * FROM information_schema.flow_statistics;
 ```
 
-#### Dashboard
+### Dashboard
 
 The bundled GreptimeDB dashboard is updated from **v0.12.2** (bundled with v1.1.0) to **v0.13.13**. The update includes:
 
@@ -66,7 +66,7 @@ The bundled GreptimeDB dashboard is updated from **v0.12.2** (bundled with v1.1.
 
 Dashboard integration updates are included in [#8687](https://github.com/GreptimeTeam/greptimedb/pull/8687) and [#8898](https://github.com/GreptimeTeam/greptimedb/pull/8898).
 
-### Breaking changes and upgrade notes
+### Breaking changes
 
 - **Local SQL filesystem access is sandboxed.** In standalone deployments, local `COPY` and external-table paths are limited to the copy root; in distributed deployments, those local paths are disabled. Before upgrading, follow the [local SQL file access migration guide](https://docs.greptime.com/1.2/user-guide/deployments-administration/migrate-local-sql-file-access) to move data, set a dedicated copy root, or move the workflow to object storage ([#8708](https://github.com/GreptimeTeam/greptimedb/pull/8708)) by [@fengjiachun](https://github.com/fengjiachun).
 - **`holt_winters` was removed.** Use `double_exponential_smoothing` instead ([#8457](https://github.com/GreptimeTeam/greptimedb/pull/8457)) by [@shuiyisong](https://github.com/shuiyisong).
@@ -260,15 +260,6 @@ The changelog below covers changes since v1.1.0, excluding those already shipped
 * fix(promql): resolve derived labels in aggregation arithmetic by [@shuiyisong](https://github.com/shuiyisong) in [#8994](https://github.com/GreptimeTeam/greptimedb/pull/8994)
 * fix(json2): keep empty structs in remainder by [@MichaelScofield](https://github.com/MichaelScofield) in [#9027](https://github.com/GreptimeTeam/greptimedb/pull/9027)
 
-### ⚡ Performance
-
-* perf: reduce parquet metadata cache footprint by [@waynexia](https://github.com/waynexia) in [#8527](https://github.com/GreptimeTeam/greptimedb/pull/8527)
-* perf: preserve dictionary-encoded query labels by [@waynexia](https://github.com/waynexia) in [#8541](https://github.com/GreptimeTeam/greptimedb/pull/8541)
-* perf: optimize OTLP trace ingestion by [@shuiyisong](https://github.com/shuiyisong) in [#8604](https://github.com/GreptimeTeam/greptimedb/pull/8604)
-* perf(servers): optimize PromQL read conversion by [@lyang24](https://github.com/lyang24) in [#8587](https://github.com/GreptimeTeam/greptimedb/pull/8587)
-* perf(mito2): make compaction picker asynchronous to avoid blocking the region worker by [@v0y4g3r](https://github.com/v0y4g3r) in [#8624](https://github.com/GreptimeTeam/greptimedb/pull/8624)
-* perf(query): prune RangeSelect input projections by [@discord9](https://github.com/discord9) in [#8570](https://github.com/GreptimeTeam/greptimedb/pull/8570)
-
 ### 🚜 Refactor
 
 * refactor(meta): centralize backend retry classification by [@WenyXu](https://github.com/WenyXu) in [#8333](https://github.com/GreptimeTeam/greptimedb/pull/8333)
@@ -296,6 +287,21 @@ The changelog below covers changes since v1.1.0, excluding those already shipped
 * refactor(json2): support querying v2 storage layout by [@MichaelScofield](https://github.com/MichaelScofield) in [#8940](https://github.com/GreptimeTeam/greptimedb/pull/8940)
 * refactor: json2 v2 storage layout by [@MichaelScofield](https://github.com/MichaelScofield) in [#8979](https://github.com/GreptimeTeam/greptimedb/pull/8979)
 * refactor(json2): concretize JSON2 schemas at merge scan boundaries by [@MichaelScofield](https://github.com/MichaelScofield) in [#9016](https://github.com/GreptimeTeam/greptimedb/pull/9016)
+
+### 📚 Documentation
+
+* docs(agents): add per-crate guides, architecture invariants, and generated-files list by [@killme2008](https://github.com/killme2008) in [#8346](https://github.com/GreptimeTeam/greptimedb/pull/8346)
+* docs: add project-level AGENTS.md as the shared agent guide by [@killme2008](https://github.com/killme2008) in [#8358](https://github.com/GreptimeTeam/greptimedb/pull/8358)
+* docs: add entity relationships and graph query RFC by [@killme2008](https://github.com/killme2008) in [#8605](https://github.com/GreptimeTeam/greptimedb/pull/8605)
+
+### ⚡ Performance
+
+* perf: reduce parquet metadata cache footprint by [@waynexia](https://github.com/waynexia) in [#8527](https://github.com/GreptimeTeam/greptimedb/pull/8527)
+* perf: preserve dictionary-encoded query labels by [@waynexia](https://github.com/waynexia) in [#8541](https://github.com/GreptimeTeam/greptimedb/pull/8541)
+* perf: optimize OTLP trace ingestion by [@shuiyisong](https://github.com/shuiyisong) in [#8604](https://github.com/GreptimeTeam/greptimedb/pull/8604)
+* perf(servers): optimize PromQL read conversion by [@lyang24](https://github.com/lyang24) in [#8587](https://github.com/GreptimeTeam/greptimedb/pull/8587)
+* perf(mito2): make compaction picker asynchronous to avoid blocking the region worker by [@v0y4g3r](https://github.com/v0y4g3r) in [#8624](https://github.com/GreptimeTeam/greptimedb/pull/8624)
+* perf(query): prune RangeSelect input projections by [@discord9](https://github.com/discord9) in [#8570](https://github.com/GreptimeTeam/greptimedb/pull/8570)
 
 ### 🧪 Testing
 
@@ -357,11 +363,15 @@ The changelog below covers changes since v1.1.0, excluding those already shipped
 * chore: remove iceberg read by [@shuiyisong](https://github.com/shuiyisong) in [#8858](https://github.com/GreptimeTeam/greptimedb/pull/8858)
 * chore: bump release version to v1.2.0 by [@discord9](https://github.com/discord9) in [#9054](https://github.com/GreptimeTeam/greptimedb/pull/9054)
 
-### 📚 Documentation
+## New Contributors
 
-* docs(agents): add per-crate guides, architecture invariants, and generated-files list by [@killme2008](https://github.com/killme2008) in [#8346](https://github.com/GreptimeTeam/greptimedb/pull/8346)
-* docs: add project-level AGENTS.md as the shared agent guide by [@killme2008](https://github.com/killme2008) in [#8358](https://github.com/GreptimeTeam/greptimedb/pull/8358)
-* docs: add entity relationships and graph query RFC by [@killme2008](https://github.com/killme2008) in [#8605](https://github.com/GreptimeTeam/greptimedb/pull/8605)
+* [@agrawalx](https://github.com/agrawalx) made their first contribution in [#8321](https://github.com/GreptimeTeam/greptimedb/pull/8321)
+* [@raphaelroshan](https://github.com/raphaelroshan) made their first contribution in [#8357](https://github.com/GreptimeTeam/greptimedb/pull/8357)
+* [@srivtx](https://github.com/srivtx) made their first contribution in [#8403](https://github.com/GreptimeTeam/greptimedb/pull/8403)
+* [@yimeng](https://github.com/yimeng) made their first contribution in [#8637](https://github.com/GreptimeTeam/greptimedb/pull/8637)
+* [@grezzko](https://github.com/grezzko) made their first contribution in [#8659](https://github.com/GreptimeTeam/greptimedb/pull/8659)
+* [@fzlzjerry](https://github.com/fzlzjerry) made their first contribution in [#8859](https://github.com/GreptimeTeam/greptimedb/pull/8859)
+* [@wy471x](https://github.com/wy471x) made their first contribution in [#8923](https://github.com/GreptimeTeam/greptimedb/pull/8923)
 
 ## All Contributors
 
