@@ -37,4 +37,7 @@ DESC TABLE INFORMATION_SCHEMA.FLOW_STATISTICS;
 统计信息由 Flownode 通过心跳上报。尚未上报统计信息的 Flow，后四列为 `NULL`，例如刚创建
 完成或 Flownode 重启之后。
 
+集群部署下 `start_time` 和 `uptime_seconds` 始终为 `NULL`：为集群持久化的 Flownode 状态
+不包含 Flow 的启动时间。这两列只在单机部署下有值。
+
 [`SHOW FLOW STATUS`](/reference/sql/show.md#show-flow-status) 返回的列与该表相同。

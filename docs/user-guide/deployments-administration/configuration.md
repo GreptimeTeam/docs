@@ -209,6 +209,8 @@ timeout = "0s"
 body_limit = "64MB"
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
+prom_validation_mode = "strict"
+experimental_enable_prometheus_native_histogram = false
 experimental_enable_explain_analyze_stream = true
 # Enable the dedicated public HTTP API server (serves /v1 and /dashboard only)
 enable_api_server = false
@@ -267,8 +269,6 @@ trace_ingest_chunk_size = 512
 [prom_store]
 enable = true
 with_metric_engine = true
-prom_validation_mode = "strict"
-experimental_enable_prometheus_native_histogram = false
 pending_rows_flush_interval = "0s"
 max_batch_rows = 100000
 max_concurrent_flushes = 256
@@ -287,6 +287,8 @@ The following table describes the options in detail:
 |            | body_limit           | String  | HTTP max body size, "64MB" by default                                                                                                                                                                                                                                                                                                                                                      |
 |            | enable_cors          | Boolean | Whether to enable HTTP CORS support, true by default. |
 |            | cors_allowed_origins | Array   | Customized allowed origins for HTTP CORS. |
+|            | prom_validation_mode         | String  | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with [UTF-8 REPLACEMENT CHARACTER U+FFFD, which looks like �](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)), `unchecked`(do not validate strings). |
+|            | experimental_enable_prometheus_native_histogram | Boolean | Experimental: enable Prometheus remote write v2 native histogram ingestion, false by default. |
 |            | experimental_enable_explain_analyze_stream | Boolean | Experimental: enable `POST /v1/sql/analyze/stream` for streaming `EXPLAIN ANALYZE VERBOSE` metrics, true by default. |
 |            | enable_api_server    | Boolean | Whether to start the dedicated public HTTP API server. This server serves only the `/v1` APIs and `/dashboard`, making it safe to expose to end users. The main HTTP server (`addr`) is intended for internal use. Disabled by default; set to `true` to enable. |
 |            | api_server_addr      | String  | The address to bind the dedicated public HTTP API server, `"127.0.0.1:4006"` by default. Only takes effect when `enable_api_server` is `true`. |
@@ -315,8 +317,6 @@ The following table describes the options in detail:
 | prom_store |                              |         | Prometheus remote storage options                                                                                                                                                                                                                                                                                                                                                          |
 |            | enable                       | Boolean | Whether to enable Prometheus Remote Write and read in HTTP API, true by default                                                                                                                                                                                                                                                                                                            |
 |            | with_metric_engine           | Boolean | Whether to use the metric engine on Prometheus Remote Write, true by default                                                                                                                                                                                                                                                                                                               |
-|            | prom_validation_mode         | String  | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with [UTF-8 REPLACEMENT CHARACTER U+FFFD, which looks like �](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)), `unchecked`(do not validate strings). |
-|            | experimental_enable_prometheus_native_histogram | Boolean | Experimental: enable Prometheus remote write v2 native histogram ingestion, false by default. |
 |            | pending_rows_flush_interval  | String  | Interval between batch flushes for Prometheus Remote Write. Set to a non-zero duration (e.g. `500ms`) to enable [batching mode](/user-guide/ingest-data/for-observability/prometheus.md#batching-mode). `0s` by default (disabled)                                                                                                                                                     |
 |            | max_batch_rows               | Integer | Maximum number of rows per batch before a flush is triggered, 100000 by default                                                                                                                                                                                                                                                                                                            |
 |            | max_concurrent_flushes       | Integer | Maximum number of concurrent flush operations, 256 by default                                                                                                                                                                                                                                                                                                                              |

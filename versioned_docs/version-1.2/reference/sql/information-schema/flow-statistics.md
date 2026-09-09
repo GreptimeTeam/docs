@@ -38,4 +38,8 @@ Statistics are reported by Flownodes through heartbeats. The last four columns a
 flow that has no statistics reported yet, for example immediately after the flow is created or
 after a Flownode restart.
 
+In a cluster, `start_time` and `uptime_seconds` are always `NULL`: the Flownode state persisted
+for the cluster does not carry a flow's start time. Both columns are populated in standalone
+deployments.
+
 [`SHOW FLOW STATUS`](/reference/sql/show.md#show-flow-status) returns the same columns.
