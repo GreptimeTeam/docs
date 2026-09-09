@@ -143,7 +143,7 @@ inputs = [ "my_source_id" ]
 compression = "gzip"
 dbname = "public"
 endpoint = "http://<host>:4000"
-extra_headers = { "skip_error" = "true" }
+extra_headers = { "x-greptime-pipeline-params" = "max_nested_levels=10" }
 pipeline_name = "greptime_identity"
 table = "<table>"
 username = "<username>"
@@ -151,7 +151,7 @@ password = "<password>"
 
 [sinks.my_sink_id.extra_params]
 source = "vector"
-x-greptime-pipeline-params = "max_nested_levels=10"
+skip_error = "true"
 ```
 
 此示例展示了如何使用 `greptimedb_logs` sink 将生成的 demo 日志数据写入 GreptimeDB。更多信息请参考 [Vector greptimedb_logs sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_logs/) 文档。

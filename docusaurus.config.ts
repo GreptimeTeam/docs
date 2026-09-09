@@ -7,7 +7,7 @@ import versionNoindex from './src/plugins/version-noindex';
 import robotsTxtGenerator from './src/plugins/robots-txt-generator';
 import faqSchema from './src/plugins/faq-schema';
 import { resolveLastmod } from './src/plugins/sitemap-lastmod';
-import { resolveLastVersion } from './src/site-versions';
+import { resolveLastVersion, stableVersionAliasPath } from './src/site-versions';
 import versions from './versions.json';
 
 // Prism theme: our light mode uses a dark code-block background.
@@ -312,6 +312,9 @@ const config: Config = {
     ],
   ],
   trailingSlash: true,
+  markdown: {
+    mermaid: true,
+  },
   plugins: [
     'docusaurus-plugin-image-zoom',
     // Only load docusaurus-biel plugin if biel_project_id is defined
@@ -333,6 +336,15 @@ const config: Config = {
       ],
     }],
     [versionNoindex, { lastVersion }],
+    // Serve the root version under /<lastVersion>/ too, so a URL written with
+    // an explicit version number resolves instead of returning 404. Each alias
+    // is a redirect page pointing back at the root path, which stays canonical.
+    ['@docusaurus/plugin-client-redirects', {
+      createRedirects(existingPath: string) {
+        const alias = stableVersionAliasPath(existingPath, lastVersion, prefixedVersions);
+        return alias ? [alias] : undefined;
+      },
+    }],
     robotsTxtGenerator,
     [faqSchema, { lastVersion }],
     function injectLocaleSwitchScript() {
@@ -352,7 +364,25 @@ const config: Config = {
     }
   ],
 
+  themes: ['@docusaurus/theme-mermaid'],
   themeConfig: {
+    mermaid: {
+      theme: {
+        light: 'neutral',
+        dark: 'dark',
+      },
+      options: {
+        themeVariables: {
+          primaryColor: '#e5d5f7',
+          primaryTextColor: '#473460',
+          primaryBorderColor: '#792af6',
+          lineColor: '#792af6',
+          secondaryColor: '#f9f8f7',
+          tertiaryColor: '#ffffff',
+          fontFamily: 'Geist, -apple-system, BlinkMacSystemFont, sans-serif',
+        },
+      },
+    },
     // Replace with your project's social card
     metadata: metaMap[locale],
     navbar: {

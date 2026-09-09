@@ -5,7 +5,7 @@ description: Lists and describes JSON functions available in GreptimeDB, includi
 
 # JSON Functions (Experimental)
 
-This page lists all json type related functions in GreptimeDB.
+This page describes GreptimeDB functions for converting and extracting JSON values.
 
 :::warning
 The JSON feature is currently experimental and may change in future releases.
@@ -37,8 +37,11 @@ Extracts values with specific types from JSON values through specific paths.
 * `json_get_float(json, path)` to extract a float value from a JSON value by the path, while integer and boolean values will be converted to floats.
 * `json_get_string(json, path)` to extract a string value from a JSON value by the path. All valid JSON values will be converted to strings, including null values, objects and arrays.
 * `json_get_object(json, path)` to extract an object value from a JSON value by the path. Returns NULL if the path does not point to an object.
+* `json_get(json, path)` to extract a value as a string. Cast the function result to extract a scalar with another SQL type, for example `json_get(value, 'a')::INT`.
 
-`path` is a string that select and extract elements from a json value. The following operators in the path are supported:
+The `path` argument to `json_get` must be a string literal. The return value is NULL when the path does not select a value or the selected value cannot be converted to the requested type.
+
+`path` is a string that selects elements from a JSON value. The following path operators are supported:
 
 | Operator                 | Description                                                  | Examples           |
 | ------------------------ | ------------------------------------------------------------ | ------------------ |
@@ -64,6 +67,8 @@ SELECT json_get_int(parse_json('{"a": {"c": 3}, "b": 2}'), 'a.c');
 +-----------------------------------------------------------------------+
 |                                                                     3 |
 +-----------------------------------------------------------------------+
+
+SELECT json_get(parse_json('{"a": 3}'), 'a')::INT;
 
 SELECT json_to_string(json_get_object(parse_json('{"a": {"b": {"c": {"d": 42}}}}'), 'a.b.c'));
 

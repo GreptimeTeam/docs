@@ -6,7 +6,7 @@ description: 介绍 Greptime 命令行工具的安装、使用方法，包括全
 
 # 概述
 
-`greptime` 命令行工具可以启动、停止、或传递配置项给 GreptimeDB。
+`greptime` 二进制文件用于启动 GreptimeDB 服务和执行管理工具。各服务子命令可以使用配置文件和命令行选项。
 
 ## 安装命令行工具
 
@@ -34,6 +34,7 @@ Usage: greptime [OPTIONS] <COMMAND>
 
 Commands:
   datanode    Start datanode service
+  flownode    Start flownode service
   frontend    Start frontend service
   metasrv     Start metasrv service
   standalone  Run greptimedb as a standalone service

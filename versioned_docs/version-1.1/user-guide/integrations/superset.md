@@ -14,7 +14,9 @@ follow this guide.
 ### Running Superset with Docker Compose
 
 [Docker compose](https://superset.apache.org/docs/installation/docker-compose)
-is the recommended way to run Superset. To add GreptimeDB extension, create a
+is the quickest way to try Superset locally. Upstream states it does not support
+or recommend the `docker compose` constructs for production use, so treat this
+path as evaluation only. To add GreptimeDB extension, create a
 `requirements-local.txt` file in `docker/` of Superset codebase.
 
 Add GreptimeDB dependency in `requirements-local.txt`:
@@ -38,6 +40,14 @@ to the same environment.
 ```bash
 pip install greptimedb-sqlalchemy
 ```
+
+:::note SQLAlchemy version
+`greptimedb-sqlalchemy` requires `sqlalchemy>=1.4,<2`. Superset 6.1.0, the
+current release, pins SQLAlchemy 1.4.54 and works with it. Superset's main
+branch has moved to SQLAlchemy 2.0, so a later release will need a dialect that
+supports 2.0 first. If you run an older Superset, check its own SQLAlchemy pin
+against that range.
+:::
 
 ## Add GreptimeDB as database
 

@@ -160,7 +160,7 @@ You can use primary key when there are suitable columns and one of the following
 For example, if you always only query logs of a specific application, you may set the `application` column as primary key (tag).
 
 ```sql
-SELECT message FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 The number of applications is usually limited. Table `http_logs_v2` uses `application` as the primary key.
@@ -317,7 +317,7 @@ CREATE TABLE http_logs_v3 (
 The following query can use the inverted index on the `http_method` column.
 
 ```sql
-SELECT message FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = `GET` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = 'GET' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 Inverted index supports the following operators:
@@ -356,11 +356,11 @@ CREATE TABLE http_logs_v4 (
 The following query can use the skipping index to filter the `request_id` column.
 
 ```sql
-SELECT message FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = `25b6f398-41cf-4965-aa19-e1c63a88a7a9` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = '25b6f398-41cf-4965-aa19-e1c63a88a7a9' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 However, note that the query capabilities of the skipping index are generally inferior to those of the inverted index.
-Skipping index can't handle complex filter conditions and may have a lower filtering performance on low cardinality columns. It only supports the equal operator.
+Skipping index can't handle complex filter conditions and may have a lower filtering performance on low cardinality columns. It applies to equality predicates and to predicates that reduce to a membership test, such as `IN` and a chain of `OR` equalities. Other operators do not use the index.
 
 
 ### Full-Text Index
@@ -378,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `raw_logs` (
 ```
 
 The `message` field is full-text indexed using the `FULLTEXT INDEX` option.
-See [fulltext column options](/reference/sql/create.md#index-column-option) for more information.
+See [fulltext column options](/user-guide/manage-data/data-index.md#full-text-index) for more information.
 
 Storing and querying structured logs usually have better performance than unstructured logs with full-text index.
 It's recommended to [use Pipeline](/user-guide/logs/use-custom-pipelines.md#create-a-custom-pipeline) to convert logs into structured logs.
@@ -450,11 +450,11 @@ This section continues from the layout discussion above and helps you decide whe
 
 ### Two misunderstandings about distributed tables
 
-As a time-series database, GreptimeDB automatically partitions data based on the TIME INDEX column at the storage layer.
+At the storage layer, GreptimeDB automatically partitions data based on the TIME INDEX column.
 Therefore, it is unnecessary and not recommended for you to partition data by time
 (e.g., one partition per day or one table per week).
 
-Additionally, GreptimeDB is a columnar storage database,
+GreptimeDB uses columnar storage,
 so partitioning a table refers to horizontal partitioning by rows,
 with each partition containing all columns.
 

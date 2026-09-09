@@ -9,7 +9,7 @@ description: Learn how to integrate GreptimeDB with Model Context Protocol (MCP)
 The GreptimeDB MCP Server is currently in experimental stage and under active development. APIs and features may change without notice. Please use with caution in production environments.
 :::
 
-The [GreptimeDB MCP Server](https://github.com/GreptimeTeam/greptimedb-mcp-server) provides a Model Context Protocol implementation that enables AI assistants like Claude to securely query and analyze your GreptimeDB databases using SQL, TQL (PromQL-compatible), and RANGE queries — with read-only enforcement and data masking built in.
+The [GreptimeDB MCP Server](https://github.com/GreptimeTeam/greptimedb-mcp-server) provides a Model Context Protocol implementation that enables AI assistants like Claude to securely query and analyze your GreptimeDB databases using SQL, TQL (PromQL-compatible), and RANGE queries — with a read-only SQL gate and data masking built in.
 
 Watch our [demo video on YouTube](https://www.youtube.com/watch?v=EBTc46yamFI) to see the MCP Server in action.
 
@@ -119,7 +119,9 @@ DNS rebinding protection is disabled by default for compatibility with proxies a
 
 ## Security
 
-The server is **read-only by default** and applies several safeguards.
+`execute_sql` is **read-only by default**, and the server applies several safeguards.
+
+The read-only guarantee covers `execute_sql` only. The pipeline and dashboard tools (`create_pipeline`, `delete_pipeline`, `create_dashboard`, `delete_dashboard`) reach GreptimeDB through the HTTP API and modify those resources regardless of `--allow-write`. If the assistant must not change anything, restrict it at the database level rather than relying on this flag.
 
 - **Security gate**: blocks `DROP`, `DELETE`, `TRUNCATE`, `UPDATE`, `INSERT`, `ALTER`, `CREATE`, `GRANT`, `REVOKE`, and encoded bypass attempts; allows `SELECT`, `SHOW`, `DESCRIBE`, `TQL`, `EXPLAIN`, `UNION`.
 - **Data masking**: columns whose names match patterns such as `password`, `token`, `api_key`, `ssn`, or `credit_card` are masked as `******`. Add patterns with `--mask-patterns`.

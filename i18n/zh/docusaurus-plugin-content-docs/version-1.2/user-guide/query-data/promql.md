@@ -235,11 +235,11 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | cosh               | `cosh(metric)`                    |
     | scalar             | `scalar(metric)`                  |
     | tanh               | `tanh(metric)`                    |
-    | timestamp          | `timestamp()`                     |
+    | timestamp          | `timestamp(metric)`               |
     | sort               | `sort(http_requests_total)`       |
     | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
-    | predicate_linear   | `predict_linear(metric, 120)`     |
+    | predict_linear     | `predict_linear(metric[5m], 120)` |
     | absent             | `absent(nonexistent{job="myjob"})`|
     | sgn                | `sgn(metric)`                     |
     | pi                 | `pi()`                            |
@@ -270,7 +270,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | deriv              | `deriv(metric[5m])`            |
     | increase           | `increase(metric[5m])`         |
     | irate              | `irate(metric[5m])`            |
-    | reset              | `reset(metric[5m])`            |
+    | resets             | `resets(metric[5m])`           |
 
 - 不支持：
 

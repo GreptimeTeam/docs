@@ -52,7 +52,11 @@
             "user-guide/concepts/why-greptimedb",
             "user-guide/concepts/data-model",
             "user-guide/concepts/architecture",
-            "user-guide/concepts/observability-2",
+            {
+              "type": "doc",
+              "id": "user-guide/concepts/observability-2",
+              "label": "Observability 2.0 and wide events"
+            },
             "user-guide/concepts/semantic-layer",
             "user-guide/concepts/storage-location",
             "user-guide/concepts/key-concepts",
@@ -352,6 +356,22 @@
                 "user-guide/deployments-administration/monitoring/key-logs",
                 "user-guide/deployments-administration/monitoring/tracing",
                 "user-guide/deployments-administration/monitoring/slow-query",
+                {
+                  "type": "category",
+                  "label": "Events",
+                  "items": [
+                    {
+                      "type": "doc",
+                      "id": "user-guide/deployments-administration/monitoring/events/overview",
+                      "label": "Overview"
+                    },
+                    "user-guide/deployments-administration/monitoring/events/query-events",
+                    "user-guide/deployments-administration/monitoring/events/event-data-model",
+                    "user-guide/deployments-administration/monitoring/events/ddl-events",
+                    "user-guide/deployments-administration/monitoring/events/region-events",
+                    "user-guide/deployments-administration/monitoring/events/maintenance-events"
+                  ]
+                },
                 "user-guide/deployments-administration/monitoring/runtime-info"
               ]
             },
@@ -525,6 +545,7 @@
             "enterprise/read-replicas/query-read-replicas"
           ]
         },
+        "enterprise/iceberg",
         "enterprise/trigger",
         "enterprise/soft-drop",
         "enterprise/user",
@@ -647,6 +668,7 @@
                   "id": "reference/sql/greptime-private/overview",
                   "label": "Overview"
                 },
+                "reference/sql/greptime-private/events",
                 "reference/sql/greptime-private/slow_queries",
                 "reference/sql/greptime-private/pipelines"
               ]
@@ -738,6 +760,7 @@
               "label": "Overview"
             },
             "contributor-guide/datanode/storage-engine",
+            "contributor-guide/datanode/memtable",
             "contributor-guide/datanode/query-engine",
             "contributor-guide/datanode/data-persistence-indexing",
             "contributor-guide/datanode/wal",

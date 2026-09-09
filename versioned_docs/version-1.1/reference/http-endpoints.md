@@ -1,15 +1,15 @@
 ---
 keywords: [HTTP API, endpoints, health check, status, metrics, configuration, query APIs, PromQL, InfluxDB, OpenTelemetry]
-description: Provides a full list of HTTP paths and their usage in GreptimeDB, including admin APIs, query endpoints, and protocol endpoints.
+description: Describes commonly used GreptimeDB HTTP paths, including admin APIs, query endpoints, and protocol endpoints.
 ---
 
 # HTTP API Endpoint List
 
-Here is the full list for the various HTTP paths and their usage in GreptimeDB:
+The following sections describe commonly used HTTP paths:
 
 ## Admin APIs
 
-Endpoints that is not versioned (under `/v1`). For admin usage like health check, status, metrics, etc.
+Unversioned endpoints outside `/v1`, used for health checks, status, metrics, and other administrative operations.
 
 ### Health Check
 
@@ -104,7 +104,7 @@ is_strict_mode = false
 - **Description**: Provides access to the server's dashboard interface.
 - **Usage**: Access these endpoints to interact with the web-based dashboard.
 
-This dashboard is packaged with the GreptimeDB server and provides a user-friendly interface for interacting with the server. It requires corresponding compile flags to be enabled when building GreptimeDB. The original source code for the dashboard can be found at https://github.com/GreptimeTeam/dashboard
+The dashboard is packaged with GreptimeDB when the corresponding build feature is enabled. Its source code is in the [GreptimeDB Dashboard repository](https://github.com/GreptimeTeam/dashboard).
 
 ### Log Level
 
@@ -179,7 +179,7 @@ For operational guidance, see [Collect profiling data](/user-guide/deployments-a
 
 ## Query Endpoints
 
-Various query APIs for sending query to GreptimeDB.
+These endpoints execute SQL or PromQL queries.
 
 ### SQL API
 
@@ -201,7 +201,7 @@ For more information on the PromQL API, refer to the [PromQL documentation](/use
 
 ## Protocol Endpoints
 
-Endpoints for various protocols that are compatible with GreptimeDB. Like InfluxDB, Prometheus, OpenTelemetry, etc.
+These endpoints implement selected APIs from InfluxDB, Prometheus, OpenTelemetry, Loki, and OpenTSDB.
 
 ### InfluxDB Compatibility
 

@@ -41,6 +41,7 @@ meta:
   configData: |
     [wal]
     provider = "kafka"
+    # Testing value: no redundant copy. Set this from your durability policy in production.
     replication_factor = 1
     topic_name_prefix = "gtp_greptimedb_wal_topic"
     auto_prune_interval = "30m"

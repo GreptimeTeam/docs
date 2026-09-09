@@ -274,6 +274,42 @@ SELECT vec_elem_product('[1.0, 2.0, 3.0]'); -- Implicitly convert string to vect
 +-------------------------------------------+
 ```
 
+### `vec_elem_avg`
+
+Returns the arithmetic mean of the elements in one vector.
+
+```sql
+SELECT vec_elem_avg('[1.0, 2.0, 3.0]');
+-- 2.0
+```
+
+### `vec_dim`
+
+Returns the number of elements in a vector as an unsigned integer.
+
+```sql
+SELECT vec_dim('[7.0, 8.0, 9.0, 10.0]');
+-- 4
+```
+
+### `vec_kth_elem`
+
+Returns the element at the zero-based integer index. A negative or out-of-range index is an error.
+
+```sql
+SELECT vec_kth_elem('[2.0, 4.0, 6.0]', 1);
+-- 4.0
+```
+
+### `vec_subvector`
+
+Returns the elements in the zero-based half-open range `[start, end)`. The function reports an error unless `0 <= start <= end <= vec_dim(vector)`.
+
+```sql
+SELECT vec_to_string(vec_subvector('[1.0, 2.0, 3.0, 4.0]', 1, 3));
+-- [2,3]
+```
+
 ### `vec_norm`
 
 Normalizes a vector. Divides each element of the vector by the L2 norm of the vector, returning a new unit vector.
@@ -341,6 +377,22 @@ SELECT vec_to_string(vec_sum(vec_col)) FROM vectors;
 | vec_to_string(vec_sum(vectors.vec_col)) |
 +-----------------------------------------+
 | [6,6,10]                                |
++-----------------------------------------+
+```
+
+### `vec_avg`
+
+Computes the element-wise average of all non-NULL vectors. All input vectors must have the same dimension.
+
+```sql
+SELECT vec_to_string(vec_avg(vec_col)) FROM vectors;
+```
+
+```sql
++-----------------------------------------+
+| vec_to_string(vec_avg(vectors.vec_col)) |
++-----------------------------------------+
+| [2,2,3.3333333]                         |
 +-----------------------------------------+
 ```
 

@@ -5,11 +5,11 @@ description: Provides access to system metadata, such as database or table names
 
 # INFORMATION_SCHEMA
 
-`INFORMATION_SCHEMA` provides access to system metadata, such as the name of a database or table, the data type of a column, etc. GreptimeDB also provides some custom `INFORMATION_SCHEMA` tables to query metadata about the GreptimeDB system itself, cluster information, and runtime telemetry for example.
+`INFORMATION_SCHEMA` provides access to metadata such as database and table names and column data types. GreptimeDB also provides custom `INFORMATION_SCHEMA` tables for system, cluster, and runtime metadata.
 
-Many `INFORMATION_SCHEMA` tables have a corresponding `SHOW` command. The benefit of querying `INFORMATION_SCHEMA` is that it is possible to join between tables.
+Many `INFORMATION_SCHEMA` tables have a corresponding `SHOW` command. Unlike `SHOW`, `INFORMATION_SCHEMA` tables can be filtered, projected, and joined in SQL queries.
 
-There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue](https://github.com/GreptimeTeam/greptimedb/issues/2931) for `INFORMATION_SCHEMA`.
+The tables below distinguish implemented metadata tables from compatibility tables that return no rows or are not supported.
 
 ## Tables for MySQL compatibility
 
@@ -44,12 +44,12 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | [`TABLES`](./tables.md) | Provides a list of tables that the current user has visibility of. Similar to `SHOW TABLES`. |
 | `TABLESPACES` | Not supported. |
 | `TABLE_PRIVILEGES` | Not implemented. Returns zero rows. |
-| `TRIGGERS` | Not supported. |
+| `TRIGGERS` | Not supported. GreptimeDB Enterprise provides a differently shaped [`TRIGGERS`](./triggers.md) table. |
 | `USER_ATTRIBUTES` | Not supported. |
 | `USER_PRIVILEGES` | Not supported.|
 | `VARIABLES_INFO` | Not supported. |
 | [`VIEWS`](./views.md)| Provides a list of views that the current user has visibility of. Similar to running `SHOW FULL TABLES WHERE table_type = 'VIEW'` |
-| [`TABLE_CONSTRAINTS`](./table-constraints.md) | Provides information on primary keys, unique indexes, and foreign keys. |
+| [`TABLE_CONSTRAINTS`](./table-constraints.md) | Provides time-index and primary-key constraint metadata. |
 
 ## Tables that GreptimeDB provides
 

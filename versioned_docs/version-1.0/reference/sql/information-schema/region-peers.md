@@ -27,7 +27,7 @@ The output is as follows:
 | status        | String |      | YES  |         | FIELD         |
 | down_seconds  | Int64  |      | YES  |         | FIELD         |
 +---------------+--------+------+------+---------+---------------+
-6 rows in set (0.00 sec)
+9 rows in set (0.00 sec)
 ```
 
 Fields in the `REGION_PEERS` table are described as follows:

@@ -7,7 +7,14 @@ description: Guide on writing and running integration tests in GreptimeDB, cover
 
 ## Introduction
 
-Integration testing is written with Rust test harness (`#[test]`), unlike unit testing, they are placed separately
-[here](https://github.com/GreptimeTeam/greptimedb/tree/main/tests-integration).
-It covers scenarios involving multiple components, in which one typical case is HTTP/gRPC-related features. You can check
-its [documentation](https://github.com/GreptimeTeam/greptimedb/blob/main/tests-integration/README.md) for more information.
+Integration tests cover behavior that crosses crate or service boundaries, such as HTTP and gRPC handling, distributed components, or external storage. They use Rust's test harness and live in the [`tests-integration`](https://github.com/GreptimeTeam/greptimedb/tree/main/tests-integration) package.
+
+Run the package with:
+
+```shell
+cargo nextest run -p tests-integration
+```
+
+Some cases require environment variables or fixtures for external services. Follow the package's [setup instructions](https://github.com/GreptimeTeam/greptimedb/blob/main/tests-integration/README.md) before running those cases.
+
+Use an integration test when a crate-level test or a Sqlness case cannot exercise the required boundary. Keep isolated logic in unit tests so that failures remain fast to reproduce.

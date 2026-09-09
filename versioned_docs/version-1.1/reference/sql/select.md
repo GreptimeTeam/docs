@@ -58,12 +58,12 @@ SELECT *
 FROM system_metrics
 WHERE idc = 'idc0';
 
--- Select all rows from the system_metrics table where the idc is 'idc0' or 'idc0'
+-- Select all rows from the system_metrics table where idc is 'idc0' or 'idc1'
 SELECT *
 FROM system_metrics
 WHERE idc IN ('idc0', 'idc1');
 
--- Select all rows from the system_metrics table where the idc is 'idc0' or 'idc0' and the cpu utilization is greater than 60%
+-- Select all rows where idc is 'idc0' or 'idc1' and cpu utilization is greater than 60%
 SELECT *
 FROM system_metrics
 WHERE idc IN ('idc0', 'idc1') AND cpu_util > 0.6;
@@ -127,7 +127,7 @@ OFFSET 10;
 
 It selects all columns from rows ranked 11th to 20th (by descending `cpu_util`)  from the `system_metrics` table.
 
-Although combining `OFFSET` and `LIMIT` with an `ORDER BY` clause can achieve pagination, this approach is not very efficient. We recommend recording the time index (timestamp) of the last record returned on each page and using this value to filter and limit the data for subsequent pages. Please refer to [OFFSET](offset.md) for more information.
+The cost of `OFFSET` grows as later pages skip more rows. For keyset pagination with a stable, unique cursor, see [OFFSET](offset.md#efficient-pagination-using-timestamps).
 
 ## Joining Tables (JOIN)
 

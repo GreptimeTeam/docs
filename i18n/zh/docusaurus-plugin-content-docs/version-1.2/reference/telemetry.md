@@ -5,15 +5,15 @@ description: 介绍 GreptimeDB 的指标收集功能，包括收集的数据类�
 
 # 指标收集
 
-为了提升我们的服务，GreptimeDB 会收集一些数据，包括 GreptimeDB 版本、节点数量、使用的操作系统、环境架构以及类似的技术细节等信息。但是我们尊重您的隐私，并确保不收集任何特定于用户的数据，其中包括数据库名称、表名称、查询内容等。
+GreptimeDB 默认启用匿名遥测。遥测数据只包含下文列出的安装和运行时字段，不包含数据库名、表名或查询内容。
 
-你的体验和隐私是我们的首要任务。你可以根据自己的喜好轻松管理此指标收集，通过配置选择启用或禁用它。
+可以通过 GreptimeDB 配置禁用遥测。
 
 ## 将会收集哪些数据
 
-详细的数据信息可能会随着时间的推移而发生变化，这些更改（如果有）将在发行说明中公布。
+遥测字段可能在后续版本中发生变化，相关变更会记录在发行说明中。
 
-启用指标收集后，GreptimeDB 将每半小时收集一次以下信息：
+启用遥测后，遥测任务启动时会发送一次数据，之后每 30 分钟发送一次。每次发送包含以下字段：
 
 - GreptimeDB 版本
 - GreptimeDB 的构建 git 哈希
@@ -30,7 +30,7 @@ description: 介绍 GreptimeDB 的指标收集功能，包括收集的数据类�
   "os": "linux",
   "version": "0.15.1",
   "arch": "aarch64",
-  "mode": "Standalone",
+  "mode": "standalone",
   "git_commit": "00d759e828f5e148ec18141904e20cb1cb7577b0",
   "nodes": 1,
   "uuid": "43717682-baa8-41e0-b126-67b797b66606",
@@ -40,7 +40,7 @@ description: 介绍 GreptimeDB 的指标收集功能，包括收集的数据类�
 
 ## 如何禁用指标收集
 
-从 GreptimeDB v0.4.0 开始，指标收集将默认启用。你可以通过更改配置来禁用它。
+从 GreptimeDB v0.4.0 开始，遥测默认启用。
 
 ### 独立模式
 
@@ -60,7 +60,7 @@ enable_telemetry = false
 ```toml
 # metasrv config file
 # Whether to enable greptimedb telemetry, true by default.
-enable_telemetry = false 
+enable_telemetry = false
 ```
 
 或者在启动时设置环境变量 `GREPTIMEDB_METASRV__ENABLE_TELEMETRY=false`。

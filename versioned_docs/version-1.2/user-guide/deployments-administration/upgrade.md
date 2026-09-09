@@ -11,6 +11,21 @@ This guide provides upgrade instructions for GreptimeDB, including compatibility
 
 For complete version history and feature additions, see the [Release Notes](/release-notes/).
 
+## Upgrade Paths to v1.2
+
+### From v1.0 or v1.1 to v1.2
+
+If you are currently running v1.0 or v1.1, you can upgrade directly to v1.2.
+Review [Upgrading from v1.0 or v1.1 to v1.2](#upgrading-from-v10-or-v11-to-v12)
+and complete the related checks in the [Upgrade Checklist](#upgrade-checklist)
+before the rollout.
+
+### From v0.17 or Earlier
+
+If you are upgrading to v1.2 from v0.17 or an earlier release, first review the
+relevant v1.0 upgrade path below and then apply the
+[v1.2 breaking changes](#upgrading-from-v10-or-v11-to-v12).
+
 ## Upgrade Paths to v1.0
 
 ### From v0.16 to v1.0
@@ -28,6 +43,113 @@ If you are currently running v0.17, you can upgrade directly to v1.0. See [Upgra
 If you are running a version earlier than v0.16, you must first upgrade to v0.16 by following the upgrade documentation for your current version. Once you have successfully upgraded to v0.16, you can then use this guide to upgrade to v1.0.
 
 ## Breaking Changes by Version
+
+### Upgrading from v1.0 or v1.1 to v1.2
+
+#### Removed PromQL `holt_winters`
+
+**Impact:** PromQL query parsing
+
+The `holt_winters` name has been removed. It was an alias kept for backward
+compatibility; the function itself is unchanged and remains available as
+`double_exponential_smoothing`, which GreptimeDB supported before v1.2 as well.
+
+**Action Required:**
+
+- Search dashboards, recording rules, alert rules, and API callers for
+  `holt_winters(`
+- Rename each call to `double_exponential_smoothing(...)`. The arguments and
+  the results are identical:
+
+  ```promql
+  # Before v1.2
+  holt_winters(prom_series[10s], 0.5, 0.1)
+
+  # v1.2 and later
+  double_exponential_smoothing(prom_series[10s], 0.5, 0.1)
+  ```
+
+- Re-run the affected queries in a staging environment after the change
+
+#### Rejected `fill`, `fill_left`, and `fill_right` PromQL Modifiers
+
+**Impact:** PromQL compatibility tightening to avoid incorrect query plans
+
+v1.2 upgrades the PromQL parser, which makes the binary-operator modifiers
+`fill`, `fill_left`, and `fill_right` syntactically valid for the first time,
+as in `metric_a + fill(0) metric_b`. GreptimeDB does not implement the
+outer-join semantics they require, so it rejects them, whether used directly or
+nested, rather than planning them as ordinary inner joins.
+
+Earlier releases could not parse these modifiers at all, so no query that
+worked before v1.2 is affected. This is also unrelated to the SQL
+`RANGE ... FILL` clause, which is unchanged.
+
+**Action Required:**
+
+- Search PromQL expressions for `fill(`, `fill_left(`, and `fill_right(`
+- Rewrite any affected query so it does not depend on these modifiers
+
+#### Pipeline Integer Narrowing Now Uses `on_failure`
+
+**Impact:** Pipeline type coercion correctness
+
+When a pipeline converts an integral input or a numeric string into a declared
+integer type that cannot represent it, the value no longer wraps with modulo
+semantics. It now follows the transform's `on_failure` policy. Previously `-1`
+written to `uint8` was stored as `255`, and `256` written to `int8` was stored
+as `0`.
+
+This applies to `int8`, `int16`, `int32`, `uint8`, `uint16`, and `uint32`, and
+to cross-sign conversions into `int64` and `uint64`. Float-to-integer behavior
+is unchanged in this release.
+
+**Action Required:**
+
+- Review pipelines that write into narrow integer targets, or that may write
+  negative values into unsigned targets
+- If those pipelines relied on wraparound behavior, widen the target type or
+  configure an explicit `on_failure` policy before upgrading
+- Use `POST /v1/pipelines/_dryrun` or representative staging data to verify
+  that boundary values now produce the expected error, default, or null outcome
+
+#### Local SQL File Access Is Now Sandboxed
+
+**Impact:** `COPY` and external-table workflows that read or write local files
+
+Standalone deployments now resolve local SQL file paths inside
+`storage.copy_root` (default `<data_home>/copy`). Distributed deployments reject
+local-file SQL access entirely.
+
+**Action Required:**
+
+- Identify `COPY` statements and external tables that reference local paths
+- If you run standalone, move those files under the sandbox, set
+  `storage.copy_root` to a dedicated directory, or switch the workflow to
+  object storage
+- If you run distributed services, migrate local-file workflows to S3, OSS,
+  GCS, or AzBlob before upgrading
+- Follow [Migrate Local SQL File Access](/user-guide/deployments-administration/migrate-local-sql-file-access.md)
+  for the detailed migration procedure
+
+#### Removed `sparse_primary_key_encoding` Configuration
+
+**Impact:** Metric engine configuration cleanup
+
+GreptimeDB now always uses sparse primary key encoding for metric tables, and
+the `sparse_primary_key_encoding` option has been removed. A configuration file
+that still sets the key loads without error; the key is ignored.
+
+**Action Required:**
+
+- Remove `sparse_primary_key_encoding` from the `[region_engine.metric]` block
+  in your configuration files, Helm values, and automation templates. Drop the
+  older `experimental_sparse_primary_key_encoding` key as well if it is still
+  present.
+- If you previously set `sparse_primary_key_encoding = false`, note that v1.2
+  no longer provides an opt-out
+- Restart a staging environment with the cleaned configuration to confirm your
+  deployment no longer depends on the removed setting
 
 ### Upgrading from v0.17 to v1.0
 
@@ -59,7 +181,8 @@ Metric Engine now enables **sparse primary key encoding** by default to improve 
 - All metric tables will automatically use sparse encoding by default
 - If you want to continue using the old encoding method, explicitly set:
   ```toml
-  [metric_engine]
+  [[region_engine]]
+  [region_engine.metric]
   sparse_primary_key_encoding = false
   ```
 
@@ -248,12 +371,15 @@ Implement double writing to both the old and new versions of GreptimeDB, then sw
 
 ## Upgrade Checklist
 
-Before upgrading to v1.0, complete the following checklist:
+Before upgrading to your target version, complete the following checklist:
 
 ### Pre-Upgrade
 
 - [ ] Review all breaking changes relevant to your upgrade path
 - [ ] **Backup all data and configurations**
+- [ ] If upgrading to v1.2, search PromQL assets for `holt_winters(`, `fill(`, `fill_left(`, and `fill_right(`
+- [ ] If upgrading to v1.2, identify `COPY` workflows and external tables that reference local file paths
+- [ ] If upgrading to v1.2, review pipelines that narrow values into `int8`/`int16`/`int32`/`uint8`/`uint16`/`uint32`, or that write negative values into unsigned targets
 - [ ] Identify queries using ordered-set aggregate functions (if upgrading from v0.16 or earlier)
 - [ ] Identify pipelines using `greptime_identity` with JSON data
 - [ ] Check for usage of deprecated Jaeger HTTP header (if upgrading from v0.17 or earlier)
@@ -262,11 +388,16 @@ Before upgrading to v1.0, complete the following checklist:
 ### Configuration Updates
 
 - [ ] Update configuration files (remove deprecated cache settings)
-- [ ] Update metric engine configuration if needed (`sparse_primary_key_encoding`)
+- [ ] If upgrading to v1.0, update metric engine configuration if needed (`sparse_primary_key_encoding`)
+- [ ] If upgrading to v1.2, remove the now-ignored `sparse_primary_key_encoding` and `experimental_sparse_primary_key_encoding` overrides
 - [ ] Update pipeline configurations (remove `flatten_json_object`, add `max_nested_levels` if needed)
+- [ ] If upgrading to v1.2 standalone deployments, set `storage.copy_root` if the default sandbox path does not fit your workflow
 
 ### Code Updates
 
+- [ ] If upgrading to v1.2, rename PromQL `holt_winters(...)` calls to `double_exponential_smoothing(...)`
+- [ ] If upgrading to v1.2, rewrite PromQL queries that use `fill`, `fill_left`, or `fill_right`
+- [ ] If upgrading to v1.2, update pipelines that relied on integer wraparound and set an explicit `on_failure` policy when needed
 - [ ] Update SQL queries with ordered-set aggregates to use `WITHIN GROUP (ORDER BY ...)`
 - [ ] Update SQL scripts using `---` comments to use `--`
 - [ ] Update queries that access nested JSON fields to use dot notation
@@ -275,6 +406,9 @@ Before upgrading to v1.0, complete the following checklist:
 ### Testing & Deployment
 
 - [ ] Test the upgrade in a non-production environment
+- [ ] If upgrading to v1.2, dry-run representative pipeline inputs that hit integer boundaries and verify the expected `on_failure` result
+- [ ] If upgrading to v1.2, validate the updated PromQL queries in staging
+- [ ] If upgrading to v1.2, verify local-file `COPY` and external-table workflows after moving them into the sandbox or object storage
 - [ ] Verify query results, especially for:
   - Ordered-set aggregate functions
   - Nested JSON data access

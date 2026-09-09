@@ -1,31 +1,24 @@
 ---
-keywords: [version numbering, Semantic Versioning, major release, minor release, revision number]
-description: Explanation of GreptimeDB's version numbering scheme, including the significance of major, minor, and revision numbers.
+keywords: [version numbering, Semantic Versioning, major version, minor version, patch version]
+description: GreptimeDB version numbering and the meaning of major, minor, and patch versions.
 ---
 
 # About GreptimeDB Version Number
 
-GreptimeDB follows the [Semantic Versioning](https://semver.org/) scheme:
+GreptimeDB follows [Semantic Versioning](https://semver.org/) and uses version numbers in the form `MAJOR.MINOR.PATCH`. For example, in `1.2.3`:
 
-1.2.3 where:
-- 1 is the major release
-- 2 is the minor release
-- 3 is the revision number
+- `1` is the major version.
+- `2` is the minor version.
+- `3` is the patch version.
 
 ## Major release(1)
-The major version indicates a significant milestone in the software’s lifecycle, often introducing extensive changes.
-- Characteristics: Includes major architectural updates, substantial new features, or system overhauls.
-- Impact: Typically not backward-compatible, requiring adjustments from users or developers.
-- Examples: Major API redesigns, foundational architectural shifts, or the introduction of new core modules.
+
+The major version changes when a release contains incompatible API or behavior changes. Upgrading to a new major version may require changes to clients, configuration, or deployment procedures, so review the release's upgrade notes before migrating.
 
 ## Minor release(2)
-The minor version focuses on feature enhancements and minor improvements, aiming to refine the existing system.
-- Characteristics: Adds new features, small updates, or interface improvements.
-- Impact: While it strives for backward compatibility within the same major version, minor breaking changes might occasionally occur.
-- Examples: Introducing optional functionality, updating user interfaces, or expanding configuration options with slight adjustments to existing behaviors.
+
+The minor version changes when a release adds backward-compatible functionality. A minor release can introduce SQL features, APIs, configuration options, or operational capabilities while keeping existing public interfaces compatible.
 
 ## Revision number(3)
-The revision number is used for patches or minor refinements that address specific issues.
-- Characteristics: Focuses on bug fixes, security updates, or performance optimizations.
-- Impact: Does not introduce new features or change the overall behavior of the system.
-- Examples: Fixing known bugs, addressing security vulnerabilities, or improving system stability.
+
+The patch version changes when a release contains backward-compatible bug fixes, security fixes, or performance improvements. Patch releases do not intentionally introduce incompatible changes to public interfaces.

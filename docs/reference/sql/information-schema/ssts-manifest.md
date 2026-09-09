@@ -1,11 +1,11 @@
 ---
 keywords: [SST manifest, SST files, region files, file metadata, table data files]
-description: Provides access to SST (Sorted String Table) file information from the manifest, including file paths, sizes, time ranges, row counts, and encoded primary key ranges.
+description: Provides access to SST (Sorted String Table) file information from the manifest, including file paths, sizes, time ranges, row counts, encoded primary key ranges, and partition expressions.
 ---
 
 # SSTS_MANIFEST
 
-The `SSTS_MANIFEST` table provides access to SST (Sorted String Table) file information collected from the manifest. This table surfaces detailed information about each SST file, including file paths, sizes, levels, time ranges, row counts, and encoded primary key ranges.
+The `SSTS_MANIFEST` table provides access to SST (Sorted String Table) file information collected from the manifest. This table surfaces detailed information about each SST file, including file paths, sizes, levels, time ranges, row counts, encoded primary key ranges, maximum uncompressed row-group sizes, and partition expressions.
 ```sql
 USE INFORMATION_SCHEMA;
 DESC SSTS_MANIFEST;
@@ -14,32 +14,36 @@ DESC SSTS_MANIFEST;
 The output is as follows:
 
 ```sql
-+------------------+---------------------+-----+------+---------+---------------+
-| Column           | Type                | Key | Null | Default | Semantic Type |
-+------------------+---------------------+-----+------+---------+---------------+
-| table_dir        | String              |     | NO   |         | FIELD         |
-| region_id        | UInt64              |     | NO   |         | FIELD         |
-| table_id         | UInt32              |     | NO   |         | FIELD         |
-| region_number    | UInt32              |     | NO   |         | FIELD         |
-| region_group     | UInt8               |     | NO   |         | FIELD         |
-| region_sequence  | UInt32              |     | NO   |         | FIELD         |
-| file_id          | String              |     | NO   |         | FIELD         |
-| level            | UInt8               |     | NO   |         | FIELD         |
-| file_path        | String              |     | NO   |         | FIELD         |
-| file_size        | UInt64              |     | NO   |         | FIELD         |
-| index_file_path  | String              |     | YES  |         | FIELD         |
-| index_file_size  | UInt64              |     | YES  |         | FIELD         |
-| num_rows         | UInt64              |     | NO   |         | FIELD         |
-| num_row_groups   | UInt64              |     | NO   |         | FIELD         |
-| min_ts           | TimestampNanosecond |     | YES  |         | FIELD         |
-| max_ts           | TimestampNanosecond |     | YES  |         | FIELD         |
-| sequence         | UInt64              |     | YES  |         | FIELD         |
-| origin_region_id | UInt64              |     | NO   |         | FIELD         |
-| node_id          | UInt64              |     | YES  |         | FIELD         |
-| visible          | Boolean             |     | NO   |         | FIELD         |
-| primary_key_min  | Binary              |     | YES  |         | FIELD         |
-| primary_key_max  | Binary              |     | YES  |         | FIELD         |
-+------------------+---------------------+-----+------+---------+---------------+
++---------------------------------+---------------------+-----+------+---------+---------------+
+| Column                          | Type                | Key | Null | Default | Semantic Type |
++---------------------------------+---------------------+-----+------+---------+---------------+
+| table_dir                       | String              |     | NO   |         | FIELD         |
+| region_id                       | UInt64              |     | NO   |         | FIELD         |
+| table_id                        | UInt32              |     | NO   |         | FIELD         |
+| region_number                   | UInt32              |     | NO   |         | FIELD         |
+| region_group                    | UInt8               |     | NO   |         | FIELD         |
+| region_sequence                 | UInt32              |     | NO   |         | FIELD         |
+| file_id                         | String              |     | NO   |         | FIELD         |
+| index_version                   | UInt64              |     | NO   |         | FIELD         |
+| level                           | UInt8               |     | NO   |         | FIELD         |
+| file_path                       | String              |     | NO   |         | FIELD         |
+| file_size                       | UInt64              |     | NO   |         | FIELD         |
+| index_file_path                 | String              |     | YES  |         | FIELD         |
+| index_file_size                 | UInt64              |     | YES  |         | FIELD         |
+| num_rows                        | UInt64              |     | NO   |         | FIELD         |
+| num_row_groups                  | UInt64              |     | NO   |         | FIELD         |
+| num_series                      | UInt64              |     | YES  |         | FIELD         |
+| min_ts                          | TimestampNanosecond |     | YES  |         | FIELD         |
+| max_ts                          | TimestampNanosecond |     | YES  |         | FIELD         |
+| sequence                        | UInt64              |     | YES  |         | FIELD         |
+| origin_region_id                | UInt64              |     | NO   |         | FIELD         |
+| node_id                         | UInt64              |     | YES  |         | FIELD         |
+| visible                         | Boolean             |     | NO   |         | FIELD         |
+| primary_key_min                 | Binary              |     | YES  |         | FIELD         |
+| primary_key_max                 | Binary              |     | YES  |         | FIELD         |
+| max_row_group_uncompressed_size | UInt64              |     | NO   |         | FIELD         |
+| partition_expr                  | String              |     | YES  |         | FIELD         |
++---------------------------------+---------------------+-----+------+---------+---------------+
 ```
 
 Fields in the `SSTS_MANIFEST` table are described as follows:
@@ -51,6 +55,7 @@ Fields in the `SSTS_MANIFEST` table are described as follows:
 - `region_group`: The group identifier for the region.
 - `region_sequence`: The sequence number of the region.
 - `file_id`: The unique identifier of the SST file (UUID).
+- `index_version`: The index version, incremented when the index file is rebuilt. Mito reports `0` when no index file is present.
 - `level`: The SST level in the LSM tree (0 for uncompacted, 1 for compacted).
 - `file_path`: The full path to the SST file in object storage.
 - `file_size`: The size of the SST file in bytes.
@@ -58,6 +63,7 @@ Fields in the `SSTS_MANIFEST` table are described as follows:
 - `index_file_size`: The size of the index file in bytes (if exists).
 - `num_rows`: The number of rows in the SST file.
 - `num_row_groups`: The number of row groups in the SST file.
+- `num_series`: The number of series in the SST file; nullable.
 - `min_ts`: The minimum timestamp in the SST file.
 - `max_ts`: The maximum timestamp in the SST file.
 - `sequence`: The sequence number associated with this file.
@@ -66,6 +72,8 @@ Fields in the `SSTS_MANIFEST` table are described as follows:
 - `visible`: Whether this file is visible in the current version.
 - `primary_key_min`: The minimum encoded primary key in the SST file.
 - `primary_key_max`: The maximum encoded primary key in the SST file.
+- `max_row_group_uncompressed_size`: The maximum uncompressed row-group size in bytes. `0` means unknown.
+- `partition_expr`: The human-readable partition expression stored with the SST file, or `NULL` if absent.
 
 ## Examples
 
@@ -100,6 +108,14 @@ FROM INFORMATION_SCHEMA.SSTS_MANIFEST
 ORDER BY table_id, min_ts;
 ```
 
+Inspect maximum uncompressed row-group sizes and partition expressions:
+
+```sql
+SELECT file_path, max_row_group_uncompressed_size, partition_expr
+FROM INFORMATION_SCHEMA.SSTS_MANIFEST
+ORDER BY max_row_group_uncompressed_size DESC;
+```
+
 Calculate total SST file size per table:
 
 ```sql
@@ -112,27 +128,31 @@ Output example:
 ```sql
 mysql> SELECT * FROM INFORMATION_SCHEMA.SSTS_MANIFEST LIMIT 1\G;
 *************************** 1. row ***************************
-       table_dir: data/greptime/public/1024/
-       region_id: 4398046511104
-        table_id: 1024
-   region_number: 0
-    region_group: 0
- region_sequence: 0
-         file_id: 01234567-89ab-cdef-0123-456789abcdef
-           level: 0
-       file_path: data/greptime/public/1024/4398046511104_0/01234567-89ab-cdef-0123-456789abcdef.parquet
-       file_size: 1234
- index_file_path: data/greptime/public/1024/4398046511104_0/index/01234567-89ab-cdef-0123-456789abcdef.puffin
- index_file_size: 256
-        num_rows: 100
-  num_row_groups: 1
-          min_ts: 2025-01-01 00:00:00.000000000
-          max_ts: 2025-01-01 00:01:00.000000000
-         sequence: 1
-origin_region_id: 4398046511104
-         node_id: 0
-         visible: true
- primary_key_min: 01800001f4
- primary_key_max: 01800001f4
+                      table_dir: data/greptime/public/1024/
+                      region_id: 4398046511104
+                       table_id: 1024
+                  region_number: 0
+                   region_group: 0
+                region_sequence: 0
+                        file_id: 01234567-89ab-cdef-0123-456789abcdef
+                  index_version: 0
+                          level: 0
+                      file_path: data/greptime/public/1024/4398046511104_0/01234567-89ab-cdef-0123-456789abcdef.parquet
+                      file_size: 1234
+                index_file_path: data/greptime/public/1024/4398046511104_0/index/01234567-89ab-cdef-0123-456789abcdef.puffin
+                index_file_size: 256
+                       num_rows: 100
+                 num_row_groups: 1
+                     num_series: 1
+                         min_ts: 2025-01-01 00:00:00.000000000
+                         max_ts: 2025-01-01 00:01:00.000000000
+                       sequence: 1
+               origin_region_id: 4398046511104
+                        node_id: 0
+                        visible: true
+                primary_key_min: 01800001f4
+                primary_key_max: 01800001f4
+max_row_group_uncompressed_size: 4096
+                 partition_expr: NULL
 1 row in set (0.02 sec)
 ```

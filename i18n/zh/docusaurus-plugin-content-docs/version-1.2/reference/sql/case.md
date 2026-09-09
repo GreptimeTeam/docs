@@ -5,8 +5,7 @@ description: CASE 语句允许在查询中执行条件逻辑，根据条件返�
 
 # CASE
 
-CASE 语句类似于编程语言中的 IF-THEN-ELSE 结构，允许你在查询中执行条件逻辑，
-它使你能够根据条件返回特定值，从而使数据检索和操作更加动态。
+`CASE` 表达式按顺序计算各个条件，并返回第一个为真的条件所对应的结果。如果没有条件为真，则返回 `ELSE` 的结果；省略 `ELSE` 时返回 `NULL`。
 
 ## 语法
 
@@ -77,10 +76,7 @@ GROUP BY
 
 ### 在 `ORDER BY` 中使用 `CASE`
 
-根据 GreptimeDB 的[数据模型](/user-guide/concepts/data-model.md)，
-`Tag` 列拥有索引，可以在 `ORDER BY` 子句中使用以提高查询性能。
-假如 `nginx_logs` 表中的 `status_code` 和 `http_method` 列是存储字符串值的 `Tag` 列，
-你可以利用 `CASE` 语句根据这些列对数据进行排序，如下所示：
+以下查询在 `status_code` 不为 `NULL` 时按 `status_code` 排序，否则按 `http_method` 排序：
 
 ```sql
 SELECT *
@@ -91,4 +87,3 @@ ORDER BY
     ELSE http_method
   END;
 ```
-

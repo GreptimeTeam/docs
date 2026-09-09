@@ -34,7 +34,9 @@ date: Sun, 26 Apr 2026 13:46:41 GMT
 
 For more information about the health check endpoint, please refer to [the Health endpoint](/reference/http-endpoints.md#health-check).
 
-## Check GreptimeDB status {#check-greptimedb-runtime-status}
+<AnchorAlias id="check-greptimedb-runtime-status" />
+
+## Check GreptimeDB status
 
 You can use the `/status` endpoint to check the deployment status of GreptimeDB.
 

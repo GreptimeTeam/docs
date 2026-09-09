@@ -325,9 +325,13 @@ objectStorage:
     endpoint: ""
 ```
 
-#### Using AWS EKS Pod Identity for S3
+<AnchorAlias id="using-aws-eks-pod-identity-for-s3" />
 
-Instead of providing static access keys, you can use [AWS EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) (IAM Roles for Service Accounts) to grant S3 access to GreptimeDB. This approach is more secure as it eliminates the need to manage long-lived credentials.
+#### Using IAM Roles for Service Accounts (IRSA) for S3
+
+Instead of providing static access keys, you can use [IAM Roles for Service Accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) (IRSA) to grant S3 access to GreptimeDB. This approach is more secure as it eliminates the need to manage long-lived credentials.
+
+IRSA and [EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) are two different mechanisms. The configuration below is IRSA: it annotates the service account with the role ARN. Pod Identity instead requires a pod identity association and no such annotation.
 
 First, configure the datanode service account with the IAM role annotation. Only the datanode reads from and writes to S3:
 
@@ -358,7 +362,7 @@ objectStorage:
 ```
 
 :::note
-When using EKS Pod Identity, omit the `objectStorage.credentials` section entirely. The datanode pods will automatically obtain temporary credentials through the IAM role associated with the service account.
+When using IRSA, omit the `objectStorage.credentials` section entirely. The datanode pods will automatically obtain temporary credentials through the IAM role associated with the service account.
 :::
 
 #### Google Cloud Storage
@@ -557,8 +561,8 @@ meta:
 - `postgresql.electionLockID`: The Advisory lock id in PostgreSQL for election.
 - `postgresql.credentials.secretName`: The PostgreSQL credentials secret name.
 - `postgresql.credentials.existingSecretName`: The PostgreSQL credentials existing secret name. If you want to use an existing secret, you should make sure the secret contains the following keys: `username` and `password`.
-- `postgresql.credentials.username`: The PostgreSQL credentials username. It will be ignored if `mysql.credentials.existingSecretName` is set. The `username` will be stored in the `username` key of the secret with `mysql.credentials.secretName`.
-- `postgresql.credentials.password`: The PostgreSQL credentials password. It will be ignored if `mysql.credentials.existingSecretName` is set. The `password` will be stored in the `password` key of the secret with `mysql.credentials.secretName`.
+- `postgresql.credentials.username`: The PostgreSQL credentials username. It will be ignored if `postgresql.credentials.existingSecretName` is set. The `username` will be stored in the `username` key of the secret with `postgresql.credentials.secretName`.
+- `postgresql.credentials.password`: The PostgreSQL credentials password. It will be ignored if `postgresql.credentials.existingSecretName` is set. The `password` will be stored in the `password` key of the secret with `postgresql.credentials.secretName`.
 
 #### Using etcd as Backend Storage
 

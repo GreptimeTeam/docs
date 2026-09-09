@@ -5,20 +5,15 @@ description: Learn how to use GreptimeDB's continuous aggregation for real-time 
 
 # Continuous Aggregation
 
-Continuous aggregation is a crucial aspect of processing time-series data to deliver real-time insights.
-The Flow engine empowers developers to perform continuous aggregations,
-such as calculating sums, averages, and other metrics, seamlessly.
-It efficiently updates the aggregated data within specified time windows, making it an invaluable tool for analytics.
+The Flow engine maintains aggregates such as sums, averages, and counts over time windows, updating the sink table as new rows arrive. Queries then read the sink table instead of scanning the source table.
 
-Following are three major usecase examples for continuous aggregation:
+The three examples below cover the common cases:
 
-1. **Real-time Analytics**: A real-time analytics platform that continuously aggregates data from a stream of events, delivering immediate insights while optionally downsampling the data to a lower resolution. For instance, this system can compile data from a high-frequency stream of log events (e.g., occurring every millisecond) to provide up-to-the-minute insights such as the number of requests per minute, average response times, and error rates per minute.
+1. **Real-time Analytics**: downsample a high-frequency event stream into a lower resolution. For instance, compile per-millisecond log events into requests per minute, average response times, and error rates per minute.
 
-2. **Real-time Monitoring**: A real-time monitoring system that continuously aggregates data from a stream of events and provides real-time alerts based on the aggregated data. For example, a system that aggregates data from a stream of sensor events and provides real-time alerts when the temperature exceeds a certain threshold.
+2. **Real-time Monitoring**: aggregate a stream and use the aggregated rows as alerts, for example emitting a row when the maximum temperature in a window exceeds a threshold.
 
-3. **Real-time Dashboard**: A real-time dashboard that shows the number of requests per minute, the average response time, and the number of errors per minute. This dashboard can be used to monitor the health of the system and to detect any anomalies in the system.
-
-In all these usecases, the continuous aggregation system continuously aggregates data from a stream of events and provides real-time insights and alerts based on the aggregated data. The system can also downsample the data to a lower resolution to reduce the amount of data stored and processed. This allows the system to provide real-time insights and alerts while keeping the data storage and processing costs low.
+3. **Real-time Dashboard**: precompute the counters a dashboard renders, such as request counts, average response time, and error counts per minute.
 
 
 ## Real-time Analytics Example
@@ -62,9 +57,9 @@ CREATE TABLE `ngx_statistics` (
 );
 ```
 
-Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. So you can be made aware in real time the information about packet size and action upon it, i.e. if the `high_size_count` became too high at a certain point, you can further examine if anything goes wrong, or if the `max_size` column suddenly spike in a 1 minute time window, you can then trying to locate that packet and further inspect it.
+Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the number of packets with a size greater than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. A spike in `high_size_count` or `max_size` within a single window then points you at the minute to inspect.
 
-The `EXPIRE AFTER '6h'` in the following SQL ensures that the flow computation only uses source data from the last 6 hours. Data older than 6 hours in the sink table will not be modified by this flow. For more details, see [manage-flow](manage-flow.md#expire-after).
+The `EXPIRE AFTER '6h'` in the following SQL ensures that the flow computation only uses source data from the last 6 hours. Data older than 6 hours in the sink table will not be modified by this flow. For more details, see [Manage Flow](manage-flow.md#expire-after).
 
 ```sql
 CREATE FLOW ngx_aggregation
@@ -79,7 +74,7 @@ SELECT
     max(size) as max_size,
     avg(size) as avg_size,
     sum(case when `size` > 550 then 1 else 0 end) as high_size_count,
-    date_bin('1 minutes'::INTERVAL, access_time) as time_window,
+    date_bin('1 minutes'::INTERVAL, access_time) as time_window
 FROM ngx_access_log
 GROUP BY
     status,
@@ -97,7 +92,9 @@ VALUES
     ('ios', 'iOS', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 404, 700, 'agent', now());
 ```
 
-Then the sink table `ngx_statistics` will be incremental updated and contain the following data:
+Then the sink table `ngx_statistics` will be incrementally updated and contain the following data:
+
+The time-window and `update_at` timestamps in these result tables are illustrative and vary with execution time.
 
 ```sql
 SELECT * FROM ngx_statistics;
@@ -123,7 +120,7 @@ VALUES
     ('ios', 'iOS', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 404, 800, 'agent', now());
 ```
 
-The sink table `ngx_statistics` now have corresponding rows updated, notes how `max_size`, `avg_size` and `high_size_count` are updated:
+The sink table `ngx_statistics` now has corresponding rows updated; note how `max_size`, `avg_size` and `high_size_count` are updated:
 
 ```sql
 SELECT * FROM ngx_statistics;
@@ -157,7 +154,7 @@ Another example of real-time analytics is to retrieve all distinct countries fro
 You can use the following query to group countries by time window:
 
 ```sql
-/* input table */
+/* source table */
 CREATE TABLE ngx_access_log (
     client STRING,
     country STRING,
@@ -184,7 +181,7 @@ COMMENT 'aggregate for distinct country'
 AS
 SELECT
     DISTINCT country,
-    date_bin('1 hour'::INTERVAL, access_time) as time_window,
+    date_bin('1 hour'::INTERVAL, access_time) as time_window
 FROM ngx_access_log
 GROUP BY
     country,
@@ -195,7 +192,7 @@ The above query puts the data from the `ngx_access_log` table into the `ngx_coun
 It calculates the distinct country for each time window.
 The `date_bin` function is used to group the data into one-hour intervals.
 The `ngx_country` table will be continuously updated with the aggregated data,
-providing real-time insights into the distinct countries that are accessing the system. The `EXPIRE AFTER` make flow ignore data with `access_time` older than 7 days and no longer calculate them anymore, see more explain in [manage-flow](manage-flow.md#expire-after).
+providing real-time insights into the distinct countries that are accessing the system. The `EXPIRE AFTER` clause makes the Flow ignore data with `access_time` older than 7 days; see [Manage Flow](manage-flow.md#expire-after) for details.
 
 You can insert some data into the source table `ngx_access_log`:
 
@@ -238,7 +235,7 @@ select * from ngx_country;
 Consider a usecase where you have a stream of sensor events from a network of temperature sensors that you want to monitor in real-time. The sensor events contain information such as the sensor ID, the temperature reading, the timestamp of the reading, and the location of the sensor. You want to continuously aggregate this data to provide real-time alerts when the temperature exceeds a certain threshold. Then the query for continuous aggregation would be:
 
 ```sql
-/* create input table */
+/* create source table */
 CREATE TABLE temp_sensor_data (
     sensor_id INT,
     loc STRING,
@@ -268,7 +265,7 @@ SELECT
     sensor_id,
     loc,
     max(temperature) as max_temp,
-    date_bin('10 seconds'::INTERVAL, ts) as time_window,
+    date_bin('10 seconds'::INTERVAL, ts) as time_window
 FROM temp_sensor_data
 GROUP BY
     sensor_id,
@@ -281,7 +278,7 @@ The above query continuously aggregates data from the `temp_sensor_data` table i
 It calculates the maximum temperature reading for each sensor and location,
 filtering out data where the maximum temperature exceeds 100 degrees.
 The `temp_alerts` table will be continuously updated with the aggregated data,
-providing real-time alerts (in the form of new rows in the `temp_alerts` table) when the temperature exceeds the threshold. The `EXPIRE AFTER '1h'` makes flow only calculate source data with `ts` in `(now - 1h, now)` range, see more explain in [manage-flow](manage-flow.md#expire-after).
+providing real-time alerts (in the form of new rows in the `temp_alerts` table) when the temperature exceeds the threshold. The `EXPIRE AFTER '1h'` makes flow only calculate source data with `ts` in `(now - 1h, now)` range, see [Manage Flow](manage-flow.md#expire-after) for details.
 
 Now that we have created the flow task, we can insert some data into the source table `temp_sensor_data`:
 
@@ -291,7 +288,7 @@ INSERT INTO temp_sensor_data VALUES
     (1, 'room1', 98.5, now() - '10 second'::INTERVAL),
     (2, 'room2', 99.5, now());
 ```
-table should be empty now, but still wait at least few seconds for flow to update results to sink table:
+The table should be empty now; wait a few seconds for the Flow to update the sink table:
 
 ```sql
 SELECT * FROM temp_alerts;
@@ -309,7 +306,7 @@ INSERT INTO temp_sensor_data VALUES
     (2, 'room2', 102.5, now());
 ```
 
-wait at least few seconds for flow to update results to sink table:
+Wait a few seconds for the Flow to update the sink table:
 
 ```sql
 SELECT * FROM temp_alerts;
@@ -330,7 +327,7 @@ SELECT * FROM temp_alerts;
 Consider a usecase in which you need a bar graph that show the distribution of packet sizes for each status code to monitor the health of the system. The query for continuous aggregation would be:
 
 ```sql
-/* create input table */
+/* create source table */
 CREATE TABLE ngx_access_log (
     client STRING,
     stat INT,
@@ -357,7 +354,7 @@ SELECT
     stat,
     trunc(size, -1)::INT as bucket_size,
     count(client) AS total_logs,
-    date_bin('1 minutes'::INTERVAL, access_time) as time_window,
+    date_bin('1 minutes'::INTERVAL, access_time) as time_window
 FROM
     ngx_access_log
 GROUP BY
@@ -369,8 +366,7 @@ GROUP BY
 The query aggregates data from the `ngx_access_log` table into the `ngx_distribution` table.
 It computes the total number of logs for each status code and packet size bucket (bucket size of 10, as specified by `trunc` with a second argument of -1) within each time window.
 The `date_bin` function groups the data into one-minute intervals.
-The `EXPIRE AFTER '6h'` ensures that the flow computation only uses source data from the last 6 hours. See more details in [manage-flow](manage-flow.md#expire-after).
-Consequently, the `ngx_distribution` table is continuously updated, offering real-time insights into the distribution of packet sizes per status code.
+The `EXPIRE AFTER '6h'` ensures that the flow computation only uses source data from the last 6 hours. See more details in [Manage Flow](manage-flow.md#expire-after).
 
 Now that we have created the flow task, we can insert some data into the source table `ngx_access_log`:
 
@@ -387,7 +383,7 @@ INSERT INTO ngx_access_log VALUES
     ('cli9', 404, 180, now()),
     ('cli10', 404, 184, now());
 ```
-wait at least few seconds for flow to update results to sink table:
+Wait a few seconds for the Flow to update the sink table:
 
 ```sql
 SELECT * FROM ngx_distribution;
@@ -413,7 +409,7 @@ SELECT * FROM ngx_distribution;
 This experimental feature may contain unexpected behavior and have its functionality change in the future.
 :::
 
-TQL (Time Query Language) can be seamlessly integrated with Flow to perform advanced time-series computations like rate calculations, moving averages, and other complex time-window operations. This combination allows you to create continuous aggregation flows that leverage TQL's powerful analytical functions for real-time insights.
+A Flow query can wrap TQL (Time Query Language), which gives you rate calculations, moving averages, and other time-window operations that are awkward to express in plain SQL.
 
 
 ### Understanding TQL Flow Components
@@ -447,8 +443,8 @@ This table will serve as the data source for our TQL-based Flow computations. Th
 Now we'll create a Flow that uses TQL to calculate the rate of `byte` over time:
 
 ```sql
-CREATE FLOW calc_rate 
-SINK TO rate_reqs 
+CREATE FLOW calc_rate
+SINK TO rate_reqs
 EVAL INTERVAL '1m' AS
 TQL EVAL (now() - '1m'::interval, now(), '30s') rate(http_requests_total{job="my_service"}[1m]);
 ```
@@ -580,8 +576,10 @@ When you're done experimenting, clean up the resources:
 
 ```sql
 DROP FLOW calc_rate;
-DROP TABLE http_requests;
+DROP FLOW calc_rate_cte;
+DROP TABLE http_requests_total;
 DROP TABLE rate_reqs;
+DROP TABLE rate_reqs_cte;
 ```
 
 ## Next Steps

@@ -32,7 +32,7 @@ DESC INFORMATION_SCHEMA.table_constraints;
 * `CONSTRAINT_NAME`: 约束的名称，可以是 `TIME INDEX` 或 `PRIMARY`。
 * `TABLE_NAME`: 表的名称。
 * `CONSTRAINT_TYPE`: 约束的类型。值可以是 `TIME INDEX` 或 `PRIMARY KEY`。`TIME INDEX` 和 `PRIMARY KEY` 信息类似于 `SHOW INDEX` 语句的执行结果。
-* `enforced`: 不支持 `CHECK` 约束，此值始终为 `YES`。
+* `ENFORCED`: 是否强制执行约束。GreptimeDB 对时间索引和主键约束返回 `YES`。
 
 ```sql
 select * from INFORMATION_SCHEMA.table_constraints WHERE table_name = 'monitor'\G;

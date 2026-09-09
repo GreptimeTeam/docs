@@ -242,7 +242,7 @@ public=> SELECT INTERVAL '1 year 2 month';
 JSON 类型目前仍处于实验阶段，在未来的版本中可能会有所调整。
 :::
 
-GreptimeDB 支持 JSON 类型，允许用户存储和查询 JSON 格式的数据。JSON 类型非常灵活，可以存储各种形式的结构化或非结构化数据，适合日志记录、分析和半结构化数据存储等场景。
+`JSON` 类型用于存储和查询结构化或非结构化 JSON 值，适合日志、分析和其他半结构化数据，尤其是不需要拆分为独立表列的对象和数组。
 
 ```sql
 CREATE TABLE json_data(

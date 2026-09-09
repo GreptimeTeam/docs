@@ -28,6 +28,7 @@ checkpoint_trigger_size = "128MB"
 # Topic 自动创建配置
 auto_create_topics = true
 num_topics = 64
+# 测试值：不保留冗余副本。生产环境应根据持久性要求设置。
 replication_factor = 1
 topic_name_prefix = "greptimedb_wal_topic"
 create_topic_timeout = "30s"
@@ -45,7 +46,7 @@ create_topic_timeout = "30s"
 | `auto_prune_parallelism`   | 并发清理任务的最大数量。                                                                                                                                                                                                                                                                                         |
 | `auto_create_topics`       | 是否自动创建 Kafka topic，设为 `false` 时需手动预创建。                                                                                                                                                                                                                                                           |
 | `num_topics`               | 用于存储 WAL 的 Kafka topic 数量。                                                                                                                                                                                                                                                                                |
-| `replication_factor`       | 每个 topic 的副本数量。                                                                                                                                                                                                                                                                                           |
+| `replication_factor`       | 每个 topic 的副本数量。示例中的 `1` 不保留冗余副本，仅适用于测试；生产环境应根据持久性要求设置，且不得超过 broker 数量。                                                                                                                                                                                                                                                                                           |
 | `topic_name_prefix`        | Kafka topic 名称前缀，必须匹配正则 `[a-zA-Z_:-][a-zA-Z0-9_:\-\.@#]*`。                                                                                                                                                                                                                                            |
 | `flush_trigger_size`       | 触发 region flush 操作的预估大小阈值（如 `"512MB"`）。计算公式为 `(latest_entry_id - flushed_entry_id) * avg_record_size`。当此值超过 `flush_trigger_size` 时，MetaSrv 会触发 region flush 操作。设为 `"0"` 时由系统自动控制。该配置还可控制 region 重放期间从 topic 重放的最大数据量，较小的值有助于缩短 Datanode 启动时的重放时间。 |
 | `checkpoint_trigger_size`  | 触发 region checkpoint 操作的预估大小阈值（如 `"128MB"`）。计算公式为 `(latest_entry_id - last_checkpoint_entry_id) * avg_record_size`。当此值超过 `checkpoint_trigger_size` 时，MetaSrv 会启动检查点操作。设为 `"0"` 时由系统自动控制。较小的值有助于缩短 Datanode 启动时的重放时间。                                 |
@@ -74,6 +75,7 @@ Datanode 负责将数据写入 Kafka 并从中读取数据。
 provider = "kafka"
 broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 max_batch_bytes = "1MB"
+create_index = false
 overwrite_entry_start_id = true
 connect_timeout = "3s"
 timeout = "3s"
@@ -86,6 +88,7 @@ timeout = "3s"
 | `provider`                 | 设置为 `"kafka"` 以启用 Remote WAL。                                                         |
 | `broker_endpoints`         | Kafka broker 的地址列表。                                                                    |
 | `max_batch_bytes`          | 每个写入批次的最大大小，默认不能超过 Kafka 配置的单条消息上限（通常为 1MB）。                |
+| `create_index`             | 是否为各个 Region 创建 Kafka WAL 索引，默认值为 `false`，且仅在分布式模式下生效。索引可以减少恢复期间的 Kafka 读取量，但仅建议在确认单个 Region 恢复存在明显读取放大后启用。Datanode 每隔 `dump_index_interval`（默认值为 `"60s"`）将索引持久化到对象存储，这会产生持续的对象存储 I/O。 |
 | `overwrite_entry_start_id` | 若设为 `true`，在 WAL 回放时跳过缺失的 entry，避免 out-of-range 错误（但可能掩盖数据丢失）。 |
 | `connect_timeout`          | Kafka 客户端的连接超时时间，默认值为 `"3s"`。                                                 |
 | `timeout`                  | Kafka 客户端操作的超时时间，默认值为 `"3s"`。                                                 |

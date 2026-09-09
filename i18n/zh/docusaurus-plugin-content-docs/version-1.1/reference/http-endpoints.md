@@ -1,11 +1,11 @@
 ---
 keywords: [HTTP API, 管理 API, 健康检查, 状态, 指标, 配置, 仪表盘, 日志级别, 性能分析]
-description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表。
+description: 介绍 GreptimeDB 常用的 HTTP 路径，包括管理 API、查询端点和协议端点。
 ---
 
 # HTTP API 端点列表
 
-以下是 GreptimeDB 中各种 HTTP 路径及其用法的完整列表：
+以下各节介绍常用的 HTTP 路径：
 
 ## 管理 API
 
@@ -104,7 +104,7 @@ is_strict_mode = false
 - **描述**: 提供对服务器仪表盘界面的访问。
 - **用法**: 访问这些端点以与基于 Web 的仪表盘进行交互。
 
-此仪表盘与 GreptimeDB 服务器一起打包，并提供一个用户友好的界面与服务器进行交互。构建 GreptimeDB 时需要启用相应的编译标志。仪表盘的原始源代码在 https://github.com/GreptimeTeam/dashboard。
+构建 GreptimeDB 时启用对应 feature 后，二进制会包含 Dashboard。源代码位于 [GreptimeDB Dashboard 仓库](https://github.com/GreptimeTeam/dashboard)。
 
 ### 日志级别
 
@@ -179,7 +179,7 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 
 ## 查询端点
 
-用于向 GreptimeDB 发送查询的各种查询 API。
+这些端点用于执行 SQL 或 PromQL 查询。
 
 ### SQL API
 
@@ -201,7 +201,7 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 
 ## 协议端点
 
-与 GreptimeDB 兼容的各种协议的端点。如 InfluxDB、Prometheus、OpenTelemetry 等。
+这些端点实现 InfluxDB、Prometheus、OpenTelemetry、Loki 和 OpenTSDB 的部分 API。
 
 ### InfluxDB 兼容性
 

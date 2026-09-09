@@ -22,11 +22,11 @@ The output is as follows:
 | table_name               | String |      | NO   |         | FIELD         |
 | column_name              | String |      | NO   |         | FIELD         |
 | ordinal_position         | Int64  |      | NO   |         | FIELD         |
-| character_maximum_length | Int64  | YES  |         | FIELD         |
-| character_octet_length   | Int64  | YES  |         | FIELD         |
-| numeric_precision        | Int64  | YES  |         | FIELD         |
-| numeric_scale            | Int64  | YES  |         | FIELD         |
-| datetime_precision       | Int64  | YES  |         | FIELD         |
+| character_maximum_length | Int64  |      | YES  |         | FIELD         |
+| character_octet_length   | Int64  |      | YES  |         | FIELD         |
+| numeric_precision        | Int64  |      | YES  |         | FIELD         |
+| numeric_scale            | Int64  |      | YES  |         | FIELD         |
+| datetime_precision       | Int64  |      | YES  |         | FIELD         |
 | character_set_name       | String |      | YES  |         | FIELD         |
 | collation_name           | String |      | YES  |         | FIELD         |
 | column_key               | String |      | NO   |         | FIELD         |

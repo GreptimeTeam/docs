@@ -5,22 +5,19 @@ description: Explains the SQL SELECT DISTINCT statement used to retrieve unique 
 
 # DISTINCT
 
-`SELECT DISTINCT` is used to select unique values from a set of data. This keyword returns distinct values
-from the output of the query.
+`SELECT DISTINCT` removes duplicate rows from a query result. When the select list contains multiple expressions, rows are considered duplicates only when the complete set of selected values is equal.
 
-The basic syntax for a `SELECT DISTINCT` statement is as followings:
+The following query returns each distinct `idc` value:
 
 ```sql
 SELECT DISTINCT idc
 FROM system_metrics;
 ```
 
-`SELECT DISTINCT` can be used in conjunction with filters.
+`DISTINCT` is applied to the rows that satisfy the `WHERE` clause:
 
 ```sql
 SELECT DISTINCT idc, host
 FROM system_metrics
 WHERE host != 'host2';
 ```
-
-`SELECT DISTINCT` is a simple but powerful command of GreptimeDB SQL that allows users to easily condense the data into a summary of unique values. It can be used on one column or multiple columns, making it very versatile for data analysis and reporting. Using "SELECT DISTINCT" is a great way to get an overview of the types of data stored in the tables.

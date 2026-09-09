@@ -83,9 +83,16 @@ extraConfig: |
   log.flush.interval.ms=1000
   log.retention.hours=4
   log.roll.hours=3
-  log.retention.bytes=250000000
   log.segment.bytes=1073741824
 ```
+
+:::warning 该集群用于 Remote WAL 时的保留策略
+`log.retention.hours=4` 是测试值。Kafka 只要命中任一保留条件就会删除 segment，
+保留窗口短于最长的 flush、故障或人工处置窗口时，会删掉 GreptimeDB 尚未回放的 WAL。
+
+用于 Remote WAL 的 topic 不要配置 `log.retention.bytes` 这类基于大小的保留策略。
+完整限制见 [注意事项与限制](/user-guide/deployments-administration/wal/remote-wal/configuration.md#注意事项与限制)。
+:::
 
 ## 安装 Kafka 集群
 
@@ -166,7 +173,7 @@ kafka-broker-1       1/1     Running   0          8m2s
 kafka-broker-2       1/1     Running   0          8m1s
 kafka-controller-0   1/1     Running   0          8m3s
 kafka-controller-1   1/1     Running   0          8m2s
-kafka-controller-0   1/1     Running   0          8m1s
+kafka-controller-2   1/1     Running   0          8m1s
 ```
 </details>
 

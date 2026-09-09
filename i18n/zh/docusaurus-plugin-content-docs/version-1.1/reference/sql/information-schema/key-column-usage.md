@@ -81,7 +81,7 @@ position_in_unique_constraint: NULL
 - `table_name`：具有约束的表的名称。
 - `column_name`：具有约束的列的名称。
 - `ordinal_position`：列在约束中的位置，而不是在表中的位置。位置编号从 `1` 开始。
-- `position_in_unique_constraint`：唯一约束和主键约束为空。对于外键约束，此列是引用表键的位置。
-- `referenced_table_schema`：约束引用的数据库名称。目前在 GreptimeDB 中，除外键约束外，所有约束中此列的值均为 `NULL`。
-- `referenced_table_name`：约束引用的表名称。目前在 GreptimeDB 中，除外键约束外，所有约束中此列的值均为 `NULL`。
-- `referenced_column_name`：约束引用的列名称。目前在 GreptimeDB 中，除外键约束外，所有约束中此列的值均为 `NULL`。
+- `position_in_unique_constraint`：为外键元数据保留。GreptimeDB 不支持外键，因此该列始终为 `NULL`。
+- `referenced_table_schema`：为外键引用的数据库保留，始终为 `NULL`。
+- `referenced_table_name`：为外键引用的表保留，始终为 `NULL`。
+- `referenced_column_name`：为外键引用的列保留，始终为 `NULL`。

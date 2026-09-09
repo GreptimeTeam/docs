@@ -81,7 +81,7 @@ The description of columns in the `KEY_COLUMN_USAGE` table is as follows:
 - `table_name`: The name of the table with the constraint.
 - `column_name`: The name of the column with the constraint.
 - `ordinal_position`: The position of the column in the constraint, rather than in the table. The position number starts from `1`.
-- `position_in_unique_constraint`: The unique constraint and the primary key constraint are empty. For foreign key constraints, this column is the position of the referenced table's key.
-- `referenced_table_schema`: The name of the schema referenced by the constraint. Currently in GreptimeDB, the value of this column in all constraints is `NULL`, except for the foreign key constraint.
-- `referenced_table_name`: The name of the table referenced by the constraint. Currently in GreptimeDB, the value of this column in all constraints is `NULL`, except for the foreign key constraint.
-- `referenced_column_name`: The name of the column referenced by the constraint. Currently in TiDB, the value of this column in all constraints is `NULL`, except for the foreign key constraint.
+- `position_in_unique_constraint`: Reserved for foreign-key metadata. GreptimeDB does not support foreign keys, so this column is always `NULL`.
+- `referenced_table_schema`: Reserved for the referenced schema of a foreign key. The value is always `NULL`.
+- `referenced_table_name`: Reserved for the referenced table of a foreign key. The value is always `NULL`.
+- `referenced_column_name`: Reserved for the referenced column of a foreign key. The value is always `NULL`.

@@ -158,7 +158,7 @@ CREATE TABLE http_logs (
 例如，如果你总是只查询特定应用程序的日志，可以将 `application` 列设为主键（tag）。
 
 ```sql
-SELECT message FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 应用程序的数量通常是有限的。表 `http_logs_v2` 使用 `application` 作为主键。
@@ -312,7 +312,7 @@ CREATE TABLE http_logs_v3 (
 以下查询可以使用 `http_method` 列上的倒排索引。
 
 ```sql
-SELECT message FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = `GET` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = 'GET' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 倒排索引支持以下运算符：
@@ -350,11 +350,11 @@ CREATE TABLE http_logs_v4 (
 以下查询可以使用跳数索引过滤 `request_id` 列。
 
 ```sql
-SELECT message FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = `25b6f398-41cf-4965-aa19-e1c63a88a7a9` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT request FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = '25b6f398-41cf-4965-aa19-e1c63a88a7a9' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 然而，请注意跳数索引的查询功能通常不如倒排索引丰富。
-跳数索引无法处理复杂的过滤条件，在低基数列上可能有较低的过滤性能。它只支持等于运算符。
+跳数索引无法处理复杂的过滤条件，在低基数列上可能有较低的过滤性能。它适用于等值谓词，以及能归约为集合成员判断的谓词，例如 `IN` 和一组由 `OR` 连接的等值条件；其他运算符不会走该索引。
 
 ### 全文索引
 
@@ -371,7 +371,7 @@ CREATE TABLE IF NOT EXISTS `raw_logs` (
 ```
 
 `message` 字段使用 `FULLTEXT INDEX` 选项进行全文索引。
-更多信息请参见[fulltext 列选项](/reference/sql/create.md#index-column-option)。
+更多信息请参见[fulltext 列选项](/user-guide/manage-data/data-index.md#全文索引)。
 
 存储和查询结构化日志通常比带有全文索引的非结构化日志性能更好。
 建议[使用 Pipeline](/user-guide/logs/use-custom-pipelines.md#create-a-pipeline) 将日志转换为结构化日志。
@@ -439,11 +439,11 @@ GreptimeDB 支持对数据表进行分区，以分散读写热点并实现水平
 
 ### 关于分布式表的两个误解
 
-作为时序数据库，GreptimeDB 在存储层自动基于 TIME INDEX 列对数据进行分区。
+GreptimeDB 在存储层自动基于 TIME INDEX 列对数据进行分区。
 因此，你无需也不建议按时间分区数据
 （例如，每天一个分区或每周一个表）。
 
-此外，GreptimeDB 是列式存储数据库，
+GreptimeDB 使用列式存储，
 因此对表进行分区是指按行进行水平分区，
 每个分区包含所有列。
 

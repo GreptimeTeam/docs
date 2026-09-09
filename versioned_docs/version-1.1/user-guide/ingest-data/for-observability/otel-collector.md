@@ -24,7 +24,7 @@ receivers:
         endpoint: 0.0.0.0:4318
 
 exporters:
-  otlphttp/traces:
+  otlp_http/traces:
     endpoint: 'http://127.0.0.1:4000/v1/otlp'
     # auth:
     #   authenticator: basicauth/client
@@ -33,7 +33,7 @@ exporters:
       x-greptime-pipeline-name: 'greptime_trace_v1'
     tls:
       insecure: true
-  otlphttp/logs:
+  otlp_http/logs:
     endpoint: 'http://127.0.0.1:4000/v1/otlp'
     # auth:
     #   authenticator: basicauth/client
@@ -41,11 +41,11 @@ exporters:
       # x-greptime-db-name: '<your_db_name>'
       # x-greptime-log-table-name: '<table_name>'
       # x-greptime-pipeline-name: '<pipeline_name>'
-      # x-greptime-pipeline-params: '<key=value,...>'
+      # x-greptime-pipeline-params: '<key1=value1&key2=value2>'
     tls:
       insecure: true
 
-  otlphttp/metrics:
+  otlp_http/metrics:
     endpoint: 'http://127.0.0.1:4000/v1/otlp'
     # auth:
     #   authenticator: basicauth/client
@@ -59,16 +59,16 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [otlphttp/traces]
+      exporters: [otlp_http/traces]
     logs:
       receivers: [otlp]
-      exporters: [otlphttp/logs]
+      exporters: [otlp_http/logs]
     metrics:
       receivers: [otlp]
-      exporters: [otlphttp/metrics]
+      exporters: [otlp_http/metrics]
 ```
 
-In the above configuration, we define a receiver `otlp` that can receive data from OpenTelemetry. We also define three exporters: `otlphttp/traces`, `otlphttp/logs`, and `otlphttp/metrics`, which send data to the OTLP endpoint of GreptimeDB.
+In the above configuration, we define a receiver `otlp` that can receive data from OpenTelemetry. We also define three exporters: `otlp_http/traces`, `otlp_http/logs`, and `otlp_http/metrics`, which send data to the OTLP endpoint of GreptimeDB.
 
 Based on the OTLP/HTTP protocol, we have added some headers to specify certain parameters, such as `x-greptime-pipeline-name` and `x-greptime-log-table-name`:
 * The `x-greptime-pipeline-name` header is used to specify the pipeline name to use, and,

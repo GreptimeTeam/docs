@@ -5,37 +5,37 @@ description: Lists and describes approximate functions available in GreptimeDB, 
 
 # Approximate Functions
 
-This page lists approximate functions in GreptimeDB, which are used for approximate data analysis.
+GreptimeDB provides functions for approximate distinct counts and quantiles.
 
 :::warning
-The following approximate functions is currently experimental and may change in future releases.
+These functions are experimental and may change in future releases.
 :::
 
 ## Approximate Count Distinct (HLL)
 
-The [HyperLogLog](https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) (HLL) algorithm is used to calculate the approximate count distinct of a set of values. It provides efficient memory usage and speed for this purpose. Three functions are provided to work with the HLL algorithm, described in following chapters:
+GreptimeDB implements [HyperLogLog](https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) (HLL) for memory-efficient, fast approximate distinct counts. Three functions create a sketch, merge sketches, and read the approximate count.
 
 :::warning
-Notice that due to the approximate nature of the algorithm, the results may not be exact but are usually very close to the actual count distinct. The relative standard error of the HyperLogLog algorithm is about 1.04/sqrt(m), where m is the number of registers used in the algorithm. GreptimeDB uses 16384 registers by default, which gives a relative standard error of about 0.008125(or 0.8125%).
+HLL returns an estimate rather than an exact count. Its relative standard error is approximately `1.04 / sqrt(m)`, where `m` is the number of registers. GreptimeDB uses 16,384 registers, corresponding to approximately 0.8125% relative standard error.
 :::
 
 ### `hll`
 
-`hll(value)` creates a HyperLogLog state in binary from a given column. The `value` can be any column that you want to calculate the approximate count distinct for. It returns a binary representation of the HLL state, which can be stored in a table or used in further calculations. See [Full Usage Example](#full-usage-example) for a full example of how to use this function in combination with other functions to calculate approximate count distinct.
+`hll(value)` coerces each value to `STRING` and aggregates it into a binary HLL state. The state can be stored in a `BINARY` column, merged with other states, or passed to `hll_count`. Persisting the state makes it possible to calculate later rollups without retaining or scanning every original value.
 
 ### `hll_merge`
 
-`hll_merge(hll_state)` merges multiple HyperLogLog states into one. This is useful when you want to combine the results of multiple HLL calculations, such as when aggregating data from different time windows or sources. The `hll_state` parameter is the binary representation of the HLL state created by [`hll`](#hll). The merged state can then be used to calculate the approximate count distinct across all the merged states. See [Full Usage Example](#full-usage-example) for a full example of how to use this function in combination with other functions to calculate approximate count distinct.
+`hll_merge(hll_state)` aggregates binary states produced by [`hll`](#hll) into one state. Use it to combine sketches from different groups, time windows, or data sources. This supports staged aggregation: a query can create and store states at one granularity, then merge them into larger rollups later.
 
 
 ### `hll_count`
 
-`hll_count(hll_state)` retrieves the approximate count distinct from a HyperLogLog state. This function takes the HLL state created by `hll` or merged by `hll_merge` and returns the approximate count of distinct values. See [Full Usage Example](#full-usage-example) for a full example of how to use this function in combination with other functions to calculate approximate count distinct.
+`hll_count(hll_state)` returns the approximate distinct count from a state produced by `hll` or `hll_merge`. HLL states are binary intermediate values rather than human-readable counts, so apply `hll_count` when returning the estimate to a query.
 
 ### Full Usage Example
-This example demonstrates how to use these functions in combination to calculate the approximate count distinct user id.
+This example calculates approximate distinct user counts by time window. It first creates compact states from raw access records, stores those states, and then reads or merges them for different reporting windows.
 
-First create the base table `access_log` for storing user access logs, and the `access_log_10s` table for storing the HyperLogLog states within a 10-second time window. Notice the `state` column is of type `BINARY`, which will store the HyperLogLog state in binary format.
+Create `access_log` for source rows and `access_log_10s` for one binary HLL state per 10-second window. The `BINARY` state column preserves the sketch needed for later counts and rollups.
 ```sql
 CREATE TABLE access_log (
     `url` STRING,
@@ -52,7 +52,7 @@ CREATE TABLE access_log_10s (
 );
 ```
 
-Insert some sample data into access_log:
+Insert sample data into `access_log`:
 ```sql
 INSERT INTO access_log VALUES
         ("/dashboard", 1, "2025-03-04 00:00:00"),
@@ -66,7 +66,7 @@ INSERT INTO access_log VALUES
         ("/not_found", 4, "2025-03-04 00:00:12");
 ```
 
-Now we can use the `hll` function to create a HyperLogLog state for the `user_id` column with a 10-second time window. The output will be a binary representation of the HLL state, which contains the necessary information to calculate approximate count distinct later. The `date_bin` function is used to group the data into 10-second time windows. Hence this `INSERT INTO` statement will create a HyperLogLog state for each 10-second time window in the `access_log` table, and insert it into the `access_log_10s` table:
+Group rows into 10-second windows and store one HLL state for each URL and window. `date_bin` assigns each row to a window, and `hll` aggregates the user IDs in that group:
 ```sql
 -- Use a 10-second windowed query to calculate the HyperLogLog states
 INSERT INTO
@@ -84,7 +84,7 @@ GROUP BY
 -- Query OK, 3 rows affected (0.05 sec)
 ```
 
-Then we can use the `hll_count` function to retrieve the approximate count distinct from the HyperLogLog state(which is the `state` column). For example, to get the approximate count distinct of user visits for each 10-second time window, we can run the following query:
+Read the approximate distinct count from each stored state. For very small groups, an exact count can be more appropriate because HLL is designed for large cardinalities and returns an estimate:
 ```sql
 -- use hll_count to query approximate data in access_log_10s, notice for small datasets, the results may not be very accurate.
 SELECT `url`, `time_window`, hll_count(state) FROM access_log_10s;
@@ -99,7 +99,7 @@ SELECT `url`, `time_window`, hll_count(state) FROM access_log_10s;
 -- +------------+---------------------+---------------------------------+
 ```
 
-In addition, we can aggregate the 10-second data to a 1-minute level by merging the HyperLogLog states using `hll_merge`. This allows us to calculate the approximate count distinct for a larger time window, which can be useful for analyzing trends over time. The following query demonstrates how to do this:
+Merge the 10-second states to calculate a distinct count for each one-minute window. Because HLL states are composable, this rollup does not need to scan the original access records again and is useful for trend analysis:
 ```sql
 -- aggregate the 10-second data to a 1-minute level by merging the HyperLogLog states using `hll_merge`.
 SELECT
@@ -121,62 +121,63 @@ GROUP BY
 -- +------------+---------------------+------------+
 ```
 
-Note how the `hll_merge` function is used to merge the HyperLogLog states from the `access_log_10s` table, and then the `hll_count` function is used to calculate the approximate count distinct for each 1-minute time window. If only use `hll_merge` without `hll_count`, the result will just be a unreadable binary representation of the merged HyperLogLog state, which is not very useful for analysis. Hence we use `hll_count` to retrieve the approximate count distinct from the merged state.
+`hll_merge` returns another binary state. Apply `hll_count` to that state to obtain the estimate.
 
-This following flowchart illustrates above usage of the HyperLogLog functions. First raw event data is first group by time window and url, then the `hll` function is used to create a HyperLogLog state for each time window and url, then the `hll_count` function is used to retrieve the approximate count distinct for each time window and url. Finally, the `hll_merge` function is used to merge the HyperLogLog states for each url, and then the `hll_count` function is used again to retrieve the approximate count distinct for the 1-minute time window.
+The following diagram shows the state creation, count, and merge operations:
 ![HLL Usage Flowchart](/hll.svg)
 
 ## Approximate Quantile (UDDSketch)
 
-Three functions are provided for approximate quantile calculation using the [UDDSketch](https://arxiv.org/abs/2004.08604) algorithm.
+GreptimeDB implements [UDDSketch](https://arxiv.org/abs/2004.08604) with functions to create, merge, and query sketch states.
 
 :::warning
-Notice that the UDDSketch algorithm is designed to provide approximate quantiles with a tunable error rate, which allows for efficient memory usage and fast calculations. The results may not be exact but are usually very close to the actual quantiles.
+UDDSketch provides fast approximate quantiles with bounded memory use. Its memory use and error depend on `bucket_num`, `error_rate`, and the input value range, as described below.
 :::
 
 ### `uddsketch_state`
 
-The `uddsketch_state` function is used to create a UDDSketch state in binary from a given column. It takes three parameters: 
-- `bucket_num`, which is the number of buckets to use for the sketch, see [How to determine bucket number and error rate](#how-to-determine-bucket_num-and-error_rate) for how to decide the value.
-- `error_rate`, which is the desired error rate for the quantile calculation. 
-- `value` parameter is the column from which the sketch will be created.
+`uddsketch_state(bucket_num, error_rate, value)` aggregates `DOUBLE` values into a binary state. The state is a compact summary of the value distribution, organized into logarithmic buckets rather than retaining every input value.
 
-for example, for a simple table `percentile_base` shown below, we can create a `uddsketch_state` for the `value` column with a bucket number of 128 and an error rate of 0.01 (1%). The output will be a binary representation of the UDDSketch state, which contains the necessary information to calculate approximate quantiles later. 
+- `bucket_num`: Maximum number of buckets in the sketch.
+- `error_rate`: Initial relative-error bound.
+- `value`: `DOUBLE` expression to aggregate.
 
-This output binary state can be think of as a histogram of the values in the `value` column, which can then be merged using `uddsketch_merge` or used to calculate quantiles using `uddsketch_calc` as shown later. See [UDDSketch Full Usage Example](#uddsketch-full-usage-example) for a full example of how to use these functions in combination to calculate approximate quantiles.
+The state can be stored in a `BINARY` column, merged with `uddsketch_merge`, or queried with `uddsketch_calc` and `uddsketch_rank`. Storing states is useful when later queries need quantiles at several time granularities.
 
 ### `uddsketch_merge`
 
-The `uddsketch_merge` function is used to merge multiple UDDSketch states into one. It takes three parameters:
-- `bucket_num`, which is the number of buckets to use for the sketch, see [How to determine bucket number and error rate](#how-to-determine-bucket_num-and-error_rate) for how to decide the value.
-- `error_rate`, which is the desired error rate for the quantile calculation. 
-- `udd_state`, which is the binary representation of the UDDSketch state created by `uddsketch_state`.
-
-This is useful when you want to combine results from different time windows or sources. Notice that the `bucket_num` and `error_rate` must match the original sketch where the state was created, or else the merge will fail.
-
-For example, if you have multiple UDDSketch states from different time windows, you can merge them into a single state to calculate the overall quantile across all the data.This output binary state can then be used to calculate quantiles using `uddsketch_calc`. See [UDDSketch Full Usage Example](#uddsketch-full-usage-example) for a full example of how to use these functions in combination to calculate approximate quantiles.
+`uddsketch_merge(bucket_num, error_rate, udd_state)` aggregates binary UDDSketch states into one state. Use it to combine distributions from different groups, time windows, or data sources without rereading the original values. `bucket_num` and `error_rate` must match the parameters used to create the input states; otherwise, the merge fails.
 
 
 ### `uddsketch_calc`
 
-The `uddsketch_calc` function is used to calculate the approximate quantile from a UDDSketch state. It takes two parameters:
-- `quantile`, which is a value between 0 and 1 representing the desired quantile to calculate, i.e., 0.99 for the 99th percentile.
-- `udd_state`, which is the binary representation of the UDDSketch state created by `uddsketch_state` or merged by `uddsketch_merge`.
+`uddsketch_calc(quantile, udd_state)` returns a quantile estimate from a state created by `uddsketch_state` or `uddsketch_merge`. It reads the state without changing it, so the same stored state can be used to calculate several quantiles.
 
-see [UDDSketch Full Usage Example](#uddsketch-full-usage-example) for a full example of how to use these functions in combination to calculate approximate quantiles.
+- `quantile`: Value from 0 through 1; for example, `0.99` requests the 99th percentile.
+- `udd_state`: Binary UDDSketch state.
+
+See [UDDSketch Full Usage Example](#uddsketch-full-usage-example) for an example that combines these functions.
+
+### `uddsketch_rank`
+
+`uddsketch_rank(value, udd_state)` returns the approximate quantile rank of a `DOUBLE` value in a binary UDDSketch state created by `uddsketch_state` or `uddsketch_merge`.
+
+The result is a `DOUBLE` from 0 through 1. A result of 0 means the value is below all values represented by the sketch, while 1 means it is above all represented values. When a value falls in a sketch bucket, the estimated rank counts half of that bucket.
+
+Both current and legacy UDDSketch state encodings are supported. The function returns `NULL` when either argument is `NULL`, the state is empty or invalid, or the value is invalid, such as `NaN`.
 
 ### How to determine `bucket_num` and `error_rate`
 
-The `bucket_num` parameter sets the maximum number of internal containers the sketch can use, directly controlling its memory footprint. Think of it as the physical storage capacity for tracking different value ranges. A larger `bucket_num` allows the sketch to accurately represent a wider dynamic range of data (i.e. a larger ratio between the maximum and minimum values). If this limit is too small for your data, the sketch will be forced to merge very high or low values, which degrades its accuracy. A recommended value for `bucket_num` is 128, which provides a good balance between accuracy and memory usage for most use cases. 
+The `bucket_num` parameter sets the maximum number of internal buckets and therefore bounds the sketch's memory use. A larger value can represent a wider ratio between the minimum and maximum values before compaction. When the sketch reaches this limit, it merges buckets at one end of the value range and loses accuracy. The recommended value is `128`, which balances accuracy and memory use for most workloads.
 
-The `error_rate` defines the desired precision for your quantile calculations. It guarantees that any computed quantile (e.g., p99) is within a certain *relative* percentage of the true value. For example, an `error_rate` of `0.01` ensures the result is within 1% of the actual value. A smaller `error_rate` provides higher accuracy, as it forces the sketch to use more granular buckets to distinguish between closer numbers.
+The `error_rate` sets the initial relative-error bound used to map values to buckets. A smaller value creates more granular buckets. If the value range requires more than `bucket_num` buckets, UDDSketch compacts buckets and the effective maximum error increases. Therefore, an `error_rate` of `0.01` is not an unconditional guarantee that every result remains within 1% of the exact value.
 
-These two parameters create a direct trade-off. To achieve the high precision promised by a small `error_rate`, the sketch needs a sufficient `bucket_num`, especially for data that spans a wide range. `bucket_num` acts as the physical limit on accuracy. If your `bucket_num` is restricted by memory constraints, setting the `error_rate` to an extremely small value will not improve precision because the limit imposed by the available buckets.
+These parameters trade memory for accuracy. A small `error_rate` requires enough buckets for the data's dynamic range. If `bucket_num` is too small, decreasing `error_rate` does not prevent compaction or the resulting increase in maximum error.
 
 ### UDDSketch Full Usage Example
-This example demonstrates how to use three `uddsketch` functions describe above to calculate the approximate quantile of a set of values.
+This example combines the four `uddsketch` functions to calculate approximate quantiles and ranks. It stores one state per five-second window, calculates p99 from each state, estimates the rank of selected values, and then merges the states for a one-minute rollup.
 
-First create the base table `percentile_base` for store the raw data, and the `percentile_5s` table for storing the UDDSketch states within a 5-second time window. notice the `percentile_state` column is of type `BINARY`, which will store the UDDSketch state in binary format.
+Create `percentile_base` for the raw data and `percentile_5s` for the UDDSketch states in each five-second window. The `percentile_state` column stores the binary sketch state so that later queries can calculate or merge quantiles without scanning the raw table.
 ```sql
 CREATE TABLE percentile_base (
     `id` INT PRIMARY KEY,
@@ -205,7 +206,7 @@ INSERT INTO percentile_base (`id`, `value`, `ts`) VALUES
     (10, 100.0, 10);
 ```
 
-Now we can use the `uddsketch_state` function to create a UDDSketch state for the `value` column with a bucket number of 128 and an error rate of 0.01 (1%). The output will be a binary representation of the UDDSketch state, which contains the necessary information to calculate approximate quantiles later, the `date_bin` function is used to group the data into 5-second time windows. Hence this `INSERT INTO` statement will create a UDDSketch state for each 5-second time window in the `percentile_base` table, and insert it into the `percentile_5s` table:
+Group rows into five-second windows and store one UDDSketch state for each window. `date_bin` assigns input values to a window, and `uddsketch_state` summarizes the distribution in that group:
 
 ```sql
 INSERT INTO
@@ -221,7 +222,27 @@ GROUP BY
 -- Query OK, 3 rows affected (0.05 sec)
 ```
 
-Now we can use the `uddsketch_calc` function to calculate the approximate quantile from the UDDSketch state. For example, to get the approximate 99th percentile (p99) for each 5-second time window, we can run the following query:
+Estimate where selected values fall in the complete distribution. The query covers values below the minimum, in the middle, and above the maximum:
+
+```sql
+SELECT
+    ROUND(uddsketch_rank(5, `percentile_state`), 2) AS below_min_rank,
+    ROUND(uddsketch_rank(55, `percentile_state`), 2) AS middle_rank,
+    ROUND(uddsketch_rank(110, `percentile_state`), 2) AS above_max_rank
+FROM (
+    SELECT uddsketch_state(128, 0.01, `value`) AS percentile_state
+    FROM percentile_base
+);
+
+-- results as follows:
+-- +----------------+-------------+----------------+
+-- | below_min_rank | middle_rank | above_max_rank |
+-- +----------------+-------------+----------------+
+-- | 0.0            | 0.5         | 1.0            |
+-- +----------------+-------------+----------------+
+```
+
+Calculate p99 for each stored state. The quantile argument `0.99` asks for an estimate of the value below which approximately 99% of the observations fall:
 ```sql
 -- query percentile_5s to get the approximate 99th percentile
 SELECT
@@ -239,9 +260,7 @@ FROM
 -- | 1970-01-01 00:00:10 | 100.49456770856492 |
 -- +---------------------+--------------------+
 ```
-Notice in above query the `percentile_state` column is the UDDSketch state created by `uddsketch_state`.
-
-In addition, we can aggregate the 5-second data to a 1-minute level by merging the UDDSketch states using `uddsketch_merge`. This allows us to calculate the approximate quantile for a larger time window, which can be useful for analyzing trends over time. The following query demonstrates how to do this:
+Merge the five-second states to calculate p99 for each one-minute window. `uddsketch_merge` combines the stored distributions, and the outer `uddsketch_calc` reads p99 from the merged state. This avoids rebuilding the one-minute distribution from raw rows:
 ```sql
 -- in addition, we can aggregate the 5-second data to a 1-minute level by merging the UDDSketch states using `uddsketch_merge`.
 SELECT
@@ -259,7 +278,5 @@ GROUP BY
 -- | 1970-01-01 00:00:00 | 100.49456770856492 |
 -- +---------------------+--------------------+
 ```
-Notice how the `uddsketch_merge` function is used to merge the UDDSketch states from the `percentile_5s` table, and then the `uddsketch_calc` function is used to calculate the approximate 99th percentile (p99) for each 1-minute time window.
-
-This following flowchart illustrates above usage of the UDDSketch functions. First raw event data is first group by time window, then the `uddsketch_state` function is used to create a UDDSketch state for each time window, then the `uddsketch_calc` function is used to retrieve the approximate 99th quantile for each time window. Finally, the `uddsketch_merge` function is used to merge the UDDSketch states for each time window, and then the `uddsketch_calc` function is used again to retrieve the approximate 99th quantile for the 1-minute time window.
+The following diagram shows the state creation, quantile calculation, and merge operations:
 ![UDDSketch Usage Flowchart](/udd.svg)

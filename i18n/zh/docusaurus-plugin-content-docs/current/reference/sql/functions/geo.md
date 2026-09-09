@@ -124,6 +124,14 @@ SELECT h3_cell_is_pentagon(h3_latlng_to_cell(37.76938, -122.3889, 8));
 SELECT h3_cell_parent(h3_latlng_to_cell(37.76938, -122.3889, 8), 6);
 ```
 
+### `h3_cell_center_child`
+
+返回指定分辨率下的中心子单元。目标分辨率必须大于或等于输入单元的分辨率。
+
+```sql
+SELECT h3_cell_center_child(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
+```
+
 ### `h3_cell_to_children`
 
 根据给定的分辨率返回子单元格。
@@ -299,6 +307,20 @@ SELECT s2_cell_parent(s2_latlng_to_cell(37.76938, -122.3889), 3);
 ```
 
 ## 编码
+
+### `geo_path`
+
+把纬度列和经度列聚合为包含 `lat` 与 `lng` 数组的 struct，并按时间戳参数排序坐标。
+
+参数：
+
+- `Float64` 类型的纬度
+- `Float64` 类型的经度
+- 时间戳
+
+```sql
+SELECT geo_path(lat, lon, ts) FROM positions;
+```
 
 ### `json_encode_path`
 

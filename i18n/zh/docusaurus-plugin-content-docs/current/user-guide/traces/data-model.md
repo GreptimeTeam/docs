@@ -87,14 +87,14 @@ span_attributes.user_agent.original        | python-requests/2.32.3
 span_attributes.http.route                 | todos/
 ```
 
-可以通过执行 `show create table opentelemetry_traces` 来查看表建表语句：
+对于新建的表，可以通过执行 `show create table opentelemetry_traces` 来查看建表语句：
 
 ```
 Table        | opentelemetry_traces
 Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (                                           +
              |   "timestamp" TIMESTAMP(9) NOT NULL,                                                    +
              |   "timestamp_end" TIMESTAMP(9) NULL,                                                    +
-             |   "duration_nano" BIGINT UNSIGNED NULL,                                                 +
+             |   "duration_nano" BIGINT NULL,                                                          +
              |   "trace_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),    +
              |   "span_id" STRING NULL,                                                                +
              |   "span_kind" STRING NULL,                                                              +
@@ -118,7 +118,7 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
              |   "resource_attributes.telemetry.sdk.version" STRING NULL,                              +
              |   "span_events" JSON NULL,                                                              +
              |   "span_links" JSON NULL,                                                               +
-             |   "parent_span_id" STRING NULL,                                                         +
+             |   "parent_span_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),+
              |   "span_attributes.db.system" STRING NULL,                                              +
              |   "span_attributes.db.name" STRING NULL,                                                +
              |   "span_attributes.db.statement" STRING NULL,                                           +
@@ -162,7 +162,8 @@ Trace 表包含了默认的 [分区规
 则](/user-guide/deployments-administration/manage-data/table-sharding.md#partition)，在
 `trace_id` 列上根据首个字符的取值划分区间。
 
-这个规则默认将引入 16 个分区，适合在 3-5 个 datanode 的部署规模下使用。
+这个规则默认将引入 16 个分区，在 3-5 个 datanode 的部署规模下是一个合理的起点。
+写入速率、查询并发以及集群中 region 的总数，都可能要求换一个分区数。
 
 如果数据量和部署规模更大，需要自定义分区规则，可以：
 
@@ -171,6 +172,7 @@ Trace 表包含了默认的 [分区规
 2. 通过设置 OTLP 写入请求的 `x-greptime-hints` [HTTP
    头](/user-guide/protocols/http#hints)，加入 `trace_table_partitions=n`，其中
    `n` 是要设置的分区数。将 `n` 设置为 `0` 或 `1` 可以取消分区。
+   其他取值必须是 `2` 到 `65536` 之间的 2 的幂，否则建表会失败。
 
 ### 索引
 

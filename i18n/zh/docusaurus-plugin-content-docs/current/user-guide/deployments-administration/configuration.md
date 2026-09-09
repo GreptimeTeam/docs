@@ -309,6 +309,7 @@ max_inflight_requests = 3000
 | otlp       |                    |        | OpenTelemetry 协议选项                                       |
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 OpenTelemetry 协议，默认为 true       |
 |            | trace_ingest_chunk_size | 整数 | 每个 trace 写入分块的最大 span 数量。设为 `0` 可禁用分块。 |
+|            | experimental_enable_resource_info | 布尔值 | 是否从 OTLP metrics 的 resource attributes 合成 `greptime_otel_resource_info` 表，让只有指标的 service 进入[语义图](/user-guide/semantic-layer/semantic-graph.md)。默认为 `false`。 |
 | prom_store |                              |        | Prometheus 远程存储选项                                                                                                                                                                                         |
 |            | enable                       | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true                                                                                                                                                         |
 |            | with_metric_engine           | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true                                                                                                                                                     |
@@ -391,13 +392,13 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 |         | account_name      | 字符串 | Azure Blob 存储的账户名                             |
 |         | account_key       | 字符串 | 访问密钥                                            |
 |         | sas_token         | 字符串 | 共享访问签名                                        |
-| Gsc     |                   |        | Google Cloud Storage 存储选项，当 type="Gsc" 时有效 |
-|         | name            | 字符串 |  存储提供商名字，默认为 `Gsc`               |
-|         | root              | 字符串 | Gsc 桶中的根路径                                    |
-|         | bucket            | 字符串 | Gsc 桶名称                                          |
-|         | scope             | 字符串 | Gsc 权限                                            |
-|         | credential_path   | 字符串 | Gsc 访问证书                                        |
-|         | endpoint          | 字符串 | GSC 的 API 端点                                     |
+| Gcs     |                   |        | Google Cloud Storage 存储选项，当 type="Gcs" 时有效 |
+|         | name            | 字符串 |  存储提供商名字，默认为 `Gcs`               |
+|         | root              | 字符串 | GCS 桶中的根路径                                    |
+|         | bucket            | 字符串 | GCS 桶名称                                          |
+|         | scope             | 字符串 | GCS 权限                                            |
+|         | credential_path   | 字符串 | GCS 访问证书                                        |
+|         | endpoint          | 字符串 | GCS 的 API 端点                                     |
 
 文件存储配置范例：
 
@@ -494,6 +495,7 @@ enable_otlp_tracing = false
 enable_per_region_metrics = false
 otlp_endpoint = "localhost:4317"
 append_stdout = true
+max_log_dir_size = "0B"
 [logging.tracing_sample_ratio]
 default_ratio = 1.0
 ```
@@ -504,13 +506,25 @@ default_ratio = 1.0
 - `enable_per_region_metrics`：是否暴露 Prometheus 的 Region 维度查询负载指标，包括 `greptime_mito_region_query_cpu_time` 和 `greptime_mito_region_query_scanned_bytes`。该选项默认关闭，因为它会为每个 Region 产生一条时间序列。通过 heartbeat 上报并在 `INFORMATION_SCHEMA.REGION_STATISTICS` 中暴露的查询统计信息不受该选项控制。
 - `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
 - `append_stdout`：是否将日志打印到 stdout。默认是`true`。
+- `max_log_dir_size`：`dir` 中受管理日志文件的最大总大小。必要时会在写入前删除较旧的已关闭日志文件，但活动文件可能会超过此限制。设置为 `0B` 可禁用此限制。
 - `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
 
 如何使用分布式追踪，请参考 [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
 
-### 生命周期事件记录器
+### Pipeline 选项
 
-生命周期事件记录器会将 Procedure 的生命周期事件持久化到 `greptime_private.events` 系统表。在单机模式下使用 `standalone` 配置；在分布式部署中，在 Metasrv 上配置：
+frontend 和 standalone 会在内存中缓存 Pipeline 定义，缓存配置位于 `[pipeline]` 部分：
+
+```toml
+[pipeline]
+cache_ttl = "10s"
+```
+
+- `cache_ttl`：本地 Pipeline 缓存的存活时间，默认值为 `10s`。在集群中，在某个 Frontend 上创建或删除 Pipeline 后，最多经过该时间才会在其他 Frontend 上生效。调大该值会减少对 `greptime_private.pipelines` 表的读取，同时增加上述延迟。
+
+### 事件记录配置
+
+记录的事件保存在 `greptime_private.events` 系统表中。
 
 ```toml
 [event_recorder]
@@ -532,7 +546,15 @@ create_database, alter_database, drop_database,
 create_flow, drop_flow,
 create_table, create_logical_tables, alter_table, alter_logical_tables,
 drop_table, undrop_table, purge_dropped_table, truncate_table,
-create_view, drop_view
+create_view, drop_view, admin_function
+```
+
+`undrop_table` 和 `purge_dropped_table` 仅 GreptimeDB 企业版支持。
+
+在分布式部署中，Frontend 支持以下事件类型：
+
+```text
+admin_function
 ```
 
 Metasrv 支持以下事件类型：
@@ -547,6 +569,8 @@ create_view, drop_view,
 repartition, repartition_group,
 batch_gc, wal_prune
 ```
+
+`undrop_table` 和 `purge_dropped_table` 仅 GreptimeDB 企业版支持。
 
 <AnchorAlias id="region-engine-options" />
 
@@ -564,7 +588,7 @@ manifest_checkpoint_distance = 10
 max_background_flushes = 4
 max_background_compactions = 2
 max_background_purges = 4
-auto_flush_interval = "1h"
+auto_flush_interval = "10m"
 global_write_buffer_size = "1GB"
 global_write_buffer_reject_size = "2GB"
 default_region_write_buffer_size = "0"
@@ -578,6 +602,7 @@ scan_memory_on_exhausted = "fail"
 min_compaction_interval = "0m"
 schedule_compaction_after_edit = true
 default_flat_format = true
+experimental_series_scan_v2 = true
 sst_write_buffer_size = "8MB"
 max_concurrent_scan_files = 384
 
@@ -596,20 +621,9 @@ create_on_compaction = "auto"
 apply_on_query = "auto"
 mem_threshold_on_create = "64M"
 intermediate_path = ""
-
-[region_engine.mito.memtable]
-type = "time_series"
 ```
 
-此外，`mito` 也提供了一个实验性质的 memtable。该 memtable 主要优化大量时间序列下的写入性能和内存占用。其查询性能可能会不如默认的 `time_series` memtable。
-
-```toml
-[region_engine.mito.memtable]
-type = "partition_tree"
-index_max_keys_per_shard = 8192
-data_freeze_threshold = 32768
-fork_dictionary_bytes = "1GiB"
-```
+Mito 根据表选项和 SST format 为每个 Region 选择 memtable 实现。`default_flat_format` 为 `true` 时，没有显式设置 `sst_format` 的 Region 使用 flat SST 和 bulk memtable。`memtable.type` 是数据库或表选项，不是 `[region_engine.mito.memtable]` 引擎配置。详见[表选项](/reference/sql/create.md#表选项)。
 
 以下是可供使用的选项
 
@@ -621,7 +635,7 @@ fork_dictionary_bytes = "1GiB"
 | `max_background_flushes`                 | 整数   | `自动` | 后台 flush 任务数（默认：1/2 CPU 核心数）。                                                                              |
 | `max_background_compactions`            | 整数   | `自动` | 后台 compaction 任务数（默认：1/4 CPU 核心数）。                                                                      |
 | `max_background_purges`                | 整数   | `自动` | 后台 purge 任务数（默认：CPU 核心数）。                                                                                  |
-| `auto_flush_interval`                    | 字符串 | `1h`          | 自动 flush 超过 `auto_flush_interval` 没 flush 的 region。可以通过[表选项 `auto_flush_interval`](/reference/sql/create.md#table-options) 按表覆盖 |
+| `auto_flush_interval`                    | 字符串 | `10m`          | 自动 flush 超过 `auto_flush_interval` 没 flush 的 region。可以通过[表选项 `auto_flush_interval`](/reference/sql/create.md#table-options) 按表覆盖 |
 | `global_write_buffer_size`               | 字符串 | `1GB`         | 写入缓冲区大小，默认值为内存总量的 1/8，但不会超过 1GB                                                                 |
 | `global_write_buffer_reject_size`        | 字符串 | `2GB`         | 写入缓冲区内数据的大小超过 `global_write_buffer_reject_size` 后拒绝写入请求，默认为 `global_write_buffer_size` 的 2 倍 |
 | `default_region_write_buffer_size`       | 字符串 | `0`           | 默认的单 region 写缓冲区阻塞阈值。设置为正值后，mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入。设置为 `0` 会禁用默认单 region 限制。表级 `write_buffer_size` 会覆盖该值，包括显式设置为 `0` 以禁用该表的限制。 |
@@ -644,7 +658,8 @@ fork_dictionary_bytes = "1GiB"
 | `scan_memory_on_exhausted`           | 字符串 | `fail`        | 扫描内存耗尽时的行为。选项：`fail`（快速失败），`wait` 或 `wait(<duration>)`（等待内存）。                       |
 | `min_compaction_interval`           | 字符串 | `0m`          | 两次 compaction 之间的最小时间间隔。设为 "0m"（默认）允许 compactions 立即运行，无限制。                              |
 | `schedule_compaction_after_edit`    | 布尔值 | `true`        | 是否允许在成功的 region edit 之后调度 compaction。<br/>设为 `true` 是在 region edit 后调度 compaction 的必要但不充分条件，`min_compaction_interval` 等其他约束仍可能阻止 compaction 被调度。<br/>设为 `false` 则保证 region edit 后不会调度 compaction。 |
-| `default_flat_format`                | 布尔值 | `true`        | 是否启用 Flat 格式作为默认 SST 格式。                                                                                |
+| `default_flat_format`                | 布尔值 | `true`        | 没有显式设置 `sst_format` 的 Region 是否使用 flat SST。Flat SST 使用 bulk memtable。                                  |
+| `experimental_series_scan_v2`       | 布尔值 | `true`        | 是否为 metric 引擎物理 region 的 series scan 启用实验性的 two-phase 模式。设为 `false` 时使用 legacy 模式，其他 series scan 也使用 legacy 模式。 |
 | `scan_parallelism`                       | 整数   | `0`           | （已弃用，请使用 `max_concurrent_scan_files`）旧版扫描并发度选项。                                                |
 | `index` | -- | -- | Mito 引擎中索引的选项。 |
 | `index.aux_path` | 字符串 | `""` | 文件系统中索引的辅助目录路径，用于存储创建索引的中间文件和搜索索引的暂存文件，默认为 `{data_home}/index_intermediate`。为了向后兼容，该目录的默认名称为 `index_intermediate`。此路径包含两个子目录：- `__intm`: 用于存储创建索引时使用的中间文件。- `staging`: 用于存储搜索索引时使用的暂存文件。 |
@@ -659,24 +674,14 @@ fork_dictionary_bytes = "1GiB"
 | `inverted_index.apply_on_query`          | 字符串 | `auto`        | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                          |
 | `inverted_index.mem_threshold_on_create` | 字符串 | `64M`         | 创建索引时如果超过该内存阈值则改为使用外部排序<br/>设置为空会关闭外排，在内存中完成所有排序                            |
 | `inverted_index.intermediate_path`       | 字符串 | `""`          | 存放外排临时文件的路径 (默认 `{data_home}/index_intermediate`).                                                        |
-| `memtable.type`                          | 字符串 | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (实验性功能)  |
-| `memtable.index_max_keys_per_shard`      | 整数   | `8192`        | 一个 shard 内的主键数<br/>只对 `partition_tree` memtable 生效                                                          |
-| `memtable.data_freeze_threshold`         | 整数   | `32768`       | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效                                            |
-| `memtable.fork_dictionary_bytes`         | 字符串 | `1GiB`        | 主键字典的大小<br/>只对 `partition_tree` memtable 生效                                                                 |
 
-`metric` 引擎针对包含大量小表的 metrics 数据进行了优化：
+`auto_flush_interval` 默认为 10 分钟。在 Mito 引擎配置中显式设置的值会覆盖默认值；表级 `auto_flush_interval` 设置会覆盖引擎级配置。
 
-```toml
-[[region_engine]]
-[region_engine.metric]
-sparse_primary_key_encoding = true
-```
+`metric` 引擎针对包含大量小表的 metrics 数据进行了优化。
 
-可用选项：
-
-| 键                                | 类型   | 默认值  | 描述                                                                                                              |
-| --------------------------------- | ------ | ------- | ----------------------------------------------------------------------------------------------------------------- |
-| `sparse_primary_key_encoding`     | 布尔值 | `true`  | 是否使用稀疏主键编码。此优化通过仅编码非空主键列来提高写入和查询性能。                                            |
+:::note
+从 v1.2 起，metric 引擎始终启用稀疏主键编码，无法禁用。该编码仅对非空主键列进行编码，可提升写入和查询性能。配置文件中已有的 `sparse_primary_key_encoding` 设置会被接受但不产生任何效果。
+:::
 
 ### 设定 meta client
 

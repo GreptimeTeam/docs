@@ -11,7 +11,6 @@ description: 介绍如何在 GreptimeDB 中更新和删除数据，包括使用�
 
 更新操作可以通过插入操作来实现。
 如果某行数据具有相同的 tag 和 time index，旧数据将被新数据替换，这意味着你只能更新 field 类型的列。
-想要更新数据，只需使用与现有数据相同的 tag 和 time index 插入新数据即可。
 
 有关列类型的更多信息，请参阅[数据模型](/user-guide/concepts/data-model.md)。
 

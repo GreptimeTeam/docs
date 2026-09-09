@@ -78,7 +78,7 @@ Note the outer array is eliminated, and lines are separated by line breaks inste
 
 #### `text/plain` format
 
-Log in plain text format is widely used throughout the ecosystem. GreptimeDB also supports `text/plain` format as log data input, enabling ingesting logs first hand from log producers.
+GreptimeDB accepts plain-text logs with `Content-Type: text/plain`, so text produced by a log source can be ingested directly.
 
 The equivalent body payload of previous example is like following:
 
@@ -89,7 +89,7 @@ The equivalent body payload of previous example is like following:
 172.16.0.1 - - [25/May/2024:20:19:37 +0000] "GET /contact HTTP/1.1" 404 162 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"
 ```
 
-Sending log ingestion request to GreptimeDB requires only modifying the `Content-Type` header to be `text/plain`, and you are good to go!
+To send the same payload as plain text, set the `Content-Type` header to `text/plain`.
 
 Please note that, unlike JSON format, where the input data already have key names as field names to be used in Pipeline processors, `text/plain` format just gives the whole line as input to the Pipeline engine. In this case we use `message` as the field name to refer to the input line, for example:
 
@@ -112,7 +112,7 @@ It is recommended to use `dissect` or `regex` processor to split the input line 
 
 The table options need to be set in the pipeline configurations.
 Starting from `v0.15`, the pipeline engine recognizes certain variables, and can set corresponding table options based on the value of the variables.
-Combined with the `vrl` processor, it's now easy to create and set table options during the pipeline execution based on input data.
+Combined with the `vrl` processor, these variables can set table options from input data during pipeline execution.
 
 Here is a list of supported common table option variables:
 - `greptime_auto_create_table`
@@ -152,8 +152,7 @@ Then we run the ingestion using the following JSON data.
 }
 ```
 
-Assuming the given table name being `d_table`, the final table name would be `d_table_2436` as we would expected.
-The table is also set with a ttl of 1 day.
+If the table name in the request is `d_table`, the data is written to `d_table_2436` with a TTL of one day.
 
 ## Examples
 

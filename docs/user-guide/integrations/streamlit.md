@@ -5,8 +5,8 @@ description: Instructions for using GreptimeDB with Streamlit to build data apps
 
 # Streamlit
 
-[Streamlit](https://streamlit.io/) is a faster way to build and share data apps.
-It's possible to build streamlit based data apps based on GreptimeDB.
+[Streamlit](https://streamlit.io/) is an open-source Python framework for building data apps.
+You can back a Streamlit app with data stored in GreptimeDB.
 
 To use GreptimeDB data in your application, you will need to create a SQL
 connection. Thanks to GreptimeDB's [MySQL protocol compatibility](/user-guide/protocols/mysql.md),

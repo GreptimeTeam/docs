@@ -1,12 +1,12 @@
 ---
 title: "GreptimeDB Command Line Overview"
 keywords: [GreptimeDB CLI, command-line interface, installation, starting services, upgrading versions, command line tools, CLI reference]
-description: Comprehensive overview of the GreptimeDB command-line interface, including installation instructions, available commands, global options, and practical examples for starting services and managing GreptimeDB instances.
+description: Describes the GreptimeDB command-line interface, including installation, service subcommands, global options, and configuration.
 ---
 
 # Overview
 
-The `greptime` command can start/stop GreptimeDB and pass configuration options. 
+The `greptime` binary starts GreptimeDB services and provides administrative utilities. Service subcommands accept configuration files and command-line options.
 
 ## Install the Greptime CLI
 

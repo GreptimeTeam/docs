@@ -1,6 +1,6 @@
 ---
-keywords: [SQL data types, SQL column types, SQL syntax, SQL examples, SQL type compatibility]
-description: Provides an overview of SQL data types supported by GreptimeDB, including string, binary, numeric, decimal, date and time, interval, JSON, and boolean types, with examples and compatibility with MySQL and PostgreSQL.
+keywords: [SQL data types, SQL column types, SQL syntax, SQL examples, SQL type compatibility, JSON2]
+description: Provides an overview of SQL data types supported by GreptimeDB, including string, binary, numeric, decimal, date and time, interval, JSON, JSON2, and boolean types, with examples and compatibility with MySQL and PostgreSQL.
 ---
 
 # Data Types
@@ -239,7 +239,7 @@ public=> SELECT INTERVAL '1 year 2 month';
 The JSON feature is currently experimental and may change in future releases.
 :::
 
-GreptimeDB supports the JSON type, allowing users to store and query JSON-formatted data. The JSON type is highly flexible and can store various forms of structured or unstructured data, making it suitable for use cases such as logging, analytics, and semi-structured data storage.
+The `JSON` type stores and queries structured or unstructured JSON values. It is suitable for logs, analytics, and other semi-structured data, especially objects and arrays whose fields do not need separate table columns.
 
 ```sql
 CREATE TABLE json_data(
@@ -282,6 +282,16 @@ Output:
 | GreptimeDB                                        |
 +---------------------------------------------------+
 ```
+
+## JSON2 Type (Beta)
+
+`JSON2` stores fields from JSON objects in a structured, columnar layout while
+preserving fields with dynamic schemas. It is intended for frequently queried
+logs and other semi-structured data. JSON2 columns require an append-only
+table, and each non-NULL root value must be a non-empty JSON object.
+
+For table syntax, type hints, path access, storage settings, and current
+limitations, see the [JSON2 type documentation](/user-guide/logs/json2.md).
 
 
 ## Boolean Type

@@ -5,9 +5,7 @@ description: Describes the LIMIT clause in SQL for restricting the number of row
 
 # LIMIT
 
-`LIMIT` clause is used to limit the number of rows returned by a query. This clause is particularly
-useful when working with large data sets, as it allows for faster query performance by reducing the
-amount of data that needs to be processed.
+The `LIMIT` clause sets the maximum number of rows returned by a query. It can improve query performance on large result sets by reducing the amount of data processed and returned.
 
 ## Syntax
 
@@ -19,7 +17,7 @@ FROM table_name
 LIMIT number_of_rows;
 ```
 
-The number_of_rows parameter specifies the maximum number of rows to be returned. If the value of this parameter is negative, no rows will be returned.
+`number_of_rows` must be a non-negative integer. A negative value produces a planning error.
 
 ## Examples
 
@@ -37,7 +35,7 @@ Consider the following table named "system_metrics":
 +-------+-------+----------+-------------+-----------+---------------------+
 ```
 
-To retrieve the top 3 rows by `memory_util`, we can use the`LIMIT` clause:
+To retrieve the top three rows by `memory_util`, use the `LIMIT` clause:
 
 ```sql
 SELECT host, idc, memory_util

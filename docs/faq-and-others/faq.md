@@ -121,7 +121,13 @@ Yes. Use `ALTER TABLE ... MODIFY COLUMN` to change a field column's data type:
 ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
-The column must be a field (not a tag or time index) and must be nullable, so that values that cannot be cast return `NULL` instead of failing.
+The column must be a field (not a tag) and must be nullable, so that values that cannot be cast return `NULL` instead of failing.
+
+The time index column is the exception: its timestamp unit can be widened to a finer one (for example, from milliseconds to microseconds) on tables that are not using the metric engine:
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
+```
 
 For the full `ALTER TABLE` syntax, see the [SQL reference](/reference/sql/alter.md).
 
@@ -323,7 +329,7 @@ Don't worry about ending up with a large number of databases or tables. Greptime
 
 GreptimeDB offers multiple disaster recovery strategies:
 
-- **Standalone DR**: Remote WAL + object storage, RPO=0, RTO in minutes.
+- **Standalone DR**: Remote WAL + object storage. RPO=0 and an RTO in minutes are the targets; a standalone instance also keeps its metadata on local disk, so back that up too.
 - **Region Failover**: Automatic failover for individual regions with minimal downtime.
 - **Active-Active Failover** (Enterprise): Asynchronous request replication between two nodes.
 - **Cross-Region Single Cluster**: Spans three regions with zero RPO and region-level fault tolerance.

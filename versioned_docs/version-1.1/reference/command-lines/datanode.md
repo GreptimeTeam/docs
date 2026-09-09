@@ -1,6 +1,6 @@
 ---
 keywords: [GreptimeDB datanode, command-line interface, datanode configuration, datanode startup, datanode options, datanode examples]
-description: Comprehensive guide to GreptimeDB datanode command-line interface, including configuration options, startup commands, and practical examples for deploying datanode instances.
+description: Command-line options and examples for starting and inspecting GreptimeDB datanode instances.
 ---
 
 # Datanode
@@ -13,7 +13,7 @@ Start the datanode service.
 
 ### Options
 
-You can list all the options from the following command:
+Print the options supported by the current binary:
 
 ```
 greptime datanode start --help
@@ -21,16 +21,18 @@ greptime datanode start --help
 
 | Option                                | Description                                                                                                                                                                                                                                                                   |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-c`/`--config-file`                  | The configuration file for datanode                                                                                                                                                                                                                                           |
-| `--data-home`                         | Database storage root directory                                                                                                                                                                                                                                               |
+| `-c`/`--config-file <CONFIG_FILE>`    | The configuration file for datanode                                                                                                                                                                                                                                           |
+| `--data-home <DATA_HOME>`             | Database storage root directory                                                                                                                                                                                                                                               |
 | `--env-prefix <ENV_PREFIX>`           | The prefix of environment variables, default is `GREPTIMEDB_DATANODE`                                                                                                                                                                                                         |
 | `--http-addr <HTTP_ADDR>`             | HTTP server address                                                                                                                                                                                                                                                           |
 | `--http-timeout <HTTP_TIMEOUT>`       | HTTP request timeout in seconds                                                                                                                                                                                                                                               |
-| `--metasrv-addrs <METASRV_ADDR>`      | Metasrv address list                                                                                                                                                                                                                                                          |
+| `--log-dir <LOG_DIR>`                 | Log directory                                                                                                                                                                                                                                                                 |
+| `--log-level <LOG_LEVEL>`             | Log level                                                                                                                                                                                                                                                                     |
+| `--metasrv-addrs <METASRV_ADDRS>...`  | Metasrv address list                                                                                                                                                                                                                                                          |
 | `--node-id <NODE_ID>`                 | The datanode ID                                                                                                                                                                                                                                                               |
 | `--grpc-bind-addr <GRPC_BIND_ADDR>`     | The address to bind the gRPC server                                                                                                                                                                                                                                           |
 | `--grpc-server-addr <GRPC_SERVER_ADDR>` | The address advertised to the metasrv, and used for connections from outside the host. If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `grpc_bind_addr` |
-| `--wal-dir <WAL_DIR>`                 | The directory of WAL                                                                                                                                                                                                                                                          |
+| `--wal-dir <WAL_DIR>`                 | Overrides the WAL directory when using the Raft Engine WAL backend                                                                                                                                                                                                            |
 
 All the `addr` options are in the form of `ip:port`.
 
@@ -38,19 +40,19 @@ All the `addr` options are in the form of `ip:port`.
 
 #### Start service with configurations
 
-Starts a datanode instance with customized configurations:
+Start a Datanode instance from a configuration file:
 
 ```sh
 greptime datanode start -c config/datanode.example.toml
 ```
 
-Starts a datanode instance with command line arguments specifying the gRPC service address, the MySQL service address, the address of the metasrv, and the node id of the instance:
+Start a Datanode instance and specify its gRPC address, Metasrv address, and node ID on the command line:
 
 ```sh
-greptime datanode start --grpc-bind-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addrs=0.0.0.0:3002 --node-id=1
+greptime datanode start --grpc-bind-addr=0.0.0.0:4001 --metasrv-addrs=0.0.0.0:3002 --node-id=1
 ```
 
-The `datanode.example.toml` configuration file comes from the `config` directory of the `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` repository. You can find more example configuration files there. The `-c` option specifies the configuration file, for more information check [Configuration](/user-guide/deployments-administration/configuration.md).
+The [`datanode.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.1.4/config/datanode.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md) for details.
 
 ## objbench
 
@@ -83,7 +85,7 @@ Measure performance and generate a flamegraph for performance analysis:
 greptime datanode objbench --config ./datanode.toml --source data/greptime/public/1024/1024_0000000000/metadata/8fb41bc7-a106-4b9e-879b-392da799f958.parquet --pprof-file=./flamegraph.svg
 ```
 
-This will generate a flamegraph in SVG format that can be opened in a web browser for performance analysis.
+This generates an SVG flamegraph that can be opened in a web browser for performance analysis.
 
 ## scanbench
 

@@ -5,7 +5,7 @@ description: Describes the HAVING clause in SQL, which is used to filter rows fo
 
 # HAVING
 
-The `HAVING` clause allows you to filter grouped (aggregated) results—it works like `WHERE`, but after grouping has taken place. The `HAVING` clause was added to SQL because the `WHERE` clause cannot be used with aggregate functions.
+`WHERE` filters input rows before grouping. `HAVING` filters grouped or aggregated results after grouping.
 
 
 ## Examples

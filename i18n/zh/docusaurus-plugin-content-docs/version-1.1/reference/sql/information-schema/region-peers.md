@@ -27,7 +27,7 @@ DESC REGION_PEERS;
 | status        | String |      | YES  |         | FIELD         |
 | down_seconds  | Int64  |      | YES  |         | FIELD         |
 +---------------+--------+------+------+---------+---------------+
-6 rows in set (0.00 sec)
+9 rows in set (0.00 sec)
 ```
 
 `REGION_PEERS` 表中的字段描述如下：

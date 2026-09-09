@@ -13,7 +13,7 @@ description: Flownode 概览，一个为数据库提供 Flow 计算能力的组�
 `Flownode` 支持 `standalone`（单机）和 `distributed`（分布式）两种模式。在 `standalone` 模式下，`Flownode` 与数据库运行在同一进程中。在 `distributed` 模式下，`Flownode` 运行在单独的进程中，并通过网络与数据库通信。
 
 一个 flow 有两种执行模式：
-- **批处理模式 (Batching Mode)**: 持续数据聚合当前使用的模式。它在离散的、微小的时间窗口上周期性地执行用户定义的 SQL 查询。聚合和 TQL 查询使用此模式。更多详情，请参阅[批处理模式开发者指南](./batching_mode.md)。
+- **批处理模式 (Batching Mode)**: 持续数据聚合当前使用的模式。它在离散的、微小的时间窗口上周期性地执行用户定义的 SQL 查询。聚合和 TQL 查询使用此模式。更多详情，请参阅[批处理模式](./batching_mode.md)。
 - **流处理模式 (Streaming Mode，已废弃)**: 原始的模式，数据在到达时即被处理。该模式保留用于兼容旧 workload，不推荐新 workload 使用。
 
 ## 组件

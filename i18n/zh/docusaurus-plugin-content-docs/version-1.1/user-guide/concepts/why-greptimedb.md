@@ -1,98 +1,117 @@
 ---
-keywords: [云原生, 可观测性数据库, 高性能, 成本效益, 统一设计]
-description: 解释使用 GreptimeDB 的动机和优势，包括统一处理 metrics、logs 和 traces 的设计、云原生架构、成本优势、高性能和易集成性。
+keywords: [开源可观测性数据库, metrics, logs, traces, 对象存储, 计算存储分离]
+description: 说明团队为什么评估 GreptimeDB、GreptimeDB 如何处理 metrics、logs 和 traces，以及开源版与 Enterprise 的能力边界。
 ---
 
 # 为什么选择 GreptimeDB
 
-## 问题：三种信号，三套系统
+团队开始评估新的可观测后端，往往是因为多套信号存储、存储扩容或长期分析的运维成本已经难以忽略。GreptimeDB 用同一个列式引擎处理 metrics、logs 和 traces，同时保留清晰的数据模型和部署边界。
 
-大多数团队的可观测性栈长这样：[Prometheus](/user-guide/ingest-data/for-observability/prometheus.md)（或 Thanos/Mimir）跑 metrics，[Grafana Loki](/user-guide/ingest-data/for-observability/loki.md)（或 ELK）跑日志，[Elasticsearch](/user-guide/protocols/elasticsearch.md)（或 Tempo）跑 traces。每套系统各有一套查询语言、存储方案、扩展方式，运维各管各的。
+## GreptimeDB 是什么
 
-"三支柱"架构在这些关注点各自独立时是合理的。但实际跑起来就是：
+GreptimeDB 是开源的可观测性数据库。它用同一个列式引擎存储和查询 metrics、logs、traces，并提供统一的 SQL 查询层。GreptimeDB 既可以使用本地存储以单机模式运行，也可以组成以对象存储为持久化存储的分布式集群。
 
-- **3 倍运维量** — 三套系统要分别部署、监控、升级、排障
-- **数据孤岛** — 错误率飙升和日志里的异常模式要手动在系统间切换才能关联
-- **成本失控** — 每套系统存一份冗余元数据，各自独立扩展导致资源浪费
+GreptimeDB 不是通用事务数据库。它的存储、索引、留存和查询路径面向以追加写入为主的时间索引数据，例如可观测数据和 IoT 数据。
 
-GreptimeDB 的思路不同：一个引擎处理三种信号，数据放对象存储，计算存储分离。
+<AnchorAlias id="问题三种信号三套系统" />
+<AnchorAlias id="统一处理可观测数据" />
 
-## 统一处理可观测数据
+## 为什么用一个引擎处理三种信号
 
-GreptimeDB 通过以下方式统一处理 metrics、logs 和 traces：
-- 一致的[数据模型](./data-model.md)，将所有可观测数据视为带上下文的时间戳宽事件
-- 原生支持 [SQL](/user-guide/query-data/sql.md) 和 [PromQL](/user-guide/query-data/promql.md) 双查询
-- 内置持续聚合能力（[Flow](/user-guide/flow-computation/overview.md)）做实时聚合和分析
-- 跨信号无缝关联分析（参见 [SQL 示例](/getting-started/quick-start.md#关联-metricslogs-和-traces)）
+metrics、logs 和 traces 分散在不同数据库时，每套系统都有自己的容量模型、生命周期策略、查询方式和故障边界。故障排查要么搬运数据，要么在几套系统之间来回查询。
 
-一套系统替代原来的多组件栈。
+GreptimeDB 用同一个列式引擎处理三类信号，并采用共同的 [Tag、Timestamp、Field 列语义](./data-model.md)：
 
-具体来说：用一个数据库替代 [Prometheus](/user-guide/ingest-data/for-observability/prometheus.md) + [Loki](/user-guide/ingest-data/for-observability/loki.md) + [Elasticsearch](/user-guide/protocols/elasticsearch.md)，用 SQL 在一条查询里关联 metrics 异常、日志模式和 trace 延迟——不用在系统间来回切换。
+- metrics、logs、traces 共用一套存储和生命周期管理机制；
+- 所有信号都可以使用 SQL 查询，metrics 还可以使用 PromQL；
+- [Flow](/user-guide/flow-computation/overview.md)用于持续聚合，并把派生结果物化到 sink table；
+- instrumentation 记录了共同标识时，可以通过 SQL 关联不同信号。
 
-<p align='center'><img src="/unify-processing.png" alt="用单一引擎替代多组件可观测性栈" width="400"/></p>
+这里的“统一”指引擎、存储和查询层，不要求 metrics、logs、traces 使用同一张表、同一套 schema，也不要求采用[宽事件模型](./observability-2.md)。
 
-## 对象存储，成本低一个数量级
+## 一个列式引擎，不同的表
 
-GreptimeDB 以[云对象存储](/user-guide/concepts/storage-location.md)（S3、Azure Blob Storage 等）为主存储层，配合列式压缩，存储成本最高可降低 50 倍。支持灵活扩展到各类云存储，管理简单，**无厂商锁定**。
+减少系统数量，不等于把不同信号硬塞进同一种 schema。指标点、日志、span 和宽事件，其访问方式和留存要求并不相同。
 
-生产环境实测：
-- **Logs**：OceanBase Cloud 生产环境存储成本下降 60%+（从 [Loki](/user-guide/ingest-data/for-observability/loki.md) 迁移到 GreptimeDB，80+ 集群、300TB 多云日志和 SQL 审计数据）
-- **Traces**：存储成本降低 45 倍，查询快 3 倍（替换 [Elasticsearch](/user-guide/protocols/elasticsearch.md) 作为 [Jaeger](/user-guide/query-data/jaeger.md) 后端，一周完成迁移）
-- **Metrics**：用原生计算存储分离替代 Thanos，运维复杂度大幅下降
+GreptimeDB 允许每类 workload 使用适合自己的表：
 
-## 高性能
+- metrics 通常用主键列保存 labels，并使用 PromQL 查询；
+- logs 常用 append-only 表，并根据查询方式选择全文索引或倒排索引；
+- traces 保留 trace 和 span 标识，可以使用 SQL 或 Jaeger 兼容接口查询；
+- 事后分析需要更多上下文时，可以采用宽事件，并承担相应的存储成本。
 
-写入端，GreptimeDB 用 LSM Tree、数据分片、灵活的 WAL 配置（本地盘或 Kafka）等手段处理大规模可观测数据的写入负载。
+这些表可以分别配置 schema、索引、TTL、compaction 选项和存储后端。具体机制参见[数据模型](./data-model.md)和[存储位置](./storage-location.md)。
 
-查询端，GreptimeDB 用纯 Rust 编写，查询引擎基于 [Apache DataFusion](https://datafusion.apache.org/) 做向量化执行和分布式并行处理，结合[多种索引](/user-guide/manage-data/data-index.md)（倒排索引、跳数索引、全文索引）做智能裁剪和过滤。
+## 实时监控与历史分析，共用一套系统
 
-[GreptimeDB 在 JSONBench 10 亿条记录冷查询中拿下第一！](https://greptime.cn/blogs/2025-03-18-json-benchmark-greptimedb) 更多[性能测试报告](https://greptime.cn/blogs/2024-09-09-report-summary)。
+故障处置需要快速查询近期数据，趋势分析、容量评估和事后排查则可能扫描几周甚至几个月的数据。如果分别使用监控后端和分析数据库，就要多维护一条写入链路、一份数据副本和一套系统。
 
-## 基于 Kubernetes 的弹性扩展
+在使用对象存储的分布式部署中，GreptimeDB 用同一个引擎、同一套存储与查询基础处理这两类 workload。近期数据可以通过内存和本地 cache 加速，持久化数据则保存在对象存储中，供更长时间范围的查询使用。长期分析不需要另建分析数据库和数据复制链路。
 
-GreptimeDB 从底层就为 [Kubernetes](/user-guide/deployments-administration/deploy-on-kubernetes/overview.md) 设计，采用计算存储分离[架构](/user-guide/concepts/architecture.md)，实现真正的弹性扩展：
-- 存储和计算资源独立伸缩
-- 通过 Kubernetes 水平扩展，无上限
-- 写入、查询、压缩等不同负载之间做资源隔离
-- 自动故障转移和高可用
+![在使用对象存储的分布式部署中，实时监控与历史分析的 workload 特征不同，但共用 GreptimeDB 的引擎、存储系统和查询层。](/shared-system-realtime-historical.zh.svg)
 
-Thanos 和 Mimir 要靠多个有状态组件（ingester 需要持久盘、store-gateway、compactor）才能扩展。GreptimeDB 从架构层面就是计算存储分离——数据持久化在对象存储，计算节点独立扩展，本地盘只做缓冲和缓存。扩容加节点，缩容不丢数据。
+<AnchorAlias id="对象存储成本低一个数量级" />
+<AnchorAlias id="基于-kubernetes-的弹性扩展" />
 
-![存储/计算分离，计算/计算分离](/storage-compute-disaggregation-compute-compute-separation.png)
+## 对象存储与独立扩展
 
-## 灵活部署：从边缘到云
+持久化文件绑定在计算节点上时，增加容量往往伴随数据迁移、本地磁盘再均衡，或者存储与计算一起扩容。留存数据越多，集群调整越重。
 
-![GreptimeDB 架构](/architecture-2.png)
+分布式 GreptimeDB 使用共享对象存储时，持久化数据文件可以放在 Amazon S3、Google Cloud Storage、Azure Blob Storage 等服务中。Datanode 负责写入、compaction 和查询，本地磁盘可以缓存远端数据。计算容量与对象存储容量可以分别调整，不必在 Datanode 之间复制全部持久化文件。具体参见[架构](./architecture.md)和[存储位置](./storage-location.md)。
 
-GreptimeDB 的模块化[架构](/user-guide/concepts/architecture.md)让各组件既能独立运行，也能协同部署。从边缘设备到云环境，都用同一套 API。比如：
-- Frontend、Datanode 和 Metasrv 可以合并成单一二进制（standalone 模式）
-- WAL、索引等组件可以按表级别启用或关闭
+<AnchorAlias id="易于集成" />
+<AnchorAlias id="灵活部署从边缘到云" />
 
-这种灵活性让 GreptimeDB 能覆盖从边缘到云的完整场景，比如[边云一体化解决方案](https://greptime.cn/carcloud)。
+## 协议和查询边界
 
-从嵌入式单机部署到云原生集群，GreptimeDB 都能适配。
+迁移成本常常不在数据库部署本身，而在采集端、仪表盘和客户端代码。GreptimeDB 支持通过多种现有协议写入数据：
 
-## 易于集成
+- Prometheus Remote Write 写入 metrics；
+- OpenTelemetry OTLP/HTTP 写入 metrics、logs 和 traces；
+- Loki Push API 写入 logs；
+- Elasticsearch Bulk API 写入文档；
+- InfluxDB Line Protocol、MySQL、PostgreSQL，以及 GreptimeDB 的 gRPC 和 HTTP API。
 
-GreptimeDB 支持 [PromQL](/user-guide/query-data/promql.md)、[Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md)、[OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md)、[Jaeger](/user-guide/query-data/jaeger.md)、[Loki](/user-guide/ingest-data/for-observability/loki.md)、[Elasticsearch](/user-guide/protocols/elasticsearch.md)、[MySQL](/user-guide/protocols/mysql.md)、[PostgreSQL](/user-guide/protocols/postgresql.md) 协议——从现有栈迁移不用改查询、不用改 pipeline。查询用 [SQL](/user-guide/query-data/sql.md) 或 PromQL，可视化接 [Grafana](/user-guide/integrations/grafana.md)。
+这些集成只覆盖对应的写入或客户端接口，不代表完整兼容原系统。Loki 写入不包含 LogQL；开源版 Elasticsearch 集成支持 Bulk API，不等于完整支持 Query DSL。所有信号都可以使用 [SQL](/user-guide/query-data/sql.md) 查询，metrics 还可以使用 [PromQL](/user-guide/query-data/promql.md)，traces 还可以使用 Jaeger 兼容查询接口。规划迁移前，应先核对各协议页面列出的边界。
 
-SQL + PromQL 双引擎意味着 GreptimeDB 可以替代"Prometheus + 数据仓库"的经典组合——PromQL 做实时监控告警，SQL 做深度分析、JOIN、聚合，全在一个系统里。GreptimeDB 还支持[多值模型](/user-guide/concepts/data-model.md)，单行可以有多个字段列，比单值模型省流量、查询也更简洁。
+## 开源版与 Enterprise 的边界
 
-SQL 不只是查询语言，也是 GreptimeDB 的管理入口——[建表](/user-guide/deployments-administration/manage-data/basic-table-operations.md)、[管理 schema](/reference/sql/alter.md)、设置 [TTL 策略](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)、配置[索引](/user-guide/manage-data/data-index.md)，全部用标准 SQL 完成。不需要专有配置文件，不需要自定义 API，不需要 YAML 驱动的控制面。这是和 Prometheus（YAML 配置 + relabeling rules）、Loki（YAML 配置 + LogQL）、Elasticsearch（REST API + JSON mappings）在运维层面的关键区别。团队只要会 SQL，就能管理 GreptimeDB，不用学新工具。
+评估扩展能力、可用性和运维成本时，需要先分清版本边界。开源版包括单机和集群部署、对象存储、SQL、PromQL、Flow、索引，以及上面列出的写入接口。
 
-## GreptimeDB 对比
+[GreptimeDB Enterprise](/enterprise/overview.md) 另行提供读副本、通过 Datanode group 隔离 workload、自动 Region 均衡与重分区、RBAC、LDAP 集成、审计日志和企业灾备方案等能力。概念文档提到开源集群时，不默认包含这些功能。
 
-| | GreptimeDB | Prometheus / Thanos / Mimir | Grafana Loki | Elasticsearch |
-|---|---|---|---|---|
-| 数据类型 | Metrics、Logs、Traces | 仅 Metrics | 仅 Logs | Logs、Traces |
-| 查询语言 | SQL + PromQL | PromQL | LogQL | Query DSL |
-| 存储 | 原生对象存储（S3 等） | 本地盘 + 对象存储（Thanos/Mimir），ingester 需要持久盘 | 对象存储（chunks） | 本地盘 |
-| 扩展 | 计算存储分离，计算节点独立扩展 | Federation / Thanos / Mimir — 多组件，运维重 | 无状态 + 对象存储 | 基于分片，运维重 |
-| 成本 | 存储成本最高降低 50 倍 | 大规模下成本高 | 中等 | 高（倒排索引开销） |
-| OpenTelemetry | 原生支持（Metrics + Logs + Traces） | 部分（仅 Metrics） | 部分（仅 Logs） | 通过 instrumentation |
-| 管理方式 | 标准 SQL（DDL、TTL、索引） | YAML 配置 + relabeling rules | YAML 配置 + LogQL | REST API + JSON mappings |
+## 可以按需调整的配置
 
-了解更多：
-- [Observability 2.0](./observability-2.md) — 宽事件、统一数据模型，GreptimeDB 面向下一代可观测性的架构
-- [可观测性统一存储](https://greptime.cn/blogs/2024-12-24-observability) — GreptimeDB 的统一存储设计
-- [替换 Loki！GreptimeDB 在 OB Cloud 的大规模日志存储实践](https://greptime.cn/blogs/2025-07-22-user-case-obcloud-log-storage-greptimedb)
+共用一套系统改变的是运维对象，不会让不同 workload 变得完全相同。可以通过下面几类配置分别调整：
+
+- [表设计](/user-guide/deployments-administration/performance-tuning/design-table.md)：选择 schema、主键、索引、append-only 模式和分区方式；通过 [TTL](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)控制留存周期，并按 workload 调整 [compaction](/user-guide/deployments-administration/manage-data/compaction.md)。
+- [容量规划](/user-guide/deployments-administration/capacity-plan.md)：根据写入量以及近期查询与历史查询的比例，规划计算资源、内存和本地 cache；再结合[性能调优指南](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md)中的运行指标调整 cache 和查询配置。
+- [持久性与恢复](/user-guide/deployments-administration/disaster-recovery/overview.md)：根据 RPO 和 RTO 选择 [WAL 模式](/user-guide/deployments-administration/wal/overview.md)、metadata 存储、对象存储策略以及备份恢复流程。
+- [Region 运维](/user-guide/deployments-administration/manage-data/overview.md)：为分布式部署规划分片、手动 Region 迁移和 failover。Enterprise 还可以使用 [Datanode group](/enterprise/deployments-administration/deploy-on-kubernetes/configure-datanode-groups.md)隔离 workload，并通过 [Region Balancer](/enterprise/autopilot/region-balancer.md)自动均衡 Region。
+
+具体配置取决于 workload 和部署方式，不存在适用于所有信号的统一预设。
+
+<AnchorAlias id="高性能" />
+
+## 生产用户公开的数据
+
+下面的数据来自特定 workload 和配置下的公开案例：
+
+- [OceanBase Cloud](https://greptime.cn/blogs/2025-07-22-user-case-obcloud-log-storage-greptimedb) 运行着 80+ GreptimeDB 集群，保存 300 TB 日志与 SQL 审计数据，留存周期为 7 天，持续写入吞吐约 1 GB/s。从 Loki 迁移后，整体日志存储成本下降 60%+。
+- [得物](https://greptime.cn/blogs/2025-05-06-poizon-greptimedb-observability)使用 Flow 从明细事件持续维护 10 秒、1 分钟和 10 分钟粒度的聚合结果。公开案例显示，预聚合将 P99 查询延迟从秒级降到毫秒级。
+
+实际结果取决于 schema、索引、留存周期、硬件、对象存储价格、cache 配置和查询 workload。规划容量时，应结合带测试条件的[性能报告](https://greptime.cn/blogs/2024-09-09-report-summary)。
+
+<AnchorAlias id="greptimedb-对比" />
+
+## 和现有方案比较
+
+实际选型通常是在现有可观测系统之间比较：指标侧的 Prometheus、Mimir、Thanos，日志与链路侧的 Loki、Tempo、Elasticsearch，以及 VictoriaMetrics、ClickHouse 或 ClickStack。
+
+[GreptimeDB 对比页面](https://greptime.cn/compare/)按产品列出了架构、协议与查询差异、迁移路径和基准测试条件。应从当前正在使用的系统进入对应页面，而不是只看一张脱离版本和 workload 的功能表。
+
+## 下一步
+
+- 通过[快速开始](/getting-started/quick-start.md)在本地验证写入和查询。
+- 对照[产品比较](https://greptime.cn/compare/)检查当前技术栈的差异。
+- 生产切换前，通过[迁移指南](/user-guide/migrate-to-greptimedb/overview.md)确认协议、查询、仪表盘和历史数据的改动范围。

@@ -54,7 +54,11 @@ const sidebars: SidebarsConfig = {
             'user-guide/concepts/why-greptimedb',
             'user-guide/concepts/data-model',
             'user-guide/concepts/architecture',
-            'user-guide/concepts/observability-2',
+            {
+              type: 'doc',
+              id: 'user-guide/concepts/observability-2',
+              label: 'Observability 2.0 and wide events',
+            },
             'user-guide/concepts/semantic-layer',
             'user-guide/concepts/storage-location',
             'user-guide/concepts/key-concepts',
@@ -264,6 +268,20 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
+          label: 'Semantic Layer',
+          items: [
+            {
+              type: 'doc',
+              id: 'user-guide/semantic-layer/overview',
+              label: 'Overview',
+            },
+            'user-guide/semantic-layer/table-semantics',
+            'user-guide/semantic-layer/semantic-graph',
+            'user-guide/semantic-layer/declaring-entities',
+          ],
+        },
+        {
+          type: 'category',
           label: 'Vector Storage',
           items: [
             'user-guide/vectors/vector-type',
@@ -352,6 +370,22 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/monitoring/key-logs',
                 'user-guide/deployments-administration/monitoring/tracing',
                 'user-guide/deployments-administration/monitoring/slow-query',
+                {
+                  type: 'category',
+                  label: 'Events',
+                  items: [
+                    {
+                      type: 'doc',
+                      id: 'user-guide/deployments-administration/monitoring/events/overview',
+                      label: 'Overview',
+                    },
+                    'user-guide/deployments-administration/monitoring/events/query-events',
+                    'user-guide/deployments-administration/monitoring/events/event-data-model',
+                    'user-guide/deployments-administration/monitoring/events/ddl-events',
+                    'user-guide/deployments-administration/monitoring/events/region-events',
+                    'user-guide/deployments-administration/monitoring/events/maintenance-events',
+                  ],
+                },
                 'user-guide/deployments-administration/monitoring/runtime-info',
               ],
             },
@@ -527,6 +561,7 @@ const sidebars: SidebarsConfig = {
             'enterprise/read-replicas/query-read-replicas',
           ],
         },
+        'enterprise/iceberg',
         'enterprise/trigger',
         'enterprise/soft-drop',
         'enterprise/user',
@@ -534,6 +569,7 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Releases',
           items: [
+            'enterprise/release-notes/release-26_05',
             'enterprise/release-notes/release-25_11',
             'enterprise/release-notes/release-25_05',
             'enterprise/release-notes/release-24_11',
@@ -649,8 +685,11 @@ const sidebars: SidebarsConfig = {
                   id: 'reference/sql/greptime-private/overview',
                   label: 'Overview',
                 },
+                'reference/sql/greptime-private/events',
                 'reference/sql/greptime-private/slow_queries',
                 'reference/sql/greptime-private/pipelines',
+                'reference/sql/greptime-private/semantic-entities',
+                'reference/sql/greptime-private/semantic-relationships',
               ],
             },
             {
@@ -741,6 +780,7 @@ const sidebars: SidebarsConfig = {
               label: 'Overview',
             },
             'contributor-guide/datanode/storage-engine',
+            'contributor-guide/datanode/memtable',
             'contributor-guide/datanode/query-engine',
             'contributor-guide/datanode/data-persistence-indexing',
             'contributor-guide/datanode/wal',

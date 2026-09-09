@@ -5,7 +5,7 @@ description: 介绍了 Range 查询的语法和用法，包括 `FILL`、`TO` 和
 
 # RANGE QUERY
 
-查询并聚合一个给定长度的时间范围的数据是时序数据常见的一种查询模式，例如 `PromQL` 中的 `Range selector`。而 GreptimeDB 在 SQL 中支持了 Range 查询，用于将时序数据汇总为时间块，并在时间块上进行数据的聚合。Range 查询作为 `SELECT` 语句的一部分，可与 SQL 灵活结合，从而在 SQL 中提供更强大的时序数据查询能力。
+Range 查询将时序数据划分为时间窗口，并在每个窗口上计算聚合表达式。它是 `SELECT` 语句的一部分，语义类似于 PromQL 的 range selector。
 
 ## Syntax
 
@@ -573,7 +573,7 @@ SELECT ts, first_value(val ORDER BY addon ASC) RANGE '5s', last_value(val ORDER 
 
 ## 嵌套使用 Range 表达式
 
-Range 表达式支持灵活的嵌套，可以将 Range 表达式结合各种运算，提供更强大的查询能力。
+Range 表达式可以位于更大的算术表达式中，但一个 Range 表达式不能包含另一个 Range 表达式。
 
 以下面这张表为例：
 

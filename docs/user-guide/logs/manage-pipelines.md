@@ -38,7 +38,7 @@ The last uploaded version is used by default if no version is specified.
 After successfully uploading a pipeline, the response will include version information:
 
 ```json
-{"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}
+{"name":"test","version":"2024-06-27 12:02:34.257312110Z"}
 ```
 
 The version is a timestamp in UTC format that indicates when the pipeline was created.
@@ -190,7 +190,12 @@ The query result is as follows:
 Then, you can use a program to convert the bigint type timestamp from the SQL result into a time string.
 
 ```shell
-timestamp_ns="1719489754257312110"; readable_timestamp=$(TZ=UTC date -d @$((${timestamp_ns:0:10}+0)) +"%Y-%m-%d %H:%M:%S").${timestamp_ns:10}Z; echo "Readable timestamp (UTC): $readable_timestamp"
+python3 -c '
+import datetime, sys
+ns = int(sys.argv[1])
+dt = datetime.datetime.fromtimestamp(ns // 10**9, datetime.timezone.utc)
+print("Readable timestamp (UTC):", dt.strftime("%Y-%m-%d %H:%M:%S") + ".%09dZ" % (ns % 10**9))
+' 1719489754257312110
 ```
 
 Output:

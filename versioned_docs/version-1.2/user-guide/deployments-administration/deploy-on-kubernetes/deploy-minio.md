@@ -27,10 +27,6 @@ image:
   repository: greptime/minio
   tag: 2025.4.22-debian-12-r1
 
-auth:
-  rootUser: greptimedbadmin
-  rootPassword: "greptimedbadmin"  
-
 resources:
   requests:
     cpu: 500m
@@ -52,6 +48,28 @@ persistence:
   storageClass: null
   size: 100Gi
 ```
+
+The root credentials are deliberately absent from this file. Helm reads a values file as plain YAML and does not expand shell variables in it, so a `${MINIO_ROOT_USER}` placeholder would be installed verbatim.
+
+Create a Secret and point the chart at it instead. Avoid `--set-string` for the password: Helm splits that value on commas itself, so a password containing one fails to parse no matter how the shell quotes it.
+
+```bash
+kubectl create namespace minio
+kubectl -n minio create secret generic minio-root-credentials \
+  --from-literal=root-user="$MINIO_ROOT_USER" \
+  --from-literal=root-password="$MINIO_ROOT_PASSWORD"
+```
+
+Then reference it from `minio-values.yaml`:
+
+```yaml
+auth:
+  existingSecret: minio-root-credentials
+  rootUserSecretKey: root-user
+  rootPasswordSecretKey: root-password
+```
+
+These root credentials are for administering MinIO and signing in to its console. GreptimeDB does not use them — it connects with a separate Access Key that you create in [Generating Access Key](#generating-access-key), which you can scope with its own permission policy.
 
 ## Installing MinIO Cluster
 
@@ -87,7 +105,7 @@ Did you know there are enterprise versions of the Bitnami catalog? For enhanced 
 
 ** Please be patient while the chart is being deployed **
 
-MinIO&reg; can be accessed via port  on the following DNS name from within your cluster:
+MinIO&reg; can be accessed via port 9000 on the following DNS name from within your cluster:
 
 minio.minio.svc.cluster.local
 
@@ -151,9 +169,7 @@ kubectl port-forward -n minio svc/minio 9001:9001
 
 2. Open your browser: http://localhost:9001/login
 
-3. Log in using the credentials set in the configuration file:
-- username: `greptimedbadmin`
-- password: `greptimedbadmin`
+3. Log in with the root credentials held in the `minio-root-credentials` Secret.
 
 ![MinIO login](/minio-login-page.png)
 
@@ -208,8 +224,8 @@ objectStorage:
 
 # Monitoring
 
-- Install Prometheus Operator (e.g: [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack))。
-- Install podmonitor CRD。
+- Install Prometheus Operator (e.g: [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)).
+- Install the ServiceMonitor CRD.
 
 To monitor the MinIO cluster, you need to have a monitoring system (such as Prometheus and Grafana) deployed in advance. Then add the following content to minio-values.yaml and re-run the command to update the MinIO configuration:
 

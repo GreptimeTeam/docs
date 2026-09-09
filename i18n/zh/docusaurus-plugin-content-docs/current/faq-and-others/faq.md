@@ -121,7 +121,13 @@ default_column_prefix = ""
 ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
-目标列必须是 Field 列（不能是 Tag 或时间索引），且必须可为空（nullable），这样类型转换失败时返回 `NULL` 而非报错。
+目标列必须是 Field 列（不能是 Tag），且必须可为空（nullable），这样类型转换失败时返回 `NULL` 而非报错。
+
+时间索引列是个例外：对于未使用 metric engine 的表，可以将其时间戳单位拓宽为更精细的单位（例如从毫秒拓宽为微秒）：
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
+```
 
 完整的 `ALTER TABLE` 语法参见 [SQL 参考](/reference/sql/alter.md)。
 
@@ -323,7 +329,7 @@ ORDER BY files DESC;
 
 GreptimeDB 提供多种灾备策略：
 
-- **单机灾备**：远程 WAL + 对象存储，RPO=0，RTO 分钟级。
+- **单机灾备**：远程 WAL + 对象存储。RPO=0、RTO 分钟级是设计目标；单机实例的元数据仍在本地磁盘上，需要一并备份。
 - **Region 故障转移**：单个 Region 自动切换，停机时间极短。
 - **双活容灾**（企业版）：双节点间异步复制请求。
 - **跨区域单集群**：横跨三个区域，零 RPO，区域级容错。

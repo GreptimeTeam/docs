@@ -110,15 +110,15 @@ CREATE TABLE monitor (
 ```
 
 :::warning NOTE
-GreptimeDB does not currently support changing the TIME INDEX after a table has been created.
+GreptimeDB does not currently support changing the TIME INDEX column to another column after a table has been created.
 Therefore, it is important to carefully choose your TIME INDEX column before creating tables.
+However, you can use `ALTER TABLE ... MODIFY COLUMN` to widen the time index's timestamp unit to a finer one (for example, from milliseconds to microseconds) on tables that are not using the metric engine. For more information, see the [ALTER reference](/reference/sql/alter.md#modify-column-type).
 :::
 
 ### `CREATE TABLE` syntax
 
-- Timestamp column: GreptimeDB is a time-series database system, a timestamp column must
-  be explicitly specified by `TIME INDEX` keyword when creating tables. The data type of
-  the timestamp column must be `TIMESTAMP`type.
+- Time index: Every GreptimeDB table requires exactly one time index. Declare it with the
+  `TIME INDEX` keyword. The column must use a `TIMESTAMP` data type.
 - Primary key: The columns in primary key are similar to tags in other other time-series systems like [InfluxDB][1]. The primary key columns with the time index column are used to uniquely define a series of data, which is similar
   to time series like [InfluxDB][2].
 - Table options: when creating a table, you can specify a set of table options, click [here](/reference/sql/create.md#table-options) for more details.

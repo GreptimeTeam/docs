@@ -1,38 +1,29 @@
 ---
-keywords: [data model, time-series tables, tags, timestamps, fields, schema management]
-description: Describes the data model of GreptimeDB, focusing on time-series tables. It explains the organization of data into tables with tags, timestamps, and fields, and provides examples of metric and log tables. Design considerations and schema management are also discussed.
+keywords: [data model, unified observability data model, time index, tags, timestamps, fields, metrics, logs, traces]
+description: Describes GreptimeDB's unified observability data model, including relational tables, time indexes, and Tag, Timestamp, and Field semantics.
 ---
 
 # Data Model
 
 ## Model
 
-GreptimeDB uses the [time-series](https://en.wikipedia.org/wiki/Time_series) table to guide the organization, compression, and expiration management of data.
-The data model is mainly based on the table model in relational databases while considering the characteristics of metrics, logs, and traces data.
+GreptimeDB uses a unified observability data model based on relational tables with a time index and `Tag`, `Timestamp`, and `Field` column semantics. Metrics, logs, traces, and events share this model while remaining in separate tables with workload-specific schemas.
 
-All data in GreptimeDB is organized into tables with names. Each data item in a table consists of three semantic types of columns: `Tag`, `Timestamp`, and `Field`.
+![Metrics, logs, and traces remain in separate tables while sharing schema concepts, storage, and query layers.](/unified-observability-model.svg)
 
-- Table names are often the same as the indicator names, log source names, or metric names.
-- `Tag` columns uniquely identify the time-series.
-  Rows with the same `Tag` values belong to the same time-series.
-  Some TSDBs may also call them labels.
-- `Timestamp` is the root of a metrics, logs, and traces database.
-  It represents the date and time when the data was generated.
-  A table can only have one column with the `Timestamp` semantic type, which is also called the `time index`.
-- The other columns are `Field` columns.
-  Fields contain the data indicators or log contents that are collected.
-  These fields are generally numerical values or string values,
-  but may also be other types of data, such as geographic locations or timestamps.
+Every GreptimeDB table has a name and exactly one time index. Columns have the following roles:
 
-A table clusters rows of the same time-series and sorts rows of the same time-series by `Timestamp`.
-The table can also deduplicate rows with the same `Tag` and `Timestamp` values, depending on the requirements of the application.
-GreptimeDB stores and processes data by time-series.
-Physically, GreptimeDB persists data into immutable Parquet SST files, sorting rows by `(primary key, timestamp)` — or by timestamp alone when a table has no primary key (such as the append-only logs table below). To learn how data is laid out and pruned inside SST files, see the [storage engine](/contributor-guide/datanode/storage-engine.md#data-layout-in-sst-files) documentation.
-Choosing the right schema is crucial for efficient data storage and retrieval; please refer to the [schema design guide](/user-guide/deployments-administration/performance-tuning/design-table.md) for more details.
+- `Tag` columns participate in the primary key and group related rows. For metrics, they usually represent labels that identify a time series. Tags are optional: append-only log and event tables can have no primary-key columns.
+- The `Timestamp` column is declared as the table's time index. It records event or sample time, helps GreptimeDB organize data by time, and enables efficient time-range queries.
+- `Field` columns store measurements, log content, trace attributes, or other values. They can use numeric, string, JSON, timestamp, and other supported data types.
+
+For tables with primary-key columns, persisted rows are ordered by `(primary key, timestamp)`. Tables can merge rows with the same primary key and timestamp according to their [merge mode](/reference/sql/create.md#create-a-table-with-merge-mode). Append-only tables disable deduplication and, when they have no primary key, order persisted rows by timestamp. GreptimeDB stores table data in immutable Parquet SST files; see [Data Layout in SST Files](/contributor-guide/datanode/storage-engine.md#data-layout-in-sst-files) for details.
+
+Schema design affects write amplification, compression, index size, and query pruning. See the [Schema Design Guide](/user-guide/deployments-administration/performance-tuning/design-table.md) before choosing primary-key columns and indexes.
 
 ### Metrics
 
-Suppose we have a table called `system_metrics` that monitors the resource usage of machines in data centers:
+The following table stores host resource metrics:
 
 ```sql
 CREATE TABLE IF NOT EXISTS system_metrics (
@@ -47,27 +38,18 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 );
 ```
 
-The data model for this table is as follows:
+![The system_metrics table maps host and idc to Tag columns, ts to the Timestamp column and time index, and the remaining measurements to Field columns.](/time-series-data-model.svg)
 
-![time-series-table-model](/time-series-data-model.svg)
+- `host` and `idc` are Tag columns declared by `PRIMARY KEY`.
+- `ts` is the Timestamp column declared by `TIME INDEX`.
+- `cpu_util`, `memory_util`, and `disk_util` are Field columns.
+- With the default [`last_row` merge mode](/reference/sql/create.md#create-a-table-with-merge-mode), queries keep the latest row for each `host`, `idc`, and `ts` combination.
 
-This is very similar to the table model everyone is familiar with. The difference lies in the `TIME INDEX` constraint, which is used to specify the `ts` column as the time index column of this table.
-
-- The table name here is `system_metrics`.
-- The `PRIMARY KEY` constraint specifies the `Tag` columns of the table.
-  The `host` column represents the hostname of the collected standalone machine.
-  The `idc` column shows the data center where the machine is located.
-- The `Timestamp` column `ts` represents the time when the data is collected.
-- The `cpu_util`, `memory_util`, `disk_util`, and `load` columns in the `Field` columns represent
-  the CPU utilization, memory utilization, disk utilization, and load of the machine, respectively.
-  These columns contain the actual data.
-- The table sorts and deduplicates rows by `host`, `idc`, `ts`. So `select count(*) from system_metrics` will scan all rows.
-
-To learn how GreptimeDB maps Prometheus metrics to this model, see [the documentation](/user-guide/ingest-data/for-observability/prometheus/#data-model).
+See [Prometheus Data Model](/user-guide/ingest-data/for-observability/prometheus.md#data-model) for the mapping between Prometheus metrics and GreptimeDB tables.
 
 ### Logs
 
-Another example is creating a table for logs like web server access logs:
+An append-only table is often a better fit for access logs:
 
 ```sql
 CREATE TABLE access_logs (
@@ -77,37 +59,35 @@ CREATE TABLE access_logs (
   http_method STRING,
   http_refer STRING,
   user_agent STRING,
-  request STRING,
-) with ('append_mode'='true');
+  request STRING
+) WITH ('append_mode' = 'true');
 ```
 
-- The time index column is `access_time`.
-- There are no tags.
-- `http_status`, `http_method`, `remote_addr`, `http_refer`, `user_agent` and `request` are fields.
-- The table sorts rows by `access_time`.
-- The table is an [append-only table](/reference/sql/create.md#create-an-append-only-table) for storing logs that do not support deletion or deduplication.
-- Querying an append-only table is usually faster. For example, `select count(*) from access_logs` can use the statistics for result without considering deduplication.
+- `access_time` is the Timestamp column.
+- The table has no Tag columns or primary key.
+- The remaining columns are Fields.
+- [`append_mode`](/reference/sql/create.md#create-an-append-only-table) disables deduplication and deletion. It fits immutable log records, but not workloads that need row updates or deletes.
+- Without a primary key, persisted rows are ordered by `access_time`.
 
-
-To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, please refer to [table management](/user-guide/deployments-administration/manage-data/basic-table-operations.md#create-a-table) and [CREATE statement](/reference/sql/create.md).
+See [Create a Table](/user-guide/deployments-administration/manage-data/basic-table-operations.md#create-a-table) and the [CREATE TABLE reference](/reference/sql/create.md) for column-role syntax and table options.
 
 ### Traces
 
-GreptimeDB supports writing OpenTelemetry traces data directly via the OTLP/HTTP protocol, refer to the [OTLP traces data model](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model-2) for detail.
+GreptimeDB accepts OpenTelemetry traces through OTLP/HTTP and maps spans to tables with a time index, trace identifiers, span identifiers, attributes, and duration fields. See the [OTLP Trace Data Model](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model-2).
+
+Trace ingestion, storage, and SQL queries are first-class capabilities. GreptimeDB also provides a Jaeger-compatible query API.
 
 ## Design Considerations
 
-GreptimeDB is designed on top of the table model for the following reasons:
+The table model provides several practical properties:
 
-- The table model has a broad group of users and it's easy to learn; we have simply introduced the concept of time index to metrics, logs, and traces.
-- Schema is metadata that describes data characteristics, and it's more convenient for users to manage and maintain.
-- Schema brings enormous benefits for optimizing storage and computing with its information like types, lengths, etc., on which we can conduct targeted optimizations.
-- When we have the table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various tables, reducing the learning and usage costs for users.
-- GreptimeDB uses a multi-value model where a single row can contain multiple field columns, reducing transfer traffic and simplifying queries compared to single-value models that require splitting data into multiple records. Read the [blog](https://greptime.com/blogs/2024-05-09-prometheus) for detailed benefits.
-- In the Observability 2.0 paradigm, metrics, logs, and traces are seen as different projections of the same underlying "wide events." GreptimeDB's unified table model naturally supports this view — all signal types share the same Tag + Timestamp + Field schema, enabling cross-signal correlation in a single SQL query. Read more in [Observability 2.0](./observability-2.md).
+- schemas expose types and column roles to the storage and query engines;
+- SQL can filter, aggregate, and join data across tables;
+- a row can contain multiple Field columns, avoiding the extra rows required by single-value models;
+- tables can choose primary keys, merge behavior, append-only mode, indexes, TTL, and storage providers independently;
+- automatic schema generation can create tables and columns for supported ingestion protocols;
+- the same Tag, Timestamp, and Field concepts apply to metrics, logs, traces, and wide events without requiring them to share a table.
 
-GreptimeDB uses SQL to manage table schema. Please refer to [table management](/user-guide/deployments-administration/manage-data/basic-table-operations.md) for more information.
-However, our definition of schema is not mandatory and leans towards a **schemaless** approach, similar to MongoDB.
-For more details, see [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
+GreptimeDB manages table schemas with SQL. See [Table Management](/user-guide/deployments-administration/manage-data/basic-table-operations.md) and [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
 
-Beyond the column schema, a table can carry a [table semantic layer](./semantic-layer.md) — semantic metadata recording which observability concept it represents (signal type, source, metric type, and more) — so AI agents and tooling can understand it without guessing from column names.
+Tables can also carry an optional [table semantic layer](./semantic-layer.md) describing signal identity and ingestion metadata for machine consumers. Read [Observability 2.0 and wide events](./observability-2.md) for one optional way to retain more context in this model.

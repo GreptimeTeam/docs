@@ -192,6 +192,7 @@ per-partition metrics.
 | `partition_count.other_ranges` | All | Number of extension or non-memtable, non-SST ranges. | Nonzero only. |
 | `selector` | All | Series row selector attached to the scan. | When a series row selector is attached. |
 | `distribution` | All | Distribution information attached to the scan. | When distribution is attached. |
+| `mode` | All | Series scan mode: `two_phase` for the new scan path or `legacy` for the legacy path. | Always for `SeriesScan`. |
 | `projection` | Verbose | Output column names after projection pruning. | When the output schema is not empty. |
 | `filters` | Verbose | Static physical predicate expressions pushed into the scanner. These predicates may drive row-group pruning, index application, and precise filtering. | When static predicates exist. |
 | `dyn_filters` | Verbose | Dynamic filter expressions attached after plan creation. These can change during execution as upstream operators produce filter values. | When dynamic filters exist. |
@@ -485,4 +486,7 @@ sort operators when a query needs ordered output.
 
 `SeriesScan` returns rows grouped by series. It uses the same per-partition
 metric structure as the other scanners and can also report distributor metrics
-from the series distributor partition.
+from the series distributor partition. It uses `two_phase` only for scans of
+metric engine physical regions when
+`region_engine.mito.experimental_series_scan_v2` is enabled. Other
+`SeriesScan` nodes report `legacy`.

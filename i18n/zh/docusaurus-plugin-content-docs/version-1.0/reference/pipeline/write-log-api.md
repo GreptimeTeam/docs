@@ -79,7 +79,7 @@ processors:
 
 #### `text/plain` 格式
 
-纯文本日志在整个生态系统中被广泛应用。GreptimeDB 同样支持日志数据以 `text/plain` 格式进行输入，使得我们可以直接从日志产生源进行写入。
+GreptimeDB 接受 `Content-Type` 为 `text/plain` 的纯文本日志，可直接写入日志源产生的文本。
 
 以下是一份和上述样例请求体内容等价的文本请求示例：
 
@@ -113,7 +113,7 @@ processors:
 
 写入日志的表选项需要在 pipeline 中配置。
 从 `v0.15` 开始，pipeline 引擎可以识别特定的变量名称，并且通过这些变量对应的值设置相应的建表选项。
-通过与 `vrl` 处理器的结合，现在可以非常轻易地通过输入的数据在 pipeline 的执行过程中设置建表选项。
+结合 `vrl` 处理器，可以根据输入数据在 pipeline 执行期间设置建表选项。
 
 以下是支持的表选项变量名：
 - `greptime_auto_create_table`
@@ -153,9 +153,9 @@ processors:
 }
 ```
 
-假设给定的表名为 `d_table`，那么最终的表名就会按照预期被设置成 `d_table_2436`。这个表同样的 ttl 同样会被设置成 1 天。
+若请求中的表名为 `d_table`，最终写入的表为 `d_table_2436`，TTL 为 1 天。
 
 ## 示例
 
-请参考[快速开始](/user-guide/logs/quick-start.md)和[使用自定义 pipeline 中的](/user-guide/logs/use-custom-pipelines.md#使用-pipeline-写入日志)写入日志部分的文档。
+请参考[快速开始](/user-guide/logs/quick-start.md#直接通过-http-写入日志)和[使用自定义 pipeline 中的](/user-guide/logs/use-custom-pipelines.md#使用-pipeline-写入日志)写入日志部分的文档。
 

@@ -40,7 +40,7 @@ your create table SQL:
    time index either.
 3. It's vital to set the most fit timestamp precision for your time index column, too. Like the chosen of time index
    column, the precision of it cannot be changed as well. Find the most fit timestamp type for your
-   data set [here](/reference/sql/data-types#data-types-compatible-with-mysql-and-postgresql).
+   data set [here](/reference/sql/data-types.md#data-types-compatible-with-mysql-and-postgresql).
 4. Choose a primary key only when it is truly needed. The primary key in GreptimeDB is different from that in PostgreSQL. You should use a primary key only when:
     * Most queries can benefit from the ordering.
     * You need to deduplicate (including delete) rows by the primary key and time index.

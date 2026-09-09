@@ -140,7 +140,7 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
              |   "resource_attributes.telemetry.sdk.version" STRING NULL,                              +
              |   "span_events" JSON NULL,                                                              +
              |   "span_links" JSON NULL,                                                               +
-             |   "parent_span_id" STRING NULL,                                                         +
+             |   "parent_span_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),+
              |   "span_attributes.db.system" STRING NULL,                                              +
              |   "span_attributes.db.name" STRING NULL,                                                +
              |   "span_attributes.db.statement" STRING NULL,                                           +
@@ -185,8 +185,9 @@ rules](/user-guide/deployments-administration/manage-data/table-sharding.md#part
 trace table on the `trace_id` column based on the first character of it. This is
 optimised for retrieve trace spans by the trace id.
 
-The partition rule introduces 16 partitions for the table. It is suitable for a
-3-5 datanode setup.
+The partition rule introduces 16 partitions for the table, a reasonable starting
+point for a 3-5 datanode setup. Ingestion rate, query concurrency, and total
+region count across the cluster may call for a different partition count.
 
 To customize the partition rule, you can:
 
@@ -196,6 +197,8 @@ To customize the partition rule, you can:
 2. Use `x-greptime-hints` [HTTP header](/user-guide/protocols/http#hints) in
    your OTLP ingestion request, include a hint `trace_table_partitions=n` where
    `n` is the partition number. Set `n` to `0` or `1` to disable partitioning.
+   Any other value must be a power of two between `2` and `65536`; the table
+   creation fails otherwise.
 
 ### Index
 

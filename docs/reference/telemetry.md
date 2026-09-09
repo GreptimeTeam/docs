@@ -5,15 +5,15 @@ description: Details on telemetry data collection in GreptimeDB, including what 
 
 # Telemetry
 
-To enhance our service, GreptimeDB collects certain telemetry data. This includes information like the GreptimeDB version, the number of nodes, the operating system used, the environment's architecture, and similar technical details. However, we respect your privacy and make sure not to collect any user-specific data, which entails database names, table names, query content, and the like.
+GreptimeDB enables anonymous telemetry by default. The telemetry payload contains the installation and runtime fields listed below. It does not contain database names, table names, or query text.
 
-This telemetry collection can easily be managed according to your preferences. You may choose to enable or disable it through the configurations. Your experience and privacy are our top priority.
+You can disable telemetry in the GreptimeDB configuration.
 
 ## What data will be collected?
 
-The usage details that get shared might change over time. These changes (if any) will be announced in release notes.
+The fields in the telemetry payload may change in a future release. Such changes are documented in the release notes.
 
-When telemetry is enabled, GreptimeDB will collect the following information every 0.5 hours:
+When telemetry is enabled, GreptimeDB sends a report when the telemetry task starts and every 30 minutes afterward. Each report contains:
 
 - GreptimeDB version
 - GreptimeDB build git hash
@@ -30,7 +30,7 @@ When telemetry is enabled, GreptimeDB will collect the following information eve
   "os": "linux",
   "version": "0.15.1",
   "arch": "aarch64",
-  "mode": "Standalone",
+  "mode": "standalone",
   "git_commit": "00d759e828f5e148ec18141904e20cb1cb7577b0",
   "nodes": 1,
   "uuid": "43717682-baa8-41e0-b126-67b797b66606",
@@ -40,7 +40,7 @@ When telemetry is enabled, GreptimeDB will collect the following information eve
 
 ## How to disable telemetry?
 
-Telemetry will be enabled by default starting from v0.4.0. You can disable it by configuring the settings.
+Telemetry has been enabled by default since GreptimeDB v0.4.0.
 
 ### Standalone mode
 
@@ -55,12 +55,12 @@ Or configure it by the environment variable `GREPTIMEDB_STANDALONE__ENABLE_TELEM
 
 ### Distributed mode
 
-Set `enable_telemetry`  in the metasrv config file to `false`:
+Set `enable_telemetry` in the metasrv config file to `false`:
 
 ```toml
 # metasrv config file
 # Whether to enable greptimedb telemetry, true by default.
-enable_telemetry = false 
+enable_telemetry = false
 ```
 
 Or set the environment variable `GREPTIMEDB_METASRV__ENABLE_TELEMETRY=false` on startup.

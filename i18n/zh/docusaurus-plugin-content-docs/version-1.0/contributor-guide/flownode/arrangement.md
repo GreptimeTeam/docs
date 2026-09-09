@@ -5,6 +5,8 @@ description: 描述了 Arrangement 在数据流进程中的状态存储功能，
 
 # Arrangement
 
+本页介绍 Flownode 旧 streaming 模式使用的状态结构；batching 模式不使用 Arrangement。
+
 Arrangement 存储数据流进程中的状态，存储 flow 的更新流（stream）以供进一步查询和更新。
 
 Arrangement 本质上存储的是带有时间戳的键值对。

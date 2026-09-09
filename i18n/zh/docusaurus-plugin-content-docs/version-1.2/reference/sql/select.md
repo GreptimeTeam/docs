@@ -53,12 +53,12 @@ SELECT *
 FROM system_metrics
 WHERE idc = 'idc0';
 
--- 从 system_metrics 表中选择所有 idc 为 'idc0' 或 'idc0' 的行
+-- 从 system_metrics 表中选择所有 idc 为 'idc0' 或 'idc1' 的行
 SELECT *
 FROM system_metrics
 WHERE idc IN ('idc0', 'idc1');
 
--- 从 system_metrics 表中选择所有idc为'idc0'或'idc0'且CPU利用率大于60%的行
+-- 从 system_metrics 表中选择所有 idc 为 'idc0' 或 'idc1' 且 CPU 利用率大于 60% 的行
 SELECT *
 FROM system_metrics
 WHERE idc IN ('idc0', 'idc1') AND cpu_util > 0.6;
@@ -120,7 +120,7 @@ OFFSET 10;
 
 它从 `system_metrics` 表中选择按 `cpu_util` 降序排列的第 11 行到第 20 行的所有列。
 
-虽然将 `OFFSET` 和 `LIMIT` 与 `ORDER BY` 子句结合使用可以实现分页，但这种方法效率不高。 我们建议记录每页返回的最后一条记录的时间索引（时间戳），并使用此值来过滤和限制后续页面的数据。 请参阅 [OFFSET](offset.md) 以获取更多信息。
+页数增加时，`OFFSET` 需要跳过的行数也会增加。使用稳定且唯一的游标进行 keyset pagination，参见 [OFFSET](offset.md#使用时间戳的高效分页)。
 
 ## 连接表（JOIN）
 

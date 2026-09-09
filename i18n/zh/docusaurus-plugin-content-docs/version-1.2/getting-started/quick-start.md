@@ -509,6 +509,6 @@ SELECT * FROM grpc_latencies;
 
 **深入了解：**
 - [为什么选择 GreptimeDB](/user-guide/concepts/why-greptimedb.md) — 架构、成本对比、竞品比较
-- [Observability 2.0](/user-guide/concepts/observability-2.md) — 宽事件和统一数据模型
+- [Observability 2.0 与宽事件](/user-guide/concepts/observability-2.md) — 宽事件的适用场景和成本
 - [Demo 场景](https://github.com/GreptimeTeam/demo-scene/) — 更多动手示例
 - [用户指南](/user-guide/overview.md) — 完整参考

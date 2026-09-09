@@ -118,8 +118,13 @@ For more information on the example code, please refer to the official documenta
 GreptimeDB supports a Prometheus-compatible mode for OTLP metrics ingestion.
 If the metrics data is persisted using the Prometheus-compatible format, you should be able to query them using PromQL, just like any Prometheus metrics.
 
-If you have not ingested any OTLP metrics before, it will automatically use the Prometheus-compatible format.
-Otherwise, it will remain the old data format with the existing table, but use the new data format for any newly created tables.
+GreptimeDB selects the ingestion format once for each OTLP export request:
+
+- If none of the referenced metric tables exists, GreptimeDB uses the Prometheus-compatible format.
+- If all referenced existing tables use the same format, GreptimeDB uses that format for every metric in the request, including any tables created by the request.
+- If the request references existing tables in both formats, GreptimeDB rejects the request.
+
+Send legacy and Prometheus-compatible metrics in separate OTLP export requests.
 
 GreptimeDB pre-processes the incoming data before persisting them, including:
 1. Converting the metric names(table names) and the label names to the Prometheus style(e.g: replace `.` with `_`). By default, GreptimeDB also adds Prometheus-style suffixes based on the metric unit and type. See [here](https://opentelemetry.io/docs/specs/otel/compatibility/prometheus_and_openmetrics/#metric-metadata-1) for details.
@@ -132,7 +137,7 @@ GreptimeDB pre-processes the incoming data before persisting them, including:
    | `memory.usage` | Gauge / `By` | `memory_usage_bytes` |
    | `queue.length` | Gauge / `{item}` | `queue_length` |
    | `http.server.request.duration` | Histogram / `s` | `http_server_request_duration_seconds` |
-   | `rpc.server.duration` | Histogram / `ms` | `rpc_server_duration_seconds` |
+   | `rpc.server.duration` | Histogram / `ms` | `rpc_server_duration_milliseconds` |
    | `http.client.request.size` | Sum (Monotonic) / `By` | `http_client_request_size_bytes_total` |
    | `system.network.io` | Sum (Monotonic) / `By` | `system_network_io_bytes_total` |
    | `http.status_code` (Attribute) | - | `http_status_code` |

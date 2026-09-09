@@ -14,7 +14,7 @@ description: Overview of Flownode, a component providing Flow computation capabi
 `Flownode` support both `standalone` and `distributed` mode. In `standalone` mode, `Flownode` runs in the same process as the database. In `distributed` mode, `Flownode` runs in a separate process and communicates with the database through the network.
 
 There are two execution modes for a flow:
-- **Batching Mode**: The active mode for continuous data aggregation. It periodically executes a user-defined SQL query over small, discrete time windows. Aggregation and TQL queries use this mode. For more details, see the [Batching Mode Developer Guide](./batching_mode.md).
+- **Batching Mode**: The active mode for continuous data aggregation. It periodically executes a user-defined SQL query over small, discrete time windows. Aggregation and TQL queries use this mode. For more details, see [Batching Mode](./batching_mode.md).
 - **Streaming Mode (deprecated)**: The original mode where data is processed as it arrives. It is kept for legacy compatibility and is not recommended for new workloads.
 
 ## Components

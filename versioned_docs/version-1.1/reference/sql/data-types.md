@@ -239,7 +239,7 @@ public=> SELECT INTERVAL '1 year 2 month';
 The JSON feature is currently experimental and may change in future releases.
 :::
 
-GreptimeDB supports the JSON type, allowing users to store and query JSON-formatted data. The JSON type is highly flexible and can store various forms of structured or unstructured data, making it suitable for use cases such as logging, analytics, and semi-structured data storage.
+The `JSON` type stores and queries structured or unstructured JSON values. It is suitable for logs, analytics, and other semi-structured data, especially objects and arrays whose fields do not need separate table columns.
 
 ```sql
 CREATE TABLE json_data(

@@ -1,15 +1,13 @@
 ---
-keywords: [企业版, 时序数据库, BYOC, 全托管云, 边云一体]
-description: GreptimeDB Enterprise 是为企业设计的时序数据库解决方案，提供了 BYOC、全托管云、边云一体等部署方式，并包含高级功能如双活互备的 DR 解决方案、LDAP 身份验证和审计日志。
+keywords: [企业版, 可观测性数据库, 时序数据库, BYOC, 全托管云, 边云一体]
+description: GreptimeDB Enterprise 概述，包括 BYOC、全托管独立云和边云一体等部署方案，以及安全、可用性和运维能力。
 ---
 
 # 企业版
 
-GreptimeDB Enterprise 是专为满足企业特定需求而设计的强大时序数据库解决方案。
-除了开源版 GreptimeDB 中提供的所有功能外，
-Enterprise 版还提供更多增强功能，帮助企业优化数据效率并显著降低成本，使企业能够使用时序数据做出更智能、更快速的决策。
+GreptimeDB Enterprise 在开源可观测性数据库的基础上，增加面向企业部署的安全、可用性、运维和负载管理能力。
 
-解决方案包括：
+可选的部署方式与解决方案包括：
 
 - **将数据库部署在你的云中 - Bring Your Own Cloud（BYOC**: 利用你自己的云基础设施来托管 GreptimeDB，提供广泛的定制和灵活性以满足你的业务需求。此服务包括对你的云资源的全面管理和强大的安全措施，以保护你的基础设施。
 - **全托管的独立云**: Greptime 团队提供完全托管的专用云环境，确保最佳性能、增强的安全性和卓越的可靠性，以满足你的企业需求。
@@ -38,6 +36,7 @@ GreptimeDB Enterprise 包括以下高级功能，
 - [Trigger](./trigger.md)：定时查询和检测预配置的规则，可触发外部 webhook，兼容 Prometheus AlertManager。
 - [内置用户管理](./user.md)：内置 RBAC 和细粒度 ACL，确保数据安全和隔离。
 - Flow 的可靠性功能。
+- [Iceberg 元数据](./iceberg.md)：通过 Apache Iceberg REST catalog 暴露 GreptimeDB 表，使 pyiceberg、Spark、Trino、DuckDB 等引擎可以直接从对象存储读取数据。
 
 ## 发布说明
 

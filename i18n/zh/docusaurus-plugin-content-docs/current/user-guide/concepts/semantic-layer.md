@@ -1,114 +1,99 @@
 ---
-keywords: [语义层, 语义元数据, 可观测性元数据, 表选项, MCP, AI agent, OpenTelemetry, 信号类型]
-description: 介绍 GreptimeDB 实验性的表语义层——通过 greptime.semantic.* 元数据告诉机器消费者一张表代表什么可观测性概念。
+keywords: [语义层, 语义图, 实体, 关系, 可观测性元数据, MCP, AI agent, OpenTelemetry, 信号类型]
+description: 介绍语义层——表语义元数据，以及 GreptimeDB 向下游工具暴露的派生实体图。
 ---
 
-# 表语义层（实验性）
+# 语义层
 
 :::warning
-语义层目前处于实验阶段，未来版本可能发生变化。没有语义元数据的表照常工作；语义层是可选的、增量式的。
+语义层目前处于实验阶段，未来版本可能发生变化。未配置语义元数据的表行为不变；语义层是可选功能。
 :::
 
-语义层给每张表附加一层薄薄的元数据，让机器消费者——LLM agent、告警与仪表盘生成器、[MCP server](/user-guide/integrations/mcp.md)、ETL 流水线——能够把一张表对应到它所代表的可观测性概念，而不必从列名去猜。
+语义层描述 GreptimeDB 所存数据的可观测性含义，让 LLM agent、告警与仪表盘生成器、[MCP server](/user-guide/integrations/mcp.md) 和 ETL 流水线等下游工具不必从列名推断。它由两部分组成：
+
+- **表语义**记录单张表代表什么：遥测信号类型、接入来源，以及 metric 单位、instrument 类型等信号特定的元数据。
+- **语义图**记录遥测数据描述的对象：行所描述的实体（service、host、pod、container、AI agent）以及它们之间的关系（哪个 service 调用哪个、哪个 pod 运行在哪个节点上）。
+
+选项词汇表、两张表的 schema 和查询写法在[语义层用户指南](/user-guide/semantic-layer/overview.md)。
 
 ## 为什么需要它
 
-GreptimeDB 接收 OTLP 的 metrics、traces、logs，以及 Prometheus remote write、InfluxDB、OpenTSDB、Loki、Elasticsearch 的数据。每种协议在传输时都带着丰富的元数据——instrument 类型、temporality、单位、语义约定版本——而这些信息在数据落表后大多被丢掉了：
+GreptimeDB 接收 OTLP metrics、traces、logs，以及 Prometheus remote write、InfluxDB Line Protocol、OpenTSDB、Loki Push API 和 Elasticsearch Bulk API 数据。有两类信息随数据一同到达，但都不会写进数据行。
 
-- 一张 OTLP traces 表看起来和任何宽表没区别；signal type 和 source 只能从命名去猜。
-- metric 的单位（`s`、`By`）被行编码器丢弃，从数据里无法还原。
-- OTLP 的聚合 temporality（`cumulative` vs `delta`）在 metric 名字里看不出来。
-- Prometheus 中由 `_total` 后缀推断出的 `counter` 类型只是*猜*出来的，不是声明的——但表里从不标记这一点。
+第一类是接入协议携带、而行编码器丢弃的单表元数据：
 
-消除这些猜测所需的元数据，在写入时本来就存在。语义层把它保留下来，而不是丢弃。这样告警生成器就能在 `rate()` 和绝对阈值之间做选择；仪表盘生成器能按 signal type 选可视化方式；agent 能读到一份结构化的目录，而不是从列名去推断。
+- 一张 OTLP traces 表看起来和任何宽表没区别；signal type 和 source 只能从命名推断。
+- OTLP metric 的单位（`s`、`By`）被行编码器丢弃，从数据里无法还原。
+- OTLP 的聚合 temporality（`cumulative` vs `delta`）不体现在 metric 名字中。
+- Prometheus 中根据 `_total` 后缀推断出的 `counter` 不是协议声明。没有语义元数据时，表中不会记录这个区别。
+
+第二类是跨表的结构。一个 service 的延迟指标、它的 span、它的日志分别落在不同的表里，"它们描述同一个 service"、"这个 service 调用了另一个 service"这类事实，只以列值约定的形式存在。要拿到"这个实体、它的邻居以及它们的遥测数据"，只能硬编码拓扑，或者从列名推断。
+
+两类信息都保留下来之后，告警生成器能区分速率和绝对值，仪表盘生成器能按 signal type 选择展示方式，agent 能在同一个查询引擎内从告警的 service 找到它的依赖，再取这些依赖的遥测数据。
 
 ## 工作原理
 
-语义层复用已有的 SQL 表面——没有新协议，也没有新的 DDL 关键字。它有三种机制：
+两部分都使用现有的 SQL 接口，不增加协议或 DDL 关键字。
 
-1. **`greptime.semantic.*` 表选项**——表级别的身份与血缘信息，存放在已有的 `table_options` 槽位里（也就是存 `ttl`、`table_data_model` 等选项的同一个槽位）。
-2. **列 `COMMENT`**——标准 SQL，用于列级别的补充说明。
-3. **[`information_schema.table_semantics`](/reference/sql/information-schema/table-semantics.md)**——一个可查询的视图，是发现入口。它为每张至少带一个 `greptime.semantic.*` 选项的表返回一行。
+1. **`greptime.semantic.*` 表选项**与 `ttl`、`table_data_model` 等选项一起保存表身份、写入元数据和实体身份。支持的接入路径会自动写入，你也可以用 `CREATE TABLE ... WITH (...)` 或 `ALTER TABLE ... SET` 设置。
+2. **[`information_schema.table_semantics`](/reference/sql/information-schema/table-semantics.md)** 是这些选项、以及由它们解析出的实体声明的查询入口。
+3. **`greptime_private.semantic_entities` 和 `greptime_private.semantic_relationships`** 以两张只读表的形式暴露语义图。
 
-## 词汇表
+## 实体与关系
 
-所有 key 都是 `greptime.semantic.` 前缀下的扁平字符串，所有 value 都是字符串。词汇表刻意保持精简——只有当一个 key 记录的信息无法从 schema、列、或消费者已经理解的 metric 命名约定里廉价地还原时，它才有资格进入。那些值已经在 metric 名字里（Prometheus 的 `_total` 后缀）、是常量、或只是重复某一列的 key，被故意省略。
+**实体**是遥测数据所描述的对象：service、service instance、host、container、Kubernetes 的 pod、node、workload、service，以及 AI agent、model、tool。一张表声明它的行描述了哪些实体，以及哪些列标识每个实体。两张表只要标识值相同，描述的就是同一个实体：一个 service 从 trace 和从 metric 进入图后仍是同一个节点。
 
-白名单是封闭的：前缀下未被识别的 key（比如 `greptime.semantic.future.key`）或超出取值范围的 value 都会被拒绝。
+**关系**是两个实体之间带类型、有方向、在某个时间窗口内成立的边：`calls`、`runs_on`、`contains`、`part_of`、`depends_on`、`uses`、`invokes`。每条边都带一个 `provenance`，记录它的来源方式——由配对的 trace span 派生、由同一行上的两个身份派生，还是人工声明——以及一个 `confidence`。调用边还带有所在窗口的 RED 指标（请求数、错误数、耗时）。
 
-### 通用 key（所有信号）
+边是有时间范围的事实，不是当前状态。派生边覆盖一个 60 秒窗口，因此"当前拓扑"是对最近若干窗口的查询；实体或边一旦不再产生遥测数据就不再出现，不需要额外的过期机制。人工声明的边覆盖的则是你给定的有效期，保留到你删除它，或该行随 TTL 过期。
 
-| Key | 说明 | 示例取值 |
-| --- | --- | --- |
-| `greptime.semantic.signal_type` | 表所代表的遥测信号类型。 | `metric` / `trace` / `log` / `event` / `unknown` |
-| `greptime.semantic.source` | 写入数据的接入生态。 | `opentelemetry` / `prometheus` / `influxdb` / `opentsdb` / `loki` / `elasticsearch` / `custom` / `mixed` / `unknown` |
-| `greptime.semantic.pipeline` | 内部接入数据模型。是 `table_data_model` 的信号无关版后继。 | `greptime_trace_v1` |
+## 读时派生
 
-### Trace key
+语义图的两张表是计算出来的，不是存储的。扫描它们时，会枚举实体声明、为每张声明表构建查询计划，并在已有的遥测数据上执行。只有人工声明的边是持久化的，存放在 `greptime_private.semantic_relationships_declared`。
 
-| Key | 说明 | 示例取值 |
-| --- | --- | --- |
-| `greptime.semantic.trace.conventions` | 数据所遵循的语义约定版本，通常是一个 OTel schema URL。 | `https://opentelemetry.io/schemas/1.27.0` / `mixed` / `unknown` |
+```mermaid
+flowchart TB
+    subgraph SRC["你自己的遥测表"]
+        direction LR
+        T1["otel_traces<br/>接入时写入声明"]
+        T2["kube_pod_info<br/>内置约定"]
+        T3["app_metrics<br/>DDL 中声明"]
+    end
 
-### Metric key
+    DECL["semantic_relationships_declared<br/>持久化，由你写入"]
+    DER["查询时派生<br/>以调用者身份执行，<br/>受 observed_at 窗口约束"]
+    RES["取截至窗口上界的最新 revision<br/>按有效期过滤<br/>重算时间列"]
 
-| Key | 说明 | 示例取值 |
-| --- | --- | --- |
-| `greptime.semantic.metric.type` | instrument 类型。 | `counter` / `gauge` / `histogram` / `summary` / `updown_counter` / `gauge_histogram` / `info` / `stateset` / `mixed` / `unknown` |
-| `greptime.semantic.metric.unit` | [UCUM](https://ucum.org/) 记法的单位。被行编码器丢弃，写入后无法还原。 | `s` / `By` / `{request}` |
-| `greptime.semantic.metric.temporality` | 聚合 temporality（仅 OTLP）。在 metric 名字里看不出来。 | `cumulative` / `delta` / `mixed` / `unknown` |
-| `greptime.semantic.metric.metadata_quality` | metric 类型是怎么得到的——即 `metric.type` 有多可信。 | `declared`（协议明确声明）/ `inferred`（从名字后缀猜测）/ `unknown` |
-| `greptime.semantic.metric.original_name` | 翻译前的 OpenTelemetry 名字，在表名被 Prometheus 化时记录。 | `http.server.duration` |
+    subgraph OUT["计算表，只读"]
+        direction LR
+        E["semantic_entities"]
+        R["semantic_relationships"]
+    end
 
-`metadata_quality` 是面向"置信度感知"工具的关键字段：一个 `inferred` 的 counter，在依赖 `rate()` 这类语义之前应当复核。
-
-`unknown` 和 `mixed` 是共享的哨兵值。`unknown` 表示打标时无法确定取值；`mixed` 表示一个单值 key 在表的生命周期里看到了相互冲突的值——比如一张长期存在的表接收了来自多个 source 的数据。任何单值语义 key 都应被视为尽力而为的提示，而非强证据。
-
-## 接入时的自动打标
-
-auto-create 路径会在每种受支持的协议上打上身份标记（`signal_type` + `source`）。OTLP metrics 额外携带完整的 metric 词汇，因为 OTLP 线格式声明了 type/unit/temporality 之后又把它们丢弃了；OTLP traces 携带 pipeline 和 conventions。
-
-| 接入路径 | `signal_type` | `source` | 额外 key |
-| --- | --- | --- | --- |
-| OTLP metrics | `metric` | `opentelemetry` | `metric.type`、`metric.unit`、`metric.temporality`、`metric.metadata_quality` = `declared`、`metric.original_name` |
-| OTLP traces | `trace` | `opentelemetry` | `pipeline` = `greptime_trace_v1`、`trace.conventions` |
-| OTLP logs | `log` | `opentelemetry` | — |
-| Prometheus remote write | `metric` | `prometheus` | 仅身份（type/unit 在 metric 名字里） |
-| InfluxDB line protocol | `metric` | `influxdb` | 仅身份 |
-| OpenTSDB | `metric` | `opentsdb` | 仅身份 |
-| Loki | `log` | `loki` | 仅身份 |
-| Elasticsearch | `log` | `elasticsearch` | 仅身份 |
-
-语义选项在建表时打标。目前还没有更新路径：把 `metadata_quality` 从 `inferred` 提升到 `declared`、或在后续写入时修订 `trace.conventions`，都暂未实现。
-
-## 用 DDL 手动打标
-
-你也可以在 `CREATE TABLE ... WITH (...)` 里自己设置这些选项。只接受白名单内、且取值合法的 key：
-
-```sql
-CREATE TABLE my_metrics (
-  ts TIMESTAMP TIME INDEX,
-  val DOUBLE
-) WITH (
-  'greptime.semantic.signal_type' = 'metric',
-  'greptime.semantic.source' = 'custom',
-  'greptime.semantic.metric.type' = 'counter',
-  'greptime.semantic.metric.unit' = 'By'
-);
+    SRC --> DER
+    DECL --> RES
+    DER --> E
+    DER --> R
+    RES --> R
 ```
 
-这些选项会出现在 `SHOW CREATE TABLE` 的输出和 `table_semantics` 视图里。
+这是因为 GreptimeDB 用同一个引擎存储 metrics、logs 和 traces：服务调用图是 trace 表的自连接，把实体和它的遥测数据关联起来是同库内的 join，两者都不需要第二份存储。
 
-## 发现语义元数据
+由此带来三个结果：
 
-消费者连接后的第一条查询，就能列出所有带语义标记的表：
+- 实体在第一行数据落库的那一刻就出现。写入时不需要额外建索引，没有物化延迟，也不存在需要与源数据保持同步的副本。
+- 派生以发起查询的用户身份执行。调用者读不到的源表会被排除在结果之外；查询语义图不会扩大调用者的可见范围。
+- 每次扫描都会对源表做实际计算，计算量由查询的时间窗口决定。完全不带 `observed_at` 谓词时取最近一小时；带了谓词但取不到下界的查询会被拒绝，而不是扫描全部历史。
 
-```sql
-SELECT table_schema, table_name, signal_type, source, pipeline, metadata_quality, semantic_options
-FROM information_schema.table_semantics
-ORDER BY table_name;
-```
+## 限制
 
-`signal_type`、`source`、`pipeline`、`metadata_quality` 被提升为独立的列；其余信号特定的 key 被折叠进 `semantic_options` JSON 字符串（去掉 `greptime.semantic.` 前缀）。完整 schema 和更多示例见 [`TABLE_SEMANTICS`](/reference/sql/information-schema/table-semantics.md) 参考文档。
+- `calls` 边上的 RED 指标描述的是实际观测到的 span 配对。在 trace 采样下，计数会低于真实流量；只有当采样与状态、耗时无关时，错误率才有代表性。
+- 图的连通程度取决于各张表共享的标识值。两张表用不同的值指代同一个 service，就会得到两个节点。设置了 `service.namespace` 时，默认配置下就会出现这种情况：trace 给出的是服务名本身，Prometheus 风格的描述性指标给出的是 `<namespace>/<name>`。
+- `semantic_entities` 每个窗口、每张贡献表返回一行。查询时用 `SELECT DISTINCT entity_type, entity_id` 去重。
+- 在非常大的 trace 表上，读时派生每次扫描的开销都高于预先物化的拓扑。
 
-[GreptimeDB MCP Server](/user-guide/integrations/mcp.md) 会读取这个视图，这样 AI 助手无需你逐一解释每张表的含义，就能理解你的表。
+## 下一步
+
+- **[语义层用户指南](/user-guide/semantic-layer/overview.md)**——选项、两张表和查询写法。
+- [声明实体与关系](/user-guide/semantic-layer/declaring-entities.md)——哪些数据无需配置即可进入图，其余的如何声明。
+- [`information_schema.table_semantics`](/reference/sql/information-schema/table-semantics.md)、[`semantic_entities`](/reference/sql/greptime-private/semantic-entities.md)、[`semantic_relationships`](/reference/sql/greptime-private/semantic-relationships.md)——列定义参考。

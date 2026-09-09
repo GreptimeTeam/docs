@@ -356,6 +356,42 @@ auth:
       password: "1fa44bbc-5ded-42bd-a3f1-c3621affce63"
       permission: "admin"       
 
+# Audit logging configuration(Enterprise GreptimeDB only)
+# Audit logs record operations executed on the database, helping monitor user activity,
+# detect suspicious operations, and ensure compliance.
+# See https://docs.greptime.com/enterprise/deployments-administration/monitoring/audit-logging/
+auditLog:
+  # Enable the audit log plugin. Default: false.
+  enabled: true
+
+  # Allowed sources for auditing. This option acts as a filter.
+  # Multiple sources are separated by commas (",").
+  # Available sources: "unknown", "http", "grpc", "mysql", "postgres".
+  # A special value "all" (default) means all sources.
+  sources: "all"
+
+  # Allowed statement classes for auditing. This option acts as a filter.
+  # Multiple classes are separated by commas (",").
+  # Available classes: "read", "write", "admin", "ddl", "misc".
+  # A special value "all" means all classes. Default: "ddl,admin".
+  classes: "ddl,admin"
+
+  # Allowed statement commands for auditing. This option acts as a filter.
+  # Multiple commands are separated by commas (",").
+  # Available commands: "promql", "select", "copy", "insert", "delete", "create",
+  # "alter", "truncate", "drop", "admin", "misc".
+  # A special value "all" (default) means all commands.
+  commands: "all"
+
+  # Allowed object types for auditing. This option acts as a filter.
+  # Multiple object types are separated by commas (",").
+  # Available object types: "database", "table", "view", "flow", "index", "misc", "trigger".
+  # A special value "all" (default) means all object types.
+  objectTypes: "all"
+
+  # Maximum number of audit log files to retain. Default: 30.
+  maxLogFiles: 30
+
 # Remote WAL related configuration, enable as needed
 # remoteWal:
 #   enabled: true

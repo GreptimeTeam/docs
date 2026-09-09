@@ -5,7 +5,7 @@ description: Explains range queries in SQL for time series data, including synta
 
 # RANGE QUERY
 
-Querying and aggregating data within a range of time is a common query pattern for time series data, such as the `Range selector` in `PromQL`. GreptimeDB supports Range queries in SQL, which is used to summarize time series data into time chunks and aggregate data on time chunks. As part of the `SELECT` statement, Range query can be flexibly combined with SQL to provide more powerful time series data query capabilities in SQL.
+A Range query divides time-series data into time windows and evaluates aggregate expressions over each window. It is part of a `SELECT` statement and is similar to a PromQL range selector.
 
 ## Syntax
 
@@ -577,7 +577,7 @@ Get after query
 
 ## Nested Range Expressions
 
-Range expressions support flexible nesting, and range expressions can be combined with various operations to provide more powerful query capabilities.
+A Range expression can appear inside a larger arithmetic expression, but one Range expression cannot contain another Range expression.
 
 Take the following table as an example:
 
@@ -737,4 +737,3 @@ SELECT ts, host, max(min(val) RANGE '10s') RANGE '10s' FROM host_val ALIGN '5s';
 ```sql
 ERROR 1815 (HY000): Range Query: Nest Range Query is not allowed
 ```
-

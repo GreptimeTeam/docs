@@ -83,9 +83,20 @@ extraConfig: |
   log.flush.interval.ms=1000
   log.retention.hours=4
   log.roll.hours=3
-  log.retention.bytes=250000000
   log.segment.bytes=1073741824
 ```
+
+:::warning Retention settings when this cluster backs Remote WAL
+`log.retention.hours=4` is a testing value. Kafka deletes a segment as soon as
+any retention condition matches, so a retention window shorter than your longest
+flush, failure, or manual-recovery window can remove WAL that GreptimeDB has not
+replayed yet.
+
+Do not add a size-based retention such as `log.retention.bytes` to topics used
+for Remote WAL. See [Required Settings and
+Limitations](/user-guide/deployments-administration/wal/remote-wal/configuration.md#required-settings-and-limitations)
+for the full set of constraints.
+:::
 
 ## Installing Kafka Cluster
 
@@ -166,7 +177,7 @@ kafka-broker-1       1/1     Running   0          8m2s
 kafka-broker-2       1/1     Running   0          8m1s
 kafka-controller-0   1/1     Running   0          8m3s
 kafka-controller-1   1/1     Running   0          8m2s
-kafka-controller-0   1/1     Running   0          8m1s
+kafka-controller-2   1/1     Running   0          8m1s
 ```
 </details>
 

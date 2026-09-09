@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="470" viewBox="0 0 1200 470" role="img" aria-labelledby="title desc">
+  <title id="title">Metric engine logical-to-physical mapping</title>
+  <desc id="desc">Multiple logical tables share a physical Region group. The Metric engine stores table and column mappings in the metadata Region and rows from the logical tables in the data Region. Both Regions are managed by Mito.</desc>
+  <defs>
+    <style>
+      .group { font: 650 22px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .title { font: 650 19px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1F2937; }
+      .label { font: 600 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .small { font: 500 15px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748B; }
+      .purple { fill: #6D28D9; }
+      .blue { fill: #1D4ED8; }
+      .teal { fill: #0F766E; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="470" fill="#FFFFFF"/>
+
+  <text x="40" y="42" class="label">Logical tables</text>
+  <rect x="40" y="70" width="220" height="70" rx="13" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="150" y="113" text-anchor="middle" class="title">Table A</text>
+  <rect x="40" y="190" width="220" height="70" rx="13" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="150" y="233" text-anchor="middle" class="title">Table B</text>
+  <rect x="40" y="310" width="220" height="70" rx="13" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="150" y="353" text-anchor="middle" class="title">Table C</text>
+
+  <path d="M 260 105 L 330 105 L 330 345 M 260 225 L 330 225 M 260 345 L 330 345 M 330 225 L 380 225" fill="none" stroke="#94A3B8" stroke-width="2.5"/>
+  <path d="M 380 225 L 368 218 L 368 232 Z" fill="#94A3B8"/>
+
+  <rect x="390" y="130" width="270" height="190" rx="17" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="2.5"/>
+  <text x="525" y="215" text-anchor="middle" class="group">Metric engine</text>
+  <text x="525" y="250" text-anchor="middle" class="small">logical → physical</text>
+
+  <path d="M 670 185 L 780 155" fill="none" stroke="#7C3AED" stroke-width="2.5"/>
+  <path d="M 780 155 L 767 151 L 771 165 Z" fill="#7C3AED"/>
+  <text x="710" y="140" class="small purple">mappings</text>
+  <path d="M 670 265 L 780 310" fill="none" stroke="#7C3AED" stroke-width="2.5"/>
+  <path d="M 780 310 L 767 299 L 762 312 Z" fill="#7C3AED"/>
+  <text x="710" y="326" class="small purple">rows</text>
+
+  <rect x="790" y="45" width="370" height="380" rx="20" fill="#FAFAFF" stroke="#C4B5FD" stroke-width="2.5"/>
+  <text x="820" y="83" class="group">Mito</text>
+  <text x="885" y="83" class="small">physical Region group</text>
+
+  <rect x="830" y="115" width="290" height="105" rx="14" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2.5"/>
+  <text x="975" y="157" text-anchor="middle" class="title blue">Metadata Region</text>
+  <text x="975" y="188" text-anchor="middle" class="small">table · column mappings</text>
+
+  <rect x="830" y="270" width="290" height="105" rx="14" fill="#ECFDF5" stroke="#2DD4BF" stroke-width="2.5"/>
+  <text x="975" y="312" text-anchor="middle" class="title teal">Data Region</text>
+  <text x="975" y="343" text-anchor="middle" class="small">shared rows · __table_id</text>
+</svg>

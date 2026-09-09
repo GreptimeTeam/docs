@@ -26,7 +26,7 @@ If the `db_name` database already exists, then GreptimeDB has the following beha
 The database can also carry options similar to the `CREATE TABLE` statement by using the `WITH` keyword. The following options are available for databases:
 
 - `ttl` - Time-To-Live for data in all tables within the database (cannot be set to `instant`)
-- `memtable.type` - Type of memtable (`time_series`, `partition_tree`)
+- `memtable.type` - Type of memtable (`bulk`, `time_series`)
 - `append_mode` - Whether tables in the database should be append-only (`true`/`false`)
 - `merge_mode` - Strategy for merging duplicate rows (`last_row`, `last_non_null`)
 - `skip_wal` - Whether to disable Write-Ahead-Log for tables in the database (`'true'`/`'false'`)
@@ -74,7 +74,7 @@ Create a database with multiple options, including append mode and custom memtab
 ```sql
 CREATE DATABASE test WITH (
   ttl='30d',
-  'memtable.type'='partition_tree',
+  'memtable.type'='bulk',
   'append_mode'='true'
 );
 ```
@@ -133,8 +133,7 @@ The table constraints contain the following:
 - The Other columns are `Field` columns in the [data model](/user-guide/concepts/data-model.md) of GreptimeDB.
 
 :::tip NOTE
-The `PRIMARY KEY` specified in the `CREATE` statement is **not** the primary key in traditional relational databases.
-Actually, The `PRIMARY KEY` in traditional relational databases is equivalent to the combination of `PRIMARY KEY` and `TIME INDEX` in GreptimeDB. In other words, the `PRIMARY KEY` and `TIME INDEX` together constitute the unique identifier of a row in GreptimeDB.
+The `PRIMARY KEY` columns and `TIME INDEX` together form the storage key used to order and merge rows. Unlike a primary key in a relational database, this storage key does not enforce uniqueness. The [`merge_mode`](#create-a-table-with-merge-mode) and [`append_mode`](#create-an-append-only-table) options determine how GreptimeDB handles rows with the same storage key.
 :::
 
 The statement won't do anything if the table already exists and `IF NOT EXISTS` is presented; otherwise returns an error.
@@ -155,7 +154,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `compaction.twcs.trigger_file_num`          | Number of files in a specific time window to trigger a compaction | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
 | `compaction.twcs.time_window`               | Compaction time window                                          | String value, such as '1d' for 1 day. The table usually partitions rows into different time windows by their timestamps. Only available when `compaction.type` is `twcs`.                                                                                   |
 | `compaction.twcs.max_output_file_size`      | Maximum allowed output file size for TWCS compaction           | String value, such as '1GB', '512MB'. Sets the maximum size for files produced by TWCS compaction. Only available when `compaction.type` is `twcs`.                                                                                                        |
-| `memtable.type`                             | Type of the memtable.                                           | String value, supports `time_series`, `partition_tree`.                                                                                                                                                                                                     |
+| `memtable.type`                             | Type of the memtable                                            | String value: `bulk` or `time_series`. If omitted, Mito selects the implementation from the SST format; the default flat format uses `bulk`. Setting `bulk` forces `sst_format=flat`, and flat SSTs use the bulk implementation even if `time_series` is specified. The legacy value `partition_tree` is accepted for compatibility and maps to the bulk and flat path. |
 | `append_mode`                               | Whether the table is append-only                                | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.                         |
 | `merge_mode`                                | The strategy to merge duplicate rows                            | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.   |
 | `sst_format`                                | The format of SST files                            | String value, supports `primary_key`, `flat`. Default is `flat`. `flat` is recommended for tables which have a large number of unique primary keys.   |
@@ -297,7 +296,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 
 #### Create a physical table with metric engine
 
-The metric engine use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. For details, please refer to the [metric engine document](/contributor-guide/datanode/metric-engine) and [Table Engines](/reference/about-greptimedb-engines.md)  introduction.
+The Metric Engine stores many logical metric tables in shared physical wide tables. This design reuses columns and metadata across logical tables. See the [Metric Engine architecture](/contributor-guide/datanode/metric-engine.md) and [Table Engines](/reference/about-greptimedb-engines.md).
 
 Create a physical table with the metric engine.
 ```sql
@@ -407,7 +406,7 @@ For more information on the `INDEX` column option, please refer to the [Data Ind
 
 ### Region partition rules
 
-Please refer to [Partition](/contributor-guide/frontend/table-sharding.md#partition) for more details.
+Please refer to [Partition](/user-guide/deployments-administration/manage-data/table-sharding.md#partition) for more details.
 
 ## CREATE EXTERNAL TABLE
 
@@ -497,6 +496,7 @@ In this example, we explicitly defined the `ts` column as the Time Index column.
 ```sql
 CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
+[ EVAL INTERVAL <interval> ]
 [ EXPIRE AFTER <expr> ]
 [ COMMENT '<string>' ]
 [ WITH (<flow-option> = <value> [, ...]) ]

@@ -6,7 +6,7 @@ description: 描述 SQL 中的 HAVING 子句，该子句用于过滤聚合函数
 
 # HAVING
 
-`HAVING` 子句允许你过滤分组（聚合）结果——它的作用类似于 `WHERE`，但是在分组发生之后才起作用。 `HAVING` 子句被添加到 SQL 中，是因为 `WHERE` 子句不能与聚合函数一起使用。
+`WHERE` 在分组前过滤输入行，`HAVING` 在分组后过滤分组或聚合结果。
 
 ## 例子
 
