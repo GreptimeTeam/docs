@@ -7,7 +7,7 @@ import versionNoindex from './src/plugins/version-noindex';
 import robotsTxtGenerator from './src/plugins/robots-txt-generator';
 import faqSchema from './src/plugins/faq-schema';
 import { resolveLastmod } from './src/plugins/sitemap-lastmod';
-import { resolveLastVersion } from './src/site-versions';
+import { resolveLastVersion, stableVersionAliasPath } from './src/site-versions';
 import versions from './versions.json';
 
 // Prism theme: our light mode uses a dark code-block background.
@@ -336,6 +336,15 @@ const config: Config = {
       ],
     }],
     [versionNoindex, { lastVersion }],
+    // Serve the root version under /<lastVersion>/ too, so a URL written with
+    // an explicit version number resolves instead of returning 404. Each alias
+    // is a redirect page pointing back at the root path, which stays canonical.
+    ['@docusaurus/plugin-client-redirects', {
+      createRedirects(existingPath: string) {
+        const alias = stableVersionAliasPath(existingPath, lastVersion, prefixedVersions);
+        return alias ? [alias] : undefined;
+      },
+    }],
     robotsTxtGenerator,
     [faqSchema, { lastVersion }],
     function injectLocaleSwitchScript() {
