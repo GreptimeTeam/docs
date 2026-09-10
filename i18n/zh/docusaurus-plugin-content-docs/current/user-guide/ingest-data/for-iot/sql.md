@@ -73,6 +73,17 @@ VALUES
 
 通过上面的语句，我们成功的向 `monitor` 表中插入了六条数据。请参考 [`INSERT`](/reference/sql/insert.md) 获得更多写入数据的相关信息。
 
+## 跳过插入请求的 WAL
+
+要在当前会话中跳过普通插入请求的预写日志（WAL）写入，请将 `skip_wal` 设置为 `true`：
+
+```sql
+SET skip_wal = true;
+```
+
+此设置不会修改表选项。进程重启时，尚未 flush 的跳过 WAL 的数据会丢失。
+将 `skip_wal` 设置为 `false`，即可恢复写入 WAL。
+
 <AnchorAlias id="time-zone" />
 
 ## 时区

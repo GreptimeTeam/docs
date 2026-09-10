@@ -65,6 +65,24 @@ curl -X POST \
 http://localhost:4000/v1/sql
 ```
 
+### Skip WAL for inserts
+
+To skip Write-Ahead Log (WAL) writes for an ordinary insert request, set the
+`x-greptime-insert-skip-wal` header to `true`. This setting applies only to the
+current request and does not change the table option. Skipped data that has not
+been flushed is lost if the process restarts.
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
+  -H 'x-greptime-insert-skip-wal: true' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'sql=INSERT INTO monitor VALUES (...)' \
+  http://localhost:4000/v1/sql
+```
+
+Set the header to `false`, or omit it, to write to the WAL.
+
 ### Hints
 
 GreptimeDB supports the `x-greptime-hints` header in HTTP requests to pass hint key-value pairs that influence request behavior.

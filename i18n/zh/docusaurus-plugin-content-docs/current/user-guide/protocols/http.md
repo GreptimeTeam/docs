@@ -61,6 +61,23 @@ curl -X POST \
 http://localhost:4000/v1/sql
 ```
 
+### 跳过插入请求的 WAL
+
+要跳过普通插入请求的预写日志（WAL）写入，请将
+`x-greptime-insert-skip-wal` 请求头设置为 `true`。此设置仅对当前请求生效，
+不会修改表选项。进程重启时，尚未 flush 的跳过 WAL 的数据会丢失。
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic <base64-encoded-credentials>' \
+  -H 'x-greptime-insert-skip-wal: true' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'sql=INSERT INTO monitor VALUES (...)' \
+  http://localhost:4000/v1/sql
+```
+
+将该请求头设置为 `false` 或省略它，即可写入 WAL。
+
 ### Hints
 
 GreptimeDB 支持在 HTTP 请求中使用 `x-greptime-hints` 请求头来传递影响请求行为的键值对。

@@ -75,6 +75,19 @@ Through the above statement, we have inserted six rows into the `monitor` table.
 
 For more information about the `INSERT` statement, please refer to [`INSERT`](/reference/sql/insert.md).
 
+## Skip WAL for inserts
+
+To skip Write-Ahead Log (WAL) writes for ordinary inserts in the current
+session, set `skip_wal` to `true`:
+
+```sql
+SET skip_wal = true;
+```
+
+This setting does not change the table option. Skipped data that has not been
+flushed is lost if the process restarts. Set `skip_wal` to `false` to resume
+writing to the WAL.
+
 ## Time zone
 
 The time zone specified in the SQL client will affect the timestamp with a string format that does not have time zone information. 
