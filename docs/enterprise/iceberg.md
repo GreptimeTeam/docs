@@ -333,6 +333,17 @@ date, timestamp). A few things to be aware of, especially in Spark:
   drop row groups for `>`, `=`, and range queries. Declaring the time index as `TIMESTAMP(6)` makes the on-disk
   Parquet microsecond precision match the schema, and all comparison operators work correctly. (Second/millisecond
   values are still stored correctly; the issue is purely predicate pushdown against file statistics.)
+
+  An existing table does not need to be recreated for this: a time index declared with second or millisecond
+  precision can be widened in place with `ALTER TABLE`. The change is lossless — existing data is read in the new
+  unit without rewriting, and new writes can use the finer precision:
+
+  ```sql
+  ALTER TABLE demo MODIFY COLUMN ts TIMESTAMP_US;
+  ```
+
+  Narrowing the unit back (for example, microseconds to milliseconds) is not allowed, and widening is not
+  supported on tables using the metric engine. See [ALTER TABLE](/reference/sql/alter.md) for details.
 - **Lossy type fallbacks.** `list`, `dictionary`, `json`, `interval`, `duration`, `time`, and arbitrary user
   `struct` types are exported as Iceberg `string` rather than a structured type, so their internal structure is not
   queryable through Iceberg.

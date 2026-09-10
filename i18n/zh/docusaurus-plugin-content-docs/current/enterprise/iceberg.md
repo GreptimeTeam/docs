@@ -288,6 +288,14 @@ ORDER BY host;
 对于常见类型（boolean、有符号整数、浮点数、string、binary、date、timestamp），GreptimeDB 类型可以干净地映射到 Iceberg。需要注意以下几点，尤其是在 Spark 中：
 
 - **将时间索引声明为 `TIMESTAMP(6)`。** GreptimeDB 默认的 `TIMESTAMP` 是毫秒精度，但 Iceberg schema 将该列声明为 `timestamptz`（微秒）。若列是毫秒精度，Spark 的 Parquet row-group 统计信息过滤会用微秒谓词去比较毫秒的文件统计，可能错误地丢弃 row-group，导致 `>`、`=` 和范围查询出错。将时间索引声明为 `TIMESTAMP(6)` 可使磁盘上的 Parquet 微秒精度与 schema 一致，所有比较运算符即可正确工作。（秒/毫秒值本身仍被正确存储；该问题纯粹出在基于文件统计的谓词下推。）
+
+  已存在的表无需为此重建：以秒或毫秒精度声明的时间索引可以通过 `ALTER TABLE` 原地拓宽。该变更是无损的——现有数据会以新单位读取，无需重写，新写入也可以使用更细的精度：
+
+  ```sql
+  ALTER TABLE demo MODIFY COLUMN ts TIMESTAMP_US;
+  ```
+
+  不允许反向缩窄单位（例如从微秒回到毫秒），且 metric 引擎的表不支持拓宽。详见 [ALTER TABLE](/reference/sql/alter.md)。
 - **有损的类型降级。** `list`、`dictionary`、`json`、`interval`、`duration`、`time` 以及任意用户 `struct` 类型会被导出为 Iceberg `string`，而非结构化类型，因此它们的内部结构无法通过 Iceberg 查询。
 - **无符号整数在 Spark 中不可读。** GreptimeDB 的无符号整数列（`uint8`、`uint16`、`uint32`、`uint64`）虽然声明为 Iceberg `long`，但底层 Parquet 文件以无符号物理类型存储，Spark 无法读取。任何触及无符号整数列的扫描在 Spark 中都会失败。如果你打算通过 Iceberg 查询某张表，请避免使用无符号类型，或将这些值以有符号类型存储。
 
