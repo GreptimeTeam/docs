@@ -5,7 +5,7 @@ description: 介绍了 GreptimeDB 的静态用户配置，允许通过配置文�
 
 # Static User Provider
 
-GreptimeDB 提供了简单的内置身份验证机制，允许你配置一个固定的帐户以方便使用，或者配置一个帐户文件以支持多个用户帐户。通过传入文件，GreptimeDB 会加载其中的所有用户。
+GreptimeDB 通过 `static_user_provider` 提供用户名和密码认证，在启动时从文件或命令行参数加载凭证。`watch_file_user_provider` 使用相同的文件格式，并在文件变更时重新加载凭证。
 
 ## 单机模式
 
@@ -21,20 +21,32 @@ alice=aaa
 bob=bbb
 ```
 
-以这种方式配置的用户默认拥有完整的读写权限。
+以这种方式配置的用户默认拥有读写权限。文件解析规则如下：
+
+- 每行的首尾空白会被移除，空行和以 `#` 开头的行会被忽略。
+- 每条凭证必须恰好包含一个 `=`。明文密码不能包含 `=`，添加 `plain:` 前缀也不能绕过此限制。此类密码需要以支持的哈希 verifier 格式存储。
+- 用户名和密码中位于 `=` 两侧的空白不会被移除，不要在分隔符两侧添加空格。
+- 同一用户名出现多次时，最后一条有效记录生效。
+- 格式错误的记录会被跳过。文件必须存在且至少包含一条有效凭证，否则 provider 初始化失败。
+- 读取错误（包括无效 UTF-8）会终止后续解析，错误发生前读到的有效凭证仍可能被加载。
 
 ### 权限模式
 
-你可以选择性地指定权限模式来控制用户的访问级别。格式为：
+可通过可选的权限模式控制读写访问，格式为：
 
 ```
 username:permission_mode=password
 ```
 
-可用的权限模式：
-- `rw` 或 `readwrite` - 完整的读写权限（未指定时的默认值）
-- `ro` 或 `readonly` - 只读权限
-- `wo` 或 `writeonly` - 只写权限
+权限模式不区分大小写：
+
+- `rw`、`readwrite` 或 `read_write` - 读写权限（未指定时的默认值）
+- `ro`、`readonly` 或 `read_only` - 只读权限
+- `wo`、`writeonly` 或 `write_only` - 只写权限
+
+无法识别的权限模式会使该记录无效：文件 provider 会跳过该记录，`static_user_provider:cmd` 则会初始化失败。
+
+这些权限模式不限定到单个数据库或表。
 
 混合权限模式的配置示例：
 
@@ -47,6 +59,7 @@ editor:rw=editor_pwd
 ```
 
 在此配置中：
+
 - `admin` 拥有完整的读写权限（默认）
 - `alice` 拥有只读权限
 - `bob` 拥有只写权限
@@ -55,20 +68,20 @@ editor:rw=editor_pwd
 
 ### 密码格式
 
-从 v1.1 起，密码可以使用显式的 verifier 格式，从而无需在配置文件中保存明文密码。默认情况下密码以明文存储：
+从 v1.1 起，密码支持明文和哈希 verifier，格式如下：
 
 - `plain:<password>` — 明文。未指定前缀时的默认格式。
 - `pbkdf2_sha256:<iterations>:<hex_salt>:<hex_hash>` — 以 PBKDF2-SHA256 哈希形式存储。
-- `mysql_native_password:<hex_sha1_sha1_password>` — 哈希形式的 verifier，同时仍可服务 MySQL `mysql_native_password` 握手。
-- `pg_scram_sha256:<iterations>:<hex_salt>:<hex_stored_key>:<hex_server_key>` — SCRAM-SHA-256 verifier，用于 PostgreSQL 的 SASL 握手。从 v1.2 起支持。
+- `mysql_native_password:<hex_sha1_sha1_password>` — 用于 MySQL `mysql_native_password` 认证的哈希 verifier。
+- `pg_scram_sha256:<iterations>:<hex_salt>:<hex_stored_key>:<hex_server_key>` — 用于 PostgreSQL SASL 认证的 SCRAM-SHA-256 verifier。从 v1.2 起支持。
 
-示例：
+以下哈希 verifier 示例使用密码 `password`，需要盐值的格式使用 `salt`：
 
 ```
 admin=plain:admin_pwd
 alice=pbkdf2_sha256:4096:73616c74:c5e478d59288c841aa530db6845c4c8d962893a001ce4e11a4963873aa98134a
-bob=mysql_native_password:6bb4837eb74329105ee4568dda7dc67ed2ca2ad9
-carol=pg_scram_sha256:4096:73616c74:53706a13f10b3c031b4c355d75ebd6500d3478062ce7d262710c3e60de02b93f:a19ce79824bd7ad68d96b8c00b0f1cc776bd0feca54d663301bb9866a860545b
+bob=mysql_native_password:2470c0c06dee42fd1618bb99005adca2ec9d1e19
+carol=pg_scram_sha256:4096:73616c74:945e1c466fc9932efadc23781edc5d1e78d5e10f005933652af1a6105154f084:b9bf0e811b1fb6793671c0cc3adedf7c75cd72291191092ad65878c5a02aad2c
 ```
 
 权限模式可与 verifier 格式组合使用，verifier 写在 `=` 之后：
@@ -79,53 +92,55 @@ alice:readonly=pbkdf2_sha256:4096:73616c74:c5e478d59288c841aa530db6845c4c8d96289
 
 #### 协议兼容性
 
-单一 verifier 格式无法服务所有协议。请根据客户端的连接方式选择格式：
+协议支持情况取决于 verifier 格式和 provider 选择的认证方法：
 
-| Verifier | HTTP/gRPC Basic | PostgreSQL SCRAM-SHA-256 | PostgreSQL cleartext | MySQL clear password | MySQL `mysql_native_password` |
-| --- | --- | --- | --- | --- | --- |
-| `plain:<password>`（或旧式 `user=password`） | 是 | 是 | 是 | 是 | 是 |
-| `pbkdf2_sha256:...` | 是 | 否 | 是 | 是 | 否 |
-| `mysql_native_password:...` | 否 | 否 | 否 | 否 | 是 |
-| `pg_scram_sha256:...` | 是 | 是 | 是 | 是 | 否 |
+| Verifier | HTTP/gRPC 用户名和密码 | PostgreSQL SCRAM-SHA-256 | PostgreSQL cleartext | MySQL `mysql_native_password` |
+| --- | --- | --- | --- | --- |
+| `plain:<password>`（或旧式 `user=password`） | 是 | 是 | 是 | 是 |
+| `pbkdf2_sha256:...` | 是 | 否 | 是 | 否 |
+| `mysql_native_password:...` | 否 | 否 | 否 | 是 |
+| `pg_scram_sha256:...` | 是 | 是 | 是 | 否 |
 
-`pbkdf2_sha256` 只保护静态存储的密码，并不改变链路安全性。支持明文传输的协议在生产环境中仍需启用 TLS。
+`static_user_provider` 和 `watch_file_user_provider` 协商的 MySQL 认证方法是 `mysql_native_password`，不提供 `mysql_clear_password`。使用 `pbkdf2_sha256` 或 `pg_scram_sha256` 的用户无法通过这两个 provider 进行 MySQL 认证。启用 TLS 或客户端的明文认证插件不会改变服务端选择的认证方法。
+
+哈希 verifier 用于保护存储的凭证，不会加密网络流量。生产环境应启用 TLS，尤其是使用 HTTP/gRPC 用户名和密码认证或 PostgreSQL 明文认证时。
 
 :::warning 破坏性变更
-密码现在按前缀解析。如果旧式明文密码恰好以 `plain:`、`pbkdf2_sha256:`、`mysql_native_password:` 或 `pg_scram_sha256:` 开头，其含义会发生变化。请使用 `plain:` 前缀保留字面值。例如，若要保留字面密码 `plain:secret`，应配置为 `user=plain:plain:secret`。
+密码按前缀解析。如果旧式明文密码恰好以 `plain:`、`pbkdf2_sha256:`、`mysql_native_password:` 或 `pg_scram_sha256:` 开头，其含义会发生变化。使用 `plain:` 前缀保留字面值。例如，若要保留字面密码 `plain:secret`，应配置为 `user=plain:plain:secret`。
 :::
 
 #### PostgreSQL SCRAM-SHA-256
 
-SCRAM-SHA-256 让 PostgreSQL 客户端不必以明文发送密码。
+PostgreSQL 客户端使用 SCRAM-SHA-256 认证时，不发送明文密码。
 
-PostgreSQL 在连接建立时就要确定唯一一种鉴权方式。此时服务端其实已经拿到了用户名，但如果按用户来选鉴权方式，就会暴露这个用户是否存在、以及它用的是哪种 verifier 格式。所以 GreptimeDB 是全局判断的：只有凭证文件里**所有**用户都支持 SCRAM 时才提供 SCRAM——也就是所有 verifier 都是 `plain:` 或 `pg_scram_sha256:`。对于不存在的用户名，服务端会用一个临时构造的 verifier 走完整个握手流程，因此登录失败和密码错误在客户端看来是一样的。
+只有所有已配置用户都使用明文密码（带或不带 `plain:` 前缀）或 `pg_scram_sha256:` verifier 时，GreptimeDB 才会选择 SCRAM-SHA-256。这两种格式可以混用。
 
 :::warning
-只要有一个 `pbkdf2_sha256:` 或 `mysql_native_password:` 用户，整个实例的 PostgreSQL 鉴权就会退回明文，包括那些自身 verifier 支持 SCRAM 的用户。想用 SCRAM 就不要混用 verifier 格式。
+只要存在一条 `pbkdf2_sha256:` 或 `mysql_native_password:` 记录，该 provider 的所有用户都会使用 PostgreSQL 明文认证。使用 `mysql_native_password:` verifier 的用户也无法通过回退后的明文认证，因为该 verifier 不能校验明文密码。
 :::
 
 不支持 channel binding（`SCRAM-SHA-256-PLUS`）。
 
-可以用 libpq 的 `require_auth` 参数确认服务端提供的是哪种方式，这个参数需要 libpq 或 `psql` 16 及以上版本：
+将所有用户配置为支持 SCRAM 的凭证后，可使用 libpq 或 `psql` 16 及以上版本验证认证方法：
 
 ```shell
 psql "host=127.0.0.1 port=4003 user=carol dbname=public require_auth=scram-sha-256"
 ```
 
-如果实例已经退回明文，这条命令会报 `server requested a cleartext password`。
+如果实例使用明文认证，命令会报错 `server requested a cleartext password`。
 
 ### 生成密码 Verifier
 
-从 v1.1 起，可以使用 `greptime user hash-password` 命令生成 verifier 字符串。该命令独立运行，不会启动任何服务端组件：
+`greptime user hash-password` 命令用于生成密码 verifier，无需启动服务器。从 v1.1 起支持：
 
 ```shell
 ./greptime user hash-password --password-stdin
 ```
 
-它从标准输入读取明文密码，并将 verifier 打印到标准输出。交互式运行时，输入密码后按回车；在脚本中，使用不回显的方式读取再通过管道传入，避免明文出现在 shell 历史或进程列表中：
+该命令从标准输入读取一行，移除末尾的回车和换行符，并将 verifier 打印到标准输出。空输入会被拒绝。`--password-stdin` 不会关闭终端回显。在 Bash 中，可先以不回显的方式读取密码，再通过管道传入命令：
 
-```shell
-read -rs PASSWORD && printf '%s' "$PASSWORD" | ./greptime user hash-password --password-stdin
+```bash
+read -r -s password && printf '%s' "$password" | ./greptime user hash-password --password-stdin
 ```
 
 将输出复制到用户文件中作为密码：
@@ -138,10 +153,12 @@ admin=pbkdf2_sha256:4096:<random_hex_salt>:<hex_hash>
 
 - `--format <FORMAT>` — verifier 格式，`pbkdf2_sha256`（默认）、`mysql_native_password` 或 `pg_scram_sha256`。
 - `--password <PASSWORD>` — 明文密码。与 `--password-stdin` 互斥，二者必须且只能指定其一。脚本中优先使用 `--password-stdin`，因为 `--password` 可能通过 shell 历史或进程列表泄露。
-- `--password-stdin` — 从标准输入读取明文密码。
+- `--password-stdin` — 从标准输入读取一行明文密码。
 - `--iterations <N>` — PBKDF2-SHA256 / SCRAM-SHA-256 迭代次数（默认 `4096`，范围 `1..=1000000`）。
 - `--salt-len <N>` — 随机盐长度，单位字节（默认 `16`，范围 `1..=1024`）。
-- `--salt-hex <HEX>` — 使用固定的十六进制盐替代随机盐，用于确定性的自动化场景。
+- `--salt-hex <HEX>` — 使用固定的十六进制盐替代随机盐，覆盖 `--salt-len`。解码后的盐长度必须为 `1..=1024` 字节。
+
+`--iterations`、`--salt-len` 和 `--salt-hex` 仅适用于带盐的格式，生成 `mysql_native_password` 时会被忽略。
 
 生成 `mysql_native_password` 格式的 verifier：
 
@@ -157,36 +174,37 @@ admin=pbkdf2_sha256:4096:<random_hex_salt>:<hex_hash>
 
 ### 启动服务器
 
-在启动服务端时，需添加 `--user-provider` 参数，并将其设置为 `static_user_provider:file:<path_to_file>`（请将 `<path_to_file>` 替换为你的用户配置文件路径）：
+启动时，将 `--user-provider` 设置为 `static_user_provider:file:<path_to_file>`，并将 `<path_to_file>` 替换为用户配置文件路径：
 
 ```shell
-./greptime standalone start --user-provider=static_user_provider:file:<path_to_file>
+./greptime standalone start --user-provider='static_user_provider:file:<path_to_file>'
 ```
 
-用户及其权限将被载入 GreptimeDB 的内存。使用这些用户账户连接至 GreptimeDB 时，系统会严格执行相应的访问权限控制。
+provider 在启动时将有效用户及其权限模式加载到内存中。文件修改后需重启服务器才能生效。
 
-:::tip 注意
-`static_user_provider:file` 模式下，文件的内容只会在启动时被加载到数据库中，在数据库运行时修改或追加的内容不会生效。
-:::
+也可以通过 `static_user_provider:cmd` 在命令行中配置凭证，使用逗号分隔多条记录：
+
+```shell
+./greptime standalone start --user-provider='static_user_provider:cmd:admin=admin_pwd,alice:ro=alice_pwd'
+```
+
+记录使用与文件相同的凭证语法。命令行中的明文密码不能包含 `,` 或 `=`，无效记录会导致 provider 初始化失败。命令行凭证可能出现在 shell 历史和进程列表中，部署时应使用凭证文件。
 
 ### 动态文件重载
 
-如果你需要在不重启服务器的情况下更新用户凭证，可以使用 `watch_file_user_provider` 替代 `static_user_provider:file`。该 provider 会监控凭证文件的变化并自动重新加载：
+`watch_file_user_provider` 监控凭证文件，无需重启服务器即可重新加载用户和权限模式：
 
 ```shell
-./greptime standalone start --user-provider=watch_file_user_provider:<path_to_file>
+./greptime standalone start --user-provider='watch_file_user_provider:<path_to_file>'
 ```
 
-`watch_file_user_provider`的特点：
-- 使用与 `static_user_provider:file` 相同的文件格式
-- 自动检测文件修改并重新加载凭证
-- 允许在不重启服务器的情况下添加、删除或修改用户
-- 如果文件临时不可用或无效，会保持上次有效的配置
+启动时，文件必须存在且至少包含一条有效凭证。重载时：
 
-这在需要动态管理用户访问的生产环境中特别有用。
+- 如果文件无法打开或没有有效凭证，provider 保留上一次配置。
+- 否则，加载到的凭证会替换上一次配置。格式错误的记录会被跳过，不会导致整个文件被拒绝。未出现在加载结果中的用户会被移除，包括记录变为无效的用户。
+
+重载不会断开已有的 MySQL 或 PostgreSQL 会话，也不会更新这些会话中已保存的用户信息。修改后的凭证和权限模式适用于后续认证。
 
 ## Kubernetes 集群
 
-你可以在 `values.yaml` 文件中配置鉴权用户。
-更多详情，请参考 [Helm Chart 配置](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#鉴权配置)。
-
+在 `values.yaml` 中配置鉴权用户，参见 [Helm Chart 配置](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#鉴权配置)。
