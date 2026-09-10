@@ -60,7 +60,7 @@ editor:rw=editor_pwd
 
 在此配置中：
 
-- `admin` 拥有完整的读写权限（默认）
+- `admin` 拥有读写权限（默认）
 - `alice` 拥有只读权限
 - `bob` 拥有只写权限
 - `viewer` 拥有只读权限
@@ -114,6 +114,8 @@ alice:readonly=pbkdf2_sha256:4096:73616c74:c5e478d59288c841aa530db6845c4c8d96289
 PostgreSQL 客户端使用 SCRAM-SHA-256 认证时，不发送明文密码。
 
 只有所有已配置用户都使用明文密码（带或不带 `plain:` 前缀）或 `pg_scram_sha256:` verifier 时，GreptimeDB 才会选择 SCRAM-SHA-256。这两种格式可以混用。
+
+使用 SCRAM-SHA-256 时，服务端也会向未知用户发送认证挑战。客户端提交 proof 后，服务端返回与密码错误相同的认证失败结果。
 
 :::warning
 只要存在一条 `pbkdf2_sha256:` 或 `mysql_native_password:` 记录，该 provider 的所有用户都会使用 PostgreSQL 明文认证。使用 `mysql_native_password:` verifier 的用户也无法通过回退后的明文认证，因为该 verifier 不能校验明文密码。

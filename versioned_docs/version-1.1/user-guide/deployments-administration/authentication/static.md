@@ -44,7 +44,9 @@ Permission modes are case-insensitive:
 - `ro`, `readonly`, or `read_only` - Read-only access
 - `wo`, `writeonly`, or `write_only` - Write-only access
 
-An unrecognized permission mode falls back to read-write access in v1.1. Check the spelling of permission modes before loading the configuration.
+:::warning
+An unrecognized permission mode falls back to read-write access in v1.1. For example, `alice:readonyl=pwd` grants Alice read-write access. Check the spelling of permission modes before loading the configuration.
+:::
 
 These modes are not scoped to individual databases or tables.
 
@@ -60,7 +62,7 @@ editor:rw=editor_pwd
 
 In this configuration:
 
-- `admin` has full read-write access (default)
+- `admin` has read-write access (default)
 - `alice` has read-only access
 - `bob` has write-only access
 - `viewer` has read-only access
