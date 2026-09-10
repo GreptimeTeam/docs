@@ -44,7 +44,7 @@ flowchart LR
 这项工作分布在 GreptimeDB 已有的进程之间：
 
 - **Datanode / standalone（写入端）。** 每当写入 SST 文件时——包括 flush、compaction、批量写入和 truncate——GreptimeDB 都会将当前存活的 Parquet 文件集合转换为 Iceberg manifest 条目，并提交一个新的 Iceberg snapshot。Iceberg 元数据写入到 datanode 已使用的同一对象存储 bucket 下的 `warehouse_root` 前缀中。
-- **Frontend（catalog 服务端）。** 它实现了 [Iceberg REST Catalog API](https://iceberg.apache.org/docs/1.6.0/api/#rest-catalog-specification)，挂载在 `/v1/iceberg`，并向客户端提供每张表当前的元数据。
+- **Frontend（catalog 服务端）。** 它实现了 [Iceberg REST Catalog API](https://iceberg.apache.org/docs/1.6.0/api/#rest-catalog-specification)，挂载在 `/v1/iceberg`，通过**直接从对象存储读取**元数据向客户端提供每张表当前的元数据——因此 frontend 所需的对象存储配置见[配置](#配置)一节。
 
 由于数据文件从不被复制，因此没有额外的存储开销，也没有写入路径上的重复——导出纯粹是在 GreptimeDB 已写入的数据旁附加的元数据。
 
@@ -87,7 +87,19 @@ Iceberg 集成是一个企业版插件。在**写入进程（datanode 或 standa
 
 两者必须引用**相同的** `warehouse_root`，以便 catalog 读取到写入端发布的内容。
 
+**Datanode / standalone。** 该进程本身已配置了 `[storage]` 数据存储段——保持不变，只需添加插件条目：
+
 ```toml
+## datanode 已在使用的对象存储（现有配置）。
+[storage]
+type = "S3"
+bucket = "greptimedb"
+root = "greptimedb"
+endpoint = "https://s3.us-east-1.amazonaws.com"
+region = "us-east-1"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+
 ## Iceberg manifest 导出会发布 Iceberg 格式的元数据（snapshot、
 ## manifest、manifest-list），使外部引擎（pyiceberg、Spark、Trino、
 ## DuckDB 等）可以通过 Iceberg REST catalog 查询 GreptimeDB 表。
@@ -95,14 +107,32 @@ Iceberg 集成是一个企业版插件。在**写入进程（datanode 或 standa
 iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
 ```
 
-可选配置项：
+**Frontend。** frontend 需要与 datanode 相同的对象存储配置。REST catalog 运行在 frontend 内部，它会**直接从对象存储读取** Iceberg 元数据——而不是通过 datanode 获取——因此如果没有 `[storage]` 配置段，catalog 将无法解析任何表。frontend 通常没有自己的 `[storage]` 配置段（它只负责代理查询）；启用 Iceberg 集成正是它需要该配置段的原因。请配置与 datanode **相同的 bucket、`root` 和凭证**，并添加插件条目：
+
+```toml
+## 与 datanode 相同的对象存储——frontend 的 REST catalog
+## 从这里读取 Iceberg 元数据。
+[storage]
+type = "S3"
+bucket = "greptimedb"
+root = "greptimedb"
+endpoint = "https://s3.us-east-1.amazonaws.com"
+region = "us-east-1"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+
+[[plugins]]
+iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
+```
+
+插件的可选配置项：
 
 | 选项 | 默认值 | 说明 |
 | ---- | ------ | ---- |
 | `warehouse_root` | `"iceberg_warehouse"` | Iceberg 元数据在 datanode 对象存储 bucket 内的存放路径前缀。 |
 | `enable_incremental` | `true` | 为 `true`（默认）时，每次 flush / compaction / truncate 都会自动发布一个新 snapshot。设为 `false` 可关闭自动发布，改为按需通过 rebuild 接口生成元数据；drop/GC 清理仍会正常运行。 |
 
-`warehouse_root` 是 GreptimeDB 已使用的对象存储 bucket 内的一个路径前缀，会被并入 store 的 `root`（例如 `s3://<bucket>/<root>/<warehouse_root>/`）。
+`warehouse_root` 是上述对象存储 bucket 内的一个路径前缀，会被并入 store 的 `root`（例如 `s3://<bucket>/<root>/<warehouse_root>/`）——这也正是 frontend 和 datanode 必须在 `[storage]` 配置和 `warehouse_root` 上保持一致的原因，否则 catalog 会去寻找并不存在的元数据。
 
 支持的对象存储后端包括 S3、OSS、GCS 和 Azure Blob。
 

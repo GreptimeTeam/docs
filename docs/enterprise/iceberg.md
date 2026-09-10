@@ -54,7 +54,8 @@ This is split across the GreptimeDB processes you already run:
   new Iceberg snapshot. The Iceberg metadata is written under a `warehouse_root` prefix inside the same
   object-storage bucket the datanode already uses.
 - **Frontend (the catalog server).** It implements the [Iceberg REST Catalog API](https://iceberg.apache.org/docs/1.6.0/api/#rest-catalog-specification),
-  mounted at `/v1/iceberg`, and serves each table's current metadata to clients.
+  mounted at `/v1/iceberg`, and serves each table's current metadata to clients by reading it **directly from object
+  storage** — see [Configuration](#configuration) for the object-storage settings the frontend therefore needs.
 
 Because the data files are never duplicated, there is no extra storage cost and no write-path duplication — the
 export is pure metadata laid down beside the data GreptimeDB already writes.
@@ -100,7 +101,20 @@ section of **both** the data-writing process (datanode or standalone) **and** th
 
 Both must reference the **same** `warehouse_root` so the catalog reads exactly the metadata the writer publishes.
 
+**Datanode / standalone.** The process already has a `[storage]` section for its data — leave it as is and add the plugin
+entry:
+
 ```toml
+## The object storage the datanode already uses (existing configuration).
+[storage]
+type = "S3"
+bucket = "greptimedb"
+root = "greptimedb"
+endpoint = "https://s3.us-east-1.amazonaws.com"
+region = "us-east-1"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+
 ## Iceberg manifest export publishes Iceberg-format metadata (snapshots,
 ## manifests, manifest-lists) so external engines (pyiceberg, Spark, Trino,
 ## DuckDB, ...) can read GreptimeDB tables through the Iceberg REST catalog.
@@ -108,15 +122,38 @@ Both must reference the **same** `warehouse_root` so the catalog reads exactly t
 iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
 ```
 
-The options are:
+**Frontend.** The frontend needs the same object-storage configuration as the datanode. The REST catalog runs inside
+the frontend and reads the Iceberg metadata **directly from object storage** — it does not fetch it through the
+datanode — so without a `[storage]` section the catalog cannot resolve any table. A frontend normally has no
+`[storage]` section of its own (it only proxies queries); enabling the Iceberg integration is the reason it needs one.
+Configure the **same bucket, `root`, and credentials** as the datanode, plus the plugin entry:
+
+```toml
+## The SAME object storage as the datanode — the frontend's REST catalog
+## reads the Iceberg metadata from here.
+[storage]
+type = "S3"
+bucket = "greptimedb"
+root = "greptimedb"
+endpoint = "https://s3.us-east-1.amazonaws.com"
+region = "us-east-1"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+
+[[plugins]]
+iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
+```
+
+The plugin options are:
 
 | Option | Default | Description |
 | ------ | ------- | ----------- |
 | `warehouse_root` | `"iceberg_warehouse"` | Path prefix, inside the datanode's object-storage bucket, where Iceberg metadata is stored. |
 | `enable_incremental` | `true` | When `true` (the default), a new snapshot is published automatically on every flush / compaction / truncate. Set `false` to disable automatic publication and generate metadata on demand through the rebuild interface instead; drop/GC cleanup still runs. |
 
-The `warehouse_root` is a path prefix inside the object-storage bucket GreptimeDB already uses, folded into the
-store's `root` (e.g. `s3://<bucket>/<root>/<warehouse_root>/`).
+The `warehouse_root` is a path prefix inside the object-storage bucket described above, folded into the store's `root`
+(e.g. `s3://<bucket>/<root>/<warehouse_root>/`) — which is why the frontend and the datanode must agree on both the
+`[storage]` configuration and the `warehouse_root`, or the catalog will look for metadata that is not there.
 
 The supported object-storage backends are S3, OSS, GCS, and Azure Blob.
 
