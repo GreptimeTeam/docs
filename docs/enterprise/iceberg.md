@@ -144,6 +144,27 @@ secret_access_key = "<secret access key>"
 iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
 ```
 
+:::note Deploying with the greptimedb-cluster Helm chart
+You don't hand-write the frontend's `[storage]` section on Kubernetes. The chart configures object storage
+centrally through the `objectStorage` values, and by default only the datanode receives that configuration. Set
+`frontend.enableObjectStorage` to `true` so the frontend is given the same object-storage configuration, and add
+the plugin entry through `frontend.configData`:
+
+```yaml
+frontend:
+  ## Inject the objectStorage values (bucket, root, credentials, ...)
+  ## into the frontend as its [storage] section.
+  enableObjectStorage: true
+
+  configData: |-
+    [[plugins]]
+    iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
+```
+
+See the [Helm chart configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)
+for the `objectStorage` and `configData` fields.
+:::
+
 The plugin options are:
 
 | Option | Default | Description |

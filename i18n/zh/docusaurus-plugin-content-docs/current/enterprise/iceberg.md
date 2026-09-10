@@ -125,6 +125,23 @@ secret_access_key = "<secret access key>"
 iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
 ```
 
+:::note 使用 greptimedb-cluster Helm chart 部署
+在 Kubernetes 上无需手写 frontend 的 `[storage]` 配置段。chart 通过 `objectStorage` 统一配置对象存储，默认只有 datanode 会获得该配置。将 `frontend.enableObjectStorage` 设为 `true`，frontend 即可获得与 datanode 相同的对象存储配置；再通过 `frontend.configData` 添加插件条目：
+
+```yaml
+frontend:
+  ## 将 objectStorage 配置（bucket、root、凭证等）
+  ## 注入为 frontend 的 [storage] 配置段。
+  enableObjectStorage: true
+
+  configData: |-
+    [[plugins]]
+    iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
+```
+
+`objectStorage` 与 `configData` 字段的说明见[常见 Helm Chart 配置](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)。
+:::
+
 插件的可选配置项：
 
 | 选项 | 默认值 | 说明 |
