@@ -109,6 +109,7 @@ SHOW TABLES
 - `version`: 版本。固定值为 `11`。
 - `create_time`: 表创建的时间戳。
 - `table_comment`: 表的注释。
+- `create_options`: 表的选项，格式为空格分隔的 `key=value`，包含在 `CREATE TABLE ... WITH (...)` 或 `ALTER TABLE` 中设置的选项。表没有任何选项时为空。
 - 其他列如 `table_rows`， `row_format` 等不支持，仅用于兼容 MySQL。GreptimeDB 未来可能会支持其中的一些列。
 
 
