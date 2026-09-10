@@ -25,19 +25,36 @@ V2 快照包含 schema 元数据、manifest 和数据文件。数据文件会被
 - 你的 `greptime` binary 包含 `cli data export-v2` 和 `cli data import-v2` 命令。
 - CLI client 和 GreptimeDB server 都能读写快照存储位置。
 
-对于远程对象存储，仅有快照 URI 还不够。你还需要显式启用一个受支持的存储后端，并传入该后端的连接选项。Export/Import V2 支持 S3-compatible 存储、阿里云 OSS、Google Cloud Storage 和 Azure Blob Storage。例如，对于 S3-compatible 存储，需要同时使用 `--s3`、`--s3-bucket` 和 `--s3-region`。
+对于远程对象存储，仅有快照 URI 还不够。你还需要显式启用一个受支持的存储后端，并传入该后端的连接选项。Export/Import V2 支持 S3-compatible 存储、阿里云 OSS、Google Cloud Storage 和 Azure Blob Storage。例如，对于 S3-compatible 存储，需要同时使用 `--s3` 和 `--s3-region`。
 
-对于 `file://` 快照，路径必须同时能被 GreptimeDB server 和 CLI client 访问。通常这意味着 CLI 与 standalone server 运行在同一台主机上，或者将同一个文件系统路径挂载到 GreptimeDB server 中。对于远程、Kubernetes 或分布式部署，请使用 S3 或 MinIO 等对象存储，而不是本地 `file://` 路径。
+对于 `file://` 快照，路径必须同时能被 GreptimeDB server 和 CLI client 访问。通常这意味着 CLI 与 standalone server 运行在同一台主机上，或者将同一个文件系统路径挂载到 GreptimeDB server 中。创建快照之前，快照的父目录必须已经存在。对于远程、Kubernetes 或分布式部署，请使用 S3 或 MinIO 等对象存储，而不是本地 `file://` 路径。
+
+GreptimeDB server 通过 `COPY DATABASE ... TO` 写入快照数据文件，因此 `file://` 快照路径还必须位于 server 的 copy root 内，即 `storage.copy_root`，默认为 `<storage.data_home>/copy`。位于 copy root 之外的路径会被 server 拒绝。对象存储快照不受 copy root 限制，因为 server 会直接把数据写入对象存储。详情请参阅[迁移本地 SQL 文件访问](/user-guide/deployments-administration/migrate-local-sql-file-access.md)。
 
 :::note
 
-快照 URI（例如 `s3://my-bucket/snapshots/prod`）标识快照位置。对象存储选项（例如 `--s3-bucket my-bucket`）配置 CLI 如何连接到对应后端。请在 create、verify、import、list 和 delete 命令中保持这些选项一致。
+快照 URI（例如 `s3://my-bucket/snapshots/prod`）标识快照位置，其中包括 bucket。对象存储选项（例如 `--s3-region` 和 `--s3-endpoint`）配置 CLI 如何连接到对应后端。`--s3-bucket` 和 `--s3-root` 不会改变快照的读写位置，以 URI 为准。请在 create、verify、import、list 和 delete 命令中传入相同的连接选项。
 
 :::
 
 ## 使用本地文件系统快速开始
 
 只有在 CLI client 和 GreptimeDB server 共享同一路径时，才应使用本地文件系统快照。例如，对于本地 standalone server，如果 CLI 在同一台主机上运行，这种方式可以工作。
+
+本指南中的示例把快照存放在 `/tmp/greptime-snapshots` 下。请在 GreptimeDB 配置文件中把该目录设置为 server 的 copy root，然后重启 server：
+
+```toml
+[storage]
+copy_root = "/tmp/greptime-snapshots"
+```
+
+也可以保留默认的 copy root，改用 `<storage.data_home>/copy` 下的快照路径，例如 `file:///path/to/data_home/copy/demo`。
+
+创建父目录，并确保 server 和 CLI 都能访问它：
+
+```bash
+mkdir -p /tmp/greptime-snapshots
+```
 
 创建快照：
 
@@ -113,9 +130,11 @@ greptime cli data import-v2 \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
-对于 AWS S3，请使用相同的 `--s3` 选项；除非使用自定义 endpoint，否则不要传 `--s3-endpoint`。如果你的环境使用 instance profile 或其他凭据提供机制，可能不需要显式传入 access key。S3 backend 仍然需要 `--s3`、`--s3-bucket` 和 `--s3-region`。
+对于 AWS S3，请使用相同的 `--s3` 选项；除非使用自定义 endpoint，否则不要传 `--s3-endpoint`。如果你的环境使用 instance profile 或其他凭据提供机制，可能不需要显式传入 access key。S3 backend 仍然需要 `--s3` 和 `--s3-region`。
 
 ## 导出指定 schemas
+
+默认情况下，`export-v2 create` 会导出除 `information_schema` 之外的所有 schema，其中包括 `greptime_private` schema，导入这样的快照时也会一并恢复 `greptime_private`。如果要排除它，请使用 `--schemas` 显式列出需要导出的 schemas。
 
 使用 `--schemas` 只导出指定 schemas。可以传入逗号分隔的列表：
 
@@ -165,6 +184,19 @@ greptime cli data import-v2 \
   --addr 127.0.0.1:4000 \
   --from file:///tmp/greptime-snapshots/schema-only
 ```
+
+## 选择数据文件格式
+
+使用 `--format` 选择数据文件格式。支持的值为 `parquet`、`csv` 和 `json`，默认值为 `parquet`。
+
+```bash
+greptime cli data export-v2 create \
+  --addr 127.0.0.1:4000 \
+  --to file:///tmp/greptime-snapshots/demo-csv \
+  --format csv
+```
+
+格式会记录在快照的 manifest 中。`import-v2` 会从 manifest 中读取格式并自动应用，因此导入时不需要再次指定格式。
 
 ## 按时间范围和 chunk window 导出
 
@@ -337,7 +369,7 @@ Export/Import V2 支持本地文件系统快照和远程对象存储快照。
 
 | Option | Description |
 | --- | --- |
-| `--s3-bucket` | S3 bucket 名称。使用 S3 时必填。 |
+| `--s3-bucket` | S3 bucket 名称。不影响快照位置，实际使用的是快照 URI 中的 bucket。 |
 | `--s3-region` | S3 region。使用 S3 时必填。 |
 | `--s3-access-key-id` | Access key ID。当环境提供凭据时可选。 |
 | `--s3-secret-access-key` | Secret access key。当环境提供凭据时可选。 |
@@ -355,6 +387,18 @@ Export/Import V2 支持本地文件系统快照和远程对象存储快照。
 curl http://127.0.0.1:4000/health
 ```
 
+### `file://` 路径位于 copy root 之外
+
+如果 `export-v2 create` 返回类似下面的错误，说明快照路径位于 server 的 copy root 之外：
+
+```text
+Local filesystem path '/tmp/greptime-snapshots/demo/data/greptime_private/1/' is outside the configured copy root or is unsafe
+```
+
+请把 `storage.copy_root` 设置为包含该快照路径的目录，或者改用 `<storage.data_home>/copy` 下的快照路径。详情请参阅[迁移本地 SQL 文件访问](/user-guide/deployments-administration/migrate-local-sql-file-access.md)。
+
+失败的运行会在磁盘上留下一个不完整的快照，`export-v2 verify` 会报告失败的 chunk。修正配置后，再次运行同一条 `export-v2 create` 命令即可继续；如果想重新创建快照，请传入 `--force`。
+
 ### `--chunk-time-window` 校验失败
 
 `--chunk-time-window` 需要同时指定 `--start-time` 和 `--end-time`。请添加有界时间范围，或移除 `--chunk-time-window`。
@@ -363,8 +407,8 @@ curl http://127.0.0.1:4000/health
 
 请检查：
 
-- 快照 URI 中的 bucket 是否与 `--s3-bucket` 一致。
-- 对于 MinIO 或其他 S3-compatible 服务，是否设置了 `--s3-endpoint`。
+- 快照 URI 中的 bucket 和路径是否正确。`--s3-bucket` 不会改变快照位置。
+- 对于 MinIO 或其他 S3-compatible 服务，是否设置了 `--s3-endpoint`。如果没有设置，CLI 会把请求发往 `--s3-region` 对应的公有 AWS S3 endpoint，通常表现为长时间无响应或返回 `301`，而不是明确的配置错误。
 - 凭据是否可以读写快照位置。
 - create、verify、import、list 和 delete 命令是否传入了相同的存储选项。
 
