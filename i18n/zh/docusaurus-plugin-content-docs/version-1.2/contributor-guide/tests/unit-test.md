@@ -7,22 +7,26 @@ description: 介绍 GreptimeDB 的单元测试，包括如何编写、运行和�
 
 ## 介绍
 
-单元测试嵌入在代码库中，通常放置在被测试逻辑的旁边。它们使用 Rust 的 `#[test]` 属性编写，并可以使用 `cargo nextest run` 运行。
+单元测试通常放在被测逻辑旁边，使用 Rust 的 `#[test]` 属性编写。GreptimeDB 主要使用 [`cargo-nextest`](https://nexte.st/) 运行 Rust 测试。
 
-GreptimeDB 代码库不支持默认的 `cargo` 测试运行器。推荐使用 [`nextest`](https://nexte.st/)。你可以通过以下命令安装它：
+安装命令如下：
 
 ```shell
 cargo install cargo-nextest --locked
 ```
 
-然后运行测试（这里 `--workspace` 不是必须的）
+开发时先运行本次修改的 package：
 
 ```shell
-cargo nextest run
+cargo nextest run -p <package>
 ```
 
-注意，如果你的 Rust 是通过 `rustup` 安装的，请确保使用 `cargo` 安装 `nextest`，而不是像 `homebrew` 这样的包管理器，否则会弄乱你的本地环境。
+可以继续使用测试名称或 nextest filter 缩小范围。影响范围较广的改动在提交前运行完整 workspace 测试：
+
+```shell
+make test
+```
 
 ## 覆盖率
 
-我们的持续集成（CI）作业有一个“覆盖率检查”步骤。它会报告有多少代码被单元测试覆盖。请在你的补丁中添加必要的单元测试。
+CI 会报告单元测试覆盖率。测试应覆盖本次改变的行为和可能回归的失败路径，而不是只追求覆盖率数字。

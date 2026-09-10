@@ -208,6 +208,8 @@ timeout = "0s"
 body_limit = "64MB"
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
+prom_validation_mode = "strict"
+experimental_enable_prometheus_native_histogram = false
 experimental_enable_explain_analyze_stream = true
 # 启用专用公共 HTTP API Server（仅提供 /v1 和 /dashboard）
 enable_api_server = false
@@ -266,13 +268,12 @@ trace_ingest_chunk_size = 512
 [prom_store]
 enable = true
 with_metric_engine = true
-prom_validation_mode = "strict"
-experimental_enable_prometheus_native_histogram = false
 pending_rows_flush_interval = "0s"
 max_batch_rows = 100000
 max_concurrent_flushes = 256
 worker_channel_capacity = 65526
 max_inflight_requests = 3000
+flow_notification_queue_capacity = 1024
 ```
 
 下表描述了每个选项的详细信息：
@@ -285,6 +286,8 @@ max_inflight_requests = 3000
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
 |            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
 |            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
+|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
+|            | experimental_enable_prometheus_native_histogram | 布尔值 | 实验性：启用 Prometheus remote write v2 native histogram 写入，默认为 false。 |
 |            | experimental_enable_explain_analyze_stream | 布尔值 | 实验性：启用 `POST /v1/sql/analyze/stream`，用于流式返回 `EXPLAIN ANALYZE VERBOSE` 指标，默认为 true。 |
 |            | enable_api_server    | 布尔值 | 是否启动专用公共 HTTP API Server。该 Server 仅提供 `/v1` API 和 `/dashboard`，可安全地对外暴露给终端用户。主 HTTP Server（`addr`）用于内部使用。默认禁用；设为 `true` 可启用。 |
 |            | api_server_addr      | 字符串 | 专用公共 HTTP API Server 的绑定地址，默认为 `"127.0.0.1:4006"`。仅在 `enable_api_server` 为 `true` 时生效。 |
@@ -312,13 +315,12 @@ max_inflight_requests = 3000
 | prom_store |                              |        | Prometheus 远程存储选项                                                                                                                                                                                         |
 |            | enable                       | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true                                                                                                                                                         |
 |            | with_metric_engine           | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true                                                                                                                                                     |
-|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
-|            | experimental_enable_prometheus_native_histogram | 布尔值 | 实验性：启用 Prometheus remote write v2 native histogram 写入，默认为 false。 |
 |            | pending_rows_flush_interval  | 字符串 | Prometheus Remote Write 批量刷写的时间间隔。设为非零值（如 `500ms`）以启用[批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式)，默认为 `0s`（禁用）                         |
 |            | max_batch_rows               | 整数   | 触发刷写的最大批量行数，默认为 100000                                                                                                                                                                           |
 |            | max_concurrent_flushes       | 整数   | 同时执行的最大刷写操作数量，默认为 256                                                                                                                                                                          |
 |            | worker_channel_capacity      | 整数   | 内部接收行数据的 worker 通道容量，默认为 65526                                                                                                                                                                  |
 |            | max_inflight_requests        | 整数   | 等待批量完成的最大请求数，默认为 3000                                                                                                                                                                           |
+|            | flow_notification_queue_capacity | 整数 | 共享队列中等待处理的逻辑表 Flow 通知数量上限，默认为 1024。仅在[批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式)下生效，取值必须大于 0。队列满时通知会被丢弃，并计入 `greptime_prom_store_flow_notification_dropped_total` 指标。 |
 | postgres   |                    |        | PostgresSQL 服务器选项                                       |
 |            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                       |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                          |
@@ -508,6 +510,17 @@ default_ratio = 1.0
 
 如何使用分布式追踪，请参考 [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
 
+### Pipeline 选项
+
+frontend 和 standalone 会在内存中缓存 Pipeline 定义，缓存配置位于 `[pipeline]` 部分：
+
+```toml
+[pipeline]
+cache_ttl = "10s"
+```
+
+- `cache_ttl`：本地 Pipeline 缓存的存活时间，默认值为 `10s`。在集群中，在某个 Frontend 上创建或删除 Pipeline 后，最多经过该时间才会在其他 Frontend 上生效。调大该值会减少对 `greptime_private.pipelines` 表的读取，同时增加上述延迟。
+
 ### 事件记录配置
 
 记录的事件保存在 `greptime_private.events` 系统表中。
@@ -532,10 +545,16 @@ create_database, alter_database, drop_database,
 create_flow, drop_flow,
 create_table, create_logical_tables, alter_table, alter_logical_tables,
 drop_table, undrop_table, purge_dropped_table, truncate_table,
-create_view, drop_view
+create_view, drop_view, admin_function
 ```
 
 `undrop_table` 和 `purge_dropped_table` 仅 GreptimeDB 企业版支持。
+
+在分布式部署中，Frontend 支持以下事件类型：
+
+```text
+admin_function
+```
 
 Metasrv 支持以下事件类型：
 
@@ -600,20 +619,9 @@ create_on_compaction = "auto"
 apply_on_query = "auto"
 mem_threshold_on_create = "64M"
 intermediate_path = ""
-
-[region_engine.mito.memtable]
-type = "time_series"
 ```
 
-此外，`mito` 也提供了一个实验性质的 memtable。该 memtable 主要优化大量时间序列下的写入性能和内存占用。其查询性能可能会不如默认的 `time_series` memtable。
-
-```toml
-[region_engine.mito.memtable]
-type = "partition_tree"
-index_max_keys_per_shard = 8192
-data_freeze_threshold = 32768
-fork_dictionary_bytes = "1GiB"
-```
+Mito 根据表选项和 SST format 为每个 Region 选择 memtable 实现。`default_flat_format` 为 `true` 时，没有显式设置 `sst_format` 的 Region 使用 flat SST 和 bulk memtable。`memtable.type` 是数据库或表选项，不是 `[region_engine.mito.memtable]` 引擎配置。详见[表选项](/reference/sql/create.md#表选项)。
 
 以下是可供使用的选项
 
@@ -648,7 +656,7 @@ fork_dictionary_bytes = "1GiB"
 | `scan_memory_on_exhausted`           | 字符串 | `fail`        | 扫描内存耗尽时的行为。选项：`fail`（快速失败），`wait` 或 `wait(<duration>)`（等待内存）。                       |
 | `min_compaction_interval`           | 字符串 | `0m`          | 两次 compaction 之间的最小时间间隔。设为 "0m"（默认）允许 compactions 立即运行，无限制。                              |
 | `schedule_compaction_after_edit`    | 布尔值 | `true`        | 是否允许在成功的 region edit 之后调度 compaction。<br/>设为 `true` 是在 region edit 后调度 compaction 的必要但不充分条件，`min_compaction_interval` 等其他约束仍可能阻止 compaction 被调度。<br/>设为 `false` 则保证 region edit 后不会调度 compaction。 |
-| `default_flat_format`                | 布尔值 | `true`        | 是否启用 Flat 格式作为默认 SST 格式。                                                                                |
+| `default_flat_format`                | 布尔值 | `true`        | 没有显式设置 `sst_format` 的 Region 是否使用 flat SST。Flat SST 使用 bulk memtable。                                  |
 | `scan_parallelism`                       | 整数   | `0`           | （已弃用，请使用 `max_concurrent_scan_files`）旧版扫描并发度选项。                                                |
 | `index` | -- | -- | Mito 引擎中索引的选项。 |
 | `index.aux_path` | 字符串 | `""` | 文件系统中索引的辅助目录路径，用于存储创建索引的中间文件和搜索索引的暂存文件，默认为 `{data_home}/index_intermediate`。为了向后兼容，该目录的默认名称为 `index_intermediate`。此路径包含两个子目录：- `__intm`: 用于存储创建索引时使用的中间文件。- `staging`: 用于存储搜索索引时使用的暂存文件。 |
@@ -663,10 +671,6 @@ fork_dictionary_bytes = "1GiB"
 | `inverted_index.apply_on_query`          | 字符串 | `auto`        | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                          |
 | `inverted_index.mem_threshold_on_create` | 字符串 | `64M`         | 创建索引时如果超过该内存阈值则改为使用外部排序<br/>设置为空会关闭外排，在内存中完成所有排序                            |
 | `inverted_index.intermediate_path`       | 字符串 | `""`          | 存放外排临时文件的路径 (默认 `{data_home}/index_intermediate`).                                                        |
-| `memtable.type`                          | 字符串 | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (实验性功能)  |
-| `memtable.index_max_keys_per_shard`      | 整数   | `8192`        | 一个 shard 内的主键数<br/>只对 `partition_tree` memtable 生效                                                          |
-| `memtable.data_freeze_threshold`         | 整数   | `32768`       | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效                                            |
-| `memtable.fork_dictionary_bytes`         | 字符串 | `1GiB`        | 主键字典的大小<br/>只对 `partition_tree` memtable 生效                                                                 |
 
 `metric` 引擎针对包含大量小表的 metrics 数据进行了优化。
 

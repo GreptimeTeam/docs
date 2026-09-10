@@ -1,5 +1,5 @@
 ---
-keywords: [JSON functions, JSON conversion, JSON extraction, JSON validation, SQL functions]
+keywords: [JSON functions, JSON2, JSON conversion, JSON extraction, JSON validation, SQL functions]
 description: Lists and describes JSON functions available in GreptimeDB, including their usage and examples.
 ---
 
@@ -49,6 +49,10 @@ Extracts values with specific types from JSON values through specific paths.
 * `json_object_keys(json)` to return the outermost keys of a JSON object as a string list. Returns `[]` for an empty object and `NULL` for non-object JSON values or `NULL` input.
 
 The `path` argument to `json_get` must be a string literal. The return value is NULL when the path does not select a value or the selected value cannot be converted to the requested type.
+
+`json_to_string`, `json_get`, `json_get_string`, `json_get_int`,
+`json_get_float`, and `json_get_bool` also accept
+[JSON2](/user-guide/logs/json2.md) columns.
 
 `path` is a string that selects elements from a JSON value. The following path operators are supported:
 

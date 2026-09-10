@@ -596,9 +596,14 @@ processors:
   - json_parse:
       fields:
         - product_object
+
+transform:
+  - fields:
+      - product_object
+    type: json
 ```
 
-The result will be:
+After the `json_parse` processor runs, the `product_object` field in the context becomes a JSON object:
 
 ```json
 {
@@ -607,6 +612,8 @@ The result will be:
   }
 }
 ```
+
+The `transform` section then maps the parsed object to the `json` type, so it is stored as a JSON column named `product_object` in the table.
 
 ### `simple_extract`
 
@@ -1052,11 +1059,52 @@ GreptimeDB currently provides the following built-in transformation types:
 - `int8`, `int16`, `int32`, `int64`: Integer types.
 - `uint8`, `uint16`, `uint32`, `uint64`: Unsigned integer types.
 - `float32`, `float64`: Floating-point types.
+- `boolean`: Boolean type.
 - `string`: String type.
 - `time`: Time type, which will be converted to GreptimeDB `timestamp(9)` type.
 - `epoch`: Timestamp type, which will be converted to GreptimeDB `timestamp(n)` type. The value of `n` depends on the precision of the epoch. When the precision is `s`, `n` is 0; when the precision is `ms`, `n` is 3; when the precision is `us`, `n` is 6; when the precision is `ns`, `n` is 9.
+- `json`: JSON type. The field value must be a JSON object or array, such as one produced by the [`json_parse`](#json_parse) processor, and it is stored as a JSON column in the table. Scalar values (for example, strings, numbers) cannot be converted to the `json` type.
+- `json2`: [JSON2](/user-guide/logs/json2.md) type. The field may be missing or `null`. A non-null value must be a non-empty JSON object, such as one produced by the [`json_parse`](#json_parse) processor. Root arrays and scalar values cannot be converted to `json2`.
 
 If a field obtains an illegal value during the transformation process, the Pipeline will throw an exception. For example, when converting a string `abc` to an integer, an exception will be thrown because the string is not a valid integer.
+
+#### JSON2 type hints
+
+:::note
+JSON2 is currently in Beta, and some capabilities are still being improved.
+:::
+
+For JSON2 behavior, query syntax, and current limitations, see the [JSON2 type documentation](/user-guide/logs/json2.md).
+
+When a pipeline creates the destination column, the short form creates a JSON2 column without type hints:
+
+```yaml
+transform:
+  - field: payload
+    type: json2
+```
+
+To declare type hints for the new JSON2 column, use the object form:
+
+```yaml
+transform:
+  - field: payload
+    type:
+      json2:
+        - path: user.id
+          type: int64
+        - path: 'attrs."http.status_code"'
+          type: string
+```
+
+Each type hint supports the following fields:
+
+- `path` (required): The JSON subpath in dot notation. Wrap a path segment in double quotes when the JSON key itself contains a dot.
+- `type` (required): One of `string`, `int64`, `uint64`, `float64`, or `boolean`.
+- `nullable` (optional): Whether the path can be missing or `null`. Defaults to `true`.
+- `default` (optional): A scalar value of the declared type to use when the path is missing.
+
+If the destination JSON2 column already exists, GreptimeDB encodes the value using the settings stored in that column instead of the inline hints. This also applies when [`table_suffix`](#table-suffix) routes records to different tables. Values that violate the applicable type hints follow the transform's [`on_failure`](#the-on_failure-field) setting.
 
 ### The `index` field
 

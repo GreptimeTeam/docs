@@ -17,7 +17,10 @@ To send logs to GreptimeDB through the raw HTTP API, use the following informati
   * `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](https://docs.greptime.com/user-guide/deployments-administration/authentication/static/) and [HTTP API](https://docs.greptime.com/user-guide/protocols/http#authentication).
   * `X-Greptime-Log-Table-Name`: `<table_name>` (optional) - The table name to store the logs. If not provided, the default table name is `loki_logs`.
 
-The request uses binary protobuf to encode the payload. The defined schema is the same as the [logproto.proto](https://github.com/grafana/loki/blob/main/pkg/logproto/logproto.proto).
+GreptimeDB accepts either of the Loki Push API payload encodings:
+
+* **Protobuf**: Send a Snappy-compressed `PushRequest` matching [logproto.proto](https://github.com/grafana/loki/blob/main/pkg/logproto/logproto.proto) with `Content-Type: application/x-protobuf`.
+* **JSON**: Send a Loki JSON push body with `Content-Type: application/json`.
 
 ### Example Code
 
@@ -35,10 +38,12 @@ loki.source.file "greptime" {
 
 loki.write "greptime_loki" {
     endpoint {
-        url = "${GREPTIME_SCHEME:=http}://${GREPTIME_HOST:=greptimedb}:${GREPTIME_PORT:=4000}/v1/loki/api/v1/push"
+        url = coalesce(sys.env("GREPTIME_SCHEME"), "http") + "://" +
+          coalesce(sys.env("GREPTIME_HOST"), "greptimedb") + ":" +
+          coalesce(sys.env("GREPTIME_PORT"), "4000") + "/v1/loki/api/v1/push"
         headers  = {
-          "x-greptime-db-name" = "${GREPTIME_DB:=public}",
-          "x-greptime-log-table-name" = "${GREPTIME_LOG_TABLE_NAME:=loki_demo_logs}",
+          "x-greptime-db-name" = coalesce(sys.env("GREPTIME_DB"), "public"),
+          "x-greptime-log-table-name" = coalesce(sys.env("GREPTIME_LOG_TABLE_NAME"), "loki_demo_logs"),
         }
     }
     external_labels = {
@@ -56,11 +61,11 @@ You can run the following command to check the data in the table:
 
 ```sql
 SELECT * FROM loki_demo_logs;
-+----------------------------+------------------------+--------------+-------+----------+
-| greptime_timestamp         | line                   | filename     | from  | job      |
-+----------------------------+------------------------+--------------+-------+----------+
-| 2024-11-25 11:02:31.256251 | Greptime is very cool! | /tmp/foo.txt | alloy | greptime |
-+----------------------------+------------------------+--------------+-------+----------+
++----------------------------+------------------------+---------------------+--------------+-------+----------+
+| greptime_timestamp         | line                   | structured_metadata | filename     | from  | job      |
++----------------------------+------------------------+---------------------+--------------+-------+----------+
+| 2024-11-25 11:02:31.256251 | Greptime is very cool! | {}                  | /tmp/foo.txt | alloy | greptime |
++----------------------------+------------------------+---------------------+--------------+-------+----------+
 1 row in set (0.01 sec)
 ```
 
@@ -118,6 +123,7 @@ SHOW CREATE TABLE loki_demo_logs\G
 Create Table: CREATE TABLE IF NOT EXISTS `loki_demo_logs` (
   `greptime_timestamp` TIMESTAMP(9) NOT NULL,
   `line` STRING NULL,
+  `structured_metadata` JSON NULL,
   `filename` STRING NULL,
   `from` STRING NULL,
   `job` STRING NULL,
@@ -127,7 +133,10 @@ Create Table: CREATE TABLE IF NOT EXISTS `loki_demo_logs` (
 
 ENGINE=mito
 WITH(
-  append_mode = 'true'
+  'comment' = 'Created on insertion',
+  append_mode = 'true',
+  'greptime.semantic.signal_type' = 'log',
+  'greptime.semantic.source' = 'loki'
 )
 1 row in set (0.00 sec)
 ```

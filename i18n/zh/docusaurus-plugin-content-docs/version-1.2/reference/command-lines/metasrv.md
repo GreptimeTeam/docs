@@ -43,4 +43,4 @@ greptime metasrv start --help
 greptime metasrv start -c config/metasrv.example.toml
 ```
 
-[`metasrv.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0-beta.2/config/metasrv.example.toml) 位于 GreptimeDB 仓库中。`-c` 选项用于选择配置文件，详见[配置](/user-guide/deployments-administration/configuration.md)。
+[`metasrv.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0/config/metasrv.example.toml) 位于 GreptimeDB 仓库中。`-c` 选项用于选择配置文件，详见[配置](/user-guide/deployments-administration/configuration.md)。

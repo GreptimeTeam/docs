@@ -7,7 +7,7 @@ description: Discover how GreptimeDB's Flow engine enables real-time continuous 
 
 GreptimeDB's Flow engine enables real-time computation on incoming data.
 It is particularly beneficial for Extract-Transform-Load (ETL) processes or for performing continuous aggregations such as sum, average, and other time-window calculations.
-Each new row updates the sink table incrementally, so the aggregation is computed on write rather than on every query.
+Flow materializes computation results in the sink table as source data is processed, so queries can read the computed results instead of recalculating them from raw data.
 
 Use cases include:
 
@@ -17,13 +17,11 @@ Use cases include:
 ## Programming Model
 
 :::note
-Flow uses batching mode for aggregation and TQL workloads. Simple non-aggregation Flow queries currently use the deprecated streaming mode and are not recommended for new workloads.
+Flow uses batching mode for aggregation and TQL workloads unless an instant-TTL source selects the deprecated streaming mode. Simple non-aggregation Flow queries also use streaming mode and are not recommended for new workloads.
 :::
 
-Upon data insertion into the source table,
-the data is concurrently ingested to the Flow engine.
-At each trigger interval (one second),
-the Flow engine executes the specified computations and updates the sink table with the results.
+Upon data insertion into the source table, the data is made available to the Flow engine.
+Flow then processes the specified computation and updates the sink table with the results.
 Both the source and sink tables are time-series tables within GreptimeDB.
 Before creating a Flow,
 it is crucial to define the schemas for these tables and design the Flow to specify the computation logic.
@@ -75,6 +73,7 @@ Finally, create the Flow `user_agent_flow` to count the occurrences of each user
 ```sql
 CREATE FLOW user_agent_flow
 SINK TO user_agent_statistics
+EVAL INTERVAL '1s'
 AS
 SELECT
   user_agent,

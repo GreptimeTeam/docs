@@ -268,6 +268,20 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
+          label: 'Semantic Layer',
+          items: [
+            {
+              type: 'doc',
+              id: 'user-guide/semantic-layer/overview',
+              label: 'Overview',
+            },
+            'user-guide/semantic-layer/table-semantics',
+            'user-guide/semantic-layer/semantic-graph',
+            'user-guide/semantic-layer/declaring-entities',
+          ],
+        },
+        {
+          type: 'category',
           label: 'Vector Storage',
           items: [
             'user-guide/vectors/vector-type',
@@ -547,6 +561,7 @@ const sidebars: SidebarsConfig = {
             'enterprise/read-replicas/query-read-replicas',
           ],
         },
+        'enterprise/iceberg',
         'enterprise/trigger',
         'enterprise/soft-drop',
         'enterprise/user',
@@ -554,6 +569,7 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Releases',
           items: [
+            'enterprise/release-notes/release-26_05',
             'enterprise/release-notes/release-25_11',
             'enterprise/release-notes/release-25_05',
             'enterprise/release-notes/release-24_11',
@@ -672,6 +688,8 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/greptime-private/events',
                 'reference/sql/greptime-private/slow_queries',
                 'reference/sql/greptime-private/pipelines',
+                'reference/sql/greptime-private/semantic-entities',
+                'reference/sql/greptime-private/semantic-relationships',
               ],
             },
             {
@@ -700,6 +718,7 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/table-semantics',
                 'reference/sql/information-schema/views',
                 'reference/sql/information-schema/flows',
+                'reference/sql/information-schema/flow-statistics',
                 'reference/sql/information-schema/region-peers',
                 'reference/sql/information-schema/region-info',
                 'reference/sql/information-schema/region-statistics',
@@ -762,6 +781,7 @@ const sidebars: SidebarsConfig = {
               label: 'Overview',
             },
             'contributor-guide/datanode/storage-engine',
+            'contributor-guide/datanode/memtable',
             'contributor-guide/datanode/query-engine',
             'contributor-guide/datanode/data-persistence-indexing',
             'contributor-guide/datanode/wal',

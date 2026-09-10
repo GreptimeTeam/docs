@@ -252,6 +252,31 @@ public=> show flows like "filter%";
 (1 row)
 ```
 
+## SHOW FLOW STATUS
+
+展示所有 Flow 的运行统计信息：
+
+```sql
+public=> SHOW FLOW STATUS;
+```
+
+```sql
+ flow_id |   flow_name    |       start_time        |   last_execution_time   | uptime_seconds | state_size
+---------+----------------+-------------------------+-------------------------+----------------+------------
+       1 | filter_numbers | 2026-09-09 02:11:38.512 | 2026-09-09 03:07:41.036 |           3363 |       1024
+(1 row)
+```
+
+`LIKE` 按 Flow 名称匹配：
+
+```sql
+public=> SHOW FLOW STATUS LIKE 'filter%';
+```
+
+结果按 Flow 名称排序。返回的列与
+[`INFORMATION_SCHEMA.FLOW_STATISTICS`](/reference/sql/information-schema/flow-statistics.md)
+相同，各列含义参见该文档。
+
 ## SHOW CREATE VIEW
 
 用于显示视图（View）的定义：

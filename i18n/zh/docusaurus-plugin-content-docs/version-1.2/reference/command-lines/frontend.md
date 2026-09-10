@@ -54,4 +54,4 @@ greptime frontend start -c config/frontend.example.toml
 greptime frontend start --metasrv-addrs=0.0.0.0:3002
 ```
 
-[`frontend.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0-beta.2/config/frontend.example.toml) 位于 GreptimeDB 仓库中。`-c` 选项用于选择配置文件，详见[配置](/user-guide/deployments-administration/configuration.md)。
+[`frontend.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0/config/frontend.example.toml) 位于 GreptimeDB 仓库中。`-c` 选项用于选择配置文件，详见[配置](/user-guide/deployments-administration/configuration.md)。

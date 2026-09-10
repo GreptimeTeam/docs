@@ -12,7 +12,24 @@ description: Understand the GreptimeDB events table data model.
 | `type`          | Event type, such as `create_table` or `region_migration`.   |
 | `timestamp`     | Time at which the row was recorded.                         |
 | `payload`       | JSON data for the event type.                               |
+| `actor`         | Database user recorded as the operation's initiator; SQL `NULL` when the event is not associated with a user request. |
 | `event_context` | JSON describing why the event was triggered when available. |
+
+## Event actor {#actor}
+
+The `actor` is the database user recorded as the initiator of an operation. Use
+it to identify who ran an `ADMIN` statement or submitted a Procedure.
+
+When an operation starts a Procedure, GreptimeDB records the database user as
+its `actor`. The Procedure and any child Procedures it starts keep the same
+`actor` throughout their lifecycle. Events that are not associated with a user
+request have a SQL `NULL` actor.
+
+When [authentication](/user-guide/deployments-administration/authentication/overview.md)
+is enabled, `actor` is the authenticated database user. Without authentication,
+`actor` does not verify who sent the request. MySQL and PostgreSQL record the
+username supplied by the client, while HTTP and gRPC record the default user
+`greptime`.
 
 ## Procedure event columns
 
@@ -49,6 +66,19 @@ not guaranteed to appear in the order shown:
 | `RollingBack`    | Procedure rollback is starting.                                                                                                                                                          |
 | `Failed`         | The Procedure reached a failed terminal state. Inspect `procedure_error` for failure details.                                                                                            |
 | `Poisoned`       | The Procedure cannot proceed. Inspect `procedure_error` for the failure details.                                                                                                         |
+
+## ADMIN function event columns
+
+An `admin_function` event records the result returned by an `ADMIN` statement.
+
+| Column                   | Meaning                                                                                                                                |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `admin_function_name`    | The name of the executed ADMIN function.                                                                                              |
+| `admin_function_status`  | The execution status: `Succeeded` or `Failed`.                                                                                        |
+| `admin_function_output`  | JSON containing `result` when the function succeeds or `error` when it fails.                                                         |
+
+The event `payload` contains the function arguments. If the result is a
+Procedure ID, query the Procedure events for that ID to track its progress.
 
 ## Query JSON fields
 

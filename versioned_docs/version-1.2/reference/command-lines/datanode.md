@@ -52,7 +52,7 @@ Start a Datanode instance and specify its gRPC address, Metasrv address, and nod
 greptime datanode start --grpc-bind-addr=0.0.0.0:4001 --metasrv-addrs=0.0.0.0:3002 --node-id=1
 ```
 
-The [`datanode.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0-beta.2/config/datanode.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md) for details.
+The [`datanode.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0/config/datanode.example.toml) file is in the GreptimeDB repository. The `-c` option selects the configuration file; see [Configuration](/user-guide/deployments-administration/configuration.md) for details.
 
 ## objbench
 

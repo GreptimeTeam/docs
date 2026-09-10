@@ -7,7 +7,7 @@ description: 详细介绍了 GreptimeDB 的存储引擎架构、数据模型和 
 
 ## 概述
 
-`存储引擎` 负责存储数据库的数据。Mito 是我们默认使用的存储引擎，基于 [LSMT][1]（Log-structured Merge-tree）。我们针对处理时间序列数据的场景做了很多优化，因此 mito 这个存储引擎并不适用于通用用途。
+Mito 是 GreptimeDB 的默认存储引擎，基于 [LSM tree][1]，面向时间序列负载设计，而不是通用的嵌入式存储引擎。
 
 ## 架构
 下图展示了存储引擎的架构和处理数据的流程。
@@ -20,9 +20,9 @@ description: 详细介绍了 GreptimeDB 的存储引擎架构、数据模型和 
   - 为尚未刷盘的数据提供高持久性保证。
   - 基于 `LogStore` API 实现，不关心底层存储介质。
   - WAL 的日志记录可以存储在本地磁盘上，也可以存储在实现了 `LogStore` API 的远程日志服务中，例如 Kafka（remote WAL）。
-- Memtable
-  - 数据首先写入 `active memtable`，又称 `mutable memtable`。
-  - 当 `mutable memtable` 已满时，它将变为只读的 `immutable memtable`。
+- [Memtable](memtable.md)
+  - Mito 根据 time index 将数据行写入 mutable memtable。
+  - Flush 冻结 mutable memtable，安装一组新的 mutable memtable 以接收写入，再将冻结的 memtable 写为 SST 文件。
 - SST
   - SST 的全名为有序字符串表（`Sorted String Table`）。
   - `immutable memtable` 刷到持久存储后形成一个 SST 文件。
@@ -100,7 +100,9 @@ Mito 会按 primary key 对行分组，并按时间排序，因此 SST 中的数
 
 Mito 支持两种 SST 格式：`flat` 和 `primary_key`。`flat` 是新表的默认格式，适用于各种 primary key 基数，包括高基数 key。`primary_key` 是为了兼容旧表而保留的遗留格式。更多详情请参考 [SST format](/reference/sql/create.md#创建指定-sst-格式的表) 和[表设计指南](/user-guide/deployments-administration/performance-tuning/design-table.md#sst-格式)。
 
-<img src="/sst-layout.svg" alt="SST layout" style={{width: '80%', margin: '0 auto'}}/>
+![Mito 默认的 flat SST 布局将文件级元数据与包含数据列和合并元数据的 Parquet row group 组合在一起。](/mito-sst-layout.zh.svg)
+
+一个 SST 可能跨越多个 compaction time window。
 
 ## 扫描裁剪
 

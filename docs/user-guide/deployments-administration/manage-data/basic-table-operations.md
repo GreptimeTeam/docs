@@ -110,8 +110,9 @@ CREATE TABLE monitor (
 ```
 
 :::warning NOTE
-GreptimeDB does not currently support changing the TIME INDEX after a table has been created.
+GreptimeDB does not currently support changing the TIME INDEX column to another column after a table has been created.
 Therefore, it is important to carefully choose your TIME INDEX column before creating tables.
+However, you can use `ALTER TABLE ... MODIFY COLUMN` to widen the time index's timestamp unit to a finer one (for example, from milliseconds to microseconds) on tables that are not using the metric engine. For more information, see the [ALTER reference](/reference/sql/alter.md#modify-column-type).
 :::
 
 ### `CREATE TABLE` syntax

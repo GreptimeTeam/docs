@@ -155,7 +155,15 @@ Modify the date type of a column
 ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
-The modified column cannot be a tag (primary key) or time index, and it must be nullable to ensure that the data can be safely converted (returns `NULL` on cast failures).
+A modified field column cannot be a tag (primary key), and it must be nullable to ensure that the data can be safely converted (returns `NULL` on cast failures).
+
+The time index column is the exception: you can widen its timestamp unit to a finer one, for example, from `TIMESTAMP` (milliseconds) to `TIMESTAMP_US` (microseconds):
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
+```
+
+Widening the time index unit is lossless — existing data is read in the new unit without rewriting, and new writes can use the finer precision. Narrowing the unit (for example, from microseconds back to milliseconds) or changing the time index to a non-timestamp type is not allowed. This operation is not supported on tables using the [metric engine](/reference/about-greptimedb-engines.md).
 
 ### Set column default value
 
@@ -195,7 +203,7 @@ Currently following options are supported:
 - `sst_format`: the SST format of the table. The value can be `flat` or `primary_key`. A table supports changing the format in both directions: `primary_key` to `flat` and `flat` to `primary_key`.
 - `write_buffer_size`: the per-region write buffer stall threshold of the table. For a positive value such as `512MB`, GreptimeDB schedules a flush when mutable memtable usage reaches half the value, stalls writes at the value, and rejects writes at twice the value. The table option overrides `region_engine.mito.default_region_write_buffer_size`. Setting it to `0` explicitly disables the per-region limit even when the engine default is nonzero. Unsetting it removes the table override and falls back to the engine default.
 - `auto_flush_interval`: how long a region of this table may go without a flush before one is triggered. The value is a [time duration string](/reference/time-durations.md) and must be greater than zero. The table option overrides the engine-wide `region_engine.mito.auto_flush_interval`.
-- `skip_wal`: whether to disable Write-Ahead-Log for this table. When set to `'true'`, the data written to the table will not be persisted to the write-ahead log, which can improve write throughput. However, when the process restarts, any unflushed data will be lost. Please use this feature only when the data source itself can ensure reliability. You can change it from `false` to `true`, but you cannot change it back to `false` or unset it.
+- `skip_wal`: whether to disable Write-Ahead-Log for this table. When set to `'true'`, the data written to the table will not be persisted to the write-ahead log, which can improve write throughput. However, when the process restarts, any unflushed data will be lost. Please use this feature only when the data source itself can ensure reliability. You can change it from `false` to `true`, but you cannot change it back to `false` or unset it. Enabling it is only supported on physical tables using the `mito` or `metric` engine, and it must be set on its own: combining it with other table options in the same `ALTER TABLE` is rejected.
 - `max_row_group_row_count`: the maximum number of rows in a Parquet row group. The value must be from `1` through `10485760` (`10 * 1024 * 1024`); zero is rejected. Changing or unsetting this option flushes pending rows using the old row group size before applying the new value. The new value, or the default of `102400` (`100 * 1024`) after unsetting, applies to subsequently produced SSTs. The ALTER operation does not immediately rewrite existing SSTs; later compactions may rewrite them using the current row group size.
 
 ```sql

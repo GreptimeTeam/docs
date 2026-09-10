@@ -134,7 +134,7 @@ inputs = [ "my_source_id" ]
 compression = "gzip"
 dbname = "public"
 endpoint = "http://<host>:4000"
-extra_headers = { "skip_error" = "true" }
+extra_headers = { "x-greptime-pipeline-params" = "max_nested_levels=10" }
 pipeline_name = "greptime_identity"
 table = "<table>"
 username = "<username>"
@@ -142,7 +142,7 @@ password = "<password>"
 
 [sinks.my_sink_id.extra_params]
 source = "vector"
-x-greptime-pipeline-params = "max_nested_levels=10"
+skip_error = "true"
 ```
 
 This example demonstrates how to use `greptimedb_logs` sink to write generated demo logs data to GreptimeDB. For more information, please refer to [Vector greptimedb_logs sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_logs/) documentation.

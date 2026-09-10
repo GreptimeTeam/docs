@@ -5,6 +5,8 @@ description: Details on the arrangement component in Flownode, which stores stat
 
 # Arrangement
 
+This page describes state used by Flownode's legacy streaming mode. Batching mode does not use an Arrangement.
+
 Arrangement stores the state in the dataflow's process. It stores the streams of update flows for further querying and updating.
 
 The arrangement essentially stores key-value pairs with timestamps to mark their change time.

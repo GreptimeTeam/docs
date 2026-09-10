@@ -43,4 +43,4 @@ greptime standalone start --help
 greptime --log-dir=greptimedb_data/logs --log-level=info standalone start -c config/standalone.example.toml
 ```
 
-[`standalone.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0-beta.2/config/standalone.example.toml) 位于 GreptimeDB 仓库中。`-c` 选项用于选择配置文件，详见[配置](/user-guide/deployments-administration/configuration.md)。
+[`standalone.example.toml`](https://github.com/GreptimeTeam/greptimedb/blob/v1.2.0/config/standalone.example.toml) 位于 GreptimeDB 仓库中。`-c` 选项用于选择配置文件，详见[配置](/user-guide/deployments-administration/configuration.md)。

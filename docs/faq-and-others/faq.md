@@ -121,7 +121,13 @@ Yes. Use `ALTER TABLE ... MODIFY COLUMN` to change a field column's data type:
 ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
-The column must be a field (not a tag or time index) and must be nullable, so that values that cannot be cast return `NULL` instead of failing.
+The column must be a field (not a tag) and must be nullable, so that values that cannot be cast return `NULL` instead of failing.
+
+The time index column is the exception: its timestamp unit can be widened to a finer one (for example, from milliseconds to microseconds) on tables that are not using the metric engine:
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
+```
 
 For the full `ALTER TABLE` syntax, see the [SQL reference](/reference/sql/alter.md).
 

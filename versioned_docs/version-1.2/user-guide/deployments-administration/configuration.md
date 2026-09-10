@@ -209,6 +209,8 @@ timeout = "0s"
 body_limit = "64MB"
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
+prom_validation_mode = "strict"
+experimental_enable_prometheus_native_histogram = false
 experimental_enable_explain_analyze_stream = true
 # Enable the dedicated public HTTP API server (serves /v1 and /dashboard only)
 enable_api_server = false
@@ -267,13 +269,12 @@ trace_ingest_chunk_size = 512
 [prom_store]
 enable = true
 with_metric_engine = true
-prom_validation_mode = "strict"
-experimental_enable_prometheus_native_histogram = false
 pending_rows_flush_interval = "0s"
 max_batch_rows = 100000
 max_concurrent_flushes = 256
 worker_channel_capacity = 65526
 max_inflight_requests = 3000
+flow_notification_queue_capacity = 1024
 ```
 
 The following table describes the options in detail:
@@ -286,6 +287,8 @@ The following table describes the options in detail:
 |            | body_limit           | String  | HTTP max body size, "64MB" by default                                                                                                                                                                                                                                                                                                                                                      |
 |            | enable_cors          | Boolean | Whether to enable HTTP CORS support, true by default. |
 |            | cors_allowed_origins | Array   | Customized allowed origins for HTTP CORS. |
+|            | prom_validation_mode         | String  | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with [UTF-8 REPLACEMENT CHARACTER U+FFFD, which looks like �](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)), `unchecked`(do not validate strings). |
+|            | experimental_enable_prometheus_native_histogram | Boolean | Experimental: enable Prometheus remote write v2 native histogram ingestion, false by default. |
 |            | experimental_enable_explain_analyze_stream | Boolean | Experimental: enable `POST /v1/sql/analyze/stream` for streaming `EXPLAIN ANALYZE VERBOSE` metrics, true by default. |
 |            | enable_api_server    | Boolean | Whether to start the dedicated public HTTP API server. This server serves only the `/v1` APIs and `/dashboard`, making it safe to expose to end users. The main HTTP server (`addr`) is intended for internal use. Disabled by default; set to `true` to enable. |
 |            | api_server_addr      | String  | The address to bind the dedicated public HTTP API server, `"127.0.0.1:4006"` by default. Only takes effect when `enable_api_server` is `true`. |
@@ -313,13 +316,12 @@ The following table describes the options in detail:
 | prom_store |                              |         | Prometheus remote storage options                                                                                                                                                                                                                                                                                                                                                          |
 |            | enable                       | Boolean | Whether to enable Prometheus Remote Write and read in HTTP API, true by default                                                                                                                                                                                                                                                                                                            |
 |            | with_metric_engine           | Boolean | Whether to use the metric engine on Prometheus Remote Write, true by default                                                                                                                                                                                                                                                                                                               |
-|            | prom_validation_mode         | String  | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with [UTF-8 REPLACEMENT CHARACTER U+FFFD, which looks like �](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)), `unchecked`(do not validate strings). |
-|            | experimental_enable_prometheus_native_histogram | Boolean | Experimental: enable Prometheus remote write v2 native histogram ingestion, false by default. |
 |            | pending_rows_flush_interval  | String  | Interval between batch flushes for Prometheus Remote Write. Set to a non-zero duration (e.g. `500ms`) to enable [batching mode](/user-guide/ingest-data/for-observability/prometheus.md#batching-mode). `0s` by default (disabled)                                                                                                                                                     |
 |            | max_batch_rows               | Integer | Maximum number of rows per batch before a flush is triggered, 100000 by default                                                                                                                                                                                                                                                                                                            |
 |            | max_concurrent_flushes       | Integer | Maximum number of concurrent flush operations, 256 by default                                                                                                                                                                                                                                                                                                                              |
 |            | worker_channel_capacity      | Integer | Capacity of the internal worker channel for receiving rows, 65526 by default                                                                                                                                                                                                                                                                                                               |
 |            | max_inflight_requests        | Integer | Maximum number of in-flight write requests waiting for batch completion, 3000 by default                                                                                                                                                                                                                                                                                                   |
+|            | flow_notification_queue_capacity | Integer | Maximum number of pending logical-table flow notifications in the shared queue, 1024 by default. Only used in [batching mode](/user-guide/ingest-data/for-observability/prometheus.md#batching-mode). The value must be greater than 0. When the queue is full, notifications are dropped and counted by the `greptime_prom_store_flow_notification_dropped_total` metric. |
 | postgres   |                      |         | PostgresSQL server options                                                                                                                                                                                                                                                                                                                                                                 |
 |            | enable               | Boolean | Whether to enable PostgresSQL protocol, true by default                                                                                                                                                                                                                                                                                                                                    |
 |            | addr                 | String  | Server address, "127.0.0.1:4003" by default                                                                                                                                                                                                                                                                                                                                                |
@@ -506,6 +508,17 @@ default_ratio = 1.0
 
 How to use distributed tracing, please reference [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#tutorial-use-jaeger-to-trace-greptimedb)
 
+### Pipeline options
+
+`frontend` and `standalone` cache pipeline definitions in memory. The cache is configured in the `[pipeline]` section:
+
+```toml
+[pipeline]
+cache_ttl = "10s"
+```
+
+- `cache_ttl`: Time to live of the local pipeline cache, `10s` by default. In a cluster, a pipeline created or deleted on one Frontend takes effect on the other Frontends after at most this duration. A longer TTL reduces reads of the `greptime_private.pipelines` table and increases that delay.
+
 ### Event recording
 
 Recorded events are stored in the `greptime_private.events` system table.
@@ -530,10 +543,16 @@ create_database, alter_database, drop_database,
 create_flow, drop_flow,
 create_table, create_logical_tables, alter_table, alter_logical_tables,
 drop_table, undrop_table, purge_dropped_table, truncate_table,
-create_view, drop_view
+create_view, drop_view, admin_function
 ```
 
 `undrop_table` and `purge_dropped_table` require GreptimeDB Enterprise.
+
+In distributed deployments, the Frontend supports the following event type:
+
+```text
+admin_function
+```
 
 Metasrv supports the following event types:
 
@@ -596,20 +615,9 @@ create_on_compaction = "auto"
 apply_on_query = "auto"
 mem_threshold_on_create = "64M"
 intermediate_path = ""
-
-[region_engine.mito.memtable]
-type = "time_series"
 ```
 
-The `mito` engine provides an experimental memtable which optimizes for write performance and memory efficiency under large amounts of time-series. Its read performance might not as fast as the default `time_series` memtable.
-
-```toml
-[region_engine.mito.memtable]
-type = "partition_tree"
-index_max_keys_per_shard = 8192
-data_freeze_threshold = 32768
-fork_dictionary_bytes = "1GiB"
-```
+Mito selects the memtable implementation for each Region according to its table options and SST format. When `default_flat_format` is `true`, Regions without an explicit `sst_format` use flat SSTs and the bulk memtable. Configure `memtable.type` as a database or table option; `[region_engine.mito.memtable]` is not an engine setting. See [table options](/reference/sql/create.md#table-options).
 
 Available options:
 
@@ -644,7 +652,7 @@ Available options:
 | `scan_memory_on_exhausted`           | String  | `fail`       | Behavior when scan memory is exhausted. Options: `fail` (fail fast), `wait` or `wait(<duration>)` (wait for memory).                                                                                                                                                                                                                                                 |
 | `min_compaction_interval`           | String  | `0m`         | Minimum time interval between two compactions. Set to "0m" (default) to allow compactions to run immediately without restriction.                                                                                                                                                                                                                                             |
 | `schedule_compaction_after_edit`    | Bool    | `true`       | Whether to allow scheduling a compaction after a successful region edit.<br/>Setting this to `true` is a necessary but not sufficient condition for scheduling compaction after a region edit. Other constraints, such as `min_compaction_interval`, may still prevent compaction from being scheduled.<br/>Setting this to `false` guarantees that compaction will not be scheduled after a region edit. |
-| `default_flat_format`                | Bool    | `true`       | Whether to enable flat format as the default SST format.                                                                                                                                                                                                                                                                                                             |
+| `default_flat_format`                | Bool    | `true`       | Whether Regions without an explicit `sst_format` use flat SSTs. Flat SSTs use the bulk memtable.                                                                                                                                                                                                                                                                      |
 | `scan_parallelism`                       | Integer | `0`           | (Deprecated, use `max_concurrent_scan_files` instead) Legacy option for scan parallelism.                                                                                                                                                                                                                                                                                                              |
 | `index`                                  | --      | --            | The options for index in Mito engine.                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `index.aux_path`                         | String  | `""`          | Auxiliary directory path for the index in the filesystem. This path is used to store intermediate files for creating the index and staging files for searching the index. It defaults to `{data_home}/index_intermediate`. The default name for this directory is `index_intermediate` for backward compatibility. This path contains two subdirectories: `__intm` for storing intermediate files used during index creation, and `staging` for storing staging files used during index searching. |
@@ -660,10 +668,6 @@ Available options:
 | `inverted_index.apply_on_query`          | String  | `auto`        | Whether to apply the index on query<br/>- `auto`: automatically<br/>- `disable`: never                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `inverted_index.mem_threshold_on_create` | String  | `64M`         | Memory threshold for performing an external sort during index creation.<br/>Setting to empty will disable external sorting, forcing all sorting operations to happen in memory.                                                                                                                                                                                                                                                                                                                    |
 | `inverted_index.intermediate_path`       | String  | `""`          | File system path to store intermediate files for external sorting (default `{data_home}/index_intermediate`).                                                                                                                                                                                                                                                                                                                                                                                      |
-| `memtable.type`                          | String  | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (experimental)                                                                                                                                                                                                                                                                                                                                                                            |
-| `memtable.index_max_keys_per_shard`      | Integer | `8192`        | The max number of keys in one shard.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `memtable.data_freeze_threshold`         | Integer | `32768`       | The max rows of data inside the actively writing buffer in one shard.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                            |
-| `memtable.fork_dictionary_bytes`         | String  | `1GiB`        | Max dictionary bytes.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 The `metric` engine is optimized for handling metrics data with a large number of small tables.
 

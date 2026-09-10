@@ -24,7 +24,7 @@ receivers:
         endpoint: 0.0.0.0:4318
 
 exporters:
-  otlphttp/traces:
+  otlp_http/traces:
     endpoint: 'http://127.0.0.1:4000/v1/otlp'
     # auth:
     #   authenticator: basicauth/client
@@ -33,7 +33,7 @@ exporters:
       x-greptime-pipeline-name: 'greptime_trace_v1'
     tls:
       insecure: true
-  otlphttp/logs:
+  otlp_http/logs:
     endpoint: 'http://127.0.0.1:4000/v1/otlp'
     # auth:
     #   authenticator: basicauth/client
@@ -41,11 +41,11 @@ exporters:
       # x-greptime-db-name: '<your_db_name>'
       # x-greptime-log-table-name: '<table_name>'
       # x-greptime-pipeline-name: '<pipeline_name>'
-      # x-greptime-pipeline-params: '<key=value,...>'
+      # x-greptime-pipeline-params: '<key1=value1&key2=value2>'
     tls:
       insecure: true
 
-  otlphttp/metrics:
+  otlp_http/metrics:
     endpoint: 'http://127.0.0.1:4000/v1/otlp'
     # auth:
     #   authenticator: basicauth/client
@@ -59,16 +59,16 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [otlphttp/traces]
+      exporters: [otlp_http/traces]
     logs:
       receivers: [otlp]
-      exporters: [otlphttp/logs]
+      exporters: [otlp_http/logs]
     metrics:
       receivers: [otlp]
-      exporters: [otlphttp/metrics]
+      exporters: [otlp_http/metrics]
 ```
 
-在上面的配置中，我们定义了一个接收器 `otlp`，它可以接收来自 OpenTelemetry 的数据。我们还定义了三个导出器 `otlphttp/traces`、`otlphttp/logs` 和 `otlphttp/metrics`，它们将数据发送到 GreptimeDB 的 OTLP 路径。
+在上面的配置中，我们定义了一个接收器 `otlp`，它可以接收来自 OpenTelemetry 的数据。我们还定义了三个导出器 `otlp_http/traces`、`otlp_http/logs` 和 `otlp_http/metrics`，它们将数据发送到 GreptimeDB 的 OTLP 路径。
 
 基于 OTLP/HTTP 协议，我们增加了一些 header 用来指定参数，比如 `x-greptime-pipeline-name` 和 `x-greptime-log-table-name`:
 * `x-greptime-pipeline-name` 用来指定要使用的 pipeline 名称
