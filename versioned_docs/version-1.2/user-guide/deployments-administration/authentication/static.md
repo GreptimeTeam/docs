@@ -60,7 +60,7 @@ editor:rw=editor_pwd
 
 In this configuration:
 
-- `admin` has full read-write access (default)
+- `admin` has read-write access (default)
 - `alice` has read-only access
 - `bob` has write-only access
 - `viewer` has read-only access
@@ -114,6 +114,8 @@ Passwords are prefix-parsed. A legacy plaintext password that literally starts w
 SCRAM-SHA-256 lets PostgreSQL clients authenticate without sending the password in cleartext.
 
 GreptimeDB selects SCRAM-SHA-256 only when every configured user has a plaintext password (with or without `plain:`) or a `pg_scram_sha256:` verifier. These two formats can be mixed.
+
+With SCRAM-SHA-256, the server also sends an authentication challenge for an unknown username. After the client submits its proof, the server returns the same authentication failure result as for an incorrect password.
 
 :::warning
 A single `pbkdf2_sha256:` or `mysql_native_password:` entry makes PostgreSQL authentication fall back to cleartext for all users of that provider. A user with a `mysql_native_password:` verifier cannot authenticate through that fallback either, because the verifier cannot validate a cleartext password.

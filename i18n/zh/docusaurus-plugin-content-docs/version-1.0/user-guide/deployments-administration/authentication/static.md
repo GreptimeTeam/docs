@@ -5,7 +5,7 @@ description: 介绍了 GreptimeDB 的静态用户配置，允许通过配置文�
 
 # Static User Provider
 
-GreptimeDB 提供了简单的内置身份验证机制，允许你配置一个固定的帐户以方便使用，或者配置一个帐户文件以支持多个用户帐户。通过传入文件，GreptimeDB 会加载其中的所有用户。
+GreptimeDB 通过 `static_user_provider` 提供用户名和密码认证，在启动时从文件或命令行参数加载凭证。`watch_file_user_provider` 使用相同的文件格式，并在文件变更时重新加载凭证。
 
 ## 单机模式
 
@@ -21,20 +21,34 @@ alice=aaa
 bob=bbb
 ```
 
-以这种方式配置的用户默认拥有完整的读写权限。
+以这种方式配置的用户默认拥有读写权限。文件解析规则如下：
+
+- 每行的首尾空白会被移除，空行和以 `#` 开头的行会被忽略。
+- 每条凭证必须恰好包含一个 `=`，密码不能包含 `=`。
+- 用户名和密码中位于 `=` 两侧的空白不会被移除，不要在分隔符两侧添加空格。
+- 同一用户名出现多次时，最后一条有效记录生效。
+- 格式错误的记录会被跳过。文件必须存在且至少包含一条有效凭证，否则 provider 初始化失败。
+- 读取错误（包括无效 UTF-8）会终止后续解析，错误发生前读到的有效凭证仍可能被加载。
 
 ### 权限模式
 
-你可以选择性地指定权限模式来控制用户的访问级别。格式为：
+可通过可选的权限模式控制读写访问，格式为：
 
 ```
 username:permission_mode=password
 ```
 
-可用的权限模式：
-- `rw` 或 `readwrite` - 完整的读写权限（未指定时的默认值）
-- `ro` 或 `readonly` - 只读权限
-- `wo` 或 `writeonly` - 只写权限
+权限模式不区分大小写：
+
+- `rw`、`readwrite` 或 `read_write` - 读写权限（未指定时的默认值）
+- `ro`、`readonly` 或 `read_only` - 只读权限
+- `wo`、`writeonly` 或 `write_only` - 只写权限
+
+:::warning
+v1.0 中，无法识别的权限模式会退回读写权限。例如，`alice:readonyl=pwd` 会赋予 `alice` 读写权限。加载配置前应检查权限模式的拼写。
+:::
+
+这些权限模式不限定到单个数据库或表。
 
 混合权限模式的配置示例：
 
@@ -47,7 +61,8 @@ editor:rw=editor_pwd
 ```
 
 在此配置中：
-- `admin` 拥有完整的读写权限（默认）
+
+- `admin` 拥有读写权限（默认）
 - `alice` 拥有只读权限
 - `bob` 拥有只写权限
 - `viewer` 拥有只读权限
@@ -55,36 +70,37 @@ editor:rw=editor_pwd
 
 ### 启动服务器
 
-在启动服务端时，需添加 `--user-provider` 参数，并将其设置为 `static_user_provider:file:<path_to_file>`（请将 `<path_to_file>` 替换为你的用户配置文件路径）：
+启动时，将 `--user-provider` 设置为 `static_user_provider:file:<path_to_file>`，并将 `<path_to_file>` 替换为用户配置文件路径：
 
 ```shell
-./greptime standalone start --user-provider=static_user_provider:file:<path_to_file>
+./greptime standalone start --user-provider='static_user_provider:file:<path_to_file>'
 ```
 
-用户及其权限将被载入 GreptimeDB 的内存。使用这些用户账户连接至 GreptimeDB 时，系统会严格执行相应的访问权限控制。
+provider 在启动时将有效用户及其权限模式加载到内存中。文件修改后需重启服务器才能生效。
 
-:::tip 注意
-`static_user_provider:file` 模式下，文件的内容只会在启动时被加载到数据库中，在数据库运行时修改或追加的内容不会生效。
-:::
+也可以通过 `static_user_provider:cmd` 在命令行中配置凭证，使用逗号分隔多条记录：
+
+```shell
+./greptime standalone start --user-provider='static_user_provider:cmd:admin=admin_pwd,alice:ro=alice_pwd'
+```
+
+记录使用与文件相同的凭证语法。命令行中的明文密码不能包含 `,` 或 `=`，无效记录会导致 provider 初始化失败。命令行凭证可能出现在 shell 历史和进程列表中，部署时应使用凭证文件。
 
 ### 动态文件重载
 
-如果你需要在不重启服务器的情况下更新用户凭证，可以使用 `watch_file_user_provider` 替代 `static_user_provider:file`。该 provider 会监控凭证文件的变化并自动重新加载：
+`watch_file_user_provider` 监控凭证文件，无需重启服务器即可重新加载用户和权限模式：
 
 ```shell
-./greptime standalone start --user-provider=watch_file_user_provider:<path_to_file>
+./greptime standalone start --user-provider='watch_file_user_provider:<path_to_file>'
 ```
 
-`watch_file_user_provider`的特点：
-- 使用与 `static_user_provider:file` 相同的文件格式
-- 自动检测文件修改并重新加载凭证
-- 允许在不重启服务器的情况下添加、删除或修改用户
-- 如果文件临时不可用或无效，会保持上次有效的配置
+启动时，文件必须存在且至少包含一条有效凭证。重载时：
 
-这在需要动态管理用户访问的生产环境中特别有用。
+- 如果文件无法打开或没有有效凭证，provider 保留上一次配置。
+- 否则，加载到的凭证会替换上一次配置。格式错误的记录会被跳过，不会导致整个文件被拒绝。未出现在加载结果中的用户会被移除，包括记录变为无效的用户。
+
+重载不会断开已有的 MySQL 或 PostgreSQL 会话，也不会更新这些会话中已保存的用户信息。修改后的凭证和权限模式适用于后续认证。
 
 ## Kubernetes 集群
 
-你可以在 `values.yaml` 文件中配置鉴权用户。
-更多详情，请参考 [Helm Chart 配置](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#鉴权配置)。
-
+在 `values.yaml` 中配置鉴权用户，参见 [Helm Chart 配置](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#鉴权配置)。

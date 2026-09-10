@@ -5,7 +5,7 @@ description: Instructions for setting up static user authentication in GreptimeD
 
 # Static User Provider
 
-GreptimeDB offers a simple built-in mechanism for authentication, allowing users to configure either a fixed account for convenient usage or an account file for multiple user accounts. By passing in a file, GreptimeDB loads all users listed within it.
+GreptimeDB supports username/password authentication with `static_user_provider`, which loads credentials from a file or a command-line argument at startup. `watch_file_user_provider` uses the same file format and reloads credentials when the file changes.
 
 ## Standalone Mode
 
@@ -21,20 +21,34 @@ alice=aaa
 bob=bbb
 ```
 
-Users configured this way have full read-write access by default.
+Users configured this way have read-write access by default. File parsing follows these rules:
+
+- Blank lines and lines starting with `#` are ignored after trimming leading and trailing whitespace from each line.
+- Each credential must contain exactly one `=`. Passwords cannot contain `=`.
+- Whitespace around `=` is not removed from the username or password. Do not add spaces around the separator.
+- If a username appears more than once, the last valid entry takes effect.
+- Malformed entries are skipped. The file must exist and contain at least one valid credential; otherwise, provider initialization fails.
+- A read error, including invalid UTF-8, stops parsing. Valid credentials read before the error can still be loaded.
 
 ### Permission Modes
 
-You can optionally specify permission modes to control user access levels. The format is:
+An optional permission mode controls read and write access. The format is:
 
 ```
 username:permission_mode=password
 ```
 
-Available permission modes:
-- `rw` or `readwrite` - Full read and write access (default when not specified)
-- `ro` or `readonly` - Read-only access
-- `wo` or `writeonly` - Write-only access
+Permission modes are case-insensitive:
+
+- `rw`, `readwrite`, or `read_write` - Read and write access (default when omitted)
+- `ro`, `readonly`, or `read_only` - Read-only access
+- `wo`, `writeonly`, or `write_only` - Write-only access
+
+:::warning
+An unrecognized permission mode falls back to read-write access in v1.0. For example, `alice:readonyl=pwd` grants Alice read-write access. Check the spelling of permission modes before loading the configuration.
+:::
+
+These modes are not scoped to individual databases or tables.
 
 Example configuration with mixed permission modes:
 
@@ -47,7 +61,8 @@ editor:rw=editor_pwd
 ```
 
 In this configuration:
-- `admin` has full read-write access (default)
+
+- `admin` has read-write access (default)
 - `alice` has read-only access
 - `bob` has write-only access
 - `viewer` has read-only access
@@ -55,36 +70,37 @@ In this configuration:
 
 ### Starting the Server
 
-Start the server with the `--user-provider` parameter and set it to `static_user_provider:file:<path_to_file>` (replace `<path_to_file>` with the path to your user configuration file):
+Set `--user-provider` to `static_user_provider:file:<path_to_file>`, replacing `<path_to_file>` with the user configuration file path:
 
 ```shell
-./greptime standalone start --user-provider=static_user_provider:file:<path_to_file>
+./greptime standalone start --user-provider='static_user_provider:file:<path_to_file>'
 ```
 
-The users and their permissions will be loaded into GreptimeDB's memory. You can create connections to GreptimeDB using these user accounts with their respective access levels enforced.
+The provider loads valid users and their permission modes into memory at startup. File changes take effect only after a restart.
 
-:::tip Note
-When using `static_user_provider:file`, the file’s contents are loaded at startup. Changes or additions to the file have no effect while the database is running.
-:::
+Credentials can also be passed inline with `static_user_provider:cmd`. Separate entries with commas:
+
+```shell
+./greptime standalone start --user-provider='static_user_provider:cmd:admin=admin_pwd,alice:ro=alice_pwd'
+```
+
+The entries use the same credential syntax as the file. Inline plaintext passwords cannot contain `,` or `=`. Invalid entries fail provider initialization. Command-line credentials can appear in shell history and process listings; use a credential file for deployment.
 
 ### Dynamic File Reloading
 
-If you need to update user credentials without restarting the server, you can use the `watch_file_user_provider` instead of `static_user_provider:file`. This provider monitors the credential file for changes and automatically reloads it:
+`watch_file_user_provider` monitors a credential file and reloads users and permission modes without restarting the server:
 
 ```shell
-./greptime standalone start --user-provider=watch_file_user_provider:<path_to_file>
+./greptime standalone start --user-provider='watch_file_user_provider:<path_to_file>'
 ```
 
-The watch file provider:
-- Uses the same file format as the static file provider
-- Automatically detects file modifications and reloads credentials
-- Allows adding, removing, or modifying users without server restart
-- If the file is temporarily unavailable or invalid, it keeps the last valid configuration
+The file must exist and contain at least one valid credential at startup. On reload:
 
-This is particularly useful in production environments where you need to manage user access dynamically.
+- If the file cannot be opened or contains no valid credentials, the provider retains the previous configuration.
+- Otherwise, the loaded credentials replace the previous configuration. Malformed entries are skipped; they do not reject the entire file. Users omitted from the loaded result are removed, including users whose entries became invalid.
+
+Reloading does not disconnect existing MySQL or PostgreSQL sessions or update the user information already attached to them. Changed credentials and permission modes apply to subsequent authentication.
 
 ## Kubernetes Cluster
 
-You can configure the authentication users in the `values.yaml` file.
-For more details, please refer to the [Helm Chart Configuration](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#authentication-configuration).
-
+Configure users in `values.yaml`. See the [Helm Chart Configuration](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#authentication-configuration).

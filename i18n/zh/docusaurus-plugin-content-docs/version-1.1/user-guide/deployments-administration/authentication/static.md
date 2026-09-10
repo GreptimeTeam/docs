@@ -44,7 +44,9 @@ username:permission_mode=password
 - `ro`、`readonly` 或 `read_only` - 只读权限
 - `wo`、`writeonly` 或 `write_only` - 只写权限
 
-v1.1 中，无法识别的权限模式会退回读写权限。加载配置前应检查权限模式的拼写。
+:::warning
+v1.1 中，无法识别的权限模式会退回读写权限。例如，`alice:readonyl=pwd` 会赋予 `alice` 读写权限。加载配置前应检查权限模式的拼写。
+:::
 
 这些权限模式不限定到单个数据库或表。
 
@@ -60,7 +62,7 @@ editor:rw=editor_pwd
 
 在此配置中：
 
-- `admin` 拥有完整的读写权限（默认）
+- `admin` 拥有读写权限（默认）
 - `alice` 拥有只读权限
 - `bob` 拥有只写权限
 - `viewer` 拥有只读权限
