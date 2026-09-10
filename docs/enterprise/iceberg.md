@@ -177,7 +177,21 @@ admin flush_table('your_table');
 ```
 
 The metadata is published asynchronously; the table becomes queryable through the REST catalog shortly after the
-flush returns. Existing, already-flushed tables are exported automatically.
+flush returns.
+
+:::note Pre-existing tables are not exported automatically
+Automatic publication only covers manifest updates that happen **after** the plugin is enabled (flush, compaction,
+truncate) — there is no startup bootstrap that publishes SST files flushed earlier. A table whose data was already
+flushed **before** the integration was enabled therefore remains absent from the catalog until its next flush or
+compaction. To export such pre-existing tables, run the rebuild endpoint once per table:
+
+```bash
+curl -X POST \
+  "http://localhost:4000/v1/iceberg/v1/greptime/namespaces/public/tables/<table>/rebuild"
+```
+
+See [Rebuild / reconcile](#operational-notes) below for the details and caveats of a rebuild.
+:::
 
 ## Reading with pyiceberg
 
@@ -346,7 +360,8 @@ date, timestamp). A few things to be aware of, especially in Spark:
 - **Old Iceberg metadata is garbage-collected** alongside the data files by GreptimeDB's normal compaction and
   GC — no separate maintenance is required.
 - **Rebuild / reconcile.** If the Iceberg export ever diverges from GreptimeDB's ground truth (a failed publish,
-  corruption, or tables created before the integration was enabled), an operator can rebuild a table's Iceberg
+  corruption, or pre-existing tables that were never bootstrapped — see
+  [Make a table readable](#make-a-table-readable)), an operator can rebuild a table's Iceberg
   metadata from scratch from the authoritative live SST set:
 
   ```bash

@@ -153,7 +153,18 @@ GreptimeDB 在 flush 时发布 Iceberg 元数据，因此新写入的数据会�
 admin flush_table('your_table');
 ```
 
-元数据是异步发布的；flush 返回后不久，该表即可通过 REST catalog 查询。已经 flush 过的现有表会被自动导出。
+元数据是异步发布的；flush 返回后不久，该表即可通过 REST catalog 查询。
+
+:::note 存量表不会被自动导出
+自动发布仅覆盖**启用插件之后**发生的 manifest 更新（flush、compaction、truncate）——不存在启动时的引导（bootstrap）过程去发布更早 flush 的 SST 文件。因此，在启用集成**之前**数据就已 flush 的表，在下一次 flush 或 compaction 之前不会出现在 catalog 中。若要导出这类存量表，请对每张表执行一次 rebuild 接口：
+
+```bash
+curl -X POST \
+  "http://localhost:4000/v1/iceberg/v1/greptime/namespaces/public/tables/<table>/rebuild"
+```
+
+rebuild 的详细说明与注意事项见下文[运维说明](#运维说明)中的「Rebuild / 对账」。
+:::
 
 ## 使用 pyiceberg 读取
 
@@ -290,7 +301,7 @@ ORDER BY host;
 
 - **元数据异步发布。** 新写入的行会在下一次 flush 或 compaction 之后出现在 Iceberg 中；可手动 flush 表（`admin flush_table('<table>')`）以立即暴露它们。
 - **旧 Iceberg 元数据会被回收**，与数据文件一起由 GreptimeDB 正常的 compaction 和 GC 处理——无需单独维护。
-- **Rebuild / 对账。** 如果 Iceberg 导出与 GreptimeDB 的真实状态出现偏差（发布失败、损坏，或在启用集成之前创建的表），运维人员可以从权威的存活 SST 集合重建一张表的 Iceberg 元数据：
+- **Rebuild / 对账。** 如果 Iceberg 导出与 GreptimeDB 的真实状态出现偏差（发布失败、损坏，或从未被引导发布的存量表——见[让表可被读取](#让表可被读取)），运维人员可以从权威的存活 SST 集合重建一张表的 Iceberg 元数据：
 
   ```bash
   curl -X POST \
