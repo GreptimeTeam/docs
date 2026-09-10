@@ -180,7 +180,7 @@ curl -X POST \
   "http://localhost:4000/v1/iceberg/v1/greptime/namespaces/public/tables/<table>/rebuild"
 ```
 
-rebuild 的详细说明与注意事项见下文[运维说明](#运维说明)中的「Rebuild / 对账」。
+rebuild 的详细说明与注意事项见下文[运维说明](#运维说明)中的「Rebuild」。
 :::
 
 ## 使用 pyiceberg 读取
@@ -306,7 +306,7 @@ ORDER BY host;
 
 - **将时间索引声明为 `TIMESTAMP(6)`。** GreptimeDB 默认的 `TIMESTAMP` 是毫秒精度，但 Iceberg schema 将该列声明为 `timestamptz`（微秒）。若列是毫秒精度，Spark 的 Parquet row-group 统计信息过滤会用微秒谓词去比较毫秒的文件统计，可能错误地丢弃 row-group，导致 `>`、`=` 和范围查询出错。将时间索引声明为 `TIMESTAMP(6)` 可使磁盘上的 Parquet 微秒精度与 schema 一致，所有比较运算符即可正确工作。（秒/毫秒值本身仍被正确存储；该问题纯粹出在基于文件统计的谓词下推。）
 
-  已存在的表无需为此重建：以秒或毫秒精度声明的时间索引可以通过 `ALTER TABLE` 原地拓宽。该变更是无损的——现有数据会以新单位读取，无需重写，新写入也可以使用更细的精度：
+  已存在的表无需为此重新创建：以秒或毫秒精度声明的时间索引可以通过 `ALTER TABLE` 原地拓宽。该变更是无损的——现有数据会以新单位读取，无需重写，新写入也可以使用更细的精度：
 
   ```sql
   ALTER TABLE demo MODIFY COLUMN ts TIMESTAMP_US;
@@ -326,7 +326,7 @@ ORDER BY host;
 
 - **元数据异步发布。** 新写入的行会在下一次 flush 或 compaction 之后出现在 Iceberg 中；可手动 flush 表（`admin flush_table('<table>')`）以立即暴露它们。
 - **旧 Iceberg 元数据会被回收**，与数据文件一起由 GreptimeDB 正常的 compaction 和 GC 处理——无需单独维护。
-- **Rebuild / 对账。** 如果 Iceberg 导出与 GreptimeDB 的真实状态出现偏差（发布失败、损坏，或从未被引导发布的存量表——见[让表可被读取](#让表可被读取)），运维人员可以从权威的存活 SST 集合重建一张表的 Iceberg 元数据：
+- **Rebuild。** 如果 Iceberg 导出与 GreptimeDB 的真实状态出现偏差（发布失败、损坏，或从未被引导发布的存量表——见[让表可被读取](#让表可被读取)），运维人员可以从权威的存活 SST 集合重建一张表的 Iceberg 元数据：
 
   ```bash
   curl -X POST \
