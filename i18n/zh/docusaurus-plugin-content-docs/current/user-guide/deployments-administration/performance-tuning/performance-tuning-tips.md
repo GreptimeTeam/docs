@@ -168,7 +168,7 @@ CREATE TABLE logs(
 | greptime_mito_write_stall_total | counter | 由于高内存压力或临时 region 状态而被阻塞的写入请求总数。 |
 | greptime_mito_write_reject_total | counter | 由于内存压力过高而被拒绝的写入请求数。 |
 | raft_engine_sync_log_duration_seconds_bucket | histogram | 将 WAL 刷入磁盘的耗时。 |
-| greptime_logstore_op_elapsed_bucket          | histogram | log-store 操作的耗时，有限延迟桶扩展至 60 秒。                                 |
+| greptime_logstore_op_elapsed_bucket | histogram | WAL log-store 操作（例如 Kafka append）的耗时。可结合 `logstore` 和 `optype` 标签区分不同存储与操作类型。 |
 | greptime_mito_flush_requests_total | counter | 已调度的 flush 请求数。 |
 | greptime_mito_flush_elapsed | histogram | 刷入 SST 文件的耗时。 |
 | greptime_mito_flush_bytes_total | counter | flush 到 SST 文件的字节数。 |

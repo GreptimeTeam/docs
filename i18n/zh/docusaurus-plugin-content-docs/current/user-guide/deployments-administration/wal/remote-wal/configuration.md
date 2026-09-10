@@ -32,6 +32,8 @@ num_topics = 64
 replication_factor = 1
 topic_name_prefix = "greptimedb_wal_topic"
 create_topic_timeout = "30s"
+connect_timeout = "3s"
+timeout = "5s"
 
 ```
 
@@ -51,6 +53,8 @@ create_topic_timeout = "30s"
 | `flush_trigger_size`       | 触发 region flush 操作的预估大小阈值（如 `"512MB"`）。计算公式为 `(latest_entry_id - flushed_entry_id) * avg_record_size`。当此值超过 `flush_trigger_size` 时，MetaSrv 会触发 region flush 操作。设为 `"0"` 时由系统自动控制。该配置还可控制 region 重放期间从 topic 重放的最大数据量，较小的值有助于缩短 Datanode 启动时的重放时间。 |
 | `checkpoint_trigger_size`  | 触发 region checkpoint 操作的预估大小阈值（如 `"128MB"`）。计算公式为 `(latest_entry_id - last_checkpoint_entry_id) * avg_record_size`。当此值超过 `checkpoint_trigger_size` 时，MetaSrv 会启动检查点操作。设为 `"0"` 时由系统自动控制。较小的值有助于缩短 Datanode 启动时的重放时间。                                 |
 | `create_topic_timeout`     | 创建 Kafka topic 的超时时间，默认值为 `"30s"`。                                                                                                                                                                                                                                                      |
+| `connect_timeout`          | Metasrv 创建 topic 所用 Kafka 客户端的连接超时时间，默认值为 `"3s"`。                                                                                                                                                                                                                                                   |
+| `timeout`                  | Metasrv 发起 Kafka 请求的总超时时间，覆盖发送请求和等待响应两个阶段，默认值为 `"5s"`。                                                                                                                                                                                                                                 |
 
 #### Kafka Topic 与权限要求
 
@@ -91,7 +95,7 @@ timeout = "5s"
 | `create_index`             | 是否为各个 Region 创建 Kafka WAL 索引，默认值为 `false`，且仅在分布式模式下生效。索引可以减少恢复期间的 Kafka 读取量，但仅建议在确认单个 Region 恢复存在明显读取放大后启用。Datanode 每隔 `dump_index_interval`（默认值为 `"60s"`）将索引持久化到对象存储，这会产生持续的对象存储 I/O。 |
 | `overwrite_entry_start_id` | 若设为 `true`，在 WAL 回放时跳过缺失的 entry，避免 out-of-range 错误（但可能掩盖数据丢失）。 |
 | `connect_timeout`          | Kafka 客户端的连接超时时间，默认值为 `"3s"`。                                                 |
-| `timeout`                  | Kafka 客户端的总请求超时时间，默认值为 `"5s"`。                                                 |
+| `timeout`                  | Kafka 客户端单次请求的总超时时间，覆盖发送请求和等待响应两个阶段，默认值为 `"5s"`。           |
 
 
 #### 注意事项与限制
