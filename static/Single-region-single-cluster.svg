@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title description">
+  <title id="title">GreptimeDB single cluster deployed in a single region</title>
+  <desc id="description">A cluster in one region: stateless Frontend replicas and Metasrv replicas above two availability zones, each of which can be a data center or a compartment of one. Datanode 1 in AZ A is unavailable, and Region Failover reopens its regions on the healthy Datanode 2 in AZ B. The Datanodes share the remote WAL and the object storage below them, while Metasrv keeps its state in the metadata backend. The loss of the whole region is not covered.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="failover-arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="arrow-left" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
+    </marker>
+    <style>
+      .title { font: 600 20px Arial, sans-serif; fill: #170128; }
+      .label { font: 17px Arial, sans-serif; fill: #39314a; }
+      .small { font: 15px Arial, sans-serif; fill: #5b5470; }
+      .zone-label { font: 600 16px Arial, sans-serif; fill: #6b638a; }
+      .dc { fill: #fbfaff; stroke: #8a7fd0; stroke-width: 2; stroke-dasharray: 12 8; }
+      .zone { fill: #ffffff; stroke: #b9b3d6; stroke-width: 2; stroke-dasharray: 8 6; }
+      .node { fill: #f8f7ff; stroke: #6f6fff; stroke-width: 2; }
+      .failed { fill: #fff4f4; stroke: #d64545; stroke-width: 2; }
+      .failed-title { font: 600 20px Arial, sans-serif; fill: #a32a2a; }
+      .region { fill: #eef0ff; stroke: #6f6fff; stroke-width: 1.5; }
+      .region-lost { fill: #f6f5f8; stroke: #b6b0c4; stroke-width: 1.5; stroke-dasharray: 6 5; }
+      .region-moved { fill: #edf9f1; stroke: #2a9d5c; stroke-width: 1.5; stroke-dasharray: 6 5; }
+      .region-label { font: 15px Arial, sans-serif; fill: #39314a; }
+      .infra { fill: #eefaff; stroke: #2491ad; stroke-width: 2; }
+      .flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#arrow); }
+      .bus { fill: none; stroke: #6f6fff; stroke-width: 2.5; }
+      .meta-flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#arrow-left); }
+      .failover { fill: none; stroke: #2a9d5c; stroke-width: 3; marker-end: url(#failover-arrow); }
+      .failover-label { font: 600 16px Arial, sans-serif; fill: #2a9d5c; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="700" fill="#ffffff"/>
+
+  <rect class="dc" x="40" y="30" width="1120" height="590" rx="20"/>
+  <text class="zone-label" x="66" y="60">Single region</text>
+
+  <rect class="node" x="90" y="80" width="460" height="90" rx="14"/>
+  <text class="title" x="320" y="115" text-anchor="middle">Frontend × N</text>
+  <text class="small" x="320" y="145" text-anchor="middle">Stateless, behind a load balancer</text>
+
+  <rect class="node" x="610" y="80" width="460" height="90" rx="14"/>
+  <text class="title" x="840" y="115" text-anchor="middle">Metasrv × 3</text>
+  <text class="small" x="840" y="145" text-anchor="middle">Leader election; state in the metadata backend</text>
+
+  <path class="bus" d="M320 170 L320 188 L840 188 L840 170"/>
+  <path class="flow" d="M320 188 L320 205"/>
+  <path class="flow" d="M840 188 L840 205"/>
+
+  <rect class="zone" x="90" y="210" width="440" height="230" rx="14"/>
+  <text class="zone-label" x="112" y="238">AZ A · a DC or a compartment of one</text>
+
+  <rect class="failed" x="113" y="252" width="394" height="168" rx="12"/>
+  <text class="failed-title" x="310" y="286" text-anchor="middle">Datanode 1 · unavailable</text>
+  <rect class="region-lost" x="136" y="310" width="165" height="44" rx="8"/>
+  <text class="region-label" x="218" y="338" text-anchor="middle">Region 1</text>
+  <rect class="region-lost" x="316" y="310" width="165" height="44" rx="8"/>
+  <text class="region-label" x="398" y="338" text-anchor="middle">Region 2</text>
+  <text class="small" x="310" y="388" text-anchor="middle">Local WAL and local disk are gone with the node</text>
+
+  <rect class="zone" x="630" y="210" width="440" height="230" rx="14"/>
+  <text class="zone-label" x="652" y="238">AZ B · a DC or a compartment of one</text>
+
+  <rect class="node" x="653" y="252" width="394" height="168" rx="12"/>
+  <text class="title" x="850" y="286" text-anchor="middle">Datanode 2 · healthy</text>
+  <rect class="region" x="676" y="310" width="165" height="44" rx="8"/>
+  <text class="region-label" x="758" y="338" text-anchor="middle">Region 3</text>
+  <rect class="region-moved" x="856" y="310" width="165" height="44" rx="8"/>
+  <text class="region-label" x="938" y="338" text-anchor="middle">Region 1, 2</text>
+  <text class="small" x="850" y="388" text-anchor="middle">Needs spare capacity to carry the extra regions</text>
+
+  <path class="failover" d="M507 332 L653 332"/>
+  <text class="failover-label" x="580" y="312" text-anchor="middle">Region</text>
+  <text class="failover-label" x="580" y="374" text-anchor="middle">Failover</text>
+
+  <path class="bus" d="M320 440 L320 458 L840 458 L840 440"/>
+  <path class="bus" d="M240 458 L840 458"/>
+  <path class="flow" d="M240 458 L240 478"/>
+  <path class="flow" d="M580 458 L580 478"/>
+  <path class="bus" d="M1070 125 L1110 125 L1110 530"/>
+  <path class="meta-flow" d="M1110 530 L1072 530"/>
+
+  <rect class="infra" x="90" y="480" width="300" height="100" rx="12"/>
+  <text class="title" x="240" y="518" text-anchor="middle">Remote WAL</text>
+  <text class="small" x="240" y="548" text-anchor="middle">Kafka; replicated brokers</text>
+
+  <rect class="infra" x="430" y="480" width="300" height="100" rx="12"/>
+  <text class="title" x="580" y="518" text-anchor="middle">Object storage</text>
+  <text class="small" x="580" y="548" text-anchor="middle">SSTables and index</text>
+
+  <rect class="infra" x="770" y="480" width="300" height="100" rx="12"/>
+  <text class="title" x="920" y="518" text-anchor="middle">Metadata backend</text>
+  <text class="small" x="920" y="548" text-anchor="middle">etcd, MySQL or PostgreSQL</text>
+
+  <text class="label" x="600" y="665" text-anchor="middle">Covers the loss of a node or an AZ. The region itself is a single failure domain here.</text>
+</svg>
