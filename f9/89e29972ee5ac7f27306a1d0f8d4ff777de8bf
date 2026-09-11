@@ -1,0 +1,27 @@
+docs/user-guide/ingest-data/for-iot/sql.md
+  s_17567755245fea::t_ef531704da65d1 78,80,86-92
+docs/user-guide/protocols/grpc.md
+  s_17567755245fea::t_b89546fe928184 12,14,16-22
+docs/user-guide/protocols/http.md
+  s_17567755245fea::t_2c825dba672bf9 68,70,81-87,117-118
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/ingest-data/for-iot/sql.md
+  s_17567755245fea::t_6fdc58037ab6af 76,78,84-89
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/protocols/http.md
+  s_17567755245fea::t_d118a5eaa202b8 64,66,77-82,112-113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f989e29972ee5ac7f27306a1d0f8d4ff777de8bf",
+  "prompts": {},
+  "sessions": {
+    "s_17567755245fea": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08e6f-7c57-77b3-b260-c390adeb4275",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
