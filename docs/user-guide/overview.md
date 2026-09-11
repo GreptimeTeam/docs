@@ -1,72 +1,53 @@
 ---
-keywords: [metrics, logs, observability, SQL support, range queries, flow computation, data model, protocols]
-description: Learn how to use GreptimeDB according to your use case, including data ingestion, querying, and administration.
+keywords: [user guide, data ingestion, querying, flow computation, deployment, migration, protocols]
+description: Entry point for running GreptimeDB — ingesting data, querying it, processing it, and operating a deployment.
 ---
 
 # User Guide
 
-Welcome to the user guide for GreptimeDB.
+This guide covers running GreptimeDB: getting data in, querying it, processing it, and operating a deployment. For the data model and architecture behind these tasks, see [Concepts](./concepts/overview.md). To install GreptimeDB and run a first query, start with the [Quick Start](/getting-started/quick-start.md).
 
-GreptimeDB is the unified observability database for metrics, logs, and traces,
-providing real-time insights from Edge to Cloud at any scale.
+<AnchorAlias id="ingesting-data-based-on-your-use-case" />
 
-## Understanding GreptimeDB Concepts
+## Ingest Data
 
-Before diving into GreptimeDB,
-it is recommended to familiarize yourself with its data model, key concepts, and features.
-For a comprehensive overview, 
-refer to the [Concepts Documentation](./concepts/overview.md).
+[Ingest Data](./ingest-data/overview.md) maps each data source to the protocol it writes with and the guide that covers it. Tables and columns are created as data arrives, so no schema has to be defined in advance.
 
-## Ingesting Data Based on Your Use Case
+Two signals have their own guides because storing them involves more than a write protocol:
 
-GreptimeDB supports [multiple protocols](./protocols/overview.md) and [various integration tools](./integrations/overview.md) to simplify data ingestion tailored to your requirements.
+- [Logs](./logs/overview.md) — parse and transform text logs with pipelines before they are stored.
+- [Traces](./traces/overview.md) — store OTLP traces and query them with SQL or the Jaeger-compatible API.
 
-### For Observability Scenarios
+<AnchorAlias id="querying-data-for-insights" />
 
-If you plan to use GreptimeDB as metrics, logs and traces storage for observability purposes,
-see the [Observability Documentation](./ingest-data/for-observability/overview.md).
-It explains how to ingest data using tools like Otel-Collector, Vector, Kafka, Prometheus, and the InfluxDB line protocol.
+## Query Data
 
-For a log storage solution,
-refer to the [Logs Documentation](./logs/overview.md).
-It details how to ingest pattern text logs using pipelines.
+- [SQL](./query-data/sql.md) — queries across metrics, logs, and traces, including range queries, CTEs, joins, and views.
+- [PromQL](./query-data/promql.md) — metric queries through the Prometheus HTTP API, or `TQL` inside SQL.
+- [Jaeger API](./query-data/jaeger.md) — trace queries from Jaeger UI or Grafana.
 
-For a trace storage solution,
-refer to the [Traces Documentation](./traces/overview.md).
-It explains how to ingest trace data using OpenTelemetry and query it with Jaeger.
+The [query overview](./query-data/overview.md) compares the three interfaces.
 
-### For IoT and Edge Computing Scenarios
+<AnchorAlias id="accelerating-queries-with-indexes" />
 
-For IoT and Edge Computing scenarios,
-the [IoT Documentation](./ingest-data/for-iot/overview.md) provides comprehensive guidance on ingesting data from diverse sources.
+## Process and Describe Data
 
-## Querying Data for Insights
+- [Flow](./flow-computation/overview.md) — continuous aggregation from incoming rows into sink tables.
+- [Data Index](./manage-data/data-index.md) — inverted, skipping, and full-text indexes, and when each one pays off.
+- [Manage Data](./manage-data/overview.md) — updates, deletes, TTL policies, and compaction.
+- [Semantic Layer](./semantic-layer/overview.md) — metadata recording what each table holds and which entities its rows describe.
+- [Vector Storage](./vectors/vector-type.md) — the vector data type and similarity search.
 
-GreptimeDB offers robust interfaces for [querying data](./query-data/overview.md).
+<AnchorAlias id="migrating-to-greptimedb-from-other-databases" />
+<AnchorAlias id="administering-and-deploying-greptimedb" />
 
-### SQL Support
+## Deploy and Operate
 
-You can use SQL for range queries, aggregations, and more.
-For detailed instructions, see the [SQL Query Documentation](./query-data/sql.md). 
+- [Deployments & Administration](./deployments-administration/overview.md) — Kubernetes and bare-metal deployment, capacity planning, WAL modes, monitoring, disaster recovery, and Region operations.
+- [Migrate to GreptimeDB](./migrate-to-greptimedb/overview.md) — protocol, query, dashboard, and historical-data changes when moving from Prometheus, InfluxDB, Loki, Elasticsearch, or MySQL.
+- [Time Zone](./timezone.md) — how the session time zone affects ingestion and query results.
 
-### Prometheus Query Language (PromQL)
+## Connect Other Tools
 
-GreptimeDB supports PromQL for querying data. Refer to the [PromQL Documentation](./query-data/promql.md) for guidance. 
-
-### Flow Computation
-
-For real-time data processing and analysis, GreptimeDB provides [Flow Computation](./flow-computation/overview.md), enabling continuous aggregations on incoming time-series data.
-
-## Accelerating Queries with Indexes
-
-Indexes such as inverted indexes, skipping indexes, and full-text indexes can significantly enhance query performance.
-Learn more about effectively using these indexes in the [Data Index Documentation](./manage-data/data-index.md).
-
-## Migrating to GreptimeDB from Other Databases
-
-Migrating data from other databases to GreptimeDB is straightforward.
-Follow the step-by-step instructions in the [Migration Documentation](./migrate-to-greptimedb/overview.md).
-
-## Administering and Deploying GreptimeDB
-
-When you're ready to deploy GreptimeDB, consult the [Deployment & Administration Documentation](/user-guide/deployments-administration/overview.md) for detailed guidance on deployment and management.
+- [Protocols](./protocols/overview.md) — the wire protocols GreptimeDB speaks, and the boundaries of each one.
+- [Integrations](./integrations/overview.md) — Grafana, Superset, Metabase, Flink, Spark, the MCP Server, and other tools that connect to GreptimeDB.

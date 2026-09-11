@@ -1,32 +1,47 @@
 ---
-keywords: [data ingestion, automatic schema generation, observability, IoT, real-time monitoring]
-description: Overview of data ingestion methods in GreptimeDB, including automatic schema generation and recommended methods for different scenarios.
+keywords: [data ingestion, ingestion protocols, automatic schema generation, observability, IoT]
+description: Maps each data source to the protocol it writes with and the guide that covers it, and explains automatic schema generation.
 ---
 
 # Ingest Data
 
-GreptimeDB supports automatic schema generation and flexible data ingestion methods,
-enabling you to easily write data tailored to your specific scenarios.
+GreptimeDB accepts data through established observability and database protocols, so most sources write to it without a custom client. This page maps each source to the protocol it writes with and the guide that covers it.
+
+<AnchorAlias id="recommended-data-ingestion-methods" />
+
+## Choose an Ingestion Path
+
+| Data comes from | Writes with | Guide |
+| --- | --- | --- |
+| OpenTelemetry SDK | OTLP/HTTP | [OpenTelemetry Protocol (OTLP)](./for-observability/opentelemetry.md) |
+| OpenTelemetry Collector | OTLP/HTTP exporter | [OTel Collector](./for-observability/otel-collector.md) |
+| Prometheus | Remote Write | [Prometheus](./for-observability/prometheus.md) |
+| Grafana Alloy | Remote Write, OTLP, or Loki | [Grafana Alloy](./for-observability/alloy.md) |
+| Loki clients | Loki Push API | [Loki](./for-observability/loki.md) |
+| Elasticsearch clients | Bulk API | [Elasticsearch](./for-observability/elasticsearch.md) |
+| Splunk shippers | HTTP Event Collector (HEC) | [Splunk](./for-observability/splunk.md) |
+| Vector | GreptimeDB sink | [Vector](./for-observability/vector.md) |
+| Fluent Bit | HTTP output plugin | [Fluent Bit](./for-observability/fluent-bit.md) |
+| Kafka topics | Vector as the transport | [Kafka](./for-observability/kafka.md) |
+| Telegraf or InfluxDB clients | InfluxDB line protocol | [InfluxDB Line Protocol](./for-iot/influxdb-line-protocol.md) |
+| OpenTSDB clients | `/opentsdb/api/put` | [OpenTSDB](./for-iot/opentsdb.md) |
+| MQTT devices | EMQX data integration | [EMQX](./for-iot/emqx.md) |
+| Your own application | gRPC SDK for Go or Java | [gRPC SDKs](./for-iot/grpc-sdks/overview.md) |
+| Existing SQL tooling | MySQL or PostgreSQL protocol | [SQL](./for-iot/sql.md) |
+| Flink jobs | GreptimeDB connector | [Apache Flink](/user-guide/integrations/flink.md) |
+| Spark jobs | GreptimeDB connector | [Apache Spark](/user-guide/integrations/spark.md) |
+
+The same guides are also grouped by scenario, in [observability sources](./for-observability/overview.md) and [IoT sources](./for-iot/overview.md).
+
+Text logs and traces need more than a write protocol. See [Logs](/user-guide/logs/overview.md) for parsing and transforming logs with pipelines, and [Traces](/user-guide/traces/overview.md) for storing and querying OTLP traces.
 
 ## Automatic Schema Generation
 
-GreptimeDB supports schemaless writing, automatically creating tables and adding necessary columns as data is ingested.
-This capability ensures that you do not need to manually define schemas beforehand, making it easier to manage and integrate diverse data sources seamlessly.
-<!-- TODO: add links to protocols and integrations -->
-This feature is supported for all protocols and integrations, except
-[SQL](./for-iot/sql.md), [Apache Flink](/user-guide/integrations/flink.md), and
-[Apache Spark](/user-guide/integrations/spark.md).
+GreptimeDB accepts schemaless writes: it creates the table and adds columns as data arrives, so no schema has to be defined in advance.
 
-## Recommended Data Ingestion Methods
-
-GreptimeDB supports various data ingestion methods for specific scenarios, ensuring optimal performance and integration flexibility.
-
-- [For Observability Scenarios](./for-observability/overview.md): Suitable for real-time monitoring and alerting.
-- [For IoT Scenarios](./for-iot/overview.md): Suitable for real-time data and complex IoT infrastructures.
-- [Apache Flink](/user-guide/integrations/flink.md): Use Flink SQL, the Table API, or the DataStream API to write insert-only records to GreptimeDB.
-- [Apache Spark](/user-guide/integrations/spark.md): Write batch DataFrames and Structured Streaming micro-batches to GreptimeDB.
+All protocols and integrations support this except [SQL](./for-iot/sql.md), [Apache Flink](/user-guide/integrations/flink.md), and [Apache Spark](/user-guide/integrations/spark.md).
 
 ## Next Steps
 
-- [Query Data](/user-guide/query-data/overview.md): Learn how to explore your data by querying your GreptimeDB database.
-- [Manage Data](/user-guide/manage-data/overview.md): Learn how to update and delete data, etc., to ensure data integrity and efficient data management.
+- [Query Data](/user-guide/query-data/overview.md) — SQL, PromQL, and the Jaeger-compatible API.
+- [Manage Data](/user-guide/manage-data/overview.md) — updates, deletes, TTL policies, and compaction.

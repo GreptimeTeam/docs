@@ -1,75 +1,53 @@
 ---
-keywords: [概述, 可观测, 物联网, 日志存储, 边缘计算, SQL 查询, 数据处理, 数据模型, 范围查询]
-description: 了解如何根据你的使用场景使用 GreptimeDB，包括数据写入、查询和管理。
+keywords: [用户指南, 数据写入, 数据查询, Flow 计算, 部署运维, 迁移, 协议]
+description: GreptimeDB 使用指南的入口，覆盖数据写入、查询、处理，以及部署和运维。
 ---
 
 # 用户指南
 
-欢迎使用 GreptimeDB 用户指南。
+本指南覆盖 GreptimeDB 的使用：把数据写进来、查询、处理，以及部署和运维。这些任务背后的数据模型和架构见[概念](./concepts/overview.md)。第一次安装并跑通一个查询，从[快速开始](/getting-started/quick-start.md)入手。
 
-GreptimeDB 是用于指标、事件和日志的统一可观测性数据库，
-可提供从边缘到云的任何规模的实时洞察。
+<AnchorAlias id="根据你的使用场景写入数据" />
 
-## 理解 GreptimeDB 的概念
+## 写入数据
 
-在深入了解 GreptimeDB 之前，
-建议先熟悉数据模型、关键概念和功能。
-请参阅 [概念文档](./concepts/overview.md)。
+[写入数据](./ingest-data/overview.md)按数据来源列出对应的写入协议和文档。表和列在数据到达时自动创建，不需要预先定义 schema。
 
-## 根据你的使用场景写入数据
+有两类信号除写入协议外还涉及存储前的处理，因此单列文档：
 
-GreptimeDB 支持[多种协议](./protocols/overview.md)和[集成工具](./integrations/overview.md)，
-以便根据你的需求写入数据。
+- [日志](./logs/overview.md)——用 Pipeline 解析和转换文本日志后再入库。
+- [链路追踪](./traces/overview.md)——存储 OTLP trace，并用 SQL 或 Jaeger 兼容接口查询。
 
-### 可观测性指标场景
+<AnchorAlias id="查询数据以获取洞察" />
 
-如果你计划将 GreptimeDB 用于存储可观测性指标、日志和链路追踪，
-请参阅[可观测性文档](./ingest-data/for-observability/overview.md)。
-该文档解释了如何使用 Otel-Collector, Vector、Kafka、Prometheus 和 InfluxDB 行协议等工具导入数据。
+## 查询数据
 
-对于日志存储解决方案，
-请参考 [日志文档](./logs/overview.md)。
-该文档详细说明了如何使用 Pipeline 写入结构化的文本日志。
+- [SQL](./query-data/sql.md)——跨指标、日志、链路查询，支持范围查询、CTE、JOIN 和视图。
+- [PromQL](./query-data/promql.md)——通过 Prometheus HTTP 接口查询指标，也可以在 SQL 中使用 `TQL`。
+- [Jaeger 接口](./query-data/jaeger.md)——从 Jaeger UI 或 Grafana 查询 trace。
 
-对于链路追踪（trace）存储解决方案，
-请参考 [trace 文档](./traces/overview.md)。
-该文档解释了使用 OpenTelemetry 导入数据以及使用 Jaeger 查询数据的方法。
+三种接口的对比见[查询数据概述](./query-data/overview.md)。
 
-### 物联网和边缘计算场景
+<AnchorAlias id="使用索引加速查询" />
 
-对于物联网和边缘计算场景，
-[物联网文档](./ingest-data/for-iot/overview.md)提供了从多种来源导入数据的全面指导。
+## 处理与描述数据
 
-## 查询数据以获取洞察
+- [Flow 计算](./flow-computation/overview.md)——对持续写入的数据做连续聚合，结果落到 sink table。
+- [数据索引](./manage-data/data-index.md)——倒排索引、跳数索引和全文索引，以及各自适用的场景。
+- [管理数据](./manage-data/overview.md)——更新、删除、TTL 策略和 compaction。
+- [表语义层](./concepts/semantic-layer.md)——`greptime.semantic.*` 元数据，记录每张表的信号类型、写入来源和单位。
+- [向量存储](./vectors/vector-type.md)——向量数据类型与相似度检索。
 
-GreptimeDB 提供了强大的[数据查询](./query-data/overview.md)功能。
+<AnchorAlias id="从其他数据库迁移到-greptimedb" />
+<AnchorAlias id="管理和部署-greptimedb" />
 
-### SQL 支持
+## 部署与运维
 
-你可以使用 SQL 进行范围查询、聚合等操作。
-有关详细说明，请参阅 [SQL 查询文档](./query-data/sql.md)。
+- [部署与管理](./deployments-administration/overview.md)——Kubernetes 和裸机部署、容量规划、WAL 模式、监控、容灾和 Region 运维。
+- [迁移到 GreptimeDB](./migrate-to-greptimedb/overview.md)——从 Prometheus、InfluxDB、Loki、Elasticsearch 或 MySQL 迁移时，协议、查询、仪表盘和历史数据的改动范围。
+- [时区](./timezone.md)——会话时区对写入和查询结果的影响。
 
-### Prometheus 查询语言 (PromQL)
+## 连接其他工具
 
-GreptimeDB 支持使用 PromQL 查询数据。
-请参考 [PromQL 文档](./query-data/promql.md) 以获取指导。
-
-### Flow 计算
-
-对于实时数据处理和分析，GreptimeDB 提供了 [Flow 计算](./flow-computation/overview.md)，
-支持对持续写入的时序数据进行持续聚合。
-
-## 使用索引加速查询
-
-倒排索引、跳数索引和全文索引等索引可以显著提升查询性能。
-有关如何有效使用这些索引的更多信息，请参阅[数据索引文档](./manage-data/data-index.md)。
-
-## 从其他数据库迁移到 GreptimeDB
-
-你可以轻松从其他数据库迁移数据到 GreptimeDB，
-请按照[迁移文档](./migrate-to-greptimedb/overview.md)中的分步说明进行操作。
-
-## 管理和部署 GreptimeDB
-
-当你准备好部署 GreptimeDB 时，
-请查阅[部署及管理文档](/user-guide/deployments-administration/overview.md)获取有关服务端部署和管理的详细指南。
+- [协议](./protocols/overview.md)——GreptimeDB 支持的传输协议，以及各自的能力边界。
+- [集成](./integrations/overview.md)——Grafana、Superset、Metabase、Flink、Spark、MCP Server 等可以连接 GreptimeDB 的工具。
