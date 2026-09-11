@@ -98,3 +98,5 @@ npx skills add https://github.com/GreptimeTeam/docs/tree/main/skills/greptimedb-
 ## 参考资料
 
 - [What GreptimeDB is doing for AI agents](https://greptime.cn/blogs/2026-04-08-greptimedb-agent-friendly-infrastructure)
+- [Agent RCA Bench](https://rca-bench.greptime.com/#zh) —— 6 个模型、14 个故障、504 次 agent 排查，测量查询接口对根因分析的影响
+- [换掉查询接口，Agent 根因分析的错误诊断少了 40%](https://greptime.cn/blogs/2026-09-08-agent-rca-bench-interface-semantic-layer)

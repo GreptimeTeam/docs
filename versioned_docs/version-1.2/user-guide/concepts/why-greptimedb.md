@@ -102,6 +102,18 @@ Published case studies give results for specific workloads and configurations:
 
 Results depend on schema, indexes, retention, hardware, object-storage pricing, cache configuration, and query workload. Use published [benchmark reports](https://greptime.com/blogs/2024-09-09-report-summary) with their test conditions when sizing a deployment.
 
+## Agent-Driven Investigation
+
+[Agent RCA Bench](https://rca-bench.greptime.com/) had six models investigate the same 14 incidents through the native Prometheus, Loki, and Tempo query APIs, and through read-only SQL and PromQL over GreptimeDB tables.
+
+Measured against the three separate backends, the GreptimeDB interface produced:
+
+- **40% fewer wrong diagnoses** — 38 wrong answers in 168 investigations against 63, or 130 correct root causes against 105.
+- **48% fewer input tokens read** — 199.8 million against 381.8 million. All six models read fewer tokens, and five of six were more accurate.
+- **About 45% lower cost to run** — USD 98–101 against USD 184–187 for the full set of investigations.
+
+The comparison changes the store, the query languages, and the tool surface together; it measures interface bundles, not the storage engine alone. The [report](https://github.com/GreptimeTeam/agent-rca-bench/blob/main/REPORT.md) publishes the protocol, the per-run artifacts, and the scope of each claim.
+
 <AnchorAlias id="how-greptimedb-compares" />
 
 ## Compare Against Your Current Stack
