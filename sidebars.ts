@@ -86,7 +86,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/ingest-data/for-observability/prometheus',
                 'user-guide/ingest-data/for-observability/vector',
                 'user-guide/ingest-data/for-observability/opentelemetry',
-                'user-guide/ingest-data/for-observability/influxdb-line-protocol',
+                'user-guide/ingest-data/for-iot/influxdb-line-protocol',
                 'user-guide/ingest-data/for-observability/kafka',
                 'user-guide/ingest-data/for-observability/loki',
                 'user-guide/ingest-data/for-observability/otel-collector',
@@ -120,7 +120,7 @@ const sidebars: SidebarsConfig = {
                   ],
                 },
                 'user-guide/ingest-data/for-iot/influxdb-line-protocol',
-                'user-guide/ingest-data/for-iot/kafka',
+                'user-guide/ingest-data/for-observability/kafka',
                 'user-guide/ingest-data/for-iot/emqx',
                 'user-guide/ingest-data/for-iot/opentsdb',
               ],
@@ -392,7 +392,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/deployments-administration/capacity-plan',
             {
               type: 'category',
-              label: 'Manage Data',
+              label: 'Table and Region Operations',
               items: [
                 {
                   type: 'doc',

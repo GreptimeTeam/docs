@@ -254,5 +254,9 @@
   "sidebar.docs.category.Events": {
     "message": "事件",
     "description": "The label for category Events in sidebar docs"
+  },
+  "sidebar.docs.category.Table and Region Operations": {
+    "message": "表与 Region 运维",
+    "description": "The label for category Table and Region Operations in sidebar docs"
   }
 }

@@ -262,5 +262,9 @@
   "sidebar.docs.category.Management Console": {
     "message": "管理控制台",
     "description": "The label for category Management Console in sidebar docs"
+  },
+  "sidebar.docs.category.Table and Region Operations": {
+    "message": "表与 Region 运维",
+    "description": "The label for category Table and Region Operations in sidebar docs"
   }
 }
