@@ -25,14 +25,14 @@ description: 可观测场景写入 GreptimeDB 的路径，按信号类型以及�
 
 - [OpenTelemetry](opentelemetry.md)——通过 SDK 或 Collector 以 OTLP/HTTP 写入。
 
-trace 的存储，以及用 SQL 或 Jaeger 兼容接口查询，见[链路追踪](/user-guide/traces/overview.md)。
+trace 的存储，以及用 SQL 和 Jaeger 兼容接口查询，见[链路追踪](/user-guide/traces/overview.md)。
 
 ## 采集端与数据管道
 
-以下工具可以承载三类信号，并代为选择写入协议：
+以下工具三类信号都能承载，写入协议由工具自己决定：
 
 - [OpenTelemetry Collector](otel-collector.md)——通过 OTLP/HTTP exporter 转发指标、日志和 trace。
 - [Vector](vector.md)——通过 GreptimeDB sink 写入。
 - [Fluent Bit](fluent-bit.md)——通过 HTTP output 插件写入。
 - [Grafana Alloy](alloy.md)——通过 Remote Write、OpenTelemetry 或 Loki 写入。
-- [Kafka](kafka.md)——以 Vector 作为中转，将 Kafka 中的数据写入 GreptimeDB。
+- [Kafka](kafka.md)——经 Vector 中转写入。

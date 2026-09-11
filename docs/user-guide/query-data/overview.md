@@ -5,7 +5,7 @@ description: The query interfaces GreptimeDB exposes — SQL, PromQL, and the Ja
 
 # Query Data
 
-GreptimeDB exposes three query interfaces over the same tables. Which one to use depends on the signal and on the tool doing the asking.
+GreptimeDB exposes several query interfaces over the same tables. Which one to use depends on the signal and on the tool doing the asking.
 
 ## Query languages
 

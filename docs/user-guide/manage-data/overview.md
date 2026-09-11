@@ -1,6 +1,6 @@
 ---
 keywords: [update data, delete data, truncate table, data retention, TTL policies]
-description: Provides an overview of managing data in GreptimeDB, including updating, deleting, truncating tables, and managing data retention with TTL policies.
+description: Updating, deleting, and truncating data in GreptimeDB, and expiring it with TTL policies.
 ---
 
 <AnchorAlias id="manage-data" />
@@ -18,7 +18,7 @@ If rows of data have the same tags and time index,
 the old data will be replaced with the new data.
 This means that you can only update columns with a field type.
 
-For more information about column types, please refer to the [Data Model](../concepts/data-model.md).
+Column types are described in [Data Model](../concepts/data-model.md).
 
 :::warning Note
 Excessive updates may negatively impact query performance, even though the performance of updates is the same as insertion.
@@ -180,7 +180,7 @@ That will not update anything:
 +-----------+---------------------+------+--------+
 ```
 
-For more information about the `merge_mode` option, please refer to the [CREATE TABLE](/reference/sql/create.md#create-a-table-with-merge-mode) statement.
+See [CREATE TABLE](/reference/sql/create.md#create-a-table-with-merge-mode) for the `merge_mode` option.
 
 ### Avoid updating data by creating table with `append_mode` option
 
@@ -258,7 +258,7 @@ SELECT * FROM app_logs;
 
 You can effectively delete data by specifying tags and time index.
 Deleting data without specifying the tag and time index columns is not efficient, as it requires two steps: querying the data and then deleting it by tag and time index.
-For more information about column types, please refer to the [Data Model](../concepts/data-model.md).
+Column types are described in [Data Model](../concepts/data-model.md).
 
 :::warning Warning
 Excessive deletions can negatively impact query performance.
@@ -297,7 +297,7 @@ You can use Time to Live (TTL) policies to automatically remove stale data from 
 - Decrease storage costs by cleaning out obsolete data.
 - Reduce the number of rows the database has to scan for some queries, potentially increasing query performance.
 
-> Please note that the expired data due to TTL policy may not be deleted right after the expiration time. Instead, they are deleted during the compaction, which is a background job run asynchronously.
+> Data past its TTL is not removed at the moment it expires. Instead, they are deleted during the compaction, which is a background job run asynchronously.
 > If you are testing the TTL policy, be sure to trigger data flush and compaction before querying the data.
 > You can use our "[ADMIN](/reference/sql/admin.md)" functions to manually run them.
 
@@ -344,7 +344,7 @@ ALTER TABLE monitor UNSET 'ttl';
 ALTER DATABASE test UNSET 'ttl';
 ```
 
-For more information about TTL policies, please refer to the [CREATE](/reference/sql/create.md) statement.
+See [CREATE](/reference/sql/create.md) for the full TTL syntax.
 
 
 ## More data management operations

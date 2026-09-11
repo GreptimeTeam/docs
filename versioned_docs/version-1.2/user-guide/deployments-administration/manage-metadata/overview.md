@@ -5,9 +5,9 @@ description: The metadata backends a GreptimeDB cluster can use — etcd, MySQL,
 
 # Metadata Storage
 
-A GreptimeDB cluster stores its metadata in an external system, which the Metasrv component reads and writes. Three backends are supported:
+A GreptimeDB cluster stores its metadata in an external system, which the Metasrv component reads and writes. The supported backends are:
 
-- **[etcd](https://etcd.io/)** — a distributed key-value store, quick to set up and run.
+- **[etcd](https://etcd.io/)** — a distributed key-value store with a small operational footprint.
 - **[MySQL](https://www.mysql.com/) and [PostgreSQL](https://www.postgresql.org/)** — relational databases with ACID transactions, replication, and established backup tooling. Both are available as managed services (RDS) on the major cloud platforms.
 
 ## Which to choose

@@ -5,7 +5,7 @@ description: GreptimeDB 提供的查询接口——SQL、PromQL 和 Jaeger 兼�
 
 # 查询数据
 
-GreptimeDB 在同一批表之上提供三种查询接口，选哪一种取决于信号类型和发起查询的工具。
+GreptimeDB 在同一批表之上提供多种查询接口，选哪一种取决于信号类型，以及由哪个工具发起查询。
 
 ## 查询语言
 
@@ -18,6 +18,6 @@ GreptimeDB 在同一批表之上提供三种查询接口，选哪一种取决于
 
 GreptimeDB 支持 [MySQL](/user-guide/protocols/mysql.md) 和 [PostgreSQL](/user-guide/protocols/postgresql.md) 线协议，现有的 SQL 驱动无需专用客户端即可连接。驱动列表和连接参数见 [SQL 工具](/reference/sql-tools.md)。
 
-## 查询未写入的数据文件
+## 查询未入库的数据文件
 
 GreptimeDB 可以直接对外部数据文件执行 SQL 查询，见[查询外部数据](./query-external-data.md)。

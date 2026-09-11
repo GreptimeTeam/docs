@@ -20,7 +20,7 @@ description: 介绍 GreptimeDB 中的 WAL（预写日志），包括本地 WAL �
 
 - **低延迟**: 本地 WAL 运行于 Datanode 进程内，避免了网络传输开销，提供更低的写入延迟。
 
-- **易于部署**: 由于 WAL 与 Datanode 紧耦合，无需引入额外组件，部署和运维更加简便。
+- **无需额外组件**：WAL 与 Datanode 同进程，不需要再部署和运维其他组件。
 
 - **零 RPO**: 在云环境中部署 GreptimeDB 时，可以结合云存储服务（如 AWS EBS 或 GCP Persistent Disk）将 WAL 数据持久化存储，从而实现零[恢复点目标](https://en.wikipedia.org/wiki/Disaster_recovery#Recovery_Point_Objective) (RPO)，即使发生故障也不会丢失任何已写入的数据。
 

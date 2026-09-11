@@ -32,7 +32,7 @@ If the incoming data is already structured, no configuration is needed: the buil
 
 ## Send logs from a collector
 
-Each guide below covers the collector's configuration and the pipeline setup it needs:
+Each guide covers the collector's configuration and the pipeline setup it needs:
 
 - [Vector](/user-guide/ingest-data/for-observability/vector.md#using-greptimedb_logs-sink-recommended)
 - [Fluent Bit](/user-guide/ingest-data/for-observability/fluent-bit.md#http)

@@ -5,4 +5,4 @@ description: GreptimeDB 对 OpenTSDB 协议的支持，以及写入文档的位�
 
 # OpenTSDB
 
-请参考[使用 OpenTSDB 写入数据](/user-guide/ingest-data/for-iot/opentsdb.md)获取详细信息。
+OpenTSDB 的写入方式见[使用 OpenTSDB 写入数据](/user-guide/ingest-data/for-iot/opentsdb.md)。

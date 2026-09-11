@@ -44,4 +44,4 @@ All protocols and integrations support this except [SQL](./for-iot/sql.md), [Apa
 ## Next Steps
 
 - [Query Data](/user-guide/query-data/overview.md) — SQL, PromQL, and the Jaeger-compatible API.
-- [Manage Data](/user-guide/manage-data/overview.md) — updates, deletes, TTL policies, and compaction.
+- [Update, Delete, and TTL](/user-guide/manage-data/overview.md) — updating by overwrite, deleting, and expiring data.

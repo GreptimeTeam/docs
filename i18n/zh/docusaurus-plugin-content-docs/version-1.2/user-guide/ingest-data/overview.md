@@ -33,7 +33,7 @@ GreptimeDB 支持多种常见的可观测性和数据库协议，多数数据源
 
 同样的文档也按场景分组，见[可观测场景](./for-observability/overview.md)和[物联网场景](./for-iot/overview.md)。
 
-文本日志和链路追踪除写入协议外还涉及存储前的处理：日志的解析和转换见 [日志](/user-guide/logs/overview.md)，OTLP trace 的存储和查询见[链路追踪](/user-guide/traces/overview.md)。
+文本日志和链路追踪在入库前还要多一步处理：日志的解析和转换见[日志](/user-guide/logs/overview.md)，OTLP trace 的存储和查询见[链路追踪](/user-guide/traces/overview.md)。
 
 ## 自动生成表结构
 
@@ -44,4 +44,4 @@ GreptimeDB 支持无 schema 写入：数据到达时自动创建表并添加需�
 ## 下一步
 
 - [查询数据](/user-guide/query-data/overview.md)——SQL、PromQL 和 Jaeger 兼容接口。
-- [管理数据](/user-guide/manage-data/overview.md)——更新、删除、TTL 策略和 compaction。
+- [更新、删除与 TTL](/user-guide/manage-data/overview.md)——覆盖写入、删除数据，以及用 TTL 控制留存。

@@ -26,7 +26,7 @@ Two signals have their own guides because storing them involves more than a writ
 - [PromQL](./query-data/promql.md) — metric queries through the Prometheus HTTP API, or `TQL` inside SQL.
 - [Jaeger API](./query-data/jaeger.md) — trace queries from Jaeger UI or Grafana.
 
-The [query overview](./query-data/overview.md) compares the three interfaces.
+The [query overview](./query-data/overview.md) compares the interfaces.
 
 <AnchorAlias id="accelerating-queries-with-indexes" />
 
@@ -34,7 +34,7 @@ The [query overview](./query-data/overview.md) compares the three interfaces.
 
 - [Flow](./flow-computation/overview.md) — continuous aggregation from incoming rows into sink tables.
 - [Data Index](./manage-data/data-index.md) — inverted, skipping, and full-text indexes, and when each one pays off.
-- [Manage Data](./manage-data/overview.md) — updates, deletes, TTL policies, and compaction.
+- [Update, Delete, and TTL](./manage-data/overview.md) — updating by overwrite, deleting, and expiring data.
 - [Semantic Layer](./semantic-layer/overview.md) — metadata recording what each table holds and which entities its rows describe.
 - [Vector Storage](./vectors/vector-type.md) — the vector data type and similarity search.
 
