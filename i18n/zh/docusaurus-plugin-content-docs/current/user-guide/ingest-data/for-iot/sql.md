@@ -73,6 +73,21 @@ VALUES
 
 通过上面的语句，我们成功的向 `monitor` 表中插入了六条数据。请参考 [`INSERT`](/reference/sql/insert.md) 获得更多写入数据的相关信息。
 
+## 在当前会话中禁用 WAL
+
+执行以下语句，可为当前会话后续的 `INSERT` 写入禁用预写日志（WAL）：
+
+```sql
+SET skip_wal = true;
+```
+
+此设置仅对当前会话生效，不会修改[表级 `skip_wal` 选项](/reference/sql/create.md#创建禁用-wal-的表)。
+执行 `SET skip_wal = false` 后，若表级 `skip_wal` 为 `true`，仍不写入 WAL。
+
+:::warning
+禁用 WAL 后，进程重启会导致尚未刷盘的数据丢失。请仅在数据可以从源端重新写入时使用。
+:::
+
 <AnchorAlias id="time-zone" />
 
 ## 时区
