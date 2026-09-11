@@ -9,7 +9,7 @@ description: GreptimeDB 企业版 26.05 系列发布说明，新功能包括定�
 
 我们很高兴地宣布 GreptimeDB 企业版 **26.05.1** 发布。这是 26.05 系列的一次更新，带来了多项重要的运维能力：定时 Compaction、Apache Iceberg 数据湖支持的早期预览、多维度 Region 均衡以及更细粒度的访问控制。此版本同时将底层的 GreptimeDB 引擎升级到 **v1.2**。
 
-_本版本基于 GreptimeDB 开源引擎 v1.2 构建。_
+_本版本基于 GreptimeDB 开源引擎 [v1.2](/release-notes/release-1-2-0) 构建。_
 
 ### 特性亮点
 
@@ -23,7 +23,7 @@ Compaction 现在可以按照由 Metasrv 管理的调度计划定时执行，而
 
 - 支持 Iceberg 表的 **repartition、truncate 和 drop**，并管理完整的表状态生命周期。
 - 支持**批量写入（bulk ingestion）**和 region 编辑钩子，并提供远程 compaction 钩子，使 Iceberg 数据可以通过企业版的 compaction 管道进行压缩。
-- Iceberg 表支持**直方图（histogram）数据类型**以及 **Metric 引擎物理表**。
+- Iceberg 表支持**直方图（histogram）数据类型**以及 **Metric 引擎物理表**。通过 Iceberg 导出的表既包括默认的 **Mito 引擎**表，也包括 **Metric 引擎的物理表**；逻辑（logical）Metric 表不会通过 catalog 暴露，请直接查询对应的物理表。
 
 #### 多维度 Region 均衡
 
@@ -43,7 +43,7 @@ Region 均衡不再只考虑写入负载。均衡器会记录每个 Region 的�
 
 #### 运维改进
 
-- 面向企业版负载的、可配置的**查询 spill**。
+- 为内存压力下的大型查询提供可配置的**查询 spill**。需要说明的是，查询 spill 并非企业版独有功能——它也已在 GreptimeDB 开源引擎中开源（参见 [v1.3.0-alpha.1 发行说明](/release-notes/release-1-3-0-alpha-1)）。
 - 按组件设置**最大 CPU** 的选项。
 - 企业版 **Flight schema 默认对齐**，保证通信格式一致；Flight **批量写入支持自动建表**。
 - 提供用于部署 GreptimeDB 及监控组件的 **Ansible playbook**。

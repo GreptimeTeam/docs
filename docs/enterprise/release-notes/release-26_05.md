@@ -13,7 +13,7 @@ scheduled compaction, an early preview of Apache Iceberg data-lake support,
 multidimensional region balancing, and finer-grained access control. This
 release also moves the GreptimeDB engine base to **v1.2**.
 
-_This release is based on GreptimeDB (open source engine) v1.2._
+_This release is based on GreptimeDB (open source engine) [v1.2](/release-notes/release-1-2-0)._
 
 ### Feature Highlights
 
@@ -36,7 +36,10 @@ support, beginning to cover the table lifecycle end to end:
 - **Bulk ingestion** and region-edit hooks, plus remote-compaction hooks so
   Iceberg data can be compacted through the enterprise compaction pipeline.
 - **Histogram data type** support and **metric-engine physical-table** support
-  for Iceberg tables.
+  for Iceberg tables. Iceberg export covers tables using the default **mito
+  engine** as well as **physical tables of the metric engine**; logical metric
+  tables are not exposed through the catalog (query the physical table
+  directly).
 
 #### Multidimensional Region Balancing
 
@@ -65,7 +68,10 @@ Soft-dropped tables keep occupying storage until they are undropped or purged.
 
 #### Operational Improvements
 
-- Configurable **query spill** for enterprise workloads.
+- Configurable **query spill** for large queries under memory pressure. Query
+  spill is not an enterprise-only capability — it has also been open-sourced in
+  the GreptimeDB engine (see the [v1.3.0-alpha.1 release
+  notes](/release-notes/release-1-3-0-alpha-1)).
 - Per-component **maximum CPU** options.
 - Enterprise **Flight schemas aligned by default** for consistent wire formats,
   and Flight **bulk inserts can now auto-create** their target tables.
