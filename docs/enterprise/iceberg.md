@@ -54,7 +54,8 @@ This is split across the GreptimeDB processes you already run:
   new Iceberg snapshot. The Iceberg metadata is written under a `warehouse_root` prefix inside the same
   object-storage bucket the datanode already uses.
 - **Frontend (the catalog server).** It implements the [Iceberg REST Catalog API](https://iceberg.apache.org/docs/1.6.0/api/#rest-catalog-specification),
-  mounted at `/v1/iceberg`, and serves each table's current metadata to clients.
+  mounted at `/v1/iceberg`, and serves each table's current metadata to clients by reading it **directly from object
+  storage** — see [Configuration](#configuration) for the object-storage settings the frontend therefore needs.
 
 Because the data files are never duplicated, there is no extra storage cost and no write-path duplication — the
 export is pure metadata laid down beside the data GreptimeDB already writes.
@@ -100,7 +101,20 @@ section of **both** the data-writing process (datanode or standalone) **and** th
 
 Both must reference the **same** `warehouse_root` so the catalog reads exactly the metadata the writer publishes.
 
+**Datanode / standalone.** The process already has a `[storage]` section for its data — leave it as is and add the plugin
+entry:
+
 ```toml
+## The object storage the datanode already uses (existing configuration).
+[storage]
+type = "S3"
+bucket = "greptimedb"
+root = "greptimedb"
+endpoint = "https://s3.us-east-1.amazonaws.com"
+region = "us-east-1"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+
 ## Iceberg manifest export publishes Iceberg-format metadata (snapshots,
 ## manifests, manifest-lists) so external engines (pyiceberg, Spark, Trino,
 ## DuckDB, ...) can read GreptimeDB tables through the Iceberg REST catalog.
@@ -108,15 +122,59 @@ Both must reference the **same** `warehouse_root` so the catalog reads exactly t
 iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
 ```
 
-The options are:
+**Frontend.** The frontend needs the same object-storage configuration as the datanode. The REST catalog runs inside
+the frontend and reads the Iceberg metadata **directly from object storage** — it does not fetch it through the
+datanode — so without a `[storage]` section the catalog cannot resolve any table. A frontend normally has no
+`[storage]` section of its own (it only proxies queries); enabling the Iceberg integration is the reason it needs one.
+Configure the **same bucket, `root`, and credentials** as the datanode, plus the plugin entry:
+
+```toml
+## The SAME object storage as the datanode — the frontend's REST catalog
+## reads the Iceberg metadata from here.
+[storage]
+type = "S3"
+bucket = "greptimedb"
+root = "greptimedb"
+endpoint = "https://s3.us-east-1.amazonaws.com"
+region = "us-east-1"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+
+[[plugins]]
+iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
+```
+
+:::note Deploying with the greptimedb-cluster Helm chart
+You don't hand-write the frontend's `[storage]` section on Kubernetes. The chart configures object storage
+centrally through the `objectStorage` values, and by default only the datanode receives that configuration. Set
+`frontend.enableObjectStorage` to `true` so the frontend is given the same object-storage configuration, and add
+the plugin entry through `frontend.configData`:
+
+```yaml
+frontend:
+  ## Inject the objectStorage values (bucket, root, credentials, ...)
+  ## into the frontend as its [storage] section.
+  enableObjectStorage: true
+
+  configData: |-
+    [[plugins]]
+    iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
+```
+
+See the [Helm chart configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)
+for the `objectStorage` and `configData` fields.
+:::
+
+The plugin options are:
 
 | Option | Default | Description |
 | ------ | ------- | ----------- |
 | `warehouse_root` | `"iceberg_warehouse"` | Path prefix, inside the datanode's object-storage bucket, where Iceberg metadata is stored. |
 | `enable_incremental` | `true` | When `true` (the default), a new snapshot is published automatically on every flush / compaction / truncate. Set `false` to disable automatic publication and generate metadata on demand through the rebuild interface instead; drop/GC cleanup still runs. |
 
-The `warehouse_root` is a path prefix inside the object-storage bucket GreptimeDB already uses, folded into the
-store's `root` (e.g. `s3://<bucket>/<root>/<warehouse_root>/`).
+The `warehouse_root` is a path prefix inside the object-storage bucket described above, folded into the store's `root`
+(e.g. `s3://<bucket>/<root>/<warehouse_root>/`) — which is why the frontend and the datanode must agree on both the
+`[storage]` configuration and the `warehouse_root`, or the catalog will look for metadata that is not there.
 
 The supported object-storage backends are S3, OSS, GCS, and Azure Blob.
 
@@ -140,7 +198,21 @@ admin flush_table('your_table');
 ```
 
 The metadata is published asynchronously; the table becomes queryable through the REST catalog shortly after the
-flush returns. Existing, already-flushed tables are exported automatically.
+flush returns.
+
+:::note Pre-existing tables are not exported automatically
+Automatic publication only covers manifest updates that happen **after** the plugin is enabled (flush, compaction,
+truncate) — there is no startup bootstrap that publishes SST files flushed earlier. A table whose data was already
+flushed **before** the integration was enabled therefore remains absent from the catalog until its next flush or
+compaction. To export such pre-existing tables, run the rebuild endpoint once per table:
+
+```bash
+curl -X POST \
+  "http://localhost:4000/v1/iceberg/v1/greptime/namespaces/public/tables/<table>/rebuild"
+```
+
+See [Rebuild / reconcile](#operational-notes) below for the details and caveats of a rebuild.
+:::
 
 ## Reading with pyiceberg
 
@@ -282,6 +354,17 @@ date, timestamp). A few things to be aware of, especially in Spark:
   drop row groups for `>`, `=`, and range queries. Declaring the time index as `TIMESTAMP(6)` makes the on-disk
   Parquet microsecond precision match the schema, and all comparison operators work correctly. (Second/millisecond
   values are still stored correctly; the issue is purely predicate pushdown against file statistics.)
+
+  An existing table does not need to be recreated for this: a time index declared with second or millisecond
+  precision can be widened in place with `ALTER TABLE`. The change is lossless — existing data is read in the new
+  unit without rewriting, and new writes can use the finer precision:
+
+  ```sql
+  ALTER TABLE demo MODIFY COLUMN ts TIMESTAMP_US;
+  ```
+
+  Narrowing the unit back (for example, microseconds to milliseconds) is not allowed, and widening is not
+  supported on tables using the metric engine. See [ALTER TABLE](/reference/sql/alter.md) for details.
 - **Lossy type fallbacks.** `list`, `dictionary`, `json`, `interval`, `duration`, `time`, and arbitrary user
   `struct` types are exported as Iceberg `string` rather than a structured type, so their internal structure is not
   queryable through Iceberg.
@@ -309,7 +392,8 @@ date, timestamp). A few things to be aware of, especially in Spark:
 - **Old Iceberg metadata is garbage-collected** alongside the data files by GreptimeDB's normal compaction and
   GC — no separate maintenance is required.
 - **Rebuild / reconcile.** If the Iceberg export ever diverges from GreptimeDB's ground truth (a failed publish,
-  corruption, or tables created before the integration was enabled), an operator can rebuild a table's Iceberg
+  corruption, or pre-existing tables that were never bootstrapped — see
+  [Make a table readable](#make-a-table-readable)), an operator can rebuild a table's Iceberg
   metadata from scratch from the authoritative live SST set:
 
   ```bash

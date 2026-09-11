@@ -44,7 +44,7 @@ flowchart LR
 这项工作分布在 GreptimeDB 已有的进程之间：
 
 - **Datanode / standalone（写入端）。** 每当写入 SST 文件时——包括 flush、compaction、批量写入和 truncate——GreptimeDB 都会将当前存活的 Parquet 文件集合转换为 Iceberg manifest 条目，并提交一个新的 Iceberg snapshot。Iceberg 元数据写入到 datanode 已使用的同一对象存储 bucket 下的 `warehouse_root` 前缀中。
-- **Frontend（catalog 服务端）。** 它实现了 [Iceberg REST Catalog API](https://iceberg.apache.org/docs/1.6.0/api/#rest-catalog-specification)，挂载在 `/v1/iceberg`，并向客户端提供每张表当前的元数据。
+- **Frontend（catalog 服务端）。** 它实现了 [Iceberg REST Catalog API](https://iceberg.apache.org/docs/1.6.0/api/#rest-catalog-specification)，挂载在 `/v1/iceberg`，通过**直接从对象存储读取**元数据向客户端提供每张表当前的元数据——因此 frontend 所需的对象存储配置见[配置](#配置)一节。
 
 由于数据文件从不被复制，因此没有额外的存储开销，也没有写入路径上的重复——导出纯粹是在 GreptimeDB 已写入的数据旁附加的元数据。
 
@@ -87,7 +87,19 @@ Iceberg 集成是一个企业版插件。在**写入进程（datanode 或 standa
 
 两者必须引用**相同的** `warehouse_root`，以便 catalog 读取到写入端发布的内容。
 
+**Datanode / standalone。** 该进程本身已配置了 `[storage]` 数据存储段——保持不变，只需添加插件条目：
+
 ```toml
+## datanode 已在使用的对象存储（现有配置）。
+[storage]
+type = "S3"
+bucket = "greptimedb"
+root = "greptimedb"
+endpoint = "https://s3.us-east-1.amazonaws.com"
+region = "us-east-1"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+
 ## Iceberg manifest 导出会发布 Iceberg 格式的元数据（snapshot、
 ## manifest、manifest-list），使外部引擎（pyiceberg、Spark、Trino、
 ## DuckDB 等）可以通过 Iceberg REST catalog 查询 GreptimeDB 表。
@@ -95,14 +107,49 @@ Iceberg 集成是一个企业版插件。在**写入进程（datanode 或 standa
 iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
 ```
 
-可选配置项：
+**Frontend。** frontend 需要与 datanode 相同的对象存储配置。REST catalog 运行在 frontend 内部，它会**直接从对象存储读取** Iceberg 元数据——而不是通过 datanode 获取——因此如果没有 `[storage]` 配置段，catalog 将无法解析任何表。frontend 通常没有自己的 `[storage]` 配置段（它只负责代理查询）；启用 Iceberg 集成正是它需要该配置段的原因。请配置与 datanode **相同的 bucket、`root` 和凭证**，并添加插件条目：
+
+```toml
+## 与 datanode 相同的对象存储——frontend 的 REST catalog
+## 从这里读取 Iceberg 元数据。
+[storage]
+type = "S3"
+bucket = "greptimedb"
+root = "greptimedb"
+endpoint = "https://s3.us-east-1.amazonaws.com"
+region = "us-east-1"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+
+[[plugins]]
+iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
+```
+
+:::note 使用 greptimedb-cluster Helm chart 部署
+在 Kubernetes 上无需手写 frontend 的 `[storage]` 配置段。chart 通过 `objectStorage` 统一配置对象存储，默认只有 datanode 会获得该配置。将 `frontend.enableObjectStorage` 设为 `true`，frontend 即可获得与 datanode 相同的对象存储配置；再通过 `frontend.configData` 添加插件条目：
+
+```yaml
+frontend:
+  ## 将 objectStorage 配置（bucket、root、凭证等）
+  ## 注入为 frontend 的 [storage] 配置段。
+  enableObjectStorage: true
+
+  configData: |-
+    [[plugins]]
+    iceberg_manifest = { warehouse_root = "iceberg_warehouse" }
+```
+
+`objectStorage` 与 `configData` 字段的说明见[常见 Helm Chart 配置](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)。
+:::
+
+插件的可选配置项：
 
 | 选项 | 默认值 | 说明 |
 | ---- | ------ | ---- |
 | `warehouse_root` | `"iceberg_warehouse"` | Iceberg 元数据在 datanode 对象存储 bucket 内的存放路径前缀。 |
 | `enable_incremental` | `true` | 为 `true`（默认）时，每次 flush / compaction / truncate 都会自动发布一个新 snapshot。设为 `false` 可关闭自动发布，改为按需通过 rebuild 接口生成元数据；drop/GC 清理仍会正常运行。 |
 
-`warehouse_root` 是 GreptimeDB 已使用的对象存储 bucket 内的一个路径前缀，会被并入 store 的 `root`（例如 `s3://<bucket>/<root>/<warehouse_root>/`）。
+`warehouse_root` 是上述对象存储 bucket 内的一个路径前缀，会被并入 store 的 `root`（例如 `s3://<bucket>/<root>/<warehouse_root>/`）——这也正是 frontend 和 datanode 必须在 `[storage]` 配置和 `warehouse_root` 上保持一致的原因，否则 catalog 会去寻找并不存在的元数据。
 
 支持的对象存储后端包括 S3、OSS、GCS 和 Azure Blob。
 
@@ -123,7 +170,18 @@ GreptimeDB 在 flush 时发布 Iceberg 元数据，因此新写入的数据会�
 admin flush_table('your_table');
 ```
 
-元数据是异步发布的；flush 返回后不久，该表即可通过 REST catalog 查询。已经 flush 过的现有表会被自动导出。
+元数据是异步发布的；flush 返回后不久，该表即可通过 REST catalog 查询。
+
+:::note 存量表不会被自动导出
+自动发布仅覆盖**启用插件之后**发生的 manifest 更新（flush、compaction、truncate）——不存在启动时的引导（bootstrap）过程去发布更早 flush 的 SST 文件。因此，在启用集成**之前**数据就已 flush 的表，在下一次 flush 或 compaction 之前不会出现在 catalog 中。若要导出这类存量表，请对每张表执行一次 rebuild 接口：
+
+```bash
+curl -X POST \
+  "http://localhost:4000/v1/iceberg/v1/greptime/namespaces/public/tables/<table>/rebuild"
+```
+
+rebuild 的详细说明与注意事项见下文[运维说明](#运维说明)中的「Rebuild」。
+:::
 
 ## 使用 pyiceberg 读取
 
@@ -247,6 +305,14 @@ ORDER BY host;
 对于常见类型（boolean、有符号整数、浮点数、string、binary、date、timestamp），GreptimeDB 类型可以干净地映射到 Iceberg。需要注意以下几点，尤其是在 Spark 中：
 
 - **将时间索引声明为 `TIMESTAMP(6)`。** GreptimeDB 默认的 `TIMESTAMP` 是毫秒精度，但 Iceberg schema 将该列声明为 `timestamptz`（微秒）。若列是毫秒精度，Spark 的 Parquet row-group 统计信息过滤会用微秒谓词去比较毫秒的文件统计，可能错误地丢弃 row-group，导致 `>`、`=` 和范围查询出错。将时间索引声明为 `TIMESTAMP(6)` 可使磁盘上的 Parquet 微秒精度与 schema 一致，所有比较运算符即可正确工作。（秒/毫秒值本身仍被正确存储；该问题纯粹出在基于文件统计的谓词下推。）
+
+  已存在的表无需为此重新创建：以秒或毫秒精度声明的时间索引可以通过 `ALTER TABLE` 原地拓宽。该变更是无损的——现有数据会以新单位读取，无需重写，新写入也可以使用更细的精度：
+
+  ```sql
+  ALTER TABLE demo MODIFY COLUMN ts TIMESTAMP_US;
+  ```
+
+  不允许反向缩窄单位（例如从微秒回到毫秒），且 metric 引擎的表不支持拓宽。详见 [ALTER TABLE](/reference/sql/alter.md)。
 - **有损的类型降级。** `list`、`dictionary`、`json`、`interval`、`duration`、`time` 以及任意用户 `struct` 类型会被导出为 Iceberg `string`，而非结构化类型，因此它们的内部结构无法通过 Iceberg 查询。
 - **无符号整数在 Spark 中不可读。** GreptimeDB 的无符号整数列（`uint8`、`uint16`、`uint32`、`uint64`）虽然声明为 Iceberg `long`，但底层 Parquet 文件以无符号物理类型存储，Spark 无法读取。任何触及无符号整数列的扫描在 Spark 中都会失败。如果你打算通过 Iceberg 查询某张表，请避免使用无符号类型，或将这些值以有符号类型存储。
 
@@ -260,7 +326,7 @@ ORDER BY host;
 
 - **元数据异步发布。** 新写入的行会在下一次 flush 或 compaction 之后出现在 Iceberg 中；可手动 flush 表（`admin flush_table('<table>')`）以立即暴露它们。
 - **旧 Iceberg 元数据会被回收**，与数据文件一起由 GreptimeDB 正常的 compaction 和 GC 处理——无需单独维护。
-- **Rebuild / 对账。** 如果 Iceberg 导出与 GreptimeDB 的真实状态出现偏差（发布失败、损坏，或在启用集成之前创建的表），运维人员可以从权威的存活 SST 集合重建一张表的 Iceberg 元数据：
+- **Rebuild。** 如果 Iceberg 导出与 GreptimeDB 的真实状态出现偏差（发布失败、损坏，或从未被引导发布的存量表——见[让表可被读取](#让表可被读取)），运维人员可以从权威的存活 SST 集合重建一张表的 Iceberg 元数据：
 
   ```bash
   curl -X POST \
