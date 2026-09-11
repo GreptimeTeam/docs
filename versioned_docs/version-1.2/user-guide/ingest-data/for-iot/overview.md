@@ -1,19 +1,16 @@
 ---
-keywords: [data ingestion, IoT, SQL INSERT, gRPC SDK, InfluxDB Line Protocol, EMQX, OpenTSDB]
-description: Overview of data ingestion methods in GreptimeDB for IoT, including SQL INSERT, gRPC SDK, InfluxDB Line Protocol, EMQX, and OpenTSDB.
+keywords: [IoT, data ingestion, MQTT, EMQX, gRPC SDK, InfluxDB line protocol, OpenTSDB, SQL]
+description: IoT ingestion paths into GreptimeDB, from device protocols and message brokers to SDKs and SQL.
 ---
-
-import DocCardList from '@theme/DocCardList';
 
 # Ingest Data for IoT
 
-The data ingestion is a critical part of the IoT data pipeline.
-It is the process of collecting data from various sources, such as sensors, devices, and applications, and storing it in a central location for further processing and analysis.
-The data ingestion is essential for ensuring that the data is accurate, reliable, and secure.
+IoT data reaches GreptimeDB from devices, brokers, and applications. [Ingest Data](../overview.md) lists every source in one table; this page covers the IoT paths.
 
-GreptimeDB can handle large volumes of data, process it in real-time, and store it efficiently for future analysis.
-It also supports various data formats, protocols, and interfaces,
-making it easy to integrate with different IoT devices and systems. 
+- [gRPC SDKs](./grpc-sdks/overview.md) — Go and Java clients for writing from your own application.
+- [EMQX](emqx.md) — MQTT devices, written through an EMQX data integration.
+- [InfluxDB Line Protocol](influxdb-line-protocol.md) — for Telegraf and existing InfluxDB clients. This page also covers the Telegraf configuration.
+- [OpenTSDB](opentsdb.md) — the `/opentsdb/api/put` HTTP endpoint.
+- [SQL](sql.md) — `INSERT` statements over the MySQL or PostgreSQL protocol.
 
-<DocCardList />
-
+Tables and columns are created as data arrives, except on the SQL path. See [Automatic Schema Generation](../overview.md#automatic-schema-generation).

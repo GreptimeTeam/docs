@@ -1,28 +1,23 @@
 ---
-keywords: [query languages, PromQL, SQL, views, CTE, query libraries, external data, log query]
-description: Overview of query languages and features supported by GreptimeDB, including PromQL, SQL, and log query capabilities.
+keywords: [query data, SQL, PromQL, Jaeger, view, CTE, SQL drivers, external data]
+description: The query interfaces GreptimeDB exposes — SQL, PromQL, and the Jaeger-compatible API — and the drivers and tools that connect to them.
 ---
 
 # Query Data
 
+GreptimeDB exposes three query interfaces over the same tables. Which one to use depends on the signal and on the tool doing the asking.
+
 ## Query languages
 
-- [PromQL](./promql.md)
-- [SQL](./sql.md)
-- [Log Query](./log-query.md) (Experimental)
+- [SQL](./sql.md) — queries across metrics, logs, and traces, including range queries, [views](./view.md), and [common table expressions](./cte.md).
+- [PromQL](./promql.md) — metric queries through the Prometheus HTTP API, or `TQL` inside SQL.
+- [Jaeger API](./jaeger.md) — trace queries from Jaeger UI or Grafana.
+- [Log Query](./log-query.md) — a dedicated HTTP endpoint for log search. Experimental.
 
-Since v0.9, GreptimeDB supports view and CTE just like other databases, used to simplify queries:
+## Clients and drivers
 
-* [View](./view.md)
-* [Common Table Expression (CTE)](./cte.md)
+GreptimeDB speaks the [MySQL](/user-guide/protocols/mysql.md) and [PostgreSQL](/user-guide/protocols/postgresql.md) wire protocols, so existing SQL drivers connect to it without a GreptimeDB-specific client. [SQL Tools](/reference/sql-tools.md) lists the drivers and their connection settings.
 
-## Recommended libraries
+## Query files that were never ingested
 
-Since GreptimeDB uses SQL as its main query language and supports both [MySQL](/user-guide/protocols/mysql.md) and [PostgreSQL](/user-guide/protocols/postgresql.md) protocols,
-you can use mature SQL drivers that support MySQL or PostgreSQL to query data.
-
-For more information, please refer to the [SQL Tools](/reference/sql-tools.md) documentation.
-
-## Query external data
-
-GreptimeDB has the capability to query external data files. For more information, please refer to the [Query External Data](./query-external-data.md) documentation.
+GreptimeDB can run SQL over external data files in place. See [Query External Data](./query-external-data.md).

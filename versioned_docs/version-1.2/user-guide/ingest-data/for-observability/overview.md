@@ -1,23 +1,38 @@
 ---
-keywords: [observability, integration, Prometheus, Vector, OpenTelemetry, InfluxDB, Loki, Splunk]
-description: Overview of integrating GreptimeDB with observability tools like Prometheus, Vector, OpenTelemetry, InfluxDB, Loki, and Splunk for real-time monitoring and analysis.
+keywords: [observability, data ingestion, metrics, logs, traces, Prometheus, OpenTelemetry, Loki, Elasticsearch, Splunk, Vector, Fluent Bit]
+description: Observability ingestion paths into GreptimeDB, grouped by signal and by the agent or pipeline that carries the data.
 ---
 
 # Ingest Data for Observability
 
-In observability scenarios,
-the ability to monitor and analyze system performance in real-time is crucial.
-GreptimeDB integrates seamlessly with leading observability tools to provide a comprehensive view of your system's health and performance metrics. 
+Observability data reaches GreptimeDB through the protocol its source already speaks. [Ingest Data](../overview.md) lists every source in one table; this page groups the observability paths by signal.
 
-- [Store and analyze trillions of logs in GreptimeDB and gain insights within minutes](/user-guide/logs/overview.md).
-- [Prometheus Remote Write](prometheus.md): Integrate GreptimeDB as remote storage for Prometheus, suitable for real-time monitoring and alerting.
-- [OpenTelemetry](opentelemetry.md): Collect and export telemetry data to GreptimeDB for detailed observability insights.
-- [OpenTelemetry Collector](otel-collector.md): Route metrics, logs, and traces to GreptimeDB through the OpenTelemetry Collector.
-- [Vector](vector.md): Use GreptimeDB as a sink for Vector, ideal for complex data pipelines and diverse data sources.
-- [Alloy](alloy.md): Use GreptimeDB as a data sink for Grafana Alloy.
-- [InfluxDB Line Protocol](influxdb-line-protocol.md): A widely-used protocol for time-series data, facilitating migration from InfluxDB to GreptimeDB. The Telegraf integration method is also introduced in this document.
-- [Loki](loki.md): A widely-used log write protocol, facilitating migration from Loki to GreptimeDB. The Alloy integration method is also introduced in this document.
-- [Elasticsearch](elasticsearch.md): Ingest logs through the Elasticsearch `_bulk` API, compatible with Logstash, Filebeat, and Telegraf.
-- [Splunk](splunk.md): Ingest logs through the Splunk HTTP Event Collector (HEC) protocol, compatible with Vector and the OpenTelemetry Collector.
-- [Fluent Bit](fluent-bit.md): Forward metrics, logs, and traces from Fluent Bit to GreptimeDB.
-- [Kafka](kafka.md): Consume metrics and logs from Kafka into GreptimeDB with Vector.
+## Metrics
+
+- [Prometheus Remote Write](prometheus.md) — for an existing Prometheus server or Prometheus Agent.
+- [OpenTelemetry](opentelemetry.md) — OTLP/HTTP from an OpenTelemetry SDK.
+- [InfluxDB Line Protocol](../for-iot/influxdb-line-protocol.md) — for Telegraf and existing InfluxDB clients. This page also covers the Telegraf configuration.
+
+## Logs
+
+- [Loki](loki.md) — the Loki Push API, for clients already writing to Loki. This page also covers the Alloy configuration.
+- [Elasticsearch](elasticsearch.md) — the `_bulk` API, compatible with Logstash, Filebeat, and Telegraf.
+- [Splunk](splunk.md) — the HTTP Event Collector (HEC) protocol, compatible with Vector and the OpenTelemetry Collector.
+
+Parsing and transforming text logs before they are stored is covered in [Logs](/user-guide/logs/overview.md).
+
+## Traces
+
+- [OpenTelemetry](opentelemetry.md) — OTLP/HTTP from an SDK or the Collector.
+
+Storing traces and querying them with SQL or the Jaeger-compatible API is covered in [Traces](/user-guide/traces/overview.md).
+
+## Agents and pipelines
+
+These carry any of the three signals, and choose the protocol for you:
+
+- [OpenTelemetry Collector](otel-collector.md) — routes metrics, logs, and traces through an OTLP/HTTP exporter.
+- [Vector](vector.md) — writes through the GreptimeDB sink.
+- [Fluent Bit](fluent-bit.md) — writes through the HTTP output plugin.
+- [Grafana Alloy](alloy.md) — writes through Remote Write, OpenTelemetry, or Loki.
+- [Kafka](kafka.md) — consumed into GreptimeDB with Vector as the transport.

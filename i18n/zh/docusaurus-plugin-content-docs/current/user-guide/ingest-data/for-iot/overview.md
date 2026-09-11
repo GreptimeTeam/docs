@@ -1,20 +1,16 @@
 ---
-keywords: [物联网, 数据写入, SQL, gRPC SDK, InfluxDB Line Protocol, EMQX, OpenTSDB]
-description: 概述 GreptimeDB 支持的各种数据写入方法，包括 SQL、gRPC SDK、InfluxDB Line Protocol、EMQX 和 OpenTSDB。
+keywords: [物联网, IoT, 数据写入, MQTT, EMQX, gRPC SDK, InfluxDB 行协议, OpenTSDB, SQL]
+description: 物联网场景写入 GreptimeDB 的路径，覆盖设备协议、消息代理、SDK 和 SQL。
 ---
 
 # 物联网（IoT）数据写入
 
-数据的写入是物联网数据流程的关键部分。
-它从各种来源（如传感器、设备和应用程序）收集数据并将其存储在中央位置以供进一步处理和分析。
-数据写入过程对于确保数据的准确性、可靠性和安全性至关重要。
+物联网数据来自设备、消息代理和应用程序。[写入数据](../overview.md)用一张表列出了全部来源，本页覆盖物联网场景的写入路径。
 
-GreptimeDB 可处理并存储超大规模量级的数据以供分析，
-支持各种数据格式、协议和接口，以便集成不同的物联网设备和系统。
+- [gRPC SDK](./grpc-sdks/overview.md)——Go 和 Java 客户端，用于从自有应用写入。
+- [EMQX](emqx.md)——MQTT 设备，通过 EMQX 的数据集成写入。
+- [InfluxDB 行协议](influxdb-line-protocol.md)——适用于 Telegraf 和已有的 InfluxDB 客户端，该页同时包含 Telegraf 的配置方式。
+- [OpenTSDB](opentsdb.md)——通过 `/opentsdb/api/put` HTTP 接口写入。
+- [SQL](sql.md)——通过 MySQL 或 PostgreSQL 协议执行 `INSERT`。
 
-- [SQL INSERT](sql.md)：简单直接的数据插入方法。
-- [gRPC SDK](./grpc-sdks/overview.md)：提供高效、高性能的数据写入，特别适用于实时数据和复杂的物联网基础设施。
-- [InfluxDB Line Protocol](influxdb-line-protocol.md)：一种广泛使用的时间序列数据协议，便于从 InfluxDB 迁移到 GreptimeDB。该文档同样介绍了 Telegraf 的集成方式。
-- [EMQX](emqx.md)：支持大规模设备连接的 MQTT 代理，可直接将数据写入到 GreptimeDB。
-- [OpenTSDB](opentsdb.md)：使用 OpenTSDB 协议将数据写入到 GreptimeDB。
-
+除 SQL 路径外，表和列都在数据到达时自动创建，见[自动生成表结构](../overview.md#自动生成表结构)。
