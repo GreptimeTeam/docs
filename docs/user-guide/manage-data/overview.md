@@ -3,7 +3,11 @@ keywords: [update data, delete data, truncate table, data retention, TTL policie
 description: Provides an overview of managing data in GreptimeDB, including updating, deleting, truncating tables, and managing data retention with TTL policies.
 ---
 
-# Manage Data
+<AnchorAlias id="manage-data" />
+
+# Update, Delete, and TTL
+
+GreptimeDB has no `UPDATE` statement. Rows are updated by inserting over them, and how that insert behaves depends on the table's merge mode. This page covers updating, deleting, and expiring data. Table and Region maintenance — sharding, migration, compaction — is in [Table and Region Operations](/user-guide/deployments-administration/manage-data/overview.md).
 
 ## Update data
 
@@ -273,7 +277,7 @@ The output will be:
 Query OK, 1 row affected (0.00 sec)
 ```
 
-For more information about the `DELETE` statement, please refer to the [SQL DELETE](/reference/sql/delete.md).
+See [DELETE](/reference/sql/delete.md) for the full statement reference.
 
 ## Truncate Table
 
@@ -284,7 +288,7 @@ For example, to truncate the `monitor` table:
 TRUNCATE TABLE monitor;
 ```
 
-For more information about the `TRUNCATE TABLE` statement, refer to the [SQL TRUNCATE TABLE](/reference/sql/truncate.md) documentation.
+See [TRUNCATE TABLE](/reference/sql/truncate.md) for the full statement reference.
 
 ## Manage data retention with TTL policies
 
@@ -345,5 +349,5 @@ For more information about TTL policies, please refer to the [CREATE](/reference
 
 ## More data management operations
 
-For more advanced data management operations, such as basic table operations, table sharding and region migration, please refer to the [Data Management](/user-guide/deployments-administration/manage-data/overview.md) in the administration section.
+Basic table operations, table sharding, and Region migration are covered in [Table and Region Operations](/user-guide/deployments-administration/manage-data/overview.md).
 

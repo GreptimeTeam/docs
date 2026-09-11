@@ -150,7 +150,7 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Manage Data',
           items: [
-            { type: 'doc', id: 'user-guide/manage-data/overview', label: 'Overview' },
+            { type: 'doc', id: 'user-guide/manage-data/overview', label: 'Update, Delete, and TTL' },
             'user-guide/manage-data/data-index'
           ]
         },

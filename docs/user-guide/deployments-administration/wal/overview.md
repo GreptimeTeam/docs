@@ -3,11 +3,11 @@ title: "GreptimeDB WAL Overview"
 keywords: [WAL, Write-Ahead Logging, Local WAL, Remote WAL, GreptimeDB]
 description: This section describes the WAL (Write-Ahead Logging) in GreptimeDB, including the advantages and disadvantages of Local WAL and Remote WAL.
 ---
-# Overview
+# Write-Ahead Logging (WAL)
 
-The [Write-Ahead Logging](/contributor-guide/datanode/wal.md#introduction)(WAL) is a crucial component in GreptimeDB that persistently records every data modification to ensure no memory-cached data loss. GreptimeDB provides three WAL storage options:
+The [Write-Ahead Logging](/contributor-guide/datanode/wal.md#introduction)(WAL) in GreptimeDB persistently records every data modification to ensure no memory-cached data loss. GreptimeDB provides three WAL storage options:
 
-- **Local WAL**: Uses an embedded storage engine([raft-engine](https://github.com/tikv/raft-engine)) within the [Datanode](/user-guide/concepts/why-greptimedb.md).
+- **Local WAL**: Uses an embedded storage engine([raft-engine](https://github.com/tikv/raft-engine)) within the [Datanode](/user-guide/concepts/architecture.md).
 
 - **Remote WAL**: Uses [Apache Kafka](https://kafka.apache.org/) as the external(remote) WAL storage component.
 
@@ -51,8 +51,8 @@ For detailed configuration, see the [Noop WAL](/user-guide/deployments-administr
 
 ## Next steps
 
-- To configure the Local WAL storage, please refer to [Local WAL](/user-guide/deployments-administration/wal/local-wal.md).
+- [Local WAL](/user-guide/deployments-administration/wal/local-wal.md) — configuring the embedded WAL.
 
-- To learn more about the Remote WAL, please refer to [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md).
+- [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) — configuring Kafka as the WAL backend.
 
-- To learn more about the Noop WAL, please refer to [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md).
+- [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) — the emergency no-op provider.

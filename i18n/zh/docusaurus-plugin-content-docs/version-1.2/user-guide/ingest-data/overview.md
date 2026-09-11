@@ -28,8 +28,8 @@ GreptimeDB 支持多种常见的可观测性和数据库协议，多数数据源
 | MQTT 设备 | EMQX 数据集成 | [EMQX](./for-iot/emqx.md) |
 | 自有应用 | Go 或 Java gRPC SDK | [gRPC SDK](./for-iot/grpc-sdks/overview.md) |
 | 现有 SQL 工具链 | MySQL 或 PostgreSQL 协议 | [SQL](./for-iot/sql.md) |
-| Flink 任务 | GreptimeDB connector | [Apache Flink](/user-guide/integrations/flink.md) |
-| Spark 任务 | GreptimeDB connector | [Apache Spark](/user-guide/integrations/spark.md) |
+| Flink 任务 | Flink SQL、Table API 或 DataStream API | [Apache Flink](/user-guide/integrations/flink.md) |
+| Spark 任务 | batch DataFrame 或 Structured Streaming micro-batch | [Apache Spark](/user-guide/integrations/spark.md) |
 
 同样的文档也按场景分组，见[可观测场景](./for-observability/overview.md)和[物联网场景](./for-iot/overview.md)。
 

@@ -11,11 +11,11 @@ description: 可观测场景写入 GreptimeDB 的路径，按信号类型以及�
 
 - [Prometheus Remote Write](prometheus.md)——适用于已经运行 Prometheus 或 Prometheus Agent 的环境。
 - [OpenTelemetry](opentelemetry.md)——通过 OpenTelemetry SDK 以 OTLP/HTTP 写入。
-- [InfluxDB 行协议](../for-iot/influxdb-line-protocol.md)——适用于 Telegraf 和已有的 InfluxDB 客户端，该页同时包含 Telegraf 的配置方式。
+- [InfluxDB 行协议](../for-iot/influxdb-line-protocol.md)——从 InfluxDB 迁移时走这条路径，也适用于 Telegraf，该页同时包含 Telegraf 的配置方式。
 
 ## 日志
 
-- [Loki](loki.md)——Loki Push API，适用于已经写入 Loki 的客户端，该页同时包含 Alloy 的配置方式。
+- [Loki](loki.md)——Loki Push API，从 Loki 迁移时走这条路径，已有的客户端不用改，该页同时包含 Alloy 的配置方式。
 - [Elasticsearch](elasticsearch.md)——`_bulk` API，兼容 Logstash、Filebeat 和 Telegraf。
 - [Splunk](splunk.md)——HTTP Event Collector（HEC）协议，兼容 Vector 和 OpenTelemetry Collector。
 

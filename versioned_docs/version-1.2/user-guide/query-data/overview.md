@@ -9,7 +9,7 @@ GreptimeDB exposes three query interfaces over the same tables. Which one to use
 
 ## Query languages
 
-- [SQL](./sql.md) — queries across metrics, logs, and traces, including range queries, [views](./view.md), and [common table expressions](./cte.md).
+- [SQL](./sql.md) — queries across metrics, logs, and traces, including range queries. [Views](./view.md) and [common table expressions](./cte.md) factor out a query you write repeatedly.
 - [PromQL](./promql.md) — metric queries through the Prometheus HTTP API, or `TQL` inside SQL.
 - [Jaeger API](./jaeger.md) — trace queries from Jaeger UI or Grafana.
 - [Log Query](./log-query.md) — a dedicated HTTP endpoint for log search. Experimental.

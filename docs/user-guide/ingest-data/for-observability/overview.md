@@ -11,11 +11,11 @@ Observability data reaches GreptimeDB through the protocol its source already sp
 
 - [Prometheus Remote Write](prometheus.md) — for an existing Prometheus server or Prometheus Agent.
 - [OpenTelemetry](opentelemetry.md) — OTLP/HTTP from an OpenTelemetry SDK.
-- [InfluxDB Line Protocol](../for-iot/influxdb-line-protocol.md) — for Telegraf and existing InfluxDB clients. This page also covers the Telegraf configuration.
+- [InfluxDB Line Protocol](../for-iot/influxdb-line-protocol.md) — the path for migrating off InfluxDB, and for Telegraf. This page also covers the Telegraf configuration.
 
 ## Logs
 
-- [Loki](loki.md) — the Loki Push API, for clients already writing to Loki. This page also covers the Alloy configuration.
+- [Loki](loki.md) — the Loki Push API, the path for migrating off Loki without changing the clients already writing to it. This page also covers the Alloy configuration.
 - [Elasticsearch](elasticsearch.md) — the `_bulk` API, compatible with Logstash, Filebeat, and Telegraf.
 - [Splunk](splunk.md) — the HTTP Event Collector (HEC) protocol, compatible with Vector and the OpenTelemetry Collector.
 

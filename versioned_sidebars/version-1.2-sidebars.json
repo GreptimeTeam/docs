@@ -150,7 +150,7 @@
             {
               "type": "doc",
               "id": "user-guide/manage-data/overview",
-              "label": "Overview"
+              "label": "Update, Delete, and TTL"
             },
             "user-guide/manage-data/data-index"
           ]

@@ -3,7 +3,11 @@ keywords: [数据管理, 数据更新, 数据删除, TTL 策略, 数据保留]
 description: 介绍如何在 GreptimeDB 中更新和删除数据，包括使用相同的 tag 和 time index 更新数据、删除数据、使用 TTL 策略保留数据等。
 ---
 
-# 管理数据
+<AnchorAlias id="管理数据" />
+
+# 更新、删除与 TTL
+
+GreptimeDB 没有 `UPDATE` 语句，更新通过覆盖写入完成，具体行为取决于表的 merge 模式。本页覆盖数据的更新、删除和过期。表和 Region 的运维操作——分片、迁移、compaction——见[表与 Region 运维](/user-guide/deployments-administration/manage-data/overview.md)。
 
 ## 更新数据
 
@@ -342,4 +346,4 @@ ALTER DATABASE test UNSET 'ttl';
 
 ## 更多数据管理操作
 
-有关更高级的数据管理操作，例如基本表操作、表分片和 Region 迁移，请参阅 Administration 部分的[数据管理](/user-guide/deployments-administration/manage-data/overview.md)。
+表的基本操作、表分片和 Region 迁移见[表与 Region 运维](/user-guide/deployments-administration/manage-data/overview.md)。

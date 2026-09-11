@@ -1,110 +1,60 @@
 ---
-keywords: [log service, quick start, pipeline configuration, manage pipelines, query logs]
-description: Comprehensive guide to GreptimeDB's log management capabilities, covering log collection architecture, pipeline processing, integration with popular collectors like Vector and Kafka, and advanced querying with full-text search.
+keywords: [logs, log ingestion, pipeline, full-text search, log collectors, Vector, Fluent Bit, Loki, Splunk]
+description: How logs reach GreptimeDB, how pipelines parse and transform them on the way in, and how to query them once stored.
 ---
 
 # Logs
 
-GreptimeDB provides a comprehensive log management solution designed for modern observability needs.
-It offers seamless integration with popular log collectors,
-flexible pipeline processing,
-and powerful querying capabilities, including full-text search.
-
-Key features include:
-
-- **Unified Storage**: Store logs alongside metrics and traces in a single database
-- **Pipeline Processing**: Transform and enrich raw logs with customizable pipelines, supporting various log collectors and formats
-- **Advanced Querying**: SQL-based analysis with full-text search capabilities
-- **Real-time Processing**: Process and query logs in real-time for monitoring and alerting
-
-
-## Log Collection Flow
+Logs are stored in the same engine as metrics and traces, so a log table can be queried with SQL and joined against the other signals. What is specific to logs is the stage before storage: a pipeline parses a raw line into columns and decides which of them get indexed.
 
 ![log-collection-flow](/log-collection-flow.drawio.svg)
 
-The diagram above illustrates the comprehensive log collection architecture,
-which follows a structured four-stage process: Log Sources, Log Collectors, Pipeline Processing, and Storage in GreptimeDB.
+A log collector sends raw lines to GreptimeDB, a pipeline turns them into rows, and the result is a table you can search with SQL and full-text indexes.
 
-### Log Sources
+## How a log becomes a row
 
-Log sources represent the foundational layer where log data originates within your infrastructure.
-GreptimeDB supports ingestion from diverse source types to accommodate comprehensive observability requirements:
+A metric arrives already structured: a name, a set of labels, a value. A log line does not — it is one string, and what is inside it depends on whoever wrote the logging statement. The pipeline is the step that closes that gap, and it runs on the write path, before anything is stored.
 
-- **Applications**: Application-level logs from microservices architectures, web applications, mobile applications, and custom software components
-- **IoT Devices**: Device logs, sensor event logs, and operational status logs from Internet of Things ecosystems
-- **Infrastructure**: Cloud platform logs, container orchestration logs (Kubernetes, Docker), load balancer logs, and network infrastructure component logs
-- **System Components**: Operating system logs, kernel events, system daemon logs, and hardware monitoring logs
-- **Custom Sources**: Any other log sources specific to your environment or applications
+A pipeline has two stages:
 
-### Log Collectors
+- **Processors** parse and rewrite the incoming fields. `dissect` and `regex` split a raw line into named fields, `json_parse` and `csv` read structured formats, `date` and `epoch` turn text into timestamps, and `vrl`, `gsub`, `select`, and `filter` reshape or drop what is left.
+- **Transform** decides how those fields are stored: the column type for each one, whether it becomes a tag, and whether it carries an `inverted`, `skipping`, or `fulltext` index.
 
-Log collectors are responsible for efficiently gathering log data from diverse sources and reliably forwarding it to the storage backend. GreptimeDB seamlessly integrates with industry-standard log collectors,
-including Vector, Fluent Bit, Apache Kafka, OpenTelemetry Collector and more.
+The result is an ordinary table, so a stored log is queried like any other data. A [dispatcher](/reference/pipeline/pipeline-config.md#dispatcher) can route different log types from one source into separate tables.
 
-GreptimeDB functions as a powerful sink backend for these collectors,
-providing robust data ingestion capabilities.
-During the ingestion process,
-GreptimeDB's pipeline system enables real-time transformation and enrichment of log data,
-ensuring optimal structure and quality before storage.
+If the incoming data is already structured, no configuration is needed: the built-in `greptime_identity` pipeline stores each field as a column.
 
-### Pipeline Processing
+## Start here
 
-GreptimeDB's pipeline mechanism transforms raw logs into structured, queryable data:
+[Quick Start](./quick-start.md) ingests logs with the built-in `greptime_identity` pipeline.
 
-- **Parse**: Extract structured data from unstructured log messages
-- **Transform**: Enrich logs with additional context and metadata
-- **Index**: Configure indexes to optimize query performance and enable efficient searching, including full-text indexes, time indexes, and more
+<AnchorAlias id="integrate-with-log-collectors" />
 
-### Storage in GreptimeDB
+## Send logs from a collector
 
-After processing through the pipeline,
-the logs are stored in GreptimeDB enabling flexible analysis and visualization:
-
-- **SQL Querying**: Use familiar SQL syntax to analyze log data
-- **Time-based Analysis**: Leverage time-series capabilities for temporal analysis
-- **Full-text Search**: Perform advanced text searches across log messages
-- **Real-time Analytics**: Query logs in real-time for monitoring and alerting
-
-## Quick Start
-
-You can quickly get started by using the built-in `greptime_identity` pipeline for log ingestion.
-For more information, please refer to the [Quick Start](./quick-start.md) guide.
-
-## Integrate with Log Collectors
-
-GreptimeDB integrates seamlessly with various log collectors to provide a comprehensive logging solution. The integration process follows these key steps:
-
-1. **Select Appropriate Log Collectors**: Choose collectors based on your infrastructure requirements, data sources, and performance needs
-2. **Analyze Output Format**: Understand the log format and structure produced by your chosen collector
-3. **Configure Pipeline**: Create and configure pipelines in GreptimeDB to parse, transform, and enrich the incoming log data
-4. **Store and Query**: Efficiently store processed logs in GreptimeDB for real-time analysis and monitoring
-
-To successfully integrate your log collector with GreptimeDB, you'll need to:
-- First understand how pipelines work in GreptimeDB
-- Then configure the sink settings in your log collector to send data to GreptimeDB
-
-Please refer to the following guides for detailed instructions on integrating GreptimeDB with log collectors:
+Each guide below covers the collector's configuration and the pipeline setup it needs:
 
 - [Vector](/user-guide/ingest-data/for-observability/vector.md#using-greptimedb_logs-sink-recommended)
-- [Kafka](/user-guide/ingest-data/for-observability/kafka.md#logs)
 - [Fluent Bit](/user-guide/ingest-data/for-observability/fluent-bit.md#http)
 - [OpenTelemetry Collector](/user-guide/ingest-data/for-observability/otel-collector.md)
+- [Kafka](/user-guide/ingest-data/for-observability/kafka.md#logs)
 - [Loki](/user-guide/ingest-data/for-observability/loki.md#using-pipeline-with-loki-push-api)
 - [Splunk](/user-guide/ingest-data/for-observability/splunk.md#using-a-pipeline)
 
-## Learn More About Pipelines
+## Write your own pipeline
 
-- [Using Custom Pipelines](./use-custom-pipelines.md): Explains how to create and use custom pipelines for log ingestion.
-- [Managing Pipelines](./manage-pipelines.md): Explains how to create and delete pipelines.
+A pipeline parses a log line, transforms the extracted values, and configures the indexes on the resulting columns.
 
-## Query Logs
+- [Using Custom Pipelines](./use-custom-pipelines.md) — writing a pipeline for a log format the built-in ones do not cover.
+- [Managing Pipelines](./manage-pipelines.md) — creating, updating, and deleting pipelines.
 
-- [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md#logs-query): Filter and search logs in the built-in Dashboard using a builder or code editor.
-- [Full-Text Search](./fulltext-search.md): Guide on using GreptimeDB's query language for effective searching and analysis of log data.
+## Query logs
+
+- [Full-Text Search](./fulltext-search.md) — matching text inside log messages.
+- [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md#logs-query) — filtering and searching from the built-in Dashboard, with a builder or a code editor.
 
 ## Reference
 
-- [Built-in Pipelines](/reference/pipeline/built-in-pipelines.md): Lists and describes the details of the built-in pipelines provided by GreptimeDB for log ingestion.
-- [APIs for Writing Logs](/reference/pipeline/write-log-api.md): Describes the HTTP API for writing logs to GreptimeDB.
-- [Pipeline Configuration](/reference/pipeline/pipeline-config.md): Provides in-depth information on each specific configuration of pipelines in GreptimeDB.
-
+- [Built-in Pipelines](/reference/pipeline/built-in-pipelines.md) — the pipelines GreptimeDB ships with.
+- [APIs for Writing Logs](/reference/pipeline/write-log-api.md) — the HTTP API that accepts log writes.
+- [Pipeline Configuration](/reference/pipeline/pipeline-config.md) — every processor and transform option.

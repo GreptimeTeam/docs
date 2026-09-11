@@ -28,8 +28,8 @@ GreptimeDB accepts data through established observability and database protocols
 | MQTT devices | EMQX data integration | [EMQX](./for-iot/emqx.md) |
 | Your own application | gRPC SDK for Go or Java | [gRPC SDKs](./for-iot/grpc-sdks/overview.md) |
 | Existing SQL tooling | MySQL or PostgreSQL protocol | [SQL](./for-iot/sql.md) |
-| Flink jobs | GreptimeDB connector | [Apache Flink](/user-guide/integrations/flink.md) |
-| Spark jobs | GreptimeDB connector | [Apache Spark](/user-guide/integrations/spark.md) |
+| Flink jobs | Flink SQL, the Table API, or the DataStream API | [Apache Flink](/user-guide/integrations/flink.md) |
+| Spark jobs | Batch DataFrames or Structured Streaming micro-batches | [Apache Spark](/user-guide/integrations/spark.md) |
 
 The same guides are also grouped by scenario, in [observability sources](./for-observability/overview.md) and [IoT sources](./for-iot/overview.md).
 
