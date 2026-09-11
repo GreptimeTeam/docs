@@ -95,7 +95,7 @@ Supports High Availability:
 - A single AZ is unavailable with degraded performance, unless the surviving AZs were sized to absorb its share of the load
 - The region itself is not covered; it is a single failure domain in this topology
 
-This solution targets zero RPO and a minute-level RTO for a node or AZ failure. As with the other solutions, the numbers depend on conditions you have to check:
+This solution targets zero RPO and a second- or minute-level RTO for a node or AZ failure. As with the other solutions, the numbers depend on conditions you have to check:
 
 - Region Failover is **disabled by default** and must be enabled explicitly.
 - The surviving Datanodes need spare capacity to carry the failed node's regions, otherwise failover only moves the overload.
@@ -129,7 +129,7 @@ For medium-to-large scale scenarios requiring zero RPO, this solution is highly 
 If Region 1 becomes completely unavailable due to a disaster, the table regions within it will be opened and recovered in the other regions.
 In the event that Region 1 becomes completely unavailable due to a disaster, the table regions within it will be opened and recovered in the other regions. Region 3 serves as a replica to adhere to the majority protocol of Metasrv.
 
-This solution targets region-level fault tolerance, scalable write capability, zero RPO, and a minute-level RTO or lower. Reaching those numbers depends on the whole dependency chain, not on the cluster layout alone:
+This solution targets region-level fault tolerance, scalable write capability, zero RPO, and a second- or minute-level RTO. Reaching those numbers depends on the whole dependency chain, not on the cluster layout alone:
 
 - Region Failover is **disabled by default** and must be enabled explicitly.
 - Kafka, the object storage, the metadata backend and the traffic entry point all have to span the failure domain you are protecting against. Metasrv running in three regions does not replicate an external MySQL or PostgreSQL metadata backend for you.
@@ -155,9 +155,9 @@ By comparing these DR solutions, you can decide on the final option based on the
 |     DR solution | Error Tolerance Objective |  RPO | RTO | TCO | Scenarios | Remote WAL & Object Storage | Notes |
 | ------------- | ------------------------- | ----- | ----- | ----- | ---------------- | --------- | --------|
 |  DR solution for Standalone| Single-Region | Backup Interval | Minute or Hour level | Low | Low requirements for availability and reliability in small scenarios |  Optional | |
-|  DR solution based on single-region deployment in a single cluster | Single-Region, node and AZ level | 0 | Minute level | Medium | The common production baseline for a cluster that lives in one region | Required | Region Failover is disabled by default |
+|  DR solution based on single-region deployment in a single cluster | Single-Region, node and AZ level | 0 | Second or minute level | Medium | The common production baseline for a cluster that lives in one region | Required | Region Failover is disabled by default |
 |  DR solution based on Active-Active Failover | Cross-Region | Depends on pending changes and the failure mode | Depends on external failover | Low | High requirements for availability and reliability in small-to-medium scenarios |  Optional | Commercial feature |
-|  DR solution based on cross-region deployment in a single cluster| Multi-Regions | 0 | Minute level | High | High requirements for availability and reliability in medium-to-large scenarios |  Required | |
+|  DR solution based on cross-region deployment in a single cluster| Multi-Regions | 0 | Second or minute level | High | High requirements for availability and reliability in medium-to-large scenarios |  Required | |
 |  DR solution based on BR | Single-Region | Backup Interval | Minute or Hour level | Low | Acceptable requirements for availability and reliability | Optional | |
 
 
