@@ -75,18 +75,21 @@ Through the above statement, we have inserted six rows into the `monitor` table.
 
 For more information about the `INSERT` statement, please refer to [`INSERT`](/reference/sql/insert.md).
 
-## Skip WAL for inserts
+## Disable WAL for the current session
 
-To skip Write-Ahead Log (WAL) writes for ordinary inserts in the current
-session, set `skip_wal` to `true`:
+Run the following statement to disable the Write-Ahead Log (WAL) for subsequent `INSERT` statements in the current session:
 
 ```sql
 SET skip_wal = true;
 ```
 
-This setting does not change the table option. Skipped data that has not been
-flushed is lost if the process restarts. Set `skip_wal` to `false` to resume
-writing to the WAL.
+This setting applies only to the current session and does not change the [table-level `skip_wal` option](/reference/sql/create.md#create-a-table-with-wal-disabled).
+Running `SET skip_wal = false` does not enable WAL if the table-level `skip_wal` option is `true`.
+
+:::warning
+When WAL is disabled, unflushed data is lost if the process restarts.
+Use this option only when the data can be ingested again from its source.
+:::
 
 ## Time zone
 

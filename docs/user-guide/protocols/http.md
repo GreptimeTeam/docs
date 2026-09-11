@@ -65,12 +65,9 @@ curl -X POST \
 http://localhost:4000/v1/sql
 ```
 
-### Skip WAL for inserts
+### Disable WAL for a single write request
 
-To skip Write-Ahead Log (WAL) writes for an ordinary insert request, set the
-`x-greptime-insert-skip-wal` header to `true`. This setting applies only to the
-current request and does not change the table option. Skipped data that has not
-been flushed is lost if the process restarts.
+Set the `x-greptime-insert-skip-wal` header to `true` to disable the Write-Ahead Log (WAL) for the current insert request.
 
 ```shell
 curl -X POST \
@@ -81,7 +78,13 @@ curl -X POST \
   http://localhost:4000/v1/sql
 ```
 
-Set the header to `false`, or omit it, to write to the WAL.
+This setting applies only to the current request and does not change the [table-level `skip_wal` option](/reference/sql/create.md#create-a-table-with-wal-disabled).
+Setting the header to `false` or omitting it does not enable WAL if the table-level `skip_wal` option is `true`.
+
+:::warning
+When WAL is disabled, unflushed data is lost if the process restarts.
+Use this option only when the data can be ingested again from its source.
+:::
 
 ### Hints
 
@@ -111,7 +114,8 @@ Supported hints:
 | `merge_mode` | String | None | Sets the [merge mode](/reference/sql/create.md#create-a-table-with-merge-mode) for the table, e.g. `last_non_null`, `last_row`. For auto-created InfluxDB line protocol tables, this hint takes precedence over [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md), which defaults to `last_non_null`. When `append_mode` is enabled, only `last_row` is allowed. |
 | `physical_table` | String | None | Specifies the physical table name for the [metric engine](/contributor-guide/datanode/metric-engine.md). |
 | `query.enable_remote_dynamic_filter_pushdown` | Boolean | `true` | Enables remote dynamic filter pushdown for SQL queries. Set it to `false` to disable Frontend-to-Datanode dynamic filter propagation for the current request. See [Remote dynamic filter pushdown](/user-guide/query-data/sql.md#remote-dynamic-filter-pushdown). |
-| `skip_wal` | Boolean | `false` | Skips WAL (Write-Ahead Log) writes for the table. |
+| `skip_wal` | Boolean | `false` | Disables WAL (Write-Ahead Log) for automatically created tables. Does not change existing tables. |
+| `insert_skip_wal` | Boolean | `false` | Disables WAL for the current insert request without changing the table-level `skip_wal` option. If the table-level `skip_wal` option is `true`, WAL remains disabled even when this hint is `false` or omitted. |
 | `sst_format` | String | None | Sets the SST (Sorted String Table) file format for the table. Valid values: `flat`, `primary_key`. |
 | `trace_table_partitions` | Int | None | Override default partition number (16) of trace tables. Set to `0` or `1` to disable partitioning. |
 

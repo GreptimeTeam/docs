@@ -61,11 +61,9 @@ curl -X POST \
 http://localhost:4000/v1/sql
 ```
 
-### 跳过插入请求的 WAL
+### 为单个写入请求禁用 WAL
 
-要跳过普通插入请求的预写日志（WAL）写入，请将
-`x-greptime-insert-skip-wal` 请求头设置为 `true`。此设置仅对当前请求生效，
-不会修改表选项。进程重启时，尚未 flush 的跳过 WAL 的数据会丢失。
+将 `x-greptime-insert-skip-wal` 请求头设置为 `true`，可为当前写入请求禁用预写日志（WAL）。
 
 ```shell
 curl -X POST \
@@ -76,7 +74,12 @@ curl -X POST \
   http://localhost:4000/v1/sql
 ```
 
-将该请求头设置为 `false` 或省略它，即可写入 WAL。
+此设置仅对当前请求生效，不会修改[表级 `skip_wal` 选项](/reference/sql/create.md#创建禁用-wal-的表)。
+将请求头设置为 `false` 或省略该请求头时，若表级 `skip_wal` 为 `true`，仍不写入 WAL。
+
+:::warning
+禁用 WAL 后，进程重启会导致尚未刷盘的数据丢失。请仅在数据可以从源端重新写入时使用。
+:::
 
 ### Hints
 
@@ -106,7 +109,8 @@ x-greptime-hint-key2: value2
 | `merge_mode` | String | 无 | 设置表的 [merge 模式](/reference/sql/create.md#创建带有-merge-模式的表)，例如 `last_non_null`、`last_row`。对于通过 InfluxDB 行协议自动创建的表，该 hint 优先于 [`influxdb.default_merge_mode`](/user-guide/deployments-administration/configuration.md) 配置；该配置默认值为 `last_non_null`。启用 `append_mode` 时，仅允许使用 `last_row`。 |
 | `physical_table` | String | 无 | 指定 [metric 引擎](/contributor-guide/datanode/metric-engine.md)的物理表名。 |
 | `query.enable_remote_dynamic_filter_pushdown` | Boolean | `true` | 为 SQL 查询启用远程动态过滤下推。设置为 `false` 可为当前请求关闭 Frontend 到 Datanode 的动态过滤传播。请参阅[远程动态过滤下推](/user-guide/query-data/sql.md#远程动态过滤下推)。 |
-| `skip_wal` | Boolean | `false` | 跳过表的 WAL（Write-Ahead Log）写入。 |
+| `skip_wal` | Boolean | `false` | 为自动创建的表禁用预写日志（WAL），不修改已有表的设置。 |
+| `insert_skip_wal` | Boolean | `false` | 为当前写入请求禁用 WAL，不修改表级 `skip_wal` 选项。设为 `false` 或省略该 hint 时，若表级设置已禁用 WAL，仍不写入 WAL。 |
 | `sst_format` | String | 无 | 设置表的 SST（Sorted String Table）文件格式。可选值：`flat`、`primary_key`。 |
 | `trace_table_partitions` | Int | None | 自定义 Trace 表的默认分区数（16）。设置为 `0` 或 `1` 时禁用分区。 |
 
