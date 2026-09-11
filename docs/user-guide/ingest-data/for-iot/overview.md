@@ -10,7 +10,7 @@ IoT data reaches GreptimeDB from devices, brokers, and applications. [Ingest Dat
 - [gRPC SDKs](./grpc-sdks/overview.md) — Go and Java clients for writing from your own application.
 - [EMQX](emqx.md) — MQTT devices, written through an EMQX data integration.
 - [InfluxDB Line Protocol](influxdb-line-protocol.md) — the path for migrating off InfluxDB, and for Telegraf. This page also covers the Telegraf configuration.
-- [OpenTSDB](opentsdb.md) — the `/opentsdb/api/put` HTTP endpoint.
+- [OpenTSDB](opentsdb.md) — the `/v1/opentsdb/api/put` HTTP endpoint.
 - [SQL](sql.md) — `INSERT` statements over the MySQL or PostgreSQL protocol.
 
 Tables and columns are created as data arrives, except on the SQL path. See [Automatic Schema Generation](../overview.md#automatic-schema-generation).

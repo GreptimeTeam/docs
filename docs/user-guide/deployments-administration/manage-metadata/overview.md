@@ -10,6 +10,9 @@ A GreptimeDB cluster stores its metadata in an external system, which the Metasr
 - **[etcd](https://etcd.io/)** — a distributed key-value store with a small operational footprint.
 - **[MySQL](https://www.mysql.com/) and [PostgreSQL](https://www.postgresql.org/)** — relational databases with ACID transactions, replication, and established backup tooling. Both are available as managed services (RDS) on the major cloud platforms.
 
+<AnchorAlias id="recommendation" />
+<AnchorAlias id="best-practices" />
+
 ## Which to choose
 
 For development and testing, etcd is the lightest option to run.

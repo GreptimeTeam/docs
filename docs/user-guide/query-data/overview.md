@@ -14,9 +14,13 @@ GreptimeDB exposes several query interfaces over the same tables. Which one to u
 - [Jaeger API](./jaeger.md) — trace queries from Jaeger UI or Grafana.
 - [Log Query](./log-query.md) — a dedicated HTTP endpoint for log search. Experimental.
 
+<AnchorAlias id="recommended-libraries" />
+
 ## Clients and drivers
 
 GreptimeDB speaks the [MySQL](/user-guide/protocols/mysql.md) and [PostgreSQL](/user-guide/protocols/postgresql.md) wire protocols, so existing SQL drivers connect to it without a GreptimeDB-specific client. [SQL Tools](/reference/sql-tools.md) lists the drivers and their connection settings.
+
+<AnchorAlias id="query-external-data" />
 
 ## Query files that were never ingested
 

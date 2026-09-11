@@ -14,9 +14,13 @@ GreptimeDB 在同一批表之上提供多种查询接口，选哪一种取决于
 - [Jaeger 接口](./jaeger.md)——从 Jaeger UI 或 Grafana 查询 trace。
 - [Log Query](./log-query.md)——面向日志检索的独立 HTTP 接口，实验性功能。
 
+<AnchorAlias id="推荐的查询库" />
+
 ## 客户端与驱动
 
 GreptimeDB 支持 [MySQL](/user-guide/protocols/mysql.md) 和 [PostgreSQL](/user-guide/protocols/postgresql.md) 线协议，现有的 SQL 驱动无需专用客户端即可连接。驱动列表和连接参数见 [SQL 工具](/reference/sql-tools.md)。
+
+<AnchorAlias id="查询外部数据" />
 
 ## 查询未入库的数据文件
 

@@ -12,7 +12,7 @@ Two endpoints are available, both `POST` with an NDJSON body:
 | Endpoint | Purpose |
 | --- | --- |
 | `/v1/elasticsearch/_bulk` | The index comes from each command line's `_index` field |
-| `/v1/elasticsearch/${index}/_bulk` | The index comes from the path |
+| `/v1/elasticsearch/${index}/_bulk` | The path supplies the index, but an `_index` field in the body overrides it |
 
 What the implementation covers:
 

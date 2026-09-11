@@ -7,6 +7,8 @@ description: Running GreptimeDB on your own infrastructure — deployment, confi
 
 This section covers running GreptimeDB on your own infrastructure. Start with [Architecture](/user-guide/concepts/architecture.md) to see which components you will deploy and operate. GreptimeCloud runs the same engine as a managed service, with deployment and maintenance handled for you.
 
+<AnchorAlias id="configuration-and-deployment" />
+
 ## Deploy
 
 - [Configuration](configuration.md) — protocol, storage, and runtime settings to review before the first deployment.
@@ -14,6 +16,9 @@ This section covers running GreptimeDB on your own infrastructure. Start with [A
 - [Capacity Planning](./capacity-plan.md) — sizing compute, memory, and local cache for the expected ingestion rate and query mix.
 - [Authentication](./authentication/overview.md) — not enabled by default.
 - [Run on Android](run-on-android.md) — for edge deployments on Android devices.
+
+<AnchorAlias id="component-management" />
+<AnchorAlias id="monitoring" />
 
 ## Operate
 
@@ -24,10 +29,14 @@ This section covers running GreptimeDB on your own infrastructure. Start with [A
 - [Upgrade](./upgrade.md) — moving a deployment to a newer version.
 - [Troubleshooting](./troubleshooting.md) — collecting the information needed to diagnose a problem.
 
+<AnchorAlias id="disaster-recovery" />
+
 ## Durability and recovery
 
 - [Write-Ahead Logging (WAL)](./wal/overview.md) — local and Remote WAL, including the [Remote WAL setup](./wal/remote-wal/configuration.md) that cluster failover depends on.
 - [Disaster Recovery](./disaster-recovery/overview.md) — backup, restore, and cross-region options.
+
+<AnchorAlias id="data-management-and-performance" />
 
 ## Performance
 

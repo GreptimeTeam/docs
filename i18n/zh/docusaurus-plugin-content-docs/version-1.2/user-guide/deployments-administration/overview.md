@@ -7,6 +7,8 @@ description: 在自有基础设施上运行 GreptimeDB——部署、配置、�
 
 本章覆盖如何在自有基础设施上运行 GreptimeDB。先看[架构](/user-guide/concepts/architecture.md)，明确需要部署和运维哪些组件。GreptimeCloud 运行同一套引擎，以托管服务的形式提供，部署和维护由平台负责。
 
+<AnchorAlias id="配置和部署" />
+
 ## 部署
 
 - [配置](configuration.md)——首次部署前需要确认的协议、存储和运行时设置。
@@ -14,6 +16,9 @@ description: 在自有基础设施上运行 GreptimeDB——部署、配置、�
 - [容量规划](./capacity-plan.md)——按写入量和查询负载规划计算资源、内存和本地缓存。
 - [鉴权](./authentication/overview.md)——默认不启用。
 - [在 Android 上运行](run-on-android.md)——用于 Android 设备上的边缘部署。
+
+<AnchorAlias id="组件管理" />
+<AnchorAlias id="监控" />
 
 ## 运维
 
@@ -24,10 +29,14 @@ description: 在自有基础设施上运行 GreptimeDB——部署、配置、�
 - [升级](./upgrade.md)——把部署升级到新版本。
 - [故障排查](./troubleshooting.md)——收集定位问题所需的信息。
 
+<AnchorAlias id="灾难恢复" />
+
 ## 持久性与恢复
 
 - [预写日志（WAL）](./wal/overview.md)——本地 WAL 与 Remote WAL，其中 [Remote WAL 配置](./wal/remote-wal/configuration.md)是集群 failover 的前提。
 - [容灾](./disaster-recovery/overview.md)——备份、恢复和跨区域方案。
+
+<AnchorAlias id="数据管理和性能" />
 
 ## 性能
 

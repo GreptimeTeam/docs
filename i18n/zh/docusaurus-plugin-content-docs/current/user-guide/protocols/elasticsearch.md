@@ -12,7 +12,7 @@ GreptimeDB 实现了 Elasticsearch 的 [`_bulk` API](https://www.elastic.co/guid
 | 端点 | 说明 |
 | --- | --- |
 | `/v1/elasticsearch/_bulk` | index 取自每条命令行的 `_index` 字段 |
-| `/v1/elasticsearch/${index}/_bulk` | index 取自路径 |
+| `/v1/elasticsearch/${index}/_bulk` | index 取自路径，但请求体中的 `_index` 字段优先 |
 
 实现范围：
 

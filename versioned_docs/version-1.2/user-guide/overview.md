@@ -9,9 +9,12 @@ This guide covers running GreptimeDB: getting data in, querying it, processing i
 
 <AnchorAlias id="ingesting-data-based-on-your-use-case" />
 
+<AnchorAlias id="for-observability-scenarios" />
+<AnchorAlias id="for-iot-and-edge-computing-scenarios" />
+
 ## Ingest Data
 
-[Ingest Data](./ingest-data/overview.md) maps each data source to the protocol it writes with and the guide that covers it. Tables and columns are created as data arrives, so no schema has to be defined in advance.
+[Ingest Data](./ingest-data/overview.md) maps each data source to the protocol it writes with and the guide that covers it. On most paths, tables and columns are created as data arrives; [SQL, Flink, and Spark](./ingest-data/overview.md#automatic-schema-generation) write into an existing table.
 
 Two signals have their own guides because storing them involves more than a write protocol:
 
@@ -19,6 +22,9 @@ Two signals have their own guides because storing them involves more than a writ
 - [Traces](./traces/overview.md) — store OTLP traces and query them with SQL or the Jaeger-compatible API.
 
 <AnchorAlias id="querying-data-for-insights" />
+
+<AnchorAlias id="sql-support" />
+<AnchorAlias id="prometheus-query-language-promql" />
 
 ## Query Data
 
@@ -29,6 +35,8 @@ Two signals have their own guides because storing them involves more than a writ
 The [query overview](./query-data/overview.md) compares the interfaces.
 
 <AnchorAlias id="accelerating-queries-with-indexes" />
+
+<AnchorAlias id="flow-computation" />
 
 ## Process and Describe Data
 

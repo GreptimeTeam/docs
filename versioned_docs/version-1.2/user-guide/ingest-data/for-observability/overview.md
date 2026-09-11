@@ -29,10 +29,10 @@ Storing traces and querying them with SQL or the Jaeger-compatible API is covere
 
 ## Agents and pipelines
 
-These carry any of the three signals, and choose the protocol for you:
+These sit between the source and GreptimeDB and pick the protocol for you. Which signals each one carries differs:
 
 - [OpenTelemetry Collector](otel-collector.md) — routes metrics, logs, and traces through an OTLP/HTTP exporter.
-- [Vector](vector.md) — writes through the GreptimeDB sink.
-- [Fluent Bit](fluent-bit.md) — writes through the HTTP output plugin.
+- [Vector](vector.md) — metrics through the `greptimedb_metrics` sink, logs through `greptimedb_logs`. No traces sink.
+- [Fluent Bit](fluent-bit.md) — logs through the HTTP output; metrics, logs, and traces through the OpenTelemetry output; metrics also through Prometheus Remote Write.
 - [Grafana Alloy](alloy.md) — writes through Remote Write, OpenTelemetry, or Loki.
 - [Kafka](kafka.md) — consumed into GreptimeDB with Vector as the transport.

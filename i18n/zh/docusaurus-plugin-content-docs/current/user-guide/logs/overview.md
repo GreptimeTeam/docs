@@ -9,6 +9,9 @@ description: 日志如何写入 GreptimeDB、Pipeline 在入库前如何解析�
 
 ![log-collection-flow](/log-collection-flow.drawio.svg)
 
+<AnchorAlias id="日志收集流程" />
+<AnchorAlias id="pipeline-处理" />
+
 ## 一条日志如何变成一行数据
 
 指标写入时已经是结构化的：指标名、一组标签、一个值。日志没有这层结构，它就是一个字符串，里面有什么取决于当初写日志的人。Pipeline 负责补上结构化这一步，在数据落库之前完成。
@@ -22,11 +25,15 @@ Pipeline 分两个阶段：
 
 如果写入的数据本身已经结构化，则不需要任何配置：内置的 `greptime_identity` Pipeline 会把每个字段按列存储。
 
+<AnchorAlias id="快速开始" />
+
 ## 从这里开始
 
 [快速开始](./quick-start.md)用内置的 `greptime_identity` Pipeline 演示日志写入。
 
 <AnchorAlias id="集成到日志收集器" />
+
+<AnchorAlias id="日志收集器" />
 
 ## 通过收集器写入
 
@@ -38,6 +45,8 @@ Pipeline 分两个阶段：
 - [Kafka](/user-guide/ingest-data/for-observability/kafka.md#logs)
 - [Loki](/user-guide/ingest-data/for-observability/loki.md#using-pipeline-with-loki-push-api)
 - [Splunk](/user-guide/ingest-data/for-observability/splunk.md#使用-pipeline)
+
+<AnchorAlias id="了解更多关于-pipeline-的信息" />
 
 ## 编写自己的 Pipeline
 

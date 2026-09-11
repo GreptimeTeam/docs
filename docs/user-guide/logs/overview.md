@@ -11,6 +11,9 @@ Logs are stored in the same engine as metrics and traces, so a log table can be 
 
 A log collector sends raw lines to GreptimeDB, a pipeline turns them into rows, and the result is a table you can search with SQL and full-text indexes.
 
+<AnchorAlias id="log-collection-flow" />
+<AnchorAlias id="pipeline-processing" />
+
 ## How a log becomes a row
 
 A metric arrives already structured: a name, a set of labels, a value. A log line does not — it is one string, and what is inside it depends on whoever wrote the logging statement. The pipeline is the step that closes that gap, and it runs on the write path, before anything is stored.
@@ -24,11 +27,15 @@ The result is an ordinary table, so a stored log is queried like any other data.
 
 If the incoming data is already structured, no configuration is needed: the built-in `greptime_identity` pipeline stores each field as a column.
 
+<AnchorAlias id="quick-start" />
+
 ## Start here
 
 [Quick Start](./quick-start.md) ingests logs with the built-in `greptime_identity` pipeline.
 
 <AnchorAlias id="integrate-with-log-collectors" />
+
+<AnchorAlias id="log-collectors" />
 
 ## Send logs from a collector
 
@@ -40,6 +47,8 @@ Each guide covers the collector's configuration and the pipeline setup it needs:
 - [Kafka](/user-guide/ingest-data/for-observability/kafka.md#logs)
 - [Loki](/user-guide/ingest-data/for-observability/loki.md#using-pipeline-with-loki-push-api)
 - [Splunk](/user-guide/ingest-data/for-observability/splunk.md#using-a-pipeline)
+
+<AnchorAlias id="learn-more-about-pipelines" />
 
 ## Write your own pipeline
 

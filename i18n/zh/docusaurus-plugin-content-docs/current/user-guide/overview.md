@@ -9,9 +9,12 @@ description: GreptimeDB 使用指南的入口，覆盖数据写入、查询、�
 
 <AnchorAlias id="根据你的使用场景写入数据" />
 
+<AnchorAlias id="可观测性指标场景" />
+<AnchorAlias id="物联网和边缘计算场景" />
+
 ## 写入数据
 
-[写入数据](./ingest-data/overview.md)按数据来源列出对应的写入协议和文档。表和列在数据到达时自动创建，不需要预先定义 schema。
+[写入数据](./ingest-data/overview.md)按数据来源列出对应的写入协议和文档。多数路径上表和列都在数据到达时自动创建；[SQL、Flink 和 Spark](./ingest-data/overview.md#自动生成表结构) 需要写入已存在的表。
 
 有两类信号在入库前还要多一步处理，因此单独成章：
 
@@ -19,6 +22,9 @@ description: GreptimeDB 使用指南的入口，覆盖数据写入、查询、�
 - [链路追踪](./traces/overview.md)——存储 OTLP trace，并用 SQL 或 Jaeger 兼容接口查询。
 
 <AnchorAlias id="查询数据以获取洞察" />
+
+<AnchorAlias id="sql-支持" />
+<AnchorAlias id="prometheus-查询语言-promql" />
 
 ## 查询数据
 
@@ -29,6 +35,8 @@ description: GreptimeDB 使用指南的入口，覆盖数据写入、查询、�
 各查询接口的对比见[查询数据](./query-data/overview.md)。
 
 <AnchorAlias id="使用索引加速查询" />
+
+<AnchorAlias id="flow-计算" />
 
 ## 处理与描述数据
 
