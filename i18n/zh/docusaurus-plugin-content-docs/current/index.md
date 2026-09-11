@@ -1,41 +1,69 @@
 ---
 title: "GreptimeDB"
 keywords: [可观测性数据库,开源可观测性数据库,时序数据库, 开源时序数据库, 可观测数据,时序数据, 可观测性工具, 云原生数据库, 数据可观测性, 可观测性平台, 边缘数据库, 物联网边缘计算, 边缘云计算, 日志管理, 日志聚合, 高基数, SQL查询示例, OpenTelemetry 收集器, GreptimeDB]
-description: 介绍了 GreptimeDB，一个开源的统一可观测性数据库，用于存储指标、日志和事件，包含入门指南、用户指南、贡献者指南等链接，帮助用户快速上手和深入了解。
+description: GreptimeDB 文档首页。GreptimeDB 是一个开源可观测性数据库，统一存储指标、日志、链路和宽事件；本页提供快速上手、用户指南、AI agent 和 SQL 参考的入口。
 ---
 
-# 简介
+import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
-<p align="center">
-    <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400"/>
-</p>
+# GreptimeDB 文档
 
-**GreptimeDB** 是一个开源可观测性数据库，可在单一引擎中处理指标、日志和链路追踪。将其作为单一的 OpenTelemetry 后端使用——用一个基于对象存储的数据库替代 Prometheus、Loki 和 Elasticsearch。使用 [SQL](/user-guide/query-data/sql.md) 和 [PromQL](/user-guide/query-data/promql.md) 查询，轻松扩展，成本降低高达 50 倍。
+**GreptimeDB** 是一个开源可观测性数据库，用一个引擎存储指标、日志和链路追踪。它可以作为唯一的 OpenTelemetry 后端，替代 Prometheus、Loki 和 Elasticsearch，数据放在对象存储上，用 [SQL](/user-guide/query-data/sql.md) 和 [PromQL](/user-guide/query-data/promql.md) 查询。
+
+<HomeCards>
+
+- **[立即开始](/getting-started/overview.md)**
+
+  安装 GreptimeDB，写入第一批数据，执行第一个查询。
+
+- **[用户指南](/user-guide/overview.md)**
+
+  写入协议、查询、Pipeline、Flow，以及生产环境的部署与运维。
+
+- **[For AI Agents](/faq-and-others/vibecoding.md)**
+
+  从 coding agent 使用 GreptimeDB，不需要自建集成。
+
+- **[参考手册](/reference/sql/overview.md)**
+
+  SQL、函数、配置项、命令行和 HTTP 接口。
+
+</HomeCards>
+
+## 向 AI 提问
+
+回答基于本站文档生成，并给出对应页面的链接。
+
+<AskAI />
 
 ## 为什么选择 GreptimeDB
 
-**用一个系统替代三个系统。** 大多数团队运行 Prometheus 处理指标、Loki 或 ELK 处理日志、Elasticsearch 或 Tempo 处理链路追踪——三个系统、三种查询语言、三套运维开销。GreptimeDB 在单一引擎中统一了这三者，并原生支持 OpenTelemetry。
+**用一个系统替代三个。** 指标、日志、链路写进同一个列式引擎，原生支持 OpenTelemetry，不用再为每种信号分别维护存储、查询语言和运维体系。
 
-**成本降低高达 50 倍。** 对象存储（S3、Azure Blob、GCS）作为主要数据存储，计算存储分离。计算节点独立扩展。使用 Rust 编写，配合列式存储和先进的压缩算法，实现最高效率。
+**成本按对象存储计价。** S3、Azure Blob、GCS 是主存储，计算独立扩展。列式存储加上针对可观测性负载调优的压缩，成本最高可降 50 倍——[OceanBase Cloud](/user-guide/concepts/why-greptimedb.md#生产用户公开的数据) 在 GreptimeDB 上存放 300 TB 日志和审计数据，公开的数据显示从 Loki 迁移后存储成本下降 60%+。
 
-**即插即用兼容。** [PromQL](/user-guide/query-data/promql.md)、[Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md)、[Jaeger](/user-guide/query-data/jaeger.md)、[MySQL](/user-guide/protocols/mysql.md)、[PostgreSQL](/user-guide/protocols/postgresql.md) 协议——无需重写查询即可迁移。[SQL](/user-guide/query-data/sql.md) + [PromQL](/user-guide/query-data/promql.md) 双查询能力意味着一个数据库就能替代指标存储 + 数据仓库的组合。
+**迁移不用重写查询。** 直接支持 [PromQL](/user-guide/query-data/promql.md)、[Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md)、[Jaeger](/user-guide/query-data/jaeger.md)、[MySQL](/user-guide/protocols/mysql.md) 和 [PostgreSQL](/user-guide/protocols/postgresql.md)，现有采集器和 [Grafana](/user-guide/integrations/grafana.md) 仪表盘无需更换。
 
-了解更多信息请阅读[为什么选择 GreptimeDB](/user-guide/concepts/why-greptimedb.md)和[Observability 2.0 与宽事件](/user-guide/concepts/observability-2.md)。
+**给 agent 一个统一的查询接口。** 在 [Agent RCA Bench](https://rca-bench.greptime.com/#zh) 中，6 个模型分别在 GreptimeDB 和 Prometheus + Loki + Tempo 上排查同样的 14 个故障：错误诊断少 40%，读取的输入 token 少 48%，整体成本低约 45%。
 
-在开始上手之前，请阅读以下文档，其包含了设置说明、基本概念、架构设计和教程：
+详见[为什么选择 GreptimeDB](/user-guide/concepts/why-greptimedb.md)和 [Observability 2.0 与宽事件](/user-guide/concepts/observability-2.md)。
 
-- [立即开始][1]: 为刚接触 GreptimeDB 的用户提供指引，包括如何安装与数据库操作。
-- [For AI Agents][8]: 通过 MCP Server、Skills 和机器可读文档，让 AI agent 使用 GreptimeDB。
-- [用户指南][2]: 应用程序开发人员可以使用 GreptimeDB 或建立自定义集成。
-- [贡献者指南][3]: 有兴趣了解更多技术细节并想成为 GreptimeDB 的贡献者的开发者请阅读此文档。
-- [Roadmap][7]: 最新的 GreptimeDB 发展路线图。
-- [发布说明][4]: 呈现所有历史版本的发布说明。
-- [FAQ][5]: 提供最常见问题的解答。
+## 与 AI agent 集成
 
-[1]: ./getting-started/overview.md
-[8]: ./faq-and-others/vibecoding.md
-[2]: ./user-guide/overview.md
-[3]: ./contributor-guide/overview.md
-[4]: /release-notes
-[5]: ./faq-and-others/faq.md
-[7]: https://greptime.cn/blogs/2026-02-11-greptimedb-roadmap-2026
+入门指南以可直接抓取的 markdown 文件托管，coding agent 在运行时读取即可，无需安装。
+
+<AgentOnboarding />
+
+- **[MCP Server](/user-guide/integrations/mcp.md)** —— 面向 agent 的只读访问：列出表、执行 SQL、TQL 和范围查询。
+- **[Skills](/faq-and-others/vibecoding.md)** —— 覆盖 Pipeline、Flow、Trigger、表设计和性能诊断，遵循 [Agent Skills](https://agentskills.io/) 标准。
+- **[语义层](/user-guide/semantic-layer/overview.md)** —— 用普通 SQL 查询每张表的含义，以及它背后的实体和关系。
+- **[llms.txt](https://docs.greptime.cn/llms.txt)** —— 全站的结构化索引；在任意文档 URL 后加 `.md` 可取得该页的原始 markdown。
+
+## 继续了解
+
+- [教程](/tutorials/k8s-metrics-monitor.md)：端到端的完整示例，例如监控一个 Kubernetes 集群。
+- [GreptimeDB 企业版](/enterprise/overview.md)：读副本、负载隔离、RBAC、审计日志和容灾方案。
+- [贡献者指南](/contributor-guide/overview.md)：面向参与 GreptimeDB 开发的读者，介绍内部实现。
+- [Roadmap](https://greptime.cn/blogs/2026-02-11-greptimedb-roadmap-2026)：项目的发展方向。
+- [发布说明](/release-notes)：所有历史版本的发布说明。
+- [FAQ](/faq-and-others/faq.md)：部署、写入和查询中的常见问题。

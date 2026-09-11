@@ -107,6 +107,13 @@ function walkDir(dir: string, ext: string): string[] {
 // after replacement.
 export const DOC_CARD_LIST_RE = /<DocCardList\b[^>]*(?:\/>|>[\s\S]*?<\/DocCardList>)/g;
 export const AGENT_ONBOARDING_RE = /<AgentOnboarding\b[^>]*(?:\/>|>[\s\S]*?<\/AgentOnboarding>)/g;
+/** <AskAI /> is an interactive widget with no markdown equivalent; drop it. */
+export const ASK_AI_RE = /<AskAI\b[^>]*(?:\/>|>[\s\S]*?<\/AskAI>)/g;
+/**
+ * <HomeCards> only lays out the markdown list it wraps, so the tags are
+ * stripped while the list itself is kept.
+ */
+export const HOME_CARDS_RE = /<\/?HomeCards\b[^>]*>\n?/g;
 const FRONTMATTER_RE = /^---\n([\s\S]*?)\n---/;
 const H1_RE = /^#\s+(.+)$/m;
 
@@ -321,6 +328,9 @@ export default function llmsTxtGenerator(
         // Started overview pages) with its plain-markdown equivalent so the
         // raw tag never reaches the agent-facing endpoints.
         processed = processed.replace(AGENT_ONBOARDING_RE, onboardingFallback);
+        // Same for the components used on the documentation home page.
+        processed = processed.replace(ASK_AI_RE, '');
+        processed = processed.replace(HOME_CARDS_RE, '');
         if (processed !== content) {
           fs.writeFileSync(filePath, processed, 'utf-8');
           postProcessedCount++;

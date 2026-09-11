@@ -1,0 +1,24 @@
+/* biel-bot renders in shadow DOM, so the panel is sized from the host element
+   and themed through the custom properties biel-search exposes. */
+.panel {
+  margin: 1.25rem 0 2rem;
+  border: 1px solid var(--gt-border-primary);
+  border-radius: 10px;
+  background: var(--gt-bg-surface);
+  overflow: hidden;
+}
+
+.panel biel-bot {
+  display: block;
+  /* biel defaults the message area to 45vh with a 450px floor, which leaves a
+     large gap under the suggested questions. The area scrolls once an answer
+     arrives, so a smaller floor costs nothing. Keep the viewport term so the
+     panel still shrinks on short screens. */
+  --biel-chat-height: min(390px, 50vh);
+  --biel-chat-embedded-height: min(390px, 50vh);
+  --biel-bot-content-bg-color: var(--gt-bg-surface);
+  --biel-bot-content-text-color: var(--ifm-font-color-base);
+  --biel-bot-content-border-radius: 0;
+  --biel-bot-content-box-shadow: none;
+  --biel-bot-content-font-family: var(--ifm-font-family-base);
+}
