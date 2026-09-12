@@ -51,5 +51,7 @@ which are described in detail in the documentation in this section:
 
 ## Release Notes
 
+- [26.05](./release-notes/release-26_05.md)
+- [25.11](./release-notes/release-25_11.md)
 - [25.05](./release-notes/release-25_05.md)
 - [24.11](./release-notes/release-24_11.md)
