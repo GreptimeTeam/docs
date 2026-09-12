@@ -29,7 +29,7 @@ Storing traces and querying them with SQL or the Jaeger-compatible API is covere
 
 ## Agents and pipelines
 
-These sit between the source and GreptimeDB and pick the protocol for you. Which signals each one carries differs:
+These sit between the source and GreptimeDB, writing through an exporter, sink, or output that you configure. The signals each one carries differ:
 
 - [OpenTelemetry Collector](otel-collector.md) — routes metrics, logs, and traces through an OTLP/HTTP exporter.
 - [Vector](vector.md) — metrics through the `greptimedb_metrics` sink, logs through `greptimedb_logs`. No traces sink.

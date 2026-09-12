@@ -15,7 +15,7 @@ A GreptimeDB cluster stores its metadata in an external system, which the Metasr
 
 ## Which to choose
 
-For development and testing, etcd is the lightest option to run.
+For development and testing, etcd is sufficient.
 
 For production, use a cloud provider's managed relational database. A managed service covers high availability, automated backups, and maintenance, which is where most of the operational cost of self-hosting a metadata store goes.
 

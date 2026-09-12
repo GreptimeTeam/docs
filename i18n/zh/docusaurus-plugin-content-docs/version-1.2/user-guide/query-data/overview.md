@@ -9,7 +9,7 @@ GreptimeDB 在同一批表之上提供多种查询接口，选哪一种取决于
 
 ## 查询语言
 
-- [SQL](./sql.md)——跨指标、日志、链路查询，支持范围查询。[视图](./view.md)和[公共表表达式（CTE）](./cte.md)用于把反复书写的查询抽出来复用。
+- [SQL](./sql.md)——跨指标、日志和链路追踪查询，支持范围查询。[视图](./view.md)和[公共表表达式（CTE）](./cte.md)用于复用重复的查询逻辑。
 - [PromQL](./promql.md)——通过 Prometheus HTTP 接口查询指标，也可以在 SQL 中使用 `TQL`。
 - [Jaeger 接口](./jaeger.md)——从 Jaeger UI 或 Grafana 查询 trace。
 - [Log Query](./log-query.md)——面向日志检索的独立 HTTP 接口，实验性功能。

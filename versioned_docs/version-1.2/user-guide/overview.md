@@ -16,7 +16,7 @@ This guide covers running GreptimeDB: getting data in, querying it, processing i
 
 [Ingest Data](./ingest-data/overview.md) maps each data source to the protocol it writes with and the guide that covers it. On most paths, tables and columns are created as data arrives; [SQL, Flink, and Spark](./ingest-data/overview.md#automatic-schema-generation) write into an existing table.
 
-Two signals have their own guides because storing them involves more than a write protocol:
+Logs and traces have their own guides, covering storage and querying beyond the write protocol:
 
 - [Logs](./logs/overview.md) — parse and transform text logs with pipelines before they are stored.
 - [Traces](./traces/overview.md) — store OTLP traces and query them with SQL or the Jaeger-compatible API.

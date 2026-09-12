@@ -16,7 +16,7 @@ description: GreptimeDB 使用指南的入口，覆盖数据写入、查询、�
 
 [写入数据](./ingest-data/overview.md)按数据来源列出对应的写入协议和文档。多数路径上表和列都在数据到达时自动创建；[SQL、Flink 和 Spark](./ingest-data/overview.md#自动生成表结构) 需要写入已存在的表。
 
-有两类信号在入库前还要多一步处理，因此单独成章：
+日志和链路追踪的存储与查询另有专门指南：
 
 - [日志](./logs/overview.md)——用 Pipeline 解析和转换文本日志后再入库。
 - [链路追踪](./traces/overview.md)——存储 OTLP trace，并用 SQL 或 Jaeger 兼容接口查询。
@@ -28,7 +28,7 @@ description: GreptimeDB 使用指南的入口，覆盖数据写入、查询、�
 
 ## 查询数据
 
-- [SQL](./query-data/sql.md)——跨指标、日志、链路查询，支持范围查询、CTE、JOIN 和视图。
+- [SQL](./query-data/sql.md)——跨指标、日志和链路追踪查询，支持范围查询、CTE、JOIN 和视图。
 - [PromQL](./query-data/promql.md)——通过 Prometheus HTTP 接口查询指标，也可以在 SQL 中使用 `TQL`。
 - [Jaeger 接口](./query-data/jaeger.md)——从 Jaeger UI 或 Grafana 查询 trace。
 

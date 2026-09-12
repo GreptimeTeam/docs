@@ -5,7 +5,7 @@ description: GreptimeDB 对 Elasticsearch 协议的实现范围——仅支持�
 
 # Elasticsearch
 
-GreptimeDB 实现了 Elasticsearch 的 [`_bulk` API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html)，本来就在用这套协议的采集端——Logstash、Filebeat、Telegraf——改一下地址即可写入 GreptimeDB。
+GreptimeDB 实现了 Elasticsearch 的 [`_bulk` API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html)，本来就在用这套协议的采集端——Logstash、Filebeat、Telegraf——修改端点地址即可写入 GreptimeDB。
 
 提供两个端点，都用 `POST` 提交 NDJSON：
 

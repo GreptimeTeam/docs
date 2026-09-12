@@ -5,7 +5,7 @@ description: GreptimeDB 对 Loki 协议的实现范围——仅支持写入的 P
 
 # Loki
 
-GreptimeDB 实现了 Loki Push API，已经在往 Loki 写日志的客户端改一下地址就能写入 GreptimeDB。
+GreptimeDB 实现了 Loki Push API，已经在往 Loki 写日志的客户端，修改端点地址即可写入 GreptimeDB。
 
 - **端点**：`POST /v1/loki/api/v1/push`
 - **负载编码**：Snappy 压缩的 Protobuf（`Content-Type: application/x-protobuf`）或 Loki JSON（`Content-Type: application/json`）

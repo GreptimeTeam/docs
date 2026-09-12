@@ -37,7 +37,7 @@ Text logs and traces need more than a write protocol. See [Logs](/user-guide/log
 
 ## Automatic Schema Generation
 
-GreptimeDB accepts schemaless writes: it creates the table and adds columns as data arrives, so no schema has to be defined in advance.
+GreptimeDB creates the table and adds columns as data arrives, so no table has to be defined in advance.
 
 All protocols and integrations support this except [SQL](./for-iot/sql.md), [Apache Flink](/user-guide/integrations/flink.md), and [Apache Spark](/user-guide/integrations/spark.md).
 

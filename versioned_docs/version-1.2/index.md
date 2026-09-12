@@ -26,7 +26,7 @@ import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
 - **[Reference](/reference/sql/overview.md)**
 
-  SQL, functions, configuration, command lines, and HTTP endpoints.
+  SQL syntax, functions, and data types.
 
 </HomeCards>
 
@@ -42,7 +42,7 @@ Answers come from this documentation, with links to the pages they are based on.
 
 **Pay object-storage prices.** S3, Azure Blob, and GCS are the primary store, and compute scales independently of them. Columnar storage and observability-tuned compression cut cost by up to 50x — [OceanBase Cloud](/user-guide/concepts/why-greptimedb.md#what-production-users-report) keeps 300 TB of logs and audit data on GreptimeDB and reports 60%+ lower storage cost after moving from Loki.
 
-**Migrate without rewriting queries.** [PromQL](/user-guide/query-data/promql.md), [Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md), [Jaeger](/user-guide/query-data/jaeger.md), [MySQL](/user-guide/protocols/mysql.md), and [PostgreSQL](/user-guide/protocols/postgresql.md) are supported directly. Existing collectors and [Grafana](/user-guide/integrations/grafana.md) dashboards continue to work.
+**Keep your collectors and dashboards.** [Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md) and OTLP on the write path, [PromQL](/user-guide/query-data/promql.md) and the [Jaeger API](/user-guide/query-data/jaeger.md) on the read path, over the [MySQL](/user-guide/protocols/mysql.md) and [PostgreSQL](/user-guide/protocols/postgresql.md) wire protocols. [Grafana](/user-guide/integrations/grafana.md) dashboards keep working. Each [protocol page](/user-guide/protocols/overview.md) states what it covers and what it does not.
 
 **Give agents one query interface.** In [Agent RCA Bench](https://rca-bench.greptime.com/), six models investigated the same 14 incidents on GreptimeDB and on Prometheus, Loki, and Tempo: 40% fewer wrong diagnoses, 48% fewer input tokens read, about 45% lower cost to run.
 
@@ -50,14 +50,14 @@ More in [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) and [Observabil
 
 ## Build with AI agents
 
-The quickstart guide is hosted as a fetchable markdown file. A coding agent reads it at runtime, with no installation required.
+The quickstart guide is hosted as a fetchable Markdown file. A coding agent reads it at runtime, with no installation required.
 
 <AgentOnboarding />
 
 - **[MCP Server](/user-guide/integrations/mcp.md)** — read-only access for agents: list tables, run SQL, TQL, and range queries.
 - **[Skills](/faq-and-others/vibecoding.md)** — pipelines, flows, triggers, table design, and performance diagnosis, in the [Agent Skills](https://agentskills.io/) format.
 - **[Semantic layer](/user-guide/concepts/semantic-layer.md)** — `greptime.semantic.*` table metadata recording the signal, source, and unit behind each table.
-- **[llms.txt](https://docs.greptime.com/llms.txt)** — a structured index of the whole site; append `.md` to any page URL for its raw markdown.
+- **[llms.txt](https://docs.greptime.com/llms.txt)** — a structured index of the whole site; append `.md` to any page URL for its raw Markdown.
 
 ## Keep exploring
 

@@ -37,7 +37,7 @@ GreptimeDB 支持多种常见的可观测性和数据库协议，多数数据源
 
 ## 自动生成表结构
 
-GreptimeDB 支持无 schema 写入：数据到达时自动创建表并添加需要的列，不需要预先定义 schema。
+GreptimeDB 支持写入时无需预先定义表结构：数据到达时自动创建表并添加需要的列。
 
 除 [SQL](./for-iot/sql.md)、[Apache Flink](/user-guide/integrations/flink.md) 和 [Apache Spark](/user-guide/integrations/spark.md) 外，所有协议和集成都支持该行为。
 

@@ -29,7 +29,7 @@ trace 的存储，以及用 SQL 和 Jaeger 兼容接口查询，见[链路追踪
 
 ## 采集端与数据管道
 
-以下工具位于数据源和 GreptimeDB 之间，写入协议由工具自己决定。各自支持的信号类型并不相同：
+以下工具位于数据源和 GreptimeDB 之间，通过各自配置的 exporter、sink 或 output 写入，支持的信号类型并不相同：
 
 - [OpenTelemetry Collector](otel-collector.md)——通过 OTLP/HTTP exporter 转发指标、日志和 trace。
 - [Vector](vector.md)——指标用 `greptimedb_metrics` sink，日志用 `greptimedb_logs`，没有 trace sink。

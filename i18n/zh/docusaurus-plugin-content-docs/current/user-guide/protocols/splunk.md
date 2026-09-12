@@ -5,7 +5,7 @@ description: GreptimeDB 对 Splunk HEC 协议的实现范围、提供哪些端�
 
 # Splunk
 
-GreptimeDB 实现了 [Splunk HTTP Event Collector（HEC）](https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector)协议的一个子集，本来就在用 HEC 的采集端——Vector、OpenTelemetry Collector——改一下地址和 token 即可写入 GreptimeDB。
+GreptimeDB 实现了 [Splunk HTTP Event Collector（HEC）](https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector)协议的一个子集，本来就在用 HEC 的采集端——Vector、OpenTelemetry Collector——修改端点地址和 token 即可写入 GreptimeDB。
 
 基础路径是 `/v1/splunk`，collector 路径由客户端自行拼接。
 

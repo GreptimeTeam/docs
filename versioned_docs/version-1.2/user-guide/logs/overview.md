@@ -16,7 +16,7 @@ A log collector sends raw lines to GreptimeDB, a pipeline turns them into rows, 
 
 ## How a log becomes a row
 
-A metric arrives already structured: a name, a set of labels, a value. A log line does not — it is one string, and what is inside it depends on whoever wrote the logging statement. The pipeline is the step that closes that gap, and it runs on the write path, before anything is stored.
+A metric arrives already structured: a name, a set of labels, a value. An unstructured log line does not: it is one string, and what is inside it depends on whoever wrote the logging statement. The pipeline is the step that closes that gap, and it runs on the write path, before anything is stored.
 
 A pipeline has two stages:
 
@@ -29,7 +29,7 @@ If the incoming data is already structured, no configuration is needed: the buil
 
 <AnchorAlias id="quick-start" />
 
-## Start here
+## Getting started
 
 [Quick Start](./quick-start.md) ingests logs with the built-in `greptime_identity` pipeline.
 
