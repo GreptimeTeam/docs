@@ -42,7 +42,7 @@ import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
 **成本按对象存储计价。** S3、Azure Blob、GCS 是主存储，计算独立扩展。列式存储加上针对可观测性负载调优的压缩，成本最高可降 50 倍——[OceanBase Cloud](/user-guide/concepts/why-greptimedb.md#生产用户公开的数据) 在 GreptimeDB 上存放 300 TB 日志和审计数据，公开的数据显示从 Loki 迁移后存储成本下降 60%+。
 
-**采集器和仪表盘不用换。** 写入侧支持 [Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md) 和 OTLP，查询侧支持 [PromQL](/user-guide/query-data/promql.md) 和 [Jaeger 接口](/user-guide/query-data/jaeger.md)，并支持 [MySQL](/user-guide/protocols/mysql.md) 与 [PostgreSQL](/user-guide/protocols/postgresql.md) 线协议，[Grafana](/user-guide/integrations/grafana.md) 仪表盘可以继续使用。各协议的覆盖范围和限制见[协议](/user-guide/protocols/overview.md)。
+**采集器和仪表盘不用换。** 写入侧支持 [Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md) 和 [OTLP](/user-guide/ingest-data/for-observability/opentelemetry.md)，查询侧支持 [PromQL](/user-guide/query-data/promql.md) 和 [Jaeger 接口](/user-guide/query-data/jaeger.md)，并支持 [MySQL](/user-guide/protocols/mysql.md) 与 [PostgreSQL](/user-guide/protocols/postgresql.md) 线协议，[Grafana](/user-guide/integrations/grafana.md) 仪表盘可以继续使用。各协议的覆盖范围和限制见[协议](/user-guide/protocols/overview.md)。
 
 **给 agent 一个统一的查询接口。** 在 [Agent RCA Bench](https://rca-bench.greptime.com/#zh) 中，6 个模型分别在 GreptimeDB 和 Prometheus + Loki + Tempo 上排查同样的 14 个故障：错误诊断少 40%，读取的输入 token 少 48%，整体成本低约 45%。
 
