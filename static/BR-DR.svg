@@ -94,7 +94,7 @@
   <rect class="node" x="1178" y="232" width="194" height="44" rx="9"/>
   <text class="t" x="1275" y="261" text-anchor="middle">Datanode</text>
   <rect x="1196" y="294" width="158" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
-  <text class="m" x="1275" y="321" text-anchor="middle" fill="#2f8fb5">Region 1-2</text>
+  <text class="m" x="1275" y="321" text-anchor="middle" fill="#2f8fb5">Region 1-1</text>
   <rect x="1196" y="356" width="158" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
   <text class="m" x="1275" y="383" text-anchor="middle" fill="#2f8fb5">Region 1-2</text>
   <rect x="1196" y="418" width="158" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
