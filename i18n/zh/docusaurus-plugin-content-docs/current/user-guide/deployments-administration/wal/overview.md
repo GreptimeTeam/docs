@@ -3,12 +3,12 @@ title: "GreptimeDB WAL 概述"
 keywords: [WAL, 预写日志, 本地 WAL, Remote WAL, GreptimeDB]
 description: 介绍 GreptimeDB 中的 WAL（预写日志），包括本地 WAL 和远程 WAL 的优缺点。
 ---
-# 概述
+# 预写日志（WAL）
 
-[预写日志](/contributor-guide/datanode/wal.md#introduction)(WAL) 是 GreptimeDB 的关键组件之一，负责持久化记录每次数据修改操作，以确保内存中的数据在故障发生时不会丢失。GreptimeDB 支持三种 WAL 存储方案：
+[预写日志](/contributor-guide/datanode/wal.md#introduction)(WAL) 持久化记录每次数据修改操作，以确保内存中的数据在故障发生时不会丢失。GreptimeDB 支持三种 WAL 存储方案：
 
 
-- **本地 WAL**: 使用嵌入式存储引擎 [raft-engine](https://github.com/tikv/raft-engine) ，直接集成在 [Datanode](/user-guide/concepts/why-greptimedb.md) 服务中。
+- **本地 WAL**: 使用嵌入式存储引擎 [raft-engine](https://github.com/tikv/raft-engine) ，直接集成在 [Datanode](/user-guide/concepts/architecture.md) 服务中。
 
 - **Remote WAL**: 使用 [Apache Kafka](https://kafka.apache.org/) 作为外部的 WAL 存储组件。
 
@@ -20,7 +20,7 @@ description: 介绍 GreptimeDB 中的 WAL（预写日志），包括本地 WAL �
 
 - **低延迟**: 本地 WAL 运行于 Datanode 进程内，避免了网络传输开销，提供更低的写入延迟。
 
-- **易于部署**: 由于 WAL 与 Datanode 紧耦合，无需引入额外组件，部署和运维更加简便。
+- **无需额外组件**：WAL 与 Datanode 同进程，不需要再部署和运维其他组件。
 
 - **零 RPO**: 在云环境中部署 GreptimeDB 时，可以结合云存储服务（如 AWS EBS 或 GCP Persistent Disk）将 WAL 数据持久化存储，从而实现零[恢复点目标](https://en.wikipedia.org/wiki/Disaster_recovery#Recovery_Point_Objective) (RPO)，即使发生故障也不会丢失任何已写入的数据。
 
@@ -54,8 +54,8 @@ Noop WAL 是一种特殊的 WAL 提供者，用于 WAL 暂时不可用的紧急�
 
 ## 后续步骤
 
-- 如需配置本地 WAL 存储，请参阅[本地 WAL](/user-guide/deployments-administration/wal/local-wal.md)。
+- [本地 WAL](/user-guide/deployments-administration/wal/local-wal.md)——内置 WAL 的配置方式。
 
-- 想了解更多 Remote WAL 相关信息，请参阅 [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md)。
+- [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md)——把 Kafka 作为 WAL 后端的配置方式。
 
-- 想了解更多 Noop WAL 相关信息，请参阅 [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md)。
+- [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md)——应急用的空实现 provider。

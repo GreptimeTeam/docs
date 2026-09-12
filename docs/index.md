@@ -1,40 +1,69 @@
 ---
 title: "GreptimeDB"
 keywords: [observability database, open source observability database, observability data, observability tools, cloud native database, data observability, observability platform, edge database, IoT edge computing, edge cloud computing, log management, log aggregation, high cardinality, sql query examples, opentelemetry collector, GreptimeDB]
-description: Introduction to GreptimeDB, an open-source observability database for metrics, logs, and traces, with links to getting started, user guide, contributor guide, and more.
+description: Documentation for GreptimeDB, an open-source observability database for metrics, logs, traces, and wide events, with entry points for getting started, the user guide, AI agents, and the SQL reference.
 ---
-# Introduction
 
-<p align="center">
-    <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400"/>
-</p>
+import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
-**GreptimeDB** is an open-source observability database that handles metrics, logs, and traces in one engine. Use it as the single OpenTelemetry backend — replacing Prometheus, Loki, and Elasticsearch with one database built on object storage. Query with [SQL](/user-guide/query-data/sql.md) and [PromQL](/user-guide/query-data/promql.md), scale without pain, cut costs up to 50x.
+# GreptimeDB Documentation
+
+**GreptimeDB** is an open-source observability database that stores metrics, logs, and traces in one engine. Run it as the single OpenTelemetry backend in place of Prometheus, Loki, and Elasticsearch, keep the data on object storage, and query all of it with [SQL](/user-guide/query-data/sql.md) and [PromQL](/user-guide/query-data/promql.md).
+
+<HomeCards>
+
+- **[Getting Started](/getting-started/overview.md)**
+
+  Install GreptimeDB, write your first rows, and run your first query.
+
+- **[User Guide](/user-guide/overview.md)**
+
+  Ingestion protocols, queries, pipelines, flows, and running GreptimeDB in production.
+
+- **[For AI Agents](/faq-and-others/vibecoding.md)**
+
+  Run GreptimeDB from a coding agent, with no custom integration.
+
+- **[Reference](/reference/sql/overview.md)**
+
+  SQL syntax, functions, and data types.
+
+</HomeCards>
+
+## Ask about GreptimeDB
+
+Answers come from this documentation, with links to the pages they are based on.
+
+<AskAI />
 
 ## Why GreptimeDB
 
-**Replace three systems with one.** Most teams run Prometheus for metrics, Loki or ELK for logs, and Elasticsearch or Tempo for traces — three systems, three query languages, three sets of operational overhead. GreptimeDB unifies all three in a single engine with native OpenTelemetry support.
+**Replace three systems with one.** Metrics, logs, and traces go into one columnar engine with native OpenTelemetry support, instead of a separate store, query language, and operational overhead for each signal.
 
-**Cut costs up to 50x.** Object storage (S3, Azure Blob, GCS) as primary data store with compute-storage separation. Compute nodes scale independently. Written in Rust with columnar storage and advanced compression for maximum efficiency.
+**Pay object-storage prices.** S3, Azure Blob, and GCS are the primary store, and compute scales independently of them. Columnar storage and observability-tuned compression cut cost by up to 50x — [OceanBase Cloud](/user-guide/concepts/why-greptimedb.md#what-production-users-report) keeps 300 TB of logs and audit data on GreptimeDB and reports 60%+ lower storage cost after moving from Loki.
 
-**Drop-in compatible.** [PromQL](/user-guide/query-data/promql.md), [Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md), [Jaeger](/user-guide/query-data/jaeger.md), [MySQL](/user-guide/protocols/mysql.md), [PostgreSQL](/user-guide/protocols/postgresql.md) protocols — migrate without rewriting queries. [SQL](/user-guide/query-data/sql.md) + [PromQL](/user-guide/query-data/promql.md) dual query capability means one database replaces your metrics store + data warehouse combo.
+**Keep your collectors and dashboards.** [Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md) and [OTLP](/user-guide/ingest-data/for-observability/opentelemetry.md) on the write path, [PromQL](/user-guide/query-data/promql.md) and the [Jaeger API](/user-guide/query-data/jaeger.md) on the read path, over the [MySQL](/user-guide/protocols/mysql.md) and [PostgreSQL](/user-guide/protocols/postgresql.md) wire protocols. [Grafana](/user-guide/integrations/grafana.md) dashboards keep working. Each [protocol page](/user-guide/protocols/overview.md) states what it covers and what it does not.
 
-Learn more in [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) and [Observability 2.0 and wide events](/user-guide/concepts/observability-2.md).
+**Give agents one query interface.** In [Agent RCA Bench](https://rca-bench.greptime.com/), six models investigated the same 14 incidents on GreptimeDB and on Prometheus, Loki, and Tempo: 40% fewer wrong diagnoses, 48% fewer input tokens read, about 45% lower cost to run.
 
-Before getting started, please read the following documents that include instructions for setting up, fundamental concepts, architectural designs, and tutorials:
+More in [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) and [Observability 2.0 and wide events](/user-guide/concepts/observability-2.md).
 
-- [Getting Started][1]: Provides an introduction to GreptimeDB for those who are new to it, including installation and database operations.
-- [For AI Agents][8]: Use GreptimeDB with AI agents via the MCP Server, Skills, and machine-readable docs.
-- [User Guide][2]: For application developers to use GreptimeDB or build custom integration.
-- [Contributor Guide][3]: For contributors interested in learning more about the technical details and enhancing GreptimeDB.
-- [Roadmap][7]: The latest GreptimeDB roadmap.
-- [Release Notes][4]: Presents all historical version release notes.
-- [FAQ][5]: Provides answers to the most frequently asked questions.
+## Build with AI agents
 
-[1]: ./getting-started/overview.md
-[8]: ./faq-and-others/vibecoding.md
-[2]: ./user-guide/overview.md
-[3]: ./contributor-guide/overview.md
-[4]: /release-notes
-[5]: ./faq-and-others/faq.md
-[7]: https://greptime.com/blogs/2026-02-11-greptimedb-roadmap-2026
+The quickstart guide is hosted as a fetchable Markdown file. A coding agent reads it at runtime, with no installation required.
+
+<AgentOnboarding />
+
+- **[MCP Server](/user-guide/integrations/mcp.md)** — read-only access for agents: list tables, run SQL, TQL, and range queries.
+- **[Skills](/faq-and-others/vibecoding.md)** — pipelines, flows, triggers, table design, and performance diagnosis, in the [Agent Skills](https://agentskills.io/) format.
+- **[Semantic layer](/user-guide/semantic-layer/overview.md)** — what each table means and how the entities behind it relate, queried with ordinary SQL.
+- **[llms.txt](https://docs.greptime.com/llms.txt)** — a structured index of the whole site; append `.md` to any page URL for its raw Markdown.
+
+## Keep exploring
+
+- [Tutorials](/tutorials/k8s-metrics-monitor.md): end-to-end walkthroughs, such as monitoring a Kubernetes cluster.
+- [GreptimeDB Enterprise](/enterprise/overview.md): read replicas, workload isolation, RBAC, audit logging, and disaster recovery.
+- [Contributor Guide](/contributor-guide/overview.md): internals, for anyone working on GreptimeDB itself.
+- [Roadmap](https://greptime.com/blogs/2026-02-11-greptimedb-roadmap-2026): the project's direction and planned work.
+- [Release Notes](/release-notes): every released version.
+- [FAQ](/faq-and-others/faq.md): common questions about deployment, ingestion, and queries.

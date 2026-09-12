@@ -102,6 +102,18 @@ GreptimeDB 允许每类 workload 使用适合自己的表：
 
 实际结果取决于 schema、索引、留存周期、硬件、对象存储价格、cache 配置和查询 workload。规划容量时，应结合带测试条件的[性能报告](https://greptime.cn/blogs/2024-09-09-report-summary)。
 
+## 用 agent 排查故障的实测结果
+
+[Agent RCA Bench](https://rca-bench.greptime.com/#zh) 让 6 个模型排查同样的 14 个故障，分别通过 Prometheus、Loki、Tempo 各自的原生查询 API，以及 GreptimeDB 表之上的只读 SQL 与 PromQL。
+
+与三个独立后端相比，GreptimeDB 接口的结果是：
+
+- **错误诊断少 40%**——168 次排查中错 38 次，三个后端错 63 次；正确根因 130 次对 105 次。
+- **读取的输入 token 少 48%**——1.998 亿对 3.818 亿。6 个模型读取的 token 都更少，其中 5 个准确率也更高。
+- **整体成本低约 45%**——全部排查的估算费用 98–101 美元，三个后端为 184–187 美元。
+
+这组对比同时改变了存储、查询语言和工具接口，衡量的是接口组合，不是单独的存储引擎。[完整报告](https://github.com/GreptimeTeam/agent-rca-bench/blob/main/REPORT.md)公开了测量协议、逐次运行数据和每项结论的适用范围。
+
 <AnchorAlias id="greptimedb-对比" />
 
 ## 和现有方案比较

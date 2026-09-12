@@ -3,6 +3,8 @@ import React from 'react';
 import MDXComponents from '@theme-original/MDXComponents';
 import AnchorAlias from '@site/src/components/AnchorAlias';
 import InjectContent from '@site/src/components/InjectContent';
+import AskAI from '@site/src/components/AskAI';
+import HomeCards from '@site/src/components/HomeCards';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
@@ -13,6 +15,8 @@ export default {
   // `Highlight` will receive all props that were passed to `<Highlight>` in MDX
   AnchorAlias,
   InjectContent,
+  AskAI,
+  HomeCards,
   Tabs,
   TabItem,
 };

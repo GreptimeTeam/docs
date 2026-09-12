@@ -67,3 +67,11 @@ pre code {
 .menu__list-item:not(:first-child){
   margin-top: 0.3rem;
 }
+
+/* docusaurus-biel appends its floating button to <body>, outside the React
+   tree, so it can only be reached from a page that embeds <AskAI /> through
+   :has(). A page with the panel does not also show the floating entry point to
+   the same assistant; where :has() is unsupported, both stay visible. */
+body:has([data-ask-ai-embedded]) biel-button {
+  display: none;
+}

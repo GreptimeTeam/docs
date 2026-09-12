@@ -1,47 +1,44 @@
 ---
-keywords: [deployment, configuration, authentication, Kubernetes, Android, capacity planning, GreptimeCloud]
-description: Overview of deploying GreptimeDB, including configuration, authentication, Kubernetes deployment, running on Android, capacity planning, and using GreptimeCloud.
+keywords: [deployment, administration, Kubernetes, configuration, monitoring, disaster recovery, performance tuning, upgrade]
+description: Running GreptimeDB on your own infrastructure — deployment, configuration, day-to-day operations, durability, and performance tuning.
 ---
 
 # Deployments & Administration
 
-GreptimeDB can be deployed and managed either on your own infrastructure or through GreptimeCloud.
-This guide provides an overview of deployment strategies, configuration, monitoring, and administration.
+This section covers running GreptimeDB on your own infrastructure. Start with [Architecture](/user-guide/concepts/architecture.md) to see which components you will deploy and operate. GreptimeCloud runs the same engine as a managed service, with deployment and maintenance handled for you.
 
-## GreptimeDB Architecture
+<AnchorAlias id="configuration-and-deployment" />
 
-Start with the [architecture](/user-guide/concepts/architecture.md) to see which components you will deploy and operate.
+## Deploy
 
-## Self-Managed GreptimeDB Deployment
+- [Configuration](configuration.md) — protocol, storage, and runtime settings to review before the first deployment.
+- [Deploy on Kubernetes](./deploy-on-kubernetes/overview.md) — deployment through the GreptimeDB Operator.
+- [Capacity Planning](./capacity-plan.md) — sizing compute, memory, and local cache for the expected ingestion rate and query mix.
+- [Authentication](./authentication/overview.md) — not enabled by default.
+- [Run on Android](run-on-android.md) — for edge deployments on Android devices.
 
-This section outlines the key aspects of deploying and administering GreptimeDB in your own environment.
+<AnchorAlias id="component-management" />
+<AnchorAlias id="monitoring" />
 
-### Configuration and Deployment
+## Operate
 
-- **Configuration:** Before deployment, [check the configuration](configuration.md) to suit your requirements, including protocol settings, storage options, and more.
-- **Authentication:** By default, authentication is not enabled. Learn how to [enable and configure authentication](./authentication/overview.md) for secure deployments.
-- **Kubernetes Deployment:** Follow the [step-by-step guide](./deploy-on-kubernetes/overview.md) to deploy GreptimeDB on Kubernetes.
-- **Capacity Planning:** Ensure your deployment can handle your workload by [planning for capacity](/user-guide/deployments-administration/capacity-plan.md).
+- [Monitoring](./monitoring/overview.md) — cluster health and performance through metrics, tracing, and runtime information.
+- [Table and Region Operations](./manage-data/overview.md) — table operations, sharding, Region migration and failover, repartition, compaction, and garbage collection.
+- [Metadata Storage](./manage-metadata/overview.md) — the metadata backend the cluster depends on.
+- [Maintenance](./maintenance/maintenance-mode.md) — maintenance mode, recovery mode, table reconciliation, and sequence management.
+- [Upgrade](./upgrade.md) — moving a deployment to a newer version.
+- [Troubleshooting](./troubleshooting.md) — collecting the information needed to diagnose a problem.
 
-### Component Management
+<AnchorAlias id="disaster-recovery" />
 
-- **Cluster Failover:** Set up [Remote WAL](./wal/remote-wal/configuration.md) for high availability.
-- **Manage Metadata:** Set up [Metadata Storage](./manage-metadata/overview.md) for GreptimeDB.
+## Durability and recovery
 
-### Monitoring
+- [Write-Ahead Logging (WAL)](./wal/overview.md) — local and Remote WAL, including the [Remote WAL setup](./wal/remote-wal/configuration.md) that cluster failover depends on.
+- [Disaster Recovery](./disaster-recovery/overview.md) — backup, restore, and cross-region options.
 
-- **Monitoring:** [Monitor cluster's health and performance](./monitoring/overview.md) through metrics, tracing, and runtime information.
+<AnchorAlias id="data-management-and-performance" />
 
-### Data Management and Performance
+## Performance
 
-- **Data Management:** [Manage your data](/user-guide/deployments-administration/manage-data/overview.md) to prevent data loss, reduce costs, and optimize performance.
-- **Performance Tuning:** Review [performance tuning tips](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md) and learn how to [design your table schema](/user-guide/deployments-administration/performance-tuning/design-table.md).
-
-### Disaster Recovery
-
-- **Disaster Recovery:** Implement [disaster recovery strategies](/user-guide/deployments-administration/disaster-recovery/overview.md) to protect your data.
-
-### Additional Topics
-
-- **Run on Android:** Learn how to [run GreptimeDB on Android devices](run-on-android.md).
-- **Upgrade:** Follow the [upgrade guide](/user-guide/deployments-administration/upgrade.md) to keep the version of GreptimeDB up to date.
+- [Performance Tuning](./performance-tuning/performance-tuning-tips.md) — cache, query, and ingestion settings to adjust from runtime evidence.
+- [Design Table Schema](./performance-tuning/design-table.md) — primary keys, indexes, append-only mode, and partitioning.
