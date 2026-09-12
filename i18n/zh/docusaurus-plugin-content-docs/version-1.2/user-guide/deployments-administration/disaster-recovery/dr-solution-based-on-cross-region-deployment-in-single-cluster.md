@@ -40,7 +40,7 @@ Table partition count: 3
 
 ### 元数据跨两个区域，数据在同一区域
 
-![DR-across-2dc-1region](/DR-across-2dc-1region.png)
+![DR-across-2dc-1region](/DR-across-2dc-1region.svg)
 
 在此解决方案中，数据位于一个区域（2 个 DC），而元数据跨越两个区域。
 
@@ -60,7 +60,7 @@ DC1 和 DC2 一起用于处理读写服务，而位于第二区域的 DC3 是用
 
 ### 数据跨两个区域
 
-![DR-across-3dc-2region](/DR-across-3dc-2region.png)
+![DR-across-3dc-2region](/DR-across-3dc-2region.svg)
 
 在此解决方案中，数据跨越两个区域。
 
@@ -78,7 +78,7 @@ DC1 和 DC2 一起用于处理读写服务，而位于第二区域的 DC3 是用
 
 ### 元数据跨三个区域，数据跨两个区域
 
-![DR-across-5dc-2region](/DR-across-5dc-2region.png)
+![DR-across-5dc-2region](/DR-across-5dc-2region.svg)
 
 在此解决方案中，数据跨越两个区域，而元数据跨越三个区域。
 
@@ -101,7 +101,7 @@ Region1 和 Region2 一起用于处理读写服务，而 Region3 是一个副本
 
 ## 数据跨三个区域
 
-![DR-across-5dc-3region](/DR-across-5dc-3region.png)
+![DR-across-5dc-3region](/DR-across-5dc-3region.svg)
 
 在此解决方案中，数据跨越三个区域。
 

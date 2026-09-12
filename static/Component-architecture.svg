@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="700" viewBox="0 0 920 700" role="img" aria-labelledby="title description">
+  <title id="title">GreptimeDB component architecture from a disaster recovery point of view</title>
+  <desc id="description">Frontend routes to three Datanodes, each holding table regions. The Datanodes share the WAL and the object storage below them.</desc>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="g" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="gs" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="as" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="am" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#b5760a"/>
+    </marker>
+    <style>
+      .t { font: 600 19px Arial, sans-serif; fill: #170128; }
+      .l { font: 16px Arial, sans-serif; fill: #39314a; }
+      .s { font: 14px Arial, sans-serif; fill: #5b5470; }
+      .m { font: 15px "DejaVu Sans Mono", Menlo, monospace; fill: #39314a; }
+      .mt { font: 600 17px "DejaVu Sans Mono", Menlo, monospace; fill: #170128; }
+      .ms { font: 12px "DejaVu Sans Mono", Menlo, monospace; fill: #ffffff; }
+      .zone { fill: #ffffff; stroke: #b9b3d6; stroke-width: 2; stroke-dasharray: 8 6; }
+      .node { fill: #f3f2ff; stroke: #6f6fff; stroke-width: 2; }
+      .infra { fill: #eefaff; stroke: #2491ad; stroke-width: 2; }
+      .wal { fill: #fdf4e3; stroke: #b5760a; stroke-width: 2; }
+      .fail { fill: #fff4f4; stroke: #d64545; stroke-width: 2; }
+      .flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#a); }
+      .bus { fill: none; stroke: #6f6fff; stroke-width: 2.5; }
+      .rep { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+              marker-end: url(#g); }
+      .rep2 { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+               marker-start: url(#gs); marker-end: url(#g); }
+      .lbl { font: 600 15px Arial, sans-serif; fill: #39314a; }
+    </style>
+  </defs>
+
+  <rect width="920" height="700" fill="#ffffff"/>
+
+  <rect class="node" x="340" y="21" width="250" height="62" rx="10" opacity="0.45"/>
+  <rect class="node" x="330" y="30" width="250" height="62" rx="10"/>
+  <text class="t" x="455.0" y="67.0" text-anchor="middle">Frontend</text>
+  <path class="flow" d="M455 101 L140 178"/>
+  <path class="flow" d="M455 101 L452 178"/>
+  <path class="flow" d="M455 101 L764 178"/>
+  <rect class="zone" x="40" y="180" width="216" height="266" rx="12"/>
+  <rect class="node" x="56" y="196" width="184" height="44" rx="9"/>
+  <text class="t" x="148" y="225" text-anchor="middle">Datanode 1</text>
+  <rect x="72" y="258" width="152" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
+  <text class="m" x="148" y="285" text-anchor="middle" fill="#2f8fb5">Region 1-1</text>
+  <rect x="72" y="320" width="152" height="44" rx="7" fill="#fbf3e0" stroke="#b5860a" stroke-width="1.5"/>
+  <text class="m" x="148" y="347" text-anchor="middle" fill="#b5860a">Region 2-1</text>
+  <rect x="72" y="382" width="152" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
+  <text class="m" x="148" y="409" text-anchor="middle" fill="#c2544a">Region 3-1</text>
+  <rect class="zone" x="352" y="180" width="216" height="266" rx="12"/>
+  <rect class="node" x="368" y="196" width="184" height="44" rx="9"/>
+  <text class="t" x="460" y="225" text-anchor="middle">Datanode 2</text>
+  <rect x="384" y="258" width="152" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
+  <text class="m" x="460" y="285" text-anchor="middle" fill="#2f8fb5">Region 1-2</text>
+  <rect x="384" y="320" width="152" height="44" rx="7" fill="#fbf3e0" stroke="#b5860a" stroke-width="1.5"/>
+  <text class="m" x="460" y="347" text-anchor="middle" fill="#b5860a">Region 2-2</text>
+  <rect x="384" y="382" width="152" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
+  <text class="m" x="460" y="409" text-anchor="middle" fill="#c2544a">Region 3-2</text>
+  <rect class="zone" x="664" y="180" width="216" height="266" rx="12"/>
+  <rect class="node" x="680" y="196" width="184" height="44" rx="9"/>
+  <text class="t" x="772" y="225" text-anchor="middle">Datanode 3</text>
+  <rect x="696" y="258" width="152" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
+  <text class="m" x="772" y="285" text-anchor="middle" fill="#2f8fb5">Region 1-3</text>
+  <rect x="696" y="320" width="152" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
+  <text class="m" x="772" y="347" text-anchor="middle" fill="#c2544a">Region 3-3</text>
+  <rect x="696" y="382" width="152" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
+  <text class="m" x="772" y="409" text-anchor="middle" fill="#c2544a">Region 3-4</text>
+  <line x1="148" y1="448" x2="148" y2="524" stroke="#6f6fff" stroke-width="2.5" marker-start="url(#as)" marker-end="url(#a)" opacity="0.9"/>
+  <line x1="460" y1="448" x2="460" y2="524" stroke="#6f6fff" stroke-width="2.5" marker-start="url(#as)" marker-end="url(#a)" opacity="0.9"/>
+  <line x1="772" y1="448" x2="772" y2="524" stroke="#6f6fff" stroke-width="2.5" marker-start="url(#as)" marker-end="url(#a)" opacity="0.9"/>
+  <rect class="wal" x="40" y="526" width="840" height="62" rx="11"/>
+  <text class="t" x="460" y="565" text-anchor="middle" fill="#b5760a">WAL</text>
+  <rect class="infra" x="40" y="600" width="840" height="62" rx="11"/>
+  <text class="t" x="460" y="639" text-anchor="middle" fill="#2491ad">Object Storage</text>
+</svg>

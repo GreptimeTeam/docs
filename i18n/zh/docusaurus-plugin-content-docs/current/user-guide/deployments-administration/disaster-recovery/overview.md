@@ -20,13 +20,13 @@ description: 介绍 GreptimeDB 的灾难恢复（DR）解决方案，包括基�
 
 下图说明了这两个概念：
 
-![RTO-RPO-explain](/RTO-RPO-explain.png)
+![RTO-RPO-explain](/RTO-RPO-explain.svg)
 
 * **预写式日志（WAL）**：持久记录每个数据修改，以确保数据的完整性和一致性。
 
 GreptimeDB 存储引擎是一个典型的 [LSM 树](https://en.wikipedia.org/wiki/Log-structured_merge-tree)：
 
-![LSM-tree-explain](/LSM-tree-explain.png)
+![LSM-tree-explain](/LSM-tree-explain.svg)
 
 写入的数据首先持久化到 WAL，然后应用到内存中的 Memtable。
 在特定条件下（例如超过内存阈值时），
@@ -41,7 +41,7 @@ Memtable 将被刷新并持久化为 SSTable。
 
 在深入了解具体的解决方案之前，让我们从灾难恢复的角度看一下 GreptimeDB 组件的架构：
 
-![Component-architecture](/Component-architecture.png)
+![Component-architecture](/Component-architecture.svg)
 
 GreptimeDB 基于存储计算分离的云原生架构设计：
 
@@ -56,7 +56,7 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 
 ### 备份与恢复
 
-![BR-explain](/BR-explain.png)
+![BR-explain](/BR-explain.svg)
 
 备份与恢复（BR）工具可以在特定时间对数据库或表进行完整快照备份，并支持增量备份。
 当集群遇到灾难时，你可以使用备份数据恢复集群。
@@ -75,7 +75,7 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 
 但是如果使用远程 WAL 和对象存储运行 Standalone，有一个更好的 DR 解决方案：
 
-![DR-Standalone](/DR-Standalone.png)
+![DR-Standalone](/DR-Standalone.svg)
 
 把 WAL 写入 Kafka、数据存入对象存储之后，已写入的数据不再依赖节点本地磁盘；灾难发生时可以借助远程 WAL 和对象存储恢复实例。
 
@@ -114,7 +114,7 @@ RPO=0 和分钟级 RTO 是该拓扑的设计目标，成立需要三个前提：
 
 ### 基于双活互备的 DR 解决方案
 
-![Active-active failover](/active-active-failover.png)
+![Active-active failover](/active-active-failover.svg)
 
 在某些边缘或中小型场景中，或者如果你没有资源部署 Remote WAL 或对象存储，双活互备相对于 Standalone 的灾难恢复提供了更好的解决方案。
 两个独立节点都能提供服务，并异步复制数据变更。
@@ -132,7 +132,7 @@ RPO=0 和分钟级 RTO 是该拓扑的设计目标，成立需要三个前提：
 
 ### 基于单集群跨区域部署的 DR 解决方案
 
-![Cross-region-single-cluster](/Cross-region-single-cluster.png)
+![Cross-region-single-cluster](/Cross-region-single-cluster.svg)
 
 对于需要零 RPO 的中大型场景，强烈推荐此解决方案。
 在此部署架构中，整个集群跨越三个 Region，每个 Region 都能处理读写请求。
@@ -151,7 +151,7 @@ Region 3 作为副本遵循 Metasrv 的多种协议。
 
 ### 基于备份恢复的 DR 解决方案
 
-![/BR-DR](/BR-DR.png)
+![/BR-DR](/BR-DR.svg)
 
 在此架构中，GreptimeDB Cluster 1 部署在 Region 1。
 BR 进程持续定期将数据从 Cluster 1 备份到 Region 2。

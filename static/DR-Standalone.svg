@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="680" viewBox="0 0 1180 680" role="img" aria-labelledby="title description">
+  <title id="title">Disaster recovery for GreptimeDB Standalone with remote WAL and object storage</title>
+  <desc id="description">The standalone instance writes to a remote WAL and flushes to object storage; a replacement instance replays the WAL and loads the data back.</desc>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="g" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="gs" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="as" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="am" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#b5760a"/>
+    </marker>
+    <style>
+      .t { font: 600 19px Arial, sans-serif; fill: #170128; }
+      .l { font: 16px Arial, sans-serif; fill: #39314a; }
+      .s { font: 14px Arial, sans-serif; fill: #5b5470; }
+      .m { font: 15px "DejaVu Sans Mono", Menlo, monospace; fill: #39314a; }
+      .mt { font: 600 17px "DejaVu Sans Mono", Menlo, monospace; fill: #170128; }
+      .ms { font: 12px "DejaVu Sans Mono", Menlo, monospace; fill: #ffffff; }
+      .zone { fill: #ffffff; stroke: #b9b3d6; stroke-width: 2; stroke-dasharray: 8 6; }
+      .node { fill: #f3f2ff; stroke: #6f6fff; stroke-width: 2; }
+      .infra { fill: #eefaff; stroke: #2491ad; stroke-width: 2; }
+      .wal { fill: #fdf4e3; stroke: #b5760a; stroke-width: 2; }
+      .fail { fill: #fff4f4; stroke: #d64545; stroke-width: 2; }
+      .flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#a); }
+      .bus { fill: none; stroke: #6f6fff; stroke-width: 2.5; }
+      .rep { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+              marker-end: url(#g); }
+      .rep2 { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+               marker-start: url(#gs); marker-end: url(#g); }
+      .lbl { font: 600 15px Arial, sans-serif; fill: #39314a; }
+    </style>
+  </defs>
+
+  <rect width="1180" height="680" fill="#ffffff"/>
+
+  <rect class="zone" x="40" y="40" width="680" height="290" rx="12"/>
+  <text class="t" x="66" y="76" text-anchor="start">Backup Standalone</text>
+  <rect class="node" x="200" y="130" width="330" height="110" rx="11"/>
+  <text class="t" x="365" y="192" text-anchor="middle">GreptimeDB</text>
+  <polygon points="530.0,102.0 534.8,118.4 549.8,110.2 541.6,125.2 558.0,130.0 541.6,134.8 549.8,149.8 534.8,141.6 530.0,158.0 525.2,141.6 510.2,149.8 518.4,134.8 502.0,130.0 518.4,125.2 510.2,110.2 525.2,118.4" fill="#d64545"/>
+  <rect class="zone" x="40" y="350" width="680" height="290" rx="12"/>
+  <text class="t" x="66" y="386" text-anchor="start">Restore Standalone</text>
+  <rect class="node" x="200" y="440" width="330" height="110" rx="11"/>
+  <text class="t" x="365" y="502" text-anchor="middle">GreptimeDB</text>
+  <rect class="wal" x="930" y="110" width="220" height="110" rx="11"/>
+  <text class="t" x="1040" y="172" text-anchor="middle" fill="#b5760a">WAL</text>
+  <rect class="infra" x="930" y="440" width="220" height="110" rx="11"/>
+  <text class="t" x="1040" y="494" text-anchor="middle" fill="#2491ad">Object</text>
+  <text class="t" x="1040" y="520" text-anchor="middle" fill="#2491ad">Storage</text>
+  <path class="flow" d="M532 172 L926 166"/>
+  <text class="s" x="740" y="150" text-anchor="middle">Write</text>
+  <path class="flow" d="M532 200 L926 462"/>
+  <text class="s" x="830" y="372" text-anchor="middle">Flush &amp;</text>
+  <text class="s" x="830" y="392" text-anchor="middle">Compact</text>
+  <path class="rep" d="M930 200 L536 486"/>
+  <text class="lbl" x="606" y="400" text-anchor="middle" fill="#2a9d5c">Replay</text>
+  <path class="rep" d="M926 505 L536 505"/>
+  <text class="lbl" x="740" y="486" text-anchor="middle" fill="#2a9d5c">Load</text>
+</svg>

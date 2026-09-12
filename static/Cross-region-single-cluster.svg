@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1520" height="800" viewBox="0 0 1520 800" role="img" aria-labelledby="title description">
+  <title id="title">A single GreptimeDB cluster deployed across three regions</title>
+  <desc id="description">Each region runs Metasrv and Frontend nodes over its own Datanodes; all of them share a WAL and an object storage that replicate across regions.</desc>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="g" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="gs" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="as" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="am" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#b5760a"/>
+    </marker>
+    <style>
+      .t { font: 600 19px Arial, sans-serif; fill: #170128; }
+      .l { font: 16px Arial, sans-serif; fill: #39314a; }
+      .s { font: 14px Arial, sans-serif; fill: #5b5470; }
+      .m { font: 15px "DejaVu Sans Mono", Menlo, monospace; fill: #39314a; }
+      .mt { font: 600 17px "DejaVu Sans Mono", Menlo, monospace; fill: #170128; }
+      .ms { font: 12px "DejaVu Sans Mono", Menlo, monospace; fill: #ffffff; }
+      .zone { fill: #ffffff; stroke: #b9b3d6; stroke-width: 2; stroke-dasharray: 8 6; }
+      .node { fill: #f3f2ff; stroke: #6f6fff; stroke-width: 2; }
+      .infra { fill: #eefaff; stroke: #2491ad; stroke-width: 2; }
+      .wal { fill: #fdf4e3; stroke: #b5760a; stroke-width: 2; }
+      .fail { fill: #fff4f4; stroke: #d64545; stroke-width: 2; }
+      .flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#a); }
+      .bus { fill: none; stroke: #6f6fff; stroke-width: 2.5; }
+      .rep { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+              marker-end: url(#g); }
+      .rep2 { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+               marker-start: url(#gs); marker-end: url(#g); }
+      .lbl { font: 600 15px Arial, sans-serif; fill: #39314a; }
+    </style>
+  </defs>
+
+  <rect width="1520" height="800" fill="#ffffff"/>
+
+  <rect class="zone" x="225.0" y="26" width="150" height="40" rx="8"/>
+  <text class="l" x="300.0" y="53" text-anchor="middle">Metasrv</text>
+  <rect class="node" x="185.0" y="87" width="250" height="56" rx="10" opacity="0.45"/>
+  <rect class="node" x="175.0" y="96" width="250" height="56" rx="10"/>
+  <text class="t" x="300.0" y="130.0" text-anchor="middle">Frontend nodes</text>
+  <path class="flow" d="M300 161 L176 214"/>
+  <rect class="zone" x="58" y="216" width="235" height="296" rx="12"/>
+  <rect class="node" x="76" y="232" width="199" height="44" rx="9"/>
+  <text class="t" x="175.5" y="261" text-anchor="middle">Datanode 1</text>
+  <rect x="95.5" y="294" width="160" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
+  <text class="m" x="176" y="321" text-anchor="middle" fill="#2f8fb5">Region 1-1</text>
+  <rect x="95.5" y="356" width="160" height="44" rx="7" fill="#fbf3e0" stroke="#b5860a" stroke-width="1.5"/>
+  <text class="m" x="176" y="383" text-anchor="middle" fill="#b5860a">Region 2-1</text>
+  <rect x="95.5" y="418" width="160" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
+  <text class="m" x="176" y="445" text-anchor="middle" fill="#c2544a">Region 3-1</text>
+  <path class="flow" d="M300 161 L424 214"/>
+  <rect class="zone" x="307" y="216" width="235" height="296" rx="12"/>
+  <rect class="node" x="325" y="232" width="199" height="44" rx="9"/>
+  <text class="t" x="424.5" y="261" text-anchor="middle">Datanode 2</text>
+  <rect x="344.5" y="294" width="160" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
+  <text class="m" x="424" y="321" text-anchor="middle" fill="#2f8fb5">Region 1-2</text>
+  <rect x="344.5" y="356" width="160" height="44" rx="7" fill="#fbf3e0" stroke="#b5860a" stroke-width="1.5"/>
+  <text class="m" x="424" y="383" text-anchor="middle" fill="#b5860a">Region 2-2</text>
+  <rect x="344.5" y="418" width="160" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
+  <text class="m" x="424" y="445" text-anchor="middle" fill="#c2544a">Region 3-2</text>
+  <text class="s" x="40" y="580" text-anchor="start">Region 1</text>
+  <line x1="300.0" y1="516" x2="300.0" y2="596" stroke="#6f6fff" stroke-width="2.5" marker-start="url(#as)" marker-end="url(#a)" opacity="0.9"/>
+  <rect class="zone" x="785.0" y="26" width="150" height="40" rx="8"/>
+  <text class="l" x="860.0" y="53" text-anchor="middle">Metasrv</text>
+  <rect class="node" x="745.0" y="87" width="250" height="56" rx="10" opacity="0.45"/>
+  <rect class="node" x="735.0" y="96" width="250" height="56" rx="10"/>
+  <text class="t" x="860.0" y="130.0" text-anchor="middle">Frontend nodes</text>
+  <path class="flow" d="M860 161 L736 214"/>
+  <rect class="zone" x="618" y="216" width="235" height="296" rx="12"/>
+  <rect class="node" x="636" y="232" width="199" height="44" rx="9"/>
+  <text class="t" x="735.5" y="261" text-anchor="middle">Datanode 3</text>
+  <rect x="655.5" y="294" width="160" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
+  <text class="m" x="736" y="321" text-anchor="middle" fill="#2f8fb5">Region 1-3</text>
+  <rect x="655.5" y="356" width="160" height="44" rx="7" fill="#fbf3e0" stroke="#b5860a" stroke-width="1.5"/>
+  <text class="m" x="736" y="383" text-anchor="middle" fill="#b5860a">Region 2-3</text>
+  <rect x="655.5" y="418" width="160" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
+  <text class="m" x="736" y="445" text-anchor="middle" fill="#c2544a">Region 3-3</text>
+  <path class="flow" d="M860 161 L984 214"/>
+  <rect class="zone" x="867" y="216" width="235" height="296" rx="12"/>
+  <rect class="node" x="885" y="232" width="199" height="44" rx="9"/>
+  <text class="t" x="984.5" y="261" text-anchor="middle">Datanode 4</text>
+  <rect x="904.5" y="294" width="160" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
+  <text class="m" x="984" y="321" text-anchor="middle" fill="#2f8fb5">Region 1-4</text>
+  <rect x="904.5" y="356" width="160" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
+  <text class="m" x="984" y="383" text-anchor="middle" fill="#c2544a">Region 3-4</text>
+  <rect x="904.5" y="418" width="160" height="44" rx="7" fill="#f2ecfb" stroke="#8a63c9" stroke-width="1.5"/>
+  <text class="m" x="984" y="445" text-anchor="middle" fill="#8a63c9">Region 4-1</text>
+  <text class="s" x="600" y="580" text-anchor="start">Region 2</text>
+  <line x1="860.0" y1="516" x2="860.0" y2="596" stroke="#6f6fff" stroke-width="2.5" marker-start="url(#as)" marker-end="url(#a)" opacity="0.9"/>
+  <rect class="zone" x="1215.0" y="26" width="150" height="40" rx="8"/>
+  <text class="l" x="1290.0" y="53" text-anchor="middle">Metasrv</text>
+  <rect class="node" x="1175.0" y="87" width="250" height="56" rx="10" opacity="0.45"/>
+  <rect class="node" x="1165.0" y="96" width="250" height="56" rx="10"/>
+  <text class="t" x="1290.0" y="130.0" text-anchor="middle">Frontend nodes</text>
+  <path class="flow" d="M1290 161 L1290 214"/>
+  <rect class="zone" x="1172.5" y="216" width="235" height="296" rx="12"/>
+  <rect class="node" x="1190.5" y="232" width="199" height="44" rx="9"/>
+  <text class="t" x="1290.0" y="261" text-anchor="middle">Datanode 5</text>
+  <rect x="1210.0" y="294" width="160" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
+  <text class="m" x="1290" y="321" text-anchor="middle" fill="#2f8fb5">Region 1-5</text>
+  <rect x="1210.0" y="356" width="160" height="44" rx="7" fill="#fbf3e0" stroke="#b5860a" stroke-width="1.5"/>
+  <text class="m" x="1290" y="383" text-anchor="middle" fill="#b5860a">Region 2-4</text>
+  <rect x="1210.0" y="418" width="160" height="44" rx="7" fill="#f2ecfb" stroke="#8a63c9" stroke-width="1.5"/>
+  <text class="m" x="1290" y="445" text-anchor="middle" fill="#8a63c9">Region 4-2</text>
+  <text class="s" x="1160" y="580" text-anchor="start">Region 3</text>
+  <line x1="1290.0" y1="516" x2="1290.0" y2="596" stroke="#6f6fff" stroke-width="2.5" marker-start="url(#as)" marker-end="url(#a)" opacity="0.9"/>
+  <line x1="570" y1="20" x2="570" y2="600" stroke="#b9b3d6" stroke-width="2" stroke-dasharray="8 6"/>
+  <line x1="1130" y1="20" x2="1130" y2="600" stroke="#b9b3d6" stroke-width="2" stroke-dasharray="8 6"/>
+  <rect class="wal" x="40" y="600" width="1440" height="62" rx="10"/>
+  <text class="t" x="760" y="639" text-anchor="middle" fill="#b5760a">WAL</text>
+  <rect class="infra" x="40" y="680" width="1440" height="62" rx="10"/>
+  <text class="t" x="760" y="719" text-anchor="middle" fill="#2491ad">Object Storage</text>
+  <text class="s" x="1480" y="775" text-anchor="end">Cross-Region Replication</text>
+</svg>

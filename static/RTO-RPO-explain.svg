@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="400" viewBox="0 0 1160 400" role="img" aria-labelledby="title description">
+  <title id="title">Recovery point objective and recovery time objective on a timeline</title>
+  <desc id="description">A timeline with three marks: RPO, the disaster, and RTO. The span from RPO to the disaster is the data lost; the span from the disaster to RTO is the downtime.</desc>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="g" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="gs" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="as" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="am" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#b5760a"/>
+    </marker>
+    <style>
+      .t { font: 600 19px Arial, sans-serif; fill: #170128; }
+      .l { font: 16px Arial, sans-serif; fill: #39314a; }
+      .s { font: 14px Arial, sans-serif; fill: #5b5470; }
+      .m { font: 15px "DejaVu Sans Mono", Menlo, monospace; fill: #39314a; }
+      .mt { font: 600 17px "DejaVu Sans Mono", Menlo, monospace; fill: #170128; }
+      .ms { font: 12px "DejaVu Sans Mono", Menlo, monospace; fill: #ffffff; }
+      .zone { fill: #ffffff; stroke: #b9b3d6; stroke-width: 2; stroke-dasharray: 8 6; }
+      .node { fill: #f3f2ff; stroke: #6f6fff; stroke-width: 2; }
+      .infra { fill: #eefaff; stroke: #2491ad; stroke-width: 2; }
+      .wal { fill: #fdf4e3; stroke: #b5760a; stroke-width: 2; }
+      .fail { fill: #fff4f4; stroke: #d64545; stroke-width: 2; }
+      .flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#a); }
+      .bus { fill: none; stroke: #6f6fff; stroke-width: 2.5; }
+      .rep { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+              marker-end: url(#g); }
+      .rep2 { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+               marker-start: url(#gs); marker-end: url(#g); }
+      .lbl { font: 600 15px Arial, sans-serif; fill: #39314a; }
+    </style>
+  </defs>
+
+  <rect width="1160" height="400" fill="#ffffff"/>
+
+  <line x1="300" y1="110" x2="300" y2="340" stroke="#b9b3d6" stroke-width="2"/>
+  <text class="t" x="300" y="92" text-anchor="middle">RPO</text>
+  <line x1="600" y1="110" x2="600" y2="340" stroke="#b9b3d6" stroke-width="2"/>
+  <text class="t" x="600" y="92" text-anchor="middle">DISASTER</text>
+  <line x1="920" y1="110" x2="920" y2="340" stroke="#b9b3d6" stroke-width="2"/>
+  <text class="t" x="920" y="92" text-anchor="middle">RTO</text>
+  <line x1="70" y1="225" x2="1090" y2="225" stroke="#6f6fff" stroke-width="2.5" stroke-dasharray="9 7" marker-start="url(#as)" marker-end="url(#a)" opacity="0.85"/>
+  <text class="s" x="96" y="205" text-anchor="start">Time</text>
+  <text class="s" x="1064" y="205" text-anchor="end">Time</text>
+  <polygon points="600.0,195.0 605.2,212.5 621.2,203.8 612.5,219.8 630.0,225.0 612.5,230.2 621.2,246.2 605.2,237.5 600.0,255.0 594.8,237.5 578.8,246.2 587.5,230.2 570.0,225.0 587.5,219.8 578.8,203.8 594.8,212.5" fill="#d64545"/>
+  <line x1="300" y1="300" x2="600" y2="300" stroke="#d64545" stroke-width="4" stroke-dasharray="2 7" stroke-linecap="round"/>
+  <line x1="600" y1="300" x2="920" y2="300" stroke="#b5760a" stroke-width="4" stroke-dasharray="2 7" stroke-linecap="round"/>
+  <text class="lbl" x="450" y="283" text-anchor="middle">Lost Data</text>
+  <text class="lbl" x="760" y="283" text-anchor="middle">Down Time</text>
+</svg>

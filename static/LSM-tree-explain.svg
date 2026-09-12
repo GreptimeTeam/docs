@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="400" viewBox="0 0 1060 400" role="img" aria-labelledby="title description">
+  <title id="title">How a write moves through the GreptimeDB storage engine</title>
+  <desc id="description">A write is persisted to the WAL, applied to the memtables, and later flushed into SSTable files.</desc>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="g" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="gs" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="as" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="am" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#b5760a"/>
+    </marker>
+    <style>
+      .t { font: 600 19px Arial, sans-serif; fill: #170128; }
+      .l { font: 16px Arial, sans-serif; fill: #39314a; }
+      .s { font: 14px Arial, sans-serif; fill: #5b5470; }
+      .m { font: 15px "DejaVu Sans Mono", Menlo, monospace; fill: #39314a; }
+      .mt { font: 600 17px "DejaVu Sans Mono", Menlo, monospace; fill: #170128; }
+      .ms { font: 12px "DejaVu Sans Mono", Menlo, monospace; fill: #ffffff; }
+      .zone { fill: #ffffff; stroke: #b9b3d6; stroke-width: 2; stroke-dasharray: 8 6; }
+      .node { fill: #f3f2ff; stroke: #6f6fff; stroke-width: 2; }
+      .infra { fill: #eefaff; stroke: #2491ad; stroke-width: 2; }
+      .wal { fill: #fdf4e3; stroke: #b5760a; stroke-width: 2; }
+      .fail { fill: #fff4f4; stroke: #d64545; stroke-width: 2; }
+      .flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#a); }
+      .bus { fill: none; stroke: #6f6fff; stroke-width: 2.5; }
+      .rep { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+              marker-end: url(#g); }
+      .rep2 { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+               marker-start: url(#gs); marker-end: url(#g); }
+      .lbl { font: 600 15px Arial, sans-serif; fill: #39314a; }
+    </style>
+  </defs>
+
+  <rect width="1060" height="400" fill="#ffffff"/>
+
+  <path d="M70 95 L228 95 L250 126 L228 157 L70 157 Z" fill="#fdeeec" stroke="#c2544a" stroke-width="2"/>
+  <text class="t" x="149" y="133" text-anchor="middle" fill="#c2544a">Data</text>
+  <path class="flow" d="M262 126 L332 126"/>
+  <text class="s" x="297" y="110" text-anchor="middle">Persist</text>
+  <path d="M344 95 L497 95 L519 126 L497 157 L344 157 Z" fill="#fdf4e3" stroke="#b5760a" stroke-width="2"/>
+  <text class="t" x="420" y="133" text-anchor="middle" fill="#b5760a">WAL</text>
+  <path class="flow" d="M531 126 L601 126"/>
+  <text class="s" x="566" y="110" text-anchor="middle">Apply</text>
+  <path d="M613 95 L826 95 L848 126 L826 157 L613 157 Z" fill="#f3f2ff" stroke="#6f6fff" stroke-width="2"/>
+  <text class="t" x="720" y="133" text-anchor="middle" fill="#6f6fff">Memtables</text>
+  <path class="flow" d="M718 157 L718 268"/>
+  <text class="s" x="736" y="216" text-anchor="start">Flush</text>
+  <rect class="infra" x="466" y="280" width="165" height="66" rx="9"/>
+  <text class="t" x="548" y="320" text-anchor="middle" fill="#2491ad">SSTable</text>
+  <rect class="infra" x="646" y="280" width="165" height="66" rx="9"/>
+  <text class="t" x="728" y="320" text-anchor="middle" fill="#2491ad">SSTable</text>
+  <rect class="infra" x="826" y="280" width="165" height="66" rx="9"/>
+  <text class="t" x="908" y="320" text-anchor="middle" fill="#2491ad">SSTable</text>
+</svg>
