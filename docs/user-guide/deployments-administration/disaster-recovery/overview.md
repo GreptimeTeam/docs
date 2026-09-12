@@ -20,12 +20,12 @@ This document contains:
 
 The following figure illustrates these two concepts:
 
-![RTO-RPO-explain](/RTO-RPO-explain.png)
+![RTO-RPO-explain](/RTO-RPO-explain.svg)
 
 * **Write-Ahead Logging (WAL)**: persistently records every data modification to ensure data integrity and consistency.
 
 GreptimeDB storage engine is a typical [LSM Tree](https://en.wikipedia.org/wiki/Log-structured_merge-tree) :
-![LSM-tree-explain](/LSM-tree-explain.png)
+![LSM-tree-explain](/LSM-tree-explain.svg)
 
 The data written is going firstly persisted into WAL, then applied into Memtable in memory. Under specific conditions (e.g., exceeding the memory threshold), the Memtable will be flushed and persisted as an SSTable. So the DR of WAL and SSTable is key to the DR of GreptimeDB.
 
@@ -36,7 +36,7 @@ The data written is going firstly persisted into WAL, then applied into Memtable
 ### GreptimeDB
 
 Before digging into the specific DR solution, let's explain the architecture of GreptimeDB components in the perspective of DR:
-![Component-architecture](/Component-architecture.png)
+![Component-architecture](/Component-architecture.svg)
 
 GreptimeDB is designed with a cloud-native architecture based on storage-compute separation:
 * **Frontend**:  the ingestion and query service layer, which forwards requests to Datanode and processes, and merges responses from Datanode.
@@ -50,7 +50,7 @@ At the same time, the WAL component is pluggable, e.g. using Kafka as the WAL se
 
 ### Backup and restore
 
-![BR-explain](/BR-explain.png)
+![BR-explain](/BR-explain.svg)
 
 The Backup & Restore (BR) tool can perform a full snapshot backup of databases or tables at a specific time and supports incremental backup.
 When a cluster encounters a disaster, you can restore the cluster from backup data. Generally speaking, BR is the last resort for disaster recovery.
@@ -66,7 +66,7 @@ If the Standalone is running on the local disk for WAL and data, then:
 A good start is to deploy GreptimeDB Standalone into an IaaS platform that has a backup and recovery solution. For example, Amazon EC2 with EBS volumes provides a comprehensive [Backup and Recovery solution](https://docs.aws.amazon.com/prescriptive-guidance/latest/backup-recovery/backup-recovery-ec2-ebs.html).
 
 But if running the Standalone with remote WAL and object storage, there is a better DR solution:
-![DR-Standalone](/DR-Standalone.png)
+![DR-Standalone](/DR-Standalone.svg)
 
 Write the WAL to the Kafka cluster and store the data in object storage, so that the ingested data no longer depends on the node's local disk.
 
@@ -105,7 +105,7 @@ Confirm the resulting RPO and RTO with a failure drill. If the region as a whole
 
 ### DR solution based on Active-Active Failover
 
-![Active-active failover](/active-active-failover.png)
+![Active-active failover](/active-active-failover.svg)
 
 In some edge or small-to-medium scale scenarios, or if you lack the resources to deploy remote WAL or object storage, Active-Active Failover offers a better solution compared to Standalone DR. Two actively serving standalone nodes replicate data changes asynchronously. If a peer or the inter-site network fails, the healthy node continues serving, retains pending changes on its local storage, and sends them after the peer recovers.
 
@@ -123,7 +123,7 @@ For more information about this solution, see [DR solution based on Active-Activ
 
 ### DR solution  based on cross-region deployment in a single cluster
 
-![Cross-region-single-cluster](/Cross-region-single-cluster.png)
+![Cross-region-single-cluster](/Cross-region-single-cluster.svg)
 
 For medium-to-large scale scenarios requiring zero RPO, this solution is highly recommended. In this deployment architecture, the entire cluster spans across three regions, with each region capable of handling both read and write requests. Data replication is achieved using remote WAL and object storage, both of which must have cross-region DR enabled.
 If Region 1 becomes completely unavailable due to a disaster, the table regions within it will be opened and recovered in the other regions.
@@ -139,7 +139,7 @@ Confirm the resulting RPO and RTO with an end-to-end failure drill. For more inf
 
 ### DR solution based on BR
 
-![/BR-DR](/BR-DR.png)
+![/BR-DR](/BR-DR.svg)
 
 In this architecture, GreptimeDB Cluster 1 is deployed in region 1. The BR process continuously and regularly backs up the data from Cluster 1 to region 2. If region 1 experiences a disaster rendering Cluster 1 unrecoverable, you can use the backup data to restore a new cluster (Cluster 2) in region 2 to resume services.
 

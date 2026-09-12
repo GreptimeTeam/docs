@@ -41,7 +41,7 @@ those numbers when comparing the solutions.
 
 ### Metadata across 2 regions, data in the same region
 
-![DR-across-2dc-1region](/DR-across-2dc-1region.png)
+![DR-across-2dc-1region](/DR-across-2dc-1region.svg)
 
 In this solution, the data is in one region (2 DCs), while the metadata across 2 regions.
 
@@ -62,7 +62,7 @@ If you want a regional-level disaster recovery solution, you can take it a step 
 
 ### Data across 2 regions
 
-![DR-across-3dc-2region](/DR-across-3dc-2region.png)
+![DR-across-3dc-2region](/DR-across-3dc-2region.svg)
 
 In this solution, the data across 2 regions.
 
@@ -80,7 +80,7 @@ If you can't tolerate performance degradation from a single DC failure, consider
 
 ### Metadata across 3 regions, data across 2 regions
 
-![DR-across-5dc-2region](/DR-across-5dc-2region.png)
+![DR-across-5dc-2region](/DR-across-5dc-2region.svg)
 
 In this solution, the data across 2 regions, while the metadata across 3 regions.
 
@@ -103,7 +103,7 @@ You can take it a step further by providing read and write services on both 3 re
 
 ### Data across 3 regions
 
-![DR-across-5dc-3region](/DR-across-5dc-3region.png)
+![DR-across-5dc-3region](/DR-across-5dc-3region.svg)
 
 In this solution, the data across 3 regions.
 

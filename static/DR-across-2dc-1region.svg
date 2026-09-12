@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1520" height="700" viewBox="0 0 1520 700" role="img" aria-labelledby="title description">
+  <title id="title">Metadata across two regions, data in one region</title>
+  <desc id="description">DC 1 and DC 2 in region 1 each run one Datanode and serve all reads and writes. DC 3 in region 2 holds a Metasrv replica only, so the cluster keeps a majority if region 1 is lost.</desc>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="g" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="gs" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="as" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="am" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#b5760a"/>
+    </marker>
+    <style>
+      .t { font: 600 19px Arial, sans-serif; fill: #170128; }
+      .l { font: 16px Arial, sans-serif; fill: #39314a; }
+      .s { font: 14px Arial, sans-serif; fill: #5b5470; }
+      .m { font: 15px "DejaVu Sans Mono", Menlo, monospace; fill: #39314a; }
+      .mt { font: 600 17px "DejaVu Sans Mono", Menlo, monospace; fill: #170128; }
+      .ms { font: 12px "DejaVu Sans Mono", Menlo, monospace; fill: #ffffff; }
+      .zone { fill: #ffffff; stroke: #b9b3d6; stroke-width: 2; stroke-dasharray: 8 6; }
+      .node { fill: #f3f2ff; stroke: #6f6fff; stroke-width: 2; }
+      .infra { fill: #eefaff; stroke: #2491ad; stroke-width: 2; }
+      .wal { fill: #fdf4e3; stroke: #b5760a; stroke-width: 2; }
+      .fail { fill: #fff4f4; stroke: #d64545; stroke-width: 2; }
+      .flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#a); }
+      .bus { fill: none; stroke: #6f6fff; stroke-width: 2.5; }
+      .rep { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+              marker-end: url(#g); }
+      .rep2 { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+               marker-start: url(#gs); marker-end: url(#g); }
+      .lbl { font: 600 15px Arial, sans-serif; fill: #39314a; }
+
+      .zone-label { font: 600 15px Arial, sans-serif; fill: #6b638a; }
+      .meta-flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#a); }
+      .failover { fill: none; stroke: #2a9d5c; stroke-width: 3; marker-end: url(#g); }
+      .failover-label { font: 600 15px Arial, sans-serif; fill: #2a9d5c; }
+    </style>
+  </defs>
+
+  <rect width="1520" height="700" fill="#ffffff"/>
+
+  <rect x="40" y="70" width="910" height="414" rx="16" fill="#fbfaff" stroke="#8a7fd0" stroke-width="2" stroke-dasharray="12 8"/>
+  <text class="t" x="62" y="56" text-anchor="start">Region 1</text>
+  <rect class="node" x="60" y="108" width="380" height="64" rx="11"/>
+  <text class="t" x="250.0" y="136" text-anchor="middle">Metasrv × 2</text>
+  <text class="s" x="250.0" y="158" text-anchor="middle">Leader election; state in the metadata backend</text>
+  <rect class="node" x="60" y="184" width="380" height="64" rx="11"/>
+  <text class="t" x="250.0" y="212" text-anchor="middle">Frontend × N</text>
+  <text class="s" x="250.0" y="234" text-anchor="middle">Stateless, behind a load balancer</text>
+  <path class="flow" d="M250 248 L250 286"/>
+  <rect class="zone" x="60" y="288" width="380" height="174" rx="12"/>
+  <text class="zone-label" x="78" y="316" text-anchor="start">AZ 1 · DC 1</text>
+  <rect class="fail" x="76" y="332" width="348" height="112" rx="11"/>
+  <text class="t" x="250.0" y="362" text-anchor="middle" fill="#a32a2a">Datanode 1 · unavailable</text>
+  <rect x="92" y="389" width="152" height="42" rx="8" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5" opacity="0.4"/>
+  <text class="l" x="168" y="416" text-anchor="middle" fill="#2f8fb5" opacity="0.4">Region 1</text>
+  <rect x="256" y="389" width="152" height="42" rx="8" fill="#fbf3e0" stroke="#b5860a" stroke-width="1.5" opacity="0.4"/>
+  <text class="l" x="332" y="416" text-anchor="middle" fill="#b5860a" opacity="0.4">Region 2</text>
+  <rect class="node" x="550" y="108" width="380" height="64" rx="11"/>
+  <text class="t" x="740.0" y="136" text-anchor="middle">Metasrv × 2</text>
+  <text class="s" x="740.0" y="158" text-anchor="middle">Leader election; state in the metadata backend</text>
+  <rect class="node" x="550" y="184" width="380" height="64" rx="11"/>
+  <text class="t" x="740.0" y="212" text-anchor="middle">Frontend × N</text>
+  <text class="s" x="740.0" y="234" text-anchor="middle">Stateless, behind a load balancer</text>
+  <path class="flow" d="M740 248 L740 286"/>
+  <rect class="zone" x="550" y="288" width="380" height="174" rx="12"/>
+  <text class="zone-label" x="568" y="316" text-anchor="start">AZ 2 · DC 2</text>
+  <rect class="node" x="566" y="332" width="348" height="112" rx="11"/>
+  <text class="t" x="740.0" y="362" text-anchor="middle">Datanode 2</text>
+  <rect x="580" y="389" width="100" height="42" rx="8" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
+  <text class="s" x="630" y="416" text-anchor="middle" fill="#c2544a">Region 3</text>
+  <rect x="690" y="389" width="100" height="42" rx="8" fill="#f2ecfb" stroke="#8a63c9" stroke-width="1.5"/>
+  <text class="s" x="740" y="416" text-anchor="middle" fill="#8a63c9">Region 4</text>
+  <rect x="800" y="389" width="100" height="42" rx="8" fill="#edf9f1" stroke="#2a9d5c" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text class="s" x="850" y="416" text-anchor="middle" fill="#2a9d5c">Region 1, 2</text>
+  <rect x="1060" y="70" width="420" height="414" rx="16" fill="#fbfaff" stroke="#8a7fd0" stroke-width="2" stroke-dasharray="12 8"/>
+  <text class="t" x="1082" y="56" text-anchor="start">Region 2</text>
+  <rect class="node" x="1080" y="108" width="380" height="64" rx="11"/>
+  <text class="t" x="1270.0" y="136" text-anchor="middle">Metasrv × 1</text>
+  <text class="s" x="1270.0" y="158" text-anchor="middle">Leader election; state in the metadata backend</text>
+  <rect class="zone" x="1080" y="184" width="380" height="64" rx="11"/>
+  <text class="s" x="1270.0" y="220" text-anchor="middle">No read or write traffic</text>
+  <rect class="zone" x="1080" y="288" width="380" height="174" rx="12"/>
+  <text class="zone-label" x="1098" y="316" text-anchor="start">AZ 3 · DC 3</text>
+  <text class="s" x="1270.0" y="384" text-anchor="middle">Metasrv replica only,</text>
+  <text class="s" x="1270.0" y="408" text-anchor="middle">so the region can hold a majority</text>
+  <path class="failover" d="M424 388 L564 388"/>
+  <text class="failover-label" x="495.0" y="354" text-anchor="middle">Region</text>
+  <text class="failover-label" x="495.0" y="374" text-anchor="middle">Failover</text>
+  <rect class="wal" x="40.0" y="524" width="464.0" height="92" rx="12"/>
+  <text class="t" x="272.0" y="562" text-anchor="middle" fill="#b5760a">Remote WAL</text>
+  <text class="s" x="272.0" y="586" text-anchor="middle">Kafka; replicated brokers</text>
+  <rect class="infra" x="528.0" y="524" width="464.0" height="92" rx="12"/>
+  <text class="t" x="760.0" y="562" text-anchor="middle" fill="#2491ad">Object storage</text>
+  <text class="s" x="760.0" y="586" text-anchor="middle">SSTables and index</text>
+  <rect class="infra" x="1016.0" y="524" width="464.0" height="92" rx="12"/>
+  <text class="t" x="1248.0" y="562" text-anchor="middle" fill="#2491ad">Metadata backend</text>
+  <text class="s" x="1248.0" y="586" text-anchor="middle">etcd, MySQL or PostgreSQL</text>
+  <path class="bus" d="M250 502 L760 502"/>
+  <path class="bus" d="M250 484 L250 502"/>
+  <path class="bus" d="M740 484 L740 502"/>
+  <path class="flow" d="M272 502 L272 522"/>
+  <path class="flow" d="M760 502 L760 522"/>
+  <path class="bus" d="M440 140 L452 140 L452 30 L1498 30"/>
+  <path class="bus" d="M930 140 L942 140 L942 30 L1498 30"/>
+  <path class="bus" d="M1460 140 L1498 140"/>
+  <path class="bus" d="M1498 30 L1498 570"/>
+  <path class="meta-flow" d="M1498 570 L1482 570"/>
+  <text class="l" x="760.0" y="664" text-anchor="middle">DC 1 and DC 2 serve every request; DC 3 only completes the Metasrv majority.</text>
+</svg>

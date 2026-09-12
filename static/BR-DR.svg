@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1460" height="600" viewBox="0 0 1460 600" role="img" aria-labelledby="title description">
+  <title id="title">Disaster recovery based on backup and restore across two regions</title>
+  <desc id="description">Cluster 1 in region 1 backs up to storage in region 2; a new cluster 2 is restored there if region 1 is lost.</desc>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="g" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="gs" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="as" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="am" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#b5760a"/>
+    </marker>
+    <style>
+      .t { font: 600 19px Arial, sans-serif; fill: #170128; }
+      .l { font: 16px Arial, sans-serif; fill: #39314a; }
+      .s { font: 14px Arial, sans-serif; fill: #5b5470; }
+      .m { font: 15px "DejaVu Sans Mono", Menlo, monospace; fill: #39314a; }
+      .mt { font: 600 17px "DejaVu Sans Mono", Menlo, monospace; fill: #170128; }
+      .ms { font: 12px "DejaVu Sans Mono", Menlo, monospace; fill: #ffffff; }
+      .zone { fill: #ffffff; stroke: #b9b3d6; stroke-width: 2; stroke-dasharray: 8 6; }
+      .node { fill: #f3f2ff; stroke: #6f6fff; stroke-width: 2; }
+      .infra { fill: #eefaff; stroke: #2491ad; stroke-width: 2; }
+      .wal { fill: #fdf4e3; stroke: #b5760a; stroke-width: 2; }
+      .fail { fill: #fff4f4; stroke: #d64545; stroke-width: 2; }
+      .flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#a); }
+      .bus { fill: none; stroke: #6f6fff; stroke-width: 2.5; }
+      .rep { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+              marker-end: url(#g); }
+      .rep2 { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+               marker-start: url(#gs); marker-end: url(#g); }
+      .lbl { font: 600 15px Arial, sans-serif; fill: #39314a; }
+    </style>
+  </defs>
+
+  <rect width="1460" height="600" fill="#ffffff"/>
+
+  <rect class="zone" x="30" y="26" width="150" height="40" rx="8"/>
+  <text class="l" x="105" y="53" text-anchor="middle">Cluster 1</text>
+  <rect class="node" x="140" y="87" width="250" height="56" rx="10" opacity="0.45"/>
+  <rect class="node" x="130" y="96" width="250" height="56" rx="10"/>
+  <text class="t" x="255.0" y="130.0" text-anchor="middle">Frontend nodes</text>
+  <path class="flow" d="M265 161 L145 214"/>
+  <rect class="zone" x="30" y="216" width="230" height="296" rx="12"/>
+  <rect class="node" x="48" y="232" width="194" height="44" rx="9"/>
+  <text class="t" x="145" y="261" text-anchor="middle">Datanode 1</text>
+  <rect x="66" y="294" width="158" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
+  <text class="m" x="145" y="321" text-anchor="middle" fill="#2f8fb5">Region 1-1</text>
+  <rect x="66" y="356" width="158" height="44" rx="7" fill="#fbf3e0" stroke="#b5860a" stroke-width="1.5"/>
+  <text class="m" x="145" y="383" text-anchor="middle" fill="#b5860a">Region 2-1</text>
+  <rect x="66" y="418" width="158" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
+  <text class="m" x="145" y="445" text-anchor="middle" fill="#c2544a">Region 3-1</text>
+  <path class="flow" d="M265 161 L415 214"/>
+  <rect class="zone" x="300" y="216" width="230" height="296" rx="12"/>
+  <rect class="node" x="318" y="232" width="194" height="44" rx="9"/>
+  <text class="t" x="415" y="261" text-anchor="middle">Datanode 2</text>
+  <rect x="336" y="294" width="158" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
+  <text class="m" x="415" y="321" text-anchor="middle" fill="#2f8fb5">Region 1-2</text>
+  <rect x="336" y="356" width="158" height="44" rx="7" fill="#fbf3e0" stroke="#b5860a" stroke-width="1.5"/>
+  <text class="m" x="415" y="383" text-anchor="middle" fill="#b5860a">Region 2-2</text>
+  <rect x="336" y="418" width="158" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
+  <text class="m" x="415" y="445" text-anchor="middle" fill="#c2544a">Region 3-2</text>
+  <line x1="570" y1="20" x2="570" y2="580" stroke="#b9b3d6" stroke-width="2" stroke-dasharray="8 6"/>
+  <rect class="zone" x="700" y="96" width="210" height="416" rx="12"/>
+  <text class="t" x="805" y="134" text-anchor="middle">Backup</text>
+  <text class="t" x="805" y="158" text-anchor="middle">storage</text>
+  <rect class="infra" x="730" y="186" width="150" height="46" rx="9"/>
+  <text class="l" x="805" y="215" text-anchor="middle" fill="#2491ad">Backup 1</text>
+  <rect class="infra" x="730" y="248" width="150" height="46" rx="9"/>
+  <text class="l" x="805" y="277" text-anchor="middle" fill="#2491ad">Backup 2</text>
+  <rect class="infra" x="730" y="310" width="150" height="46" rx="9"/>
+  <text class="l" x="805" y="339" text-anchor="middle" fill="#2491ad">Backup 3</text>
+  <rect class="infra" x="730" y="372" width="150" height="46" rx="9"/>
+  <text class="l" x="805" y="401" text-anchor="middle" fill="#2491ad">Backup 4</text>
+  <rect class="infra" x="730" y="434" width="150" height="46" rx="9"/>
+  <text class="l" x="805" y="463" text-anchor="middle" fill="#2491ad">Backup 5</text>
+  <polygon points="600,333 666,333 666,327 692,340 666,353 666,347 600,347" fill="#b5760a" opacity="0.9"/>
+  <text class="s" x="646" y="306" text-anchor="middle">Backup</text>
+  <polygon points="920,333 986,333 986,327 1012,340 986,353 986,347 920,347" fill="#b5760a" opacity="0.9"/>
+  <text class="s" x="966" y="306" text-anchor="middle">Restore</text>
+  <rect class="zone" x="1290" y="26" width="150" height="40" rx="8"/>
+  <text class="l" x="1365" y="53" text-anchor="middle">Cluster 2</text>
+  <rect class="node" x="1150" y="87" width="250" height="56" rx="10" opacity="0.45"/>
+  <rect class="node" x="1140" y="96" width="250" height="56" rx="10"/>
+  <text class="t" x="1265.0" y="130.0" text-anchor="middle">Frontend nodes</text>
+  <path class="flow" d="M1275 161 L1275 214"/>
+  <rect class="zone" x="1160" y="216" width="230" height="296" rx="12"/>
+  <rect class="node" x="1178" y="232" width="194" height="44" rx="9"/>
+  <text class="t" x="1275" y="261" text-anchor="middle">Datanode</text>
+  <rect x="1196" y="294" width="158" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
+  <text class="m" x="1275" y="321" text-anchor="middle" fill="#2f8fb5">Region 1-2</text>
+  <rect x="1196" y="356" width="158" height="44" rx="7" fill="#e8f4fa" stroke="#2f8fb5" stroke-width="1.5"/>
+  <text class="m" x="1275" y="383" text-anchor="middle" fill="#2f8fb5">Region 1-2</text>
+  <rect x="1196" y="418" width="158" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
+  <text class="m" x="1275" y="445" text-anchor="middle" fill="#c2544a">Region 3-1</text>
+  <text class="s" x="30" y="560" text-anchor="start">Region 1</text>
+  <text class="s" x="590" y="560" text-anchor="start">Region 2</text>
+</svg>

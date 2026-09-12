@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title description">
+  <title id="title">Backup and restore between a GreptimeDB cluster and its backup storage</title>
+  <desc id="description">The backup cluster uploads SST files to storage; the restore cluster downloads them back when the original cluster is lost.</desc>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="g" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="gs" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#2a9d5c"/>
+    </marker>
+    <marker id="as" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#6f6fff"/>
+    </marker>
+    <marker id="am" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#b5760a"/>
+    </marker>
+    <style>
+      .t { font: 600 19px Arial, sans-serif; fill: #170128; }
+      .l { font: 16px Arial, sans-serif; fill: #39314a; }
+      .s { font: 14px Arial, sans-serif; fill: #5b5470; }
+      .m { font: 15px "DejaVu Sans Mono", Menlo, monospace; fill: #39314a; }
+      .mt { font: 600 17px "DejaVu Sans Mono", Menlo, monospace; fill: #170128; }
+      .ms { font: 12px "DejaVu Sans Mono", Menlo, monospace; fill: #ffffff; }
+      .zone { fill: #ffffff; stroke: #b9b3d6; stroke-width: 2; stroke-dasharray: 8 6; }
+      .node { fill: #f3f2ff; stroke: #6f6fff; stroke-width: 2; }
+      .infra { fill: #eefaff; stroke: #2491ad; stroke-width: 2; }
+      .wal { fill: #fdf4e3; stroke: #b5760a; stroke-width: 2; }
+      .fail { fill: #fff4f4; stroke: #d64545; stroke-width: 2; }
+      .flow { fill: none; stroke: #6f6fff; stroke-width: 2.5; marker-end: url(#a); }
+      .bus { fill: none; stroke: #6f6fff; stroke-width: 2.5; }
+      .rep { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+              marker-end: url(#g); }
+      .rep2 { fill: none; stroke: #2a9d5c; stroke-width: 2.5; stroke-dasharray: 7 5;
+               marker-start: url(#gs); marker-end: url(#g); }
+      .lbl { font: 600 15px Arial, sans-serif; fill: #39314a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="700" fill="#ffffff"/>
+
+  <rect class="zone" x="30" y="40" width="650" height="300" rx="12"/>
+  <text class="t" x="56" y="76" text-anchor="start">Backup Cluster</text>
+  <rect class="node" x="190" y="130" width="330" height="110" rx="11"/>
+  <text class="t" x="355" y="192" text-anchor="middle">GreptimeDB</text>
+  <polygon points="520.0,102.0 524.8,118.4 539.8,110.2 531.6,125.2 548.0,130.0 531.6,134.8 539.8,149.8 524.8,141.6 520.0,158.0 515.2,141.6 500.2,149.8 508.4,134.8 492.0,130.0 508.4,125.2 500.2,110.2 515.2,118.4" fill="#d64545"/>
+  <rect class="zone" x="30" y="360" width="650" height="300" rx="12"/>
+  <text class="t" x="56" y="396" text-anchor="start">Restore Cluster</text>
+  <rect class="node" x="190" y="450" width="330" height="110" rx="11"/>
+  <text class="t" x="355" y="512" text-anchor="middle">GreptimeDB</text>
+  <rect class="zone" x="880" y="40" width="290" height="620" rx="12"/>
+  <text class="t" x="1025" y="78" text-anchor="middle">Storage</text>
+  <rect class="infra" x="940" y="110" width="170" height="54" rx="9"/>
+  <text class="l" x="1025" y="144" text-anchor="middle" fill="#2491ad">SST File</text>
+  <rect class="infra" x="940" y="196" width="170" height="54" rx="9"/>
+  <text class="l" x="1025" y="230" text-anchor="middle" fill="#2491ad">SST File</text>
+  <rect class="infra" x="940" y="282" width="170" height="54" rx="9"/>
+  <text class="l" x="1025" y="316" text-anchor="middle" fill="#2491ad">SST File</text>
+  <rect class="infra" x="940" y="368" width="170" height="54" rx="9"/>
+  <text class="l" x="1025" y="402" text-anchor="middle" fill="#2491ad">SST File</text>
+  <rect class="infra" x="940" y="454" width="170" height="54" rx="9"/>
+  <text class="l" x="1025" y="488" text-anchor="middle" fill="#2491ad">SST File</text>
+  <rect class="infra" x="940" y="540" width="170" height="54" rx="9"/>
+  <text class="l" x="1025" y="574" text-anchor="middle" fill="#2491ad">SST File</text>
+  <polygon points="700,187 832,187 832,178 866,195 832,212 832,203 700,203" fill="#b5760a" opacity="0.9"/>
+  <text class="s" x="783" y="140" text-anchor="middle">backup &amp;</text>
+  <text class="s" x="783" y="160" text-anchor="middle">upload</text>
+  <polygon points="866,497 734,497 734,488 700,505 734,522 734,513 866,513" fill="#b5760a" opacity="0.9"/>
+  <text class="s" x="783" y="450" text-anchor="middle">download &amp;</text>
+  <text class="s" x="783" y="470" text-anchor="middle">restore</text>
+</svg>
