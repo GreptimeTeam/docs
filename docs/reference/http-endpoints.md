@@ -219,6 +219,78 @@ These endpoints execute SQL, PromQL, or structured log queries.
   
 For more information on the SQL API, refer to the [HTTP API documentation](/user-guide/protocols/http.md#post-sql-statements) in the user guide.
 
+### Streaming EXPLAIN ANALYZE API
+
+- **Path**: `/v1/sql/analyze/stream`
+- **Methods**: `POST`
+- **Description**: Streams live `EXPLAIN ANALYZE VERBOSE` or `TQL ANALYZE VERBOSE` metrics of a running query as Server-Sent Events (SSE).
+
+The endpoint is POST-only and responds with `Content-Type: text/event-stream`. Since browser `EventSource` only supports GET requests, it cannot be used with this endpoint.
+
+#### Request parameters
+
+Parameters can be passed either as query string parameters or as fields in an `application/x-www-form-urlencoded` POST body:
+
+| Parameter | Required | Description |
+| --- | --- | --- |
+| `sql` | Yes | A single SQL `EXPLAIN ANALYZE VERBOSE` or `TQL ANALYZE VERBOSE` statement to execute. |
+| `db` | No | The database to run the statement against. |
+| `snapshot_interval_ms` | No | Interval between `metrics` snapshots in milliseconds. Defaults to `5000`; values are clamped to the `[1000, 60000]` range. |
+
+Example:
+
+```bash
+curl -N -X POST 'http://127.0.0.1:4000/v1/sql/analyze/stream' \
+  -H 'Accept: text/event-stream' \
+  --data-urlencode 'sql=EXPLAIN ANALYZE VERBOSE SELECT * FROM monitor'
+```
+
+#### Statement restrictions
+
+The endpoint accepts one SQL `EXPLAIN ANALYZE VERBOSE` statement or one `TQL ANALYZE VERBOSE` statement. A `FORMAT JSON` clause is optional; no other output format is supported. Any other request is rejected with a regular JSON error response (not SSE), including:
+
+- Non-analyze statements, such as `SELECT ...`
+- SQL `EXPLAIN` or `EXPLAIN ANALYZE` without `VERBOSE`
+- An analyze statement with a non-JSON format, such as `FORMAT TEXT` or `FORMAT GRAPHVIZ`
+- Multiple statements separated by semicolons
+
+#### SSE events
+
+Each event is sent as an `event:` line followed by a `data:` line containing a JSON payload, and events are separated by blank lines. A keep-alive comment line is sent every 15 seconds while the stream is open.
+
+Payload fields:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `seq` | integer | Monotonically increasing sequence number of the event. |
+| `state` | string | The event type: `metrics`, `final`, `canceled`, or `error`. |
+| `partial` | boolean | `true` for `metrics` events, `false` for terminal events. |
+| `elapsed_ms` | integer | Elapsed time in milliseconds since the request started. |
+| `metrics` | array | When available, a `stage` / `node` / `plan` snapshot. It can appear in `metrics`, `final`, `canceled`, and `error` events. Periodic `metrics` events contain compact execution topology and runtime metrics; terminal events include verbose plan details. |
+| `output` | object | The final query result in GreptimeDB JSON format. Only present in `final` events. |
+| `reason` | string | The reason for the failure or cancellation. Only present in `error` and `canceled` events. |
+| `code` | integer | The GreptimeDB status code. Only present in `error` and `canceled` events. |
+
+The server emits four event types:
+
+- `metrics` — emitted periodically while the query runs. Each event carries a **complete best-effort snapshot** of the compact execution topology and runtime metrics collected so far, not a delta of the changes since the previous event. The snapshot is best-effort: metric values may change while it is being collected. Snapshots are coalesced with an adaptive interval: once a snapshot payload reaches 1 MiB, the interval is raised to at least 10 seconds; at 10 MiB, to at least 30 seconds. Snapshots are throttled but never truncated. Slow clients may skip intermediate snapshots, so sequence values need not be consecutive.
+- `final` — terminal. Emitted when the query finishes. It carries the final metrics snapshot, including verbose plan details, and the query result in the `output` field.
+- `canceled` — terminal. Emitted when the query is canceled before finishing. It carries the cancellation reason and the GreptimeDB status code `1005` (`Cancelled`), and a metrics snapshot when available.
+- `error` — terminal. Emitted when the query fails. It carries the error reason and the GreptimeDB status code, and a metrics snapshot when available.
+
+Example of a `metrics` event:
+
+```text
+event: metrics
+data: {"seq":3,"state":"metrics","partial":true,"elapsed_ms":15234,"metrics":[{"stage":0,"node":0,"plan":{"name":"MergeScanExec","param":"peers=[...]","output_rows":0,"elapsed_compute":0,"metrics":{...},"children":[...]}}]}
+```
+
+#### Client disconnect and lifecycle
+
+If the client disconnects before a terminal event, it simply stops receiving events: the SSE stream is dropped and the underlying query is best-effort canceled. A disconnected client never receives a `canceled` event.
+
+The stream has no resume, reconnect, or detached-execution lifecycle: the connection stays open from the request until the terminal event, and events are delivered only to the connected client.
+
 ### Format SQL API
 
 - **Path**: `/v1/sql/format`
