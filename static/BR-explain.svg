@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title description">
   <title id="title">Backup and restore between a GreptimeDB cluster and its backup storage</title>
-  <desc id="description">The backup cluster uploads SST files to storage; the restore cluster downloads them back when the original cluster is lost.</desc>
+  <desc id="description">The backup cluster uploads backup files to storage; the restore cluster downloads them back when the original cluster is lost.</desc>
   <defs>
     <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
@@ -53,17 +53,17 @@
   <rect class="zone" x="880" y="40" width="290" height="620" rx="12"/>
   <text class="t" x="1025" y="78" text-anchor="middle">Storage</text>
   <rect class="infra" x="940" y="110" width="170" height="54" rx="9"/>
-  <text class="l" x="1025" y="144" text-anchor="middle" fill="#2491ad">SST File</text>
+  <text class="l" x="1025" y="144" text-anchor="middle" fill="#2491ad">Backup file</text>
   <rect class="infra" x="940" y="196" width="170" height="54" rx="9"/>
-  <text class="l" x="1025" y="230" text-anchor="middle" fill="#2491ad">SST File</text>
+  <text class="l" x="1025" y="230" text-anchor="middle" fill="#2491ad">Backup file</text>
   <rect class="infra" x="940" y="282" width="170" height="54" rx="9"/>
-  <text class="l" x="1025" y="316" text-anchor="middle" fill="#2491ad">SST File</text>
+  <text class="l" x="1025" y="316" text-anchor="middle" fill="#2491ad">Backup file</text>
   <rect class="infra" x="940" y="368" width="170" height="54" rx="9"/>
-  <text class="l" x="1025" y="402" text-anchor="middle" fill="#2491ad">SST File</text>
+  <text class="l" x="1025" y="402" text-anchor="middle" fill="#2491ad">Backup file</text>
   <rect class="infra" x="940" y="454" width="170" height="54" rx="9"/>
-  <text class="l" x="1025" y="488" text-anchor="middle" fill="#2491ad">SST File</text>
+  <text class="l" x="1025" y="488" text-anchor="middle" fill="#2491ad">Backup file</text>
   <rect class="infra" x="940" y="540" width="170" height="54" rx="9"/>
-  <text class="l" x="1025" y="574" text-anchor="middle" fill="#2491ad">SST File</text>
+  <text class="l" x="1025" y="574" text-anchor="middle" fill="#2491ad">Backup file</text>
   <polygon points="700,187 832,187 832,178 866,195 832,212 832,203 700,203" fill="#b5760a" opacity="0.9"/>
   <text class="s" x="783" y="140" text-anchor="middle">backup &amp;</text>
   <text class="s" x="783" y="160" text-anchor="middle">upload</text>

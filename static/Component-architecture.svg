@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="660" viewBox="0 0 920 660" role="img" aria-labelledby="title description">
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="700" viewBox="0 0 920 700" role="img" aria-labelledby="title description">
   <title id="title">GreptimeDB component architecture from a disaster recovery point of view</title>
-  <desc id="description">Frontend routes to three Datanodes, each holding table regions. The Datanodes share the WAL and the object storage.</desc>
+  <desc id="description">Frontend routes to three Datanodes, each holding table regions. The Datanodes share the WAL and the object storage below them.</desc>
   <defs>
     <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L9,3 z" fill="#6f6fff"/>
@@ -39,7 +39,7 @@
     </style>
   </defs>
 
-  <rect width="920" height="660" fill="#ffffff"/>
+  <rect width="920" height="700" fill="#ffffff"/>
 
   <rect class="node" x="340" y="21" width="250" height="62" rx="10" opacity="0.45"/>
   <rect class="node" x="330" y="30" width="250" height="62" rx="10"/>
@@ -74,10 +74,11 @@
   <text class="m" x="772" y="347" text-anchor="middle" fill="#c2544a">Region 3-3</text>
   <rect x="696" y="382" width="152" height="44" rx="7" fill="#fdeeec" stroke="#c2544a" stroke-width="1.5"/>
   <text class="m" x="772" y="409" text-anchor="middle" fill="#c2544a">Region 3-4</text>
-  <rect class="wal" x="40" y="540" width="528" height="74" rx="11"/>
-  <text class="t" x="304" y="586" text-anchor="middle" fill="#b5760a">WAL</text>
-  <rect class="infra" x="616" y="540" width="264" height="74" rx="11"/>
-  <text class="t" x="748" y="586" text-anchor="middle" fill="#2491ad">Object Storage</text>
-  <line x1="148" y1="482" x2="148" y2="538" stroke="#6f6fff" stroke-width="2.5" marker-start="url(#as)" marker-end="url(#a)" opacity="0.9"/>
-  <line x1="772" y1="482" x2="772" y2="538" stroke="#6f6fff" stroke-width="2.5" marker-start="url(#as)" marker-end="url(#a)" opacity="0.9"/>
+  <line x1="148" y1="482" x2="148" y2="524" stroke="#6f6fff" stroke-width="2.5" marker-start="url(#as)" marker-end="url(#a)" opacity="0.9"/>
+  <line x1="460" y1="482" x2="460" y2="524" stroke="#6f6fff" stroke-width="2.5" marker-start="url(#as)" marker-end="url(#a)" opacity="0.9"/>
+  <line x1="772" y1="482" x2="772" y2="524" stroke="#6f6fff" stroke-width="2.5" marker-start="url(#as)" marker-end="url(#a)" opacity="0.9"/>
+  <rect class="wal" x="40" y="526" width="840" height="62" rx="11"/>
+  <text class="t" x="460" y="565" text-anchor="middle" fill="#b5760a">WAL</text>
+  <rect class="infra" x="40" y="600" width="840" height="62" rx="11"/>
+  <text class="t" x="460" y="639" text-anchor="middle" fill="#2491ad">Object Storage</text>
 </svg>
