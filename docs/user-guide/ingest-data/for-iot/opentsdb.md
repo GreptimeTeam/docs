@@ -10,9 +10,7 @@ GreptimeDB supports ingesting OpenTSDB via HTTP API.
 GreptimeDB also supports inserting OpenTSDB metrics via HTTP endpoints. We use the request and
 response format described in OpenTSDB's `/api/put`.
 
-The HTTP endpoint in GreptimeDB for handling metrics is `/opentsdb/api/put`
-
-> Note: remember to prefix the path with GreptimeDB's http API version, `v1`.
+The HTTP endpoint in GreptimeDB for handling metrics is `/v1/opentsdb/api/put`.
 
 Starting GreptimeDB, the HTTP server is listening on port `4000` by default.
 

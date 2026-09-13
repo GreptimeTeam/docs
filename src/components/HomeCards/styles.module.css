@@ -1,0 +1,75 @@
+/*
+ * Same family as @theme/DocCard (whole-card hit target, Infima hover chrome),
+ * but tuned as homepage primary entry points: roomier type, wrapping copy,
+ * Greptime surface tokens — not a category-index clone.
+ */
+
+.cards ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  list-style: none;
+  margin: 1.5rem 0 2rem;
+  padding: 0;
+}
+
+.cards ul > li {
+  --ifm-link-hover-decoration: none;
+
+  position: relative;
+  /* Override `.markdown li + li { margin-top }` so the grid stays top-aligned. */
+  margin: 0;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--gt-border-primary);
+  border-radius: var(--ifm-card-border-radius, 8px);
+  background: var(--gt-bg-surface);
+  box-shadow: 0 1.5px 3px 0 rgb(0 0 0 / 10%);
+  transition: border-color var(--ifm-transition-fast) ease,
+    box-shadow var(--ifm-transition-fast) ease;
+}
+
+.cards ul > li + li {
+  margin-top: 0;
+}
+
+.cards ul > li:hover {
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 3px 6px 0 rgb(0 0 0 / 16%);
+}
+
+.cards ul > li p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.cards ul > li p:first-child {
+  margin-bottom: 0.45rem;
+  font-size: 1.1rem;
+  font-weight: var(--ifm-font-weight-bold);
+  line-height: 1.35;
+  color: var(--ifm-heading-color);
+}
+
+.cards ul > li a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Stretch the title link across the card (DocCard wraps the whole card in <Link>). */
+.cards ul > li a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.cards ul > li:hover p:first-child {
+  color: var(--ifm-color-primary);
+}
+
+@media (max-width: 996px) {
+  .cards ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

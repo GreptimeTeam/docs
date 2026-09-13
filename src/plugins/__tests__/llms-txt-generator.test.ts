@@ -2,7 +2,9 @@ import { describe, it, expect } from 'vitest';
 import * as path from 'path';
 import {
   AGENT_ONBOARDING_RE,
+  ASK_AI_RE,
   DOC_CARD_LIST_RE,
+  HOME_CARDS_RE,
   deriveMdUrlPath,
 } from '../llms-txt-generator';
 
@@ -67,6 +69,20 @@ describe('MDX tag regexes', () => {
   it('regexes do not match similarly-prefixed tags', () => {
     expect(docCardListRe().test('<DocCardListItem />')).toBe(false);
     expect(agentOnboardingRe().test('<AgentOnboardingExtra />')).toBe(false);
+  });
+
+  it('ASK_AI_RE removes the widget in both forms', () => {
+    const askAiRe = () => new RegExp(ASK_AI_RE.source, 'g');
+    expect('a\n\n<AskAI />\n\nb'.replace(askAiRe(), '')).toBe('a\n\n\n\nb');
+    expect('<AskAI>x</AskAI>'.replace(askAiRe(), '')).toBe('');
+    expect(askAiRe().test('<AskAIPanel />')).toBe(false);
+  });
+
+  it('HOME_CARDS_RE strips the wrapper but keeps the list it wraps', () => {
+    const input = '<HomeCards>\n\n- [A](a.md) — one\n- [B](b.md) — two\n\n</HomeCards>\n';
+    expect(input.replace(new RegExp(HOME_CARDS_RE.source, 'g'), '')).toBe(
+      '\n- [A](a.md) — one\n- [B](b.md) — two\n\n',
+    );
   });
 
   it('regexes leave surrounding whitespace untouched on replace', () => {

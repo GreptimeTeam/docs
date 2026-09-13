@@ -11,7 +11,7 @@ GreptimeDB 支持通过 HTTP API 使用 OpenTSDB 协议。
 
 ### HTTP API
 
-GreptimeDB 还支持通过 HTTP 接口插入 OpenTSDB 数据，接口是 `/opentsdb/api/put`，使用的请求和响应格式与 OpenTSDB 的 `/api/put` 接口相同。
+GreptimeDB 还支持通过 HTTP 接口插入 OpenTSDB 数据，接口是 `/v1/opentsdb/api/put`，使用的请求和响应格式与 OpenTSDB 的 `/api/put` 接口相同。
 
 GreptimeDB 的 HTTP Server 默认监听 `4000` 端口。例如使用 curl 写入一个指标数据：
 

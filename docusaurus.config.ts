@@ -103,7 +103,7 @@ const bielMetaMap = {
     sourcesText: 'Related Documents',
     inputPlaceholderText: 'Ask a question about Greptime...',
     footerText: 'AI-generated answers may contain errors. <br> You can also communicate with engineers through <b><a href="https://github.com/orgs/GreptimeTeam/discussions">Github Discussions</a></b> or join <a href="https://greptime.com/slack">Slack community</a>.',
-    welcomeMessage: 'Hi! I am Greptime AI. You can ask me questions about GreptimeDB. For example, I can help you write SQL, Pipelines, or other GreptimeDB-related code.'
+    welcomeMessage: 'Every answer links to the documentation pages it is based on. Where the documentation is silent, the answer says so instead of guessing.'
   },
   'zh': {
     project: biel_project_id,
@@ -113,8 +113,8 @@ const bielMetaMap = {
     buttonStyle: 'dark',
     sourcesText: '相关文档',
     inputPlaceholderText: '请输入和 Greptime 相关的问题...',
-    footerText: 'AI 生成的答案可能包含错误。<br> 你还可以通过 <b><a href="https://github.com/orgs/GreptimeTeam/discussions">Github Discussions</a></b> 或加入 <a href="https://greptime.com/slack">Slack 社区</a>与工程师沟通。',
-    welcomeMessage: '你好，我是 Greptime AI。你可以问我关于 GreptimeDB 的问题，例如我可以帮助你编写 SQL、Pipeline 或其他与 GreptimeDB 相关的代码。',
+    footerText: 'AI 生成的答案可能包含错误。<br> 添加微信 <b>greptime</b> 加入技术交流群，也可以在 <b><a href="https://github.com/orgs/GreptimeTeam/discussions">Github Discussions</a></b> 或 <a href="https://greptime.com/slack">Slack 社区</a>与工程师沟通。',
+    welcomeMessage: '每条回答都会附上所依据的文档页面链接。文档没有覆盖的内容，回答会直接说明，不作推测。',
   }
 };
 

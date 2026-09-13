@@ -85,6 +85,16 @@ Three consequences follow:
 - Derivation runs with the querying user's permissions. A source table the caller cannot read is excluded from the result rather than widening their access.
 - Every scan does real work over the source tables, bounded by the queried time window. A query with no `observed_at` predicate at all falls back to the last hour; one whose predicate has no usable lower bound is rejected rather than scanning all history.
 
+## What it changes for an agent
+
+[Agent RCA Bench](https://rca-bench.greptime.com/) measured the semantic layer as its own interface arm, over the same GreptimeDB tables as the plain SQL and PromQL arm.
+
+The clearest effect is on focused evidence retrieval. In the fixed-cohort micro-benchmarks, the semantic interface returned fewer rows in all 35 eligible Discovery results — where the model must first locate the table and signal carrying the evidence — and reduced both rows and tool calls in 11 of 12 dependency-retrieval results.
+
+On service and dependency faults it was also the most accurate of the three interfaces measured: 112 of 120 correct diagnoses with the layer, 106 of 120 on the same tables without it, and 85 of 120 across separate Prometheus, Loki, and Tempo backends. No model was less accurate with the layer on these faults, and four of six were more accurate.
+
+End to end, 14 cases were not enough to separate the two GreptimeDB interfaces. The [report](https://github.com/GreptimeTeam/agent-rca-bench/blob/main/REPORT.md) publishes the measurement protocol and the per-run records.
+
 ## Limitations
 
 - RED metrics on `calls` edges describe the span pairs actually observed. Under trace sampling, counts understate real traffic, and error rates are representative only if sampling is unbiased with respect to status and latency.

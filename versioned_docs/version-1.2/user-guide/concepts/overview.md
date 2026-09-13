@@ -6,7 +6,7 @@ description: Provides an overview of GreptimeDB, including its data model, archi
 
 # Concepts
 
-GreptimeDB is the open-source observability database. It uses one columnar engine to process metrics, logs, and traces, and supports scalable deployments backed by object storage. The signals share Tag, Timestamp, and Field column semantics, but can remain in separate tables with different schemas and retention policies.
+GreptimeDB is an open-source observability database. It uses one columnar engine to process metrics, logs, and traces, and supports scalable deployments backed by object storage. The signals share Tag, Timestamp, and Field column semantics, but can remain in separate tables with different schemas and retention policies.
 
 **Start here:**
 - [Why GreptimeDB](./why-greptimedb.md) — Product scope, unified processing, scaling, protocol boundaries, and deployment options

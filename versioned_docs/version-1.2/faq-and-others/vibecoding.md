@@ -114,3 +114,5 @@ grounded in the official documentation.
 ## References
 
 - [What GreptimeDB is doing for AI agents](https://greptime.com/blogs/2026-04-08-greptimedb-agent-friendly-infrastructure)
+- [Agent RCA Bench](https://rca-bench.greptime.com/) — 504 agent investigations across six models and 14 incidents, measuring how the query interface affects root-cause analysis
+- [Same Telemetry, Different Query Interfaces: Results from 504 Agent RCA Runs](https://greptime.com/blogs/2026-09-08-agent-rca-bench-interface-semantic-layer)
