@@ -3,7 +3,7 @@
 .panel {
   margin: 1.25rem 0 2rem;
   border: 1px solid var(--gt-border-primary);
-  border-radius: 10px;
+  border-radius: var(--ifm-card-border-radius, 8px);
   background: var(--gt-bg-surface);
   overflow: hidden;
 }
@@ -21,4 +21,26 @@
   --biel-bot-content-border-radius: 0;
   --biel-bot-content-box-shadow: none;
   --biel-bot-content-font-family: var(--ifm-font-family-base);
+
+  /* Root dark/text tokens — header title and other chrome derive from these. */
+  --biel-dark-color: var(--gt-purple);
+  --biel-header-text-color: var(--gt-purple);
+  --biel-header-border-color: var(--gt-border-primary);
+  --biel-header-powered-by-text-color: var(--ifm-color-emphasis-700);
+  --biel-header-powered-by-link-color: var(--ifm-link-color);
+
+  /* AI bubble: system page background + main-dark body text. */
+  --biel-message-biel-bg-color: var(--gt-bg-primary);
+  --biel-message-biel-text-color: var(--ifm-font-color-base);
+  --biel-message-code-inline-text-color: var(--ifm-font-color-base);
+  --biel-message-link-color: var(--ifm-link-color);
+  /* User bubble: main-dark fill with contrasting text. */
+  --biel-message-user-bg-color: var(--gt-purple);
+  --biel-message-user-text-color: var(--gt-bg-surface);
+  /* Secondary / label / source chrome — muted system text. */
+  --biel-text-color: var(--ifm-color-emphasis-700);
+  --biel-message-source-text-color: var(--ifm-font-color-base);
+  --biel-message-source-bg-color: var(--ifm-color-emphasis-200);
+  --biel-message-source-bg-hover-color: var(--ifm-color-emphasis-300);
+  --biel-footer-action-color: var(--ifm-color-emphasis-700);
 }
