@@ -32,7 +32,7 @@ import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
 ## Ask about GreptimeDB
 
-Answers come from this documentation, with links to the pages they are based on.
+Installation, ingestion, queries, configuration — answered from this documentation.
 
 <AskAI />
 

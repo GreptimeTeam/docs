@@ -32,7 +32,7 @@ import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
 ## 向 AI 提问
 
-回答基于本站文档生成，并给出对应页面的链接。
+安装、写入、查询、配置——基于本站文档作答。
 
 <AskAI />
 
