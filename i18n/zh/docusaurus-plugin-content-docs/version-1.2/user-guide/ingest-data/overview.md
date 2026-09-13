@@ -26,7 +26,7 @@ GreptimeDB 支持多种常见的可观测性和数据库协议，多数数据源
 | Telegraf 或 InfluxDB 客户端 | InfluxDB 行协议 | [InfluxDB 行协议](./for-iot/influxdb-line-protocol.md) |
 | OpenTSDB 客户端 | `/v1/opentsdb/api/put` | [OpenTSDB](./for-iot/opentsdb.md) |
 | MQTT 设备 | EMQX 数据集成 | [EMQX](./for-iot/emqx.md) |
-| 自有应用 | Go 或 Java gRPC SDK | [gRPC SDK](./for-iot/grpc-sdks/overview.md) |
+| 自有应用 | gRPC SDK | [gRPC SDK](./for-iot/grpc-sdks/overview.md) |
 | 现有 SQL 工具链 | MySQL 或 PostgreSQL 协议 | [SQL](./for-iot/sql.md) |
 | Flink 任务 | Flink SQL、Table API 或 DataStream API | [Apache Flink](/user-guide/integrations/flink.md) |
 | Spark 任务 | batch DataFrame 或 Structured Streaming micro-batch | [Apache Spark](/user-guide/integrations/spark.md) |

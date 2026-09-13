@@ -3,6 +3,9 @@ keywords: [deployment, administration, Kubernetes, configuration, monitoring, di
 description: Running GreptimeDB on your own infrastructure — deployment, configuration, day-to-day operations, durability, and performance tuning.
 ---
 
+<AnchorAlias id="self-managed-greptimedb-deployment" />
+<AnchorAlias id="greptimedb-architecture" />
+
 # Deployments & Administration
 
 This section covers running GreptimeDB on your own infrastructure. Start with [Architecture](/user-guide/concepts/architecture.md) to see which components you will deploy and operate. GreptimeCloud runs the same engine as a managed service, with deployment and maintenance handled for you.

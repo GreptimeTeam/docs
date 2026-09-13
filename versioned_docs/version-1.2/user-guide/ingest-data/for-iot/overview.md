@@ -7,7 +7,7 @@ description: IoT ingestion paths into GreptimeDB, from device protocols and mess
 
 IoT data reaches GreptimeDB from devices, brokers, and applications. [Ingest Data](../overview.md) lists every source in one table; this page covers the IoT paths.
 
-- [gRPC SDKs](./grpc-sdks/overview.md) — Go and Java clients for writing from your own application.
+- [gRPC SDKs](./grpc-sdks/overview.md) — clients for Go, Java, Rust, .NET, Erlang, and TypeScript.
 - [EMQX](emqx.md) — MQTT devices, written through an EMQX data integration.
 - [InfluxDB Line Protocol](influxdb-line-protocol.md) — the path for migrating off InfluxDB, and for Telegraf. This page also covers the Telegraf configuration.
 - [OpenTSDB](opentsdb.md) — the `/v1/opentsdb/api/put` HTTP endpoint.

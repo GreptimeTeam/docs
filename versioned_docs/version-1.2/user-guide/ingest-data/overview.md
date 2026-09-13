@@ -26,7 +26,7 @@ GreptimeDB accepts data through established observability and database protocols
 | Telegraf or InfluxDB clients | InfluxDB line protocol | [InfluxDB Line Protocol](./for-iot/influxdb-line-protocol.md) |
 | OpenTSDB clients | `/v1/opentsdb/api/put` | [OpenTSDB](./for-iot/opentsdb.md) |
 | MQTT devices | EMQX data integration | [EMQX](./for-iot/emqx.md) |
-| Your own application | gRPC SDK for Go or Java | [gRPC SDKs](./for-iot/grpc-sdks/overview.md) |
+| Your own application | gRPC SDK | [gRPC SDKs](./for-iot/grpc-sdks/overview.md) |
 | Existing SQL tooling | MySQL or PostgreSQL protocol | [SQL](./for-iot/sql.md) |
 | Flink jobs | Flink SQL, the Table API, or the DataStream API | [Apache Flink](/user-guide/integrations/flink.md) |
 | Spark jobs | Batch DataFrames or Structured Streaming micro-batches | [Apache Spark](/user-guide/integrations/spark.md) |

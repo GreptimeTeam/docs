@@ -3,6 +3,9 @@ keywords: [部署, 运维, Kubernetes, 配置, 监控, 容灾, 性能调优, 升
 description: 在自有基础设施上运行 GreptimeDB——部署、配置、日常运维、持久性与性能调优。
 ---
 
+<AnchorAlias id="自托管-greptimedb-部署" />
+<AnchorAlias id="greptimedb-架构" />
+
 # 运维部署及管理
 
 本章覆盖如何在自有基础设施上运行 GreptimeDB。先看[架构](/user-guide/concepts/architecture.md)，明确需要部署和运维哪些组件。GreptimeCloud 运行同一套引擎，以托管服务的形式提供，部署和维护由平台负责。
