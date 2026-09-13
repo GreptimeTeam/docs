@@ -13,6 +13,6 @@ export default function HomeCards({
   children,
 }: {
   children: React.ReactNode;
-}): JSX.Element {
+}): React.JSX.Element {
   return <div className={styles.cards}>{children}</div>;
 }
