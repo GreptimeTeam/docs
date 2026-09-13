@@ -54,7 +54,7 @@ import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
 <AgentOnboarding />
 
-- **[MCP Server](/user-guide/integrations/mcp.md)** —— 面向 agent 的只读访问：列出表、执行 SQL、TQL 和范围查询。
+- **[MCP Server](/user-guide/integrations/mcp.md)** —— agent 可调用的查询工具：SQL、TQL 和范围查询，默认只读；此外还能管理 Pipeline 和仪表盘，这部分会写入。
 - **[Skills](/faq-and-others/vibecoding.md)** —— 覆盖 Pipeline、Flow、Trigger、表设计和性能诊断，遵循 [Agent Skills](https://agentskills.io/) 标准。
 - **[语义层](/user-guide/semantic-layer/overview.md)** —— 用普通 SQL 查询每张表的含义，以及它背后的实体和关系。
 - **[llms.txt](https://docs.greptime.cn/llms.txt)** —— 全站的结构化索引；在任意文档 URL 后加 `.md` 可取得该页的原始 Markdown。

@@ -61,7 +61,7 @@ const SUGGESTED: Record<string, { title: string; questions: string[] }> = {
   },
 };
 
-export default function AskAI(): JSX.Element | null {
+export default function AskAI(): React.JSX.Element | null {
   const { i18n } = useDocusaurusContext();
   // docusaurus-biel is only registered when BIEL_PROJECT_ID is set, so builds
   // without it render nothing instead of an empty panel.
@@ -79,11 +79,11 @@ export default function AskAI(): JSX.Element | null {
       <biel-bot
         project={project}
         embedded-mode="true"
-        header-title={biel.headerTitle}
-        welcome-message={biel.welcomeMessage}
-        input-placeholder-text={biel.inputPlaceholderText}
-        sources-text={biel.sourcesText}
-        footer-text={biel.footerText}
+        header-title={biel?.headerTitle}
+        welcome-message={biel?.welcomeMessage}
+        input-placeholder-text={biel?.inputPlaceholderText}
+        sources-text={biel?.sourcesText}
+        footer-text={biel?.footerText}
         suggested-questions={JSON.stringify(suggested.questions)}
         suggested-questions-title={suggested.title}
       />

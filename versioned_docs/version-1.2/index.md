@@ -54,7 +54,7 @@ The quickstart guide is hosted as a fetchable Markdown file. A coding agent read
 
 <AgentOnboarding />
 
-- **[MCP Server](/user-guide/integrations/mcp.md)** — read-only access for agents: list tables, run SQL, TQL, and range queries.
+- **[MCP Server](/user-guide/integrations/mcp.md)** — query tools an agent can call: SQL, TQL, and range queries, read-only by default. It also manages pipelines and dashboards, which write.
 - **[Skills](/faq-and-others/vibecoding.md)** — pipelines, flows, triggers, table design, and performance diagnosis, in the [Agent Skills](https://agentskills.io/) format.
 - **[Semantic layer](/user-guide/concepts/semantic-layer.md)** — `greptime.semantic.*` table metadata recording the signal, source, and unit behind each table.
 - **[llms.txt](https://docs.greptime.com/llms.txt)** — a structured index of the whole site; append `.md` to any page URL for its raw Markdown.
