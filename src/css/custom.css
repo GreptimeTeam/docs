@@ -4,11 +4,7 @@
 
 :root {
   --ifm-footer-padding-vertical: 6px;
-  --biel-primary-color: #000000;
-}
-
-[data-theme='dark'] {
-  --biel-primary-color: #e6e2ee;
+  --biel-primary-color: var(--gt-accent);
 }
 
 body {

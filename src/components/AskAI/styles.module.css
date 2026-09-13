@@ -3,7 +3,7 @@
 .panel {
   margin: 1.25rem 0 2rem;
   border: 1px solid var(--gt-border-primary);
-  border-radius: 10px;
+  border-radius: var(--ifm-card-border-radius, 8px);
   background: var(--gt-bg-surface);
   overflow: hidden;
 }
