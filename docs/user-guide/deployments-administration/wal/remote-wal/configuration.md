@@ -35,6 +35,8 @@ num_topics = 64
 replication_factor = 1
 topic_name_prefix = "greptimedb_wal_topic"
 create_topic_timeout = "30s"
+connect_timeout = "3s"
+timeout = "5s"
 
 ```
 
@@ -54,6 +56,8 @@ create_topic_timeout = "30s"
 | `flush_trigger_size`       | Estimated size threshold (e.g., `"512MB"`) for triggering a flush operation in a region. Calculated as `(latest_entry_id - flushed_entry_id) * avg_record_size`. When this value exceeds `flush_trigger_size`, MetaSrv initiates a flush. Set to `"0"` to let the system automatically determine the flush trigger size. This also controls the maximum replay size from a topic during region replay; using a smaller value can help reduce region replay time during Datanode startup.                |
 | `checkpoint_trigger_size`  | Estimated size threshold (e.g., `"128MB"`) for triggering a checkpoint operation in a region. Calculated as `(latest_entry_id - last_checkpoint_entry_id) * avg_record_size`. When this value exceeds `checkpoint_trigger_size`, MetaSrv initiates a checkpoint. Set to `"0"` to let the system automatically determine the checkpoint trigger size. Using a smaller value can help reduce region replay time during Datanode startup.                                                        |
 | `create_topic_timeout`     | The timeout for creating a Kafka topic. Default is `"30s"`.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `connect_timeout`          | The connect timeout for the Kafka client used by Metasrv topic creation. Default is `"3s"`.                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `timeout`                  | The total timeout for a Kafka request issued by Metasrv, covering both sending the request and waiting for the response. Default is `"5s"`.                                                                                                                                                                                                                                                                                                                                                     |
 
 #### Topic Setup and Kafka Permissions 
 
@@ -81,7 +85,7 @@ max_batch_bytes = "1MB"
 create_index = false
 overwrite_entry_start_id = true
 connect_timeout = "3s"
-timeout = "3s"
+timeout = "5s"
 ```
 
 ### Options
@@ -94,7 +98,7 @@ timeout = "3s"
 | `create_index`             | Whether to create per-region Kafka WAL indexes. The default is `false`, and the option only takes effect in distributed mode. The index can reduce Kafka reads during recovery, but enable it only after confirming significant read amplification during single-region recovery. The Datanode persists the index to object storage every `dump_index_interval` (`"60s"` by default), adding continuous object-store I/O. |
 | `overwrite_entry_start_id` | If true, the Datanode will skip over missing entries during WAL replay. Prevents out-of-range errors, but may hide data loss. |
 | `connect_timeout`          | The connect timeout for Kafka client. Default is `"3s"`.                                                                      |
-| `timeout`                  | The timeout for Kafka client operations. Default is `"3s"`.                                                                   |
+| `timeout`                  | The total timeout for a Kafka request, covering both sending the request and waiting for the response. Default is `"5s"`.   |
 
 
 #### Required Settings and Limitations
