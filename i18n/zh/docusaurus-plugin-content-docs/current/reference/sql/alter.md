@@ -251,13 +251,13 @@ ALTER TABLE monitor UNSET 'write_buffer_size';
 ALTER TABLE monitor UNSET 'max_row_group_row_count';
 ```
 
-### 设置重分区列 hint
+### 设置重分区 hint
 
 :::info 企业版功能
 该选项仅在 GreptimeDB Enterprise 中可用。详细说明请参考 [Auto Repartition](/enterprise/autopilot/auto-repartition.md)。
 :::
 
-在 GreptimeDB Enterprise 中，可以在 `CREATE TABLE ... WITH` 中指定 `repartition.column.hint`，也可以后续通过 `ALTER TABLE` 修改。
+在 GreptimeDB Enterprise 中，可以在 `CREATE TABLE ... WITH` 中指定 `repartition.column.hint` 和 `repartition.partition.num.hint`，也可以后续通过 `ALTER TABLE` 修改。
 
 对于未分区表，可以设置 Auto Repartition 使用的候选列：
 
@@ -265,15 +265,22 @@ ALTER TABLE monitor UNSET 'max_row_group_row_count';
 ALTER TABLE table_name SET 'repartition.column.hint'='column_name';
 ```
 
-取消该 hint：
+你还可以设置后续 Auto Repartition 规划使用的目标分区数。该值必须是 `u32` 范围内的正整数：
+
+```sql
+ALTER TABLE table_name SET 'repartition.partition.num.hint'=10;
+```
+
+取消任意 hint：
 
 ```sql
 ALTER TABLE table_name UNSET 'repartition.column.hint';
+ALTER TABLE table_name UNSET 'repartition.partition.num.hint';
 ```
 
-该 hint 只会记录供后续 Auto Repartition 使用的元信息，不会立即触发重分区。
+这些 hint 只会记录供后续 Auto Repartition 规划使用的元信息，不会立即触发重分区。
 
-使用 `ALTER TABLE` 时，该 hint 必须单独设置或取消，不能和其他 table options 一起修改。
+使用 `ALTER TABLE` 时，可以同时设置或取消多个重分区 hint，但不能和其他 table options 一起修改。
 
 <AnchorAlias id="分区拆分与合并" />
 <AnchorAlias id="split-or-merge-partitions" />

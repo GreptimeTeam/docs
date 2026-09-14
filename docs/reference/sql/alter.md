@@ -252,13 +252,13 @@ ALTER TABLE monitor UNSET 'write_buffer_size';
 ALTER TABLE monitor UNSET 'max_row_group_row_count';
 ```
 
-### Set repartition column hint
+### Set repartition hints
 
 :::info Enterprise feature
 This option is available in GreptimeDB Enterprise. For details, see [Auto Repartition](/enterprise/autopilot/auto-repartition.md).
 :::
 
-In GreptimeDB Enterprise, `repartition.column.hint` can be specified in `CREATE TABLE ... WITH` or changed later with `ALTER TABLE`.
+In GreptimeDB Enterprise, `repartition.column.hint` and `repartition.partition.num.hint` can be specified in `CREATE TABLE ... WITH` or changed later with `ALTER TABLE`.
 
 For an unpartitioned table, you can set the preferred column used by Auto Repartition:
 
@@ -266,15 +266,22 @@ For an unpartitioned table, you can set the preferred column used by Auto Repart
 ALTER TABLE table_name SET 'repartition.column.hint'='column_name';
 ```
 
-To remove the hint:
+You can set a target partition count for future Auto Repartition planning. The value must be a positive integer within the `u32` range:
+
+```sql
+ALTER TABLE table_name SET 'repartition.partition.num.hint'=10;
+```
+
+To remove either hint:
 
 ```sql
 ALTER TABLE table_name UNSET 'repartition.column.hint';
+ALTER TABLE table_name UNSET 'repartition.partition.num.hint';
 ```
 
-The hint only records metadata for future Auto Repartition. It does not trigger Repartition immediately.
+The hints only record metadata for future Auto Repartition planning. They do not trigger Repartition immediately.
 
-When using `ALTER TABLE`, the hint must be set or unset separately from other table options.
+When using `ALTER TABLE`, repartition hints can be set or unset together, but separately from other table options.
 
 <AnchorAlias id="split-or-merge-partitions" />
 
