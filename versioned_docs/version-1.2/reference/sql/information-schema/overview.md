@@ -31,8 +31,8 @@ The tables below distinguish implemented metadata tables from compatibility tabl
 | `OPTIMIZER_TRACE` | Not implemented. Returns zero rows. |
 | `PARAMETERS` | Not implemented. Returns zero rows. |
 | [`PARTITIONS`](./partitions.md) | Provides a list of table partitions. |
-| `PLUGINS` | Not supported.|
-| `PROCESSLIST` | Not supported, please use `PROCESS_LIST` instead. |
+| `PLUGINS` | Not implemented. Returns zero rows. |
+| `PROCESSLIST` | Not implemented. Returns zero rows. |
 | `PROFILING` | Not implemented. Returns zero rows. |
 | `REFERENTIAL_CONSTRAINTS` | Not implemented. Returns zero rows. |
 | `ROUTINES` | Not implemented. Returns zero rows. |
@@ -46,7 +46,7 @@ The tables below distinguish implemented metadata tables from compatibility tabl
 | `TABLE_PRIVILEGES` | Not implemented. Returns zero rows. |
 | `TRIGGERS` | Not supported. GreptimeDB Enterprise provides a differently shaped [`TRIGGERS`](./triggers.md) table. |
 | `USER_ATTRIBUTES` | Not supported. |
-| `USER_PRIVILEGES` | Not supported.|
+| `USER_PRIVILEGES` | Not implemented. Returns zero rows. |
 | `VARIABLES_INFO` | Not supported. |
 | [`VIEWS`](./views.md)| Provides a list of views that the current user has visibility of. Similar to running `SHOW FULL TABLES WHERE table_type = 'VIEW'` |
 | [`TABLE_CONSTRAINTS`](./table-constraints.md) | Provides time-index and primary-key constraint metadata. |

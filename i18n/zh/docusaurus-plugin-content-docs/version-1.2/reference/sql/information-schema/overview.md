@@ -31,8 +31,8 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 | `OPTIMIZER_TRACE` | 未实现。返回零行。 |
 | `PARAMETERS` | 未实现。返回零行。 |
 | [`PARTITIONS`](./partitions.md) | 提供了表分区的列表。 |
-| `PLUGINS` | 不支持。|
-| `PROCESSLIST` | 不支持，请使用 `PROCESS_LIST` 表 |
+| `PLUGINS` | 未实现。返回零行。 |
+| `PROCESSLIST` | 未实现。返回零行。 |
 | `PROFILING` | 未实现。返回零行。 |
 | `REFERENTIAL_CONSTRAINTS` | 未实现。返回零行。 |
 | `ROUTINES` | 未实现。返回零行。 |
@@ -46,7 +46,7 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 | `TABLE_PRIVILEGES` | 未实现。返回零行。 |
 | `TRIGGERS` | 不支持。GreptimeDB Enterprise 提供一张结构不同的 [`TRIGGERS`](./triggers.md) 表。 |
 | `USER_ATTRIBUTES` | 不支持。 |
-| `USER_PRIVILEGES` | 不支持。|
+| `USER_PRIVILEGES` | 未实现。返回零行。 |
 | `VARIABLES_INFO` | 不支持。 |
 | [`VIEWS`](./views.md)| 提供了当前用户可见的视图（View）列表及相关信息。 |
 | [`TABLE_CONSTRAINTS`](./table-constraints.md) | 提供时间索引和主键约束的元数据。 |
