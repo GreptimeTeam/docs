@@ -7,6 +7,8 @@ date: 2026-09-08
 
 Release date: September 8, 2026
 
+> **We recommend users on v1.2.0 upgrade to [v1.2.1](https://github.com/GreptimeTeam/greptimedb/releases/tag/v1.2.1), which fixes a JSON2 data-loss issue during compaction along with several query-correctness and stability fixes.**
+
 GreptimeDB v1.2.0 adds new structural stored JSON data type ("`JSON2`") and query capabilities, Prometheus Remote Write v2 ingestion, Flow runtime observability, and dashboard updates, alongside query and ingestion improvements.
 
 ### 👍 Highlights
