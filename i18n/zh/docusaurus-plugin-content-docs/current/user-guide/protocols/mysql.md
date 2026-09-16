@@ -16,6 +16,9 @@ mysql -h <host> -P 4002 -u <username> -p
 - 请参考[鉴权认证](/user-guide/deployments-administration/authentication/overview.md) 来设置 GreptimeDB 的用户名和密码。
 - 如果你想使用其他端口连接 MySQL，请参考配置文档中的[协议选项](/user-guide/deployments-administration/configuration.md#协议选项)。
 
+## 以注释开头的语句
+
+GreptimeDB 支持以注释开头的 SQL 语句，因此会在每条语句前添加注释的 JDBC 客户端能够正常使用。例如 [DataGrip](https://www.jetbrains.com/datagrip/) 会在每条语句前发送 `/* ApplicationName=DataGrip <version> */`，现在可以通过 MySQL 协议正常地对 GreptimeDB 进行元数据探查（introspection）和执行查询。
 
 ## 管理表
 
