@@ -31,8 +31,8 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 | `OPTIMIZER_TRACE` | 未实现。返回零行。 |
 | `PARAMETERS` | 未实现。返回零行。 |
 | [`PARTITIONS`](./partitions.md) | 提供了表分区的列表。 |
-| `PLUGINS` | 不支持。|
-| `PROCESSLIST` | 不支持，请使用 `PROCESS_LIST` 表 |
+| `PLUGINS` | 提供插件信息的 MySQL 列结构。由于 GreptimeDB 没有可插拔组件，该表返回零行。 |
+| `PROCESSLIST` | 提供会话列表的 MySQL 列结构。该表返回零行，GreptimeDB 自身的会话请通过 [`PROCESS_LIST`](./process-list.md) 和 `SHOW PROCESSLIST` 查看。 |
 | `PROFILING` | 未实现。返回零行。 |
 | `REFERENTIAL_CONSTRAINTS` | 未实现。返回零行。 |
 | `ROUTINES` | 未实现。返回零行。 |
@@ -46,10 +46,12 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 | `TABLE_PRIVILEGES` | 未实现。返回零行。 |
 | `TRIGGERS` | 不支持。GreptimeDB Enterprise 提供一张结构不同的 [`TRIGGERS`](./triggers.md) 表。 |
 | `USER_ATTRIBUTES` | 不支持。 |
-| `USER_PRIVILEGES` | 不支持。|
+| `USER_PRIVILEGES` | 提供全局权限的 MySQL 列结构。由于 GreptimeDB 不通过 `INFORMATION_SCHEMA` 暴露权限信息，该表返回零行。 |
 | `VARIABLES_INFO` | 不支持。 |
 | [`VIEWS`](./views.md)| 提供了当前用户可见的视图（View）列表及相关信息。 |
 | [`TABLE_CONSTRAINTS`](./table-constraints.md) | 提供时间索引和主键约束的元数据。 |
+
+`PLUGINS`、`PROCESSLIST` 和 `USER_PRIVILEGES` 自 v1.2.1 起提供，用于让 MySQL 生态的工具能够找到它们期望的表名和列结构；这三张表都返回零行。
 
 ## GreptimeDB 提供的表
 
