@@ -31,8 +31,8 @@ The tables below distinguish implemented metadata tables from compatibility tabl
 | `OPTIMIZER_TRACE` | Not implemented. Returns zero rows. |
 | `PARAMETERS` | Not implemented. Returns zero rows. |
 | [`PARTITIONS`](./partitions.md) | Provides a list of table partitions. |
-| `PLUGINS` | Provides the MySQL columns for plugins. Returns zero rows, because GreptimeDB has no pluggable components. |
-| `PROCESSLIST` | Provides the MySQL columns for the session list. Returns zero rows; GreptimeDB reports its own sessions through [`PROCESS_LIST`](./process-list.md) and `SHOW PROCESSLIST`. |
+| `PLUGINS` | Not implemented. Returns zero rows. |
+| `PROCESSLIST` | Not implemented. Returns zero rows. |
 | `PROFILING` | Not implemented. Returns zero rows. |
 | `REFERENTIAL_CONSTRAINTS` | Not implemented. Returns zero rows. |
 | `ROUTINES` | Not implemented. Returns zero rows. |
@@ -46,13 +46,10 @@ The tables below distinguish implemented metadata tables from compatibility tabl
 | `TABLE_PRIVILEGES` | Not implemented. Returns zero rows. |
 | `TRIGGERS` | Not supported. GreptimeDB Enterprise provides a differently shaped [`TRIGGERS`](./triggers.md) table. |
 | `USER_ATTRIBUTES` | Not supported. |
-| `USER_PRIVILEGES` | Provides the MySQL columns for global privileges. Returns zero rows, because GreptimeDB does not expose privileges through `INFORMATION_SCHEMA`. |
+| `USER_PRIVILEGES` | Not implemented. Returns zero rows. |
 | `VARIABLES_INFO` | Not supported. |
 | [`VIEWS`](./views.md)| Provides a list of views that the current user has visibility of. Similar to running `SHOW FULL TABLES WHERE table_type = 'VIEW'` |
 | [`TABLE_CONSTRAINTS`](./table-constraints.md) | Provides time-index and primary-key constraint metadata. |
-
-`PLUGINS`, `PROCESSLIST`, and `USER_PRIVILEGES` are available since v1.2.1. They exist so MySQL-compatible
-tooling finds the table names and column shapes it expects, and they return zero rows.
 
 ## Tables that GreptimeDB provides
 
