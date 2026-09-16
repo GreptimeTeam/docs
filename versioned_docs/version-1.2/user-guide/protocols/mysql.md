@@ -16,12 +16,6 @@ mysql -h <host> -P 4002 -u <username> -p
 - For how to setup username and password for GreptimeDB, please refer to [Authentication](/user-guide/deployments-administration/authentication/overview.md).
 - If you want to use other ports for MySQL, please refer to [Protocol options](/user-guide/deployments-administration/configuration.md#protocol-options) in the configuration document.
 
-## Statements with leading comments
-
-GreptimeDB supports SQL statements that start with a comment, so JDBC-based clients that prefix every
-statement with one work as expected. [DataGrip](https://www.jetbrains.com/datagrip/) sends
-`/* ApplicationName=DataGrip <version> */` in front of each statement and can introspect and query a
-GreptimeDB instance over the MySQL protocol.
 
 ## Table management
 
