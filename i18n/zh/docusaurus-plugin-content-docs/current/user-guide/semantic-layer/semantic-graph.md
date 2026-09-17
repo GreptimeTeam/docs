@@ -283,22 +283,25 @@ WHERE entity_type = 'service' AND entity_id = 'cart'
 
 ### 多跳遍历
 
-每多一跳就多一次自连接，两个端点列都要匹配：实体由 `(entity_type, entity_id)` 标识，只按 id 连接会把恰好同名的无关实体串起来。用 `LEFT JOIN` 可以保留没有下一跳的邻居：
+用 `WITH RECURSIVE` 可以按任意深度遍历边集合。两个端点列都要参与连接：实体由 `(entity_type, entity_id)` 标识，只按 id 连接会把恰好同名的无关实体串起来。
 
 ```sql
-SELECT DISTINCT hop1.dst_id AS depth1, hop2.dst_id AS depth2
-FROM greptime_private.semantic_relationships AS hop1
-LEFT JOIN greptime_private.semantic_relationships AS hop2
-  ON hop2.src_type = hop1.dst_type AND hop2.src_id = hop1.dst_id
-  AND hop2.rel_type = 'calls'
-  AND hop2.observed_at >= now() - INTERVAL '15' MINUTE
-WHERE hop1.src_type = 'service' AND hop1.src_id = 'frontend'
-  AND hop1.rel_type = 'calls'
-  AND hop1.observed_at >= now() - INTERVAL '15' MINUTE
-ORDER BY depth1, depth2;
+WITH RECURSIVE reachable(entity_type, entity_id, depth) AS (
+  SELECT 'service' AS entity_type, 'frontend' AS entity_id, 0 AS depth
+  UNION ALL
+  SELECT r.dst_type, r.dst_id, reachable.depth + 1
+  FROM greptime_private.semantic_relationships r
+  JOIN reachable
+    ON r.src_type = reachable.entity_type AND r.src_id = reachable.entity_id
+  WHERE r.rel_type = 'calls'
+    AND r.observed_at >= now() - INTERVAL '15' MINUTE
+    AND reachable.depth < 3
+)
+SELECT DISTINCT entity_type, entity_id, depth FROM reachable
+ORDER BY depth, entity_id;
 ```
 
-这两张表不支持递归 CTE：`WITH RECURSIVE` 的递归项如果扫描 `semantic_entities` 或 `semantic_relationships`，会以 `Execution error: Stream already exhausted` 失败。
+终止遍历的是深度上界。调用图存在环，而递归本身不做环检测：不设上界就不会结束，设了上界则环上的实体会在更大的深度处再次出现。
 
 ## 限制
 
@@ -306,5 +309,4 @@ ORDER BY depth1, depth2;
 - RED 指标反映的是存储下来的 span 配对，在采样下不等于真实流量。
 - 两张表用不同的值指代同一个实体会得到两个节点。需要对齐标识值，或者声明取值相同的标识列。
 - 读时派生每次扫描都会重新计算。在非常大的 trace 表上，宽窗口的代价很高。
-- 遍历深度在写查询时就固定了：一跳一次自连接，不能用 `WITH RECURSIVE`。
 - 尚未实现 ISO SQL/PGQ 的 `GRAPH_TABLE` / `MATCH` 接口。

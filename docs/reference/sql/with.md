@@ -1,6 +1,6 @@
 ---
-keywords: [CTE, Common Table Expression, SQL WITH clause, non-recursive CTE, SQL syntax]
-description: Describes the usage of the WITH clause to define Common Table Expressions (CTEs) in SQL, including syntax, examples of non-recursive CTEs, and notes on recursive CTEs.
+keywords: [CTE, Common Table Expression, SQL WITH clause, non-recursive CTE, recursive CTE, WITH RECURSIVE, SQL syntax]
+description: Describes the usage of the WITH clause to define Common Table Expressions (CTEs) in SQL, including syntax and examples of non-recursive and recursive CTEs.
 ---
 
 # WITH
@@ -86,4 +86,27 @@ ON cte1.a = cte2.b;
 
 ### Recursive CTE
 
-Recursive CTE is not implemented currently.
+A recursive CTE is declared with `WITH RECURSIVE`. It takes an anchor term, then a recursive term that references the CTE by name:
+
+```sql
+WITH RECURSIVE counter(n) AS (
+  SELECT 1 AS n
+  UNION ALL
+  SELECT n + 1 FROM counter WHERE n < 5
+)
+SELECT n FROM counter;
+```
+
+```sql
++---+
+| n |
++---+
+| 1 |
+| 2 |
+| 3 |
+| 4 |
+| 5 |
++---+
+```
+
+The recursion stops when an iteration produces no rows. There is no iteration limit and no cycle detection, so a recursive term that keeps producing rows runs until the query is cancelled.
