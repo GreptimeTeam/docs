@@ -283,22 +283,25 @@ WHERE entity_type = 'service' AND entity_id = 'cart'
 
 ### Multi-hop traversal
 
-Add one self-join per hop, matching on both endpoint columns: an entity is identified by `(entity_type, entity_id)`, and joining on the id alone links unrelated entities that happen to share a name. A `LEFT JOIN` keeps the neighbours that have no further hop:
+`WITH RECURSIVE` walks the edge set to any depth. Join on both endpoint columns: an entity is identified by `(entity_type, entity_id)`, and joining on the id alone links unrelated entities that happen to share a name.
 
 ```sql
-SELECT DISTINCT hop1.dst_id AS depth1, hop2.dst_id AS depth2
-FROM greptime_private.semantic_relationships AS hop1
-LEFT JOIN greptime_private.semantic_relationships AS hop2
-  ON hop2.src_type = hop1.dst_type AND hop2.src_id = hop1.dst_id
-  AND hop2.rel_type = 'calls'
-  AND hop2.observed_at >= now() - INTERVAL '15' MINUTE
-WHERE hop1.src_type = 'service' AND hop1.src_id = 'frontend'
-  AND hop1.rel_type = 'calls'
-  AND hop1.observed_at >= now() - INTERVAL '15' MINUTE
-ORDER BY depth1, depth2;
+WITH RECURSIVE reachable(entity_type, entity_id, depth) AS (
+  SELECT 'service' AS entity_type, 'frontend' AS entity_id, 0 AS depth
+  UNION ALL
+  SELECT r.dst_type, r.dst_id, reachable.depth + 1
+  FROM greptime_private.semantic_relationships r
+  JOIN reachable
+    ON r.src_type = reachable.entity_type AND r.src_id = reachable.entity_id
+  WHERE r.rel_type = 'calls'
+    AND r.observed_at >= now() - INTERVAL '15' MINUTE
+    AND reachable.depth < 3
+)
+SELECT DISTINCT entity_type, entity_id, depth FROM reachable
+ORDER BY depth, entity_id;
 ```
 
-Recursive CTEs are not supported over the graph tables: a `WITH RECURSIVE` term that scans `semantic_entities` or `semantic_relationships` fails with `Execution error: Stream already exhausted`.
+The depth bound is what terminates the traversal. Call graphs contain cycles, and the recursion does not detect them: without the bound it never finishes, and with it a cyclic path reports the same entity again at a greater depth.
 
 ## Limitations
 
@@ -306,5 +309,4 @@ Recursive CTEs are not supported over the graph tables: a `WITH RECURSIVE` term 
 - RED metrics reflect stored span pairs, not real traffic under sampling.
 - Two tables naming the same entity with different values produce two nodes. Align the identifying values, or declare identity columns that carry the same values.
 - Read-time derivation repeats its work on every scan. Very large trace tables make wide windows expensive.
-- Traversal depth is fixed at query-writing time: one self-join per hop, no `WITH RECURSIVE`.
 - The ISO SQL/PGQ `GRAPH_TABLE` / `MATCH` surface is not implemented.
