@@ -55,7 +55,7 @@ flowchart LR
 | Schema（数据库，例如 `public`） | Namespace |
 | Table（表） | Table |
 | Column（列） | Field（字段） |
-| 时间索引列 | 一个 `timestamptz` 字段 |
+| 时间索引列 | 一个 `timestamp` 字段 |
 
 来自 `ALTER TABLE`（新增 / 重命名 / 删除列）的 schema 变更会反映到 Iceberg schema 中，无需重启。
 
@@ -73,7 +73,7 @@ GreptimeDB 列类型到 Iceberg 类型的映射如下：
 | `string` | `string` |
 | `binary` | `binary` |
 | `date` | `date` |
-| `timestamp`（任意精度） | `timestamptz` |
+| `timestamp`（任意精度） | `timestamp` |
 | Prometheus native histogram（struct） | `struct`（包含 `list` 子字段） |
 | `uint8`、`uint16`、`uint32`、`uint64` | `long` — **在 Spark 中不可读**（见下文） |
 | `list`、`dictionary`、`json`、`interval`、`duration`、`time`、任意用户 `struct` | `string`（有损降级） |
@@ -259,10 +259,10 @@ spark-sql \
 CREATE TABLE demo (
   ts      TIMESTAMP(6) NOT NULL,   -- TIME INDEX
   host    STRING,
-  region  STRING,
+  cloud_region  STRING,
   cpu     DOUBLE,
   mem     FLOAT,
-  status  INT,
+  http_status  INT,
   TIME INDEX (ts)
 );
 
@@ -304,7 +304,7 @@ ORDER BY host;
 
 对于常见类型（boolean、有符号整数、浮点数、string、binary、date、timestamp），GreptimeDB 类型可以干净地映射到 Iceberg。需要注意以下几点，尤其是在 Spark 中：
 
-- **将时间索引声明为 `TIMESTAMP(6)`。** GreptimeDB 默认的 `TIMESTAMP` 是毫秒精度，但 Iceberg schema 将该列声明为 `timestamptz`（微秒）。若列是毫秒精度，Spark 的 Parquet row-group 统计信息过滤会用微秒谓词去比较毫秒的文件统计，可能错误地丢弃 row-group，导致 `>`、`=` 和范围查询出错。将时间索引声明为 `TIMESTAMP(6)` 可使磁盘上的 Parquet 微秒精度与 schema 一致，所有比较运算符即可正确工作。（秒/毫秒值本身仍被正确存储；该问题纯粹出在基于文件统计的谓词下推。）
+- **将时间索引声明为 `TIMESTAMP(6)`。** GreptimeDB 默认的 `TIMESTAMP` 是毫秒精度，但 Iceberg schema 将该列声明为 `timestamp`（微秒）。若列是毫秒精度，Spark 的 Parquet row-group 统计信息过滤会用微秒谓词去比较毫秒的文件统计，可能错误地丢弃 row-group，导致 `>`、`=` 和范围查询出错。将时间索引声明为 `TIMESTAMP(6)` 可使磁盘上的 Parquet 微秒精度与 schema 一致，所有比较运算符即可正确工作。（秒/毫秒值本身仍被正确存储；该问题纯粹出在基于文件统计的谓词下推。）
 
   已存在的表无需为此重新创建：以秒或毫秒精度声明的时间索引可以通过 `ALTER TABLE` 原地拓宽。该变更是无损的——现有数据会以新单位读取，无需重写，新写入也可以使用更细的精度：
 
