@@ -1,5 +1,5 @@
 ---
-keywords: [公共表表达式, CTE, SQL 查询, WITH 关键字, SQL 示例]
+keywords: [公共表表达式, CTE, SQL 查询, WITH 关键字, 递归 CTE, WITH RECURSIVE, SQL 示例]
 description: 介绍了如何使用 `WITH` 关键字定义公共表表达式（CTE），包括基本语法和示例。
 ---
 
@@ -86,4 +86,27 @@ ON cte1.a = cte2.b;
 
 ### 递归 CTE
 
-递归 CTE 目前尚未实现。
+递归 CTE 用 `WITH RECURSIVE` 声明，由一个锚点项和一个按名字引用该 CTE 的递归项组成：
+
+```sql
+WITH RECURSIVE counter(n) AS (
+  SELECT 1 AS n
+  UNION ALL
+  SELECT n + 1 FROM counter WHERE n < 5
+)
+SELECT n FROM counter;
+```
+
+```sql
++---+
+| n |
++---+
+| 1 |
+| 2 |
+| 3 |
+| 4 |
+| 5 |
++---+
+```
+
+递归在某一轮不再产出新行时停止。引擎没有迭代次数上限，也不做环检测，因此只要递归项一直有输出，查询就会执行到被取消为止。
