@@ -67,7 +67,7 @@ export is pure metadata laid down beside the data GreptimeDB already writes.
 | Schema (database, e.g. `public`) | Namespace |
 | Table | Table |
 | Column | Field |
-| Time index column | A `timestamptz` field |
+| Time index column | A `timestamp` field |
 
 Schema changes from `ALTER TABLE` (added / renamed / dropped columns) are reflected in the Iceberg schema without
 any restart.
@@ -86,7 +86,7 @@ GreptimeDB column types map to Iceberg types as follows:
 | `string` | `string` |
 | `binary` | `binary` |
 | `date` | `date` |
-| `timestamp` (any precision) | `timestamptz` |
+| `timestamp` (any precision) | `timestamp` |
 | Prometheus native histogram (struct) | `struct` (with `list` sub-fields) |
 | `uint8`, `uint16`, `uint32`, `uint64` | `long` — **not readable in Spark** (see below) |
 | `list`, `dictionary`, `json`, `interval`, `duration`, `time`, arbitrary `struct` | `string` (lossy fallback) |
@@ -297,10 +297,10 @@ metadata is published:
 CREATE TABLE demo (
   ts      TIMESTAMP(6) NOT NULL,   -- TIME INDEX
   host    STRING,
-  region  STRING,
+  cloud_region  STRING,
   cpu     DOUBLE,
   mem     FLOAT,
-  status  INT,
+  http_status  INT,
   TIME INDEX (ts)
 );
 
@@ -349,7 +349,7 @@ GreptimeDB types map cleanly to Iceberg for the common cases (booleans, signed i
 date, timestamp). A few things to be aware of, especially in Spark:
 
 - **Declare the time index as `TIMESTAMP(6)`.** GreptimeDB's default `TIMESTAMP` is millisecond precision, but the
-  Iceberg schema declares the column as `timestamptz` (microsecond). With a millisecond column, Spark's Parquet
+  Iceberg schema declares the column as `timestamp` (microsecond). With a millisecond column, Spark's Parquet
   row-group statistics filtering compares microsecond predicates against millisecond file stats and can incorrectly
   drop row groups for `>`, `=`, and range queries. Declaring the time index as `TIMESTAMP(6)` makes the on-disk
   Parquet microsecond precision match the schema, and all comparison operators work correctly. (Second/millisecond
