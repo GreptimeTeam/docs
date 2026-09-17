@@ -251,6 +251,8 @@ ALTER TABLE monitor UNSET 'write_buffer_size';
 ALTER TABLE monitor UNSET 'max_row_group_row_count';
 ```
 
+<AnchorAlias id="设置重分区列-hint" />
+
 ### 设置重分区 hint
 
 :::info 企业版功能

@@ -252,6 +252,8 @@ ALTER TABLE monitor UNSET 'write_buffer_size';
 ALTER TABLE monitor UNSET 'max_row_group_row_count';
 ```
 
+<AnchorAlias id="set-repartition-column-hint" />
+
 ### Set repartition hints
 
 :::info Enterprise feature
