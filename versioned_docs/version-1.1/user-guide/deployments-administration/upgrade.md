@@ -9,7 +9,14 @@ description: Introduce how to upgrade GreptimeDB to the latest version, includin
 
 This guide provides upgrade instructions for GreptimeDB, including compatibility information and breaking changes for each version. Before upgrading, ensure you review the relevant breaking changes for your upgrade path.
 
+For each upgrade, review the changes introduced after your current version up
+to and including your target version. Reviewing intermediate releases does not
+mean you need to install each one; follow the supported upgrade paths below.
+
 For complete version history and feature additions, see the [Release Notes](/release-notes/).
+
+If your upgrade crosses v1.1, review [Metric Engine changes in v1.1](#metric-engine-changes-in-v11).
+If you are coming from v0.17, also read the [v1.0 compaction guidance](/1.0/user-guide/deployments-administration/upgrade/#metric-engine-compaction-changes-in-v10).
 
 ## Upgrade Paths to v1.0
 
@@ -29,7 +36,21 @@ If you are running a version earlier than v0.16, you must first upgrade to v0.16
 
 ## Breaking Changes by Version
 
+### Metric Engine changes in v1.1
+
+This change applies when upgrading from any version earlier than v1.1 to v1.1 or
+later. Metric Engine now selects the Flat SST format for physical tables even
+when `default_flat_format = false`.
+
+If compaction runs out of memory after upgrading, review the
+[v1.0 compaction guidance](/1.0/user-guide/deployments-administration/upgrade/#metric-engine-compaction-changes-in-v10) to check the window and file sizes.
+Switching to `primary_key` is not the recommended fix for this compaction memory
+issue.
+
 ### Upgrading from v0.17 to v1.0
+
+For Metric Engine tables, review the [compaction guidance](/1.0/user-guide/deployments-administration/upgrade/#metric-engine-compaction-changes-in-v10) before
+upgrading from v0.17 to v1.0 or later.
 
 #### Jaeger HTTP Header Removal
 
@@ -258,6 +279,8 @@ Before upgrading to v1.0, complete the following checklist:
 - [ ] Identify pipelines using `greptime_identity` with JSON data
 - [ ] Check for usage of deprecated Jaeger HTTP header (if upgrading from v0.17 or earlier)
 - [ ] Review metric tables if using Metric Engine
+- [ ] If upgrading from v0.17 to v1.0 or later, follow the [Metric Engine compaction guidance](/1.0/user-guide/deployments-administration/upgrade/#metric-engine-compaction-changes-in-v10) to choose a window and decide whether to run SWCS before upgrading
+- [ ] If upgrading from a version earlier than v1.1 to v1.1 or later, review [Metric Engine changes in v1.1](#metric-engine-changes-in-v11)
 
 ### Configuration Updates
 
@@ -275,6 +298,7 @@ Before upgrading to v1.0, complete the following checklist:
 ### Testing & Deployment
 
 - [ ] Test the upgrade in a non-production environment
+- [ ] If upgrading from v0.17 to v1.0 or later, test with historical SSTs and monitor memory usage, compaction progress, and query failures
 - [ ] Verify query results, especially for:
   - Ordered-set aggregate functions
   - Nested JSON data access

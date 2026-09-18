@@ -9,7 +9,13 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 
 本指南提供 GreptimeDB 的升级说明，包括每个版本的兼容性信息和破坏性变更。升级前，请确保查看与你的升级路径相关的破坏性变更。
 
+升级时，请查看当前版本之后、直到目标版本为止的各版本变更。查看中间版本的变更
+不代表必须逐个安装这些版本；实际升级步骤请遵循下方支持的升级路径。
+
 完整的版本历史和功能新增，请参见[发行说明](/release-notes/)。
+
+如果升级路径跨越 v1.1，请查看 [v1.1 的 Metric Engine 变更](#v11-的-metric-engine-变更)。
+如果当前版本是 v0.17，还需阅读 [v1.0 的压缩建议](/1.0/user-guide/deployments-administration/upgrade/#v10-的-metric-engine-压缩变更)。
 
 ## 升级到 v1.0 的路径
 
@@ -29,7 +35,19 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 
 ## 各版本的破坏性变更
 
+### v1.1 的 Metric Engine 变更
+
+从任何早于 v1.1 的版本升级到 v1.1 或更高版本时，都需要注意此变更。
+Metric Engine 会为物理表选择 Flat SST 格式，即使配置了
+`default_flat_format = false` 也是如此。
+
+如果升级后压缩时发生 OOM，请参考 [v1.0 的压缩建议](/1.0/user-guide/deployments-administration/upgrade/#v10-的-metric-engine-压缩变更)，
+检查时间窗口和文件大小。不建议通过切换到 `primary_key` 格式来解决这里的压缩内存问题。
+
 ### 从 v0.17 升级到 v1.0
+
+如果使用 Metric Engine 表，从 v0.17 升级到 v1.0 或更高版本前，请查看
+[压缩建议](/1.0/user-guide/deployments-administration/upgrade/#v10-的-metric-engine-压缩变更)。
 
 #### 移除 Jaeger HTTP Header
 
@@ -258,6 +276,8 @@ SELECT * FROM table;
 - [ ] 识别使用 `greptime_identity` 处理 JSON 数据的 pipeline
 - [ ] 检查是否使用了已废弃的 Jaeger HTTP header（如果从 v0.17 或更早版本升级）
 - [ ] 如果使用 Metric Engine，检查指标表
+- [ ] 如果从 v0.17 升级到 v1.0 或更高版本，参考 [Metric Engine 压缩建议](/1.0/user-guide/deployments-administration/upgrade/#v10-的-metric-engine-压缩变更)选择时间窗口，并决定是否在升级前执行 SWCS
+- [ ] 如果从早于 v1.1 的版本升级到 v1.1 或更高版本，查看 [v1.1 的 Metric Engine 变更](#v11-的-metric-engine-变更)
 
 ### 配置更新
 
@@ -275,6 +295,7 @@ SELECT * FROM table;
 ### 测试与部署
 
 - [ ] 在非生产环境中测试升级
+- [ ] 如果从 v0.17 升级到 v1.0 或更高版本，使用历史 SST 测试，并监控内存用量、压缩进度和查询错误
 - [ ] 验证查询结果，特别是：
   - 有序集聚合函数
   - 嵌套 JSON 数据访问
