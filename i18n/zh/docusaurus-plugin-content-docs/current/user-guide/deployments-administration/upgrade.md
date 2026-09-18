@@ -9,6 +9,9 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 
 本指南提供 GreptimeDB 的升级说明，包括每个版本的兼容性信息和破坏性变更。升级前，请确保查看与你的升级路径相关的破坏性变更。
 
+升级时，请查看当前版本之后、直到目标版本为止的各版本变更。查看中间版本的变更
+不代表必须逐个安装这些版本；实际升级步骤请遵循下方支持的升级路径。
+
 完整的版本历史和功能新增，请参见[发行说明](/release-notes/)。
 
 ## 升级到 v1.2 的路径
@@ -18,11 +21,15 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 如果你当前运行的是 v1.0 或 v1.1，可以直接升级到 v1.2。升级前，请先查看
 [从 v1.0 或 v1.1 升级到 v1.2](#从-v10-或-v11-升级到-v12)，并完成
 [升级检查清单](#升级检查清单)中的相关检查。
+如果当前版本是 v1.0，还需查看 [v1.1 的 Metric Engine 变更](/1.1/user-guide/deployments-administration/upgrade/#v11-的-metric-engine-变更)。
 
 ### 从 v0.17 或更早版本到 v1.2
 
 如果你要从 v0.17 或更早版本升级到 v1.2，请先查看下方适用的 v1.0 升级路径，
 再处理 [v1.2 的破坏性变更](#从-v10-或-v11-升级到-v12)。
+
+如果使用 Metric Engine，还需查看 [v1.0 的压缩建议](/1.0/user-guide/deployments-administration/upgrade/#v10-的-metric-engine-压缩变更)
+和 [v1.1 的 Metric Engine 变更](/1.1/user-guide/deployments-administration/upgrade/#v11-的-metric-engine-变更)。
 
 ## 升级到 v1.0 的路径
 
@@ -136,6 +143,9 @@ GreptimeDB 现在始终为 metric 表使用稀疏主键编码，`sparse_primary_
 - 使用清理后的配置在预发环境重启一次，确认部署已不再依赖这些被移除的设置
 
 ### 从 v0.17 升级到 v1.0
+
+如果使用 Metric Engine 表，从 v0.17 升级到 v1.0 或更高版本前，请查看
+[压缩建议](/1.0/user-guide/deployments-administration/upgrade/#v10-的-metric-engine-压缩变更)。
 
 #### 移除 Jaeger HTTP Header
 
@@ -368,6 +378,8 @@ SELECT * FROM table;
 - [ ] 识别使用 `greptime_identity` 处理 JSON 数据的 pipeline
 - [ ] 检查是否使用了已废弃的 Jaeger HTTP header（如果从 v0.17 或更早版本升级）
 - [ ] 如果使用 Metric Engine，检查指标表
+- [ ] 如果从 v0.17 升级到 v1.0 或更高版本，参考 [Metric Engine 压缩建议](/1.0/user-guide/deployments-administration/upgrade/#v10-的-metric-engine-压缩变更)选择时间窗口，并决定是否在升级前执行 SWCS
+- [ ] 如果从早于 v1.1 的版本升级到 v1.1 或更高版本，查看 [v1.1 的 Metric Engine 变更](/1.1/user-guide/deployments-administration/upgrade/#v11-的-metric-engine-变更)
 
 ### 配置更新
 
@@ -390,6 +402,7 @@ SELECT * FROM table;
 ### 测试与部署
 
 - [ ] 在非生产环境中测试升级
+- [ ] 如果从 v0.17 升级到 v1.0 或更高版本，使用历史 SST 测试，并监控内存用量、压缩进度和查询错误
 - [ ] 如果升级到 v1.2，使用触发整数边界的代表性 pipeline 输入进行 dry-run，并验证 `on_failure` 结果是否符合预期
 - [ ] 如果升级到 v1.2，在预发环境验证更新后的 PromQL 查询
 - [ ] 如果升级到 v1.2，在把本地文件工作流迁移到沙箱或对象存储后验证 `COPY` 和外部表行为

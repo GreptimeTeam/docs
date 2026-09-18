@@ -9,6 +9,10 @@ description: Introduce how to upgrade GreptimeDB to the latest version, includin
 
 This guide provides upgrade instructions for GreptimeDB, including compatibility information and breaking changes for each version. Before upgrading, ensure you review the relevant breaking changes for your upgrade path.
 
+For each upgrade, review the changes introduced after your current version up
+to and including your target version. Reviewing intermediate releases does not
+mean you need to install each one; follow the supported upgrade paths below.
+
 For complete version history and feature additions, see the [Release Notes](/release-notes/).
 
 ## Upgrade Paths to v1.2
@@ -19,12 +23,16 @@ If you are currently running v1.0 or v1.1, you can upgrade directly to v1.2.
 Review [Upgrading from v1.0 or v1.1 to v1.2](#upgrading-from-v10-or-v11-to-v12)
 and complete the related checks in the [Upgrade Checklist](#upgrade-checklist)
 before the rollout.
+If you are starting from v1.0, also review [Metric Engine changes in v1.1](/1.1/user-guide/deployments-administration/upgrade/#metric-engine-changes-in-v11).
 
 ### From v0.17 or Earlier
 
 If you are upgrading to v1.2 from v0.17 or an earlier release, first review the
 relevant v1.0 upgrade path below and then apply the
 [v1.2 breaking changes](#upgrading-from-v10-or-v11-to-v12).
+
+For Metric Engine, also review the [v1.0 compaction guidance](/1.0/user-guide/deployments-administration/upgrade/#metric-engine-compaction-changes-in-v10)
+and [Metric Engine changes in v1.1](/1.1/user-guide/deployments-administration/upgrade/#metric-engine-changes-in-v11).
 
 ## Upgrade Paths to v1.0
 
@@ -152,6 +160,9 @@ that still sets the key loads without error; the key is ignored.
   deployment no longer depends on the removed setting
 
 ### Upgrading from v0.17 to v1.0
+
+For Metric Engine tables, review the [compaction guidance](/1.0/user-guide/deployments-administration/upgrade/#metric-engine-compaction-changes-in-v10) before
+upgrading from v0.17 to v1.0 or later.
 
 #### Jaeger HTTP Header Removal
 
@@ -384,6 +395,8 @@ Before upgrading to your target version, complete the following checklist:
 - [ ] Identify pipelines using `greptime_identity` with JSON data
 - [ ] Check for usage of deprecated Jaeger HTTP header (if upgrading from v0.17 or earlier)
 - [ ] Review metric tables if using Metric Engine
+- [ ] If upgrading from v0.17 to v1.0 or later, follow the [Metric Engine compaction guidance](/1.0/user-guide/deployments-administration/upgrade/#metric-engine-compaction-changes-in-v10) to choose a window and decide whether to run SWCS before upgrading
+- [ ] If upgrading from a version earlier than v1.1 to v1.1 or later, review [Metric Engine changes in v1.1](/1.1/user-guide/deployments-administration/upgrade/#metric-engine-changes-in-v11)
 
 ### Configuration Updates
 
@@ -406,6 +419,7 @@ Before upgrading to your target version, complete the following checklist:
 ### Testing & Deployment
 
 - [ ] Test the upgrade in a non-production environment
+- [ ] If upgrading from v0.17 to v1.0 or later, test with historical SSTs and monitor memory usage, compaction progress, and query failures
 - [ ] If upgrading to v1.2, dry-run representative pipeline inputs that hit integer boundaries and verify the expected `on_failure` result
 - [ ] If upgrading to v1.2, validate the updated PromQL queries in staging
 - [ ] If upgrading to v1.2, verify local-file `COPY` and external-table workflows after moving them into the sandbox or object storage
