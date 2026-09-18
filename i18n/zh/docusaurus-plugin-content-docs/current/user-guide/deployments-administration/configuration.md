@@ -258,6 +258,15 @@ enable = true
 # 可选值："last_non_null"、"last_row"。
 default_merge_mode = "last_non_null"
 
+[pending_rows_batcher]
+protocols = ["influxdb", "opentsdb", "otlp", "logs", "loki", "splunk", "elasticsearch", "http_sql", "prom"]
+pending_rows_flush_interval = "500ms"
+max_batch_rows = 100000
+max_concurrent_flushes = 256
+worker_channel_capacity = 65526
+max_inflight_requests = 3000
+flow_notification_queue_capacity = 1024
+
 [jaeger]
 enable = true
 
@@ -282,7 +291,7 @@ flow_notification_queue_capacity = 1024
 | ---------- | ------------------ | ------ | ------------------------------------------------------------ |
 | http       |                    |        | HTTP 服务器选项                                              |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
-|            | timeout            | 字符串 | HTTP 请求超时时间。设为 "0s" 可禁用超时（默认值为 "0s"）。启用 Prometheus Remote Write [批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式) 时，非零且不超过 `prom_store.pending_rows_flush_interval` 加 1 秒的超时值会被自动调整为该值。                              |
+|            | timeout            | 字符串 | HTTP 请求超时时间。设为 `0s` 可禁用超时（默认值为 `0s`）。启用 Prometheus Remote Write [批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式)或普通表共享批量写入时，非零的超时值会被自动提高到至少为当前启用的最大刷写间隔加 1 秒。刷写间隔由 `prom_store.pending_rows_flush_interval` 和 `pending_rows_batcher.pending_rows_flush_interval` 决定。                              |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
 |            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
 |            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
@@ -305,6 +314,14 @@ flow_notification_queue_capacity = 1024
 | influxdb   |                    |        | InfluxDB 协议选项                                            |
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true            |
 |            | default_merge_mode | 字符串 | InfluxDB 协议自动创建表时使用的默认 merge 模式。可选值：`last_non_null`、`last_row`。默认值：`last_non_null` |
+| pending_rows_batcher |                              |        | 为显式启用的 HTTP 写入协议提供普通表共享批量写入能力。`protocols` 支持 `influxdb`、`opentsdb`、`otlp`、`logs`、`loki`、`splunk`、`elasticsearch`、`http_sql` 和 `prom`。省略 `protocols` 或将其设为空数组会禁用此批量写入链路。选中 `prom` 且启用共享批量写入时，其参数优先于 `prom_store` 中的对应参数。Metric Engine 未启用时，Prometheus Remote Write 使用普通表共享批量写入器；否则仍使用专用的批量写入链路。此批量写入链路暂不支持流式 Flow 源表。 |
+|            | protocols                    | 数组   | 使用共享批量写入器的 HTTP 写入协议。默认为空数组。 |
+|            | pending_rows_flush_interval  | 字符串 | 从收到第一批待处理数据开始计算的定时刷写间隔。设为非零值（如 `500ms`），可为所选协议启用批量写入。默认为 `0s`。 |
+|            | max_batch_rows               | 整数   | 一次完整提交达到该行数时触发刷写，默认为 100000。 |
+|            | max_concurrent_flushes       | 整数   | Frontend 共享批量写入器允许同时执行的最大刷写操作数，默认为 256。 |
+|            | worker_channel_capacity      | 整数   | 每个表 worker 最多可排队的提交数，默认为 65526。 |
+|            | max_inflight_requests        | 整数   | 已接收但尚未完成的原始请求数上限，默认为 3000。 |
+|            | flow_notification_queue_capacity | 整数 | 共享队列中等待处理的表 Flow 通知数上限，默认为 1024。取值必须大于 0。 |
 | opentsdb   |                    |        | OpenTSDB 协议选项                                            |
 |            | enable             | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                          |
 | jaeger     |                    |        | Jaeger 协议选项                                              |
