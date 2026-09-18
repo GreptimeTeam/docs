@@ -33,7 +33,7 @@ Auto Repartition is useful in the following scenarios:
 
 ## Auto Repartition for unpartitioned tables
 
-Auto Repartition can also work with unpartitioned tables when a repartition column hint is specified. For an unpartitioned table, GreptimeDB Enterprise does not infer partition columns automatically. You can specify the preferred column for future Auto Repartition when creating the table:
+Auto Repartition can also work with unpartitioned tables when a repartition column hint is specified. For an unpartitioned table, GreptimeDB Enterprise does not infer partition columns automatically. You can specify the preferred column and a target partition count for future Auto Repartition planning when creating the table:
 
 ```sql
 CREATE TABLE sensor_readings (
@@ -42,7 +42,10 @@ CREATE TABLE sensor_readings (
     ts TIMESTAMP TIME INDEX,
     PRIMARY KEY(host)
 )
-WITH ('repartition.column.hint'='host');
+WITH (
+  'repartition.column.hint'='host',
+  'repartition.partition.num.hint'=10
+);
 ```
 
 You can also set or update the hint later by using `ALTER TABLE`:
@@ -51,13 +54,14 @@ You can also set or update the hint later by using `ALTER TABLE`:
 ALTER TABLE sensor_readings SET 'repartition.column.hint'='host';
 ```
 
-To remove the hint:
+The target partition count must be a positive integer within the `u32` range. To remove either hint:
 
 ```sql
 ALTER TABLE sensor_readings UNSET 'repartition.column.hint';
+ALTER TABLE sensor_readings UNSET 'repartition.partition.num.hint';
 ```
 
-The hint only records metadata for future Auto Repartition. It does not trigger Repartition immediately. After the table meets the Auto Repartition trigger conditions, GreptimeDB Enterprise can use the hinted column to generate partition boundaries and submit a Repartition action.
+The hints only record metadata for future Auto Repartition planning. They do not trigger Repartition immediately. The partition count hint does not change Auto Repartition behavior. After the table meets the Auto Repartition trigger conditions, GreptimeDB Enterprise can use the hinted column to generate partition boundaries and submit a Repartition action.
 
 The repartition column hint has the following restrictions:
 
@@ -65,7 +69,7 @@ The repartition column hint has the following restrictions:
 - The specified column must exist in the table.
 - The specified column cannot be the time index column.
 - It can only be set on a table without partition metadata.
-- When using `ALTER TABLE`, it must be set or unset separately from other table options.
+- When using `ALTER TABLE`, repartition hints can be set or unset together, but separately from other table options.
 
 ## Limitations
 
