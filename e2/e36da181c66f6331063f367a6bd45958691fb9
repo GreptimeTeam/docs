@@ -1,0 +1,25 @@
+docs/user-guide/ingest-data/for-observability/prometheus.md
+  s_5dffa09e594910::t_a5effe951e90ac 338-349
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/configuration.md
+  s_5dffa09e594910::t_9914d683ae4681 317
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/ingest-data/for-observability/prometheus.md
+  s_5dffa09e594910::t_a5effe951e90ac 329-340
+docs/user-guide/deployments-administration/configuration.md
+  s_5dffa09e594910::t_9914d683ae4681 318
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e2e36da181c66f6331063f367a6bd45958691fb9",
+  "prompts": {},
+  "sessions": {
+    "s_5dffa09e594910": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0b380-18f7-7dd1-b2c9-0ec51225d012",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
