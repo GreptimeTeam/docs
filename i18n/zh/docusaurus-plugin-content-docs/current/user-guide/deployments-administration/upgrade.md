@@ -87,7 +87,6 @@ data/greptime/public/1024/1024_0000000000/data/manifest/00000000000000000007.che
 jq -r '.checkpoint.compaction_time_window' 00000000000000000007.checkpoint
 ```
 
-如果启用了 manifest 压缩，文件后缀为 `.checkpoint.gz`，需要先解压再读取 JSON。
 checkpoint 只是一个快照，还应检查后续 manifest 记录是否更新了
 `compaction_time_window`。如果该字段缺失或为 null，就无法从中确定要保留的窗口。
 

@@ -94,8 +94,7 @@ version. Download that checkpoint and read `checkpoint.compaction_time_window`:
 jq -r '.checkpoint.compaction_time_window' 00000000000000000007.checkpoint
 ```
 
-If manifest compression is enabled, the file has a `.checkpoint.gz` suffix;
-decompress it before reading the JSON. A checkpoint is a snapshot, so also check
+A checkpoint is a snapshot, so also check
 later manifest entries for updates to `compaction_time_window`. A missing or null
 value does not tell you which window to preserve.
 
