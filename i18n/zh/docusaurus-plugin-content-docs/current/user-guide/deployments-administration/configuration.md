@@ -314,7 +314,7 @@ flow_notification_queue_capacity = 1024
 | influxdb   |                    |        | InfluxDB 协议选项                                            |
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true            |
 |            | default_merge_mode | 字符串 | InfluxDB 协议自动创建表时使用的默认 merge 模式。可选值：`last_non_null`、`last_row`。默认值：`last_non_null` |
-| pending_rows_batcher |                              |        | 为显式启用的 HTTP 写入协议提供实验性的普通表共享批量写入能力。`protocols` 支持 `influxdb`、`opentsdb`、`otlp`、`logs`、`loki`、`splunk`、`elasticsearch`、`http_sql` 和 `prom`。省略 `protocols` 或将其设为空数组会禁用此批量写入链路。对于 `prom`，此链路仅在未启用 Metric Engine 时生效；否则使用 `prom_store` 下的配置。此批量写入链路暂不支持流式 Flow 源表。 |
+| pending_rows_batcher |                              |        | 为显式启用的 HTTP 写入协议提供普通表共享批量写入能力。`protocols` 支持 `influxdb`、`opentsdb`、`otlp`、`logs`、`loki`、`splunk`、`elasticsearch`、`http_sql` 和 `prom`。省略 `protocols` 或将其设为空数组会禁用此批量写入链路。选中 `prom` 且启用共享批量写入时，其参数优先于 `prom_store` 中的对应参数。Metric Engine 未启用时，Prometheus Remote Write 使用普通表共享批量写入器；否则仍使用专用的批量写入链路。此批量写入链路暂不支持流式 Flow 源表。 |
 |            | protocols                    | 数组   | 使用共享批量写入器的 HTTP 写入协议。默认为空数组。 |
 |            | pending_rows_flush_interval  | 字符串 | 从收到第一批待处理数据开始计算的定时刷写间隔。设为非零值（如 `500ms`），可为所选协议启用批量写入。默认为 `0s`。 |
 |            | max_batch_rows               | 整数   | 一次完整提交达到该行数时触发刷写，默认为 100000。 |

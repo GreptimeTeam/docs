@@ -335,6 +335,18 @@ The following table describes the batching-related options:
 Batching mode only takes effect when both `with_metric_engine` is `true` and `pending_rows_flush_interval` is set to a non-zero duration.
 :::
 
+:::note
+For Prometheus Remote Write without the metric engine, configure the shared ordinary-table batcher instead:
+
+```toml
+[pending_rows_batcher]
+protocols = ["prom"]
+pending_rows_flush_interval = "500ms"
+```
+
+When this configuration is enabled for `prom`, its batching controls take precedence over the corresponding `[prom_store]` options. With the metric engine enabled, Prometheus Remote Write retains its dedicated batching path.
+:::
+
 ### Request timeout and retries
 
 When [`http.timeout`](/user-guide/deployments-administration/configuration.md#protocol-options) is set to a non-zero duration and a remote write request to `/v1/prometheus/write` exceeds it,

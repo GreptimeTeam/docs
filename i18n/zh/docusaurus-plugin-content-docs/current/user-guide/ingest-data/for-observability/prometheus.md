@@ -326,6 +326,18 @@ pending_rows_flush_interval = "500ms"
 批量写入模式仅在 `with_metric_engine` 为 `true` 且 `pending_rows_flush_interval` 设置为非零时间间隔时生效。
 :::
 
+:::note
+对于未启用 Metric Engine 的 Prometheus Remote Write，请改为配置普通表共享批量写入器：
+
+```toml
+[pending_rows_batcher]
+protocols = ["prom"]
+pending_rows_flush_interval = "500ms"
+```
+
+为 `prom` 启用此配置后，其批量写入参数优先于对应的 `[prom_store]` 参数。启用 Metric Engine 时，Prometheus Remote Write 仍使用专用的批量写入链路。
+:::
+
 ### 请求超时与重试
 
 当 [`http.timeout`](/user-guide/deployments-administration/configuration.md#协议选项) 设置为非零值，
