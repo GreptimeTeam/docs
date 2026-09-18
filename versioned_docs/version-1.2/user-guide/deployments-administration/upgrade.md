@@ -26,6 +26,130 @@ If you are upgrading to v1.2 from v0.17 or an earlier release, first review the
 relevant v1.0 upgrade path below and then apply the
 [v1.2 breaking changes](#upgrading-from-v10-or-v11-to-v12).
 
+#### Check Metric Engine compaction settings
+
+When upgrading from v0.17 to v1.2, check the compaction window of your Metric Engine
+physical tables. v1.2 uses a one-day (`1d`) window unless you have explicitly set
+one. This default helps queries over long time ranges, but switching from a
+smaller window can trigger compaction of historical files and increase memory usage.
+The window is not being re-inferred on each restart.
+
+On an upgraded instance or a staging copy, use
+[`information_schema.ssts_manifest`](/reference/sql/information-schema/ssts-manifest.md)
+to inspect the files of your physical table. Replace the schema and table names
+in these examples with your own:
+
+```sql
+SELECT s.region_id, s.table_id, s.file_id, s.level, s.file_size,
+       s.index_file_size, s.num_rows, s.min_ts, s.max_ts
+FROM information_schema.ssts_manifest s
+JOIN information_schema.tables t ON s.table_id = t.table_id
+WHERE t.table_schema = 'public'
+  AND t.table_name = 'greptime_physical_table'
+ORDER BY s.region_id, s.max_ts;
+```
+
+You can also summarize file sizes and counts for each region. Sizes are in bytes:
+
+```sql
+SELECT s.region_id, COUNT(*) AS file_count,
+       SUM(s.file_size) AS total_bytes,
+       AVG(s.file_size) AS avg_file_bytes,
+       MAX(s.file_size) AS max_file_bytes
+FROM information_schema.ssts_manifest s
+JOIN information_schema.tables t ON s.table_id = t.table_id
+WHERE t.table_schema = 'public'
+  AND t.table_name = 'greptime_physical_table'
+GROUP BY s.region_id;
+```
+
+Use the timestamp ranges to see how many files, and how much data, fall within a
+candidate window. A larger window can help queries over longer time ranges, but
+may bring more files into a compaction. Choose a window based on your existing
+files and available memory, and test it with historical data before upgrading
+production. `1h` is one option, not a requirement for every workload.
+
+#### Keep the original compaction window
+
+If you want to keep the original window, check the physical table's data-region
+manifest **before upgrading**. For Metric Engine, the checkpoint path relative
+to the configured storage root is:
+
+```text
+data/<catalog>/<schema>/<table_id>/<table_id>_<region_sequence:010>/data/manifest/<version:020>.checkpoint
+```
+
+The directory suffix is the region sequence padded to 10 digits, not the full
+region ID. The checkpoint filename uses a manifest version padded to 20 digits.
+For example, table `1024`, region sequence `0`, and checkpoint version `7` give:
+
+```text
+data/greptime/public/1024/1024_0000000000/data/manifest/00000000000000000007.checkpoint
+```
+
+Read `_last_checkpoint` in the same manifest directory to find the checkpoint
+version. Download that checkpoint and read `checkpoint.compaction_time_window`:
+
+```shell
+jq -r '.checkpoint.compaction_time_window' 00000000000000000007.checkpoint
+```
+
+If manifest compression is enabled, the file has a `.checkpoint.gz` suffix;
+decompress it before reading the JSON. A checkpoint is a snapshot, so also check
+later manifest entries for updates to `compaction_time_window`. A missing or null
+value does not tell you which window to preserve.
+
+Check each physical data region. If the regions use different windows, choose a
+table-level window based on the SST distribution. Set your chosen window
+explicitly on the physical table before upgrading. For example, to keep a
+one-hour window:
+
+```sql
+ALTER TABLE public.greptime_physical_table
+SET 'compaction.twcs.time_window' = '1h';
+```
+
+Replace the table name and duration with your own. Inspect the manifest to find
+the value; use `ALTER TABLE` to change the setting.
+
+#### Handle large files and compaction memory
+
+The `experimental_compaction_memory_limit` setting relies on file metadata that
+v0.17 SSTs do not contain. It cannot reliably account for those older files,
+even after you upgrade. Do not rely on this setting alone to prevent compaction
+from running out of memory while historical files remain.
+
+If compaction runs out of memory while merging files that are several hundred MB
+each, try a smaller compaction output file size, such as `128MB`. We recommend
+keeping it above `50MB` to avoid producing too many small files:
+
+```sql
+ALTER TABLE public.greptime_physical_table
+SET 'compaction.twcs.max_output_file_size' = '128MB';
+```
+
+This setting controls the size of files produced by compaction. It does not
+immediately split existing files or limit the memory needed to merge them.
+
+Metric Engine intentionally selects the Flat SST format even when
+`default_flat_format = false`. Changing the format to `primary_key` is not the
+recommended fix for this compaction memory issue.
+
+If queries fail with `Too many files to read concurrently`, consider
+[manual SWCS compaction](/user-guide/deployments-administration/manage-data/compaction.md#strict-window-compaction-strategy-swcs-and-manual-compaction)
+to reorganize the files. For example, this uses a one-hour window and parallelism
+of one:
+
+```sql
+ADMIN COMPACT_TABLE('public.greptime_physical_table', 'swcs', 'window=3600,parallelism=1');
+```
+
+SWCS adds compaction work and can read the same input file for multiple windows.
+Test it with your data and allow enough memory and time for it to finish.
+
+See the [maintainer's explanation in issue #9172](https://github.com/GreptimeTeam/greptimedb/issues/9172#issuecomment-5693460752)
+for more background.
+
 ## Upgrade Paths to v1.0
 
 ### From v0.16 to v1.0
@@ -152,6 +276,31 @@ that still sets the key loads without error; the key is ignored.
   deployment no longer depends on the removed setting
 
 ### Upgrading from v0.17 to v1.0
+
+#### Compact Metric Engine tables before upgrading
+
+If your Metric Engine physical tables have many overlapping SST files or files
+that span long time ranges, we recommend running
+[SWCS compaction](/user-guide/deployments-administration/manage-data/compaction.md#strict-window-compaction-strategy-swcs-and-manual-compaction)
+on v0.17 before upgrading to v1.0. This reorganizes historical files into the
+chosen time windows and can reduce the number of files that queries need to read.
+
+For example, to compact a physical table into one-hour windows on v0.17:
+
+```sql
+ADMIN COMPACT_TABLE('public.greptime_physical_table', 'swcs', '3600');
+```
+
+Replace the table name and window with your own. The third argument is the window
+size in seconds; v0.17 does not support the newer `window=...,parallelism=...`
+syntax. Run this on the physical table, not its logical tables.
+
+SWCS can read the same file for multiple windows and consume substantial memory
+and I/O. Schedule it when the instance has enough resources, monitor its progress,
+and wait for it to finish before upgrading. It does not replace explicitly setting
+`compaction.twcs.time_window` if you want to keep the same window after upgrading.
+Files produced on v0.17 still lack the metadata used by the newer compaction memory
+limit.
 
 #### Jaeger HTTP Header Removal
 
@@ -384,6 +533,8 @@ Before upgrading to your target version, complete the following checklist:
 - [ ] Identify pipelines using `greptime_identity` with JSON data
 - [ ] Check for usage of deprecated Jaeger HTTP header (if upgrading from v0.17 or earlier)
 - [ ] Review metric tables if using Metric Engine
+- [ ] Before upgrading from v0.17 to v1.0, consider SWCS compaction for physical tables with overlapping or long-span SST files, and wait for it to finish
+- [ ] If upgrading from v0.17 to v1.2 with Metric Engine, record the original compaction windows and explicitly set the window you want to use
 
 ### Configuration Updates
 
@@ -406,6 +557,7 @@ Before upgrading to your target version, complete the following checklist:
 ### Testing & Deployment
 
 - [ ] Test the upgrade in a non-production environment
+- [ ] If upgrading from v0.17 to v1.2, test with historical SSTs and monitor memory usage, compaction progress, and query failures
 - [ ] If upgrading to v1.2, dry-run representative pipeline inputs that hit integer boundaries and verify the expected `on_failure` result
 - [ ] If upgrading to v1.2, validate the updated PromQL queries in staging
 - [ ] If upgrading to v1.2, verify local-file `COPY` and external-table workflows after moving them into the sandbox or object storage

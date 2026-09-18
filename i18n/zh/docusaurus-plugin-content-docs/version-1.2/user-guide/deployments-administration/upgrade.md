@@ -24,6 +24,115 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 如果你要从 v0.17 或更早版本升级到 v1.2，请先查看下方适用的 v1.0 升级路径，
 再处理 [v1.2 的破坏性变更](#从-v10-或-v11-升级到-v12)。
 
+#### 检查 Metric Engine 的压缩配置
+
+从 v0.17 升级到 v1.2 时，请检查 Metric Engine 物理表的压缩时间窗口。
+如果没有显式设置，v1.2 会使用一天（`1d`）的窗口。这个默认值有助于查询较长
+时间范围的数据，但从较小的窗口切换过来，可能触发历史文件的重新压缩，增加内存用量。
+这并不是每次重启时重新推断窗口大小。
+
+在升级后的实例或预发环境的数据副本上，可以通过
+[`information_schema.ssts_manifest`](/reference/sql/information-schema/ssts-manifest.md)
+查看物理表的文件。请将下面示例中的数据库名和表名替换为实际值：
+
+```sql
+SELECT s.region_id, s.table_id, s.file_id, s.level, s.file_size,
+       s.index_file_size, s.num_rows, s.min_ts, s.max_ts
+FROM information_schema.ssts_manifest s
+JOIN information_schema.tables t ON s.table_id = t.table_id
+WHERE t.table_schema = 'public'
+  AND t.table_name = 'greptime_physical_table'
+ORDER BY s.region_id, s.max_ts;
+```
+
+也可以按 Region 汇总文件大小和数量，大小的单位为字节：
+
+```sql
+SELECT s.region_id, COUNT(*) AS file_count,
+       SUM(s.file_size) AS total_bytes,
+       AVG(s.file_size) AS avg_file_bytes,
+       MAX(s.file_size) AS max_file_bytes
+FROM information_schema.ssts_manifest s
+JOIN information_schema.tables t ON s.table_id = t.table_id
+WHERE t.table_schema = 'public'
+  AND t.table_name = 'greptime_physical_table'
+GROUP BY s.region_id;
+```
+
+结合文件的时间范围，查看候选窗口内有多少文件、总数据量有多大。较大的窗口有助于
+长时间范围的查询，但也可能让一次压缩涉及更多文件。请根据现有文件和可用内存选择
+窗口，并在升级生产环境前用历史数据进行测试。`1h` 是一个可选值，并非所有场景都需要使用。
+
+#### 保留原来的压缩时间窗口
+
+如果想保留原来的窗口，请在**升级前**查看物理表数据 Region 的 manifest。
+Metric Engine 的 checkpoint 路径如下，相对于配置的存储根目录：
+
+```text
+data/<catalog>/<schema>/<table_id>/<table_id>_<region_sequence:010>/data/manifest/<version:020>.checkpoint
+```
+
+目录后缀是补齐到 10 位的 Region 序号，不是完整的 Region ID。checkpoint 文件名
+使用补齐到 20 位的 manifest 版本号。例如，表 ID 为 `1024`、Region 序号为 `0`、
+checkpoint 版本号为 `7` 时，路径为：
+
+```text
+data/greptime/public/1024/1024_0000000000/data/manifest/00000000000000000007.checkpoint
+```
+
+读取同一 manifest 目录下的 `_last_checkpoint`，找到 checkpoint 版本号。
+下载对应文件，查看 `checkpoint.compaction_time_window`：
+
+```shell
+jq -r '.checkpoint.compaction_time_window' 00000000000000000007.checkpoint
+```
+
+如果启用了 manifest 压缩，文件后缀为 `.checkpoint.gz`，需要先解压再读取 JSON。
+checkpoint 只是一个快照，还应检查后续 manifest 记录是否更新了
+`compaction_time_window`。如果该字段缺失或为 null，就无法从中确定要保留的窗口。
+
+请检查每个物理数据 Region。如果各 Region 的窗口不同，可以根据 SST 分布选择一个
+表级窗口。在升级前，显式设置物理表的窗口。例如，要保留一小时的窗口：
+
+```sql
+ALTER TABLE public.greptime_physical_table
+SET 'compaction.twcs.time_window' = '1h';
+```
+
+请替换为实际的表名和时间窗口。通过 manifest 查看原值，通过 `ALTER TABLE` 修改配置。
+
+#### 处理大文件和压缩内存问题
+
+`experimental_compaction_memory_limit` 依赖文件元数据，而 v0.17 生成的 SST
+不包含这些信息。即使已经升级，它也无法可靠地估算这些旧文件的压缩内存用量。
+只要历史文件仍然存在，就不能仅依靠此配置来避免压缩时内存不足。
+
+如果合并数百 MB 大小的文件时发生 OOM，可以尝试调小压缩输出文件的大小，例如设为
+`128MB`。建议将该值设为大于 `50MB`，避免产生过多小文件：
+
+```sql
+ALTER TABLE public.greptime_physical_table
+SET 'compaction.twcs.max_output_file_size' = '128MB';
+```
+
+这个配置控制压缩生成的文件大小，不会立即拆分已有文件，也不限制合并文件所需的内存。
+
+即使配置了 `default_flat_format = false`，Metric Engine 仍会选择 Flat SST 格式，
+这是预期行为。不建议通过切换到 `primary_key` 格式来解决这里的压缩内存问题。
+
+如果查询报错 `Too many files to read concurrently`，可以考虑通过
+[手动 SWCS 压缩](/user-guide/deployments-administration/manage-data/compaction.md#严格窗口压缩策略swcs和手动压缩)
+重新组织文件。例如，以下语句使用一小时的窗口，并将并行度设为一：
+
+```sql
+ADMIN COMPACT_TABLE('public.greptime_physical_table', 'swcs', 'window=3600,parallelism=1');
+```
+
+SWCS 会增加压缩工作量，同一个输入文件也可能因跨越多个窗口而被多次读取。
+请先用实际数据测试，并为它留出足够的内存和执行时间。
+
+更多背景可参考 [issue #9172 中维护者的回复](https://github.com/GreptimeTeam/greptimedb/issues/9172#issuecomment-5693460752)。
+
 ## 升级到 v1.0 的路径
 
 ### 从 v0.16 到 v1.0
@@ -136,6 +245,27 @@ GreptimeDB 现在始终为 metric 表使用稀疏主键编码，`sparse_primary_
 - 使用清理后的配置在预发环境重启一次，确认部署已不再依赖这些被移除的设置
 
 ### 从 v0.17 升级到 v1.0
+
+#### 升级前压缩 Metric Engine 表
+
+如果 Metric Engine 物理表中有较多相互重叠的 SST 文件，或文件跨越较长的时间范围，
+建议在升级到 v1.0 前，先在 v0.17 上执行
+[SWCS 压缩](/user-guide/deployments-administration/manage-data/compaction.md#严格窗口压缩策略swcs和手动压缩)。
+它会按选定的时间窗口重新组织历史文件，有助于减少查询需要读取的文件数量。
+
+例如，在 v0.17 上按一小时窗口压缩物理表：
+
+```sql
+ADMIN COMPACT_TABLE('public.greptime_physical_table', 'swcs', '3600');
+```
+
+请替换为实际的表名和窗口大小。第三个参数的单位是秒；v0.17 不支持较新版本的
+`window=...,parallelism=...` 写法。请对物理表执行此操作，而不是逻辑表。
+
+SWCS 可能为不同窗口多次读取同一个文件，占用较多内存和 I/O。请在实例资源充足时
+执行，观察压缩进度，并等它完成后再升级。如果希望升级后继续使用同样的窗口，
+仍需显式设置 `compaction.twcs.time_window`。在 v0.17 上压缩生成的文件也不包含
+较新版本压缩内存限制所需的元数据。
 
 #### 移除 Jaeger HTTP Header
 
@@ -368,6 +498,8 @@ SELECT * FROM table;
 - [ ] 识别使用 `greptime_identity` 处理 JSON 数据的 pipeline
 - [ ] 检查是否使用了已废弃的 Jaeger HTTP header（如果从 v0.17 或更早版本升级）
 - [ ] 如果使用 Metric Engine，检查指标表
+- [ ] 从 v0.17 升级到 v1.0 前，对于 SST 文件相互重叠或跨越较长时间范围的物理表，考虑执行 SWCS 压缩，并等待完成
+- [ ] 如果使用 Metric Engine 从 v0.17 升级到 v1.2，记录原来的压缩时间窗口，并显式设置要使用的窗口
 
 ### 配置更新
 
@@ -390,6 +522,7 @@ SELECT * FROM table;
 ### 测试与部署
 
 - [ ] 在非生产环境中测试升级
+- [ ] 如果从 v0.17 升级到 v1.2，使用历史 SST 测试，并监控内存用量、压缩进度和查询错误
 - [ ] 如果升级到 v1.2，使用触发整数边界的代表性 pipeline 输入进行 dry-run，并验证 `on_failure` 结果是否符合预期
 - [ ] 如果升级到 v1.2，在预发环境验证更新后的 PromQL 查询
 - [ ] 如果升级到 v1.2，在把本地文件工作流迁移到沙箱或对象存储后验证 `COPY` 和外部表行为
