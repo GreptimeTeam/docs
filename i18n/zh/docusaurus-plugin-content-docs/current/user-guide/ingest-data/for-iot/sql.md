@@ -82,7 +82,7 @@ SET skip_wal = true;
 ```
 
 此设置仅对当前会话生效，不会修改[表级 `skip_wal` 选项](/reference/sql/create.md#创建禁用-wal-的表)。
-执行 `SET skip_wal = false` 后，若表级 `skip_wal` 为 `true`，仍不写入 WAL。
+执行 `SET skip_wal = false` 只会停止为当前会话禁用 WAL；若表级 `skip_wal` 为 `true`，它不会为该表重新启用 WAL。要为该表后续写入重新启用 WAL，请使用 [`ALTER TABLE ... SET 'skip_wal'='false'`](/reference/sql/alter.md#alter-table)。
 
 :::warning
 禁用 WAL 后，进程重启会导致尚未刷盘的数据丢失。请仅在数据可以从源端重新写入时使用。

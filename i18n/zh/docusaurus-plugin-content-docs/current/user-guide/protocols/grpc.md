@@ -14,7 +14,7 @@ GreptimeDB 提供了 [gRPC SDK](/user-guide/ingest-data/for-iot/grpc-sdks/overvi
 在 `x-greptime-hints` gRPC 元数据中设置 `insert_skip_wal=true`，可为当前写入请求禁用预写日志（WAL）。
 
 此设置仅对当前请求生效，不会修改[表级 `skip_wal` 选项](/reference/sql/create.md#创建禁用-wal-的表)。
-将 `insert_skip_wal` 设置为 `false` 或省略该 hint 时，若表级 `skip_wal` 为 `true`，仍不写入 WAL。
+将 `insert_skip_wal` 设置为 `false` 或省略该 hint，只会停止为当前请求禁用 WAL；若表级 `skip_wal` 为 `true`，它不会为该表重新启用 WAL。要为该表后续写入重新启用 WAL，请使用 [`ALTER TABLE ... SET 'skip_wal'='false'`](/reference/sql/alter.md#alter-table)。
 
 :::warning
 禁用 WAL 后，进程重启会导致尚未刷盘的数据丢失。请仅在数据可以从源端重新写入时使用。
