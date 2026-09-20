@@ -18,3 +18,4 @@ description: 提供了 GreptimeDB 中函数的概述，包括函数的分类、�
   - [向量函数](./vector.md)
   - [近似函数](./approximate.md)
   - [异常检测函数](./anomaly.md)
+  - [Jev 自然语言过滤（实验功能）](./jev.md)
