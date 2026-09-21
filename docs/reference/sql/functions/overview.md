@@ -18,4 +18,5 @@ Use this page as a quick index to GreptimeDB function references.
   - [Vector Functions](./vector.md)
   - [Approximate Functions](./approximate.md)
   - [Anomaly Detection Functions](./anomaly.md)
-  - [Jev Natural-Language Filtering (experimental)](./jev.md)
+- AI Functions
+  - [Jev Natural-Language Filtering (experimental)](./ai/jev.md)

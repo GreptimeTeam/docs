@@ -159,6 +159,10 @@
     "message": "GreptimeDB 函数",
     "description": "The label for category GreptimeDB Functions in sidebar docs"
   },
+  "sidebar.docs.category.AI Functions": {
+    "message": "AI 函数",
+    "description": "The label for category AI Functions in sidebar docs"
+  },
   "sidebar.docs.category.Information Schema": {
     "message": "Information Schema",
     "description": "The label for category Information Schema in sidebar docs"

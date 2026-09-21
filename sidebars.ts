@@ -669,7 +669,13 @@ const sidebars: SidebarsConfig = {
                     'reference/sql/functions/vector',
                     'reference/sql/functions/approximate',
                     'reference/sql/functions/anomaly',
-                    'reference/sql/functions/jev',
+                  ],
+                },
+                {
+                  type: 'category',
+                  label: 'AI Functions',
+                  items: [
+                    'reference/sql/functions/ai/jev',
                   ],
                 },
                 'reference/sql/functions/df-functions',

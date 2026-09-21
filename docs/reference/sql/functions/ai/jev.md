@@ -10,7 +10,7 @@ to judge whether a natural-language condition holds for a text value. It returns
 a Boolean and can be used in `WHERE` or `SELECT`.
 
 :::note Experimental availability
-This function is included by the **default-enabled Cargo feature `ai-functions`**
+This function is included by the **default-enabled Cargo feature `ai_functions`**
 in builds containing the Jev implementation. External API evaluation still
 requires the runtime switch and an API key.
 The implementation is tracked in
@@ -30,11 +30,11 @@ cargo run -p cmd -- standalone start
 
 There are two separate gates:
 
-- The Cargo feature `ai-functions`, enabled by default, compiles and registers the SQL function.
+- The Cargo feature `ai_functions`, enabled by default, compiles and registers the SQL function.
 - `GREPTIMEDB_EXPERIMENTAL_JEV=true` permits the compiled function to call the API.
 
 Default builds register `jev()`, but do not automatically permit external API
-calls. To enable the Cargo feature explicitly, use `--features ai-functions`.
+calls. To enable the Cargo feature explicitly, use `--features ai_functions`.
 The environment must belong to the GreptimeDB process; changing another
 terminal's environment does not update a running server.
 
