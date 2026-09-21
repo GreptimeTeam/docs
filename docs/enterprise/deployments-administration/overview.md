@@ -14,6 +14,7 @@ The following sections describe the enterprise-specific features and capabilitie
 ## Configuration and Deployment
 
 - [Deploy GreptimeDB Enterprise on Kubernetes](./deploy-on-kubernetes/overview.md): Learn how to obtain the dedicated GreptimeDB Enterprise image.
+- [Standalone Follower](./standalone-follower.md): Run standalone nodes with leader election, automatic promotion, and optional follower reads.
 - [LDAP Authentication](authentication.md): Enhanced authentication capabilities for GreptimeDB Enterprise.
 
 ## Monitoring

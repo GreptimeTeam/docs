@@ -25,6 +25,7 @@ GreptimeDB Enterprise includes the following advanced features,
 which are described in detail in the documentation in this section:
 
 - [Active-Active Failover Disaster Recovery Solution](./deployments-administration/disaster-recovery/overview.md): Ensure uninterrupted service and data protection with advanced disaster recovery solution.
+- [Standalone Follower](./deployments-administration/standalone-follower.md): Deploy standalone nodes with leader election, automatic promotion, and optional follower reads.
 - [LDAP Authentication](./deployments-administration/authentication.md): Secure your system with LDAP-based authentication for access management.
 - [Audit Logging](./deployments-administration/monitoring/audit-logging.md): Track and monitor
   user activity with detailed audit logs.
