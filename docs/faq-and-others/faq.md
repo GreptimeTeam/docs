@@ -87,7 +87,7 @@ There are three ways to control table options such as `ttl`, `append_mode`, `mer
    ALTER TABLE my_table SET 'ttl' = '7d';
    ALTER TABLE my_table SET 'append_mode' = 'true';
    ```
-   Note that `merge_mode` and `skip_wal` cannot be altered after creation — they must be set at table creation time. See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for all supported options and constraints.
+   Note that `merge_mode` cannot be altered after creation and must be set at table creation time. You can change `skip_wal` from `false` to `true`; if the table was created with WAL enabled and WAL was later disabled through `ALTER TABLE`, you can change it back to `false` to reuse its original WAL provider. Tables created with WAL disabled cannot enable it later. `skip_wal` does not support `UNSET`. See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for all supported options and constraints.
 
 3. **Set database-level defaults**: Create or alter the database with default options. New auto-created tables will inherit these values:
    ```sql

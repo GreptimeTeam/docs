@@ -203,7 +203,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
 - `sst_format`: 表的 SST 格式。值可以是 `flat` 或 `primary_key`。表支持双向格式转换：`primary_key` 转换为 `flat`，以及 `flat` 转换为 `primary_key`。
 - `write_buffer_size`: 表的单 region 写缓冲区阻塞阈值。设置为 `512MB` 等正值后，mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入。该表选项会覆盖 `region_engine.mito.default_region_write_buffer_size`。即使引擎默认值非零，显式设置为 `0` 也会禁用单 region 限制。取消设置会移除表级覆盖，并回退到引擎默认值。
 - `auto_flush_interval`: 该表的 region 最长多久没有 flush 就触发一次 flush。值是一个[时间范围字符串](/reference/time-durations.md)，必须大于 0。该表选项会覆盖引擎级的 `region_engine.mito.auto_flush_interval`。
-- `skip_wal`: 是否为该表禁用预写日志（WAL）。当设置为 `'true'` 时表的写入数据将不会持久化到预写日志，可以提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。你可以将其从 `false` 更改为 `true`；对于创建时已经具备 WAL provider 的表，之后也可以再改回 `false`。创建时没有 WAL provider 的表，后续不能启用 WAL。修改该选项只影响后续写入；在 WAL 被禁用期间写入的数据不会被追溯补写到 WAL 中。仅支持在使用 `mito` 或 `metric` 引擎的物理表上设置，且必须单独设置，不能在同一条 `ALTER TABLE` 中与其他 table option 一起修改。
+- `skip_wal`: 是否为该表禁用预写日志（WAL）。当设置为 `'true'` 时表的写入数据将不会持久化到预写日志，可以提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。你可以将其从 `false` 更改为 `true`。如果表在创建时启用了 WAL，之后通过 `ALTER TABLE` 禁用 WAL，则可以再改回 `false`，复用原有的 WAL 提供者。创建时就禁用 WAL 的表没有可用的 WAL 提供者，后续不能启用 WAL。不支持 `UNSET`。修改该选项只影响后续写入；在 WAL 禁用期间写入的数据不会补写到 WAL。仅支持在使用 `mito` 或 `metric` 引擎的物理表上设置，且必须单独设置，不能在同一条 `ALTER TABLE` 中与其他 table option 一起修改。
 - `max_row_group_row_count`: Parquet row group 的最大行数。取值必须在 `1` 到 `10485760`（`10 * 1024 * 1024`）之间，设置为零会被拒绝。修改或取消该选项时，GreptimeDB 会先使用旧的 row group 大小 flush 尚未落盘的数据，再应用新值。新值，或取消设置后的默认值 `102400`（`100 * 1024`），会应用于后续生成的 SST。ALTER 操作不会立即重写已有 SST；后续 compaction 可能会使用当前的 row group 大小重写这些 SST。
 
 ```sql

@@ -87,7 +87,7 @@ GreptimeDB 使用三种语义列类型：**Tag**、**Timestamp** 和 **Field**�
    ALTER TABLE my_table SET 'ttl' = '7d';
    ALTER TABLE my_table SET 'append_mode' = 'true';
    ```
-   注意 `merge_mode` 和 `skip_wal` 不支持建表后修改，必须在建表时指定。所有支持的选项和约束参见 [ALTER TABLE](/reference/sql/alter.md#修改表的参数)。
+   注意 `merge_mode` 不支持建表后修改，必须在建表时指定。`skip_wal` 可以从 `false` 改为 `true`；如果表在创建时启用了 WAL，之后通过 `ALTER TABLE` 禁用 WAL，则可以改回 `false`，复用原有的 WAL 提供者。创建时就禁用 WAL 的表后续不能启用 WAL。`skip_wal` 不支持 `UNSET`。所有支持的选项和约束参见 [ALTER TABLE](/reference/sql/alter.md#修改表的参数)。
 
 3. **设置数据库级别的默认选项**：创建或修改数据库时指定默认选项，后续自动创建的表会继承这些值：
    ```sql

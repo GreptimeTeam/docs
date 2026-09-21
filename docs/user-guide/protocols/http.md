@@ -79,7 +79,8 @@ curl -X POST \
 ```
 
 This setting applies only to the current request and does not change the [table-level `skip_wal` option](/reference/sql/create.md#create-a-table-with-wal-disabled).
-Setting the header to `false` or omitting it only stops disabling WAL for the current request; it does not re-enable WAL for a table whose table-level `skip_wal` option is `true`. To re-enable WAL for subsequent writes on that table, use [`ALTER TABLE ... SET 'skip_wal'='false'`](/reference/sql/alter.md#alter-table).
+Setting the header to `false` or omitting it does not enable WAL if the table-level `skip_wal` option is `true`.
+If the table was created with WAL enabled and WAL was later disabled through `ALTER TABLE`, you can re-enable it. See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for the operation and its restrictions.
 
 :::warning
 When WAL is disabled, unflushed data is lost if the process restarts.
@@ -115,7 +116,7 @@ Supported hints:
 | `physical_table` | String | None | Specifies the physical table name for the [metric engine](/contributor-guide/datanode/metric-engine.md). |
 | `query.enable_remote_dynamic_filter_pushdown` | Boolean | `true` | Enables remote dynamic filter pushdown for SQL queries. Set it to `false` to disable Frontend-to-Datanode dynamic filter propagation for the current request. See [Remote dynamic filter pushdown](/user-guide/query-data/sql.md#remote-dynamic-filter-pushdown). |
 | `skip_wal` | Boolean | `false` | Disables WAL (Write-Ahead Log) for automatically created tables. Does not change existing tables. |
-| `insert_skip_wal` | Boolean | `false` | Disables WAL for the current insert request without changing the table-level `skip_wal` option. If the table-level `skip_wal` option is `true`, WAL remains disabled for the table even when this hint is `false` or omitted; re-enable it with `ALTER TABLE ... SET 'skip_wal'='false'`. |
+| `insert_skip_wal` | Boolean | `false` | Disables WAL for the current insert request without changing the table-level `skip_wal` option. If the table-level `skip_wal` option is `true`, WAL remains disabled even when this hint is `false` or omitted. See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for re-enabling WAL and its restrictions. |
 | `sst_format` | String | None | Sets the SST (Sorted String Table) file format for the table. Valid values: `flat`, `primary_key`. |
 | `trace_table_partitions` | Int | None | Override default partition number (16) of trace tables. Set to `0` or `1` to disable partitioning. |
 

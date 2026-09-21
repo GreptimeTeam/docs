@@ -75,7 +75,8 @@ curl -X POST \
 ```
 
 此设置仅对当前请求生效，不会修改[表级 `skip_wal` 选项](/reference/sql/create.md#创建禁用-wal-的表)。
-将请求头设置为 `false` 或省略该请求头，只会停止为当前请求禁用 WAL；若表级 `skip_wal` 为 `true`，它不会为该表重新启用 WAL。要为该表后续写入重新启用 WAL，请使用 [`ALTER TABLE ... SET 'skip_wal'='false'`](/reference/sql/alter.md#alter-table)。
+将请求头设置为 `false` 或省略该请求头时，若表级 `skip_wal` 为 `true`，仍不写入 WAL。
+如果表在创建时启用了 WAL，之后通过 `ALTER TABLE` 禁用 WAL，则可以重新启用。操作方式和限制参见 [ALTER TABLE](/reference/sql/alter.md#修改表的参数)。
 
 :::warning
 禁用 WAL 后，进程重启会导致尚未刷盘的数据丢失。请仅在数据可以从源端重新写入时使用。
@@ -110,7 +111,7 @@ x-greptime-hint-key2: value2
 | `physical_table` | String | 无 | 指定 [metric 引擎](/contributor-guide/datanode/metric-engine.md)的物理表名。 |
 | `query.enable_remote_dynamic_filter_pushdown` | Boolean | `true` | 为 SQL 查询启用远程动态过滤下推。设置为 `false` 可为当前请求关闭 Frontend 到 Datanode 的动态过滤传播。请参阅[远程动态过滤下推](/user-guide/query-data/sql.md#远程动态过滤下推)。 |
 | `skip_wal` | Boolean | `false` | 为自动创建的表禁用预写日志（WAL），不修改已有表的设置。 |
-| `insert_skip_wal` | Boolean | `false` | 为当前写入请求禁用 WAL，不修改表级 `skip_wal` 选项。设为 `false` 或省略该 hint 时，若表级设置已禁用 WAL，该表仍不写入 WAL；如需重新启用，请使用 `ALTER TABLE ... SET 'skip_wal'='false'`。 |
+| `insert_skip_wal` | Boolean | `false` | 为当前写入请求禁用 WAL，不修改表级 `skip_wal` 选项。设为 `false` 或省略该 hint 时，若表级设置已禁用 WAL，仍不写入 WAL。重新启用的条件和操作方式参见 [ALTER TABLE](/reference/sql/alter.md#修改表的参数)。 |
 | `sst_format` | String | 无 | 设置表的 SST（Sorted String Table）文件格式。可选值：`flat`、`primary_key`。 |
 | `trace_table_partitions` | Int | None | 自定义 Trace 表的默认分区数（16）。设置为 `0` 或 `1` 时禁用分区。 |
 
