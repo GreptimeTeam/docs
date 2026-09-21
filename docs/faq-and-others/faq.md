@@ -87,7 +87,7 @@ There are three ways to control table options such as `ttl`, `append_mode`, `mer
    ALTER TABLE my_table SET 'ttl' = '7d';
    ALTER TABLE my_table SET 'append_mode' = 'true';
    ```
-   Note that `merge_mode` and `skip_wal` cannot be altered after creation — they must be set at table creation time. See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for all supported options and constraints.
+   Note that `merge_mode` cannot be altered after creation and must be set at table creation time. You can change `skip_wal` from `false` to `true`, but setting it back to `false` requires a RaftEngine or Kafka WAL provider. Changing this option does not switch providers; tables created with `skip_wal='true'` use Noop and cannot enable WAL later. `skip_wal` does not support `UNSET`. See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for all supported options and constraints.
 
 3. **Set database-level defaults**: Create or alter the database with default options. New auto-created tables will inherit these values:
    ```sql
