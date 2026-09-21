@@ -9,8 +9,8 @@ description: 使用实验性的 Jev SQL 函数，通过自然语言条件和概�
 判断文本是否满足自然语言描述的条件，返回布尔值，可用于 `WHERE` 或 `SELECT`。
 
 :::note 实验功能的可用范围
-此函数需要使用包含 Jev 实现的源码，并在构建时启用 Cargo feature `jev`。
-**默认构建不编译或注册此函数**。
+在包含 Jev 实现的构建中，**默认启用的 Cargo feature `ai-functions`** 会编译并注册此函数。
+实际调用外部 API 仍需启用运行时开关并提供 API key。
 实现进度见 [GreptimeDB PR #9265](https://github.com/GreptimeTeam/greptimedb/pull/9265)。
 :::
 
@@ -21,15 +21,16 @@ description: 使用实验性的 Jev SQL 函数，通过自然语言条件和概�
 ```shell
 export GREPTIMEDB_EXPERIMENTAL_JEV=true
 export JEV_API_KEY='<your TypeSafe API key>'
-cargo run -p cmd --features jev -- standalone start
+cargo run -p cmd -- standalone start
 ```
 
 这里有两个独立的开关：
 
-- Cargo feature `jev` 控制 SQL 函数的编译与注册。
+- 默认启用的 Cargo feature `ai-functions` 控制 SQL 函数的编译与注册。
 - `GREPTIMEDB_EXPERIMENTAL_JEV=true` 允许已编译的函数调用 API。
 
-仅设置环境变量，不能在默认二进制中启用 `jev()`；默认二进制会在 SQL 规划时拒绝该函数。
+默认构建会注册 `jev()`，但不会自动允许外部 API 调用。
+如果需要显式启用 Cargo feature，可以使用 `--features ai-functions`。
 环境变量必须传给 GreptimeDB 进程，在另一个终端设置变量不会更新已运行的服务。
 
 | 环境变量 | 默认值 | 说明 |

@@ -10,8 +10,9 @@ to judge whether a natural-language condition holds for a text value. It returns
 a Boolean and can be used in `WHERE` or `SELECT`.
 
 :::note Experimental availability
-This function requires a source build containing the Jev implementation with the
-Cargo feature `jev` enabled. It is **not compiled or registered in default builds**.
+This function is included by the **default-enabled Cargo feature `ai-functions`**
+in builds containing the Jev implementation. External API evaluation still
+requires the runtime switch and an API key.
 The implementation is tracked in
 [GreptimeDB PR #9265](https://github.com/GreptimeTeam/greptimedb/pull/9265).
 :::
@@ -24,18 +25,18 @@ environment variables and start a feature-enabled standalone instance:
 ```shell
 export GREPTIMEDB_EXPERIMENTAL_JEV=true
 export JEV_API_KEY='<your TypeSafe API key>'
-cargo run -p cmd --features jev -- standalone start
+cargo run -p cmd -- standalone start
 ```
 
 There are two separate gates:
 
-- The Cargo feature `jev` compiles and registers the SQL function.
+- The Cargo feature `ai-functions`, enabled by default, compiles and registers the SQL function.
 - `GREPTIMEDB_EXPERIMENTAL_JEV=true` permits the compiled function to call the API.
 
-Setting environment variables does not enable `jev()` in a default binary. Such a
-binary rejects the function during SQL planning. The environment must belong to
-the GreptimeDB process; changing another terminal's environment does not update a
-running server.
+Default builds register `jev()`, but do not automatically permit external API
+calls. To enable the Cargo feature explicitly, use `--features ai-functions`.
+The environment must belong to the GreptimeDB process; changing another
+terminal's environment does not update a running server.
 
 | Environment variable | Default | Description |
 | --- | --- | --- |
