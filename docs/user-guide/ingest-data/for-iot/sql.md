@@ -85,7 +85,6 @@ SET skip_wal = true;
 
 This setting applies only to the current session and does not change the [table-level `skip_wal` option](/reference/sql/create.md#create-a-table-with-wal-disabled).
 Running `SET skip_wal = false` does not enable WAL if the table-level `skip_wal` option is `true`.
-If the table was created with WAL enabled and WAL was later disabled through `ALTER TABLE`, you can re-enable it. See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for the operation and its restrictions.
 
 :::warning
 When WAL is disabled, unflushed data is lost if the process restarts.

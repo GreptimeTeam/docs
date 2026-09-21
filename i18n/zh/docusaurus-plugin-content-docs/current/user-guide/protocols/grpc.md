@@ -15,7 +15,6 @@ GreptimeDB 提供了 [gRPC SDK](/user-guide/ingest-data/for-iot/grpc-sdks/overvi
 
 此设置仅对当前请求生效，不会修改[表级 `skip_wal` 选项](/reference/sql/create.md#创建禁用-wal-的表)。
 将 `insert_skip_wal` 设置为 `false` 或省略该 hint 时，若表级 `skip_wal` 为 `true`，仍不写入 WAL。
-如果表在创建时启用了 WAL，之后通过 `ALTER TABLE` 禁用 WAL，则可以重新启用。操作方式和限制参见 [ALTER TABLE](/reference/sql/alter.md#修改表的参数)。
 
 :::warning
 禁用 WAL 后，进程重启会导致尚未刷盘的数据丢失。请仅在数据可以从源端重新写入时使用。

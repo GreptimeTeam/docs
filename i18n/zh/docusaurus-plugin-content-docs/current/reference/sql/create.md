@@ -308,7 +308,7 @@ SELECT * from metrics ORDER BY host, ts;
 
 #### 创建禁用 WAL 的表
 
-创建一个禁用 WAL 的表。请注意，当 WAL 被禁用时，进程重启后尚未 flush 的数据将会丢失。下面的示例在建表时设置 `skip_wal='true'`，后续不能启用 WAL。如果需要临时禁用 WAL，应在建表时启用 WAL，再通过 [`ALTER TABLE`](/reference/sql/alter.md#修改表的参数) 禁用和重新启用。重新启用只影响后续写入，禁用期间写入的数据不会补写到 WAL。
+创建一个禁用 WAL 的表。请注意，当 WAL 被禁用时，进程重启后尚未 flush 的数据将会丢失。下面的示例在建表时设置 `skip_wal='true'`，因此使用 Noop WAL 提供者，后续不能启用 WAL。表级 `skip_wal` 的修改规则参见 [ALTER TABLE](/reference/sql/alter.md#修改表的参数)。
 
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(

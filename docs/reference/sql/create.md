@@ -299,7 +299,7 @@ SELECT * from metrics ORDER BY host, ts;
 
 #### Create a table with WAL disabled
 
-Create a table with WAL disabled. Please note that when WAL is disabled, unflushed data will be lost on process restart. The example below sets `skip_wal='true'` at creation time, so WAL cannot be enabled later. To disable WAL temporarily, create the table with WAL enabled, then use [`ALTER TABLE`](/reference/sql/alter.md#alter-table-options) to disable and re-enable it. Re-enabling affects subsequent writes only; rows written while WAL was disabled are not retroactively written to WAL.
+Create a table with WAL disabled. Please note that when WAL is disabled, unflushed data will be lost on process restart. The example below sets `skip_wal='true'` at creation time, so it uses the Noop WAL provider and cannot enable WAL later. See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for the rules on changing table-level `skip_wal`.
 
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(
