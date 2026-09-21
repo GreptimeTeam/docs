@@ -1,13 +1,29 @@
 ---
-keywords: [enterprise, standalone, follower, high availability, leader election, failover]
-description: Deploy GreptimeDB Enterprise standalone nodes with leader election, automatic promotion, and optional follower reads.
+keywords: [enterprise, standalone, leader-follower mode, high availability, leader election, failover]
+description: Deploy GreptimeDB Enterprise in standalone leader-follower mode, with leader election, automatic promotion, and optional follower reads.
 ---
 
-# Standalone Follower
+# Standalone Leader-Follower Mode
 
-GreptimeDB Enterprise supports running standalone nodes in a leader-follower topology. The nodes share an external metadata store and data storage. One node is elected leader and accepts writes; the other stays running as a follower and can become leader after a failover. You can also enable reads on the follower for workloads that tolerate stale data.
+GreptimeDB Enterprise supports running standalone nodes in leader-follower mode. The nodes share an external metadata store and data storage. One node is elected leader and accepts writes; the other stays running as a follower and can become leader after a failover. You can also enable reads on the follower for workloads that tolerate stale data.
 
 This topology differs from [active-active failover](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md), where both standalone peers accept writes and replicate changes to each other. It also differs from [cluster Read Replicas](/enterprise/read-replicas/overview.md), which manage follower Regions across Datanodes.
+
+## Choose a Deployment Mode
+
+Use the following comparison to choose between standalone leader-follower mode, [active-active failover](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md), and a [distributed cluster](/user-guide/concepts/architecture.md).
+
+| Aspect | Standalone leader-follower mode | Active-active failover | Distributed cluster |
+| --- | --- | --- | --- |
+| Writes and queries | One elected leader accepts writes. Optional follower reads can return stale data. | Both peers accept writes and execute queries locally; changes replicate asynchronously. | Frontends route writes to Region leaders and distribute queries across Datanodes. |
+| State and dependencies | Shared PostgreSQL or MySQL metadata and shared data storage; a load balancer routes traffic to the leader. The example below uses a local WAL on each node. | Each peer keeps its own complete data copy and pending replication changes. An external mechanism routes traffic. | Separate Frontend, Metasrv, and Datanode services, plus a metadata backend, data storage, and the selected WAL backend. |
+| Failover | Election promotes a follower; the load balancer redirects new connections once the new leader is ready. | An external traffic mechanism switches to an available peer; the topology does not elect a primary. | Configured Region Failover can reopen Regions on surviving Datanodes. Availability depends on WAL, shared storage, and spare capacity. |
+| Advantages | Automatic leader promotion with fewer separately deployed GreptimeDB components than a distributed cluster. | Peers can continue serving independently during connectivity interruptions and synchronize after recovery. | Horizontal scaling, distributed query execution, and independent scaling of service components. |
+| Limitations | Write capacity remains bounded by one leader. Both nodes depend on shared services, and the local-WAL configuration can lose unflushed writes after a node and its WAL are lost. | Replication lag can leave a peer missing recent writes. Independent writes and Schema changes require reconciliation planning; this is not distributed query scale-out. | More components to deploy and operate. Failover and durability require appropriate configuration rather than following automatically from cluster mode. |
+
+Prefer leader-follower mode when the write workload fits on one standalone node, you want automatic leader promotion without separately deploying cluster components, and you can provide highly available shared metadata and data storage. It suits applications that can reconnect after failover and accept the durability limits of their chosen WAL configuration.
+
+Prefer active-active failover when you need independently writable peers that can continue serving during inter-node connectivity interruptions. Choose a distributed cluster when you need to spread writes or query work across multiple Datanodes. Leader election selects the writable node; the load balancer and clients still handle traffic switching and reconnection.
 
 ## System Architecture
 
@@ -45,7 +61,7 @@ Roles are assigned by election, so either node can become leader. The load balan
 
 For a deployment on two separate hosts, prepare:
 
-- A GreptimeDB Enterprise build with standalone follower support and the PostgreSQL or MySQL metadata backend you intend to use.
+- A GreptimeDB Enterprise build with standalone leader-follower mode support and the PostgreSQL or MySQL metadata backend you intend to use.
 - A load balancer in front of both nodes, configured to route application traffic using the HTTP leader check.
 - A shared PostgreSQL or MySQL database for metadata and election. The local `raft_engine` **metadata backend** does not support election.
 - Shared data storage, such as an S3 bucket and root prefix, accessible from both nodes. Separate local data directories alone do not provide a shared data copy.

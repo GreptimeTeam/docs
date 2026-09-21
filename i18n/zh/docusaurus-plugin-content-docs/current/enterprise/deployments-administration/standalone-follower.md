@@ -1,13 +1,29 @@
 ---
-keywords: [企业版, standalone, follower, 主备部署, 高可用, Leader 选举, 故障切换]
-description: 部署支持 Leader 选举、自动升主和可选 Follower 读取的 GreptimeDB 企业版 Standalone 节点。
+keywords: [企业版, standalone, Leader-Follower 模式, 高可用, Leader 选举, 故障切换]
+description: 以 Standalone Leader-Follower 模式部署 GreptimeDB 企业版，支持 Leader 选举、自动升主和可选 Follower 读取。
 ---
 
-# Standalone 主备部署
+# Standalone Leader-Follower 模式
 
-GreptimeDB 企业版支持将 Standalone 节点部署为 Leader（主节点）和 Follower（备节点）。两个节点共享外部元数据存储和数据存储。其中一个节点通过选举成为 Leader，接受写入；另一个节点以 Follower 身份保持运行，并可在故障切换后成为 Leader。对于允许读取旧数据的负载，也可以启用 Follower 读取。
+GreptimeDB 企业版支持以 Leader-Follower 模式部署 Standalone 节点，分别担任 Leader（主节点）和 Follower（备节点）。两个节点共享外部元数据存储和数据存储。其中一个节点通过选举成为 Leader，接受写入；另一个节点以 Follower 身份保持运行，并可在故障切换后成为 Leader。对于允许读取旧数据的负载，也可以启用 Follower 读取。
 
 该拓扑与[双活互备](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)不同：双活互备中的两个 Standalone 节点都接受写入，并相互复制变更。它也不同于[集群读副本](/enterprise/read-replicas/overview.md)，后者在不同 Datanode 上管理 Follower Region。
+
+## 选择部署模式
+
+下表对比 Standalone Leader-Follower 模式、[双活互备](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)和[分布式集群](/user-guide/concepts/architecture.md)，帮助选择适合业务的部署方式。
+
+| 对比项 | Standalone Leader-Follower 模式 | 双活互备 | 分布式集群 |
+| --- | --- | --- | --- |
+| 写入与查询 | 由选出的一个 Leader 接受写入。可选的 Follower 读取可能返回旧数据。 | 两个节点都接受写入，并在本地执行查询；变更异步复制到对端。 | Frontend 将写入路由到 Region Leader，并将查询分发到不同 Datanode。 |
+| 状态与依赖 | 共享 PostgreSQL 或 MySQL 元数据存储和数据存储；负载均衡器将流量发送到 Leader。下文示例中每个节点使用各自的本地 WAL。 | 每个节点保存自己的完整数据副本和待复制变更，由外部机制路由流量。 | 分别部署 Frontend、Metasrv 和 Datanode 服务，以及元数据后端、数据存储和所选的 WAL 后端。 |
+| 故障切换 | Follower 通过选举升主；新 Leader 就绪后，负载均衡器将新连接转发到该节点。 | 外部流量切换机制将请求转发到可用节点；该拓扑不会选举主节点。 | 配置 Region Failover 后，可在存活的 Datanode 上重新打开 Region。可用性取决于 WAL、共享存储和预留容量。 |
+| 优点 | 支持自动升主，需要独立部署的 GreptimeDB 组件比分布式集群少。 | 节点间连接中断时，两端仍可独立提供服务，并在恢复后继续同步。 | 支持水平扩展、分布式查询，以及各服务组件的独立扩容。 |
+| 限制 | 写入能力仍受单个 Leader 限制。两个节点都依赖共享服务；使用本地 WAL 时，节点及其 WAL 丢失可能导致尚未刷盘的写入丢失。 | 复制延迟可能导致对端缺少近期写入。需要规划独立写入和 Schema 变更的协调处理；该模式不提供分布式查询扩展能力。 | 需要部署和运维更多组件。故障切换和持久性依赖合理配置，并非使用集群模式就能自动获得。 |
+
+如果单个 Standalone 节点足以承载写入负载，希望在不分别部署集群组件的情况下实现自动升主，并且能够提供高可用的共享元数据和数据存储，可以优先选择 Leader-Follower 模式。应用需要能够在故障切换后重新连接，并接受所选 WAL 配置的持久性限制。
+
+如果需要两个节点独立接受写入，并在节点间连接中断时继续服务，可以优先选择双活互备。如果需要将写入或查询工作分散到多个 Datanode，应选择分布式集群。Leader 选举只负责确定可写节点，流量切换和重新连接仍由负载均衡器和客户端完成。
 
 ## 系统架构
 
@@ -45,7 +61,7 @@ flowchart TB
 
 在两台独立主机上部署时，需要准备：
 
-- 支持 Standalone Follower 功能以及所选 PostgreSQL 或 MySQL 元数据后端的 GreptimeDB 企业版构建。
+- 支持 Standalone Leader-Follower 模式以及所选 PostgreSQL 或 MySQL 元数据后端的 GreptimeDB 企业版构建。
 - 部署在两个节点前的负载均衡器，并配置为根据 HTTP Leader 检查结果路由应用流量。
 - 用于元数据和选举的共享 PostgreSQL 或 MySQL 数据库。本地 `raft_engine` **元数据后端**不支持选举。
 - 两个节点均可访问的共享数据存储，例如相同的 S3 bucket 和 root 前缀。仅在各节点上使用独立的本地数据目录，无法提供共享的数据副本。

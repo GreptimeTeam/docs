@@ -14,7 +14,7 @@ description: GreptimeDB 企业版的部署指南，包括鉴权认证、Kubernet
 ## 配置与部署
 
 - [在 Kubernetes 上部署 GreptimeDB 企业版](./deploy-on-kubernetes/overview.md): 了解如何获取专用的 GreptimeDB 企业版镜像。
-- [Standalone 主备部署](./standalone-follower.md)：部署支持 Leader 选举、自动升主和可选 Follower 读取的 Standalone 节点。
+- [Standalone Leader-Follower 模式](./standalone-follower.md)：部署支持 Leader 选举、自动升主和可选 Follower 读取的 Standalone 节点。
 - [LDAP 鉴权](authentication.md): 为 GreptimeDB 企业版提供增强的认证能力。
 
 ## 监控
