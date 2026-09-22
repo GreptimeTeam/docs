@@ -164,6 +164,7 @@ const sidebars: SidebarsConfig = {
               label: 'Overview',
             },
             'user-guide/integrations/prometheus',
+            'user-guide/integrations/vmalert',
             'user-guide/integrations/vector',
             'user-guide/integrations/kafka',
             'user-guide/integrations/flink',
