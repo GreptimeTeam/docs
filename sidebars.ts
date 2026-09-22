@@ -675,7 +675,14 @@ const sidebars: SidebarsConfig = {
                   type: 'category',
                   label: 'AI Functions',
                   items: [
-                    'reference/sql/functions/ai/jev',
+                    {
+                      type: 'doc',
+                      id: 'reference/sql/functions/ai/overview',
+                      label: 'Overview',
+                    },
+                    'reference/sql/functions/ai/ai-match',
+                    'reference/sql/functions/ai/ai-choose',
+                    'reference/sql/functions/ai/ai-score',
                   ],
                 },
                 'reference/sql/functions/df-functions',
