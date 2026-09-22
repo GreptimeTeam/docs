@@ -24,6 +24,7 @@ GreptimeDB Enterprise 包括以下高级功能，
 详情描述在本章节的文档中：
 
 - [基于双活互备的 DR 解决方案](./deployments-administration/disaster-recovery/overview.md)：通过高级灾难恢复解决方案确保服务不中断和数据保护。
+- [Standalone Leader-Follower 模式](./deployments-administration/standalone-follower.md)：部署支持 Leader 选举、自动升主和可选 Follower 读取的 Standalone 节点。
 - [部署 GreptimeDB](./deployments-administration/overview.md)：设置认证信息及其他关键配置后，将 GreptimeDB 部署在 Kubernetes 上并监控关键指标。
 - [审计日志](./deployments-administration/monitoring/audit-logging.md)：记录数据库用户行为的日志。
 - [Query Guard](./deployments-administration/query-guard.md)：对所有用户（包括管理员）禁止 `DROP TABLE` / `DROP DATABASE` 语句，并拒绝跨 catalog 访问。
