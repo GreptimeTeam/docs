@@ -1,13 +1,14 @@
 ---
 keywords: [vmalert, VictoriaMetrics, alerting rules, 记录规则, PromQL]
-description: 配置 vmalert 以 GreptimeDB 为数据源执行 alerting rules 和记录规则。
+description: >-
+  配置 vmalert 以 GreptimeDB 为数据源执行 alerting rules 和 recording rules。
 ---
 
 # vmalert
 
-[vmalert](https://docs.victoriametrics.com/vmalert/) 用于执行兼容 Prometheus 的
-alerting rules 和记录规则。它可以通过 Prometheus HTTP API 将 GreptimeDB
-用作数据源。
+[vmalert](https://docs.victoriametrics.com/vmalert/) 支持使用 Prometheus 风格的
+YAML 配置定义 alerting rules 和 recording rules，并通过 Prometheus HTTP API
+查询 GreptimeDB，以评估规则表达式。
 
 将 vmalert 与 GreptimeDB 集成时，我们推荐使用 `1.148.4` 或更高版本。
 
@@ -59,7 +60,9 @@ vmalert 使用与 Prometheus 类似的 YAML 规则配置格式。支持的配置
   https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/
 
 以下示例包含一条 alerting rule 和一条 recording rule，均使用 PromQL
-表达式查询 GreptimeDB。示例假设数据库中已有 `up` 指标，且包含 `job` 标签。
+表达式查询 GreptimeDB。示例假设数据库中已有 `up` 指标和
+`http_requests_total` counter 指标，且两者均包含 `job` 标签。
+其中 alerting rule 监控 `job="api"` 的目标，请按实际的 `job` 标签值调整。
 将以下内容保存为 `/etc/vmalert/greptimedb-rules.yaml`：
 
 ```yaml
@@ -75,16 +78,17 @@ groups:
         annotations:
           summary: "API instance is down"
 
-      - record: job:up:sum
-        expr: sum by (job) (up)
+      - record: job:http_requests:rate5m
+        expr: sum by (job) (rate(http_requests_total[5m]))
 ```
 
 使用上一节的命令启动 vmalert 后，它会每分钟执行一次规则组中的两条规则：
 
 - `InstanceDown`：当某条 `job="api"` 的时间序列持续满足 `up == 0` 达到
   5 分钟时，告警进入 firing 状态。
-- `job:up:sum`：按 `job` 对 `up` 求和，并通过远程写入端点将结果保存到
-  GreptimeDB，指标名为 `job:up:sum`。
+- `job:http_requests:rate5m`：计算过去 5 分钟的平均 HTTP 请求速率，按 `job`
+  汇总后通过远程写入端点保存到 GreptimeDB。该指标可用于流量仪表盘和告警，
+  无需重复计算请求速率。
 
 示例使用 `-notifier.blackhole`，因此不会发送告警通知。如需发送通知，请移除
 该参数，并参考 [vmalert 文档](https://docs.victoriametrics.com/vmalert/)
@@ -96,8 +100,8 @@ HTTP API 查询结果：
 ```shell
 curl --get "${GREPTIME_URL}/v1/prometheus/api/v1/query" \
   --data-urlencode 'db=public' \
-  --data-urlencode 'query=job:up:sum'
+  --data-urlencode 'query=job:http_requests:rate5m'
 ```
 
-当 `up` 指标包含可供规则计算的数据时，查询结果中应包含按 `job` 分组的
-`job:up:sum` 时间序列，其值为对应分组的 `up` 值之和。
+当 `http_requests_total` 在 5 分钟窗口内包含足够的样本供规则计算时，
+查询结果会返回每个 `job` 已记录的请求速率，单位为每秒请求数。

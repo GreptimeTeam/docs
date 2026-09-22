@@ -6,9 +6,9 @@ description: >-
 
 # vmalert
 
-[vmalert](https://docs.victoriametrics.com/vmalert/) evaluates
-Prometheus-compatible alerting and recording rules. You can use GreptimeDB as
-its data source through the Prometheus HTTP API.
+[vmalert](https://docs.victoriametrics.com/vmalert/) supports defining alerting
+and recording rules in Prometheus-style YAML configuration. It can query
+GreptimeDB through the Prometheus HTTP API to evaluate rule expressions.
 
 When integrating vmalert with GreptimeDB, we recommend version `1.148.4` or
 later.
@@ -69,8 +69,10 @@ options. For rule syntax and concepts, see the Prometheus documentation for
 
 The following example defines an alerting rule and a recording rule that
 query GreptimeDB using PromQL. It assumes that the database already contains
-an `up` metric with a `job` label. Save the following configuration as
-`/etc/vmalert/greptimedb-rules.yaml`:
+an `up` metric and an `http_requests_total` counter, both with a `job` label.
+The alerting rule monitors targets with `job="api"`. Adjust this value to
+match your `job` label.
+Save the following configuration as `/etc/vmalert/greptimedb-rules.yaml`:
 
 ```yaml
 groups:
@@ -85,8 +87,8 @@ groups:
         annotations:
           summary: "API instance is down"
 
-      - record: job:up:sum
-        expr: sum by (job) (up)
+      - record: job:http_requests:rate5m
+        expr: sum by (job) (rate(http_requests_total[5m]))
 ```
 
 Start vmalert using the command in the previous section. It evaluates both
@@ -94,8 +96,10 @@ rules in the group every minute:
 
 - `InstanceDown`: Enters the firing state when a time series with `job="api"`
   continuously satisfies `up == 0` for 5 minutes.
-- `job:up:sum`: Sums `up` by `job` and writes the results to GreptimeDB as
-  the `job:up:sum` metric through the remote write endpoint.
+- `job:http_requests:rate5m`: Calculates the average HTTP request rate over
+  the past 5 minutes, summed by `job`, and writes the results to GreptimeDB
+  through the remote write endpoint. The recorded metric can be used in
+  traffic dashboards and alerts without repeating the rate calculation.
 
 The example uses `-notifier.blackhole`, so it does not send notifications.
 To send notifications, remove this flag and configure a notifier such as
@@ -108,9 +112,9 @@ through the Prometheus HTTP API:
 ```shell
 curl --get "${GREPTIME_URL}/v1/prometheus/api/v1/query" \
   --data-urlencode 'db=public' \
-  --data-urlencode 'query=job:up:sum'
+  --data-urlencode 'query=job:http_requests:rate5m'
 ```
 
-If the `up` metric contains data for the rule to evaluate, the query should
-return `job:up:sum` time series grouped by `job`, with each value equal to
-the sum of `up` values in that group.
+If `http_requests_total` contains enough samples in the 5-minute window for
+the rule to evaluate, the query returns the recorded request rate for each
+`job`, measured in requests per second.
