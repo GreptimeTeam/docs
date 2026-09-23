@@ -45,14 +45,20 @@ Extracts values with specific types from JSON values through specific paths.
 * `json_get_float(json, path)` to extract a float value from a JSON value by the path, while integer and boolean values will be converted to floats.
 * `json_get_string(json, path)` to extract a string value from a JSON value by the path. All valid JSON values will be converted to strings, including null values, objects and arrays.
 * `json_get_object(json, path)` to extract an object value from a JSON value by the path. Returns NULL if the path does not point to an object.
-* `json_get(json, path)` to extract a value as a string. Cast the function result to extract a scalar with another SQL type, for example `json_get(value, 'a')::INT`.
+* `json_get(json, path)` to extract a value as a string by default (see the JSON2 read type rules below). Cast the function result to extract a scalar with another SQL type, for example `json_get(value, 'a')::INT`.
 * `json_object_keys(json)` to return the outermost keys of a JSON object as a string list. Returns `[]` for an empty object and `NULL` for non-object JSON values or `NULL` input.
 
-The `path` argument to `json_get` must be a string literal. The return value is NULL when the path does not select a value or the selected value cannot be converted to the requested type.
+The `path` argument to `json_get` must be a string literal. During field extraction, the return value is NULL when the path does not select a value or the selected value cannot be converted to the read type. This does not cover failures in an outer explicit CAST, which follows normal SQL CAST rules and can report an error.
 
 `json_to_string`, `json_get`, `json_get_string`, `json_get_int`,
 `json_get_float`, and `json_get_bool` also accept
 [JSON2](/user-guide/logs/json2.md) columns.
+
+For JSON2, `json_get` reads the underlying data using the matching type hint.
+For unhinted paths, it infers the read type from the SQL query, defaulting to
+`STRING` when no type information is available. With a matching hint, an
+explicit CAST is applied after the hinted read and can fail with a conversion
+error. See [JSON Field Type hints](/user-guide/logs/json2.md#json-field-type-hints).
 
 `path` is a string that selects elements from a JSON value. The following path operators are supported:
 

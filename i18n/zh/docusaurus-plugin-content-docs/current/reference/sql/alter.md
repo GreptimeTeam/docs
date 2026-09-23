@@ -165,6 +165,38 @@ ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
 
 拓宽时间索引单位是无损的——已有数据在读取时按新单位解释，无需重写；新写入的数据可以使用更精细的精度。但收窄单位（例如从微秒改回毫秒）或将时间索引改为非时间戳类型是不允许的。该操作不支持使用 [metric engine](/reference/about-greptimedb-engines.md) 的表。
 
+### 修改 JSON2 配置
+
+可以通过 `ALTER TABLE ... MODIFY COLUMN` 修改已有 JSON2 列的 type hint 和 `max_auto_expanded_paths`。例如，为 [JSON2 快速入门](/user-guide/logs/json2.md#快速入门) 中的 `attrs` 列添加 type hint，并提高自动展开的路径数量上限：
+
+```sql
+ALTER TABLE application_logs
+    MODIFY COLUMN attrs JSON2 (
+        max_auto_expanded_paths = 2000,
+        trace_id STRING,
+        user.id BIGINT,
+        http.status BIGINT,
+        latency_ms DOUBLE
+    );
+```
+
+新配置会**整体替换**该列原有的 JSON2 配置，而不是与原配置合并。需要保留的 type hint 必须全部写入语句中；未列出的 hint 会被移除，对应的 JSON 字段仍可查询。省略 `max_auto_expanded_paths` 时，该选项恢复为默认值 `100`。
+
+例如，下面的语句只保留 `trace_id` 的 type hint，并将自动展开上限恢复为 `100`：
+
+```sql
+ALTER TABLE application_logs
+    MODIFY COLUMN attrs JSON2 (
+        trace_id STRING
+    );
+```
+
+修改后的配置用于后续写入和查询，已有数据仍可读取。
+
+Compaction 会按新配置重写历史数据：能够转换为新 hint 类型的值会被转换，无法转换的路径会写为 `null`，该行及其其他字段保留。这一处理针对历史数据，后续写入仍需通过 type hint 校验。
+
+该操作仅适用于已有的 JSON2 列，且该列不能是主键或时间索引。
+
 ### 设置列默认值
 
 为现有列设置默认值：

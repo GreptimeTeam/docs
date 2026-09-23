@@ -165,6 +165,51 @@ ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
 
 Widening the time index unit is lossless — existing data is read in the new unit without rewriting, and new writes can use the finer precision. Narrowing the unit (for example, from microseconds back to milliseconds) or changing the time index to a non-timestamp type is not allowed. This operation is not supported on tables using the [metric engine](/reference/about-greptimedb-engines.md).
 
+### Modify JSON2 settings
+
+Use `ALTER TABLE ... MODIFY COLUMN` to change the type hints and
+`max_auto_expanded_paths` of an existing JSON2 column. For example, add type
+hints to the `attrs` column from the [JSON2 quick start](/user-guide/logs/json2.md#quick-start)
+and increase the automatic path expansion limit:
+
+```sql
+ALTER TABLE application_logs
+    MODIFY COLUMN attrs JSON2 (
+        max_auto_expanded_paths = 2000,
+        trace_id STRING,
+        user.id BIGINT,
+        http.status BIGINT,
+        latency_ms DOUBLE
+    );
+```
+
+The new settings **replace the entire JSON2 configuration** of the column;
+they are not merged with the previous settings. Include every type hint you
+want to retain. Omitted hints are removed, but their JSON fields remain
+queryable. Omitting `max_auto_expanded_paths` resets it to its default of `100`.
+
+For example, the following statement keeps only the `trace_id` type hint and
+resets the automatic expansion limit to `100`:
+
+```sql
+ALTER TABLE application_logs
+    MODIFY COLUMN attrs JSON2 (
+        trace_id STRING
+    );
+```
+
+The updated settings apply to subsequent writes and queries, and existing data
+remains readable.
+
+Compaction rewrites historical data using the new settings:
+values that can be converted to a new hinted type are converted, while paths
+that cannot be converted are written as `null`. The row and its other fields
+are retained. This handling applies to historical data; new writes still
+undergo type-hint validation.
+
+This operation applies only to existing JSON2 columns that are neither primary
+keys nor time indexes.
+
 ### Set column default value
 
 Set a default value for an existing column:

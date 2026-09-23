@@ -116,11 +116,11 @@ You can also use JSON functions and cast the return type explicitly:
 ```sql
 SELECT
     json_get(attrs, 'http.path')::STRING AS path,
-    json_get(attrs, 'http.status')::INT8 AS status,
+    json_get(attrs, 'http.status')::BIGINT AS status,
     json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms,
     json_get(attrs, 'error')::BOOLEAN AS error
 FROM application_logs
-WHERE json_get(attrs, 'http.status')::INT8 >= 500
+WHERE json_get(attrs, 'http.status')::BIGINT >= 500
     OR json_get(attrs, 'latency_ms')::DOUBLE > 300
 ORDER BY ts;
 ```
@@ -162,11 +162,14 @@ query performance close to regular columns. JSON2 also validates their values
 during writes. Type hints are optional. For subpaths without type hints, JSON2
 infers their types from the values written to the column.
 
+Type hints also determine the read types of JSON2 subpaths during queries.
+For paths without type hints, read types are inferred from the query context.
+
 The syntax for declaring type hints is:
 
 ```sql
 json_column JSON2 (
-    path.to.field DATA_TYPE [NULL | NOT NULL] [DEFAULT literal]
+    path.to.field DATA_TYPE
 )
 ```
 
@@ -180,17 +183,19 @@ not a nested path `service.name`.
 Type hints currently support the following data types:
 
 - `STRING`
-- `BIGINT`
-- `BIGINT UNSIGNED`
-- `DOUBLE`
+- `BIGINT` / `INT64`
+- `BIGINT UNSIGNED` / `UINT64`
+- `DOUBLE` / `FLOAT64`
 - `BOOLEAN`
 
-Type hints allow `NULL` by default. If you specify `NOT NULL`, that path must
-exist in the written JSON.
+Type hints currently do not support explicit `NULL`, `NOT NULL`, or `DEFAULT`
+options. Type hints are nullable by default, and missing fields are normalized
+to JSON `null`.
 
 You can declare type hints directly in the `CREATE TABLE` statement. The
-following example defines type hints for commonly queried subpaths in the
-`attrs` column:
+following is an alternative way to create `application_logs`, with type hints
+for commonly queried subpaths in `attrs`. Use this statement instead of the
+CREATE TABLE statement in the quick start:
 
 ```sql
 CREATE TABLE application_logs (
@@ -201,12 +206,12 @@ CREATE TABLE application_logs (
     attrs JSON2 (
         trace_id STRING,
         user.id BIGINT,
-        user.name STRING DEFAULT 'anonymous',
+        user.name STRING,
         http.method STRING,
         http.path STRING,
         http.status BIGINT,
         latency_ms DOUBLE,
-        error BOOLEAN DEFAULT false
+        error BOOLEAN
     )
 ) WITH (
     'append_mode' = 'true'
@@ -215,15 +220,17 @@ CREATE TABLE application_logs (
 
 ### `json_get` UDF
 
-`json_get` reads a nested field from JSON2 by path. It returns a string by
-default. If you want to specify the return type directly, add a cast after the
-function.
+`json_get` reads a nested field from JSON2 by path. Add a cast after the
+function to specify the result type.
 
-The syntax of `json_get` is:
+The basic syntax of `json_get` is:
 
 ```sql
-json_get(json_column, 'path.to.field')::TYPE
+json_get(json_column, 'path.to.field')
 ```
+
+To cast the result to another type, use
+`json_get(json_column, 'path.to.field')::TYPE`.
 
 `json_get` can be used in `SELECT`, `WHERE`, `GROUP BY`, and other SQL clauses
 that accept expressions. For example:
@@ -264,13 +271,16 @@ FROM application_logs
 WHERE attrs.http.status >= 500;
 ```
 
-A missing path, an out-of-range subscript, or a type mismatch returns `NULL`.
+During field extraction, a missing path, an out-of-range subscript, or a value
+that cannot be converted to the read type returns `NULL`. An outer explicit
+CAST follows normal SQL conversion rules and can fail with an error.
 
 ### Use paths in SQL functions
 
 JSON2 paths can be passed directly to scalar, aggregate, and window functions.
-GreptimeDB infers the SQL type expected by the function and converts compatible
-values. Values that cannot be converted to the expected type return `NULL`.
+Hinted paths are read using their declared types. For unhinted paths,
+GreptimeDB infers the read type from the SQL type expected by the function.
+Values that cannot be converted to that type during extraction return `NULL`.
 
 ```sql
 SELECT ABS(attrs.latency_ms) AS latency_ms
@@ -289,7 +299,8 @@ you need, for example `attrs.latency_ms::DOUBLE`.
 ### Control automatic path expansion
 
 JSON2 automatically stores up to 100 unhinted leaf paths as structured columns.
-Use `max_auto_expanded_paths` to change this limit:
+Use `max_auto_expanded_paths` to change this limit. The following is a separate
+table creation example:
 
 ```sql
 CREATE TABLE application_logs (
@@ -307,6 +318,11 @@ Set the option to `0` to disable automatic expansion. Type-hinted paths do not
 count against this limit. Fields beyond the limit remain in a special
 `remainder` field and can still be queried, so the option controls storage
 layout and performance, not the logical JSON schema.
+
+### Alter type hints and storage settings
+
+The settings of an existing JSON2 column can be changed with
+`ALTER TABLE ... MODIFY COLUMN`. See [Modify JSON2 settings](/reference/sql/alter.md#modify-json2-settings).
 
 <AnchorAlias id="roadmap" />
 

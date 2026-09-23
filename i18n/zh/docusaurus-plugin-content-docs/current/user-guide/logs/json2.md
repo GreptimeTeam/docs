@@ -104,11 +104,11 @@ ORDER BY ts;
 ```sql
 SELECT
     json_get(attrs, 'http.path')::STRING AS path,
-    json_get(attrs, 'http.status')::INT8 AS status,
+    json_get(attrs, 'http.status')::BIGINT AS status,
     json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms,
     json_get(attrs, 'error')::BOOLEAN AS error
 FROM application_logs
-WHERE json_get(attrs, 'http.status')::INT8 >= 500
+WHERE json_get(attrs, 'http.status')::BIGINT >= 500
     OR json_get(attrs, 'latency_ms')::DOUBLE > 300
 ORDER BY ts;
 ```
@@ -144,11 +144,13 @@ GROUP BY json_get(attrs, 'http.path')::STRING;
 
 JSON2 支持使用 type hint 为指定的子路径声明确定的数据类型。对于类型已知且稳定、需要频繁查询的子路径，建议使用 type hint。这些子路径会按指定类型存储，从而获得接近普通列的查询性能。JSON2 还会在写入时校验这些子路径的值。Type hint 是可选的。对于未声明 type hint 的子路径，JSON2 会根据写入列中的值推断其类型。
 
+此外，type hint 也决定了查询时 JSON2 子路径的读取类型；未声明 type hint 的路径，其读取类型由查询上下文推断。
+
 声明 type hint 的语法如下：
 
 ```sql
 json_column JSON2 (
-    path.to.field DATA_TYPE [NULL | NOT NULL] [DEFAULT literal]
+    path.to.field DATA_TYPE
 )
 ```
 
@@ -162,14 +164,14 @@ Type hint 的路径使用点号分隔，例如 `user.id` 对应 JSON 中的
 当前 type hint 支持以下类型：
 
 - `STRING`
-- `BIGINT`
-- `BIGINT UNSIGNED`
-- `DOUBLE`
+- `BIGINT` / `INT64`
+- `BIGINT UNSIGNED` / `UINT64`
+- `DOUBLE` / `FLOAT64`
 - `BOOLEAN`
 
-Type hint 默认允许 `NULL`。如果设置 `NOT NULL`，写入的 JSON 中必须存在该路径。
+Type hint 目前不支持显式配置 `NULL`、`NOT NULL` 或 `DEFAULT`。Type hint 默认为 nullable，缺失的字段会规范化为 JSON `null`。
 
-可以直接在 `CREATE TABLE` 语句中声明 type hint。下面的示例为 `attrs` 列中经常查询的子路径定义了 type hint：
+可以直接在 `CREATE TABLE` 语句中声明 type hint。下面展示另一种创建 `application_logs` 表的方式，为 `attrs` 列中经常查询的子路径定义 type hint。该示例与快速入门中的建表语句二选一：
 
 ```sql
 CREATE TABLE application_logs (
@@ -180,12 +182,12 @@ CREATE TABLE application_logs (
     attrs JSON2 (
         trace_id STRING,
         user.id BIGINT,
-        user.name STRING DEFAULT 'anonymous',
+        user.name STRING,
         http.method STRING,
         http.path STRING,
         http.status BIGINT,
         latency_ms DOUBLE,
-        error BOOLEAN DEFAULT false
+        error BOOLEAN
     )
 ) WITH (
     'append_mode' = 'true'
@@ -194,13 +196,15 @@ CREATE TABLE application_logs (
 
 ### `json_get` UDF
 
-`json_get` 用于按路径读取 JSON2 中的嵌套字段。默认返回字符串类型；如果希望直接指定返回类型，可以在函数后使用类型转换。
+`json_get` 用于按路径读取 JSON2 中的嵌套字段。可以在函数后使用类型转换指定结果类型。
 
-`json_get` 的语法如下：
+`json_get` 的基本语法如下：
 
 ```sql
-json_get(json_column, 'path.to.field')::TYPE
+json_get(json_column, 'path.to.field')
 ```
+
+需要转换结果类型时，可以使用 `json_get(json_column, 'path.to.field')::TYPE`。
 
 `json_get` 可以用于 `SELECT`、`WHERE`、`GROUP BY` 等接受表达式的 SQL 子句。例如：
 
@@ -236,11 +240,11 @@ FROM application_logs
 WHERE attrs.http.status >= 500;
 ```
 
-路径不存在、下标越界或类型不匹配时返回 `NULL`。
+提取字段时，路径不存在、下标越界或值无法转换为读取类型时返回 `NULL`。外层显式 CAST 遵循普通 SQL 转换规则，转换失败可能报错。
 
 ### 在 SQL 函数中使用路径
 
-JSON2 路径可以直接传给 scalar、aggregate 和 window function。GreptimeDB 会根据函数期望的 SQL 类型转换兼容的值；无法转换为期望类型的值返回 `NULL`。
+JSON2 路径可以直接传给 scalar、aggregate 和 window function。声明了 type hint 的路径按 hint 指定的类型读取；其他路径根据函数期望的 SQL 类型推断读取类型，读取时无法转换为该类型的值返回 `NULL`。
 
 ```sql
 SELECT ABS(attrs.latency_ms) AS latency_ms
@@ -257,7 +261,7 @@ FROM application_logs;
 
 ### 控制路径自动展开
 
-JSON2 默认最多将 100 个未声明 type hint 的 leaf path 自动存储为结构化列。可以通过 `max_auto_expanded_paths` 调整这一数量：
+JSON2 默认最多将 100 个未声明 type hint 的 leaf path 自动存储为结构化列。可以通过 `max_auto_expanded_paths` 调整这一数量。下面是一个独立的建表示例：
 
 ```sql
 CREATE TABLE application_logs (
@@ -272,6 +276,10 @@ CREATE TABLE application_logs (
 ```
 
 将该选项设为 `0` 可以关闭自动展开。声明了 type hint 的路径不占用这一数量。超出限制的字段仍会保留在特殊的 `remainder` 字段中并可正常查询，因此该选项控制的是存储布局和性能，而不是 JSON 的逻辑 schema。
+
+### 修改 type hint 和存储配置
+
+已有 JSON2 列的配置可以通过 `ALTER TABLE ... MODIFY COLUMN` 修改，详见 [修改 JSON2 配置](/reference/sql/alter.md#修改-json2-配置)。
 
 <AnchorAlias id="未来规划" />
 

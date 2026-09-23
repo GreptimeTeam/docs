@@ -979,8 +979,8 @@ Each type hint supports the following fields:
 
 - `path` (required): The JSON subpath in dot notation. Wrap a path segment in double quotes when the JSON key itself contains a dot.
 - `type` (required): One of `string`, `int64`, `uint64`, `float64`, or `boolean`.
-- `nullable` (optional): Whether the path can be missing or `null`. Defaults to `true`.
-- `default` (optional): A scalar value of the declared type to use when the path is missing.
+
+Type hints currently do not support the `nullable` or `default` options. Type hints are nullable by default, and missing fields are normalized to JSON `null`.
 
 If the destination JSON2 column already exists, GreptimeDB encodes the value using the settings stored in that column instead of the inline hints. This also applies when [`table_suffix`](#table-suffix) routes records to different tables. Values that violate the applicable type hints follow the transform's [`on_failure`](#the-on_failure-field) setting.
 
