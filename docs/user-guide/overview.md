@@ -58,4 +58,6 @@ The [query overview](./query-data/overview.md) compares the interfaces.
 ## Connect Other Tools
 
 - [Protocols](./protocols/overview.md) — the wire protocols GreptimeDB speaks, and the boundaries of each one.
-- [Integrations](./integrations/overview.md) — Grafana, Superset, Metabase, Flink, Spark, the MCP Server, and other tools that connect to GreptimeDB.
+- [Integrations](./integrations/overview.md) — Grafana, vmalert, Superset,
+  Metabase, Flink, Spark, the MCP Server, and other tools that connect to
+  GreptimeDB.
