@@ -1,0 +1,25 @@
+docs/user-guide/deployments-administration/configuration.md
+  s_c9db0f1e0179b2::t_693249882bef0d 424-426,428-431,433-434
+docs/user-guide/deployments-administration/upgrade.md
+  s_c9db0f1e0179b2::t_d2107570a3f654 162,164,168-170,174-177,406
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/configuration.md
+  s_c9db0f1e0179b2::t_9d22f655ca501a 424,426,428-431,433-434
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/upgrade.md
+  s_c9db0f1e0179b2::t_91134c515a31da 145,147,151-152,156-158,387
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b012e5843fc6498b93e6003a4b36a29fdfe0a931",
+  "prompts": {},
+  "sessions": {
+    "s_c9db0f1e0179b2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0cc58-9763-7473-a463-7e75eb5e39f3",
+        "model": "unknown"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
