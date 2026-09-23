@@ -421,37 +421,17 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
-#### 阿里云 OSS 的 RRSA/OIDC 认证
+#### 阿里云 OSS 凭证
 
-通过 ACK 的服务账号 RAM 角色（RRSA）访问 OSS 时，应保留 RRSA 注入的以下环境变量，
-确保 GreptimeDB 进程可以读取它们：
+阿里云 OSS 按以下顺序获取凭证，使用第一个可用的凭证：
 
-- `ALIBABA_CLOUD_ROLE_ARN`
-- `ALIBABA_CLOUD_OIDC_PROVIDER_ARN`
-- `ALIBABA_CLOUD_OIDC_TOKEN_FILE`
+1. `storage` 中配置的 AccessKey。
+2. 环境变量中的 AccessKey。
+3. 从实例元数据获取的 ECS RAM Role 凭证。
+4. OIDC 凭证（`AssumeRoleWithOIDC`）。
 
-GreptimeDB v1.1.0 将 OSS 凭证获取顺序改为：配置中的 AccessKey、环境变量中的
-AccessKey、ECS RAM Role 凭证、AssumeRoleWithOIDC。如果 Pod 可以通过 metadata
-获取 ECS 节点凭证，就会优先使用该凭证，而不是 RRSA 凭证。OSS 返回权限错误后，
-凭证链不会因此改用 OIDC 重试。
-
-对于使用 RRSA/OIDC 的部署，在 GreptimeDB 进程环境中设置
-`ALIBABA_CLOUD_ECS_METADATA_DISABLED=true`，跳过 ECS metadata 凭证来源。
-在 Kubernetes 中，将以下设置加入 GreptimeDB 容器的 `env` 列表
-（这是容器配置片段，不是 Helm values）：
-
-```yaml
-env:
-  - name: ALIBABA_CLOUD_ECS_METADATA_DISABLED
-    value: "true"
-```
-
-将该设置应用到访问 OSS 的 standalone 实例或所有 datanode，并重启相关实例。
-保留原有 RRSA 环境变量和 token 挂载。配置中或环境变量中的 AccessKey 仍有更高优先级；
-存在这些密钥时，该设置不会强制使用 OIDC。
-
-如果部署依赖 ECS RAM Role 凭证，请勿禁用 ECS metadata。
-升级后的错误表现和验证步骤请参见 [OSS 升级说明](/user-guide/deployments-administration/upgrade.md#oss-rrsa-credential-precedence)。
+如果 ECS RAM Role 和 OIDC 角色的权限不一致，且需要使用 OIDC 角色，
+设置环境变量 `ALIBABA_CLOUD_ECS_METADATA_DISABLED=true`，跳过 ECS metadata。
 
 ### 存储服务的 http 客户端
 

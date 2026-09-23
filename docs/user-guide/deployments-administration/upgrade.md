@@ -159,34 +159,22 @@ that still sets the key loads without error; the key is ignored.
 - Restart a staging environment with the cleaned configuration to confirm your
   deployment no longer depends on the removed setting
 
-### Upgrading from v1.0 to v1.1
+### Upgrading from v1.0.x to v1.1.4
 
-#### OSS RRSA credential precedence {#oss-rrsa-credential-precedence}
+#### OSS credential precedence
 
 **Impact:** OSS authentication can use a different RAM role after an upgrade.
 
-When upgrading from v1.0.2 to v1.1.0, ACK deployments using RRSA/OIDC can select
-ECS node RAM Role credentials before OIDC credentials if the Pod can obtain
-credentials from node metadata. If the node role lacks the required OSS
-permissions, table creation or writes can fail with `403 PermissionDenied`
-(for example, while writing a manifest). The same credential order is present
-in v1.1.4, v1.2.1, and `v1.3.0-alpha.1-nightly-20260907`; also review this guidance
-when upgrading directly from v1.0 to one of those versions.
+When upgrading from v1.0.x to v1.1.4, OSS tries ECS RAM Role credentials before
+OIDC credentials. If both are available and the ECS role lacks the required OSS
+permissions, table creation or writes can fail with `403 PermissionDenied`.
 
 **Action Required:**
 
-1. If the deployment uses RRSA/OIDC, set
-   `ALIBABA_CLOUD_ECS_METADATA_DISABLED=true` in the environment of the standalone
-   instance or all datanodes accessing OSS before rolling out the upgrade.
-   Keep the existing RRSA environment variables and token mount. See
-   [OSS RRSA/OIDC configuration](/user-guide/deployments-administration/configuration.md#alibaba-cloud-oss-authentication-with-rrsaoidc)
-   for the container configuration example and credential precedence details.
-2. Restart the affected instances so the setting takes effect. Do not apply it
-   to deployments that rely on ECS RAM Role credentials.
-3. Test the upgrade in a non-production environment. Verify table creation,
-   writes, and reads, and check that OSS operations no longer return permission
-   errors. If errors persist, check the selected identity and its bucket
-   permissions; a `403` alone does not identify this credential-order issue.
+If you need to use the OIDC role, set `ALIBABA_CLOUD_ECS_METADATA_DISABLED=true`
+in the GreptimeDB process environment and restart the affected instances.
+See [Aliyun OSS credentials](/user-guide/deployments-administration/configuration.md#aliyun-oss-credentials)
+for the credential lookup order.
 
 ### Upgrading from v0.17 to v1.0
 
@@ -415,7 +403,7 @@ Before upgrading to your target version, complete the following checklist:
 
 ### Pre-Upgrade
 
-- [ ] If using OSS RRSA/OIDC, review the [credential precedence change](#oss-rrsa-credential-precedence) and configure the ECS metadata opt-out where needed
+- [ ] If using OSS, review the [credential precedence](#oss-credential-precedence) and disable ECS metadata if needed
 - [ ] Review all breaking changes relevant to your upgrade path
 - [ ] **Backup all data and configurations**
 - [ ] If upgrading to v1.2, search PromQL assets for `holt_winters(`, `fill(`, `fill_left(`, and `fill_right(`
