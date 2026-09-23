@@ -1,7 +1,10 @@
 /* biel-bot renders in shadow DOM, so the panel is sized from the host element
    and themed through the custom properties biel-search exposes. */
-.panel {
+.slot {
   margin: 1.25rem 0 2rem;
+}
+
+.panel {
   border: 1px solid var(--gt-border-primary);
   border-radius: var(--ifm-card-border-radius, 8px);
   background: var(--gt-bg-surface);
@@ -43,4 +46,29 @@
   --biel-message-source-bg-color: var(--ifm-color-emphasis-200);
   --biel-message-source-bg-hover-color: var(--ifm-color-emphasis-300);
   --biel-footer-action-color: var(--ifm-color-emphasis-700);
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 399;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* Above the navbar (--ifm-z-index-fixed: 200) and biel's own modal layer (300). */
+.expanded {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(1080px, 94vw);
+  z-index: 400;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+}
+
+/* The panel is sized by the message area, so the reserve covers the header, the
+   input, the footer and the 95px the textarea can grow by while typing. */
+.panel.expanded biel-bot {
+  --biel-chat-height: max(220px, calc(100dvh - 340px));
+  --biel-chat-embedded-height: max(220px, calc(100dvh - 340px));
 }
