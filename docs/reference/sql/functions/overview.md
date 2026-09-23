@@ -18,3 +18,7 @@ Use this page as a quick index to GreptimeDB function references.
   - [Vector Functions](./vector.md)
   - [Approximate Functions](./approximate.md)
   - [Anomaly Detection Functions](./anomaly.md)
+- [AI Functions (experimental)](./ai/overview.md)
+  - [ai_match — natural-language matching probability](./ai/functions.md#ai_match)
+  - [ai_choose — classification](./ai/functions.md#ai_choose)
+  - [ai_score — rating and confidence](./ai/functions.md#ai_score)

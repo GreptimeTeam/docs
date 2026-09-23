@@ -18,3 +18,7 @@ description: 提供了 GreptimeDB 中函数的概述，包括函数的分类、�
   - [向量函数](./vector.md)
   - [近似函数](./approximate.md)
   - [异常检测函数](./anomaly.md)
+- [AI 函数（实验功能）](./ai/overview.md)
+  - [ai_match — 自然语言匹配概率](./ai/functions.md#ai_match)
+  - [ai_choose — 分类](./ai/functions.md#ai_choose)
+  - [ai_score — 评分与置信度](./ai/functions.md#ai_score)

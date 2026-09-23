@@ -672,6 +672,18 @@ const sidebars: SidebarsConfig = {
                     'reference/sql/functions/anomaly',
                   ],
                 },
+                {
+                  type: 'category',
+                  label: 'AI Functions',
+                  items: [
+                    {
+                      type: 'doc',
+                      id: 'reference/sql/functions/ai/overview',
+                      label: 'Overview',
+                    },
+                    'reference/sql/functions/ai/functions',
+                  ],
+                },
                 'reference/sql/functions/df-functions',
               ]
             },
