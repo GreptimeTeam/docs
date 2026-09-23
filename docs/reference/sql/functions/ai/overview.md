@@ -10,9 +10,9 @@ provider-neutral; the current backend is [TypeSafe's Jev model](https://docs.typ
 
 | Function | Purpose | Return value |
 | --- | --- | --- |
-| [`ai_match(text, prompt)`](./ai-match.md) | Estimate whether a statement holds for the text | `DOUBLE` probability in `[0, 1]` |
-| [`ai_choose(text, prompt, criteria)`](./ai-choose.md) | Classify text into one of the supplied options | `STRING` containing the selected option name |
-| [`ai_score(text, prompt, criteria)`](./ai-score.md) | Rate text against ordered levels | JSONB object with `score`, `confidence`, and `probabilities` |
+| [`ai_match(text, prompt)`](./functions.md#ai_match) | Estimate whether a statement holds for the text | `DOUBLE` probability in `[0, 1]` |
+| [`ai_choose(text, prompt, criteria)`](./functions.md#ai_choose) | Classify text into one of the supplied options | `STRING` containing the selected option name |
+| [`ai_score(text, prompt, criteria)`](./functions.md#ai_score) | Rate text against ordered levels | JSONB object with `score`, `confidence`, and `probabilities` |
 
 :::warning Experimental availability
 These functions are experimental and may change. They are available in builds
@@ -77,7 +77,7 @@ SELECT ai_choose(NULL, 'Route the ticket', 'invalid JSON');
 
 ## Example data
 
-The function pages use this small synthetic dataset. Quote `service` and `message`
+The function reference uses this small synthetic dataset. Quote `service` and `message`
 in the table definition because the parser treats them as keywords:
 
 ```sql
@@ -136,7 +136,7 @@ field. This reuses the result within the query, not across queries.
 - Network errors, timeouts, HTTP errors (including `429` and `529`), invalid JSON,
   and invalid answers fail the query. They do not become `NULL`, and there is no
   automatic retry or backoff. Each response must have the requested question type
-  and satisfy the value constraints on the function's reference page.
+  and satisfy the value constraints in the function's reference section.
 - At most eight requests run concurrently **per expression/batch invocation**,
   with a 30-second timeout per request. This is not a per-query or process-wide
   limit; concurrent partitions and queries can produce more in-flight requests.

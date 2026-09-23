@@ -10,9 +10,9 @@ AI 函数根据自然语言提示词评估文本。SQL 函数名不绑定特定�
 
 | 函数 | 用途 | 返回值 |
 | --- | --- | --- |
-| [`ai_match(text, prompt)`](./ai-match.md) | 估计某个陈述对文本成立的概率 | `[0, 1]` 范围内的 `DOUBLE` 概率 |
-| [`ai_choose(text, prompt, criteria)`](./ai-choose.md) | 将文本归入给定选项之一 | 包含选项名称的 `STRING` |
-| [`ai_score(text, prompt, criteria)`](./ai-score.md) | 根据有序等级对文本评分 | 包含 `score`、`confidence` 和 `probabilities` 的 JSONB 对象 |
+| [`ai_match(text, prompt)`](./functions.md#ai_match) | 估计某个陈述对文本成立的概率 | `[0, 1]` 范围内的 `DOUBLE` 概率 |
+| [`ai_choose(text, prompt, criteria)`](./functions.md#ai_choose) | 将文本归入给定选项之一 | 包含选项名称的 `STRING` |
+| [`ai_score(text, prompt, criteria)`](./functions.md#ai_score) | 根据有序等级对文本评分 | 包含 `score`、`confidence` 和 `probabilities` 的 JSONB 对象 |
 
 :::warning 实验功能的可用范围
 这些函数处于实验阶段，后续可能发生变化，需要使用包含
@@ -71,7 +71,7 @@ SELECT ai_choose(NULL, 'Route the ticket', 'invalid JSON');
 
 ## 示例数据
 
-各函数页面使用以下小规模合成数据集。`service` 和 `message` 被解析器视为关键字，
+函数参考页面使用以下小规模合成数据集。`service` 和 `message` 被解析器视为关键字，
 因此在建表语句中为列名加引号：
 
 ```sql
@@ -126,7 +126,7 @@ ORDER BY probability DESC;
   非法 JSON、描述类型或选项/等级数量会在本地报错。
 - 网络错误、超时、HTTP 错误（包括 `429` 和 `529`）、非法 JSON 或无效答案都会使查询失败，
   不会转换为 `NULL`。当前没有自动重试或退避机制。响应必须包含请求所对应的问题类型，
-  并满足各函数页面列出的取值约束。
+  并满足各函数参考章节列出的取值约束。
 - **每个表达式的一次 batch 调用**最多并发 8 个请求，每个请求超时为 30 秒。
   这不是查询级或进程级上限；多个分区和查询并行时，总请求并发数可能更高。
 - 普通 SQL 条件可以缩小候选数据范围，但不保证按 SQL 文本顺序求值，`LIMIT` 也不是 API 请求数的硬上限。
