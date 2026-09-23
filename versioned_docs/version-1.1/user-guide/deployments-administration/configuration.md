@@ -348,6 +348,42 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
+#### Alibaba Cloud OSS authentication with RRSA/OIDC
+
+When using ACK RAM Roles for Service Accounts (RRSA) to access OSS, keep the
+following environment variables injected by RRSA available to the GreptimeDB
+process:
+
+- `ALIBABA_CLOUD_ROLE_ARN`
+- `ALIBABA_CLOUD_OIDC_PROVIDER_ARN`
+- `ALIBABA_CLOUD_OIDC_TOKEN_FILE`
+
+GreptimeDB v1.1.0 changed the OSS credential lookup order to: configured access
+keys, environment access keys, ECS RAM Role credentials, then
+AssumeRoleWithOIDC. If the Pod can obtain ECS node credentials from metadata,
+those credentials take precedence over RRSA credentials. An OSS permission
+error does not cause the credential chain to retry with OIDC.
+
+For deployments that use RRSA/OIDC, set
+`ALIBABA_CLOUD_ECS_METADATA_DISABLED=true` in the GreptimeDB process environment
+to skip ECS metadata credentials. For Kubernetes, add the following to the
+GreptimeDB container's `env` list (this is a container fragment, not Helm values):
+
+```yaml
+env:
+  - name: ALIBABA_CLOUD_ECS_METADATA_DISABLED
+    value: "true"
+```
+
+Apply this setting to the standalone instance or all datanodes accessing OSS,
+and restart the affected instances. Keep the RRSA variables and token mount in
+place. Configured access keys and environment access keys still take precedence;
+this setting does not force OIDC when those keys are present.
+
+Do not disable ECS metadata if the deployment relies on ECS RAM Role credentials.
+See the [OSS upgrade guidance](/user-guide/deployments-administration/upgrade.md#oss-rrsa-credential-precedence)
+for upgrade symptoms and verification steps.
+
 ### Storage http client
 
 `[storage.http_client]` sets the options for the http client that is used to send requests to the storage service.

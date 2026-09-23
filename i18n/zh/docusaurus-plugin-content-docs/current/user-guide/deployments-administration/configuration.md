@@ -421,6 +421,18 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
+#### 阿里云 OSS 凭证
+
+阿里云 OSS 按以下顺序获取凭证，使用第一个可用的凭证：
+
+1. `storage` 中配置的 AccessKey。
+2. 环境变量中的 AccessKey。
+3. 从实例元数据获取的 ECS RAM Role 凭证。
+4. OIDC 凭证（`AssumeRoleWithOIDC`）。
+
+如果 ECS RAM Role 和 OIDC 角色的权限不一致，且需要使用 OIDC 角色，
+设置环境变量 `ALIBABA_CLOUD_ECS_METADATA_DISABLED=true`，跳过 ECS metadata。
+
 ### 存储服务的 http 客户端
 
 `[storage.http_client]` 设置了向存储服务发送请求的 http 客户端的各种配置。
