@@ -8,8 +8,7 @@ description: >-
 # Integrations
 
 GreptimeDB works with common tools for data ingestion, querying, visualization,
-and alerting. For example, [vmalert](./vmalert.md) uses GreptimeDB as a data
-source to evaluate alerting and recording rules.
+and alerting.
 Most tools connect through GreptimeDB's MySQL, PostgreSQL, gRPC, Prometheus,
 OpenTelemetry, or InfluxDB line protocol endpoints.
 The pages below cover the settings for each tool.
