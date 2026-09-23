@@ -1,6 +1,5 @@
 ---
-keywords: [integrations, 数据写入, 可视化, 商业智能, 告警, Grafana, Superset,
-  Metabase, DBeaver, MCP, vmalert]
+keywords: [integrations, 数据写入, 可视化, 商业智能, 告警, Grafana, Superset, Metabase, DBeaver, MCP, vmalert]
 description: 介绍 GreptimeDB 与数据写入、查询、可视化、告警、商业智能和 AI 工具的集成。
 ---
 

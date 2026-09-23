@@ -1,6 +1,5 @@
 ---
-keywords: [integrations, data ingestion, visualization, business intelligence,
-  alerting, Grafana, Superset, Metabase, DBeaver, MCP, vmalert]
+keywords: [integrations, data ingestion, visualization, business intelligence, alerting, Grafana, Superset, Metabase, DBeaver, MCP, vmalert]
 description: >-
   Overview of integrating GreptimeDB with tools for data ingestion, querying,
   visualization, alerting, business intelligence, and AI.
