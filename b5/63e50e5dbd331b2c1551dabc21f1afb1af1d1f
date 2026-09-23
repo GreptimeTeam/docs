@@ -1,0 +1,41 @@
+docs/user-guide/deployments-administration/configuration.md
+  s_150cac020ee5fa::t_a85afbdf48f47b 424-459
+docs/user-guide/deployments-administration/upgrade.md
+  s_150cac020ee5fa::t_eb16b9a61ea179 162-190,418
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/configuration.md
+  s_150cac020ee5fa::t_194151732e4cae 424-455
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/upgrade.md
+  s_150cac020ee5fa::t_e53c7f66d8a0bf 145-167,395
+i18n/zh/docusaurus-plugin-content-docs/version-1.1/user-guide/deployments-administration/configuration.md
+  s_150cac020ee5fa::t_af29dba707fc7c 349-380
+i18n/zh/docusaurus-plugin-content-docs/version-1.1/user-guide/deployments-administration/upgrade.md
+  s_150cac020ee5fa::t_081ede8557d86a 47-69,292,296
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/configuration.md
+  s_150cac020ee5fa::t_9f8f6c00654f5a 423-454
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/upgrade.md
+  s_150cac020ee5fa::t_839aebbe0678cb 145-167,395
+versioned_docs/version-1.1/user-guide/deployments-administration/configuration.md
+  s_150cac020ee5fa::t_068aa8dc497b25 351-386
+versioned_docs/version-1.1/user-guide/deployments-administration/upgrade.md
+  s_150cac020ee5fa::t_8c95bd6746c0f2 50-78,301,305
+versioned_docs/version-1.2/user-guide/deployments-administration/configuration.md
+  s_150cac020ee5fa::t_e7a31a3d955939 423-458
+versioned_docs/version-1.2/user-guide/deployments-administration/upgrade.md
+  s_150cac020ee5fa::t_5a35a363492aae 162-190,418
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b563e50e5dbd331b2c1551dabc21f1afb1af1d1f",
+  "prompts": {},
+  "sessions": {
+    "s_150cac020ee5fa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0cc5e-fe92-7571-9f4e-475c71bc193f",
+        "model": "unknown"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
