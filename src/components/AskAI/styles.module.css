@@ -19,6 +19,10 @@
      panel still shrinks on short screens. */
   --biel-chat-height: min(390px, 50vh);
   --biel-chat-embedded-height: min(390px, 50vh);
+  /* Embedded mode keeps position:relative but still applies this z-index.
+     The default (300) sits above the sticky navbar (--ifm-z-index-fixed: 200)
+     and covers it while scrolling. Expanded mode uses .expanded's own layer. */
+  --biel-bot-content-z-index: auto;
   --biel-bot-content-bg-color: var(--gt-bg-surface);
   --biel-bot-content-text-color: var(--ifm-font-color-base);
   --biel-bot-content-border-radius: 0;
