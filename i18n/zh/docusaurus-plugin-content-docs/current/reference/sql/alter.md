@@ -167,7 +167,9 @@ ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
 
 ### 修改 JSON2 配置
 
-可以通过 `ALTER TABLE ... MODIFY COLUMN` 修改已有 JSON2 列的 type hint 和 `max_auto_expanded_paths`。例如，为 [JSON2 快速入门](/user-guide/logs/json2.md#快速入门) 中的 `attrs` 列添加 type hint，并提高自动展开的路径数量上限：
+可以通过 `ALTER TABLE ... MODIFY COLUMN` 修改已有 JSON2 列的 type hint 和
+`max_auto_expanded_paths`。例如，为 [JSON2 快速入门](/user-guide/logs/json2.md#快速入门)
+中的 `attrs` 列添加 type hint，并提高自动展开的路径数量上限：
 
 ```sql
 ALTER TABLE application_logs
@@ -180,9 +182,14 @@ ALTER TABLE application_logs
     );
 ```
 
-新配置会**整体替换**该列原有的 JSON2 配置，而不是与原配置合并。需要保留的 type hint 必须全部写入语句中；未列出的 hint 会被移除，对应的 JSON 字段仍可查询。省略 `max_auto_expanded_paths` 时，该选项恢复为默认值 `100`。
+新配置会**整体替换**该列现有的 JSON2 配置，而不是与原配置合并。因此，如果希望保
+留已有的 type hint，需要在新的 `MODIFY COLUMN` 语句中完整指定。未在新配置中列出
+的 type hint 会被移除，但对应的 JSON 字段及其已有数据不会被删除。
 
-例如，下面的语句只保留 `trace_id` 的 type hint，并将自动展开上限恢复为 `100`：
+如果省略 `max_auto_expanded_paths`，该配置会恢复为默认值 100。
+
+例如，下面的语句只保留 `trace_id` 的 type hint，同时将 `max_auto_expanded_paths`
+恢复为默认值：
 
 ```sql
 ALTER TABLE application_logs
@@ -191,11 +198,10 @@ ALTER TABLE application_logs
     );
 ```
 
-修改后的配置用于后续写入和查询，已有数据仍可读取。
+修改后的 type hint 会用于后续写入的数据校验，并用于确定查询对应 JSON 路径时的
+类型。已有数据仍然可以正常读取。
 
-Compaction 会按新配置重写历史数据：能够转换为新 hint 类型的值会被转换，无法转换的路径会写为 `null`，该行及其其他字段保留。这一处理针对历史数据，后续写入仍需通过 type hint 校验。
-
-该操作仅适用于已有的 JSON2 列，且该列不能是主键或时间索引。
+该操作仅适用于已有的 JSON2 列，并且目标列不能是主键列或时间索引列。
 
 ### 设置列默认值
 
