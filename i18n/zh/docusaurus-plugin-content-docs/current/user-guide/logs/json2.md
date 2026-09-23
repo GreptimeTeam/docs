@@ -144,11 +144,7 @@ GROUP BY json_get(attrs, 'http.path')::STRING;
 | --- | --- | --- | --- |
 | /v1/orders | 3 | 1 | 166.8 |
 
-<AnchorAlias id="语法" />
-
 ## JSON2 列配置
-
-<AnchorAlias id="json-字段-type-hint" />
 
 ### Type hint
 
@@ -246,7 +242,8 @@ JSON2 支持通过 `json_get` 函数或点号语法访问嵌套字段。这两�
 - 用户可以通过显式类型转换指定最终的表达式类型。对于声明了 type hint 的路径，
   显式类型转换应用于按照 type hint 读取后的结果。
 - 如果路径未声明 type hint，且未显式指定类型，则读取类型由查询上下文推断。
-- 如果上述规则无法确定读取类型，则默认按 `STRING` 读取。
+- 如果无法从 type hint、显式类型转换或查询上下文中确定读取类型，则默认按
+  `STRING` 读取。
 
 例如，若 `http.status` 声明了 `BIGINT` type hint，下面的表达式会按 `BIGINT`
 读取该路径：
@@ -332,9 +329,8 @@ SQL 子句。
 
 ### 在 SQL 函数中使用路径
 
-JSON2 路径可以直接传给 scalar、aggregate 和 window function。声明了 type hint 的
-路径按 hint 指定的类型读取；其他路径根据函数期望的 SQL 类型推断读取类型，读取时
-无法转换为该类型的值返回 `NULL`。
+JSON2 子路径可以用于标量函数、聚合函数和窗口函数。对于未声明 type hint 的路径，
+GreptimeDB 会结合函数调用的上下文推断读取类型。例如：
 
 ```sql
 SELECT ABS(attrs.latency_ms) AS latency_ms
@@ -348,8 +344,6 @@ FROM application_logs;
 ```
 
 如果上下文无法提供所需类型，可以显式转换，例如 `attrs.latency_ms::DOUBLE`。
-
-<AnchorAlias id="未来规划" />
 
 ## 当前限制
 
