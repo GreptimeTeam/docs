@@ -58,7 +58,7 @@ For JSON2, `json_get` reads the underlying data using the matching type hint.
 For unhinted paths, it infers the read type from the SQL query, defaulting to
 `STRING` when no type information is available. With a matching hint, an
 explicit CAST is applied after the hinted read and can fail with a conversion
-error. See [JSON Field Type hints](/user-guide/logs/json2.md#json-field-type-hints).
+error. See [Subpath type rules](/user-guide/logs/json2.md#subpath-type-rules).
 
 `path` is a string that selects elements from a JSON value. The following path operators are supported:
 

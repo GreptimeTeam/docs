@@ -151,9 +151,11 @@ The query result is:
 | --- | --- | --- | --- |
 | /v1/orders | 3 | 1 | 166.8 |
 
-## Syntax
+<AnchorAlias id="syntax" />
 
-### JSON Field Type hints
+## JSON2 Column Configuration
+
+### Type hints
 
 JSON2 supports type hints for declaring concrete data types for selected
 subpaths. Type hints are recommended for frequently queried subpaths with known
@@ -161,9 +163,6 @@ and stable types. These subpaths are stored using the specified types, providing
 query performance close to regular columns. JSON2 also validates their values
 during writes. Type hints are optional. For subpaths without type hints, JSON2
 infers their types from the values written to the column.
-
-Type hints also determine the read types of JSON2 subpaths during queries.
-For paths without type hints, read types are inferred from the query context.
 
 The syntax for declaring type hints is:
 
@@ -194,8 +193,7 @@ to JSON `null`.
 
 You can declare type hints directly in the `CREATE TABLE` statement. The
 following is an alternative way to create `application_logs`, with type hints
-for commonly queried subpaths in `attrs`. Use this statement instead of the
-CREATE TABLE statement in the quick start:
+for commonly queried subpaths in `attrs`:
 
 ```sql
 CREATE TABLE application_logs (
@@ -217,84 +215,6 @@ CREATE TABLE application_logs (
     'append_mode' = 'true'
 );
 ```
-
-### `json_get` UDF
-
-`json_get` reads a nested field from JSON2 by path. Add a cast after the
-function to specify the result type.
-
-The basic syntax of `json_get` is:
-
-```sql
-json_get(json_column, 'path.to.field')
-```
-
-To cast the result to another type, use
-`json_get(json_column, 'path.to.field')::TYPE`.
-
-`json_get` can be used in `SELECT`, `WHERE`, `GROUP BY`, and other SQL clauses
-that accept expressions. For example:
-
-```sql
-SELECT
-    json_get(attrs, 'trace_id')::STRING AS trace_id,
-    json_get(attrs, 'http.status')::BIGINT AS status,
-    json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms
-FROM application_logs
-WHERE json_get(attrs, 'http.status')::BIGINT >= 500;
-```
-
-The typed extraction functions `json_get_string`, `json_get_int`,
-`json_get_float`, and `json_get_bool` also accept JSON2 values. See
-[JSON functions](/reference/sql/functions/json.md#extraction) for details.
-
-### Dot syntax
-
-You can read JSON2 subpaths directly with dot syntax and use zero-based
-subscripts to access array elements:
-
-```sql
-json_column.path.to.field
-json_column.path[0].field
-```
-
-Dot syntax can be used in `SELECT`, `WHERE`, `GROUP BY`, and other SQL clauses
-that accept expressions. For example:
-
-```sql
-SELECT
-    attrs.trace_id,
-    attrs.http.status,
-    attrs.latency_ms,
-    attrs.items[0].name
-FROM application_logs
-WHERE attrs.http.status >= 500;
-```
-
-During field extraction, a missing path, an out-of-range subscript, or a value
-that cannot be converted to the read type returns `NULL`. An outer explicit
-CAST follows normal SQL conversion rules and can fail with an error.
-
-### Use paths in SQL functions
-
-JSON2 paths can be passed directly to scalar, aggregate, and window functions.
-Hinted paths are read using their declared types. For unhinted paths,
-GreptimeDB infers the read type from the SQL type expected by the function.
-Values that cannot be converted to that type during extraction return `NULL`.
-
-```sql
-SELECT ABS(attrs.latency_ms) AS latency_ms
-FROM application_logs;
-
-SELECT SUM(attrs.latency_ms) AS total_latency_ms
-FROM application_logs;
-
-SELECT LAG(attrs.latency_ms) OVER (ORDER BY ts) AS previous_latency_ms
-FROM application_logs;
-```
-
-Add an explicit cast when the surrounding expression does not provide the type
-you need, for example `attrs.latency_ms::DOUBLE`.
 
 ### Control automatic path expansion
 
@@ -319,10 +239,143 @@ count against this limit. Fields beyond the limit remain in a special
 `remainder` field and can still be queried, so the option controls storage
 layout and performance, not the logical JSON schema.
 
-### Alter type hints and storage settings
+### Modify settings
 
 The settings of an existing JSON2 column can be changed with
-`ALTER TABLE ... MODIFY COLUMN`. See [Modify JSON2 settings](/reference/sql/alter.md#modify-json2-settings).
+`ALTER TABLE ... MODIFY COLUMN`. See
+[Modify JSON2 settings](/reference/sql/alter.md#modify-json2-settings).
+
+## Query JSON2
+
+JSON2 supports accessing nested fields through the `json_get` function or dot
+syntax. Both follow the same subpath type rules.
+
+### Subpath type rules
+
+When querying JSON2 subpaths, GreptimeDB considers type hints, explicit casts,
+and the query context to determine the read type.
+
+The following principles generally apply:
+
+- If a path has a type hint, it is read using the type specified by the hint.
+- If a path has no type hint but has an explicit cast, it is read using the
+  explicitly specified type.
+- If a path has neither a type hint nor an explicit cast, the read type is
+  determined by the query context.
+- If the read type cannot be determined from type hints, explicit casts, or the
+  query context, it defaults to `STRING`.
+
+For example, suppose `http.status` has a `BIGINT` type hint:
+
+```sql
+json_get(attrs, 'http.status')
+```
+
+The query uses the type hint to determine the path's read type.
+
+If you add an explicit cast to `STRING`:
+
+```sql
+json_get(attrs, 'http.status')::STRING
+```
+
+The type hint still determines the path's read type, and the explicit cast
+applies to the result after reading.
+
+For paths without type hints, the query context contributes to determining the
+read type. For example:
+
+```sql
+WHERE json_get(attrs, 'http.status') >= 500
+```
+
+This comparison expression provides a type requirement that contributes to
+determining the path's read type.
+
+You can also provide an explicit type requirement with a cast:
+
+```sql
+json_get(attrs, 'http.status')::BIGINT
+```
+
+For paths without type hints, this type requirement contributes to determining
+the read type.
+
+<AnchorAlias id="json_get-udf" />
+
+### `json_get` function
+
+`json_get` reads a nested field from JSON2 by path.
+
+The syntax is:
+
+```sql
+json_get(json_column, 'path.to.field')
+json_get(json_column, 'path.to.field')::TYPE
+```
+
+For example:
+
+```sql
+SELECT
+    json_get(attrs, 'trace_id')::STRING AS trace_id,
+    json_get(attrs, 'http.status')::BIGINT AS status,
+    json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms
+FROM application_logs
+WHERE json_get(attrs, 'http.status')::BIGINT >= 500;
+```
+
+The typed extraction functions `json_get_string`, `json_get_int`,
+`json_get_float`, and `json_get_bool` also accept JSON2 values. See
+[JSON functions](/reference/sql/functions/json.md#extraction) for details.
+
+### Dot syntax
+
+You can read JSON2 subpaths directly with dot syntax and use zero-based
+subscripts to access array elements:
+
+```sql
+json_column.path.to.field
+json_column.path[0].field
+```
+
+For example:
+
+```sql
+SELECT
+    attrs.trace_id,
+    attrs.http.status,
+    attrs.latency_ms,
+    attrs.items[0].name
+FROM application_logs
+WHERE attrs.http.status >= 500;
+```
+
+`json_get` and dot syntax can both be used in `SELECT`, `WHERE`, `GROUP BY`,
+and other SQL clauses that accept expressions.
+
+A missing path, an out-of-range array subscript, or a value that cannot be
+converted to the corresponding read type returns `NULL`.
+
+### Use paths in SQL functions
+
+JSON2 subpaths can be used in scalar, aggregate, and window functions. For paths
+without type hints, GreptimeDB infers the read type using the context of the
+function call. For example:
+
+```sql
+SELECT ABS(attrs.latency_ms) AS latency_ms
+FROM application_logs;
+
+SELECT SUM(attrs.latency_ms) AS total_latency_ms
+FROM application_logs;
+
+SELECT LAG(attrs.latency_ms) OVER (ORDER BY ts) AS previous_latency_ms
+FROM application_logs;
+```
+
+Add an explicit cast when the surrounding expression does not provide the type
+you need, for example `attrs.latency_ms::DOUBLE`.
 
 <AnchorAlias id="roadmap" />
 

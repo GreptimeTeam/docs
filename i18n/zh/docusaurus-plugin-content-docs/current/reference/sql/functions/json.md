@@ -52,7 +52,7 @@ SELECT json_to_string(json_object('host', 'web-1', 'cpu', 0.42, 'healthy', true)
 
 `json_to_string`、`json_get`、`json_get_string`、`json_get_int`、`json_get_float` 和 `json_get_bool` 也支持 [JSON2](/user-guide/logs/json2.md) 列。
 
-对于 JSON2，`json_get` 按匹配的 type hint 指定的类型读取底层数据；未声明 hint 的路径根据查询 SQL 推断读取类型，没有类型信息时默认使用 `STRING`。匹配 hint 时，显式 CAST 在按 hint 读取后执行，并可能因转换失败而报错。详见 [JSON 字段 Type hint](/user-guide/logs/json2.md#json-字段-type-hint)。
+对于 JSON2，`json_get` 按匹配的 type hint 指定的类型读取底层数据；未声明 hint 的路径根据查询 SQL 推断读取类型，没有类型信息时默认使用 `STRING`。匹配 hint 时，显式 CAST 在按 hint 读取后执行，并可能因转换失败而报错。详见 [子路径类型规则](/user-guide/logs/json2.md#子路径类型规则)。
 
 `path` 是一个用于从 JSON 值中选择和提取元素的字符串。`path` 中支持的操作符有：
 

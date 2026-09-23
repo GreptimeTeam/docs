@@ -236,44 +236,48 @@ JSON2 支持通过 `json_get` 函数或点号语法访问嵌套字段。这两�
 
 ### 子路径类型规则
 
-查询 JSON2 子路径时，读取类型按以下规则确定：
+查询 JSON2 子路径时，GreptimeDB 会综合 type hint、显式类型转换和查询上下文确定
+读取类型。
+
+通常遵循以下原则：
 
 - 如果路径声明了 type hint，则按照 type hint 指定的类型读取。
-- 用户可以通过显式类型转换指定最终的表达式类型。对于声明了 type hint 的路径，
-  显式类型转换应用于按照 type hint 读取后的结果。
-- 如果路径未声明 type hint，且未显式指定类型，则读取类型由查询上下文推断。
+- 如果路径未声明 type hint，但存在显式类型转换，则按照显式指定的类型读取。
+- 如果路径既未声明 type hint，也未显式指定类型，则根据查询上下文确定读取类型。
 - 如果无法从 type hint、显式类型转换或查询上下文中确定读取类型，则默认按
   `STRING` 读取。
 
-例如，若 `http.status` 声明了 `BIGINT` type hint，下面的表达式会按 `BIGINT`
-读取该路径：
+例如，若 `http.status` 声明了 `BIGINT` type hint：
 
 ```sql
 json_get(attrs, 'http.status')
 ```
 
-如果显式转换为 `STRING`，则先按 type hint 指定的 `BIGINT` 类型读取，再将结果
-转换为 `STRING`：
+查询会使用该 type hint 确定路径的读取类型。
+
+如果再显式转换为 `STRING`：
 
 ```sql
 json_get(attrs, 'http.status')::STRING
 ```
 
-如果路径未声明 type hint，则读取类型可以由查询上下文推断。例如：
+Type hint 仍用于确定路径的读取类型，显式类型转换作用于读取后的结果。
+
+对于未声明 type hint 的路径，查询上下文会参与确定读取类型。例如：
 
 ```sql
 WHERE json_get(attrs, 'http.status') >= 500
 ```
 
-查询上下文会根据与整数 `500` 的比较推断该路径所需的读取类型。
+这里的比较表达式提供了类型要求，参与确定该路径的读取类型。
 
-也可以通过显式类型转换指定所需类型：
+也可以通过显式类型转换提供明确的类型要求：
 
 ```sql
 json_get(attrs, 'http.status')::BIGINT
 ```
 
-该路径会按照 `BIGINT` 类型读取。
+对于未声明 type hint 的路径，该类型要求会参与确定读取类型。
 
 ### `json_get` 函数
 
