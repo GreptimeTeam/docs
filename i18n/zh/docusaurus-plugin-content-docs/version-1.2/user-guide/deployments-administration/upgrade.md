@@ -142,6 +142,29 @@ GreptimeDB 现在始终为 metric 表使用稀疏主键编码，`sparse_primary_
   已经不再提供关闭该行为的选项
 - 使用清理后的配置在预发环境重启一次，确认部署已不再依赖这些被移除的设置
 
+### 从 v1.0 升级到 v1.1
+
+#### OSS RRSA 凭证优先级变化 {#oss-rrsa-credential-precedence}
+
+**影响：** 升级后访问 OSS 时使用的 RAM 角色可能发生变化。
+
+从 v1.0.2 升级到 v1.1.0 时，如果 Pod 可以从节点 metadata 获取凭证，使用
+RRSA/OIDC 的 ACK 部署可能优先选用 ECS 节点 RAM Role 凭证。如果节点角色缺少
+所需的 OSS 权限，建表或写入可能返回 `403 PermissionDenied`，例如在写入 manifest
+时失败。v1.1.4、v1.2.1 和 `v1.3.0-alpha.1-nightly-20260907` 也采用相同的凭证顺序；
+从 v1.0 直接升级到这些版本时，也需检查此项。
+
+**操作要求：**
+
+1. 如果部署使用 RRSA/OIDC，在升级部署前，为访问 OSS 的 standalone 实例或所有
+   datanode 设置环境变量 `ALIBABA_CLOUD_ECS_METADATA_DISABLED=true`。
+   保留原有 RRSA 环境变量和 token 挂载。容器配置示例和凭证优先级说明见
+   [OSS RRSA/OIDC 配置](/user-guide/deployments-administration/configuration.md#阿里云-oss-的-rrsaoidc-认证)。
+2. 重启相关实例使设置生效。如果部署依赖 ECS RAM Role 凭证，请勿设置该变量。
+3. 在非生产环境验证升级，检查建表、写入和读取，并确认 OSS 操作不再返回权限错误。
+   如果仍然报错，请检查实际使用的身份及其 bucket 权限；仅凭 `403` 不能认定是此凭证
+   优先级问题。
+
 ### 从 v0.17 升级到 v1.0
 
 如果使用 Metric Engine 表，从 v0.17 升级到 v1.0 或更高版本前，请查看
@@ -369,6 +392,7 @@ SELECT * FROM table;
 
 ### 升级前
 
+- [ ] 如果使用 OSS RRSA/OIDC，检查[凭证优先级变化](#oss-rrsa-credential-precedence)，并在需要时配置禁用 ECS metadata
 - [ ] 查看与你的升级路径相关的所有破坏性变更
 - [ ] **备份所有数据和配置**
 - [ ] 如果升级到 v1.2，搜索 PromQL 资产中的 `holt_winters(`、`fill(`、`fill_left(` 和 `fill_right(`
