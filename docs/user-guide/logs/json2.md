@@ -155,9 +155,7 @@ The query result is:
 
 ## JSON2 Column Configuration
 
-<AnchorAlias id="json-field-type-hints" />
-
-### Type hints
+### JSON Field Type hints
 
 JSON2 supports type hints for declaring concrete data types for selected
 subpaths. Type hints are recommended for frequently queried subpaths with known

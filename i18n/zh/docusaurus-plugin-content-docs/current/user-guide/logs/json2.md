@@ -148,9 +148,7 @@ GROUP BY json_get(attrs, 'http.path')::STRING;
 
 ## JSON2 列配置
 
-<AnchorAlias id="json-字段-type-hint" />
-
-### Type hint
+### JSON 字段 Type hint
 
 JSON2 支持使用 type hint 为指定的子路径声明确定的数据类型。对于类型已知且稳定、
 需要频繁查询的子路径，建议使用 type hint。这些子路径会按指定类型存储，从而获得接
