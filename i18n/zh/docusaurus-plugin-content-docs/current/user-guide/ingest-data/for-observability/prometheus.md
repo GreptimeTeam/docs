@@ -299,31 +299,38 @@ mysql> select * from `go_memstats_mcache_inuse_bytes`;
 
 当 metric engine 启用时，GreptimeDB 支持 Prometheus Remote Write 的批量写入模式，
 通过减少单次请求的开销来提高写入吞吐量。
-在批量写入模式下，传入的行数据会被累积并以更大的批次刷写到 metric engine 中，
-在多 region 的集群部署中可以带来最高 **2 倍的吞吐量提升**，但是需要仔细调整攒批相关的参数以避免写入延迟增加。
+在批量写入模式下，传入的行数据会被累积并以更大的批次刷写到 metric engine 中。
 
 批量写入模式**默认关闭**。
-要启用它，请在配置文件的 `[prom_store]` 部分将 `pending_rows_flush_interval` 设置为非零时间间隔：
+要启用它，请在 `[pending_rows_batcher.logical_table]` 中配置 `prom` 和非零的
+`pending_rows_flush_interval`：
 
 ```toml
 [prom_store]
 enable = true
 with_metric_engine = true
+
+[pending_rows_batcher.logical_table]
+protocols = ["prom"]
 pending_rows_flush_interval = "500ms"
 ```
 
-下表描述了批量写入相关的配置选项：
+下表描述 `[pending_rows_batcher.logical_table]` 中的配置选项：
 
 | 键                           | 类型   | 默认值    | 描述                                                                 |
 | ---------------------------- | ------ | --------- | -------------------------------------------------------------------- |
-| pending_rows_flush_interval  | 字符串 | `"0s"`    | 批量刷写的时间间隔。`"0s"` 表示禁用批量写入模式。                   |
+| protocols                    | 数组   | `[]`      | 使用逻辑表批量写入器的协议。Prometheus Remote Write 使用 `prom`。    |
+| pending_rows_flush_interval  | 字符串 | `"0s"`    | 从收到第一批待处理数据开始计算的定时刷写间隔。`"0s"` 表示禁用批量写入模式。 |
 | max_batch_rows               | 整数   | `100000`  | 触发刷写的最大批量行数。                                             |
-| max_concurrent_flushes       | 整数   | `256`     | 同时执行的最大刷写操作数量。                                         |
-| worker_channel_capacity      | 整数   | `65536`   | 内部接收行数据的 worker 通道容量。                                   |
+| max_concurrent_flushes       | 整数   | `256`     | 最大并发刷写操作数。                                                 |
+| worker_channel_capacity      | 整数   | `65536`   | 每个物理表 worker 最多可排队的提交数。                               |
 | max_inflight_requests        | 整数   | `3000`    | 等待批量完成的最大请求数。                                           |
+| flow_notification_queue_capacity | 整数 | `1024` | 共享队列中等待处理的逻辑表 Flow 通知数上限。                          |
 
 :::tip
-批量写入模式仅在 `with_metric_engine` 为 `true` 且 `pending_rows_flush_interval` 设置为非零时间间隔时生效。
+仅当 `prom_store.with_metric_engine` 为 `true`、
+`pending_rows_batcher.logical_table.protocols` 包含 `prom`，且
+`pending_rows_batcher.logical_table.pending_rows_flush_interval` 为非零值时，批量写入模式才会生效。
 :::
 
 ### 请求超时与重试
@@ -334,9 +341,9 @@ GreptimeDB 会返回 `504 Gateway Timeout` 而不是 `408 Request Timeout`。
 Prometheus 及其他 Remote Write 发送端会对 `5xx` 响应进行重试，
 因此超时的请求会被自动重试，而不是被直接丢弃。
 
-在批量写入模式下，已被接受到待刷写批次中的行数据即使在请求超时后仍会继续在后台刷写。
+在同步批量写入模式下，已被接受到待刷写批次中的行数据即使在请求超时后仍会继续在后台刷写。
 为了确保请求能够等待足够长的时间以完成批次刷写，
-如果 `http.timeout` 为非零值且不超过 `pending_rows_flush_interval` 加 1 秒，
+如果 `http.timeout` 为非零值且不超过 `pending_rows_batcher.logical_table.pending_rows_flush_interval` 加 1 秒，
 GreptimeDB 会将其自动调整为该值并输出警告日志。
 设置 `http.timeout = "0s"`（默认值）则完全禁用 HTTP 超时。
 
