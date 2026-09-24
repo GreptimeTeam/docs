@@ -1,0 +1,21 @@
+docs/user-guide/ingest-data/for-observability/prometheus.md
+  s_5dffa09e594910::t_88f4ebde75f595 310,313-314,320-322,326,330-331,333-334,336,339-341,351,353-354
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/ingest-data/for-observability/prometheus.md
+  s_5dffa09e594910::t_c4af3edc8e3faa 302,305-306,312-314,318,322-323,325-326,328,331-333,344,346
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "26d1ef9a91841d685d0226caed8c6603bdd0d334",
+  "prompts": {},
+  "sessions": {
+    "s_5dffa09e594910": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0b380-18f7-7dd1-b2c9-0ec51225d012",
+        "model": "unknown"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
