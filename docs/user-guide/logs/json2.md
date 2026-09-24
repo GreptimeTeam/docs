@@ -304,8 +304,6 @@ WHERE attrs.http.status >= 500;
 
 A missing path or an out-of-range array subscript returns `NULL`.
 
-<AnchorAlias id="use-paths-in-sql-functions" />
-
 ### Return types and type conversion
 
 `json_get` and dot syntax follow the same return type rules.

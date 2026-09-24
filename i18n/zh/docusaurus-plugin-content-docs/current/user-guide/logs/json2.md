@@ -286,8 +286,6 @@ WHERE attrs.http.status >= 500;
 
 路径不存在或数组下标越界时返回 `NULL`。
 
-<AnchorAlias id="在-sql-函数中使用路径" />
-
 ### 返回类型与类型转换
 
 `json_get` 和点号语法遵循相同的返回类型规则。
