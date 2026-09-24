@@ -144,7 +144,11 @@ GROUP BY json_get(attrs, 'http.path')::STRING;
 | --- | --- | --- | --- |
 | /v1/orders | 3 | 1 | 166.8 |
 
+<AnchorAlias id="语法" />
+
 ## JSON2 列配置
+
+<AnchorAlias id="json-字段-type-hint" />
 
 ### Type hint
 
@@ -233,6 +237,8 @@ CREATE TABLE application_logs (
 
 JSON2 支持通过 `json_get` 函数或点号语法访问嵌套字段。
 
+<AnchorAlias id="json_get-udf" />
+
 ### `json_get` 函数
 
 `json_get` 用于按路径读取 JSON2 中的嵌套字段。
@@ -320,6 +326,8 @@ SELECT
     attrs.http.status AS status_by_dot
 FROM application_logs;
 ```
+
+<AnchorAlias id="未来规划" />
 
 ## 当前限制
 
