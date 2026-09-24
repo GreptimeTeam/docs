@@ -248,58 +248,7 @@ The settings of an existing JSON2 column can be changed with
 ## Query JSON2
 
 JSON2 supports accessing nested fields through the `json_get` function or dot
-syntax. Both follow the same subpath type rules.
-
-### Subpath type rules
-
-When querying JSON2 subpaths, GreptimeDB considers type hints, explicit casts,
-and the query context to determine the read type.
-
-The following principles generally apply:
-
-- If a path has a type hint, it is read using the type specified by the hint.
-- If a path has no type hint but has an explicit cast, it is read using the
-  explicitly specified type.
-- If a path has neither a type hint nor an explicit cast, the read type is
-  determined by the query context.
-- If the read type cannot be determined from type hints, explicit casts, or the
-  query context, it defaults to `STRING`.
-
-For example, suppose `http.status` has a `BIGINT` type hint:
-
-```sql
-json_get(attrs, 'http.status')
-```
-
-The query uses the type hint to determine the path's read type.
-
-If you add an explicit cast to `STRING`:
-
-```sql
-json_get(attrs, 'http.status')::STRING
-```
-
-The type hint still determines the path's read type, and the explicit cast
-applies to the result after reading.
-
-For paths without type hints, the query context contributes to determining the
-read type. For example:
-
-```sql
-WHERE json_get(attrs, 'http.status') >= 500
-```
-
-This comparison expression provides a type requirement that contributes to
-determining the path's read type.
-
-You can also provide an explicit type requirement with a cast:
-
-```sql
-json_get(attrs, 'http.status')::BIGINT
-```
-
-For paths without type hints, this type requirement contributes to determining
-the read type.
+syntax.
 
 <AnchorAlias id="json_get-udf" />
 
@@ -314,7 +263,8 @@ json_get(json_column, 'path.to.field')
 json_get(json_column, 'path.to.field')::TYPE
 ```
 
-For example:
+`json_get` can be used in `SELECT`, `WHERE`, `GROUP BY`, and other SQL clauses
+that accept expressions. For example:
 
 ```sql
 SELECT
@@ -339,7 +289,8 @@ json_column.path.to.field
 json_column.path[0].field
 ```
 
-For example:
+Dot syntax can be used in `SELECT`, `WHERE`, `GROUP BY`, and other SQL clauses
+that accept expressions. For example:
 
 ```sql
 SELECT
@@ -351,31 +302,48 @@ FROM application_logs
 WHERE attrs.http.status >= 500;
 ```
 
-`json_get` and dot syntax can both be used in `SELECT`, `WHERE`, `GROUP BY`,
-and other SQL clauses that accept expressions.
+A missing path or an out-of-range array subscript returns `NULL`.
 
-A missing path, an out-of-range array subscript, or a value that cannot be
-converted to the corresponding read type returns `NULL`.
+<AnchorAlias id="use-paths-in-sql-functions" />
 
-### Use paths in SQL functions
+### Return types and type conversion
 
-JSON2 subpaths can be used in scalar, aggregate, and window functions. For paths
-without type hints, GreptimeDB infers the read type using the context of the
-function call. For example:
+`json_get` and dot syntax follow the same return type rules.
+
+If the accessed path has a type hint, the result uses the type specified by
+that hint. For example, if `http.status` has a `BIGINT` type hint, both
+`json_get(attrs, 'http.status')` and `attrs.http.status` return `BIGINT`.
+
+For paths without type hints, GreptimeDB infers the return type from the query
+context, such as the types required by function arguments or comparisons.
+You can also specify the return type with an explicit cast. For example:
 
 ```sql
+-- Infer the type from function argument requirements
 SELECT ABS(attrs.latency_ms) AS latency_ms
 FROM application_logs;
 
-SELECT SUM(attrs.latency_ms) AS total_latency_ms
-FROM application_logs;
+-- Infer the type from comparison requirements
+SELECT ts
+FROM application_logs
+WHERE attrs.http.status >= 500;
 
-SELECT LAG(attrs.latency_ms) OVER (ORDER BY ts) AS previous_latency_ms
+-- Specify the return type explicitly
+SELECT json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms
 FROM application_logs;
 ```
 
-Add an explicit cast when the surrounding expression does not provide the type
-you need, for example `attrs.latency_ms::DOUBLE`.
+If a path has no type hint or explicit cast, and the query context cannot
+determine the return type, the result defaults to `STRING`. For example,
+without a type hint, both expressions below return `STRING`, even if
+`http.status` stores a number in the JSON:
+
+```sql
+SELECT
+    json_get(attrs, 'http.status') AS status_by_function,
+    attrs.http.status AS status_by_dot
+FROM application_logs;
+```
 
 <AnchorAlias id="roadmap" />
 

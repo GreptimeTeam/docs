@@ -231,66 +231,20 @@ CREATE TABLE application_logs (
 
 ## 查询 JSON2
 
-JSON2 支持通过 `json_get` 函数或点号语法访问嵌套字段。这两种方式遵循相同的
-子路径类型规则。
-
-### 子路径类型规则
-
-查询 JSON2 子路径时，GreptimeDB 会综合 type hint、显式类型转换和查询上下文确定
-读取类型。
-
-通常遵循以下原则：
-
-- 如果路径声明了 type hint，则按照 type hint 指定的类型读取。
-- 如果路径未声明 type hint，但存在显式类型转换，则按照显式指定的类型读取。
-- 如果路径既未声明 type hint，也未显式指定类型，则根据查询上下文确定读取类型。
-- 如果无法从 type hint、显式类型转换或查询上下文中确定读取类型，则默认按
-  `STRING` 读取。
-
-例如，若 `http.status` 声明了 `BIGINT` type hint：
-
-```sql
-json_get(attrs, 'http.status')
-```
-
-查询会使用该 type hint 确定路径的读取类型。
-
-如果再显式转换为 `STRING`：
-
-```sql
-json_get(attrs, 'http.status')::STRING
-```
-
-Type hint 仍用于确定路径的读取类型，显式类型转换作用于读取后的结果。
-
-对于未声明 type hint 的路径，查询上下文会参与确定读取类型。例如：
-
-```sql
-WHERE json_get(attrs, 'http.status') >= 500
-```
-
-这里的比较表达式提供了类型要求，参与确定该路径的读取类型。
-
-也可以通过显式类型转换提供明确的类型要求：
-
-```sql
-json_get(attrs, 'http.status')::BIGINT
-```
-
-对于未声明 type hint 的路径，该类型要求会参与确定读取类型。
+JSON2 支持通过 `json_get` 函数或点号语法访问嵌套字段。
 
 ### `json_get` 函数
 
 `json_get` 用于按路径读取 JSON2 中的嵌套字段。
 
-语法如下：
+`json_get` 的语法如下：
 
 ```sql
 json_get(json_column, 'path.to.field')
 json_get(json_column, 'path.to.field')::TYPE
 ```
 
-例如：
+`json_get` 可以用于 `SELECT`、`WHERE`、`GROUP BY` 等接受表达式的 SQL 子句。例如：
 
 ```sql
 SELECT
@@ -307,14 +261,14 @@ WHERE json_get(attrs, 'http.status')::BIGINT >= 500;
 
 ### 点号语法
 
-JSON2 也支持通过点号语法直接访问嵌套字段，并通过从 0 开始的下标访问数组元素：
+可以直接通过点号语法读取 JSON2 中的子路径，并通过从 0 开始的下标访问数组元素：
 
 ```sql
 json_column.path.to.field
 json_column.path[0].field
 ```
 
-例如：
+点号语法可以用于 `SELECT`、`WHERE`、`GROUP BY` 等接受表达式的 SQL 子句。例如：
 
 ```sql
 SELECT
@@ -326,28 +280,46 @@ FROM application_logs
 WHERE attrs.http.status >= 500;
 ```
 
-`json_get` 和点号语法都可以用于 `SELECT`、`WHERE`、`GROUP BY` 等接受表达式的
-SQL 子句。
+路径不存在或数组下标越界时返回 `NULL`。
 
-当路径不存在、数组下标越界，或值无法转换为对应的读取类型时，返回 `NULL`。
+<AnchorAlias id="在-sql-函数中使用路径" />
 
-### 在 SQL 函数中使用路径
+### 返回类型与类型转换
 
-JSON2 子路径可以用于标量函数、聚合函数和窗口函数。对于未声明 type hint 的路径，
-GreptimeDB 会结合函数调用的上下文推断读取类型。例如：
+`json_get` 和点号语法遵循相同的返回类型规则。
+
+如果访问路径声明了 type hint，则返回该 type hint 指定的类型。例如，`http.status`
+声明了 `BIGINT` type hint 时，`json_get(attrs, 'http.status')` 和
+`attrs.http.status` 都返回 `BIGINT`。
+
+对于未声明 type hint 的路径，GreptimeDB 会根据查询上下文推断返回类型，例如函数
+参数或比较运算所要求的类型。也可以通过显式类型转换指定返回类型。例如：
 
 ```sql
+-- 根据函数参数要求推断类型
 SELECT ABS(attrs.latency_ms) AS latency_ms
 FROM application_logs;
 
-SELECT SUM(attrs.latency_ms) AS total_latency_ms
-FROM application_logs;
+-- 根据比较运算要求推断类型
+SELECT ts
+FROM application_logs
+WHERE attrs.http.status >= 500;
 
-SELECT LAG(attrs.latency_ms) OVER (ORDER BY ts) AS previous_latency_ms
+-- 显式指定返回类型
+SELECT json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms
 FROM application_logs;
 ```
 
-如果上下文无法提供所需类型，可以显式转换，例如 `attrs.latency_ms::DOUBLE`。
+如果没有声明 type hint，也没有显式指定类型，且查询上下文无法确定返回类型，则默认
+返回 `STRING`。例如，在未声明 type hint 的情况下，下面两个表达式都返回 `STRING`，
+即使 JSON 中的 `http.status` 存储的是数字：
+
+```sql
+SELECT
+    json_get(attrs, 'http.status') AS status_by_function,
+    attrs.http.status AS status_by_dot
+FROM application_logs;
+```
 
 ## 当前限制
 
