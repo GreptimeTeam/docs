@@ -191,7 +191,7 @@ the new settings are removed.
 Changing type hints may affect some historical data. If historical data is
 rewritten during subsequent compaction, the new type hints apply, and field
 values incompatible with the new types become `null`. For example, if `j.a`
-previously stored strings, specifying an `int` type hint for it may cause
+previously stored strings, specifying a `BIGINT` type hint for it may cause
 some historical field values to become `null`.
 
 Omitting `max_auto_expanded_paths` resets it to its default of `100`.

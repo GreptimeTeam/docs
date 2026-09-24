@@ -188,7 +188,7 @@ ALTER TABLE application_logs
 
 修改 type hint 可能影响部分历史数据。如果历史数据在后续 compaction 中被重写，
 则会应用新的类型提示，其中与新类型不兼容的字段值会变为 `null`。例如，为原先存储
-字符串的 `j.a` 指定 `int` 类型提示后，部分历史字段值可能变为 `null`。
+字符串的 `j.a` 指定 `BIGINT` 类型提示后，部分历史字段值可能变为 `null`。
 
 如果省略 `max_auto_expanded_paths`，该配置会恢复为默认值 100。
 
