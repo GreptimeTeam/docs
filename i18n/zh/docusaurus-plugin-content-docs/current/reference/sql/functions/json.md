@@ -45,14 +45,12 @@ SELECT json_to_string(json_object('host', 'web-1', 'cpu', 0.42, 'healthy', true)
 * `json_get_float(json, path)` 按照路径 `path` 从 JSON 中获取浮点数值。布尔值、整数值将被转换为浮点数。
 * `json_get_string(json, path)` 按照路径 `path` 从 JSON 中获取字符串。所有类型的 JSON 值都将被转换为字符串，包括数组、对象和 null。
 * `json_get_object(json, path)` 按照路径 `path` 从 JSON 中获取对象值。如果路径未指向对象，则返回 NULL。
-* `json_get(json, path)` 默认以字符串形式提取值（JSON2 的读取类型规则见下文）。要提取为其他 SQL 标量类型，可转换函数结果，例如 `json_get(value, 'a')::INT`。
+* `json_get(json, path)` 以字符串形式提取值。要提取为其他 SQL 标量类型，可转换函数结果，例如 `json_get(value, 'a')::INT`。
 * `json_object_keys(json)` 返回 JSON 对象最外层的所有键，并以字符串列表的形式返回。空对象返回 `[]`，非对象 JSON 值或 `NULL` 输入返回 `NULL`。
 
-`json_get` 的 `path` 参数必须是字符串字面量。提取字段时，路径未选中值或选中的值无法转换为读取类型时返回 NULL。这不包括外层显式 CAST 的转换失败；后者遵循普通 SQL CAST 规则，可能报错。
+`json_get` 的 `path` 参数必须是字符串字面量。路径未选中值或选中的值无法转换为目标类型时返回 NULL。
 
 `json_to_string`、`json_get`、`json_get_string`、`json_get_int`、`json_get_float` 和 `json_get_bool` 也支持 [JSON2](/user-guide/logs/json2.md) 列。
-
-对于 JSON2，`json_get` 按匹配的 type hint 指定的类型读取底层数据；未声明 hint 的路径根据查询 SQL 推断读取类型，没有类型信息时默认使用 `STRING`。匹配 hint 时，显式 CAST 在按 hint 读取后执行，并可能因转换失败而报错。详见 [子路径类型规则](/user-guide/logs/json2.md#子路径类型规则)。
 
 `path` 是一个用于从 JSON 值中选择和提取元素的字符串。`path` 中支持的操作符有：
 
