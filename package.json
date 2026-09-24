@@ -61,7 +61,7 @@
     "remark": "^15.0.1",
     "strip-markdown": "^6.0.0",
     "typescript": "~5.2.2",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.11"
   },
   "browserslist": {
     "production": [
