@@ -116,11 +116,11 @@ You can also use JSON functions and cast the return type explicitly:
 ```sql
 SELECT
     json_get(attrs, 'http.path')::STRING AS path,
-    json_get(attrs, 'http.status')::INT8 AS status,
+    json_get(attrs, 'http.status')::BIGINT AS status,
     json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms,
     json_get(attrs, 'error')::BOOLEAN AS error
 FROM application_logs
-WHERE json_get(attrs, 'http.status')::INT8 >= 500
+WHERE json_get(attrs, 'http.status')::BIGINT >= 500
     OR json_get(attrs, 'latency_ms')::DOUBLE > 300
 ORDER BY ts;
 ```
@@ -151,7 +151,9 @@ The query result is:
 | --- | --- | --- | --- |
 | /v1/orders | 3 | 1 | 166.8 |
 
-## Syntax
+<AnchorAlias id="syntax" />
+
+## JSON2 Column Configuration
 
 ### JSON Field Type hints
 
@@ -166,7 +168,7 @@ The syntax for declaring type hints is:
 
 ```sql
 json_column JSON2 (
-    path.to.field DATA_TYPE [NULL | NOT NULL] [DEFAULT literal]
+    path.to.field DATA_TYPE
 )
 ```
 
@@ -180,17 +182,18 @@ not a nested path `service.name`.
 Type hints currently support the following data types:
 
 - `STRING`
-- `BIGINT`
-- `BIGINT UNSIGNED`
-- `DOUBLE`
+- `BIGINT` / `INT64`
+- `BIGINT UNSIGNED` / `UINT64`
+- `DOUBLE` / `FLOAT64`
 - `BOOLEAN`
 
-Type hints allow `NULL` by default. If you specify `NOT NULL`, that path must
-exist in the written JSON.
+Type hints currently do not support explicit `NULL`, `NOT NULL`, or `DEFAULT`
+options. Type hints are nullable by default, and missing fields are normalized
+to JSON `null`.
 
 You can declare type hints directly in the `CREATE TABLE` statement. The
-following example defines type hints for commonly queried subpaths in the
-`attrs` column:
+following is an alternative way to create `application_logs`, with type hints
+for commonly queried subpaths in `attrs`:
 
 ```sql
 CREATE TABLE application_logs (
@@ -201,27 +204,62 @@ CREATE TABLE application_logs (
     attrs JSON2 (
         trace_id STRING,
         user.id BIGINT,
-        user.name STRING DEFAULT 'anonymous',
+        user.name STRING,
         http.method STRING,
         http.path STRING,
         http.status BIGINT,
         latency_ms DOUBLE,
-        error BOOLEAN DEFAULT false
+        error BOOLEAN
     )
 ) WITH (
     'append_mode' = 'true'
 );
 ```
 
-### `json_get` UDF
+### Control automatic path expansion
 
-`json_get` reads a nested field from JSON2 by path. It returns a string by
-default. If you want to specify the return type directly, add a cast after the
-function.
-
-The syntax of `json_get` is:
+JSON2 automatically stores up to 100 unhinted leaf paths as structured columns.
+Use `max_auto_expanded_paths` to change this limit. The following is a separate
+table creation example:
 
 ```sql
+CREATE TABLE application_logs (
+    ts TIMESTAMP TIME INDEX,
+    attrs JSON2 (
+        max_auto_expanded_paths = 20,
+        trace_id STRING
+    )
+) WITH (
+    'append_mode' = 'true'
+);
+```
+
+Set the option to `0` to disable automatic expansion. Type-hinted paths do not
+count against this limit. Fields beyond the limit remain in a special
+`remainder` field and can still be queried, so the option controls storage
+layout and performance, not the logical JSON schema.
+
+### Modify settings
+
+The settings of an existing JSON2 column can be changed with
+`ALTER TABLE ... MODIFY COLUMN`. See
+[Modify JSON2 settings](/reference/sql/alter.md#modify-json2-settings).
+
+## Query JSON2
+
+JSON2 supports accessing nested fields through the `json_get` function or dot
+syntax.
+
+<AnchorAlias id="json_get-udf" />
+
+### `json_get` function
+
+`json_get` reads a nested field from JSON2 by path.
+
+The syntax is:
+
+```sql
+json_get(json_column, 'path.to.field')
 json_get(json_column, 'path.to.field')::TYPE
 ```
 
@@ -264,49 +302,46 @@ FROM application_logs
 WHERE attrs.http.status >= 500;
 ```
 
-A missing path, an out-of-range subscript, or a type mismatch returns `NULL`.
+A missing path or an out-of-range array subscript returns `NULL`.
 
-### Use paths in SQL functions
+### Return types and type conversion
 
-JSON2 paths can be passed directly to scalar, aggregate, and window functions.
-GreptimeDB infers the SQL type expected by the function and converts compatible
-values. Values that cannot be converted to the expected type return `NULL`.
+`json_get` and dot syntax follow the same return type rules.
+
+If the accessed path has a type hint, the result uses the type specified by
+that hint. For example, if `http.status` has a `BIGINT` type hint, both
+`json_get(attrs, 'http.status')` and `attrs.http.status` return `BIGINT`.
+
+For paths without type hints, GreptimeDB infers the return type from the query
+context, such as the types required by function arguments or comparisons.
+You can also specify the return type with an explicit cast. For example:
 
 ```sql
+-- Infer the type from function argument requirements
 SELECT ABS(attrs.latency_ms) AS latency_ms
 FROM application_logs;
 
-SELECT SUM(attrs.latency_ms) AS total_latency_ms
-FROM application_logs;
+-- Infer the type from comparison requirements
+SELECT ts
+FROM application_logs
+WHERE attrs.http.status >= 500;
 
-SELECT LAG(attrs.latency_ms) OVER (ORDER BY ts) AS previous_latency_ms
+-- Specify the return type explicitly
+SELECT json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms
 FROM application_logs;
 ```
 
-Add an explicit cast when the surrounding expression does not provide the type
-you need, for example `attrs.latency_ms::DOUBLE`.
-
-### Control automatic path expansion
-
-JSON2 automatically stores up to 100 unhinted leaf paths as structured columns.
-Use `max_auto_expanded_paths` to change this limit:
+If a path has no type hint or explicit cast, and the query context cannot
+determine the return type, the result defaults to `STRING`. For example,
+without a type hint, both expressions below return `STRING`, even if
+`http.status` stores a number in the JSON:
 
 ```sql
-CREATE TABLE application_logs (
-    ts TIMESTAMP TIME INDEX,
-    attrs JSON2 (
-        max_auto_expanded_paths = 20,
-        trace_id STRING
-    )
-) WITH (
-    'append_mode' = 'true'
-);
+SELECT
+    json_get(attrs, 'http.status') AS status_by_function,
+    attrs.http.status AS status_by_dot
+FROM application_logs;
 ```
-
-Set the option to `0` to disable automatic expansion. Type-hinted paths do not
-count against this limit. Fields beyond the limit remain in a special
-`remainder` field and can still be queried, so the option controls storage
-layout and performance, not the logical JSON schema.
 
 <AnchorAlias id="roadmap" />
 

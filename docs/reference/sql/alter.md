@@ -165,6 +165,53 @@ ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
 
 Widening the time index unit is lossless — existing data is read in the new unit without rewriting, and new writes can use the finer precision. Narrowing the unit (for example, from microseconds back to milliseconds) or changing the time index to a non-timestamp type is not allowed. This operation is not supported on tables using the [metric engine](/reference/about-greptimedb-engines.md).
 
+### Modify JSON2 settings
+
+Use `ALTER TABLE ... MODIFY COLUMN` to change the type hints and
+`max_auto_expanded_paths` of an existing JSON2 column. For example, add type
+hints to the `attrs` column from the [JSON2 quick start](/user-guide/logs/json2.md#quick-start)
+and increase the automatic path expansion limit:
+
+```sql
+ALTER TABLE application_logs
+    MODIFY COLUMN attrs JSON2 (
+        max_auto_expanded_paths = 2000,
+        trace_id STRING,
+        user.id BIGINT,
+        http.status BIGINT,
+        latency_ms DOUBLE
+    );
+```
+
+The new settings **replace the entire JSON2 configuration** of the column;
+they are not merged with the previous settings. Include every existing type hint
+you want to retain in the new `MODIFY COLUMN` statement. Type hints omitted from
+the new settings are removed.
+
+Changing type hints may affect some historical data. If historical data is
+rewritten during subsequent compaction, the new type hints apply, and field
+values incompatible with the new types become `null`. For example, if `j.a`
+previously stored strings, specifying a `BIGINT` type hint for it may cause
+some historical field values to become `null`.
+
+Omitting `max_auto_expanded_paths` resets it to its default of `100`.
+
+For example, the following statement keeps only the `trace_id` type hint and
+resets `max_auto_expanded_paths` to its default:
+
+```sql
+ALTER TABLE application_logs
+    MODIFY COLUMN attrs JSON2 (
+        trace_id STRING
+    );
+```
+
+The updated type hints validate subsequent writes and determine the types used
+when querying the corresponding JSON paths.
+
+This operation applies only to existing JSON2 columns that are neither primary
+keys nor time indexes.
+
 ### Set column default value
 
 Set a default value for an existing column:
