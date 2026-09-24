@@ -307,32 +307,38 @@ You can refer to the [pipeline's documentation](/user-guide/logs/use-custom-pipe
 
 When the metric engine is enabled, GreptimeDB supports a batching mode for Prometheus Remote Write
 that reduces per-request overhead and improves ingestion throughput.
-In batching mode, incoming rows are accumulated and flushed to the metric engine in larger batches,
-which can yield up to **2x throughput improvement** in clustered deployments with multiple regions,
-but requires careful tuning of batch parameters to match the ingestion workload and prevent increased 
-latency.
+In batching mode, incoming rows are accumulated and flushed to the metric engine in larger batches.
 
 Batching mode is **disabled by default**.
-To enable it, set `pending_rows_flush_interval` to a non-zero duration in the `[prom_store]` section of the configuration file:
+To enable it, configure `prom` and a non-zero `pending_rows_flush_interval` in the
+`[pending_rows_batcher.logical_table]` section:
 
 ```toml
 [prom_store]
 enable = true
 with_metric_engine = true
+
+[pending_rows_batcher.logical_table]
+protocols = ["prom"]
 pending_rows_flush_interval = "500ms"
 ```
 
-The following table describes the batching-related options:
+The following table describes the options in `[pending_rows_batcher.logical_table]`:
 
 | Key                          | Type    | Default  | Description                                                                 |
 | ---------------------------- | ------- | -------- | --------------------------------------------------------------------------- |
-| pending_rows_flush_interval  | String  | `"0s"`   | Interval between batch flushes. `"0s"` disables batching.                   |
+| protocols                    | Array   | `[]`      | Protocols that use the logical-table batcher. Use `prom` for Prometheus Remote Write. |
+| pending_rows_flush_interval  | String  | `"0s"`   | Interval from the first pending submission to a timed flush. `"0s"` disables batching. |
 | max_batch_rows               | Integer | `100000` | Maximum number of rows per batch before a flush is triggered.               |
-| max_concurrent_flushes       | Integer | `256`    | Maximum number of flush operations that can run concurrently.               |
+| max_concurrent_flushes       | Integer | `256`    | Maximum number of concurrent flush operations.                              |
+| worker_channel_capacity      | Integer | `65536`  | Maximum number of queued submissions for each physical-table worker.        |
 | max_inflight_requests        | Integer | `3000`   | Maximum number of in-flight write requests waiting for batch completion.    |
+| flow_notification_queue_capacity | Integer | `1024` | Maximum number of logical-table Flow notifications waiting in the shared queue. |
 
 :::tip
-Batching mode only takes effect when both `with_metric_engine` is `true` and `pending_rows_flush_interval` is set to a non-zero duration.
+Batching mode takes effect only when `prom_store.with_metric_engine` is `true`,
+`pending_rows_batcher.logical_table.protocols` includes `prom`, and
+`pending_rows_batcher.logical_table.pending_rows_flush_interval` is non-zero.
 :::
 
 ### Request timeout and retries
@@ -342,9 +348,10 @@ GreptimeDB responds with `504 Gateway Timeout` instead of `408 Request Timeout`.
 Prometheus and other remote write senders retry on `5xx` responses,
 so a timed-out request is retried automatically instead of being dropped.
 
-In batching mode, rows that have been accepted into a pending batch continue to flush in the background even after the request times out.
+In synchronous batching mode, rows that have been accepted into a pending batch continue to flush in the background even after the request times out.
 To ensure a request can wait long enough for its batch to flush,
-GreptimeDB raises a non-zero `http.timeout` that is less than or equal to `pending_rows_flush_interval` plus 1 second to that value and logs a warning.
+GreptimeDB raises a non-zero `http.timeout` that is less than or equal to
+`pending_rows_batcher.logical_table.pending_rows_flush_interval` plus 1 second to that value and logs a warning.
 Setting `http.timeout = "0s"` (the default) disables the HTTP timeout entirely.
 
 ### Customized physical table

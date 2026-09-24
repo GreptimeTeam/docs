@@ -259,11 +259,20 @@ enable = true
 default_merge_mode = "last_non_null"
 
 [pending_rows_batcher]
-protocols = ["influxdb", "opentsdb", "otlp", "logs", "loki", "splunk", "elasticsearch", "http_sql", "prom"]
+protocols = ["influxdb", "opentsdb", "otlp", "logs", "loki", "splunk", "elasticsearch", "http_sql", "mysql", "postgres", "prom"]
 pending_rows_flush_interval = "500ms"
 max_batch_rows = 100000
 max_concurrent_flushes = 256
-worker_channel_capacity = 65526
+worker_channel_capacity = 65536
+max_inflight_requests = 3000
+flow_notification_queue_capacity = 1024
+
+[pending_rows_batcher.logical_table]
+protocols = ["prom", "otlp"]
+pending_rows_flush_interval = "500ms"
+max_batch_rows = 100000
+max_concurrent_flushes = 256
+worker_channel_capacity = 65536
 max_inflight_requests = 3000
 flow_notification_queue_capacity = 1024
 
@@ -277,13 +286,9 @@ trace_ingest_chunk_size = 512
 [prom_store]
 enable = true
 with_metric_engine = true
-pending_rows_flush_interval = "0s"
-max_batch_rows = 100000
-max_concurrent_flushes = 256
-worker_channel_capacity = 65526
-max_inflight_requests = 3000
-flow_notification_queue_capacity = 1024
 ```
+
+两种批量写入路径默认均在存储完成后再返回响应。将环境变量 `PENDING_ROWS_BATCH_SYNC` 设为 `false` 后，系统会在数据进入队列后立即响应；入队后发生的存储失败无法返回给客户端。同步批量写入时，单连接写入和 `INSERT SELECT` 可能需要等待一次刷写。
 
 下表描述了每个选项的详细信息：
 
@@ -291,7 +296,7 @@ flow_notification_queue_capacity = 1024
 | ---------- | ------------------ | ------ | ------------------------------------------------------------ |
 | http       |                    |        | HTTP 服务器选项                                              |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
-|            | timeout            | 字符串 | HTTP 请求超时时间。设为 `0s` 可禁用超时（默认值为 `0s`）。启用 Prometheus Remote Write [批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式)或普通表共享批量写入时，非零的超时值会被自动提高到至少为当前启用的最大刷写间隔加 1 秒。刷写间隔由 `prom_store.pending_rows_flush_interval` 和 `pending_rows_batcher.pending_rows_flush_interval` 决定。                              |
+|            | timeout            | 字符串 | HTTP 请求超时时间。设为 `0s` 可禁用超时（默认值为 `0s`）。当 `PENDING_ROWS_BATCH_SYNC` 为 `true`，且 Prometheus Remote Write、使用 metric engine 的 OTLP metrics 或普通表 HTTP 写入启用了批量写入时，非零超时值会被自动提高到至少为当前启用的最大刷写间隔加 1 秒。刷写间隔由 `pending_rows_batcher.pending_rows_flush_interval` 和 `pending_rows_batcher.logical_table.pending_rows_flush_interval` 决定。MySQL 和 PostgreSQL 的批量写入不会调整此超时。 |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
 |            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
 |            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
@@ -314,14 +319,22 @@ flow_notification_queue_capacity = 1024
 | influxdb   |                    |        | InfluxDB 协议选项                                            |
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true            |
 |            | default_merge_mode | 字符串 | InfluxDB 协议自动创建表时使用的默认 merge 模式。可选值：`last_non_null`、`last_row`。默认值：`last_non_null` |
-| pending_rows_batcher |                              |        | 为显式启用的 HTTP 写入协议提供普通表共享批量写入能力。`protocols` 支持 `influxdb`、`opentsdb`、`otlp`、`logs`、`loki`、`splunk`、`elasticsearch`、`http_sql` 和 `prom`。省略 `protocols` 或将其设为空数组会禁用此批量写入链路。选中 `prom` 且启用共享批量写入时，其参数优先于 `prom_store` 中的对应参数。Metric Engine 未启用时，Prometheus Remote Write 使用普通表共享批量写入器；否则仍使用专用的批量写入链路。此批量写入链路暂不支持流式 Flow 源表。 |
-|            | protocols                    | 数组   | 使用共享批量写入器的 HTTP 写入协议。默认为空数组。 |
+| pending_rows_batcher |                              |        | 为显式启用的普通表写入提供共享批量写入能力。`protocols` 支持 `influxdb`、`opentsdb`、`otlp`、`logs`、`loki`、`splunk`、`elasticsearch`、`http_sql`、`mysql`、`postgres` 和 `prom`。metric engine 未启用时，Prometheus Remote Write 使用此批量写入器。OTLP logs、traces 以及未使用 metric engine 的 metrics 使用此批量写入器。MySQL 和 PostgreSQL 对符合条件的 INSERT 使用此批量写入器。省略 `protocols` 或将其设为空数组会禁用此批量写入链路。此批量写入链路暂不支持流式 Flow 源表。 |
+|            | protocols                    | 数组   | 使用普通表批量写入器的写入协议。默认为空数组。 |
 |            | pending_rows_flush_interval  | 字符串 | 从收到第一批待处理数据开始计算的定时刷写间隔。设为非零值（如 `500ms`），可为所选协议启用批量写入。默认为 `0s`。 |
 |            | max_batch_rows               | 整数   | 一次完整提交达到该行数时触发刷写，默认为 100000。 |
 |            | max_concurrent_flushes       | 整数   | Frontend 共享批量写入器允许同时执行的最大刷写操作数，默认为 256。 |
-|            | worker_channel_capacity      | 整数   | 每个表 worker 最多可排队的提交数，默认为 65526。 |
+|            | worker_channel_capacity      | 整数   | 每个表 worker 最多可排队的提交数，默认为 65536。 |
 |            | max_inflight_requests        | 整数   | 已接收但尚未完成的原始请求数上限，默认为 3000。 |
 |            | flow_notification_queue_capacity | 整数 | 共享队列中等待处理的表 Flow 通知数上限，默认为 1024。取值必须大于 0。 |
+| pending_rows_batcher.logical_table |                         |        | 用于 metric engine 逻辑表的批量写入。仅支持 `prom` 和 `otlp`。metric engine 启用时，它适用于 Prometheus Remote Write 和非旧版 OTLP metrics；logs、traces 与旧版 OTLP metrics 不适用。其参数独立于父级配置。省略此 section 时保留旧 Prometheus 批量写入行为，但不会启用 OTLP metrics 批量写入。显式配置空 `protocols` 数组或 `0s` 间隔会禁用逻辑表批量写入，且不会回退到旧配置。 |
+|            | protocols                    | 数组   | 使用逻辑表批量写入器的协议：`prom` 和 `otlp`。默认为空数组。 |
+|            | pending_rows_flush_interval  | 字符串 | 从收到第一批待处理数据开始计算的定时刷写间隔。设为非零值可为所选协议启用逻辑表批量写入。默认为 `0s`。 |
+|            | max_batch_rows               | 整数   | 一次完整提交达到该行数时触发刷写，默认为 100000。 |
+|            | max_concurrent_flushes       | 整数   | Prometheus Remote Write 与 OTLP metrics 共用的最大并发刷写操作数，默认为 256。 |
+|            | worker_channel_capacity      | 整数   | 每个物理表 worker 最多可排队的提交数，默认为 65536。 |
+|            | max_inflight_requests        | 整数   | 已接收但尚未完成的原始请求数上限，默认为 3000。 |
+|            | flow_notification_queue_capacity | 整数 | 共享队列中等待处理的逻辑表 Flow 通知数上限，默认为 1024。取值必须大于 0。 |
 | opentsdb   |                    |        | OpenTSDB 协议选项                                            |
 |            | enable             | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                          |
 | jaeger     |                    |        | Jaeger 协议选项                                              |
@@ -330,15 +343,9 @@ flow_notification_queue_capacity = 1024
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 OpenTelemetry 协议，默认为 true       |
 |            | trace_ingest_chunk_size | 整数 | 每个 trace 写入分块的最大 span 数量。设为 `0` 可禁用分块。 |
 |            | experimental_enable_resource_info | 布尔值 | 是否从 OTLP metrics 的 resource attributes 合成 `greptime_otel_resource_info` 表，让只有指标的 service 进入[语义图](/user-guide/semantic-layer/semantic-graph.md)。默认为 `false`。 |
-| prom_store |                              |        | Prometheus 远程存储选项                                                                                                                                                                                         |
+| prom_store |                              |        | Prometheus 远程存储选项。省略 `pending_rows_batcher.logical_table` 时，旧的批量写入参数仍可使用；新的逻辑表批量写入请配置在 `pending_rows_batcher.logical_table` 下。 |
 |            | enable                       | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true                                                                                                                                                         |
-|            | with_metric_engine           | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true                                                                                                                                                     |
-|            | pending_rows_flush_interval  | 字符串 | Prometheus Remote Write 批量刷写的时间间隔。设为非零值（如 `500ms`）以启用[批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式)，默认为 `0s`（禁用）                         |
-|            | max_batch_rows               | 整数   | 触发刷写的最大批量行数，默认为 100000                                                                                                                                                                           |
-|            | max_concurrent_flushes       | 整数   | 同时执行的最大刷写操作数量，默认为 256                                                                                                                                                                          |
-|            | worker_channel_capacity      | 整数   | 内部接收行数据的 worker 通道容量，默认为 65526                                                                                                                                                                  |
-|            | max_inflight_requests        | 整数   | 等待批量完成的最大请求数，默认为 3000                                                                                                                                                                           |
-|            | flow_notification_queue_capacity | 整数 | 共享队列中等待处理的逻辑表 Flow 通知数量上限，默认为 1024。仅在[批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式)下生效，取值必须大于 0。队列满时通知会被丢弃，并计入 `greptime_prom_store_flow_notification_dropped_total` 指标。 |
+|            | with_metric_engine           | 布尔值 | 是否在 Prometheus 远程写入中使用 metric engine，默认为 true                                                                                                                                                     |
 | postgres   |                    |        | PostgresSQL 服务器选项                                       |
 |            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                       |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                          |
