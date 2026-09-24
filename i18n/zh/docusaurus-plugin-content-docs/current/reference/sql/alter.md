@@ -184,7 +184,11 @@ ALTER TABLE application_logs
 
 新配置会**整体替换**该列现有的 JSON2 配置，而不是与原配置合并。因此，如果希望保
 留已有的 type hint，需要在新的 `MODIFY COLUMN` 语句中完整指定。未在新配置中列出
-的 type hint 会被移除，但对应的 JSON 字段及其已有数据不会被删除。
+的 type hint 会被移除。
+
+修改 type hint 可能影响部分历史数据。如果历史数据在后续 compaction 中被重写，
+则会应用新的类型提示，其中与新类型不兼容的字段值会变为 `null`。例如，为原先存储
+字符串的 `j.a` 指定 `int` 类型提示后，部分历史字段值可能变为 `null`。
 
 如果省略 `max_auto_expanded_paths`，该配置会恢复为默认值 100。
 
@@ -199,7 +203,7 @@ ALTER TABLE application_logs
 ```
 
 修改后的 type hint 会用于后续写入的数据校验，并用于确定查询对应 JSON 路径时的
-类型。已有数据仍然可以正常读取。
+类型。
 
 该操作仅适用于已有的 JSON2 列，并且目标列不能是主键列或时间索引列。
 

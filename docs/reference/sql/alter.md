@@ -186,8 +186,13 @@ ALTER TABLE application_logs
 The new settings **replace the entire JSON2 configuration** of the column;
 they are not merged with the previous settings. Include every existing type hint
 you want to retain in the new `MODIFY COLUMN` statement. Type hints omitted from
-the new settings are removed, but their JSON fields and existing data are not
-deleted.
+the new settings are removed.
+
+Changing type hints may affect some historical data. If historical data is
+rewritten during subsequent compaction, the new type hints apply, and field
+values incompatible with the new types become `null`. For example, if `j.a`
+previously stored strings, specifying an `int` type hint for it may cause
+some historical field values to become `null`.
 
 Omitting `max_auto_expanded_paths` resets it to its default of `100`.
 
@@ -202,7 +207,7 @@ ALTER TABLE application_logs
 ```
 
 The updated type hints validate subsequent writes and determine the types used
-when querying the corresponding JSON paths. Existing data remains readable.
+when querying the corresponding JSON paths.
 
 This operation applies only to existing JSON2 columns that are neither primary
 keys nor time indexes.
