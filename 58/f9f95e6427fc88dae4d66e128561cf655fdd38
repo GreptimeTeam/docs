@@ -1,0 +1,21 @@
+docs/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_17302bdadcc912 50-51,62-63,149-150,281-282,390-391,478-479
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_0cb3dc824b8e23 50-51,62-63,149-150,281-282,390-391,478-479
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "58f9f95e6427fc88dae4d66e128561cf655fdd38",
+  "prompts": {},
+  "sessions": {
+    "s_4ba75150b8ff77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0e5f2-7641-7372-ab8f-ee2e2ac1262c",
+        "model": "unknown"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
