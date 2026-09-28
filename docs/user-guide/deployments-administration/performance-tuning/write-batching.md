@@ -1,9 +1,9 @@
 ---
 keywords: [GreptimeDB, write batching, ingestion, configuration, frontend, standalone]
-description: Configure write batching in GreptimeDB standalone and frontend configuration files.
+description: Configure server-side write batching in GreptimeDB standalone and frontend configuration files.
 ---
 
-# Write batching
+# Server-side write batching
 
 You can configure write batching in the standalone or frontend configuration file. It batches writes before flushing them to storage. Write batching is disabled by default.
 

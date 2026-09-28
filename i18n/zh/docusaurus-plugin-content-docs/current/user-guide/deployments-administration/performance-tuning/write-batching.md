@@ -1,9 +1,9 @@
 ---
 keywords: [GreptimeDB, 写入批量处理, 写入协议, 配置, frontend, standalone]
-description: 在 GreptimeDB standalone 或 frontend 配置文件中配置写入批量处理。
+description: 在 GreptimeDB standalone 或 frontend 配置文件中配置服务端写入批量处理。
 ---
 
-# 写入批量处理
+# 服务端写入批量处理
 
 你可以在 standalone 或 frontend 配置文件中配置写入批量处理。它会在将写入刷写到存储之前进行批量处理。写入批量处理默认关闭。
 

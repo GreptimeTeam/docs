@@ -310,7 +310,7 @@ that reduces per-request overhead and improves ingestion throughput.
 In batching mode, incoming rows are accumulated and flushed to the metric engine in larger batches.
 
 Batching mode is **disabled by default**.
-Configure Prometheus Remote Write through batching for metric engine logical tables. See [Write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md#configure-batching-for-metric-engine-logical-tables).
+Configure Prometheus Remote Write through batching for metric engine logical tables. See [Server-side write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md#configure-batching-for-metric-engine-logical-tables).
 
 ### Request timeout and retries
 
@@ -319,7 +319,7 @@ GreptimeDB responds with `504 Gateway Timeout` instead of `408 Request Timeout`.
 Prometheus and other remote write senders retry on `5xx` responses,
 so a timed-out request is retried automatically instead of being dropped.
 
-For batching acknowledgment and HTTP timeout behavior, see [Write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md#request-acknowledgment-and-http-timeouts).
+For batching acknowledgment and HTTP timeout behavior, see [Server-side write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md#request-acknowledgment-and-http-timeouts).
 
 ### Customized physical table
 

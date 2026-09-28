@@ -276,7 +276,7 @@ with_metric_engine = true
 | ---------- | ------------------ | ------ | ------------------------------------------------------------ |
 | http       |                    |        | HTTP 服务器选项                                              |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
-|            | timeout            | 字符串 | HTTP 请求超时时间。设为 `0s` 可禁用超时（默认值为 `0s`）。启用批量写入时的行为请参阅[写入批量处理](#写入批量处理)。 |
+|            | timeout            | 字符串 | HTTP 请求超时时间。设为 `0s` 可禁用超时（默认值为 `0s`）。启用批量写入时的行为请参阅[服务端写入批量处理](#服务端写入批量处理)。 |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
 |            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
 |            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
@@ -326,7 +326,7 @@ with_metric_engine = true
 |                                          | `key_path`  | String  | TLS 私钥文件路径                                 |
 |                                          | `watch`     | Boolean | 监控文件变化，自动重新加载证书或私钥。`grpc.tls` 不支持自动重新加载，请保持 `grpc.tls.watch` 为 `false`。 |
 
-### 写入批量处理
+### 服务端写入批量处理
 
 你可以在 standalone 或 frontend 配置文件中配置写入批量处理。以下示例为普通 InfluxDB 表启用批量处理：
 
@@ -336,7 +336,7 @@ protocols = ["influxdb"]
 pending_rows_flush_interval = "500ms"
 ```
 
-有关支持的协议和批量处理行为，请参阅[写入批量处理](/user-guide/deployments-administration/performance-tuning/write-batching.md)。
+有关支持的协议和批量处理行为，请参阅[服务端写入批量处理](/user-guide/deployments-administration/performance-tuning/write-batching.md)。
 
 ### 查询选项
 

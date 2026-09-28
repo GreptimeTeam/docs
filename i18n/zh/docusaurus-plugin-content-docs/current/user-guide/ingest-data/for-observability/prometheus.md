@@ -302,7 +302,7 @@ mysql> select * from `go_memstats_mcache_inuse_bytes`;
 在批量写入模式下，传入的行数据会被累积并以更大的批次刷写到 metric engine 中。
 
 批量写入模式**默认关闭**。
-Prometheus Remote Write 通过 metric engine 逻辑表批量处理进行配置。请参阅[写入批量处理](/user-guide/deployments-administration/performance-tuning/write-batching.md#配置-metric-engine-逻辑表批量处理)。
+Prometheus Remote Write 通过 metric engine 逻辑表批量处理进行配置。请参阅[服务端写入批量处理](/user-guide/deployments-administration/performance-tuning/write-batching.md#配置-metric-engine-逻辑表批量处理)。
 
 ### 请求超时与重试
 
@@ -312,7 +312,7 @@ GreptimeDB 会返回 `504 Gateway Timeout` 而不是 `408 Request Timeout`。
 Prometheus 及其他 Remote Write 发送端会对 `5xx` 响应进行重试，
 因此超时的请求会被自动重试，而不是被直接丢弃。
 
-有关批量处理的请求确认和 HTTP 超时行为，请参阅[写入批量处理](/user-guide/deployments-administration/performance-tuning/write-batching.md#请求确认和-http-超时)。
+有关批量处理的请求确认和 HTTP 超时行为，请参阅[服务端写入批量处理](/user-guide/deployments-administration/performance-tuning/write-batching.md#请求确认和-http-超时)。
 
 ### 自定义物理表
 

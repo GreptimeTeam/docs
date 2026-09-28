@@ -277,7 +277,7 @@ The following table describes the options in detail:
 | ---------- | -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | http       |                      |         | HTTP server options                                                                                                                                                                                                                                                                                                                                                                        |
 |            | addr                 | String  | Server address, "127.0.0.1:4000" by default                                                                                                                                                                                                                                                                                                                                                |
-|            | timeout              | String  | HTTP request timeout. Set to `0s` to disable timeout (default: "0s"). See [Write batching](#write-batching) for its behavior when batching is enabled. |
+|            | timeout              | String  | HTTP request timeout. Set to `0s` to disable timeout (default: "0s"). See [Server-side write batching](#server-side-write-batching) for its behavior when batching is enabled. |
 |            | body_limit           | String  | HTTP max body size, "64MB" by default                                                                                                                                                                                                                                                                                                                                                      |
 |            | enable_cors          | Boolean | Whether to enable HTTP CORS support, true by default. |
 |            | cors_allowed_origins | Array   | Customized allowed origins for HTTP CORS. |
@@ -328,7 +328,7 @@ layer security.
 |                                           | `key_path`  | String  | File path for TLS private key                                 |
 |                                           | `watch`     | Boolean | Watch file system changes and reload certificate and key file. Auto reload is not supported by `grpc.tls`; keep `grpc.tls.watch` set to `false`. |
 
-### Write batching
+### Server-side write batching
 
 You can configure write batching in the standalone or frontend configuration file. The following example enables batching for ordinary InfluxDB tables:
 
@@ -338,7 +338,7 @@ protocols = ["influxdb"]
 pending_rows_flush_interval = "500ms"
 ```
 
-See [Write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md) for supported protocols and batching behavior.
+See [Server-side write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md) for supported protocols and batching behavior.
 
 ### Query options
 
