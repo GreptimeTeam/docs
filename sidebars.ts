@@ -414,6 +414,7 @@ const sidebars: SidebarsConfig = {
               items: [
                 'user-guide/deployments-administration/performance-tuning/performance-tuning-tips',
                 'user-guide/deployments-administration/performance-tuning/design-table',
+                'user-guide/deployments-administration/performance-tuning/write-batching',
               ]
             },
             {

@@ -310,36 +310,7 @@ that reduces per-request overhead and improves ingestion throughput.
 In batching mode, incoming rows are accumulated and flushed to the metric engine in larger batches.
 
 Batching mode is **disabled by default**.
-To enable it, configure `prom` and a non-zero `pending_rows_flush_interval` in the
-`[pending_rows_batcher.logical_table]` section:
-
-```toml
-[prom_store]
-enable = true
-with_metric_engine = true
-
-[pending_rows_batcher.logical_table]
-protocols = ["prom"]
-pending_rows_flush_interval = "500ms"
-```
-
-The following table describes the options in `[pending_rows_batcher.logical_table]`:
-
-| Key                          | Type    | Default  | Description                                                                 |
-| ---------------------------- | ------- | -------- | --------------------------------------------------------------------------- |
-| protocols                    | Array   | `[]`      | Protocols that use the logical-table batcher. Use `prom` for Prometheus Remote Write. |
-| pending_rows_flush_interval  | String  | `"0s"`   | Interval from the first pending submission to a timed flush. `"0s"` disables batching. |
-| max_batch_rows               | Integer | `100000` | Maximum number of rows per batch before a flush is triggered.               |
-| max_concurrent_flushes       | Integer | `256`    | Maximum number of concurrent flush operations.                              |
-| worker_channel_capacity      | Integer | `65536`  | Maximum number of queued submissions for each physical-table worker.        |
-| max_inflight_requests        | Integer | `3000`   | Maximum number of in-flight write requests waiting for batch completion.    |
-| flow_notification_queue_capacity | Integer | `1024` | Maximum number of logical-table Flow notifications waiting in the shared queue. |
-
-:::tip
-Batching mode takes effect only when `prom_store.with_metric_engine` is `true`,
-`pending_rows_batcher.logical_table.protocols` includes `prom`, and
-`pending_rows_batcher.logical_table.pending_rows_flush_interval` is non-zero.
-:::
+Configure Prometheus Remote Write through batching for metric engine logical tables. See [Write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md#configure-batching-for-metric-engine-logical-tables).
 
 ### Request timeout and retries
 
@@ -348,11 +319,7 @@ GreptimeDB responds with `504 Gateway Timeout` instead of `408 Request Timeout`.
 Prometheus and other remote write senders retry on `5xx` responses,
 so a timed-out request is retried automatically instead of being dropped.
 
-In synchronous batching mode, rows that have been accepted into a pending batch continue to flush in the background even after the request times out.
-To ensure a request can wait long enough for its batch to flush,
-GreptimeDB raises a non-zero `http.timeout` that is less than or equal to
-`pending_rows_batcher.logical_table.pending_rows_flush_interval` plus 1 second to that value and logs a warning.
-Setting `http.timeout = "0s"` (the default) disables the HTTP timeout entirely.
+For batching acknowledgment and HTTP timeout behavior, see [Write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md#request-acknowledgment-and-http-timeouts).
 
 ### Customized physical table
 

@@ -259,24 +259,6 @@ enable = true
 # Available values: "last_non_null", "last_row".
 default_merge_mode = "last_non_null"
 
-[pending_rows_batcher]
-protocols = ["influxdb", "opentsdb", "otlp", "logs", "loki", "splunk", "elasticsearch", "http_sql", "mysql", "postgres", "prom"]
-pending_rows_flush_interval = "500ms"
-max_batch_rows = 100000
-max_concurrent_flushes = 256
-worker_channel_capacity = 65536
-max_inflight_requests = 3000
-flow_notification_queue_capacity = 1024
-
-[pending_rows_batcher.logical_table]
-protocols = ["prom", "otlp"]
-pending_rows_flush_interval = "500ms"
-max_batch_rows = 100000
-max_concurrent_flushes = 256
-worker_channel_capacity = 65536
-max_inflight_requests = 3000
-flow_notification_queue_capacity = 1024
-
 [jaeger]
 enable = true
 
@@ -289,15 +271,13 @@ enable = true
 with_metric_engine = true
 ```
 
-Both batching paths wait for storage to complete before replying by default. Set the `PENDING_ROWS_BATCH_SYNC` environment variable to `false` to acknowledge queue admission instead. In that mode, storage failures that occur after admission cannot be returned to the client. With synchronous batching, single-connection writes and `INSERT SELECT` can wait for a flush.
-
 The following table describes the options in detail:
 
 | Option     | Key                  | Type    | Description                                                                                                                                                                                                                                                                                                                                                                                |
 | ---------- | -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | http       |                      |         | HTTP server options                                                                                                                                                                                                                                                                                                                                                                        |
 |            | addr                 | String  | Server address, "127.0.0.1:4000" by default                                                                                                                                                                                                                                                                                                                                                |
-|            | timeout              | String  | HTTP request timeout. Set to `0s` to disable timeout (default: "0s"). When `PENDING_ROWS_BATCH_SYNC` is `true` and batching is enabled for Prometheus Remote Write, metric-engine OTLP metrics, or ordinary-table HTTP writes, a non-zero timeout is raised to at least the largest active flush interval plus 1 second. The intervals come from `pending_rows_batcher.pending_rows_flush_interval` and `pending_rows_batcher.logical_table.pending_rows_flush_interval`. MySQL and PostgreSQL batching does not change this timeout. |
+|            | timeout              | String  | HTTP request timeout. Set to `0s` to disable timeout (default: "0s"). See [Write batching](#write-batching) for its behavior when batching is enabled. |
 |            | body_limit           | String  | HTTP max body size, "64MB" by default                                                                                                                                                                                                                                                                                                                                                      |
 |            | enable_cors          | Boolean | Whether to enable HTTP CORS support, true by default. |
 |            | cors_allowed_origins | Array   | Customized allowed origins for HTTP CORS. |
@@ -320,22 +300,6 @@ The following table describes the options in detail:
 | influxdb   |                      |         | InfluxDB Protocol options                                                                                                                                                                                                                                                                                                                                                                  |
 |            | enable               | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                                                                                                                                                                                                                                                                                                                           |
 |            | default_merge_mode   | String  | Default merge mode for tables automatically created by InfluxDB protocol. Available values: `last_non_null`, `last_row`. Default: `last_non_null`                                                                                                                                                                                                                                           |
-| pending_rows_batcher |                              |         | Shared batching for opted-in ordinary-table writes. Supported values for `protocols` are `influxdb`, `opentsdb`, `otlp`, `logs`, `loki`, `splunk`, `elasticsearch`, `http_sql`, `mysql`, `postgres`, and `prom`. Prometheus Remote Write uses this batcher only when the metric engine is disabled. OTLP logs, traces, and metrics without the metric engine use this batcher. MySQL and PostgreSQL use it for eligible INSERT statements. Omitting `protocols` or setting it to an empty array disables this batching path. Streaming Flow source tables are not supported. |
-|            | protocols                    | Array   | Ingestion protocols that use the ordinary-table batcher. The default is an empty array. |
-|            | pending_rows_flush_interval  | String  | Interval from the first pending submission to a timed flush. Set to a non-zero duration (for example, `500ms`) to enable batching for the selected protocols. `0s` by default. |
-|            | max_batch_rows               | Integer | Maximum number of rows in a complete submission before a flush is triggered, 100000 by default. |
-|            | max_concurrent_flushes       | Integer | Maximum number of concurrent flush operations shared by the Frontend batcher, 256 by default. |
-|            | worker_channel_capacity      | Integer | Maximum number of queued submissions for each table worker, 65536 by default. |
-|            | max_inflight_requests        | Integer | Maximum number of admitted original requests awaiting completion, 3000 by default. |
-|            | flow_notification_queue_capacity | Integer | Maximum number of table Flow notifications waiting in the shared queue, 1024 by default. The value must be greater than 0. |
-| pending_rows_batcher.logical_table |                         |         | Batching for metric-engine logical tables. Only `prom` and `otlp` are supported. It applies to Prometheus Remote Write and non-legacy OTLP metrics when the metric engine is enabled; logs, traces, and legacy OTLP metrics are not eligible. The controls are independent of the parent section. Omitting this section preserves legacy Prometheus batching but does not enable OTLP metric batching. An explicit empty `protocols` array or `0s` interval disables logical-table batching without fallback. |
-|            | protocols                    | Array   | Protocols that use the logical-table batcher: `prom` and `otlp`. The default is an empty array. |
-|            | pending_rows_flush_interval  | String  | Interval from the first pending submission to a timed flush. Set to a non-zero duration to enable logical-table batching for the selected protocols. `0s` by default. |
-|            | max_batch_rows               | Integer | Maximum number of rows in a complete submission before a flush is triggered, 100000 by default. |
-|            | max_concurrent_flushes       | Integer | Maximum number of concurrent flush operations shared by Prometheus Remote Write and OTLP metrics, 256 by default. |
-|            | worker_channel_capacity      | Integer | Maximum number of queued submissions for each physical-table worker, 65536 by default. |
-|            | max_inflight_requests        | Integer | Maximum number of admitted original requests awaiting completion, 3000 by default. |
-|            | flow_notification_queue_capacity | Integer | Maximum number of logical-table Flow notifications waiting in the shared queue, 1024 by default. The value must be greater than 0. |
 | opentsdb   |                      |         | OpenTSDB Protocol options                                                                                                                                                                                                                                                                                                                                                                  |
 |            | enable               | Boolean | Whether to enable OpenTSDB protocol in HTTP API, true by default                                                                                                                                                                                                                                                                                                                           |
 | jaeger     |                      |         | Jaeger protocol options |
@@ -344,7 +308,7 @@ The following table describes the options in detail:
 |            | enable               | Boolean | Whether to enable OpenTelemetry protocol in HTTP API, true by default. |
 |            | trace_ingest_chunk_size | Integer | Maximum spans per trace ingest chunk. Set to `0` to disable splitting. |
 |            | experimental_enable_resource_info | Boolean | Whether to synthesize the `greptime_otel_resource_info` table from the resource attributes of OTLP metrics, so metrics-only services reach the [semantic graph](/user-guide/semantic-layer/semantic-graph.md). `false` by default. |
-| prom_store |                              |         | Prometheus remote storage options. Legacy batching controls remain accepted when `pending_rows_batcher.logical_table` is omitted; configure new logical-table batching under `pending_rows_batcher.logical_table`. |
+| prom_store |                              |         | Prometheus remote storage options. |
 |            | enable                       | Boolean | Whether to enable Prometheus Remote Write and read in HTTP API, true by default                                                                                                                                                                                                                                                                                                            |
 |            | with_metric_engine           | Boolean | Whether to use the metric engine on Prometheus Remote Write, true by default                                                                                                                                                                                                                                                                                                               |
 | postgres   |                      |         | PostgresSQL server options                                                                                                                                                                                                                                                                                                                                                                 |
@@ -363,6 +327,18 @@ layer security.
 |                                           | `cert_path` | String  | File path for TLS certificate                                 |
 |                                           | `key_path`  | String  | File path for TLS private key                                 |
 |                                           | `watch`     | Boolean | Watch file system changes and reload certificate and key file. Auto reload is not supported by `grpc.tls`; keep `grpc.tls.watch` set to `false`. |
+
+### Write batching
+
+You can configure write batching in the standalone or frontend configuration file. The following example enables batching for ordinary InfluxDB tables:
+
+```toml
+[pending_rows_batcher]
+protocols = ["influxdb"]
+pending_rows_flush_interval = "500ms"
+```
+
+See [Write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md) for supported protocols and batching behavior.
 
 ### Query options
 
