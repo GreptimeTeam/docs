@@ -58,4 +58,5 @@ description: GreptimeDB 使用指南的入口，覆盖数据写入、查询、�
 ## 连接其他工具
 
 - [协议](./protocols/overview.md)——GreptimeDB 支持的传输协议，以及各自的能力边界。
-- [集成](./integrations/overview.md)——Grafana、Superset、Metabase、Flink、Spark、MCP Server 等可以连接 GreptimeDB 的工具。
+- [集成](./integrations/overview.md)——Grafana、vmalert、Superset、Metabase、
+  Flink、Spark、MCP Server 等可以连接 GreptimeDB 的工具。
