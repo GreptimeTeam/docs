@@ -35,6 +35,28 @@ remote_read:
 - The `db` parameter in the URL represents the database to which we want to write data. It is optional. By default, the database is set to `public`.
 - `basic_auth` is the authentication configuration. Fill in the username and password if GreptimeDB authentication is enabled. Please refer to the [authentication document](/user-guide/deployments-administration/authentication/overview.md).
 
+### Native histograms
+
+GreptimeDB accepts native histograms through Prometheus Remote Write 2.0 by default,
+without an additional GreptimeDB configuration option. Remote Write 1.0 requests
+containing native histograms are rejected.
+
+Prometheus uses Remote Write 1.0 by default. To send native histograms that Prometheus
+has collected, select Remote Write 2.0 in `prometheus.yml`:
+
+```yaml
+remote_write:
+- url: http://localhost:4000/v1/prometheus/write?db=public
+  protobuf_message: io.prometheus.write.v2.Request
+```
+
+With this message format, Prometheus always sends native histograms; setting
+`send_native_histograms` is unnecessary. See the
+[Prometheus remote write configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write).
+
+Query native histograms with GreptimeDB's PromQL API. Prometheus Remote Read
+currently returns scalar samples only and does not return native histograms.
+
 ### Grafana Alloy configuration file
 
 If you are using Grafana Alloy, configure the remote write endpoint in the Alloy configuration file (`config.alloy`). For more information, refer to the [Alloy documentation](alloy.md#prometheus-remote-write).
@@ -58,7 +80,8 @@ follows:
 | Sample Metrics | In GreptimeDB             | GreptimeDB Data Types |
 | -------------- | ------------------------- | --------------------- |
 | Name           | Table (Auto-created) Name | String                |
-| Value          | Column (Field)            | Double                |
+| Float value    | Column (Field)            | Double                |
+| Native histogram | Column (Field)          | Struct                |
 | Timestamp      | Column (Time Index)       | Timestamp             |
 | Label          | Column (Tag)              | String                |
 

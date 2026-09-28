@@ -209,7 +209,6 @@ body_limit = "64MB"
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
 prom_validation_mode = "strict"
-experimental_enable_prometheus_native_histogram = false
 experimental_enable_explain_analyze_stream = true
 # 启用专用公共 HTTP API Server（仅提供 /v1 和 /dashboard）
 enable_api_server = false
@@ -276,6 +275,9 @@ max_inflight_requests = 3000
 flow_notification_queue_capacity = 1024
 ```
 
+启用相应协议后，GreptimeDB 默认支持写入 Prometheus Remote Write 2.0 原生直方图和
+OTLP/HTTP 累积指数直方图。
+
 下表描述了每个选项的详细信息：
 
 | 选项       | 键                 | 类型   | 描述                                                         |
@@ -287,7 +289,6 @@ flow_notification_queue_capacity = 1024
 |            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
 |            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
 |            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
-|            | experimental_enable_prometheus_native_histogram | 布尔值 | 实验性：启用 Prometheus remote write v2 native histogram 写入，默认为 false。 |
 |            | experimental_enable_explain_analyze_stream | 布尔值 | 实验性：启用 `POST /v1/sql/analyze/stream`，用于流式返回 `EXPLAIN ANALYZE VERBOSE` 指标，默认为 true。 |
 |            | enable_api_server    | 布尔值 | 是否启动专用公共 HTTP API Server。该 Server 仅提供 `/v1` API 和 `/dashboard`，可安全地对外暴露给终端用户。主 HTTP Server（`addr`）用于内部使用。默认禁用；设为 `true` 可启用。 |
 |            | api_server_addr      | 字符串 | 专用公共 HTTP API Server 的绑定地址，默认为 `"127.0.0.1:4006"`。仅在 `enable_api_server` 为 `true` 时生效。 |

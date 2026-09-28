@@ -175,7 +175,16 @@ The Prometheus-compatible OTLP metrics data model is mapped to the GreptimeDB da
 - The name of the Metric will be used as the name of the GreptimeDB table, and the table will be automatically created if it does not exist.
 - Only selected resource attributes are kept by default. See above for details and configuration options. Attributes are used as tag columns in the GreptimeDB table.
 - You can refer to the [Prometheus Data Model](./prometheus.md#data-model) for other details.
-- ExponentialHistogram is not supported yet.
+- Cumulative `ExponentialHistogram` metrics are supported by default via OTLP/HTTP.
+  Each point is stored as a native histogram in a Struct field named
+  `greptime_native_histogram` by default, rather than separate `_bucket`, `_sum`, and
+  `_count` series. Delta and unspecified temporality are rejected.
+
+Invalid exponential histogram points are rejected while valid points in the same
+OTLP/HTTP request can still be ingested. Such requests return partial success;
+requests with only rejected points return an `InvalidArgument` error.
+OTel Arrow does not support exponential histograms because its wire format omits
+`zero_threshold`.
 
 If you are using a table that was created by an older OTLP metrics ingestion format, the existing table keeps that format. Here are some mapping differences:
 

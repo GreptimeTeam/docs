@@ -36,6 +36,25 @@ remote_read:
 - URL 中的 `db` 参数表示要写入的数据库。它是可选的。默认情况下，数据库设置为 `public`。
 - `basic_auth` 是身份鉴权配置。如果 GreptimeDB 启用了鉴权，请填写用户名和密码。请参阅 [鉴权认证文档](/user-guide/deployments-administration/authentication/overview.md)。
 
+### 原生直方图
+
+GreptimeDB 默认支持通过 Prometheus Remote Write 2.0 写入原生直方图，无需额外的 GreptimeDB 配置。
+包含原生直方图的 Remote Write 1.0 请求会被拒绝。
+
+Prometheus 默认使用 Remote Write 1.0。要发送 Prometheus 已采集的原生直方图，
+请在 `prometheus.yml` 中选择 Remote Write 2.0：
+
+```yaml
+remote_write:
+- url: http://localhost:4000/v1/prometheus/write?db=public
+  protobuf_message: io.prometheus.write.v2.Request
+```
+
+使用此消息格式时，Prometheus 始终发送原生直方图，无需设置 `send_native_histograms`。
+详见 [Prometheus 远程写入配置](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write)。
+
+请使用 GreptimeDB 的 PromQL API 查询原生直方图。Prometheus Remote Read 目前仅返回标量样本，不返回原生直方图。
+
 ### Grafana Alloy 配置文件
 
 如果你使用 Grafana Alloy，请在 Alloy 配置文件（`config.alloy`）中配置 Remote Write。有关更多信息，请参阅 [Alloy 文档](alloy.md#prometheus-remote-write)。
@@ -59,7 +78,8 @@ GreptimeDB 可以被视为多值数据模型，自动将多个 Prometheus 指标
 | Sample Metrics | In GreptimeDB             | GreptimeDB Data Types |
 | -------------- | ------------------------- | --------------------- |
 | Name           | Table (Auto-created) Name | String                |
-| Value          | Column (Field)            | Double                |
+| Float value    | Column (Field)            | Double                |
+| Native histogram | Column (Field)          | Struct                |
 | Timestamp      | Column (Time Index)       | Timestamp             |
 | Label          | Column (Tag)              | String                |
 
