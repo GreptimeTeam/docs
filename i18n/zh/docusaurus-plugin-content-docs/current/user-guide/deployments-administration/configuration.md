@@ -362,12 +362,12 @@ parallelism = 0
 
 `存储`选项在 `datanode` 和 `standalone` 模式下有效，它指定了数据库数据目录和其他存储相关的选项。
 
-GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容服务（比如 MinIO、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
+GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容服务（比如 MinIO、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage、阿里云 OSS 和 HDFS（Hadoop Distributed File System）。
 
 | 选项    | 键                | 类型   | 描述                                                |
 | ------- | ----------------- | ------ | --------------------------------------------------- |
 | storage |                   |        | 存储选项                                            |
-|         | type              | 字符串 | 存储类型，支持 "File"，"S3" 和 "Oss" 等。           |
+|         | type              | 字符串 | 存储类型，支持 "File"、"S3"、"Gcs"、"Azblob"、"Oss" 和 "Hdfs"。           |
 | File    |                   |        | 本地文件存储选项，当 type="File" 时有效             |
 |         | data_home         | 字符串 | 数据库存储根目录，默认为 "./greptimedb_data"          |
 |         | copy_root         | 字符串 | 单机模式下 SQL 访问本地文件的根目录（默认为 `<data_home>/copy`）。`COPY` 语句和外部表中的相对路径将在该目录下解析；仅当绝对路径位于该目录内时才被接受。分布式部署始终禁止 SQL 访问本地文件。升级指引请参阅[迁移本地 SQL 文件访问](/user-guide/deployments-administration/migrate-local-sql-file-access.md)。 |
@@ -402,6 +402,10 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 |         | scope             | 字符串 | GCS 权限                                            |
 |         | credential_path   | 字符串 | GCS 访问证书                                        |
 |         | endpoint          | 字符串 | GCS 的 API 端点                                     |
+| Hdfs    |                   |        | HDFS 存储选项，当 type="Hdfs" 时有效                |
+|         | root              | 字符串 | HDFS 中的根路径                                     |
+|         | name_node         | 字符串 | HDFS NameNode URI，例如 `hdfs://127.0.0.1:9000`    |
+|         | options           | Map    | 传递给 Rust 原生 HDFS 客户端的附加选项             |
 
 文件存储配置范例：
 
@@ -420,6 +424,16 @@ bucket = "test_greptimedb"
 root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
+```
+
+HDFS 配置范例（使用 Rust 原生客户端）：
+
+```toml
+[storage]
+type = "Hdfs"
+root = "/greptimedb"
+name_node = "hdfs://127.0.0.1:9000"
+options = { "dfs.client.block.write.replace-datanode-on-failure.enable" = "true" }
 ```
 
 #### 阿里云 OSS 凭证
