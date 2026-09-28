@@ -47,6 +47,35 @@ If compaction runs out of memory after upgrading, review the
 Switching to `primary_key` is not the recommended fix for this compaction memory
 issue.
 
+### Upgrading from v1.0 to v1.1
+
+#### OSS RRSA credential precedence {#oss-rrsa-credential-precedence}
+
+**Impact:** OSS authentication can use a different RAM role after an upgrade.
+
+When upgrading from v1.0.2 to v1.1.0, ACK deployments using RRSA/OIDC can select
+ECS node RAM Role credentials before OIDC credentials if the Pod can obtain
+credentials from node metadata. If the node role lacks the required OSS
+permissions, table creation or writes can fail with `403 PermissionDenied`
+(for example, while writing a manifest). The same credential order is present
+in v1.1.4, v1.2.1, and `v1.3.0-alpha.1-nightly-20260907`; also review this guidance
+when upgrading directly from v1.0 to one of those versions.
+
+**Action Required:**
+
+1. If the deployment uses RRSA/OIDC, set
+   `ALIBABA_CLOUD_ECS_METADATA_DISABLED=true` in the environment of the standalone
+   instance or all datanodes accessing OSS before rolling out the upgrade.
+   Keep the existing RRSA environment variables and token mount. See
+   [OSS RRSA/OIDC configuration](/user-guide/deployments-administration/configuration.md#alibaba-cloud-oss-authentication-with-rrsaoidc)
+   for the container configuration example and credential precedence details.
+2. Restart the affected instances so the setting takes effect. Do not apply it
+   to deployments that rely on ECS RAM Role credentials.
+3. Test the upgrade in a non-production environment. Verify table creation,
+   writes, and reads, and check that OSS operations no longer return permission
+   errors. If errors persist, check the selected identity and its bucket
+   permissions; a `403` alone does not identify this credential-order issue.
+
 ### Upgrading from v0.17 to v1.0
 
 For Metric Engine tables, review the [compaction guidance](/1.0/user-guide/deployments-administration/upgrade/#metric-engine-compaction-changes-in-v10) before
@@ -269,10 +298,11 @@ Implement double writing to both the old and new versions of GreptimeDB, then sw
 
 ## Upgrade Checklist
 
-Before upgrading to v1.0, complete the following checklist:
+Before upgrading to your target version, complete the following checklist:
 
 ### Pre-Upgrade
 
+- [ ] If using OSS RRSA/OIDC, review the [credential precedence change](#oss-rrsa-credential-precedence) and configure the ECS metadata opt-out where needed
 - [ ] Review all breaking changes relevant to your upgrade path
 - [ ] **Backup all data and configurations**
 - [ ] Identify queries using ordered-set aggregate functions (if upgrading from v0.16 or earlier)

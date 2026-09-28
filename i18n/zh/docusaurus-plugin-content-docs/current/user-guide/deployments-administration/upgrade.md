@@ -142,6 +142,21 @@ GreptimeDB 现在始终为 metric 表使用稀疏主键编码，`sparse_primary_
   已经不再提供关闭该行为的选项
 - 使用清理后的配置在预发环境重启一次，确认部署已不再依赖这些被移除的设置
 
+### 从 v1.0.x 升级到 v1.1.4
+
+#### OSS 凭证优先级
+
+**影响：** 升级后访问 OSS 时使用的 RAM 角色可能发生变化。
+
+从 v1.0.x 升级到 v1.1.4 后，OSS 会优先获取 ECS RAM Role 凭证，再获取 OIDC 凭证。
+如果两者均可用，但 ECS 角色缺少所需的 OSS 权限，建表或写入可能返回 `403 PermissionDenied`。
+
+**操作要求：**
+
+如果需要使用 OIDC 角色，在 GreptimeDB 进程环境中设置
+`ALIBABA_CLOUD_ECS_METADATA_DISABLED=true`，并重启相关实例。
+凭证获取顺序请参见[阿里云 OSS 凭证](/user-guide/deployments-administration/configuration.md#阿里云-oss-凭证)。
+
 ### 从 v0.17 升级到 v1.0
 
 如果使用 Metric Engine 表，从 v0.17 升级到 v1.0 或更高版本前，请查看
@@ -369,6 +384,7 @@ SELECT * FROM table;
 
 ### 升级前
 
+- [ ] 如果使用 OSS，检查[凭证优先级](#oss-凭证优先级)，并按需禁用 ECS metadata
 - [ ] 查看与你的升级路径相关的所有破坏性变更
 - [ ] **备份所有数据和配置**
 - [ ] 如果升级到 v1.2，搜索 PromQL 资产中的 `holt_winters(`、`fill(`、`fill_left(` 和 `fill_right(`

@@ -159,6 +159,23 @@ that still sets the key loads without error; the key is ignored.
 - Restart a staging environment with the cleaned configuration to confirm your
   deployment no longer depends on the removed setting
 
+### Upgrading from v1.0.x to v1.1.4
+
+#### OSS credential precedence
+
+**Impact:** OSS authentication can use a different RAM role after an upgrade.
+
+When upgrading from v1.0.x to v1.1.4, OSS tries ECS RAM Role credentials before
+OIDC credentials. If both are available and the ECS role lacks the required OSS
+permissions, table creation or writes can fail with `403 PermissionDenied`.
+
+**Action Required:**
+
+If you need to use the OIDC role, set `ALIBABA_CLOUD_ECS_METADATA_DISABLED=true`
+in the GreptimeDB process environment and restart the affected instances.
+See [Aliyun OSS credentials](/user-guide/deployments-administration/configuration.md#aliyun-oss-credentials)
+for the credential lookup order.
+
 ### Upgrading from v0.17 to v1.0
 
 For Metric Engine tables, review the [compaction guidance](/1.0/user-guide/deployments-administration/upgrade/#metric-engine-compaction-changes-in-v10) before
@@ -386,6 +403,7 @@ Before upgrading to your target version, complete the following checklist:
 
 ### Pre-Upgrade
 
+- [ ] If using OSS, review the [credential precedence](#oss-credential-precedence) and disable ECS metadata if needed
 - [ ] Review all breaking changes relevant to your upgrade path
 - [ ] **Backup all data and configurations**
 - [ ] If upgrading to v1.2, search PromQL assets for `holt_winters(`, `fill(`, `fill_left(`, and `fill_right(`
