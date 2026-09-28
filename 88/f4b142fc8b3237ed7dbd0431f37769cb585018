@@ -1,0 +1,19 @@
+sidebars.ts
+  s_5dffa09e594910::t_961cfe2dad826b 417
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "88f4b142fc8b3237ed7dbd0431f37769cb585018",
+  "prompts": {},
+  "sessions": {
+    "s_5dffa09e594910": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0b380-18f7-7dd1-b2c9-0ec51225d012",
+        "model": "unknown"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
