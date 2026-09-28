@@ -268,12 +268,6 @@ trace_ingest_chunk_size = 512
 [prom_store]
 enable = true
 with_metric_engine = true
-pending_rows_flush_interval = "0s"
-max_batch_rows = 100000
-max_concurrent_flushes = 256
-worker_channel_capacity = 65526
-max_inflight_requests = 3000
-flow_notification_queue_capacity = 1024
 ```
 
 Prometheus Remote Write 2.0 native histograms and cumulative OTLP/HTTP exponential
@@ -285,7 +279,7 @@ The following table describes the options in detail:
 | ---------- | -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | http       |                      |         | HTTP server options                                                                                                                                                                                                                                                                                                                                                                        |
 |            | addr                 | String  | Server address, "127.0.0.1:4000" by default                                                                                                                                                                                                                                                                                                                                                |
-|            | timeout              | String  | HTTP request timeout. Set to `0s` to disable timeout (default: "0s"). When Prometheus Remote Write [batching mode](/user-guide/ingest-data/for-observability/prometheus.md#batching-mode) is enabled, a non-zero timeout less than or equal to `prom_store.pending_rows_flush_interval` plus 1 second is adjusted to that value.                                                                                                                                                                                                                                                                                                                                                     |
+|            | timeout              | String  | HTTP request timeout. Set to `0s` to disable timeout (default: "0s"). See [Server-side write batching](#server-side-write-batching) for its behavior when batching is enabled. |
 |            | body_limit           | String  | HTTP max body size, "64MB" by default                                                                                                                                                                                                                                                                                                                                                      |
 |            | enable_cors          | Boolean | Whether to enable HTTP CORS support, true by default. |
 |            | cors_allowed_origins | Array   | Customized allowed origins for HTTP CORS. |
@@ -315,15 +309,9 @@ The following table describes the options in detail:
 |            | enable               | Boolean | Whether to enable OpenTelemetry protocol in HTTP API, true by default. |
 |            | trace_ingest_chunk_size | Integer | Maximum spans per trace ingest chunk. Set to `0` to disable splitting. |
 |            | experimental_enable_resource_info | Boolean | Whether to synthesize the `greptime_otel_resource_info` table from the resource attributes of OTLP metrics, so metrics-only services reach the [semantic graph](/user-guide/semantic-layer/semantic-graph.md). `false` by default. |
-| prom_store |                              |         | Prometheus remote storage options                                                                                                                                                                                                                                                                                                                                                          |
+| prom_store |                              |         | Prometheus remote storage options. |
 |            | enable                       | Boolean | Whether to enable Prometheus Remote Write and read in HTTP API, true by default                                                                                                                                                                                                                                                                                                            |
 |            | with_metric_engine           | Boolean | Whether to use the metric engine on Prometheus Remote Write, true by default                                                                                                                                                                                                                                                                                                               |
-|            | pending_rows_flush_interval  | String  | Interval between batch flushes for Prometheus Remote Write. Set to a non-zero duration (e.g. `500ms`) to enable [batching mode](/user-guide/ingest-data/for-observability/prometheus.md#batching-mode). `0s` by default (disabled)                                                                                                                                                     |
-|            | max_batch_rows               | Integer | Maximum number of rows per batch before a flush is triggered, 100000 by default                                                                                                                                                                                                                                                                                                            |
-|            | max_concurrent_flushes       | Integer | Maximum number of concurrent flush operations, 256 by default                                                                                                                                                                                                                                                                                                                              |
-|            | worker_channel_capacity      | Integer | Capacity of the internal worker channel for receiving rows, 65526 by default                                                                                                                                                                                                                                                                                                               |
-|            | max_inflight_requests        | Integer | Maximum number of in-flight write requests waiting for batch completion, 3000 by default                                                                                                                                                                                                                                                                                                   |
-|            | flow_notification_queue_capacity | Integer | Maximum number of pending logical-table flow notifications in the shared queue, 1024 by default. Only used in [batching mode](/user-guide/ingest-data/for-observability/prometheus.md#batching-mode). The value must be greater than 0. When the queue is full, notifications are dropped and counted by the `greptime_prom_store_flow_notification_dropped_total` metric. |
 | postgres   |                      |         | PostgresSQL server options                                                                                                                                                                                                                                                                                                                                                                 |
 |            | enable               | Boolean | Whether to enable PostgresSQL protocol, true by default                                                                                                                                                                                                                                                                                                                                    |
 |            | addr                 | String  | Server address, "127.0.0.1:4003" by default                                                                                                                                                                                                                                                                                                                                                |
@@ -340,6 +328,18 @@ layer security.
 |                                           | `cert_path` | String  | File path for TLS certificate                                 |
 |                                           | `key_path`  | String  | File path for TLS private key                                 |
 |                                           | `watch`     | Boolean | Watch file system changes and reload certificate and key file. Auto reload is not supported by `grpc.tls`; keep `grpc.tls.watch` set to `false`. |
+
+### Server-side write batching
+
+You can configure write batching in the standalone or frontend configuration file. The following example enables batching for InfluxDB writes to ordinary tables:
+
+```toml
+[pending_rows_batcher]
+protocols = ["influxdb"]
+pending_rows_flush_interval = "500ms"
+```
+
+See [Server-side write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md) for supported protocols and batching behavior.
 
 ### Query options
 

@@ -267,12 +267,6 @@ trace_ingest_chunk_size = 512
 [prom_store]
 enable = true
 with_metric_engine = true
-pending_rows_flush_interval = "0s"
-max_batch_rows = 100000
-max_concurrent_flushes = 256
-worker_channel_capacity = 65526
-max_inflight_requests = 3000
-flow_notification_queue_capacity = 1024
 ```
 
 启用相应协议后，GreptimeDB 默认支持写入 Prometheus Remote Write 2.0 原生直方图和
@@ -284,7 +278,7 @@ OTLP/HTTP 累积指数直方图。
 | ---------- | ------------------ | ------ | ------------------------------------------------------------ |
 | http       |                    |        | HTTP 服务器选项                                              |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
-|            | timeout            | 字符串 | HTTP 请求超时时间。设为 "0s" 可禁用超时（默认值为 "0s"）。启用 Prometheus Remote Write [批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式) 时，非零且不超过 `prom_store.pending_rows_flush_interval` 加 1 秒的超时值会被自动调整为该值。                              |
+|            | timeout            | 字符串 | HTTP 请求超时时间。设为 `0s` 可禁用超时（默认值为 `0s`）。启用批量写入时的行为请参阅[服务端写入批量处理](#服务端写入批量处理)。 |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
 |            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
 |            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
@@ -314,15 +308,9 @@ OTLP/HTTP 累积指数直方图。
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 OpenTelemetry 协议，默认为 true       |
 |            | trace_ingest_chunk_size | 整数 | 每个 trace 写入分块的最大 span 数量。设为 `0` 可禁用分块。 |
 |            | experimental_enable_resource_info | 布尔值 | 是否从 OTLP metrics 的 resource attributes 合成 `greptime_otel_resource_info` 表，让只有指标的 service 进入[语义图](/user-guide/semantic-layer/semantic-graph.md)。默认为 `false`。 |
-| prom_store |                              |        | Prometheus 远程存储选项                                                                                                                                                                                         |
+| prom_store |                              |        | Prometheus 远程存储选项。 |
 |            | enable                       | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true                                                                                                                                                         |
-|            | with_metric_engine           | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true                                                                                                                                                     |
-|            | pending_rows_flush_interval  | 字符串 | Prometheus Remote Write 批量刷写的时间间隔。设为非零值（如 `500ms`）以启用[批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式)，默认为 `0s`（禁用）                         |
-|            | max_batch_rows               | 整数   | 触发刷写的最大批量行数，默认为 100000                                                                                                                                                                           |
-|            | max_concurrent_flushes       | 整数   | 同时执行的最大刷写操作数量，默认为 256                                                                                                                                                                          |
-|            | worker_channel_capacity      | 整数   | 内部接收行数据的 worker 通道容量，默认为 65526                                                                                                                                                                  |
-|            | max_inflight_requests        | 整数   | 等待批量完成的最大请求数，默认为 3000                                                                                                                                                                           |
-|            | flow_notification_queue_capacity | 整数 | 共享队列中等待处理的逻辑表 Flow 通知数量上限，默认为 1024。仅在[批量写入模式](/user-guide/ingest-data/for-observability/prometheus.md#批量写入模式)下生效，取值必须大于 0。队列满时通知会被丢弃，并计入 `greptime_prom_store_flow_notification_dropped_total` 指标。 |
+|            | with_metric_engine           | 布尔值 | 是否在 Prometheus 远程写入中使用 metric engine，默认为 true                                                                                                                                                     |
 | postgres   |                    |        | PostgresSQL 服务器选项                                       |
 |            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                       |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                          |
@@ -338,6 +326,18 @@ OTLP/HTTP 累积指数直方图。
 |                                          | `cert_path` | String  | TLS 证书文件路径                                 |
 |                                          | `key_path`  | String  | TLS 私钥文件路径                                 |
 |                                          | `watch`     | Boolean | 监控文件变化，自动重新加载证书或私钥。`grpc.tls` 不支持自动重新加载，请保持 `grpc.tls.watch` 为 `false`。 |
+
+### 服务端写入批量处理
+
+你可以在 standalone 或 frontend 配置文件中配置写入批量处理。以下示例为写入普通表的 InfluxDB 请求启用批量处理：
+
+```toml
+[pending_rows_batcher]
+protocols = ["influxdb"]
+pending_rows_flush_interval = "500ms"
+```
+
+有关支持的协议和批量处理行为，请参阅[服务端写入批量处理](/user-guide/deployments-administration/performance-tuning/write-batching.md)。
 
 ### 查询选项
 
