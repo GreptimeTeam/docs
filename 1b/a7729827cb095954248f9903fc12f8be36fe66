@@ -1,0 +1,29 @@
+docs/user-guide/deployments-administration/configuration.md
+  s_5dffa09e594910::t_6de4e9fa98a758 280,331,341
+docs/user-guide/deployments-administration/performance-tuning/write-batching.md
+  s_5dffa09e594910::t_781ec6864d1b62 3,6
+docs/user-guide/ingest-data/for-observability/prometheus.md
+  s_5dffa09e594910::t_4bc66f686f7422 313,322
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/configuration.md
+  s_5dffa09e594910::t_866805261c2d65 279,329,339
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/performance-tuning/write-batching.md
+  s_5dffa09e594910::t_63bea406b1afa8 3,6
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/ingest-data/for-observability/prometheus.md
+  s_5dffa09e594910::t_f75217dd4fea5b 305,315
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1ba7729827cb095954248f9903fc12f8be36fe66",
+  "prompts": {},
+  "sessions": {
+    "s_5dffa09e594910": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0b380-18f7-7dd1-b2c9-0ec51225d012",
+        "model": "unknown"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
