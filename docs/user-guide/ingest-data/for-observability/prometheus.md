@@ -310,7 +310,7 @@ that reduces per-request overhead and improves ingestion throughput.
 In batching mode, incoming rows are accumulated and flushed to the metric engine in larger batches.
 
 Batching mode is **disabled by default**.
-Configure Prometheus Remote Write through batching for metric engine logical tables. See [Server-side write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md#configure-batching-for-metric-engine-logical-tables).
+Configure Prometheus Remote Write through metric-engine logical-table batching. See [Server-side write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md#metric-engine-logical-table-batching).
 
 ### Request timeout and retries
 

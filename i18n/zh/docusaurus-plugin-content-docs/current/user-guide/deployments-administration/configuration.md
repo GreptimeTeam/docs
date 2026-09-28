@@ -328,7 +328,7 @@ with_metric_engine = true
 
 ### 服务端写入批量处理
 
-你可以在 standalone 或 frontend 配置文件中配置写入批量处理。以下示例为普通 InfluxDB 表启用批量处理：
+你可以在 standalone 或 frontend 配置文件中配置写入批量处理。以下示例为写入普通表的 InfluxDB 请求启用批量处理：
 
 ```toml
 [pending_rows_batcher]

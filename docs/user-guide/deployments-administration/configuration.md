@@ -330,7 +330,7 @@ layer security.
 
 ### Server-side write batching
 
-You can configure write batching in the standalone or frontend configuration file. The following example enables batching for ordinary InfluxDB tables:
+You can configure write batching in the standalone or frontend configuration file. The following example enables batching for InfluxDB writes to ordinary tables:
 
 ```toml
 [pending_rows_batcher]
