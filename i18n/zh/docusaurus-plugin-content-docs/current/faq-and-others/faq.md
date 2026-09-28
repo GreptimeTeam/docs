@@ -231,6 +231,21 @@ GreptimeDB 的 metasrv 组件支持 etcd、MySQL 和 PostgreSQL 作为元数据�
 
 最终取决于团队的技术栈和已有基础设施。各后端的配置方式参见[元数据存储配置](/user-guide/deployments-administration/manage-metadata/configuration.md)。
 
+### 使用 etcd 时遇到 `NOSPACE` 错误怎么办？
+
+`NOSPACE` 表示 etcd 的后端数据库已达到空间配额。常见原因是未开启自动压缩（compaction），或历史版本保留过多。例如，大量 `ALTER TABLE` 请求会反复更新表元数据（table info），即使表的数量没有增加，也会积累大量历史版本。
+
+GreptimeDB 不需要通过这些历史版本回溯表元数据。使用 Bitnami 的 etcd Helm chart 时，建议配置基于 revision 的自动压缩：
+
+```yaml
+autoCompactionMode: "revision"
+autoCompactionRetention: "100"
+```
+
+etcd 每 5 分钟压缩至 `当前 revision - 100`。完整配置参见[管理 etcd](/user-guide/deployments-administration/manage-metadata/manage-etcd.md#安装)。
+
+如果已触发 `NOSPACE`，需要压缩历史版本、进行碎片整理（defragmentation）以回收磁盘空间，并在空间占用降至配额以下后解除告警。如果当前有效数据本身已接近配额，还需要评估容量。
+
 ### 如何管理 GreptimeDB？
 
 GreptimeDB 使用**标准 SQL 作为管理接口**。你可以通过 SQL 完成[表的基本操作如建表删表](/user-guide/deployments-administration/manage-data/basic-table-operations.md)、[修改 Schema](/reference/sql/alter.md)、设置 [TTL 策略](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)、配置[索引](/user-guide/manage-data/data-index.md)等操作，不用写配置文件，也不用调专有 API。
