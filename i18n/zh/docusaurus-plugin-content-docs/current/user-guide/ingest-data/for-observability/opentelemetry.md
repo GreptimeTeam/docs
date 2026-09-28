@@ -177,7 +177,13 @@ GreptimeDB 将会直接保存它们，不会进行累计值（cumulative value�
 - Metric 的名称将被作为 GreptimeDB 表的名称，当表不存在时会自动创建。
 - 只有特定 resource 属性会被默认保留。详情和配置选项见上一小节。属性在 GreptimeDB 表中会被作为 tag 列。
 - 参考 [Prometheus 数据模型](./prometheus.md#数据模型)了解更多数据模型信息。
-- ExponentialHistogram 暂时未被支持。
+- 默认支持通过 OTLP/HTTP 写入累积（cumulative temporality）的 `ExponentialHistogram` 指标。
+  每个数据点以原生直方图的形式存储在 Struct 字段中，字段名默认为 `greptime_native_histogram`，
+  而不是拆分为 `_bucket`、`_sum` 和 `_count` 序列。增量时序（delta temporality）和未指定时序的指标会被拒绝。
+
+无效的指数直方图数据点会被拒绝，同一 OTLP/HTTP 请求中的有效数据点仍可写入。
+这类请求返回部分成功；如果请求中只有被拒绝的数据点，则返回 `InvalidArgument` 错误。
+OTel Arrow 的传输格式缺少 `zero_threshold`，因此不支持指数直方图。
 
 如果某张表是由旧版 OTLP 指标写入格式创建的，这张表会继续保留原有格式。以下是数据模型在映射上的差别：
 
