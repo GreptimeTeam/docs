@@ -1,0 +1,39 @@
+docs/user-guide/ingest-data/for-iot/sql.md
+  s_17567755245fea::t_ef531704da65d1 78,80,86-92
+docs/user-guide/protocols/grpc.md
+  s_17567755245fea::t_b89546fe928184 12,14,16-22
+docs/user-guide/protocols/http.md
+  s_17567755245fea::t_2c825dba672bf9 68,70,81-87,117-118
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/ingest-data/for-iot/sql.md
+  s_17567755245fea::t_6fdc58037ab6af 76,78,84-89
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/protocols/http.md
+  s_17567755245fea::t_d118a5eaa202b8 64,66,77-82,112-113
+docs/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_17302bdadcc912 50-51,62-63,149-150,281-282,390-391,478-479
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_0cb3dc824b8e23 50-51,62-63,149-150,281-282,390-391,478-479
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "2b56b77612bb7b3f4bb27d2856b874c98a5fc1ea",
+  "prompts": {},
+  "sessions": {
+    "s_17567755245fea": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08e6f-7c57-77b3-b260-c390adeb4275",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    },
+    "s_4ba75150b8ff77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0e5f2-7641-7372-ab8f-ee2e2ac1262c",
+        "model": "unknown"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
