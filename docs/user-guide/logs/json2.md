@@ -260,19 +260,26 @@ The syntax is:
 
 ```sql
 json_get(json_column, 'path.to.field')
-json_get(json_column, 'path.to.field')::TYPE
+json_get(json_column, 'path.to.field', NULL::TYPE)
 ```
+
+GreptimeDB infers the return type for the two-argument form. See
+[Type inference](#type-inference) below for details. The three-argument form
+explicitly specifies the return type using the type of the third argument,
+typically written as `NULL::TYPE`, such as `NULL::BIGINT`. The third argument
+only specifies a type; it is not a default value for missing paths. The type
+explicitly specified through the third argument has the highest priority.
 
 `json_get` can be used in `SELECT`, `WHERE`, `GROUP BY`, and other SQL clauses
 that accept expressions. For example:
 
 ```sql
 SELECT
-    json_get(attrs, 'trace_id')::STRING AS trace_id,
-    json_get(attrs, 'http.status')::BIGINT AS status,
-    json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms
+    json_get(attrs, 'trace_id', NULL::STRING) AS trace_id,
+    json_get(attrs, 'http.status', NULL::BIGINT) AS status,
+    json_get(attrs, 'latency_ms', NULL::DOUBLE) AS latency_ms
 FROM application_logs
-WHERE json_get(attrs, 'http.status')::BIGINT >= 500;
+WHERE json_get(attrs, 'http.status', NULL::BIGINT) >= 500;
 ```
 
 The typed extraction functions `json_get_string`, `json_get_int`,
@@ -304,19 +311,26 @@ WHERE attrs.http.status >= 500;
 
 A missing path or an out-of-range array subscript returns `NULL`.
 
-### Return types and type conversion
+### Type inference
 
-`json_get` and dot syntax follow the same return type rules.
+When using the two-argument form of `json_get` or dot syntax, GreptimeDB
+determines the return type according to the following rules.
 
 If the accessed path has a type hint, the result uses the type specified by
 that hint. For example, if `http.status` has a `BIGINT` type hint, both
 `json_get(attrs, 'http.status')` and `attrs.http.status` return `BIGINT`.
 
 For paths without type hints, GreptimeDB infers the return type from the query
-context, such as the types required by function arguments or comparisons.
-You can also specify the return type with an explicit cast. For example:
+context, including explicit casts (`::TYPE` or `CAST(... AS TYPE)`), function
+arguments, and comparisons. For example:
 
 ```sql
+-- Infer the type from the explicit cast target and read the field as DOUBLE
+SELECT
+    json_get(attrs, 'latency_ms')::DOUBLE AS latency_by_function,
+    attrs.latency_ms::DOUBLE AS latency_by_dot
+FROM application_logs;
+
 -- Infer the type from function argument requirements
 SELECT ABS(attrs.latency_ms) AS latency_ms
 FROM application_logs;
@@ -325,13 +339,12 @@ FROM application_logs;
 SELECT ts
 FROM application_logs
 WHERE attrs.http.status >= 500;
-
--- Specify the return type explicitly
-SELECT json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms
-FROM application_logs;
 ```
 
-If a path has no type hint or explicit cast, and the query context cannot
+If a path has a type hint, the field is read using the declared type first;
+an outer explicit cast applies to the result.
+
+If a path has no type hint and the query context cannot
 determine the return type, the result defaults to `STRING`. For example,
 without a type hint, both expressions below return `STRING`, even if
 `http.status` stores a number in the JSON:

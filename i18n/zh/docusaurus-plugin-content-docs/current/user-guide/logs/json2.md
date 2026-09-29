@@ -245,18 +245,23 @@ JSON2 支持通过 `json_get` 函数或点号语法访问嵌套字段。
 
 ```sql
 json_get(json_column, 'path.to.field')
-json_get(json_column, 'path.to.field')::TYPE
+json_get(json_column, 'path.to.field', NULL::TYPE)
 ```
+
+两参数形式的返回类型由 GreptimeDB 推断，具体规则见下文[类型推断](#类型推断)。三
+参数形式通过第三个参数的类型显式指定返回类型，通常写作 `NULL::TYPE`，例如
+`NULL::BIGINT`。第三个参数仅用于指定类型，不是路径缺失时的默认值。通过第三个参数
+显式指定的类型具有最高优先级。
 
 `json_get` 可以用于 `SELECT`、`WHERE`、`GROUP BY` 等接受表达式的 SQL 子句。例如：
 
 ```sql
 SELECT
-    json_get(attrs, 'trace_id')::STRING AS trace_id,
-    json_get(attrs, 'http.status')::BIGINT AS status,
-    json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms
+    json_get(attrs, 'trace_id', NULL::STRING) AS trace_id,
+    json_get(attrs, 'http.status', NULL::BIGINT) AS status,
+    json_get(attrs, 'latency_ms', NULL::DOUBLE) AS latency_ms
 FROM application_logs
-WHERE json_get(attrs, 'http.status')::BIGINT >= 500;
+WHERE json_get(attrs, 'http.status', NULL::BIGINT) >= 500;
 ```
 
 类型明确的提取函数 `json_get_string`、`json_get_int`、`json_get_float` 和
@@ -286,18 +291,24 @@ WHERE attrs.http.status >= 500;
 
 路径不存在或数组下标越界时返回 `NULL`。
 
-### 返回类型与类型转换
+### 类型推断
 
-`json_get` 和点号语法遵循相同的返回类型规则。
+使用两参数形式的 `json_get` 或点号语法时，GreptimeDB 按以下规则确定返回类型。
 
 如果访问路径声明了 type hint，则返回该 type hint 指定的类型。例如，`http.status`
 声明了 `BIGINT` type hint 时，`json_get(attrs, 'http.status')` 和
 `attrs.http.status` 都返回 `BIGINT`。
 
-对于未声明 type hint 的路径，GreptimeDB 会根据查询上下文推断返回类型，例如函数
-参数或比较运算所要求的类型。也可以通过显式类型转换指定返回类型。例如：
+对于未声明 type hint 的路径，GreptimeDB 会根据查询上下文推断返回类型，包括显式
+类型转换（`::TYPE` 或 `CAST(... AS TYPE)`）、函数参数和比较运算等。例如：
 
 ```sql
+-- 根据显式类型转换的目标类型推断，按 DOUBLE 类型读取字段
+SELECT
+    json_get(attrs, 'latency_ms')::DOUBLE AS latency_by_function,
+    attrs.latency_ms::DOUBLE AS latency_by_dot
+FROM application_logs;
+
 -- 根据函数参数要求推断类型
 SELECT ABS(attrs.latency_ms) AS latency_ms
 FROM application_logs;
@@ -306,14 +317,12 @@ FROM application_logs;
 SELECT ts
 FROM application_logs
 WHERE attrs.http.status >= 500;
-
--- 显式指定返回类型
-SELECT json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms
-FROM application_logs;
 ```
 
-如果没有声明 type hint，也没有显式指定类型，且查询上下文无法确定返回类型，则默认
-返回 `STRING`。例如，在未声明 type hint 的情况下，下面两个表达式都返回 `STRING`，
+如果路径已声明 type hint，则先按声明的类型读取；外层显式类型转换作用于读取结果。
+
+如果没有声明 type hint，且查询上下文无法确定返回类型，则默认返回 `STRING`。
+例如，在未声明 type hint 的情况下，下面两个表达式都返回 `STRING`，
 即使 JSON 中的 `http.status` 存储的是数字：
 
 ```sql
