@@ -344,6 +344,9 @@ The bundled dashboard advances to v0.13.15. JSON result columns gain a per-colum
 * chore: remove dead code left behind by removed features by [@killme2008](https://github.com/killme2008) in [#9377](https://github.com/GreptimeTeam/greptimedb/pull/9377)
 * chore: disable unstable rustfmt features by [@sunng87](https://github.com/sunng87) in [#9379](https://github.com/GreptimeTeam/greptimedb/pull/9379)
 * chore: add cargo min-publish-age of 7 days by [@killme2008](https://github.com/killme2008) in [#9384](https://github.com/GreptimeTeam/greptimedb/pull/9384)
+* revert(ci): pin the query-regression runner toolchain to nightly-2026-03-21 by [@sunng87](https://github.com/sunng87) in [#9389](https://github.com/GreptimeTeam/greptimedb/pull/9389)
+* chore: add mold back to nix flake by [@sunng87](https://github.com/sunng87) in [#9388](https://github.com/GreptimeTeam/greptimedb/pull/9388)
+* chore: bump version to 1.3.0-beta.1 by [@WenyXu](https://github.com/WenyXu) in [#9392](https://github.com/GreptimeTeam/greptimedb/pull/9392)
 
 ## New Contributors
 
