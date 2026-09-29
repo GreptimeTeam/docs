@@ -13,38 +13,58 @@ GreptimeDB v1.3.0-beta.1 is the first beta of the 1.3 release. This changelog co
 
 ### 👍 Highlights
 
-#### Anchor PromQL queries to a fixed time
+#### Native histogram ingestion enabled by default
 
-The `@` modifier now anchors vector and matrix selectors to a Unix timestamp or to the start/end of the query range. Previously, selectors with `@` could silently follow each evaluation step instead. For example, compare a counter's current rate with the rate at the end of the selected range:
+GreptimeDB now accepts Prometheus Remote Write v2 native histograms and cumulative OTLP/HTTP exponential histograms without experimental configuration switches. For Prometheus that already collects native histograms, select Remote Write 2.0 in `prometheus.yml`:
 
-```promql
-rate(http_requests_total[5m] @ end())
+```yaml
+remote_write:
+  - url: http://localhost:4000/v1/prometheus/write?db=public
+    protobuf_message: io.prometheus.write.v2.Request
 ```
 
-An absolute timestamp and `offset` can also be combined:
+Query the stored histograms through GreptimeDB's PromQL API. This release also fixes histogram reads from SSTs and scalar batch writes to physical tables shared with histogram metrics. Remote Write v1 native histograms, native histogram Remote Read, and OTel Arrow exponential histograms remain unsupported. See [#9301](https://github.com/GreptimeTeam/greptimedb/pull/9301) and [#9321](https://github.com/GreptimeTeam/greptimedb/pull/9321).
 
-```promql
-http_requests_total @ 1700000600 offset 2m
-```
+#### Trace V2: JSON2 attributes with Jaeger and Semantic Graph support
 
-These examples assume an existing `http_requests_total` counter. Subquery-level `@` and `offset` remain outside this change's scope. See [#9224](https://github.com/GreptimeTeam/greptimedb/pull/9224).
+The opt-in `greptime_trace_v2` pipeline stores span, scope, and resource attributes in three JSON2 columns instead of adding a SQL column for every attribute. Its 19-column schema also preserves span events and links as JSON arrays. Jaeger queries and Semantic Graph derivation support the new model.
 
-#### Choose the time precision of metric tables
-
-Metric engine physical tables can now use time units other than milliseconds. Pre-create a physical table with microsecond precision, for example:
+Select `greptime_trace_v2` with the `x-greptime-pipeline-name` header on OTLP trace ingestion requests and use a separate destination table from Trace V1. After ingesting into a table named `traces_v2`, query typed attributes directly:
 
 ```sql
-CREATE TABLE metrics_us (
-    greptime_timestamp TIMESTAMP(6) NOT NULL,
-    greptime_value DOUBLE NULL,
-    TIME INDEX (greptime_timestamp)
-) ENGINE = metric
-WITH ('physical_metric_table' = 'true');
+SELECT
+    trace_id,
+    span_attributes."http.status_code"::BIGINT AS http_status,
+    resource_attributes."service.name"::STRING AS service_name
+FROM traces_v2;
 ```
 
-Metric ingestion aligns timestamps with the destination table's time unit, and logical-table batching supports these non-millisecond tables. Choosing finer storage precision does not add precision to the incoming samples. See [#9236](https://github.com/GreptimeTeam/greptimedb/pull/9236) and [#9346](https://github.com/GreptimeTeam/greptimedb/pull/9346).
+Existing Trace V1 tables are not automatically migrated. Events and links use JSON in this release; `ARRAY(JSON2)` is deferred. See [#9192](https://github.com/GreptimeTeam/greptimedb/pull/9192), [#9232](https://github.com/GreptimeTeam/greptimedb/pull/9232), [#9257](https://github.com/GreptimeTeam/greptimedb/pull/9257), and [#9278](https://github.com/GreptimeTeam/greptimedb/pull/9278).
 
-#### Dashboard
+#### Compaction scheduling, output sizing, and memory fixes
+
+TWCS now applies separate compaction triggers to active and inactive windows, prioritizes newer windows, and limits inactive-window rewrites with a rewrite budget. Strict-window compaction (SWCS) now honors the existing output-file size setting, whose default is 512 MiB. For an existing table, set the output threshold with:
+
+```sql
+ALTER TABLE my_table
+SET 'compaction.twcs.max_output_file_size' = '512MB';
+```
+
+The threshold is a soft limit: a single oversized series can remain in one file. Compaction also releases completed SST write buffers earlier and runs pruning, metadata, and index work on the compaction runtime instead of the query runtime. These changes address specific sources of rewrite and memory overhead; they do not establish a fixed performance gain for every workload. See [#9011](https://github.com/GreptimeTeam/greptimedb/pull/9011), [#9259](https://github.com/GreptimeTeam/greptimedb/pull/9259), [#9243](https://github.com/GreptimeTeam/greptimedb/pull/9243), and [#9304](https://github.com/GreptimeTeam/greptimedb/pull/9304).
+
+#### DataFusion 55.1.0
+
+The query engine is upgraded from DataFusion 53.1 to 55.1.0, with fixes for query limits, projections, and nested-data handling. The upgrade also changes some SQL result types and semantics. For example, exact median now interpolates even-sized integer inputs and returns a floating-point result:
+
+```sql
+SELECT median(v) AS median_value
+FROM (VALUES (1), (2), (3), (4)) AS samples(v);
+-- median_value: 2.5
+```
+
+Review the upgrade notes below before updating consumers with fixed result schemas. See [#8555](https://github.com/GreptimeTeam/greptimedb/pull/8555), [#9177](https://github.com/GreptimeTeam/greptimedb/pull/9177), and [#9071](https://github.com/GreptimeTeam/greptimedb/pull/9071).
+
+### Dashboard
 
 The bundled dashboard advances to v0.13.15. JSON result columns gain a per-column action to show or hide null fields, and the metric query input layout handles overflowing content. See dashboard [#653](https://github.com/GreptimeTeam/dashboard/pull/653) and [#652](https://github.com/GreptimeTeam/dashboard/pull/652).
 
