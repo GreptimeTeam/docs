@@ -160,12 +160,26 @@ GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-
 | `append_mode`                               | 该表是否时 append-only 的                | 字符串值。默认值为 'false'，根据 'merge_mode' 按主键和时间戳删除重复行。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行                        |
 | `merge_mode`                                | 合并重复行的策略                         | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。 |
 | `sst_format`                                | SST 文件的格式                            | 字符串值，支持 `primary_key`，`flat`。默认为 `flat`。`flat` 格式建议用于具有高基数主键的表。   |
+| `experimental_sst_float_field_encoding` | 实验性浮点字段 SST 编码 | 字符串值，支持 `default` 和 `byte_stream_split`，默认值为 `default`。`byte_stream_split` 对 Parquet SST 中的 `FLOAT` 和 `DOUBLE` 字段列启用 byte-stream-split 编码，不影响标签列或其他类型的列。 |
 | `comment`                                   | 表级注释                                 | 字符串值。                                                                                                                                                               |
 | `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值，支持 `none`, `skipping`.                                                                                                             |
 | `skip_wal`                                | 是否关闭表的预写日志                               | 字符串类型。当设置为 `'true'` 时表的写入数据将不会持久化到预写日志，可以避免存储磨损同时提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。 |
 | `write_buffer_size`                       | 该表的单 region 写缓冲区阻塞阈值                   | 字符串类型，例如 `'512MB'` 或 `'1GB'`。设置为正值后，mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入。该表选项会覆盖 `region_engine.mito.default_region_write_buffer_size`。即使引擎默认值非零，显式设置为 `'0'` 也会禁用单 region 限制。取消设置会移除表级覆盖，并回退到引擎默认值。 |
 | `auto_flush_interval`                     | 该表的 region 最长多久没有 flush 就触发一次 flush | 字符串类型，是一个时间范围字符串，例如 `'5m'` 或 `'1h'`，必须大于 0。该表选项会覆盖引擎级的 `region_engine.mito.auto_flush_interval`。用 `ALTER TABLE` 将其设为 `NULL` 可以移除表级覆盖、回退到引擎级配置。 |
 | `max_row_group_row_count`                 | Parquet row group 的最大行数                       | 字符串类型，表示 `1` 到 `10485760`（`10 * 1024 * 1024`）之间的整数。未设置该选项时，默认值为 `102400`（`100 * 1024`）。 |
+
+可以在建表时显式启用实验性浮点编码：
+
+```sql
+CREATE TABLE float_metrics (
+  ts TIMESTAMP TIME INDEX,
+  host STRING PRIMARY KEY,
+  val DOUBLE
+) ENGINE=mito
+WITH ('experimental_sst_float_field_encoding' = 'byte_stream_split');
+```
+
+省略该选项或设置为 `default` 会保留默认的 Parquet 写入编码策略。该选项控制 SST 写入编码，不改变浮点值或查询语义。读取器可以读取这两种编码的 SST。压缩率和读写性能取决于工作负载，建议在生产环境启用前进行基准测试。此处介绍的是建表选项，不支持通过 `ALTER TABLE` 修改该选项。
 
 #### 创建自定义 row group 大小的表
 

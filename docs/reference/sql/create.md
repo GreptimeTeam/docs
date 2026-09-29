@@ -158,12 +158,26 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `append_mode`                               | Whether the table is append-only                                | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.                         |
 | `merge_mode`                                | The strategy to merge duplicate rows                            | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.   |
 | `sst_format`                                | The format of SST files                            | String value, supports `primary_key`, `flat`. Default is `flat`. `flat` is recommended for tables which have a large number of unique primary keys.   |
+| `experimental_sst_float_field_encoding` | Experimental SST encoding for float fields | String value: `default` (the default) or `byte_stream_split`. `byte_stream_split` enables byte-stream-split encoding for `FLOAT` and `DOUBLE` field columns in Parquet SST files, without affecting tag columns or columns of other types. |
 | `comment`                                   | Table level comment                                             | String value.                                                                                                                                                                                                                                               |
 | `skip_wal`                                | Whether to disable Write-Ahead-Log for this table                               | String type. When set to `'true'`, the data written to the table will not be persisted to the write-ahead log, which can avoid storage wear and improve write throughput. However, when the process restarts, any unflushed data will be lost. Please use this feature only when the data source itself can ensure reliability. |
 | `write_buffer_size`                       | Per-region write buffer stall threshold for this table                          | String type, such as `'512MB'` or `'1GB'`. For a positive value, GreptimeDB schedules a flush when mutable memtable usage reaches half the value, stalls writes at the value, and rejects writes at twice the value. The table option overrides `region_engine.mito.default_region_write_buffer_size`. An explicit `'0'` disables the per-region limit even when the engine default is nonzero. Unset the option to remove the table override and fall back to the engine default. |
 | `auto_flush_interval`                     | How long a region of this table may go without a flush before one is triggered | String type, a time duration such as `'5m'` or `'1h'`. Must be greater than zero. The table option overrides the engine-wide `region_engine.mito.auto_flush_interval`. Set it to `NULL` with `ALTER TABLE` to drop the override and fall back to the engine setting. |
 | `max_row_group_row_count`                 | Maximum number of rows in a Parquet row group                                  | String type representing an integer from `1` through `10485760` (`10 * 1024 * 1024`). The default is `102400` (`100 * 1024`) when this option is not set. |
 | `index.type`                                | Index type                                                      | **Only for metric engine** String value, supports `none`, `skipping`.                                                                                                                                                                                       |
+
+To opt in to the experimental float encoding when creating a table:
+
+```sql
+CREATE TABLE float_metrics (
+  ts TIMESTAMP TIME INDEX,
+  host STRING PRIMARY KEY,
+  val DOUBLE
+) ENGINE=mito
+WITH ('experimental_sst_float_field_encoding' = 'byte_stream_split');
+```
+
+Omitting the option or setting it to `default` retains the default Parquet writer encoding policy. The option controls SST encoding, not float values or query semantics. The reader can read SSTs written with either encoding. Compression and read/write performance depend on the workload; benchmark before enabling it in production. This is a creation-time option; changing it with `ALTER TABLE` is not supported.
 
 #### Create a table with a custom row group size
 
