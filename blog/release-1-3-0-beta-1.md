@@ -58,18 +58,6 @@ SET 'compaction.twcs.max_output_file_size' = '512MB';
 
 The threshold is a soft limit: a single oversized series can remain in one file. Compaction also releases completed SST write buffers earlier and runs pruning, metadata, and index work on the compaction runtime instead of the query runtime. These changes address specific sources of rewrite and memory overhead; they do not establish a fixed performance gain for every workload. See [#9011](https://github.com/GreptimeTeam/greptimedb/pull/9011), [#9259](https://github.com/GreptimeTeam/greptimedb/pull/9259), [#9243](https://github.com/GreptimeTeam/greptimedb/pull/9243), and [#9304](https://github.com/GreptimeTeam/greptimedb/pull/9304).
 
-#### DataFusion 55.1.0
-
-The query engine is upgraded from DataFusion 53.1 to 55.1.0, with fixes for query limits, projections, and nested-data handling. The upgrade also changes some SQL result types and semantics. For example, exact median now interpolates even-sized integer inputs and returns a floating-point result:
-
-```sql
-SELECT median(v) AS median_value
-FROM (VALUES (1), (2), (3), (4)) AS samples(v);
--- median_value: 2.5
-```
-
-Review the upgrade notes below before updating consumers with fixed result schemas. See [#8555](https://github.com/GreptimeTeam/greptimedb/pull/8555), [#9177](https://github.com/GreptimeTeam/greptimedb/pull/9177), and [#9071](https://github.com/GreptimeTeam/greptimedb/pull/9071).
-
 ### Dashboard
 
 The bundled dashboard advances to v0.13.15. JSON result columns gain a per-column action to show or hide null fields, and the metric query input layout handles overflowing content. See dashboard [#653](https://github.com/GreptimeTeam/dashboard/pull/653) and [#652](https://github.com/GreptimeTeam/dashboard/pull/652).
