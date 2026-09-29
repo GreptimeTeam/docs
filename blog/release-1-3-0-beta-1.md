@@ -27,9 +27,17 @@ Query the stored histograms through GreptimeDB's PromQL API. This release also f
 
 #### Series index preview (experimental)
 
-This release introduces an experimental series index for discovering candidate time series in indexed SSTs, with background maintenance and manual index reconciliation. See [#9085](https://github.com/GreptimeTeam/greptimedb/pull/9085), [#9086](https://github.com/GreptimeTeam/greptimedb/pull/9086), and [#9323](https://github.com/GreptimeTeam/greptimedb/pull/9323).
+This release introduces an experimental series index for discovering candidate time series in indexed SSTs. See [#9085](https://github.com/GreptimeTeam/greptimedb/pull/9085).
 
-**Series index is experimental and unstable. Future releases may introduce breaking changes. It is not recommended for production use.**
+To try it in a non-production environment, set `experimental_enable_series_index = true` in the Mito engine configuration of your standalone instance or datanodes, then restart the affected instances. Update the existing Mito engine entry if one is already configured:
+
+```toml
+[[region_engine]]
+[region_engine.mito]
+experimental_enable_series_index = true
+```
+
+**Series index is at a very early experimental stage and is unstable. Future releases may introduce breaking changes. It is not recommended for production use.**
 
 #### Trace V2: JSON2 attributes with Jaeger and Semantic Graph support
 
