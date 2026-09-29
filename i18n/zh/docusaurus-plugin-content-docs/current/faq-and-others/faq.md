@@ -246,6 +246,8 @@ etcd 每 5 分钟压缩至 `当前 revision - 100`。完整配置参见[管理 e
 
 如果已触发 `NOSPACE`，需要压缩历史版本、进行碎片整理（defragmentation）以回收磁盘空间，并在空间占用降至配额以下后解除告警。如果当前有效数据本身已接近配额，还需要评估容量。
 
+生产环境建议优先使用托管 MySQL 或 PostgreSQL（RDS）作为元数据存储，避免 etcd 因保留过多历史版本而触发 `NOSPACE`，同时减少自动压缩和碎片整理等维护工作。配置方式参见[元数据存储配置](/user-guide/deployments-administration/manage-metadata/configuration.md)。
+
 ### 如何管理 GreptimeDB？
 
 GreptimeDB 使用**标准 SQL 作为管理接口**。你可以通过 SQL 完成[表的基本操作如建表删表](/user-guide/deployments-administration/manage-data/basic-table-operations.md)、[修改 Schema](/reference/sql/alter.md)、设置 [TTL 策略](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)、配置[索引](/user-guide/manage-data/data-index.md)等操作，不用写配置文件，也不用调专有 API。

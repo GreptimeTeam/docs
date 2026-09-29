@@ -246,6 +246,8 @@ Every 5 minutes, etcd compacts up to `current revision - 100`. See [Manage etcd]
 
 If `NOSPACE` has already occurred, compact old revisions, defragment the database to reclaim disk space, and disarm the alarm after usage falls below the quota. If current data alone approaches the quota, review capacity as well.
 
+For production deployments, prefer managed MySQL or PostgreSQL (RDS) for metadata storage. This avoids etcd-specific `NOSPACE` errors caused by retaining too many historical versions and reduces maintenance work such as configuring auto compaction and running defragmentation. See [Metadata Storage Configuration](/user-guide/deployments-administration/manage-metadata/configuration.md) for setup instructions.
+
 ### How do I manage GreptimeDB?
 
 GreptimeDB uses **standard SQL as its management interface**. You can [create tables](/user-guide/deployments-administration/manage-data/basic-table-operations.md), [alter schemas](/reference/sql/alter.md), set [TTL policies](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies), and configure [indexes](/user-guide/manage-data/data-index.md) — all through SQL. No config files to write, no proprietary APIs to call.
