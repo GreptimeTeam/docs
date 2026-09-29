@@ -1,0 +1,21 @@
+docs/faq-and-others/faq.md
+  s_79a9e65ea96ac9::t_c8bae625628788 247
+i18n/zh/docusaurus-plugin-content-docs/current/faq-and-others/faq.md
+  s_79a9e65ea96ac9::t_0f2394d3f4bd8b 247
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b6f55ffc9290ac4169e7bbf141b81511a3344d60",
+  "prompts": {},
+  "sessions": {
+    "s_79a9e65ea96ac9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0e5f2-769b-7522-b1eb-c5fde25b21a9",
+        "model": "unknown"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
