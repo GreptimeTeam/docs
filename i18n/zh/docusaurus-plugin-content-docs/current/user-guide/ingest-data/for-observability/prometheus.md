@@ -339,6 +339,31 @@ Prometheus 及其他 Remote Write 发送端会对 `5xx` 响应进行重试，
 默认情况下，metric engine 会自动创建一个名为 `greptime_physical_table` 的物理表。
 为了优化性能，你可以选择创建一个具有自定义配置的物理表。
 
+<AnchorAlias id="byte-stream-split-encoding-for-float-fields" />
+
+### 浮点字段使用 byte-stream-split 编码
+
+请在向该表写入数据之前创建物理表。如果默认物理表已经存在，请使用新的物理表名称，并将 Remote Write 指向该表；以下示例不会修改已有表。
+
+如果存储的数据以浮点字段为主，可以在自定义物理表时通过 [`experimental_sst_float_field_encoding`](/reference/sql/create.md#table-options) 表选项启用 `byte_stream_split` 编码：
+
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp)
+)
+ENGINE = metric
+WITH (
+    "physical_metric_table" = "",
+    "experimental_sst_float_field_encoding" = "byte_stream_split"
+);
+```
+
+如果物理表使用其他名称，需要在 Remote Write URL 的 `physical_table` 参数中指定该名称。该编码会在压缩前按字节位置重新排列每个浮点值的字节，可以减小存储指标数据的 SST 文件大小，并减少读取浮点列所需的 I/O。它作用于物理表中的所有 `FLOAT`/`DOUBLE` 字段列，而不只是 `greptime_value`，也不会作用于标签列和时间戳列。这是 Mito 的表选项，并不限于 metric engine。
+
+该选项默认关闭：`default` 保持当前写入行为，存储的值和查询结果都不变，两种编码写出的 SST 文件都可以读取。能否减少存储占用和 I/O 取决于数据分布和压缩配置，读写延迟的表现也因工作负载而异；原本压缩效果已经很好的数据可能不会受益，请先在自己的工作负载上进行基准测试，再在生产环境启用。这是实验性选项，只能在创建物理表时设置；`ALTER TABLE` 不支持将已有表改回 `default`。如果希望新创建的指标表使用默认编码，可以新建未设置该选项的物理表，并通过 Remote Write URL 将新指标写入该表。已有的逻辑指标表仍关联原物理表；修改 URL 不会迁移其已有数据，也不会切换其写入编码。两种编码写出的已有 SST 文件仍可读取。Remote Write 的 `x-greptime-hints` 请求头不能设置这个物理表选项。示例中使用的是默认物理表名称，因此无需修改 Remote Write URL。
+
 ### 启用跳数索引
 
 默认情况下，metric engine 不会为列创建索引。你可以通过设置 `index.type` 为 `skipping` 来设置索引类型。

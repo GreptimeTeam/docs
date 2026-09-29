@@ -158,12 +158,32 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `append_mode`                               | Whether the table is append-only                                | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.                         |
 | `merge_mode`                                | The strategy to merge duplicate rows                            | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.   |
 | `sst_format`                                | The format of SST files                            | String value, supports `primary_key`, `flat`. Default is `flat`. `flat` is recommended for tables which have a large number of unique primary keys.   |
+| `experimental_sst_float_field_encoding` | Experimental SST encoding for floating-point field columns | String value: `default` (the default) or `byte_stream_split`. `byte_stream_split` applies Parquet byte-stream-split encoding to every `FLOAT` and `DOUBLE` field column of the table and disables dictionary encoding for those columns. Tag columns, the time index column, and columns of other types are not affected. |
 | `comment`                                   | Table level comment                                             | String value.                                                                                                                                                                                                                                               |
 | `skip_wal`                                | Whether to disable Write-Ahead-Log for this table                               | String type. When set to `'true'`, the data written to the table will not be persisted to the write-ahead log, which can avoid storage wear and improve write throughput. However, when the process restarts, any unflushed data will be lost. Please use this feature only when the data source itself can ensure reliability. |
 | `write_buffer_size`                       | Per-region write buffer stall threshold for this table                          | String type, such as `'512MB'` or `'1GB'`. For a positive value, GreptimeDB schedules a flush when mutable memtable usage reaches half the value, stalls writes at the value, and rejects writes at twice the value. The table option overrides `region_engine.mito.default_region_write_buffer_size`. An explicit `'0'` disables the per-region limit even when the engine default is nonzero. Unset the option to remove the table override and fall back to the engine default. |
 | `auto_flush_interval`                     | How long a region of this table may go without a flush before one is triggered | String type, a time duration such as `'5m'` or `'1h'`. Must be greater than zero. The table option overrides the engine-wide `region_engine.mito.auto_flush_interval`. Set it to `NULL` with `ALTER TABLE` to drop the override and fall back to the engine setting. |
 | `max_row_group_row_count`                 | Maximum number of rows in a Parquet row group                                  | String type representing an integer from `1` through `10485760` (`10 * 1024 * 1024`). The default is `102400` (`100 * 1024`) when this option is not set. |
 | `index.type`                                | Index type                                                      | **Only for metric engine** String value, supports `none`, `skipping`.                                                                                                                                                                                       |
+
+#### Create a table with byte-stream-split float encoding
+
+`byte_stream_split` stores the bytes of each floating-point value grouped by byte position before the Parquet writer compresses them, which can improve the compression ratio of `FLOAT` and `DOUBLE` field columns. Try it when floating-point fields make up a large share of the SST data, such as metrics and telemetry workloads: smaller SST files reduce storage usage, and queries that read those columns may need less I/O.
+
+The option applies to every floating-point field column of the table, not only to a single value column. In a physical table for the metric engine, for example, it covers `greptime_value` and all other `FLOAT`/`DOUBLE` field columns. Tag columns (`PRIMARY KEY`), the `TIME INDEX` column, and columns of other types keep their existing encoding. This is a Mito table option, so any table that stores float fields can use it; it is not specific to the metric engine.
+
+```sql
+CREATE TABLE float_metrics (
+  ts TIMESTAMP TIME INDEX,
+  host STRING PRIMARY KEY,
+  val DOUBLE
+) ENGINE=mito
+WITH ('experimental_sst_float_field_encoding' = 'byte_stream_split');
+```
+
+Omitting the option or setting it to `default` keeps the current Parquet writer behavior, and the option is experimental. It changes how values are stored, not the values themselves or query results, and GreptimeDB reads SST files written with either encoding. Byte-stream-split does not use dictionary encoding, so the affected float field columns are written without dictionary encoding.
+
+Whether the encoding reduces storage and I/O depends on the data distribution and the compression codec, and latency can change in either direction. Data that already compresses well, for example where dictionary encoding is effective, may not benefit. Benchmark your own workload before enabling it in production. See [byte-stream-split encoding for Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md#byte-stream-split-encoding-for-float-fields) for a metric engine example. Set the option when you create the table; `ALTER TABLE` does not support changing it.
 
 #### Create a table with a custom row group size
 
