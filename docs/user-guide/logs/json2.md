@@ -153,7 +153,7 @@ The query result is:
 
 <AnchorAlias id="syntax" />
 
-## JSON2 Column Configuration
+## JSON2 Column Settings
 
 ### JSON Field Type hints
 

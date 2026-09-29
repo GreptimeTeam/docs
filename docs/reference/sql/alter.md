@@ -183,7 +183,7 @@ ALTER TABLE application_logs
     );
 ```
 
-The new settings **replace the entire JSON2 configuration** of the column;
+The new settings **replace all settings for the JSON2 column**;
 they are not merged with the previous settings. Include every existing type hint
 you want to retain in the new `MODIFY COLUMN` statement. Type hints omitted from
 the new settings are removed.
