@@ -244,7 +244,7 @@ autoCompactionRetention: "100"
 
 Every 5 minutes, etcd compacts up to `current revision - 100`. See [Manage etcd](/user-guide/deployments-administration/manage-metadata/manage-etcd.md#install) for the full configuration.
 
-If `NOSPACE` has already occurred, compact old revisions, defragment the database to reclaim disk space, and disarm the alarm after usage falls below the quota. If current data alone approaches the quota, review capacity as well.
+If `NOSPACE` has already occurred, compact old revisions, [defragment the database](https://etcd.io/docs/v3.6/op-guide/maintenance/#defragmentation) to reclaim disk space, and disarm the alarm after usage falls below the quota. If current data alone approaches the quota, review capacity as well.
 
 For production deployments, prefer managed MySQL or PostgreSQL (RDS) for metadata storage. This avoids etcd-specific `NOSPACE` errors caused by retaining too many historical versions and reduces maintenance work such as configuring auto compaction and running defragmentation. See [Metadata Storage Configuration](/user-guide/deployments-administration/manage-metadata/configuration.md) for setup instructions.
 

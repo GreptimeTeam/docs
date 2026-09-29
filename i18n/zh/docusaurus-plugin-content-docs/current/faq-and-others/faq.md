@@ -244,7 +244,7 @@ autoCompactionRetention: "100"
 
 etcd 每 5 分钟压缩至 `当前 revision - 100`。完整配置参见[管理 etcd](/user-guide/deployments-administration/manage-metadata/manage-etcd.md#安装)。
 
-如果已触发 `NOSPACE`，需要压缩历史版本、进行碎片整理（defragmentation）以回收磁盘空间，并在空间占用降至配额以下后解除告警。如果当前有效数据本身已接近配额，还需要评估容量。
+如果已触发 `NOSPACE`，需要压缩历史版本、进行[碎片整理（defragmentation）](https://etcd.io/docs/v3.6/op-guide/maintenance/#defragmentation)以回收磁盘空间，并在空间占用降至配额以下后解除告警。如果当前有效数据本身已接近配额，还需要评估容量。
 
 生产环境建议优先使用托管 MySQL 或 PostgreSQL（RDS）作为元数据存储，避免 etcd 因保留过多历史版本而触发 `NOSPACE`，同时减少自动压缩和碎片整理等维护工作。配置方式参见[元数据存储配置](/user-guide/deployments-administration/manage-metadata/configuration.md)。
 
