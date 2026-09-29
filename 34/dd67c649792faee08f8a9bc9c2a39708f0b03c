@@ -1,0 +1,19 @@
+blog/release-1-3-0-beta-1.md
+  s_4ba75150b8ff77::t_9aa1447a389d8b 347-349
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "34dd67c649792faee08f8a9bc9c2a39708f0b03c",
+  "prompts": {},
+  "sessions": {
+    "s_4ba75150b8ff77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0e5f2-7641-7372-ab8f-ee2e2ac1262c",
+        "model": "unknown"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
