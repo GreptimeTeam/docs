@@ -47,8 +47,8 @@ resources:
     cpu: '2'
     memory: 8Gi
 
-autoCompactionMode: "revision"
-autoCompactionRetention: "100"
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
 
 extraEnvVars:
   - name: ETCD_QUOTA_BACKEND_BYTES
@@ -58,8 +58,6 @@ extraEnvVars:
   - name: ETCD_SNAPSHOT_COUNT
     value: "10000"
 ```
-
-This configuration uses revision-based auto compaction. Every 5 minutes, etcd checks the current revision and compacts up to `current revision - 100`. The retained history window depends on the write rate; clients that read or watch older revisions must handle compaction errors. Compaction makes space available for reuse within etcd; reclaiming disk space requires defragmentation.
 
 Install etcd cluster:
 
@@ -146,8 +144,8 @@ resources:
     cpu: '2'
     memory: 8Gi
 
-autoCompactionMode: "revision"
-autoCompactionRetention: "100"
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
 
 extraEnvVars:
   - name: ETCD_QUOTA_BACKEND_BYTES
@@ -278,8 +276,8 @@ resources:
     cpu: '2'
     memory: 8Gi
 
-autoCompactionMode: "revision"
-autoCompactionRetention: "100"
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
 
 extraEnvVars:
   - name: ETCD_QUOTA_BACKEND_BYTES
@@ -387,8 +385,8 @@ resources:
     cpu: '2'
     memory: 8Gi
 
-autoCompactionMode: "revision"
-autoCompactionRetention: "100"
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
 
 extraEnvVars:
   - name: ETCD_QUOTA_BACKEND_BYTES
@@ -475,8 +473,8 @@ resources:
     cpu: '2'
     memory: 8Gi
 
-autoCompactionMode: "revision"
-autoCompactionRetention: "100"
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
 
 extraEnvVars:
   - name: ETCD_QUOTA_BACKEND_BYTES
