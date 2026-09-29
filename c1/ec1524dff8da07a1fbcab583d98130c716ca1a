@@ -1,0 +1,41 @@
+i18n/zh/docusaurus-plugin-content-docs/version-1.0/faq-and-others/faq.md
+  s_4ba75150b8ff77::t_4e86db0308ba59 228-244
+i18n/zh/docusaurus-plugin-content-docs/version-1.0/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_d427b82db385d5 50-51,62-63,149-150,281-282,390-391,478-479
+i18n/zh/docusaurus-plugin-content-docs/version-1.1/faq-and-others/faq.md
+  s_4ba75150b8ff77::t_dcc7800de9d90d 228-244
+i18n/zh/docusaurus-plugin-content-docs/version-1.1/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_315d5dba3aacb3 50-51,62-63,149-150,281-282,390-391,478-479
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/faq-and-others/faq.md
+  s_4ba75150b8ff77::t_0e0e3c4eaf0a2e 228-244
+i18n/zh/docusaurus-plugin-content-docs/version-1.2/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_4015a2fa5653db 50-51,62-63,149-150,281-282,390-391,478-479
+versioned_docs/version-1.0/faq-and-others/faq.md
+  s_4ba75150b8ff77::t_99ff4553328457 228-244
+versioned_docs/version-1.0/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_a465dc41728dd0 50-51,62-63,149-150,281-282,390-391,478-479
+versioned_docs/version-1.1/faq-and-others/faq.md
+  s_4ba75150b8ff77::t_d647052e45d6f2 228-244
+versioned_docs/version-1.1/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_d75fe2a7c20da4 50-51,62-63,149-150,281-282,390-391,478-479
+versioned_docs/version-1.2/faq-and-others/faq.md
+  s_4ba75150b8ff77::t_e763cd7bba1ccb 228-244
+versioned_docs/version-1.2/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_8875e19c9ce1bc 50-51,62-63,149-150,281-282,390-391,478-479
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c1ec1524dff8da07a1fbcab583d98130c716ca1a",
+  "prompts": {},
+  "sessions": {
+    "s_4ba75150b8ff77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0e5f2-7641-7372-ab8f-ee2e2ac1262c",
+        "model": "unknown"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
