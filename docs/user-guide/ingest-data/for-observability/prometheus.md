@@ -351,6 +351,29 @@ Setting `http.timeout = "0s"` (the default) disables the HTTP timeout entirely.
 
 By default, the metric engine will automatically create a physical table named `greptime_physical_table` if it does not already exist. For performance optimization, you may choose to create a physical table with customized configurations.
 
+### Byte-stream-split encoding for float fields
+
+Create this table before sending data to it. If the default physical table already exists, choose a new physical table name and route remote writes to it; this example does not change an existing table.
+
+If floating-point fields dominate the data you store, you can create a custom physical table with the [`experimental_sst_float_field_encoding`](/reference/sql/create.md#table-options) table option set to `byte_stream_split`:
+
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp)
+)
+ENGINE = metric
+WITH (
+    "physical_metric_table" = "",
+    "experimental_sst_float_field_encoding" = "byte_stream_split"
+);
+```
+
+The encoding groups the bytes of each floating-point value by byte position before compression, which can reduce the size of the SST files that store metrics and the I/O needed to read float columns. It applies to every `FLOAT`/`DOUBLE` field column of the physical table, not only `greptime_value`, and never to tag or timestamp columns. It is a Mito table option, so it is not limited to the metric engine.
+
+The option is opt-in: `default` keeps the existing writer behavior, stored values and query results are unchanged, and SST files written with either encoding can be read. Whether it reduces storage and I/O depends on your data distribution and compression setup, and latency can change in either direction; data that already compresses well may not benefit, so benchmark your workload before enabling it in production. This is a creation-time option, and `ALTER TABLE` cannot change it. If you use a different physical table name, pass it in the `physical_table` parameter of the remote write URL; the example above uses the default name, so no URL change is needed.
+
 ### Enable skipping index
 
 By default, the metric engine won't create indexes for columns. You can enable it by setting the `index.type` to `skipping`.

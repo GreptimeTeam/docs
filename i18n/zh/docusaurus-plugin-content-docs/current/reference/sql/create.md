@@ -160,7 +160,7 @@ GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-
 | `append_mode`                               | 该表是否时 append-only 的                | 字符串值。默认值为 'false'，根据 'merge_mode' 按主键和时间戳删除重复行。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行                        |
 | `merge_mode`                                | 合并重复行的策略                         | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。 |
 | `sst_format`                                | SST 文件的格式                            | 字符串值，支持 `primary_key`，`flat`。默认为 `flat`。`flat` 格式建议用于具有高基数主键的表。   |
-| `experimental_sst_float_field_encoding` | 实验性浮点字段 SST 编码 | 字符串值，支持 `default` 和 `byte_stream_split`，默认值为 `default`。`byte_stream_split` 对 Parquet SST 中的 `FLOAT` 和 `DOUBLE` 字段列启用 byte-stream-split 编码，不影响标签列或其他类型的列。 |
+| `experimental_sst_float_field_encoding` | 实验性浮点字段 SST 编码 | 字符串值，支持 `default` 和 `byte_stream_split`，默认值为 `default`。`byte_stream_split` 对表中所有 `FLOAT` 和 `DOUBLE` 字段列应用 Parquet 的 byte-stream-split 编码，并关闭这些列的字典编码；标签列、时间索引列以及其他类型的列不受影响。 |
 | `comment`                                   | 表级注释                                 | 字符串值。                                                                                                                                                               |
 | `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值，支持 `none`, `skipping`.                                                                                                             |
 | `skip_wal`                                | 是否关闭表的预写日志                               | 字符串类型。当设置为 `'true'` 时表的写入数据将不会持久化到预写日志，可以避免存储磨损同时提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。 |
@@ -168,7 +168,11 @@ GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-
 | `auto_flush_interval`                     | 该表的 region 最长多久没有 flush 就触发一次 flush | 字符串类型，是一个时间范围字符串，例如 `'5m'` 或 `'1h'`，必须大于 0。该表选项会覆盖引擎级的 `region_engine.mito.auto_flush_interval`。用 `ALTER TABLE` 将其设为 `NULL` 可以移除表级覆盖、回退到引擎级配置。 |
 | `max_row_group_row_count`                 | Parquet row group 的最大行数                       | 字符串类型，表示 `1` 到 `10485760`（`10 * 1024 * 1024`）之间的整数。未设置该选项时，默认值为 `102400`（`100 * 1024`）。 |
 
-可以在建表时显式启用实验性浮点编码：
+#### 创建使用 byte-stream-split 浮点编码的表
+
+`byte_stream_split` 会在 Parquet 写入器压缩之前，按字节位置重新排列每个浮点值的字节，从而提升 `FLOAT` 和 `DOUBLE` 字段列的压缩率。当浮点字段在 SST 数据中占比较大时可以尝试启用，例如 metrics 和 telemetry 场景：更小的 SST 文件可以降低存储占用，读取这些列的查询也可能减少所需的 I/O。
+
+该选项作用于表中的所有浮点字段列，而不只是某一个取值列。例如在 metric engine 的物理表中，它同时覆盖 `greptime_value` 以及其他所有 `FLOAT`/`DOUBLE` 字段列；标签列（`PRIMARY KEY`）、`TIME INDEX` 列以及其他类型的列保持原有编码。这是 Mito 的表选项，任何存储浮点字段的表都可以使用，并非 metric engine 专用。
 
 ```sql
 CREATE TABLE float_metrics (
@@ -179,7 +183,9 @@ CREATE TABLE float_metrics (
 WITH ('experimental_sst_float_field_encoding' = 'byte_stream_split');
 ```
 
-省略该选项或设置为 `default` 会保留默认的 Parquet 写入编码策略。该选项控制 SST 写入编码，不改变浮点值或查询语义。读取器可以读取这两种编码的 SST。压缩率和读写性能取决于工作负载，建议在生产环境启用前进行基准测试。此处介绍的是建表选项，不支持通过 `ALTER TABLE` 修改该选项。
+省略该选项或设置为 `default` 时保持当前 Parquet 写入行为，该选项属于实验性功能。它只改变数据的存储编码，不改变存储的值和查询结果，两种编码写出的 SST 文件都可以读取。byte-stream-split 不使用字典编码，因此受影响的浮点字段列不会采用字典编码。
+
+该编码能否减少存储占用和 I/O 取决于数据分布和压缩算法，读写延迟的表现也因工作负载而异；原本压缩效果已经很好的数据（例如字典编码更有效的场景）可能并不会受益。请先在自己的工作负载上进行基准测试，再决定是否在生产环境启用。metric engine 物理表的配置示例请参考 [Prometheus Remote Write 的 byte-stream-split 编码](/user-guide/ingest-data/for-observability/prometheus.md#byte-stream-split-encoding-for-float-fields)。该选项需要在建表时设置，`ALTER TABLE` 不支持修改。
 
 #### 创建自定义 row group 大小的表
 
