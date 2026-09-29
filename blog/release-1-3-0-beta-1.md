@@ -55,16 +55,21 @@ FROM traces_v2;
 
 Existing Trace V1 tables are not automatically migrated. Events and links use JSON in this release; `ARRAY(JSON2)` is deferred. See [#9192](https://github.com/GreptimeTeam/greptimedb/pull/9192), [#9232](https://github.com/GreptimeTeam/greptimedb/pull/9232), [#9257](https://github.com/GreptimeTeam/greptimedb/pull/9257), and [#9278](https://github.com/GreptimeTeam/greptimedb/pull/9278).
 
-#### Compaction scheduling, output sizing, and memory fixes
+#### Improved compaction algorithms and TWCS tuning
 
-TWCS now applies separate compaction triggers to active and inactive windows, prioritizes newer windows, and limits inactive-window rewrites with a rewrite budget. Strict-window compaction (SWCS) now honors the existing output-file size setting, whose default is 512 MiB. For an existing table, set the output threshold with:
+The multiway merge used by compaction now uses a winner tree for its active input streams, reducing comparison work when merging overlapping sorted data. TWCS also applies different selection policies to active and inactive time windows: active windows favor separate merges of newly flushed and previously compacted files to avoid repeated rewrites, while inactive windows have additional consolidation paths. Serial automatic compaction selects one output at a time and replans against the updated SST state before selecting further work.
+
+Three new tuning options accompany the renamed active-window file-count trigger. The following example sets the table-level options to their defaults:
 
 ```sql
-ALTER TABLE my_table
-SET 'compaction.twcs.max_output_file_size' = '512MB';
+ALTER TABLE my_table SET
+    'compaction.twcs.active_window.trigger_file_num' = '4',
+    'compaction.twcs.active_window.l1_merge_trigger' = '16',
+    'compaction.twcs.inactive_window.trigger_file_num' = '2',
+    'compaction.twcs.inactive_window.l1_merge_trigger' = '8';
 ```
 
-The threshold is a soft limit: a single oversized series can remain in one file. Compaction also releases completed SST write buffers earlier and runs pruning, metadata, and index work on the compaction runtime instead of the query runtime. These changes address specific sources of rewrite and memory overhead; they do not establish a fixed performance gain for every workload. See [#9011](https://github.com/GreptimeTeam/greptimedb/pull/9011), [#9259](https://github.com/GreptimeTeam/greptimedb/pull/9259), [#9243](https://github.com/GreptimeTeam/greptimedb/pull/9243), and [#9304](https://github.com/GreptimeTeam/greptimedb/pull/9304).
+The existing `compaction.twcs.trigger_file_num` option remains accepted as an alias for `compaction.twcs.active_window.trigger_file_num`; inactive windows now use their own thresholds. See [#8989](https://github.com/GreptimeTeam/greptimedb/pull/8989), [#9064](https://github.com/GreptimeTeam/greptimedb/pull/9064), and [#9011](https://github.com/GreptimeTeam/greptimedb/pull/9011).
 
 ### Dashboard
 
