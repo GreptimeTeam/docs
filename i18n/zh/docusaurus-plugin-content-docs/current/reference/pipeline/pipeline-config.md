@@ -997,8 +997,8 @@ transform:
 
 - `path`（必填）：使用点号语法表示 JSON 子路径。如果 JSON key 本身包含点号，请使用双引号包裹对应的路径段。
 - `type`（必填）：支持 `string`、`int64`、`uint64`、`float64` 或 `boolean`。
-- `nullable`（可选）：该路径是否可以缺失或为 `null`，默认为 `true`。
-- `default`（可选）：路径缺失时使用的默认值，必须是声明类型对应的标量值。
+
+Type hint 目前不支持配置 `nullable` 或 `default`。Type hint 默认为 nullable，缺失的字段会规范化为 JSON `null`。
 
 如果目标 JSON2 列已存在，GreptimeDB 会使用该列中保存的配置编码字段值，而不是 pipeline 中的内联 type hint。通过 [`table_suffix`](#table-suffix) 将数据路由到不同表时也是如此。如果字段值不符合实际使用的 type hint，transform 会按照 [`on_failure`](#on_failure-字段) 配置进行处理。
 
