@@ -25,6 +25,12 @@ remote_write:
 
 Query the stored histograms through GreptimeDB's PromQL API. This release also fixes histogram reads from SSTs and scalar batch writes to physical tables shared with histogram metrics. Remote Write v1 native histograms, native histogram Remote Read, and OTel Arrow exponential histograms remain unsupported. See [#9301](https://github.com/GreptimeTeam/greptimedb/pull/9301) and [#9321](https://github.com/GreptimeTeam/greptimedb/pull/9321).
 
+#### Series index preview (experimental)
+
+This release introduces an experimental series index for discovering candidate time series in indexed SSTs, with background maintenance and manual index reconciliation. See [#9085](https://github.com/GreptimeTeam/greptimedb/pull/9085), [#9086](https://github.com/GreptimeTeam/greptimedb/pull/9086), and [#9323](https://github.com/GreptimeTeam/greptimedb/pull/9323).
+
+**Series index is experimental and unstable. Future releases may introduce breaking changes. It is not recommended for production use.**
+
 #### Trace V2: JSON2 attributes with Jaeger and Semantic Graph support
 
 The opt-in `greptime_trace_v2` pipeline stores span, scope, and resource attributes in three JSON2 columns instead of adding a SQL column for every attribute. Its 19-column schema also preserves span events and links as JSON arrays. Jaeger queries and Semantic Graph derivation support the new model.
