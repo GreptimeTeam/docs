@@ -47,8 +47,8 @@ resources:
     cpu: '2'
     memory: 8Gi
 
-autoCompactionMode: "periodic"
-autoCompactionRetention: "1h"
+autoCompactionMode: "revision"
+autoCompactionRetention: "100"
 
 extraEnvVars:
   - name: ETCD_QUOTA_BACKEND_BYTES
@@ -58,6 +58,8 @@ extraEnvVars:
   - name: ETCD_SNAPSHOT_COUNT
     value: "10000"
 ```
+
+此配置使用基于 revision 的自动压缩。etcd 每 5 分钟检查一次当前 revision，并压缩至 `当前 revision - 100`。保留的历史时间窗口取决于写入速率；读取或监听旧 revision 的客户端需要处理历史版本已被压缩的错误。压缩释放的空间可供 etcd 内部复用；要回收磁盘空间，还需要进行碎片整理（defragmentation）。
 
 安装 etcd 集群:
 
@@ -144,8 +146,8 @@ resources:
     cpu: '2'
     memory: 8Gi
 
-autoCompactionMode: "periodic"
-autoCompactionRetention: "1h"
+autoCompactionMode: "revision"
+autoCompactionRetention: "100"
 
 extraEnvVars:
   - name: ETCD_QUOTA_BACKEND_BYTES
@@ -276,8 +278,8 @@ resources:
     cpu: '2'
     memory: 8Gi
 
-autoCompactionMode: "periodic"
-autoCompactionRetention: "1h"
+autoCompactionMode: "revision"
+autoCompactionRetention: "100"
 
 extraEnvVars:
   - name: ETCD_QUOTA_BACKEND_BYTES
@@ -385,8 +387,8 @@ resources:
     cpu: '2'
     memory: 8Gi
 
-autoCompactionMode: "periodic"
-autoCompactionRetention: "1h"
+autoCompactionMode: "revision"
+autoCompactionRetention: "100"
 
 extraEnvVars:
   - name: ETCD_QUOTA_BACKEND_BYTES
@@ -473,8 +475,8 @@ resources:
     cpu: '2'
     memory: 8Gi
 
-autoCompactionMode: "periodic"
-autoCompactionRetention: "1h"
+autoCompactionMode: "revision"
+autoCompactionRetention: "100"
 
 extraEnvVars:
   - name: ETCD_QUOTA_BACKEND_BYTES
