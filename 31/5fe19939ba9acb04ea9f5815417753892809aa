@@ -1,0 +1,25 @@
+i18n/zh/docusaurus-plugin-content-docs/version-1.0/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_2cb73b78a24d7e 50-51,147-148,279-280,388-389,476-477
+i18n/zh/docusaurus-plugin-content-docs/version-1.1/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_edea7f47254b77 50-51,147-148,279-280,388-389,476-477
+versioned_docs/version-1.0/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_9261b9e77bdd8d 50-51,147-148,279-280,388-389,476-477
+versioned_docs/version-1.1/user-guide/deployments-administration/manage-metadata/manage-etcd.md
+  s_4ba75150b8ff77::t_d3a3d322bebadc 50-51,147-148,279-280,388-389,476-477
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "315fe19939ba9acb04ea9f5815417753892809aa",
+  "prompts": {},
+  "sessions": {
+    "s_4ba75150b8ff77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0e5f2-7641-7372-ab8f-ee2e2ac1262c",
+        "model": "unknown"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
