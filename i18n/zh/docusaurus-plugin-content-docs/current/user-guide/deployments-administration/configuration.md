@@ -698,6 +698,58 @@ Mito 根据表选项和 SST format 为每个 Region 选择 memtable 实现。`de
 从 v1.2 起，metric 引擎始终启用稀疏主键编码，无法禁用。该编码仅对非空主键列进行编码，可提升写入和查询性能。配置文件中已有的 `sparse_primary_key_encoding` 设置会被接受但不产生任何效果。
 :::
 
+
+#### 实验性缓冲序列扫描
+
+缓冲扫描器需要显式启用，目前仍在开发分支上评估。它先完成完整时间范围的准备，再按序列回放数据，使用紧凑标识和可选的 IPC 溢写及缓存。现有扫描默认行为不变。以下参数是暂定的实验设置，并非生产配置建议。
+
+```toml
+[[region_engine]]
+[region_engine.mito.experimental_buffered_series_scan]
+enabled = true
+memory_limit = "50%"
+# Omit spill_threshold to use one quarter of the resolved memory limit.
+# spill_threshold = "2GB"
+disk_limit = "20GB"
+# Omit scratch to use {data_home}/buffered-scan-scratch.
+# scratch = "/var/lib/greptimedb/buffered-scan-scratch"
+preparation_concurrency = 0
+source_policy = "selected_series_per_partition"
+candidate_chunk_size = 1000000
+layout = "multiple_series"
+key_encoding = "plain"
+compression = "none"
+batch_rows = 1024
+batch_bytes = "1MB"
+file_bytes = "64MB"
+file_batches = 1024
+file_metadata_bytes = "1MB"
+retention = "threshold"
+```
+
+
+如果已经配置了 Mito 引擎，请把该配置表放在现有引擎条目下。启用后，符合条件的原生稀疏 metric 序列扫描使用缓冲模式，其他扫描保持原有行为。旧的开发专用 `GREPTIME_BUFFERED_SERIES_SCAN_OPTIONS` JSON 接口已移除。
+
+内存百分比和自动并发度只在引擎启动时解析一次，优先采用 cgroup 资源限制，否则采用宿主机资源。并发度 `0` 表示 `clamp(cpu_cores / 4, 1, 4)`，显式正数可以覆盖它。如果无法检测系统内存，必须指定有限且为正的绝对 `memory_limit`。溢写阈值必须为正且不超过内存预算；省略时为预算的四分之一。
+
+预算作用于**一个 SeriesScan**，由该扫描的源读取、归并和输出分区共享。包含多个扫描的 PromQL 查询可能同时消耗多份预算。内存准入包含估算和预留，并不是进程 RSS 上限；现有引擎扫描限制仍然有效。读取器和输入文件数量只用于诊断，不是准入限制。
+
+受控实验可将 `source_policy` 设为 `shared_selected_series`，`layout` 设为 `one_series`，`key_encoding` 设为 `fixed_dictionary`，或将 `compression` 设为 `lz4`、`zstd`。固定字典包含所有选中的序列标识，占用跟踪内存和每个文件的元数据容量；较大的字典可能需要显式增大 `file_metadata_bytes`。两种布局都会把长序列拆成有界批次。准备并发度独立于输出并行度；共享读取模式在同一预算下分别调度源任务和归并任务。
+
+`retention` 支持 `threshold`、`forced_spill` 和 `resident`。阈值模式在准备阶段回收尚未发布的结果；强制溢写模式把准备数据写入 IPC；常驻模式在必须溢写时拒绝扫描。最终回放不会写入溢写或缓存内容。准入还会为下游保留一个完整序列及下一批数据的输出容量，不涵盖任意收集全部结果的消费者。
+
+可选结果缓存独立配置磁盘和元数据容量：
+
+```toml
+[region_engine.mito.experimental_buffered_series_scan.cache]
+directory = "/var/lib/greptimedb/buffered-cache"
+disk_limit = "20GB"
+metadata_limit = "1GB"
+```
+
+省略此配置表即可禁用缓存。缓存准入和转换发生在准备阶段。可选缓存失败时跳过缓存，必需的溢写失败则使扫描失败。缓存条目独立拥有标签和不可变结果，不依赖创建它的扫描。活跃读取会固定已淘汰文件，磁盘和元数据仍计费至删除成功。缓存不会跨重启恢复。专用命名空间锁保护清理操作，只删除可识别的遗留文件，保留未知文件和符号链接。请使用 SST 存储目录以外的可写临时及缓存路径。查询结束时的指标可能早于异步清理完成。
+
+
 ### 设定 meta client
 
 `meta_client` 选项适用于 `datanode` 和 `frontend` 模块，用于指定 Metasrv 的相关信息。

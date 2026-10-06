@@ -695,6 +695,57 @@ The `metric` engine is optimized for handling metrics data with a large number o
 Starting from v1.2, sparse primary key encoding is always enabled for the metric engine and cannot be disabled. It encodes only non-null primary key columns, improving write and query performance. Any `sparse_primary_key_encoding` setting in your configuration file is accepted but has no effect.
 :::
 
+
+#### Experimental buffered series scans
+
+The buffered scanner is opt-in and is currently being evaluated on the development branch. It prepares complete time ranges before replaying series, using compact identities and an optional IPC spill/cache store. Existing scan defaults remain unchanged. The settings below are provisional experiment settings, not a production recommendation.
+
+```toml
+[[region_engine]]
+[region_engine.mito.experimental_buffered_series_scan]
+enabled = true
+memory_limit = "50%"
+# Omit spill_threshold to use one quarter of the resolved memory limit.
+# spill_threshold = "2GB"
+disk_limit = "20GB"
+# Omit scratch to use {data_home}/buffered-scan-scratch.
+# scratch = "/var/lib/greptimedb/buffered-scan-scratch"
+preparation_concurrency = 0
+source_policy = "selected_series_per_partition"
+candidate_chunk_size = 1000000
+layout = "multiple_series"
+key_encoding = "plain"
+compression = "none"
+batch_rows = 1024
+batch_bytes = "1MB"
+file_bytes = "64MB"
+file_batches = 1024
+file_metadata_bytes = "1MB"
+retention = "threshold"
+```
+
+Add this table under the existing Mito engine entry if one is already configured. Eligible native sparse metric series scans use buffered mode when enabled; other scans retain their existing behavior. The former development-only `GREPTIME_BUFFERED_SERIES_SCAN_OPTIONS` JSON interface has been removed.
+
+Memory percentages and automatic concurrency resolve once at engine startup using cgroup-aware resource limits, with host resources as the fallback. Concurrency `0` selects `clamp(cpu_cores / 4, 1, 4)`; an explicit positive value overrides it. Set an absolute, finite `memory_limit` if system memory cannot be detected. The spill threshold must be positive and no larger than that limit.
+
+The budget applies to **one SeriesScan**, shared by its source work, merges, and output partitions. A PromQL query containing multiple scans can consume multiple budgets. Tracked admission includes estimates and reservations; it is not a process RSS limit. Existing engine scan limits still apply. Reader and input-file counts are diagnostic measurements, not admission limits.
+
+For controlled experiments, `source_policy` also accepts `shared_selected_series`; `layout` accepts `one_series`; `key_encoding` accepts `fixed_dictionary`; and `compression` accepts `lz4` or `zstd`. Fixed dictionaries include all selected identities and consume tracked memory and per-file metadata capacity. Larger dictionaries may require an explicit `file_metadata_bytes` limit. Both layouts split large series into bounded batches. Preparation concurrency is independent of output parallelism; shared mode schedules source tasks and merges independently under the same budget.
+
+`retention` accepts `threshold`, `forced_spill`, or `resident`. Threshold mode reclaims unpublished results during preparation. Forced-spill mode writes preparation payload to IPC files. Resident mode rejects a scan that would require spilling. Final replay never creates spill or cache content. Admission also reserves downstream output retention for one complete series plus the next batch; arbitrary collect-all consumers are outside this contract.
+
+The optional result cache has separate disk and metadata capacities:
+
+```toml
+[region_engine.mito.experimental_buffered_series_scan.cache]
+directory = "/var/lib/greptimedb/buffered-cache"
+disk_limit = "20GB"
+metadata_limit = "1GB"
+```
+
+Omit this table to disable the cache. Admission and conversion happen during preparation. Optional cache failures skip caching; required spill failures fail the scan. Cache entries own their tags and immutable results independently of the producing scan. Active readers pin evicted files, and disk/metadata charges persist until deletion succeeds. The cache is ephemeral across restarts. Dedicated namespace locks protect cleanup, which removes only recognized abandoned files and preserves unknown files and symlinks. Use writable scratch/cache paths outside SST storage. Query-end metrics can precede asynchronous cleanup.
+
+
 ### Specify meta client
 
 The `meta_client` options are valid in `datanode` and `frontend` mode, which specify the Metasrv client information.
