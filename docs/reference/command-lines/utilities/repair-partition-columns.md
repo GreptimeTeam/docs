@@ -29,7 +29,6 @@ greptime cli meta repair partition-column [OPTIONS]
 | `--store-key-prefix <STORE_KEY_PREFIX>` | The key prefix of the metadata store | "" | string |
 | `--meta-table-name <META_TABLE_NAME>` | The table name in RDS to store metadata. Only used when using `postgres-store` or `mysql-store` | `greptime_metakv` | string |
 | `--meta-schema-name <META_SCHEMA_NAME>` | PostgreSQL schema of the metadata table. Must match the Metasrv `meta_schema_name` setting. If not set, the `search_path` of the connection is used. Only used when backend is `postgres-store`. |  | string |
-| `--auto-create-schema` | Create the schema specified by `--meta-schema-name` if it does not exist. This behavior is always enabled and cannot be turned off with this flag. Only used when backend is `postgres-store`. | `true` | flag |
 | `--backend-tls-mode <BACKEND_TLS_MODE>` | TLS mode for the metadata store connection (etcd, PostgreSQL, or MySQL). Set it to match the TLS requirement of the metadata store. | `disable` | one of:<br/>`disable`<br/>`prefer`<br/>`require`<br/>`verify-ca`<br/>`verify-full` |
 | `--backend-tls-cert-path <BACKEND_TLS_CERT_PATH>` | Path to the client certificate file for the metadata store connection. | "" | string |
 | `--backend-tls-key-path <BACKEND_TLS_KEY_PATH>` | Path to the client private key file for the metadata store connection. | "" | string |

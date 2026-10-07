@@ -26,7 +26,6 @@ greptime cli meta snapshot save [OPTIONS]
 | --store-key-prefix | No       | ""                | Unified prefix for data in metasrv, refer to metasrv configuration                                                                                 |
 | --meta-table-name  | No       | greptime_metakv   | When backend is one of `postgres-store`, `mysql-store`, the table name storing metadata                                                            |
 | --meta-schema-name | No | - | PostgreSQL schema of the metadata table. Must match the Metasrv `meta_schema_name` setting. If not set, the `search_path` of the connection is used. Only used when backend is `postgres-store` |
-| --auto-create-schema | No | true | Create the schema specified by `--meta-schema-name` if it does not exist. This behavior is always enabled and cannot be turned off with this flag. Only used when backend is `postgres-store` |
 | --backend-tls-mode | No | disable | TLS mode for the metadata store connection (etcd, PostgreSQL, or MySQL). Set it to match the TLS requirement of the metadata store: `disable`, `prefer`, `require`, `verify-ca`, or `verify-full` |
 | --backend-tls-cert-path | No | "" | Path to the client certificate file for the metadata store connection |
 | --backend-tls-key-path | No | "" | Path to the client private key file for the metadata store connection |
@@ -113,7 +112,6 @@ greptime cli meta snapshot restore [OPTIONS]
 | --store-key-prefix | No       | ""              | Unified prefix for data in metasrv, refer to metasrv configuration                                                                                   |
 | --meta-table-name  | No       | greptime_metakv | When backend is `postgres-store`, `mysql-store`, the table name storing metadata                                                                     |
 | --meta-schema-name | No | - | PostgreSQL schema of the metadata table. Must match the Metasrv `meta_schema_name` setting. If not set, the `search_path` of the connection is used. Only used when backend is `postgres-store` |
-| --auto-create-schema | No | true | Create the schema specified by `--meta-schema-name` if it does not exist. This behavior is always enabled and cannot be turned off with this flag. Only used when backend is `postgres-store` |
 | --backend-tls-mode | No | disable | TLS mode for the metadata store connection (etcd, PostgreSQL, or MySQL). Set it to match the TLS requirement of the metadata store: `disable`, `prefer`, `require`, `verify-ca`, or `verify-full` |
 | --backend-tls-cert-path | No | "" | Path to the client certificate file for the metadata store connection |
 | --backend-tls-key-path | No | "" | Path to the client private key file for the metadata store connection |
