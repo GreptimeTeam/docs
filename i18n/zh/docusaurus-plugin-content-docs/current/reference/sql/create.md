@@ -162,7 +162,7 @@ GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-
 | `sst_format`                                | SST 文件的格式                            | 字符串值，支持 `primary_key`，`flat`。默认为 `flat`。`flat` 格式建议用于具有高基数主键的表。   |
 | `experimental_sst_float_field_encoding` | 实验性浮点字段 SST 编码 | 字符串值，支持 `default` 和 `byte_stream_split`，默认值为 `default`。`byte_stream_split` 对表中所有 `FLOAT` 和 `DOUBLE` 字段列应用 Parquet 的 byte-stream-split 编码，并关闭这些列的字典编码；标签列、时间索引列以及其他类型的列不受影响。 |
 | `comment`                                   | 表级注释                                 | 字符串值。                                                                                                                                                               |
-| `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值，支持 `none`, `skipping`.                                                                                                             |
+| `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值，支持 `inverted`、`skipping`。未设置时不创建索引。                                                                                    |
 | `skip_wal`                                | 是否关闭表的预写日志                               | 字符串类型。当设置为 `'true'` 时表的写入数据将不会持久化到预写日志，可以避免存储磨损同时提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。 |
 | `write_buffer_size`                       | 该表的单 region 写缓冲区阻塞阈值                   | 字符串类型，例如 `'512MB'` 或 `'1GB'`。设置为正值后，mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入。该表选项会覆盖 `region_engine.mito.default_region_write_buffer_size`。即使引擎默认值非零，显式设置为 `'0'` 也会禁用单 region 限制。取消设置会移除表级覆盖，并回退到引擎默认值。 |
 | `auto_flush_interval`                     | 该表的 region 最长多久没有 flush 就触发一次 flush | 字符串类型，是一个时间范围字符串，例如 `'5m'` 或 `'1h'`，必须大于 0。该表选项会覆盖引擎级的 `region_engine.mito.auto_flush_interval`。用 `ALTER TABLE` 将其设为 `NULL` 可以移除表级覆盖、回退到引擎级配置。 |
@@ -541,13 +541,16 @@ CREATE EXTERNAL TABLE city (
 ```sql
 CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
-[ EVAL INTERVAL <interval> ]
 [ EXPIRE AFTER <expr> ]
+[ EVAL INTERVAL <interval> ]
+[ EVAL OFFSET <interval> ]
 [ COMMENT '<string>' ]
 [ WITH (<flow-option> = <value> [, ...]) ]
 AS
 <SQL>;
 ```
+
+`EVAL OFFSET` 设置 `EVAL INTERVAL` 调度的相位：Flow 在距 Unix epoch `offset + k * interval` 的时刻执行。`EVAL OFFSET` 必须与 `EVAL INTERVAL` 一起使用，取值必须是整秒，范围为 `[0, EVAL INTERVAL)`。
 
 `WITH` 子句用于指定 flow 选项。
 例如，实验性的 `experimental_enable_incremental_read` 选项可以为符合条件的 batching flow 启用增量 source 读取。

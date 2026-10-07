@@ -17,6 +17,13 @@ description: 使用 CLI 与 GreptimeDB 元数据交互的指南，包括键值�
 | `--backend <BACKEND>`                   | 元数据存储后端类型                                                                                                                                                                                                                                                                             | etcd-store      | etcd-store, memory-store, postgres-store, mysql-store |
 | `--store-key-prefix <STORE_KEY_PREFIX>` | 元数据存储前缀缀                                                                                                                                                                                                                                                                               | -               | -                                                     |
 | `--meta-table-name <META_TABLE_NAME>`   | 元数据存储的表名。元数据存储后端为 [postgres-store] 或 [mysql-store] 时使用                                                                                                                                                                                                                   | greptime_metakv | -                                                     |
+| `--meta-schema-name <META_SCHEMA_NAME>` | 元数据表所在的 PostgreSQL schema，必须与 Metasrv 的 `meta_schema_name` 配置一致。未设置时使用连接的 `search_path`。仅在后端为 `postgres-store` 时使用 | - | - |
+| `--auto-create-schema` | schema 不存在时自动创建 `--meta-schema-name` 指定的 schema。该行为始终启用，无法通过该参数关闭。仅在后端为 `postgres-store` 时使用 | true | - |
+| `--backend-tls-mode <BACKEND_TLS_MODE>` | 连接元数据存储（etcd、PostgreSQL 或 MySQL）的 TLS 模式，需与元数据存储的 TLS 要求一致 | disable | disable, prefer, require, verify-ca, verify-full |
+| `--backend-tls-cert-path <BACKEND_TLS_CERT_PATH>` | 连接元数据存储时使用的客户端证书文件路径 | "" | - |
+| `--backend-tls-key-path <BACKEND_TLS_KEY_PATH>` | 连接元数据存储时使用的客户端私钥文件路径 | "" | - |
+| `--backend-tls-ca-cert-path <BACKEND_TLS_CA_CERT_PATH>` | 连接元数据存储时使用的 CA 证书文件路径 | "" | - |
+| `--backend-tls-watch` | 监听 TLS 证书文件的变化 | false | - |
 
 
 

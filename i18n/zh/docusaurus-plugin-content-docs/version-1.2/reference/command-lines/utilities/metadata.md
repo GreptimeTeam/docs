@@ -25,6 +25,13 @@ greptime cli meta snapshot save [OPTIONS]
 | --backend          | 否       | etcd-store        | 元数据存储后端：`etcd-store`、`memory-store`、`postgres-store`、`mysql-store` 或 `raft-engine-store`                                                   |
 | --store-key-prefix | 否       | ""                | 元数据存储前缀，参考 Metasrv 配置                                                                                                                    |
 | --meta-table-name  | 否       | greptime_metakv   | 当后端为 `postgres-store` 或 `mysql-store` 时，元数据存储的表名                                                                                      |
+| --meta-schema-name | 否 | - | 元数据表所在的 PostgreSQL schema，必须与 Metasrv 的 `meta_schema_name` 配置一致。未设置时使用连接的 `search_path`。仅在后端为 `postgres-store` 时使用 |
+| --auto-create-schema | 否 | true | schema 不存在时自动创建 `--meta-schema-name` 指定的 schema。该行为始终启用，无法通过该参数关闭。仅在后端为 `postgres-store` 时使用 |
+| --backend-tls-mode | 否 | disable | 连接元数据存储（etcd、PostgreSQL 或 MySQL）的 TLS 模式，需与元数据存储的 TLS 要求一致，可选 `disable`、`prefer`、`require`、`verify-ca` 或 `verify-full` |
+| --backend-tls-cert-path | 否 | "" | 连接元数据存储时使用的客户端证书文件路径 |
+| --backend-tls-key-path | 否 | "" | 连接元数据存储时使用的客户端私钥文件路径 |
+| --backend-tls-ca-cert-path | 否 | "" | 连接元数据存储时使用的 CA 证书文件路径 |
+| --backend-tls-watch | 否 | false | 监听 TLS 证书文件的变化 |
 | --max-txn-ops      | 否       | 128               | 最大事务操作数                                                                                                                                       |
 
 #### 文件选项
@@ -103,6 +110,13 @@ greptime cli meta snapshot restore [OPTIONS]
 | --backend          | 否       | etcd-store      | 元数据存储后端：`etcd-store`、`memory-store`、`postgres-store`、`mysql-store` 或 `raft-engine-store`                                                    |
 | --store-key-prefix | 否       | ""              | 元数据存储的 key 前缀，参考 Metasrv 配置                                                                                                             |
 | --meta-table-name  | 否       | greptime_metakv | 当后端为 `postgres-store` 或 `mysql-store` 时，元数据存储的表名                                                                                      |
+| --meta-schema-name | 否 | - | 元数据表所在的 PostgreSQL schema，必须与 Metasrv 的 `meta_schema_name` 配置一致。未设置时使用连接的 `search_path`。仅在后端为 `postgres-store` 时使用 |
+| --auto-create-schema | 否 | true | schema 不存在时自动创建 `--meta-schema-name` 指定的 schema。该行为始终启用，无法通过该参数关闭。仅在后端为 `postgres-store` 时使用 |
+| --backend-tls-mode | 否 | disable | 连接元数据存储（etcd、PostgreSQL 或 MySQL）的 TLS 模式，需与元数据存储的 TLS 要求一致，可选 `disable`、`prefer`、`require`、`verify-ca` 或 `verify-full` |
+| --backend-tls-cert-path | 否 | "" | 连接元数据存储时使用的客户端证书文件路径 |
+| --backend-tls-key-path | 否 | "" | 连接元数据存储时使用的客户端私钥文件路径 |
+| --backend-tls-ca-cert-path | 否 | "" | 连接元数据存储时使用的 CA 证书文件路径 |
+| --backend-tls-watch | 否 | false | 监听 TLS 证书文件的变化 |
 | --max-txn-ops      | 否       | 128             | 最大事务操作数                                                                                                                                       |
 
 #### 文件选项

@@ -15,7 +15,7 @@ GreptimeDB 的组件默认都会输出 INFO 级别的日志到以下位置：
 - 标准输出
 - GreptimeDB 当前工作目录下的 `greptimedb_data/logs` 目录
 
-日志文件的输出目录也可以通过配置文件的 `[logging]` 小节或者启动参数 `--log_dir` 修改：
+日志文件的输出目录也可以通过配置文件的 `[logging]` 小节或者启动参数 `--log-dir` 修改：
 
 ```toml
 [logging]

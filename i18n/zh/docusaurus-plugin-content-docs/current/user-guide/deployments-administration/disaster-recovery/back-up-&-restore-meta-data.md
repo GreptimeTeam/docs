@@ -9,6 +9,11 @@ description: 介绍 GreptimeDB 的元数据导出和导入工具，用于数据�
 
 有关详细的命令行选项和高级配置，请参阅 [元数据导出和导入](/reference/command-lines/utilities/metadata.md)。
 
+:::note
+- 如果 Metasrv 使用 PostgreSQL 后端并设置了 `meta_schema_name`，需要通过 `--meta-schema-name` 传入相同的 schema。不传时，CLI 读写的是连接 `search_path` 中的元数据表，可能不是 Metasrv 使用的那张表。
+- `--backend-tls-mode` 默认为 `disable`。如果元数据存储要求 TLS，需要设置 `--backend-tls-mode` 及相关的 `--backend-tls-*` 参数。
+:::
+
 ## 概述
 
 ## 导出操作

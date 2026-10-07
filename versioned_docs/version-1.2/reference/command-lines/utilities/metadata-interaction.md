@@ -17,6 +17,13 @@ The `greptime cli meta` command can be used to interact with the metadata of Gre
 | `--backend <BACKEND>`                   | The metadata store backend                                                                                                                                                                                                                                                                                          | etcd-store      | etcd-store, memory-store, postgres-store, mysql-store |
 | `--store-key-prefix <STORE_KEY_PREFIX>` | The key prefix of the metadata store                                                                                                                                                                                                                                                                                | -               | -                                                     |
 | `--meta-table-name <META_TABLE_NAME>`   | The table name in RDS to store metadata. Only used when using [postgres-store] or [mysql-store]                                                                                                                                                                                                                     | greptime_metakv | -                                                     |
+| `--meta-schema-name <META_SCHEMA_NAME>` | PostgreSQL schema of the metadata table. Must match the Metasrv `meta_schema_name` setting. If not set, the `search_path` of the connection is used. Only used when backend is `postgres-store` | - | - |
+| `--auto-create-schema` | Create the schema specified by `--meta-schema-name` if it does not exist. This behavior is always enabled and cannot be turned off with this flag. Only used when backend is `postgres-store` | true | - |
+| `--backend-tls-mode <BACKEND_TLS_MODE>` | TLS mode for the metadata store connection (etcd, PostgreSQL, or MySQL). Set it to match the TLS requirement of the metadata store | disable | disable, prefer, require, verify-ca, verify-full |
+| `--backend-tls-cert-path <BACKEND_TLS_CERT_PATH>` | Path to the client certificate file for the metadata store connection | "" | - |
+| `--backend-tls-key-path <BACKEND_TLS_KEY_PATH>` | Path to the client private key file for the metadata store connection | "" | - |
+| `--backend-tls-ca-cert-path <BACKEND_TLS_CA_CERT_PATH>` | Path to the CA certificate file for the metadata store connection | "" | - |
+| `--backend-tls-watch` | Watch the TLS certificate files for changes | false | - |
 
 
 

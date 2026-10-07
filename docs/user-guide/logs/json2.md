@@ -166,7 +166,7 @@ The syntax for declaring type hints is:
 
 ```sql
 json_column JSON2 (
-    path.to.field DATA_TYPE [NULL | NOT NULL] [DEFAULT literal]
+    path.to.field DATA_TYPE [INVERTED INDEX]
 )
 ```
 
@@ -185,8 +185,9 @@ Type hints currently support the following data types:
 - `DOUBLE`
 - `BOOLEAN`
 
-Type hints allow `NULL` by default. If you specify `NOT NULL`, that path must
-exist in the written JSON.
+Type hint paths are always nullable: a path can be missing or `null` in the
+written JSON. `NULL`, `NOT NULL`, and `DEFAULT` are not supported. Add
+`INVERTED INDEX` to create an inverted index on the path.
 
 You can declare type hints directly in the `CREATE TABLE` statement. The
 following example defines type hints for commonly queried subpaths in the
@@ -201,12 +202,12 @@ CREATE TABLE application_logs (
     attrs JSON2 (
         trace_id STRING,
         user.id BIGINT,
-        user.name STRING DEFAULT 'anonymous',
+        user.name STRING,
         http.method STRING,
         http.path STRING,
         http.status BIGINT,
         latency_ms DOUBLE,
-        error BOOLEAN DEFAULT false
+        error BOOLEAN
     )
 ) WITH (
     'append_mode' = 'true'

@@ -526,7 +526,8 @@ dir = "./greptimedb_data/logs"
 level = "info"
 enable_otlp_tracing = false
 enable_per_region_metrics = false
-otlp_endpoint = "localhost:4317"
+otlp_endpoint = "http://localhost:4318/v1/traces"
+otlp_export_protocol = "http"
 append_stdout = true
 [logging.tracing_sample_ratio]
 default_ratio = 1.0
@@ -536,7 +537,9 @@ default_ratio = 1.0
 - `level`: log 输出的日志等级，日志等级有 `info`, `debug`, `error`, `warn`，默认等级为 `info`。
 - `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
 - `enable_per_region_metrics`：是否暴露 Prometheus 的 Region 维度查询负载指标，包括 `greptime_mito_region_query_cpu_time` 和 `greptime_mito_region_query_scanned_bytes`。该选项默认关闭，因为它会为每个 Region 产生一条时间序列。通过 heartbeat 上报并在 `INFORMATION_SCHEMA.REGION_STATISTICS` 中暴露的查询统计信息不受该选项控制。
-- `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
+- `otlp_endpoint`：导出 tracing 的 OTLP 端点。`otlp_export_protocol` 为 `http` 时默认值为 `http://localhost:4318/v1/traces`，为 `grpc` 时默认值为 `http://localhost:4317`。未带 scheme 的端点会自动加上 `http://` 前缀。
+- `otlp_export_protocol`：导出 tracing 使用的 OTLP 协议，可选值为 `http`（HTTP + 二进制 protobuf）和 `grpc`，默认为 `http`。
+- `otlp_headers`：OTLP 导出请求附带的 HTTP 请求头，在 `[logging.otlp_headers]` 表中以键值对配置。仅在 `otlp_export_protocol` 为 `http` 时生效。
 - `append_stdout`：是否将日志打印到 stdout。默认是`true`。
 - `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
 
@@ -649,7 +652,7 @@ result_cache_size = "128MiB"
 create_on_flush = "auto"
 create_on_compaction = "auto"
 apply_on_query = "auto"
-mem_threshold_on_create = "64M"
+mem_threshold_on_create = "auto"
 intermediate_path = ""
 ```
 
@@ -701,7 +704,7 @@ Mito 根据表选项和 SST format 为每个 Region 选择 memtable 实现。`de
 | `inverted_index.create_on_flush`         | 字符串 | `auto`        | 是否在 flush 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                       |
 | `inverted_index.create_on_compaction`    | 字符串 | `auto`        | 是否在 compaction 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                  |
 | `inverted_index.apply_on_query`          | 字符串 | `auto`        | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                          |
-| `inverted_index.mem_threshold_on_create` | 字符串 | `64M`         | 创建索引时如果超过该内存阈值则改为使用外部排序<br/>设置为空会关闭外排，在内存中完成所有排序                            |
+| `inverted_index.mem_threshold_on_create` | 字符串 | `auto`        | 创建索引时如果超过该内存阈值则改为使用外部排序<br/>- `auto`：系统内存的 1/16<br/>- `unlimited`：关闭外排，在内存中完成所有排序<br/>- 固定大小，例如 `64MB` |
 | `inverted_index.intermediate_path`       | 字符串 | `""`          | 存放外排临时文件的路径 (默认 `{data_home}/index_intermediate`).                                                        |
 
 `metric` 引擎针对包含大量小表的 metrics 数据进行了优化。
@@ -1028,7 +1031,9 @@ timeout = "3s"
 | wal.broker_endpoints                          | Array   | --                   | Kafka 集群的端点                                                                                                                     |
 | `wal.auto_create_topics`                      | Bool    | `true`               | 自动为 WAL 创建 topics <br/>设置为 `true` 则自动为 WAL 创建 topics <br/>否则，使用名为 `topic_name_prefix_[0..num_topics)` 的 topics |
 | `wal.auto_prune_interval`                     | String  | `0s`                 | 定期自动裁剪远程 WAL 的时间间隔 <br/>设置为 `0s` 表示禁止自动裁剪 |
-| `wal.trigger_flush_threshold`                 | Integer | `0`                  | 自动 WAL 裁剪中触发 region flush 操作的阈值 <br/>当满足以下条件时，metasrv 会对 region 发送 flush 请求：<br/>`trigger_flush_threshold` + `prunable_entry_id` < `max_prunable_entry_id`<br/>其中：<br/>- `prunable_entry_id` 是该 region 可裁剪的最大日志条目 ID，在该 ID 之前的日志都不被该 region 使用<br/>- `max_prunable_entry_id` 是使用与该 region 同一 kafka topic 的所有 region 可裁剪的最大日志条目 ID，在该 ID 之前的日志都不再被任一 region 使用 <br/>设置为 `0` 以禁止在自动 WAL 裁剪中触发 region flush 操作 |
+| `wal.auto_prune_logical_delete`               | Bool    | `false`              | 自动 WAL 裁剪是否只更新元数据而不调用 Kafka `DeleteRecords`。参见 [Remote WAL 配置](/user-guide/deployments-administration/wal/remote-wal/configuration.md#metasrv-配置)。 |
+| `wal.flush_trigger_size`                      | String  | `512MB`              | region 的 WAL 估算大小超过该值时，metasrv 触发该 region 的 flush。参见 [Remote WAL 配置](/user-guide/deployments-administration/wal/remote-wal/configuration.md#metasrv-配置)。 |
+| `wal.checkpoint_trigger_size`                 | String  | `128MB`              | region 的 WAL 估算大小超过该值时，metasrv 触发该 region 的 checkpoint。参见 [Remote WAL 配置](/user-guide/deployments-administration/wal/remote-wal/configuration.md#metasrv-配置)。 |
 | `wal.auto_prune_parallelism`                  | Integer | `10` | 自动 WAL 裁剪的最大并行任务限制，其中每个任务负责一个 kafka topic 的 WAL 裁剪 |
 | `wal.num_topics`                              | Integer | `64`                 | Topic 数量                                                                                                                           |
 | wal.selector_type                             | String  | `round_robin` | topic selector 类型 <br/>可用 selector 类型：<br/>- round_robin（默认）                                                              |

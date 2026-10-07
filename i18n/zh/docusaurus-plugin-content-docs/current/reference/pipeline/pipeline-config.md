@@ -445,6 +445,7 @@ processors:
   - csv:
       fields:
         - message
+      target_fields: ip,method,path
       separator: ','
       quote: '"'
       trim: true
@@ -454,6 +455,8 @@ processors:
 如上所示，`csv` Processor 的配置包含以下字段：
 
 - `fields`: 需要解析的字段名列表。
+- `target_fields`: 以逗号分隔的输出字段名。解析出的值按列顺序依次写入这些字段，超出目标字段数量的列会被丢弃。如不设置，该 Processor 不会输出任何字段。
+- `empty_value`: 记录中没有对应列的目标字段所使用的值。如不设置，这些字段为 `null`。
 - `separator`: 分隔符。
 - `quote`: 引号。
 - `trim`: 是否去除空格。默认为 `false`。
@@ -997,8 +1000,7 @@ transform:
 
 - `path`（必填）：使用点号语法表示 JSON 子路径。如果 JSON key 本身包含点号，请使用双引号包裹对应的路径段。
 - `type`（必填）：支持 `string`、`int64`、`uint64`、`float64` 或 `boolean`。
-- `nullable`（可选）：该路径是否可以缺失或为 `null`，默认为 `true`。
-- `default`（可选）：路径缺失时使用的默认值，必须是声明类型对应的标量值。
+- `index`（可选）：设置为 `inverted` 时为该路径创建倒排索引，不支持其他索引类型。
 
 如果目标 JSON2 列已存在，GreptimeDB 会使用该列中保存的配置编码字段值，而不是 pipeline 中的内联 type hint。通过 [`table_suffix`](#table-suffix) 将数据路由到不同表时也是如此。如果字段值不符合实际使用的 type hint，transform 会按照 [`on_failure`](#on_failure-字段) 配置进行处理。
 

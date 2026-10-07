@@ -28,6 +28,13 @@ greptime cli meta repair partition-column [OPTIONS]
 | `--max-txn-ops <MAX_TXN_OPS>` | 事务中的最大操作数。仅在使用 `etcd-store` 时使用。 | `128` | 数字 |
 | `--store-key-prefix <STORE_KEY_PREFIX>` | 元数据存储的键前缀 | "" | 字符串 |
 | `--meta-table-name <META_TABLE_NAME>` | RDS 中存储元数据的表名。仅在使用 `postgres-store` 或 `mysql-store` 时使用。 | `greptime_metakv` | 字符串 |
+| `--meta-schema-name <META_SCHEMA_NAME>` | 元数据表所在的 PostgreSQL schema，必须与 Metasrv 的 `meta_schema_name` 配置一致。未设置时使用连接的 `search_path`。仅在后端为 `postgres-store` 时使用。 |  | 字符串 |
+| `--auto-create-schema` | schema 不存在时自动创建 `--meta-schema-name` 指定的 schema。该行为始终启用，无法通过该参数关闭。仅在后端为 `postgres-store` 时使用。 | `true` | flag |
+| `--backend-tls-mode <BACKEND_TLS_MODE>` | 连接元数据存储（etcd、PostgreSQL 或 MySQL）的 TLS 模式，需与元数据存储的 TLS 要求一致。 | `disable` | 以下其一：<br/>`disable`<br/>`prefer`<br/>`require`<br/>`verify-ca`<br/>`verify-full` |
+| `--backend-tls-cert-path <BACKEND_TLS_CERT_PATH>` | 连接元数据存储时使用的客户端证书文件路径。 | "" | 字符串 |
+| `--backend-tls-key-path <BACKEND_TLS_KEY_PATH>` | 连接元数据存储时使用的客户端私钥文件路径。 | "" | 字符串 |
+| `--backend-tls-ca-cert-path <BACKEND_TLS_CA_CERT_PATH>` | 连接元数据存储时使用的 CA 证书文件路径。 | "" | 字符串 |
+| `--backend-tls-watch` | 监听 TLS 证书文件的变化。 | `false` | flag |
 | `--dry-run` | 只报告无效的分区列，不修改表元数据。执行修复前可先使用此选项检查拟进行的更改。 | `false` | flag |
 | `--update-limit <N>` | 该工具对表元数据执行更改的最大次数。此选项可用于逐步更新表元数据。 | 无限制 | 数字 |
 

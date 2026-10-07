@@ -70,7 +70,7 @@ The `path` argument to `json_get` must be a string literal. The return value is 
 | `[<pos1> to <pos2>, ..]` | Selecting all elements of a range in an Array                | `$[1 to last - 2]` |
 | `?(<expr>)`              | Selecting all elements that matched the filter expression    | `$?(@.price < 10)` |
 
-If the path is invalid, the function will return a NULL value.
+If the path is invalid, the function returns an error. If the path is valid but matches nothing, the function returns `NULL`.
 
 ```sql
 SELECT json_get_int(parse_json('{"a": {"c": 3}, "b": 2}'), 'a.c');

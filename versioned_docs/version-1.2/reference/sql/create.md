@@ -163,7 +163,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `write_buffer_size`                       | Per-region write buffer stall threshold for this table                          | String type, such as `'512MB'` or `'1GB'`. For a positive value, GreptimeDB schedules a flush when mutable memtable usage reaches half the value, stalls writes at the value, and rejects writes at twice the value. The table option overrides `region_engine.mito.default_region_write_buffer_size`. An explicit `'0'` disables the per-region limit even when the engine default is nonzero. Unset the option to remove the table override and fall back to the engine default. |
 | `auto_flush_interval`                     | How long a region of this table may go without a flush before one is triggered | String type, a time duration such as `'5m'` or `'1h'`. Must be greater than zero. The table option overrides the engine-wide `region_engine.mito.auto_flush_interval`. Set it to `NULL` with `ALTER TABLE` to drop the override and fall back to the engine setting. |
 | `max_row_group_row_count`                 | Maximum number of rows in a Parquet row group                                  | String type representing an integer from `1` through `10485760` (`10 * 1024 * 1024`). The default is `102400` (`100 * 1024`) when this option is not set. |
-| `index.type`                                | Index type                                                      | **Only for metric engine** String value, supports `none`, `skipping`.                                                                                                                                                                                       |
+| `index.type`                                | Index type                                                      | **Only for metric engine** String value, supports `inverted`, `skipping`. If not set, no index is created.                                                                                                                                                   |
 
 #### Create a table with a custom row group size
 
@@ -510,8 +510,8 @@ In this example, we explicitly defined the `ts` column as the Time Index column.
 ```sql
 CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
-[ EVAL INTERVAL <interval> ]
 [ EXPIRE AFTER <expr> ]
+[ EVAL INTERVAL <interval> ]
 [ COMMENT '<string>' ]
 [ WITH (<flow-option> = <value> [, ...]) ]
 AS

@@ -148,7 +148,7 @@ JSON2 支持使用 type hint 为指定的子路径声明确定的数据类型。
 
 ```sql
 json_column JSON2 (
-    path.to.field DATA_TYPE [NULL | NOT NULL] [DEFAULT literal]
+    path.to.field DATA_TYPE [INVERTED INDEX]
 )
 ```
 
@@ -167,7 +167,7 @@ Type hint 的路径使用点号分隔，例如 `user.id` 对应 JSON 中的
 - `DOUBLE`
 - `BOOLEAN`
 
-Type hint 默认允许 `NULL`。如果设置 `NOT NULL`，写入的 JSON 中必须存在该路径。
+Type hint 路径始终允许为空：写入的 JSON 中该路径可以缺失或为 `null`。不支持 `NULL`、`NOT NULL` 和 `DEFAULT`。添加 `INVERTED INDEX` 可以为该路径创建倒排索引。
 
 可以直接在 `CREATE TABLE` 语句中声明 type hint。下面的示例为 `attrs` 列中经常查询的子路径定义了 type hint：
 
@@ -180,12 +180,12 @@ CREATE TABLE application_logs (
     attrs JSON2 (
         trace_id STRING,
         user.id BIGINT,
-        user.name STRING DEFAULT 'anonymous',
+        user.name STRING,
         http.method STRING,
         http.path STRING,
         http.status BIGINT,
         latency_ms DOUBLE,
-        error BOOLEAN DEFAULT false
+        error BOOLEAN
     )
 ) WITH (
     'append_mode' = 'true'

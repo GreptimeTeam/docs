@@ -68,7 +68,7 @@ SELECT json_to_string(json_object('host', 'web-1', 'cpu', 0.42, 'healthy', true)
 | `[<pos1> to <pos2>, ..]` | 选择数组中某个范围内的所有元素            | `$[1 to last - 2]` |
 | `?(<expr>)`              | 选择所有匹配过滤表达式的元素              | `$?(@.price < 10)` |
 
-如果 `path` 是无效的，函数将返回 `NULL`。
+如果 `path` 无效，函数将返回错误；如果 `path` 有效但没有匹配到任何值，函数将返回 `NULL`。
 
 ```sql
 SELECT json_get_int(parse_json('{"a": {"c": 3}, "b": 2}'), 'a.c');

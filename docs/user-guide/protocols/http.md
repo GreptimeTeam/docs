@@ -115,7 +115,6 @@ Supported hints:
 | `physical_table` | String | None | Specifies the physical table name for the [metric engine](/contributor-guide/datanode/metric-engine.md). |
 | `query.enable_remote_dynamic_filter_pushdown` | Boolean | `true` | Enables remote dynamic filter pushdown for SQL queries. Set it to `false` to disable Frontend-to-Datanode dynamic filter propagation for the current request. See [Remote dynamic filter pushdown](/user-guide/query-data/sql.md#remote-dynamic-filter-pushdown). |
 | `skip_wal` | Boolean | `false` | Disables WAL (Write-Ahead Log) for automatically created tables. Does not change existing tables. |
-| `insert_skip_wal` | Boolean | `false` | Disables WAL for the current insert request without changing the table-level `skip_wal` option. If the table-level `skip_wal` option is `true`, WAL remains disabled even when this hint is `false` or omitted. |
 | `sst_format` | String | None | Sets the SST (Sorted String Table) file format for the table. Valid values: `flat`, `primary_key`. |
 | `trace_table_partitions` | Int | None | Override default partition number (16) of trace tables. Set to `0` or `1` to disable partitioning. |
 

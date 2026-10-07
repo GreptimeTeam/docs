@@ -206,7 +206,7 @@ SELECT h3_grid_disk(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
 请注意，此函数返回一个 UInt64 数组，并且仅适用于我们的 HTTP 查询 API 和 Postgres 通道。
 
 ```sql
-SELECT h3_grid_disk_distance(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
+SELECT h3_grid_disk_distances(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
 ```
 
 ### `h3_grid_distance`

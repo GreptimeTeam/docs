@@ -208,8 +208,6 @@ timeout = "0s"
 body_limit = "64MB"
 enable_cors = true
 # cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
-prom_validation_mode = "strict"
-experimental_enable_explain_analyze_stream = true
 # 启用专用公共 HTTP API Server（仅提供 /v1 和 /dashboard）
 enable_api_server = false
 api_server_addr = "127.0.0.1:4006"
@@ -267,6 +265,7 @@ trace_ingest_chunk_size = 512
 [prom_store]
 enable = true
 with_metric_engine = true
+prom_validation_mode = "strict"
 ```
 
 启用相应协议后，GreptimeDB 默认支持写入 Prometheus Remote Write 2.0 原生直方图和
@@ -282,8 +281,6 @@ OTLP/HTTP 累积指数直方图。
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
 |            | enable_cors        | 布尔值 | 是否启用 HTTP CORS 支持，默认为 true。 |
 |            | cors_allowed_origins | 数组 | 自定义 HTTP CORS 允许的来源。 |
-|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
-|            | experimental_enable_explain_analyze_stream | 布尔值 | 实验性：启用 `POST /v1/sql/analyze/stream`，用于流式返回 `EXPLAIN ANALYZE VERBOSE` 指标，默认为 true。 |
 |            | enable_api_server    | 布尔值 | 是否启动专用公共 HTTP API Server。该 Server 仅提供 `/v1` API 和 `/dashboard`，可安全地对外暴露给终端用户。主 HTTP Server（`addr`）用于内部使用。默认禁用；设为 `true` 可启用。 |
 |            | api_server_addr      | 字符串 | 专用公共 HTTP API Server 的绑定地址，默认为 `"127.0.0.1:4006"`。仅在 `enable_api_server` 为 `true` 时生效。 |
 | grpc       |                    |        | gRPC 服务器选项                                              |
@@ -311,6 +308,7 @@ OTLP/HTTP 累积指数直方图。
 | prom_store |                              |        | Prometheus 远程存储选项。 |
 |            | enable                       | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true                                                                                                                                                         |
 |            | with_metric_engine           | 布尔值 | 是否在 Prometheus 远程写入中使用 metric engine，默认为 true                                                                                                                                                     |
+|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。默认为 `strict`。 |
 | postgres   |                    |        | PostgresSQL 服务器选项                                       |
 |            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                       |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                          |
@@ -508,7 +506,8 @@ dir = "./greptimedb_data/logs"
 level = "info"
 enable_otlp_tracing = false
 enable_per_region_metrics = false
-otlp_endpoint = "localhost:4317"
+otlp_endpoint = "http://localhost:4318/v1/traces"
+otlp_export_protocol = "http"
 append_stdout = true
 max_log_dir_size = "0B"
 [logging.tracing_sample_ratio]
@@ -519,7 +518,9 @@ default_ratio = 1.0
 - `level`: log 输出的日志等级，日志等级有 `info`, `debug`, `error`, `warn`，默认等级为 `info`。
 - `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
 - `enable_per_region_metrics`：是否暴露 Prometheus 的 Region 维度查询负载指标，包括 `greptime_mito_region_query_cpu_time` 和 `greptime_mito_region_query_scanned_bytes`。该选项默认关闭，因为它会为每个 Region 产生一条时间序列。通过 heartbeat 上报并在 `INFORMATION_SCHEMA.REGION_STATISTICS` 中暴露的查询统计信息不受该选项控制。
-- `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
+- `otlp_endpoint`：导出 tracing 的 OTLP 端点。`otlp_export_protocol` 为 `http` 时默认值为 `http://localhost:4318/v1/traces`，为 `grpc` 时默认值为 `http://localhost:4317`。未带 scheme 的端点会自动加上 `http://` 前缀。
+- `otlp_export_protocol`：导出 tracing 使用的 OTLP 协议，可选值为 `http`（HTTP + 二进制 protobuf）和 `grpc`，默认为 `http`。
+- `otlp_headers`：OTLP 导出请求附带的 HTTP 请求头，在 `[logging.otlp_headers]` 表中以键值对配置。仅在 `otlp_export_protocol` 为 `http` 时生效。
 - `append_stdout`：是否将日志打印到 stdout。默认是`true`。
 - `max_log_dir_size`：`dir` 中受管理日志文件的最大总大小。必要时会在写入前删除较旧的已关闭日志文件，但活动文件可能会超过此限制。设置为 `0B` 可禁用此限制。
 - `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
@@ -634,7 +635,7 @@ result_cache_size = "128MiB"
 create_on_flush = "auto"
 create_on_compaction = "auto"
 apply_on_query = "auto"
-mem_threshold_on_create = "64M"
+mem_threshold_on_create = "auto"
 intermediate_path = ""
 ```
 
@@ -687,7 +688,7 @@ Mito 根据表选项和 SST format 为每个 Region 选择 memtable 实现。`de
 | `inverted_index.create_on_flush`         | 字符串 | `auto`        | 是否在 flush 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                       |
 | `inverted_index.create_on_compaction`    | 字符串 | `auto`        | 是否在 compaction 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                  |
 | `inverted_index.apply_on_query`          | 字符串 | `auto`        | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                          |
-| `inverted_index.mem_threshold_on_create` | 字符串 | `64M`         | 创建索引时如果超过该内存阈值则改为使用外部排序<br/>设置为空会关闭外排，在内存中完成所有排序                            |
+| `inverted_index.mem_threshold_on_create` | 字符串 | `auto`        | 创建索引时如果超过该内存阈值则改为使用外部排序<br/>- `auto`：系统内存的 1/16<br/>- `unlimited`：关闭外排，在内存中完成所有排序<br/>- 固定大小，例如 `64MB` |
 | `inverted_index.intermediate_path`       | 字符串 | `""`          | 存放外排临时文件的路径 (默认 `{data_home}/index_intermediate`).                                                        |
 
 `auto_flush_interval` 默认为 10 分钟。在 Mito 引擎配置中显式设置的值会覆盖默认值；表级 `auto_flush_interval` 设置会覆盖引擎级配置。
@@ -1016,7 +1017,9 @@ timeout = "5s"
 | wal.broker_endpoints                          | Array   | --                   | Kafka 集群的端点                                                                                                                     |
 | `wal.auto_create_topics`                      | Bool    | `true`               | 自动为 WAL 创建 topics <br/>设置为 `true` 则自动为 WAL 创建 topics <br/>否则，使用名为 `topic_name_prefix_[0..num_topics)` 的 topics |
 | `wal.auto_prune_interval`                     | String  | `0s`                 | 定期自动裁剪远程 WAL 的时间间隔 <br/>设置为 `0s` 表示禁止自动裁剪 |
-| `wal.trigger_flush_threshold`                 | Integer | `0`                  | 自动 WAL 裁剪中触发 region flush 操作的阈值 <br/>当满足以下条件时，metasrv 会对 region 发送 flush 请求：<br/>`trigger_flush_threshold` + `prunable_entry_id` < `max_prunable_entry_id`<br/>其中：<br/>- `prunable_entry_id` 是该 region 可裁剪的最大日志条目 ID，在该 ID 之前的日志都不被该 region 使用<br/>- `max_prunable_entry_id` 是使用与该 region 同一 kafka topic 的所有 region 可裁剪的最大日志条目 ID，在该 ID 之前的日志都不再被任一 region 使用 <br/>设置为 `0` 以禁止在自动 WAL 裁剪中触发 region flush 操作 |
+| `wal.auto_prune_logical_delete`               | Bool    | `false`              | 自动 WAL 裁剪是否只更新元数据而不调用 Kafka `DeleteRecords`。参见 [Remote WAL 配置](/user-guide/deployments-administration/wal/remote-wal/configuration.md#metasrv-配置)。 |
+| `wal.flush_trigger_size`                      | String  | `512MB`              | region 的 WAL 估算大小超过该值时，metasrv 触发该 region 的 flush。参见 [Remote WAL 配置](/user-guide/deployments-administration/wal/remote-wal/configuration.md#metasrv-配置)。 |
+| `wal.checkpoint_trigger_size`                 | String  | `128MB`              | region 的 WAL 估算大小超过该值时，metasrv 触发该 region 的 checkpoint。参见 [Remote WAL 配置](/user-guide/deployments-administration/wal/remote-wal/configuration.md#metasrv-配置)。 |
 | `wal.auto_prune_parallelism`                  | Integer | `10` | 自动 WAL 裁剪的最大并行任务限制，其中每个任务负责一个 kafka topic 的 WAL 裁剪 |
 | `wal.num_topics`                              | Integer | `64`                 | Topic 数量                                                                                                                           |
 | wal.selector_type                             | String  | `round_robin` | topic selector 类型 <br/>可用 selector 类型：<br/>- round_robin（默认）                                                              |
