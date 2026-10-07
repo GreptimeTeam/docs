@@ -33,7 +33,6 @@ greptime cli meta repair partition-column [OPTIONS]
 | `--backend-tls-cert-path <BACKEND_TLS_CERT_PATH>` | 连接元数据存储时使用的客户端证书文件路径。 | "" | 字符串 |
 | `--backend-tls-key-path <BACKEND_TLS_KEY_PATH>` | 连接元数据存储时使用的客户端私钥文件路径。 | "" | 字符串 |
 | `--backend-tls-ca-cert-path <BACKEND_TLS_CA_CERT_PATH>` | 连接元数据存储时使用的 CA 证书文件路径。 | "" | 字符串 |
-| `--backend-tls-watch` | 监听 TLS 证书文件的变化。 | `false` | flag |
 | `--dry-run` | 只报告无效的分区列，不修改表元数据。执行修复前可先使用此选项检查拟进行的更改。 | `false` | flag |
 | `--update-limit <N>` | 该工具对表元数据执行更改的最大次数。此选项可用于逐步更新表元数据。 | 无限制 | 数字 |
 

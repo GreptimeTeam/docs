@@ -22,7 +22,6 @@ The `greptime cli meta` command can be used to interact with the metadata of Gre
 | `--backend-tls-cert-path <BACKEND_TLS_CERT_PATH>` | Path to the client certificate file for the metadata store connection | "" | - |
 | `--backend-tls-key-path <BACKEND_TLS_KEY_PATH>` | Path to the client private key file for the metadata store connection | "" | - |
 | `--backend-tls-ca-cert-path <BACKEND_TLS_CA_CERT_PATH>` | Path to the CA certificate file for the metadata store connection | "" | - |
-| `--backend-tls-watch` | Watch the TLS certificate files for changes | false | - |
 
 
 

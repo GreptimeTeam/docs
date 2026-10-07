@@ -31,7 +31,6 @@ greptime cli meta repair logical-tables [OPTIONS]
 | `--backend-tls-cert-path <BACKEND_TLS_CERT_PATH>` | 连接元数据存储时使用的客户端证书文件路径 | "" | - |
 | `--backend-tls-key-path <BACKEND_TLS_KEY_PATH>` | 连接元数据存储时使用的客户端私钥文件路径 | "" | - |
 | `--backend-tls-ca-cert-path <BACKEND_TLS_CA_CERT_PATH>` | 连接元数据存储时使用的 CA 证书文件路径 | "" | - |
-| `--backend-tls-watch` | 监听 TLS 证书文件的变化 | false | - |
 | `--table-names <TABLE_NAMES>`                                 | 要修复的表名，用逗号分隔                                                                                                                                                                                                                                                                       | -               |
 | `--table-ids <TABLE_IDS>`                                     | 要修复的表 ID，用逗号分隔                                                                                                                                                                                                                                                                      | -               |
 | `--schema-name <SCHEMA_NAME>`                                 | 要修复的表所属数据库的名称                                                                                                                                                                                                                                                                     | public          |

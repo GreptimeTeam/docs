@@ -22,7 +22,6 @@ description: 使用 CLI 与 GreptimeDB 元数据交互的指南，包括键值�
 | `--backend-tls-cert-path <BACKEND_TLS_CERT_PATH>` | 连接元数据存储时使用的客户端证书文件路径 | "" | - |
 | `--backend-tls-key-path <BACKEND_TLS_KEY_PATH>` | 连接元数据存储时使用的客户端私钥文件路径 | "" | - |
 | `--backend-tls-ca-cert-path <BACKEND_TLS_CA_CERT_PATH>` | 连接元数据存储时使用的 CA 证书文件路径 | "" | - |
-| `--backend-tls-watch` | 监听 TLS 证书文件的变化 | false | - |
 
 
 

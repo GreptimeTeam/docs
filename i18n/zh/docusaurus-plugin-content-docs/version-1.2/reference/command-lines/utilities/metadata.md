@@ -30,7 +30,6 @@ greptime cli meta snapshot save [OPTIONS]
 | --backend-tls-cert-path | 否 | "" | 连接元数据存储时使用的客户端证书文件路径 |
 | --backend-tls-key-path | 否 | "" | 连接元数据存储时使用的客户端私钥文件路径 |
 | --backend-tls-ca-cert-path | 否 | "" | 连接元数据存储时使用的 CA 证书文件路径 |
-| --backend-tls-watch | 否 | false | 监听 TLS 证书文件的变化 |
 | --max-txn-ops      | 否       | 128               | 最大事务操作数                                                                                                                                       |
 
 #### 文件选项
@@ -114,7 +113,6 @@ greptime cli meta snapshot restore [OPTIONS]
 | --backend-tls-cert-path | 否 | "" | 连接元数据存储时使用的客户端证书文件路径 |
 | --backend-tls-key-path | 否 | "" | 连接元数据存储时使用的客户端私钥文件路径 |
 | --backend-tls-ca-cert-path | 否 | "" | 连接元数据存储时使用的 CA 证书文件路径 |
-| --backend-tls-watch | 否 | false | 监听 TLS 证书文件的变化 |
 | --max-txn-ops      | 否       | 128             | 最大事务操作数                                                                                                                                       |
 
 #### 文件选项

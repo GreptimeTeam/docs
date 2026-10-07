@@ -30,7 +30,6 @@ greptime cli meta snapshot save [OPTIONS]
 | --backend-tls-cert-path | No | "" | Path to the client certificate file for the metadata store connection |
 | --backend-tls-key-path | No | "" | Path to the client private key file for the metadata store connection |
 | --backend-tls-ca-cert-path | No | "" | Path to the CA certificate file for the metadata store connection |
-| --backend-tls-watch | No | false | Watch the TLS certificate files for changes |
 | --max-txn-ops      | No       | 128               | Maximum number of txn operations                                                                                                                   |
 
 #### File Options
@@ -116,7 +115,6 @@ greptime cli meta snapshot restore [OPTIONS]
 | --backend-tls-cert-path | No | "" | Path to the client certificate file for the metadata store connection |
 | --backend-tls-key-path | No | "" | Path to the client private key file for the metadata store connection |
 | --backend-tls-ca-cert-path | No | "" | Path to the CA certificate file for the metadata store connection |
-| --backend-tls-watch | No | false | Watch the TLS certificate files for changes |
 | --max-txn-ops      | No       | 128             | Maximum number of txn operations                                                                                                                     |
 
 #### File Options

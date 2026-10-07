@@ -33,7 +33,6 @@ greptime cli meta repair partition-column [OPTIONS]
 | `--backend-tls-cert-path <BACKEND_TLS_CERT_PATH>` | Path to the client certificate file for the metadata store connection. | "" | string |
 | `--backend-tls-key-path <BACKEND_TLS_KEY_PATH>` | Path to the client private key file for the metadata store connection. | "" | string |
 | `--backend-tls-ca-cert-path <BACKEND_TLS_CA_CERT_PATH>` | Path to the CA certificate file for the metadata store connection. | "" | string |
-| `--backend-tls-watch` | Watch the TLS certificate files for changes. | `false` | flag |
 | `--dry-run` | Report invalid partition columns without changing table metadata. Use this flag to inspect the proposed changes before running the repair. | `false` | flag |
 | `--update-limit <N>` | The maximum times this tool does the alterations to the table metadata. This option can be used to gradually update the table metadata | unlimited | number |
 
