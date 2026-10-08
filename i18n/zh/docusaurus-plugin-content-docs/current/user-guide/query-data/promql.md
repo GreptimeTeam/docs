@@ -151,9 +151,12 @@ GreptimeDB 目前已实现了大部分（超过 90%）的 PromQL 功能。您可
 
 ### 选择器
 
-Instant 选择器和 Range 选择器均已支持。需要注意的是，在 Prometheus 和 GreptimeDB 中，指标名称的标签匹配有一个特殊限制：不支持反向匹配（例如 `{__name__!="request_count"}`）。但其他匹配方式，如等值匹配和正则匹配都是完全支持的。
+Instant 选择器和 Range 选择器均已支持。指标名称（`__name__`）的标签匹配有以下限制：
 
-时间区间和时间偏移修饰符均已支持，但目前尚未支持 `@` 修饰符。
+- 在 [`TQL`](#sql) 中只支持等值匹配，例如 `{__name__="request_count"}`。
+- [Prometheus HTTP API](#prometheus-的-http-api) 还支持正则匹配和反向匹配，例如 `{__name__=~"request_.*"}` 或 `{__name__!="request_count", host="h1"}`。这些匹配只作用于 metric engine 创建的表，例如通过 Prometheus Remote Write 写入的表。
+
+时间区间、时间偏移修饰符和 `@` 修饰符（包括 `@ start()` 和 `@ end()`）均已支持。
 
 当选择不存在的列时，它们将被视为一个所有值都为 `""` 的列。该行为与 Prometheus 和 VictoriaMetrics 一致。
 

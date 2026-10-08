@@ -215,7 +215,7 @@ Note that this function returns a UInt64 array and it only works on our HTTP
 Query API and Postgres channel.
 
 ```sql
-SELECT h3_grid_disk_distance(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
+SELECT h3_grid_disk_distances(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
 ```
 
 ### `h3_grid_distance`

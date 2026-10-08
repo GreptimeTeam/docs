@@ -15,7 +15,7 @@ GreptimeDB components default to outputting INFO level logs to the following loc
 - Standard output
 - `greptimedb_data/logs` directory under GreptimeDB's current working directory
 
-The log output directory can also be modified through the `[logging]` section in the configuration file or the `--log_dir` startup parameter:
+The log output directory can also be modified through the `[logging]` section in the configuration file or the `--log-dir` startup parameter:
 
 ```toml
 [logging]

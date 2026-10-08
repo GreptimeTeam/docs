@@ -150,7 +150,10 @@ Both string and float literals are supported, with the same [rule](https://prome
 
 ### Selector
 
-Both instant and range selector are supported. But notice that in both Prometheus and GreptimeDB, the label matching on metric name is an exception. Negative matching (e.g. `{__name__!="request_count}"`) is not allowed. Others like equal-matching or regex-matching are supported.
+Both instant and range selector are supported. Label matching on the metric name (`__name__`) has the following restrictions:
+
+- In [`TQL`](#sql), only equal-matching is supported, for example `{__name__="request_count"}`.
+- The [Prometheus HTTP API](#prometheus-http-api) also supports regex-matching and negative matching, for example `{__name__=~"request_.*"}` or `{__name__!="request_count", host="h1"}`. These matchers only match tables created by the metric engine, such as tables written through Prometheus Remote Write.
 
 Time duration and offset are supported, but `@` modifier is not supported yet.
 

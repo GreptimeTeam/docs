@@ -161,7 +161,7 @@ GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-
 | `merge_mode`                                | 合并重复行的策略                         | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。 |
 | `sst_format`                                | SST 文件的格式                            | 字符串值，支持 `primary_key`，`flat`。默认为 `flat`。`flat` 格式建议用于具有高基数主键的表。   |
 | `comment`                                   | 表级注释                                 | 字符串值。                                                                                                                                                               |
-| `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值，支持 `none`, `skipping`.                                                                                                             |
+| `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值，支持 `inverted`、`skipping`。未设置时不创建索引。                                                                                    |
 | `skip_wal`                                | 是否关闭表的预写日志                               | 字符串类型。当设置为 `'true'` 时表的写入数据将不会持久化到预写日志，可以避免存储磨损同时提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。 |
 | `write_buffer_size`                       | 该表的单 region 写缓冲区阻塞阈值                   | 字符串类型，例如 `'512MB'` 或 `'1GB'`。设置为正值后，mutable memtable 内存用量达到该值的一半时，GreptimeDB 会调度 flush；达到该值时会阻塞写入，达到该值的 2 倍时会拒绝写入。该表选项会覆盖 `region_engine.mito.default_region_write_buffer_size`。即使引擎默认值非零，显式设置为 `'0'` 也会禁用单 region 限制。取消设置会移除表级覆盖，并回退到引擎默认值。 |
 | `auto_flush_interval`                     | 该表的 region 最长多久没有 flush 就触发一次 flush | 字符串类型，是一个时间范围字符串，例如 `'5m'` 或 `'1h'`，必须大于 0。该表选项会覆盖引擎级的 `region_engine.mito.auto_flush_interval`。用 `ALTER TABLE` 将其设为 `NULL` 可以移除表级覆盖、回退到引擎级配置。 |
@@ -521,8 +521,8 @@ CREATE EXTERNAL TABLE city (
 ```sql
 CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
-[ EVAL INTERVAL <interval> ]
 [ EXPIRE AFTER <expr> ]
+[ EVAL INTERVAL <interval> ]
 [ COMMENT '<string>' ]
 [ WITH (<flow-option> = <value> [, ...]) ]
 AS

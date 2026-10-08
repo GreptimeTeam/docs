@@ -9,6 +9,11 @@ This guide describes how to use GreptimeDB's metadata export and import tools fo
 
 For detailed command-line options and advanced configurations, please refer to [Metadata Export & Import](/reference/command-lines/utilities/metadata.md).
 
+:::note
+- If Metasrv uses a PostgreSQL backend with `meta_schema_name` set, pass the same schema with `--meta-schema-name`. Without it, the CLI reads and writes the metadata table in the `search_path` of the connection, which may not be the table Metasrv uses.
+- `--backend-tls-mode` defaults to `disable`. If the metadata store requires TLS, set `--backend-tls-mode` and the related `--backend-tls-*` options.
+:::
+
 ## Overview
 
 ## Export Operations

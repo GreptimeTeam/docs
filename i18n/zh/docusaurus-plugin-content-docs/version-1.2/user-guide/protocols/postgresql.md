@@ -38,7 +38,6 @@ GreptimeDB 的 PostgreSQL 协议遵循原始 PostgreSQL 的 [时区处理方式]
 `time_zone` 的值可以是：
 
 - 时区的全称，例如 `America/New_York`。
-- 时区的缩写，例如 `PST`。
 - UTC 的偏移量，例如 `+08:00`。
 
 你可以使用 `SHOW` 来查看当前的时区设置。例如：

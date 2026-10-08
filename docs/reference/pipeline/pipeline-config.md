@@ -426,6 +426,7 @@ processors:
   - csv:
       fields:
         - message
+      target_fields: ip,method,path
       separator: ','
       quote: '"'
       trim: true
@@ -435,6 +436,8 @@ processors:
 In the above example, the configuration of the `csv` processor includes the following fields:
 
 - `fields`: A list of field names to be parsed.
+- `target_fields`: Comma-separated names of the output fields. Parsed values are assigned to these fields in column order, and columns beyond the number of target fields are discarded. If not set, the processor produces no output fields.
+- `empty_value`: The value assigned to target fields that have no corresponding column in the record. If not set, these fields are `null`.
 - `separator`: The separator.
 - `quote`: The quotation mark.
 - `trim`: Whether to trim whitespace. Defaults to `false`.
@@ -979,8 +982,6 @@ Each type hint supports the following fields:
 
 - `path` (required): The JSON subpath in dot notation. Wrap a path segment in double quotes when the JSON key itself contains a dot.
 - `type` (required): One of `string`, `int64`, `uint64`, `float64`, or `boolean`.
-- `nullable` (optional): Whether the path can be missing or `null`. Defaults to `true`.
-- `default` (optional): A scalar value of the declared type to use when the path is missing.
 
 If the destination JSON2 column already exists, GreptimeDB encodes the value using the settings stored in that column instead of the inline hints. This also applies when [`table_suffix`](#table-suffix) routes records to different tables. Values that violate the applicable type hints follow the transform's [`on_failure`](#the-on_failure-field) setting.
 

@@ -446,6 +446,7 @@ processors:
   - csv:
       fields:
         - message
+      target_fields: ip,method,path
       separator: ','
       quote: '"'
       trim: true
@@ -455,6 +456,8 @@ processors:
 如上所示，`csv` Processor 的配置包含以下字段：
 
 - `fields`: 需要解析的字段名列表。
+- `target_fields`: 以逗号分隔的输出字段名。解析出的值按列顺序依次写入这些字段，超出目标字段数量的列会被丢弃。如不设置，该 Processor 不会输出任何字段。
+- `empty_value`: 记录中没有对应列的目标字段所使用的值。如不设置，这些字段为 `null`。
 - `separator`: 分隔符。
 - `quote`: 引号。
 - `trim`: 是否去除空格。默认为 `false`。

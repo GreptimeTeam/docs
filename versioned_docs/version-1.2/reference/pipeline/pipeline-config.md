@@ -427,6 +427,7 @@ processors:
   - csv:
       fields:
         - message
+      target_fields: ip,method,path
       separator: ','
       quote: '"'
       trim: true
@@ -436,6 +437,8 @@ processors:
 In the above example, the configuration of the `csv` processor includes the following fields:
 
 - `fields`: A list of field names to be parsed.
+- `target_fields`: Comma-separated names of the output fields. Parsed values are assigned to these fields in column order, and columns beyond the number of target fields are discarded. If not set, the processor produces no output fields.
+- `empty_value`: The value assigned to target fields that have no corresponding column in the record. If not set, these fields are `null`.
 - `separator`: The separator.
 - `quote`: The quotation mark.
 - `trim`: Whether to trim whitespace. Defaults to `false`.

@@ -33,6 +33,11 @@ datafusion_functions = [scalar_functions, agg_functions, window_functions, speci
 ## Filenames of merged docs (used to distinguish internal vs external links)
 MERGED_FILENAMES = datafusion_functions.map { |doc| File.basename(URI(doc[:url]).path) }
 
+## DataFusion functions shadowed by a GreptimeDB function of the same name
+GREPTIMEDB_OVERRIDES = {
+  "to_unixtime" => "/reference/sql/functions/greptimedb.md#to_unixtime",
+}
+
 def process_headlines(line)
   ## Add a level of headlines
   if line =~ /^\s*(#+)\s/
@@ -107,6 +112,16 @@ def escape_mdx_angles(lines)
         end
       }.join
     end
+  end
+end
+
+def add_override_notes(lines)
+  lines.flat_map do |line|
+    name = line[/^#+\s+`([a-z0-9_]+)`\s*$/, 1]
+    link = GREPTIMEDB_OVERRIDES[name]
+    next [line] unless link
+
+    [line, "", ":::note", "GreptimeDB overrides this function. See [`#{name}`](#{link}) for the GreptimeDB behavior.", ":::"]
   end
 end
 
@@ -211,7 +226,7 @@ EOF
     all_content += markdown + "\n"
 
     lines = markdown.split(/\n/)
-    lines = process_lines(lines)
+    lines = add_override_notes(process_lines(lines))
 
     f.puts lines.join("\n")
   end

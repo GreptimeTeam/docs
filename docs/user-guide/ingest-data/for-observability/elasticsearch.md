@@ -45,7 +45,6 @@ GreptimeDB supports data ingestion through Elasticsearch protocol by implementin
 
 - `x-greptime-db-name`: Specifies the database name. Defaults to `public` if not specified.
 - `x-greptime-pipeline-name`: Specifies the pipeline name. Defaults to GreptimeDB's internal pipeline `greptime_identity` if not specified.
-- `x-greptime-pipeline-version`: Specifies the pipeline version. Defaults to the latest version of the corresponding pipeline if not specified.
 
 For more details about Pipeline, please refer to the [Manage Pipelines](/user-guide/logs/manage-pipelines.md) documentation.
 
@@ -55,7 +54,6 @@ You can use the following HTTP URL parameters:
 
 - `db`: Specifies the database name. Defaults to `public` if not specified.
 - `pipeline_name`: Specifies the pipeline name. Defaults to GreptimeDB's internal pipeline `greptime_identity` if not specified.
-- `version`: Specifies the pipeline version. Defaults to the latest version of the corresponding pipeline if not specified.
 - `msg_field`: Specifies the JSON field name containing the original log data. For example, in Logstash and Filebeat, this field is typically `message`. If specified, GreptimeDB will attempt to parse the data in this field as JSON format. If parsing fails, the field will be treated as a string. This configuration option currently only takes effect in URL parameters.
 
 ### Authentication Header

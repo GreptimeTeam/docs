@@ -45,7 +45,6 @@ GreptimeDB 支持通过实现以下两个 HTTP endpoint 来实现 Elasticsearch 
 
 - `x-greptime-db-name`：指定写入的数据库名。如不指定，则默认使用 `public` 数据库；
 - `x-greptime-pipeline-name`：指定写入的 pipeline 名，如不指定，则默认使用 GreptimeDB 内部的 pipeline `greptime_identity`；
-- `x-greptime-pipeline-version`：指定写入的 pipeline 版本，如不指定，则默认对应 pipeline 的最新版本；
 
 更多关于 Pipeline 的详细信息，请参考 [管理 Pipelines](/user-guide/logs/manage-pipelines.md) 文档。
 
@@ -55,7 +54,6 @@ GreptimeDB 支持通过实现以下两个 HTTP endpoint 来实现 Elasticsearch 
 
 - `db`：指定写入的数据库名。如不指定，则默认使用 `public` 数据库；
 - `pipeline_name`：指定写入的 pipeline 名，如不指定，则默认使用 GreptimeDB 内部的 pipeline `greptime_identity`；
-- `version`：指定写入的 pipeline 版本，如不指定，则默认对应 pipeline 的最新版本；
 - `msg_field`：`msg_field` 可指定包含原始日志数据的 JSON 字段名。比如在 Logstash 和 Filebeat 中，该字段通常为 `message`。如果用户指定了该参数，则 GreptimeDB 会尝试将该字段中的数据以 JSON 格式进行展开，如果展开失败，则该字段会被当成字符串进行处理。该配置选项目前仅在 URL 参数中生效。
 
 ### 鉴权 Header

@@ -328,10 +328,10 @@ For users migrating from MySQL or PostgreSQL to GreptimeDB, GreptimeDB supports 
 | `SmallInt`, `Int2`                                              | `Int16`                |
 | `Int`, `Int4`                                                   | `Int32`                |
 | `BigInt`, `Int8`                                                | `Int64`                |
-| `UnsignedTinyInt`                                               | `UInt8`                |
-| `UnsignedSmallInt`                                              | `UInt16`               |
-| `UnsignedInt`                                                   | `UInt32`               |
-| `UnsignedBigInt`                                                | `UInt64`               |
+| `TinyInt Unsigned`                                              | `UInt8`                |
+| `SmallInt Unsigned`                                             | `UInt16`               |
+| `Int Unsigned`                                                  | `UInt32`               |
+| `BigInt Unsigned`                                               | `UInt64`               |
 | `Float`, `Float4`                                               | `Float32`              |
 | `Double`, `Float8`                                              | `Float64`              |
 | `Timestamp_s`, `Timestamp_sec`, `Timestamp(0)`                  | `TimestampSecond`      |

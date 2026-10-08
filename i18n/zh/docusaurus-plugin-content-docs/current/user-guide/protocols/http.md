@@ -110,7 +110,6 @@ x-greptime-hint-key2: value2
 | `physical_table` | String | 无 | 指定 [metric 引擎](/contributor-guide/datanode/metric-engine.md)的物理表名。 |
 | `query.enable_remote_dynamic_filter_pushdown` | Boolean | `true` | 为 SQL 查询启用远程动态过滤下推。设置为 `false` 可为当前请求关闭 Frontend 到 Datanode 的动态过滤传播。请参阅[远程动态过滤下推](/user-guide/query-data/sql.md#远程动态过滤下推)。 |
 | `skip_wal` | Boolean | `false` | 为自动创建的表禁用预写日志（WAL），不修改已有表的设置。 |
-| `insert_skip_wal` | Boolean | `false` | 为当前写入请求禁用 WAL，不修改表级 `skip_wal` 选项。设为 `false` 或省略该 hint 时，若表级设置已禁用 WAL，仍不写入 WAL。 |
 | `sst_format` | String | 无 | 设置表的 SST（Sorted String Table）文件格式。可选值：`flat`、`primary_key`。 |
 | `trace_table_partitions` | Int | None | 自定义 Trace 表的默认分区数（16）。设置为 `0` 或 `1` 时禁用分区。 |
 

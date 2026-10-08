@@ -3208,6 +3208,10 @@ Additional examples can be found [here](https://github.com/apache/datafusion/blo
 
 ##### `to_unixtime`
 
+:::note
+GreptimeDB 使用自己的实现覆盖了该函数，行为请参见 [`to_unixtime`](/reference/sql/functions/greptimedb.md#to_unixtime)。
+:::
+
 Converts a value to seconds since the unix epoch (`1970-01-01T00:00:00`).
 Supports strings, dates, timestamps, integer, unsigned integer, and float types as input.
 Strings are parsed as RFC3339 (e.g. '2023-07-20T05:44:00')
