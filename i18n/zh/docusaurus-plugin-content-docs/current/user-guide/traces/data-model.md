@@ -50,33 +50,6 @@ Pipeline 的名称来作为数据模型的版本。目前可用的内置 Pipelin
 
 对于 `greptime_trace_v1`，GreptimeDB 还会在 schema 演进过程中协调 attribute 列的类型。当 trace 表已经存在时，已有表结构对兼容的新写入值具有优先级。兼容的标量值可以转换为已有列类型；当已有 `Int64` attribute 列后续收到整数和浮点数混合写入时，该列可能会被扩展为 `Float64`。如果某个 span 仍无法写入，GreptimeDB 可能只拒绝该 span，同时接受请求中的其他 span。
 
-以下示例展示了新建 `greptime_trace_v1` 表的表结构：
-
-```text
-+------------------------------------+---------------------+------+------+---------+---------------+
-| Column                             | Type                | Key  | Null | Default | Semantic Type |
-+------------------------------------+---------------------+------+------+---------+---------------+
-| timestamp                          | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
-| timestamp_end                      | TimestampNanosecond |      | YES  |         | FIELD         |
-| duration_nano                      | Int64               |      | YES  |         | FIELD         |
-| parent_span_id                     | String              |      | YES  |         | FIELD         |
-| trace_id                           | String              |      | YES  |         | FIELD         |
-| span_id                            | String              |      | YES  |         | FIELD         |
-| span_kind                          | String              |      | YES  |         | FIELD         |
-| span_name                          | String              |      | YES  |         | FIELD         |
-| span_status_code                   | String              |      | YES  |         | FIELD         |
-| span_status_message                | String              |      | YES  |         | FIELD         |
-| trace_state                        | String              |      | YES  |         | FIELD         |
-| scope_name                         | String              |      | YES  |         | FIELD         |
-| scope_version                      | String              |      | YES  |         | FIELD         |
-| service_name                       | String              | PRI  | YES  |         | TAG           |
-| span_attributes.net.sock.peer.addr | String              |      | YES  |         | FIELD         |
-| span_attributes.peer.service       | String              |      | YES  |         | FIELD         |
-| span_events                        | Json                |      | YES  |         | FIELD         |
-| span_links                         | Json                |      | YES  |         | FIELD         |
-+------------------------------------+---------------------+------+------+---------+---------------+
-```
-
 以下是使用 OpenTelemetry Django 埋点生成的一行 Span 数据示例：
 
 ```
