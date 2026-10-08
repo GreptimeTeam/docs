@@ -302,45 +302,7 @@ GreptimeDB 会通过 **HTTP 协议** 接受 **protobuf 编码的 traces 数据**
 
 ### 数据模型
 
-GreptimeDB 将 OTLP traces 数据模型映射到表结构。默认情况下，Trace 数据存储在 `opentelemetry_traces` 表中。使用 `greptime_trace_v2` 可将属性存储在固定的 JSON2 列中；配置、查询示例和迁移注意事项请参阅[Trace 数据模型](/user-guide/traces/data-model.md)。以下示例展示了新建 `greptime_trace_v1` 表的表结构：
-
-```sql
-+------------------------------------+---------------------+------+------+---------+---------------+
-| Column                             | Type                | Key  | Null | Default | Semantic Type |
-+------------------------------------+---------------------+------+------+---------+---------------+
-| timestamp                          | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
-| timestamp_end                      | TimestampNanosecond |      | YES  |         | FIELD         |
-| duration_nano                      | Int64               |      | YES  |         | FIELD         |
-| parent_span_id                     | String              |      | YES  |         | FIELD         |
-| trace_id                           | String              |      | YES  |         | FIELD         |
-| span_id                            | String              |      | YES  |         | FIELD         |
-| span_kind                          | String              |      | YES  |         | FIELD         |
-| span_name                          | String              |      | YES  |         | FIELD         |
-| span_status_code                   | String              |      | YES  |         | FIELD         |
-| span_status_message                | String              |      | YES  |         | FIELD         |
-| trace_state                        | String              |      | YES  |         | FIELD         |
-| scope_name                         | String              |      | YES  |         | FIELD         |
-| scope_version                      | String              |      | YES  |         | FIELD         |
-| service_name                       | String              | PRI  | YES  |         | TAG           |
-| span_attributes.net.sock.peer.addr | String              |      | YES  |         | FIELD         |
-| span_attributes.peer.service       | String              |      | YES  |         | FIELD         |
-| span_events                        | Json                |      | YES  |         | FIELD         |
-| span_links                         | Json                |      | YES  |         | FIELD         |
-+------------------------------------+---------------------+------+------+---------+---------------+
-```
-
-- 每一行代表一个单一的 span。
-- `service_name` 用作 **Tag**（**主键**的一部分）。
-- `timestamp` 用作 **时间索引**（Time Index）。
-- Resource Attributes、Scope Attributes 和 Span Attributes 将被自动展平为单独的列。
-  - 注意：`resource_attributes.service.name` 被排除在打平之外，因为它已经存储在 `service_name` 列中。
-- `span_events` 和 `span_links` 默认存储为 `JSON` 数据类型。
-
-有关数据模型和辅助表的更多详细信息，请参阅 [Trace 数据模型](/user-guide/traces/data-model.md)。
-
-注意:
-1. `greptime_trace_v1` 处理方式默认通过 `trace_id` 字段将数据切分成不同的分区以提升性能。**请确保 `trace_id` 的第一个字符是分布均匀的**。
-2. 在非测试的场合下，可以通过设置 `ttl` 以避免持久化数据量过大。通过设置 `x-greptime-hints: ttl=7d` HTTP 请求头，在创建 trace 表时会添加一个 7 天的 `ttl` 表选项。见[此文档](/reference/sql/create.md#表选项)了解更多关于表选项 `ttl` 的信息。
+Trace 数据模型的表结构、属性存储方式和表选项统一介绍于[Trace 数据模型](/user-guide/traces/data-model.md)。该页分别说明 `greptime_trace_v1` 和 `greptime_trace_v2`。
 
 ### Schema 演进与 Partial Success
 

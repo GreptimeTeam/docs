@@ -28,72 +28,9 @@ Pipeline 的名称来作为数据模型的版本。目前可用的内置 Pipelin
 
 在未来我们可能引入新的 Pipeline 名称，即数据模型版本。新的 Pipeline 可能与老版本不兼容，因此建议创建新的数据表来使用。
 
-## JSON2 数据模型（`greptime_trace_v2`）
+<AnchorAlias id="数据模型" />
 
-v2 模型将每个 Span 存储为一行，固定包含 19 列。属性使用
-[JSON2](/user-guide/logs/json2.md) 存储，因此新增属性键不会增加表列。JSON2 目前处于 Beta 阶段。
-
-| 列 | SQL 类型 | 含义 |
-| --- | --- | --- |
-| `timestamp` | `TIMESTAMP(9)` | Span 开始时间，作为时间索引。 |
-| `timestamp_end` | `TIMESTAMP(9)` | Span 结束时间。 |
-| `duration_nano` | `BIGINT` | Span 持续时间，单位为纳秒。 |
-| `trace_id`、`span_id`、`parent_span_id` | `STRING` | Trace 和 Span 标识符。 |
-| `span_kind`、`span_name` | `STRING` | Span 类型和操作名称。 |
-| `span_status_code`、`span_status_message` | `STRING` | Span 状态。 |
-| `trace_state` | `STRING` | W3C trace state。 |
-| `scope_name`、`scope_version` | `STRING` | 埋点作用域。 |
-| `service_name` | `STRING` | 可为空的 Tag 和主键，从 Resource 属性 `service.name` 提取。 |
-| `span_attributes`、`scope_attributes`、`resource_attributes` | `JSON2` | 属性对象，保留嵌套值。 |
-| `span_events`、`span_links` | `JSON` | 事件和链接数组，无内容时为 `[]`。 |
-
-与 v1 不同，v2 在提取 `service_name` 的同时，也会在 `resource_attributes` 中保留
-`service.name`。如果 Resource 未提供可用的服务名称，Tag 值为 `NULL`。
-
-首次写入时会自动建表，默认表名仍为 `opentelemetry_traces`。v2 沿用下文介绍的
-Trace ID 分区规则、`service_name`、`trace_id` 和 `parent_span_id` 上的跳数索引、
-Append-only 模式，以及服务和操作辅助表。
-
-### 选择 v2 写入
-
-在 OTLP/HTTP exporter 中设置以下请求头，例如在 Collector 的 `otlp_http` exporter 配置中：
-
-```yaml
-headers:
-  x-greptime-pipeline-name: "greptime_trace_v2"
-  x-greptime-trace-table-name: "opentelemetry_traces_v2"
-```
-
-从 v1 切换到 v2 时，请使用新表。修改 Pipeline 请求头不会迁移已有数据：标记为 v1 的表
-会拒绝 v2 写入，反之亦然。引用打平属性列的查询也需要改用 JSON2 路径。
-已有 v1 表可以继续使用 v1 Pipeline。
-
-### 查询 v2 属性
-
-OpenTelemetry 属性键通常包含点号。请用双引号包住完整的键名，将其作为字面键读取，
-而不是嵌套路径：
-
-```sql
-SELECT
-    timestamp,
-    trace_id,
-    service_name,
-    span_attributes."http.request.method"::STRING AS method,
-    span_attributes."http.response.status_code"::BIGINT AS status,
-    resource_attributes."service.name"::STRING AS resource_service
-FROM opentelemetry_traces_v2
-WHERE span_attributes."http.response.status_code"::BIGINT >= 500
-ORDER BY timestamp DESC
-LIMIT 20;
-```
-
-例如，`span_attributes."http.request.method"` 读取键 `http.request.method`，而
-`span_attributes.http.request.method` 读取嵌套对象。v1 中的
-`"span_attributes.http.request.method"` 表示打平后的表列，不适用于 v2。
-更多示例请参阅 [JSON2 查询语法](/user-guide/logs/json2.md#点号语法)。
-事件和链接仍使用 [JSON 函数](/reference/sql/functions/json.md)查询。
-
-## 数据模型
+## greptime_trace_v1
 
 `greptime_trace_v1` 数据模型是非常直观的。默认情况下，Trace 数据存储在名为 `opentelemetry_traces` 的表中。你可以通过在 OTLP/HTTP 请求中指定 `x-greptime-trace-table-name` 请求头来自定义表名。
 
@@ -112,45 +49,31 @@ LIMIT 20;
 
 对于 `greptime_trace_v1`，GreptimeDB 还会在 schema 演进过程中协调 attribute 列的类型。当 trace 表已经存在时，已有表结构对兼容的新写入值具有优先级。兼容的标量值可以转换为已有列类型；当已有 `Int64` attribute 列后续收到整数和浮点数混合写入时，该列可能会被扩展为 `Float64`。如果某个 span 仍无法写入，GreptimeDB 可能只拒绝该 span，同时接受请求中的其他 span。
 
-以下是一个使用 OpenTelemetry Django 埋点生成的表结构：
+以下示例展示了新建 `greptime_trace_v1` 表的表结构：
 
-```
-timestamp                                  | 2025-05-07 10:03:29.657544
-timestamp_end                              | 2025-05-07 10:03:29.661714
-duration_nano                              | 4169970
-trace_id                                   | fb60d19aa36fdcb7d14a71ca0b9b42ae
-span_id                                    | 49806a2671f2ddcb
-span_kind                                  | SPAN_KIND_SERVER
-span_name                                  | POST todos/
-span_status_code                           | STATUS_CODE_UNSET
-span_status_message                        |
-trace_state                                |
-scope_name                                 | opentelemetry.instrumentation.django
-scope_version                              | 0.51b0
-service_name                               | myproject
-span_attributes.http.request.method        | POST
-span_attributes.url.full                   |
-span_attributes.server.address             | django:8000
-span_attributes.network.peer.address       |
-span_attributes.server.port                | 8000
-span_attributes.network.peer.port          |
-span_attributes.http.response.status_code  | 201
-span_attributes.network.protocol.version   | 1.1
-resource_attributes.telemetry.sdk.language | python
-resource_attributes.telemetry.sdk.name     | opentelemetry
-resource_attributes.telemetry.sdk.version  | 1.30.0
-span_events                                | []
-span_links                                 | []
-parent_span_id                             | eccc18b6fc210f31
-span_attributes.db.system                  |
-span_attributes.db.name                    |
-span_attributes.db.statement               |
-span_attributes.url.scheme                 | http
-span_attributes.url.path                   | /todos/
-span_attributes.client.address             | 10.89.0.5
-span_attributes.client.port                | 44302
-span_attributes.user_agent.original        | python-requests/2.32.3
-span_attributes.http.route                 | todos/
+```text
++------------------------------------+---------------------+------+------+---------+---------------+
+| Column                             | Type                | Key  | Null | Default | Semantic Type |
++------------------------------------+---------------------+------+------+---------+---------------+
+| timestamp                          | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| timestamp_end                      | TimestampNanosecond |      | YES  |         | FIELD         |
+| duration_nano                      | Int64               |      | YES  |         | FIELD         |
+| parent_span_id                     | String              |      | YES  |         | FIELD         |
+| trace_id                           | String              |      | YES  |         | FIELD         |
+| span_id                            | String              |      | YES  |         | FIELD         |
+| span_kind                          | String              |      | YES  |         | FIELD         |
+| span_name                          | String              |      | YES  |         | FIELD         |
+| span_status_code                   | String              |      | YES  |         | FIELD         |
+| span_status_message                | String              |      | YES  |         | FIELD         |
+| trace_state                        | String              |      | YES  |         | FIELD         |
+| scope_name                         | String              |      | YES  |         | FIELD         |
+| scope_version                      | String              |      | YES  |         | FIELD         |
+| service_name                       | String              | PRI  | YES  |         | TAG           |
+| span_attributes.net.sock.peer.addr | String              |      | YES  |         | FIELD         |
+| span_attributes.peer.service       | String              |      | YES  |         | FIELD         |
+| span_events                        | Json                |      | YES  |         | FIELD         |
+| span_links                         | Json                |      | YES  |         | FIELD         |
++------------------------------------+---------------------+------+------+---------+---------------+
 ```
 
 对于新建的表，可以通过执行 `show create table opentelemetry_traces` 来查看建表语句：
@@ -222,7 +145,41 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
              | )
 ```
 
+## greptime_trace_v2
+
+v2 模型将每个 Span 存储为一行，固定包含 19 列。属性使用
+[JSON2](/user-guide/logs/json2.md) 存储，因此新增属性键不会增加表列。
+
+| 列 | SQL 类型 | 含义 |
+| --- | --- | --- |
+| `timestamp` | `TIMESTAMP(9)` | Span 开始时间，作为时间索引。 |
+| `timestamp_end` | `TIMESTAMP(9)` | Span 结束时间。 |
+| `duration_nano` | `BIGINT` | Span 持续时间，单位为纳秒。 |
+| `trace_id`、`span_id`、`parent_span_id` | `STRING` | Trace 和 Span 标识符。 |
+| `span_kind`、`span_name` | `STRING` | Span 类型和操作名称。 |
+| `span_status_code`、`span_status_message` | `STRING` | Span 状态。 |
+| `trace_state` | `STRING` | W3C trace state。 |
+| `scope_name`、`scope_version` | `STRING` | 埋点作用域。 |
+| `service_name` | `STRING` | 可为空的 Tag 和主键，从 Resource 属性 `service.name` 提取。 |
+| `span_attributes`、`scope_attributes`、`resource_attributes` | `JSON2` | 属性对象，保留嵌套值。 |
+| `span_events`、`span_links` | `JSON` | 事件和链接数组，无内容时为 `[]`。 |
+
+与 v1 不同，v2 在提取 `service_name` 的同时，也会在 `resource_attributes` 中保留
+`service.name`。如果 Resource 未提供可用的服务名称，Tag 值为 `NULL`。
+
+首次写入时会自动建表，默认表名仍为 `opentelemetry_traces`。v2 沿用下文介绍的
+Trace ID 分区规则、`service_name`、`trace_id` 和 `parent_span_id` 上的跳数索引、
+Append-only 模式，以及服务和操作辅助表。
+
+从 v1 切换到 v2 时，请使用新表。修改 Pipeline 请求头不会迁移已有数据：标记为 v1 的表会拒绝 v2 写入，反之亦然。已有 v1 表可以继续使用 v1 Pipeline。配置和 SQL 示例请参阅[写入与查询](./read-write.md)。
+
+## 通用表行为
+
+以下内容适用于 v1 和 v2。
+
 ### 分区规则
+
+请确保 `trace_id` 的第一个字符分布均匀，以避免分区间数据倾斜。
 
 Trace 表包含了默认的 [分区规
 则](/user-guide/deployments-administration/manage-data/table-sharding.md#partition)，在
@@ -259,6 +216,10 @@ table](/reference/sql/alter.md#create-an-index-for-a-column)语句来实现。�
 式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表)。
 
 ### TTL
+
+生产环境建议设置 TTL，限制数据保留时间。在 OTLP 请求中设置
+`x-greptime-hints: ttl=7d`，可在建表时配置 7 天的 TTL。
+详见[表选项](/reference/sql/create.md#表选项)。
 
 可以对 Trace 表应用 [过期时间规则](/reference/sql/alter.md#alter-table-options)。
 

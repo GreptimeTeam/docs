@@ -75,6 +75,26 @@ service:
       exporters: [otlp_http]
 ```
 
+#### 使用 greptime_trace_v2 写入
+
+上面的完整配置使用 v1。要使用 v2，请将其中的 `exporters` 配置替换为以下内容，
+其余 receivers 和 service 配置保持不变：
+
+```yaml
+exporters:
+  otlp_http:
+    endpoint: "http://greptimedb:4000/v1/otlp"
+    headers:
+      x-greptime-pipeline-name: "greptime_trace_v2"
+      x-greptime-trace-table-name: "opentelemetry_traces_v2"
+      #authorization: "Basic <base64(username:password)>"
+    tls:
+      insecure: true
+```
+
+请使用新表，避免向已有 v1 表写入 v2 数据。按下文发送 Trace 后，GreptimeDB 会自动
+创建 `opentelemetry_traces_v2`，并将属性存储为 JSON2。SDK 直接写入时也使用相同的请求头。
+
 #### 将 Trace 数据写入到 OpenTelemetry Collector
 
 你可以给应用配置相应的 exporter 来将 traces 数据写入到 OpenTelemetry Collector。
@@ -115,7 +135,7 @@ GreptimeDB 的 OTEL 端点支持 Basic 认证。详情请参考 [鉴权](/user-g
 在 OTLP 接口中，我们要求 HTTP 头 `x-greptime-pipeline-name` 作为必选参数。在这里
 我们复用了日志接口中 Pipeline 的概念作为数据转化的机制。Trace 数据应使用内置的
 `greptime_trace_v1`（打平属性列）或 `greptime_trace_v2`（JSON2 属性）。
-有关 v2 配置和查询示例，请参阅[Trace 数据模型](./data-model.md)。切换模型时请使用独立的表。
+有关模型差异和表选项，请参阅[Trace 数据模型](./data-model.md)。切换模型时请使用独立的表。
 自定义的 Pipeline 暂不支持。
 
 ### Append-only 模式
@@ -139,6 +159,8 @@ GreptimeDB 内置的 Jaeger 兼容层使得用户可以直接复用市面上的 
 我们在 [Jaeger 协议文档](/user-guide/query-data/jaeger.md)里对此做了具体描述。
 
 ### SQL
+
+#### greptime_trace_v1
 
 Trace 数据也可以通过 SQL 查询。默认 Trace 数据会写入 `opentelemetry_traces` 表中，
 这个表名也可以在写入时通过 `x-greptime-trace-table-name` 来指定。通过 SQL 查询：
@@ -171,5 +193,32 @@ span_attributes.http.request.method: POST
                         span_links: []
 ...
 ```
+
+#### greptime_trace_v2
+
+OpenTelemetry 属性键通常包含点号。请用双引号包住完整的键名，将其作为字面键读取，
+而不是嵌套路径：
+
+```sql
+SELECT * FROM public.opentelemetry_traces_v2 LIMIT 10;
+
+SELECT
+    timestamp,
+    trace_id,
+    service_name,
+    span_attributes."http.request.method"::STRING AS method,
+    span_attributes."http.response.status_code"::BIGINT AS status,
+    resource_attributes."service.name"::STRING AS resource_service
+FROM public.opentelemetry_traces_v2
+WHERE span_attributes."http.response.status_code"::BIGINT >= 500
+ORDER BY timestamp DESC
+LIMIT 20;
+```
+
+例如，`span_attributes."http.request.method"` 读取键 `http.request.method`，而
+`span_attributes.http.request.method` 读取嵌套对象。v1 中的
+`"span_attributes.http.request.method"` 表示打平后的表列，不适用于 v2。
+更多示例请参阅 [JSON2 查询语法](/user-guide/logs/json2.md#点号语法)。
+事件和链接仍使用 [JSON 函数](/reference/sql/functions/json.md)查询。
 
 在下一节[数据模型](./data-model.md) 中我们会对这个表结构做详细介绍。

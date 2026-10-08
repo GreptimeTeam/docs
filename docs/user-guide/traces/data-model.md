@@ -34,78 +34,9 @@ We may introduce new data models by adding new available pipeline names. Note
 that a new pipeline may not be compatible with previous ones, so you are
 recommended to use it in a new table.
 
-## JSON2 Data Model (`greptime_trace_v2`)
+<AnchorAlias id="data-model" />
 
-The v2 model stores one row per span with a fixed set of 19 columns. It uses
-[JSON2](/user-guide/logs/json2.md) for attributes, so new attribute keys do not
-add table columns. JSON2 is currently in Beta.
-
-| Columns | SQL type | Meaning |
-| --- | --- | --- |
-| `timestamp` | `TIMESTAMP(9)` | Span start time; the time index. |
-| `timestamp_end` | `TIMESTAMP(9)` | Span end time. |
-| `duration_nano` | `BIGINT` | Span duration in nanoseconds. |
-| `trace_id`, `span_id`, `parent_span_id` | `STRING` | Trace and span identifiers. |
-| `span_kind`, `span_name` | `STRING` | Span kind and operation name. |
-| `span_status_code`, `span_status_message` | `STRING` | Span status. |
-| `trace_state` | `STRING` | W3C trace state. |
-| `scope_name`, `scope_version` | `STRING` | Instrumentation scope. |
-| `service_name` | `STRING` | Nullable tag and primary key, extracted from the `service.name` resource attribute. |
-| `span_attributes`, `scope_attributes`, `resource_attributes` | `JSON2` | Attribute objects, including nested values. |
-| `span_events`, `span_links` | `JSON` | Event and link arrays; `[]` when empty. |
-
-Unlike v1, v2 keeps `service.name` in `resource_attributes` as well as extracting
-it into `service_name`. If the resource does not provide a usable service name,
-the tag is `NULL`.
-
-The table is created automatically on the first write. The default table name
-is still `opentelemetry_traces`. V2 uses the same trace-ID partitioning, skipping
-indexes on `service_name`, `trace_id`, and `parent_span_id`, append-only mode,
-and auxiliary service/operation tables described below.
-
-### Select v2 for ingestion
-
-Set these headers in your OTLP/HTTP exporter, for example in the Collector's
-`otlp_http` exporter configuration:
-
-```yaml
-headers:
-  x-greptime-pipeline-name: "greptime_trace_v2"
-  x-greptime-trace-table-name: "opentelemetry_traces_v2"
-```
-
-Use a new table when switching from v1 to v2. Changing the pipeline header does
-not migrate existing data: writes using v2 are rejected for a table marked as
-v1, and vice versa. Update queries that reference flattened attribute columns
-to use JSON2 paths. Existing v1 tables can continue using the v1 pipeline.
-
-### Query v2 attributes
-
-OpenTelemetry attribute keys often contain dots. Quote the entire key to read
-it as a literal JSON key rather than a nested path:
-
-```sql
-SELECT
-    timestamp,
-    trace_id,
-    service_name,
-    span_attributes."http.request.method"::STRING AS method,
-    span_attributes."http.response.status_code"::BIGINT AS status,
-    resource_attributes."service.name"::STRING AS resource_service
-FROM opentelemetry_traces_v2
-WHERE span_attributes."http.response.status_code"::BIGINT >= 500
-ORDER BY timestamp DESC
-LIMIT 20;
-```
-
-For example, `span_attributes."http.request.method"` reads the key
-`http.request.method`, while `span_attributes.http.request.method` reads nested
-objects. The v1 form `"span_attributes.http.request.method"` names a flattened
-table column and does not apply to v2. See [JSON2 query syntax](/user-guide/logs/json2.md#dot-syntax)
-for more examples. Events and links continue to use the
-[JSON functions](/reference/sql/functions/json.md).
-
-## Data Model
+## greptime_trace_v1
 
 The `greptime_trace_v1` data model is pretty straight-forward. By default,
 trace data is stored in a table named `opentelemetry_traces`. You can customize
@@ -139,45 +70,31 @@ widened to `Float64` when incoming values contain both integers and floats. If a
 span still cannot be written, GreptimeDB may reject that span while accepting the
 other spans in the request.
 
-A typical table structure generated from OpenTelemetry django instrument is like:
+The following example shows the schema of a newly created `greptime_trace_v1` table:
 
-```
-timestamp                                  | 2025-05-07 10:03:29.657544
-timestamp_end                              | 2025-05-07 10:03:29.661714
-duration_nano                              | 4169970
-trace_id                                   | fb60d19aa36fdcb7d14a71ca0b9b42ae
-span_id                                    | 49806a2671f2ddcb
-span_kind                                  | SPAN_KIND_SERVER
-span_name                                  | POST todos/
-span_status_code                           | STATUS_CODE_UNSET
-span_status_message                        |
-trace_state                                |
-scope_name                                 | opentelemetry.instrumentation.django
-scope_version                              | 0.51b0
-service_name                               | myproject
-span_attributes.http.request.method        | POST
-span_attributes.url.full                   |
-span_attributes.server.address             | django:8000
-span_attributes.network.peer.address       |
-span_attributes.server.port                | 8000
-span_attributes.network.peer.port          |
-span_attributes.http.response.status_code  | 201
-span_attributes.network.protocol.version   | 1.1
-resource_attributes.telemetry.sdk.language | python
-resource_attributes.telemetry.sdk.name     | opentelemetry
-resource_attributes.telemetry.sdk.version  | 1.30.0
-span_events                                | []
-span_links                                 | []
-parent_span_id                             | eccc18b6fc210f31
-span_attributes.db.system                  |
-span_attributes.db.name                    |
-span_attributes.db.statement               |
-span_attributes.url.scheme                 | http
-span_attributes.url.path                   | /todos/
-span_attributes.client.address             | 10.89.0.5
-span_attributes.client.port                | 44302
-span_attributes.user_agent.original        | python-requests/2.32.3
-span_attributes.http.route                 | todos/
+```text
++------------------------------------+---------------------+------+------+---------+---------------+
+| Column                             | Type                | Key  | Null | Default | Semantic Type |
++------------------------------------+---------------------+------+------+---------+---------------+
+| timestamp                          | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| timestamp_end                      | TimestampNanosecond |      | YES  |         | FIELD         |
+| duration_nano                      | Int64               |      | YES  |         | FIELD         |
+| parent_span_id                     | String              |      | YES  |         | FIELD         |
+| trace_id                           | String              |      | YES  |         | FIELD         |
+| span_id                            | String              |      | YES  |         | FIELD         |
+| span_kind                          | String              |      | YES  |         | FIELD         |
+| span_name                          | String              |      | YES  |         | FIELD         |
+| span_status_code                   | String              |      | YES  |         | FIELD         |
+| span_status_message                | String              |      | YES  |         | FIELD         |
+| trace_state                        | String              |      | YES  |         | FIELD         |
+| scope_name                         | String              |      | YES  |         | FIELD         |
+| scope_version                      | String              |      | YES  |         | FIELD         |
+| service_name                       | String              | PRI  | YES  |         | TAG           |
+| span_attributes.net.sock.peer.addr | String              |      | YES  |         | FIELD         |
+| span_attributes.peer.service       | String              |      | YES  |         | FIELD         |
+| span_events                        | Json                |      | YES  |         | FIELD         |
+| span_links                         | Json                |      | YES  |         | FIELD         |
++------------------------------------+---------------------+------+------+---------+---------------+
 ```
 
 To check the table definition, you can use the `show create table opentelemetry_traces`
@@ -250,7 +167,48 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
              | )
 ```
 
+## greptime_trace_v2
+
+The v2 model stores one row per span with a fixed set of 19 columns. It uses
+[JSON2](/user-guide/logs/json2.md) for attributes, so new attribute keys do not
+add table columns.
+
+| Columns | SQL type | Meaning |
+| --- | --- | --- |
+| `timestamp` | `TIMESTAMP(9)` | Span start time; the time index. |
+| `timestamp_end` | `TIMESTAMP(9)` | Span end time. |
+| `duration_nano` | `BIGINT` | Span duration in nanoseconds. |
+| `trace_id`, `span_id`, `parent_span_id` | `STRING` | Trace and span identifiers. |
+| `span_kind`, `span_name` | `STRING` | Span kind and operation name. |
+| `span_status_code`, `span_status_message` | `STRING` | Span status. |
+| `trace_state` | `STRING` | W3C trace state. |
+| `scope_name`, `scope_version` | `STRING` | Instrumentation scope. |
+| `service_name` | `STRING` | Nullable tag and primary key, extracted from the `service.name` resource attribute. |
+| `span_attributes`, `scope_attributes`, `resource_attributes` | `JSON2` | Attribute objects, including nested values. |
+| `span_events`, `span_links` | `JSON` | Event and link arrays; `[]` when empty. |
+
+Unlike v1, v2 keeps `service.name` in `resource_attributes` as well as extracting
+it into `service_name`. If the resource does not provide a usable service name,
+the tag is `NULL`.
+
+The table is created automatically on the first write. The default table name
+is still `opentelemetry_traces`. V2 uses the same trace-ID partitioning, skipping
+indexes on `service_name`, `trace_id`, and `parent_span_id`, append-only mode,
+and auxiliary service/operation tables described below.
+
+Use a new table when switching from v1 to v2. Changing the pipeline header does
+not migrate existing data: writes using v2 are rejected for a table marked as
+v1, and vice versa. Existing v1 tables can continue using the v1 pipeline.
+See [Ingestion and Query](./read-write.md) for exporter configuration and SQL examples.
+
+## Shared Table Behavior
+
+The following behavior applies to both v1 and v2.
+
 ### Partition Rules
+
+Ensure that the first character of `trace_id` is evenly distributed to avoid skew
+between partitions.
 
 We included default [partition
 rules](/user-guide/deployments-administration/manage-data/table-sharding.md#partition) for
@@ -299,6 +257,10 @@ By default, trace table created by OpenTelemetry API are in [append only
 mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
 
 ### TTL
+
+For production workloads, set a TTL to limit retention. Send
+`x-greptime-hints: ttl=7d` with the OTLP request to set a seven-day TTL when the
+table is created. See [table options](/reference/sql/create.md#table-options).
 
 You can apply [TTL on trace table](/reference/sql/alter.md#alter-table-options).
 

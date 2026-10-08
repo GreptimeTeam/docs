@@ -79,6 +79,27 @@ service:
       exporters: [otlp_http]
 ```
 
+#### Ingest with greptime_trace_v2
+
+The complete configuration above uses v1. To use v2, replace its `exporters`
+section with the following; keep the receivers and service configuration:
+
+```yaml
+exporters:
+  otlp_http:
+    endpoint: "http://greptimedb:4000/v1/otlp"
+    headers:
+      x-greptime-pipeline-name: "greptime_trace_v2"
+      x-greptime-trace-table-name: "opentelemetry_traces_v2"
+      #authorization: "Basic <base64(username:password)>"
+    tls:
+      insecure: true
+```
+
+Use a new table to avoid sending v2 data to an existing v1 table. Sending traces
+as described below automatically creates `opentelemetry_traces_v2` with JSON2
+attributes. Use the same headers when writing directly from an SDK.
+
 #### Write Trace Data to OpenTelemetry Collector
 
 You can configure the corresponding exporter to write traces data to the
@@ -122,7 +143,7 @@ The HTTP header `x-greptime-pipeline-name` is required for ingesting trace
 data. Here we reuse the Pipeline concept of GreptimeDB for data
 transformation. Use the built-in `greptime_trace_v1` pipeline for flattened
 attribute columns, or `greptime_trace_v2` for JSON2 attributes. See
-[Trace Data Modeling](./data-model.md) for the v2 configuration and query examples.
+[Trace Data Modeling](./data-model.md) for model differences and table options.
 Use a separate table when switching models.
 No custom pipeline is allowed for the moment.
 
@@ -146,6 +167,8 @@ For detail of Jaeger's endpoint and parameters, check [our Jaeger protocol
 docs](/user-guide/query-data/jaeger.md).
 
 ### SQL
+
+#### greptime_trace_v1
 
 All data in GreptimeDB is available for query using SQL, via MySQL and other
 transport protocol.
@@ -182,6 +205,34 @@ span_attributes.http.request.method: POST
                         span_links: []
 ...
 ```
+
+#### greptime_trace_v2
+
+OpenTelemetry attribute keys often contain dots. Quote the entire key to read
+it as a literal JSON key rather than a nested path:
+
+```sql
+SELECT * FROM public.opentelemetry_traces_v2 LIMIT 10;
+
+SELECT
+    timestamp,
+    trace_id,
+    service_name,
+    span_attributes."http.request.method"::STRING AS method,
+    span_attributes."http.response.status_code"::BIGINT AS status,
+    resource_attributes."service.name"::STRING AS resource_service
+FROM public.opentelemetry_traces_v2
+WHERE span_attributes."http.response.status_code"::BIGINT >= 500
+ORDER BY timestamp DESC
+LIMIT 20;
+```
+
+For example, `span_attributes."http.request.method"` reads the key
+`http.request.method`, while `span_attributes.http.request.method` reads nested
+objects. The v1 form `"span_attributes.http.request.method"` names a flattened
+table column and does not apply to v2. See [JSON2 query syntax](/user-guide/logs/json2.md#dot-syntax)
+for more examples. Events and links continue to use the
+[JSON functions](/reference/sql/functions/json.md).
 
 We will cover more information about the table structure in [Data
 Model](./data-model.md) section.
