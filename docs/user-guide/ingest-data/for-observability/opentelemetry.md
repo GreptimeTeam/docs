@@ -296,7 +296,7 @@ To send OpenTelemetry traces data to GreptimeDB through OpenTelemetry SDK librar
   - `Authorization`: `Basic` authentication.
   - `X-Greptime-DB-Name`: `<dbname>`
   - `X-Greptime-Trace-Table-Name`: `<table_name>` (optional) - The table name to store the traces. If not provided, the default table name is `opentelemetry_traces`.
-  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1` (required) - The pipeline name to process the traces.
+  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1` or `greptime_trace_v2` (required) - The pipeline name to process the traces.
 
 GreptimeDB accepts **protobuf encoded traces data** via **HTTP protocol**.
 
@@ -306,7 +306,10 @@ You can directly send OpenTelemetry traces data to GreptimeDB, or use OpenTeleme
 
 ### Data Model
 
-GreptimeDB maps the OTLP traces data model to a table schema. By default, trace data is stored in the `opentelemetry_traces` table. The following example shows the schema of a newly created trace table:
+GreptimeDB maps the OTLP traces data model to a table schema. By default, trace data is stored in the `opentelemetry_traces` table. Use `greptime_trace_v2` to store attributes in fixed JSON2 columns; see
+[Trace Data Modeling](/user-guide/traces/data-model.md) for configuration, query
+examples, and migration considerations. The following example shows the schema
+of a newly created `greptime_trace_v1` table:
 
 ```sql
 +------------------------------------+---------------------+------+------+---------+---------------+

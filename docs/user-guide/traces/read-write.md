@@ -120,7 +120,10 @@ The GreptimeDB OTEL endpoint supports Basic authentication. For details, please 
 
 The HTTP header `x-greptime-pipeline-name` is required for ingesting trace
 data. Here we reuse the Pipeline concept of GreptimeDB for data
-transformation. Use the built-in `greptime_trace_v1` pipeline for trace data.
+transformation. Use the built-in `greptime_trace_v1` pipeline for flattened
+attribute columns, or `greptime_trace_v2` for JSON2 attributes. See
+[Trace Data Modeling](./data-model.md) for the v2 configuration and query examples.
+Use a separate table when switching models.
 No custom pipeline is allowed for the moment.
 
 ### Append-only Mode
@@ -155,7 +158,7 @@ By default, trace data is written into the table called
 SELECT * FROM public.opentelemetry_traces \G
 ```
 
-An example output is like
+For the v1 configuration above, an example output is like
 
 ```
 *************************** 1. row ***************************

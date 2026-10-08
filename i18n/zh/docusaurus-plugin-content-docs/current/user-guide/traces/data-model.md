@@ -21,11 +21,77 @@ description: 介绍 Trace 数据如何存入 GreptimeDB.
 GreptimeDB 本身的数据类型和相关功能在持续演化。为了实现向后兼容，我们使用
 Pipeline 的名称来作为数据模型的版本。目前可用的内置 Pipeline 为：
 
-- `greptime_trace_v1`: trace 表推荐使用的数据模型。
+- `greptime_trace_v1`：将属性打平为独立的表列。
+- `greptime_trace_v2`：将属性存储在三个固定的 `JSON2` 列中。
 
-在使用 OTLP/HTTP 协议写入数据时，需要通过 `x-greptime-pipeline-name` HTTP 头指定数据模型。新的 trace 表请使用 `x-greptime-pipeline-name: greptime_trace_v1`。
+在使用 OTLP/HTTP 协议写入数据时，需要通过 `x-greptime-pipeline-name` HTTP 头指定数据模型。需要打平属性列时选择 v1；希望使用 JSON2 存储属性、避免每个属性键都新增表列时选择 v2。
 
 在未来我们可能引入新的 Pipeline 名称，即数据模型版本。新的 Pipeline 可能与老版本不兼容，因此建议创建新的数据表来使用。
+
+## JSON2 数据模型（`greptime_trace_v2`）
+
+v2 模型将每个 Span 存储为一行，固定包含 19 列。属性使用
+[JSON2](/user-guide/logs/json2.md) 存储，因此新增属性键不会增加表列。JSON2 目前处于 Beta 阶段。
+
+| 列 | SQL 类型 | 含义 |
+| --- | --- | --- |
+| `timestamp` | `TIMESTAMP(9)` | Span 开始时间，作为时间索引。 |
+| `timestamp_end` | `TIMESTAMP(9)` | Span 结束时间。 |
+| `duration_nano` | `BIGINT` | Span 持续时间，单位为纳秒。 |
+| `trace_id`、`span_id`、`parent_span_id` | `STRING` | Trace 和 Span 标识符。 |
+| `span_kind`、`span_name` | `STRING` | Span 类型和操作名称。 |
+| `span_status_code`、`span_status_message` | `STRING` | Span 状态。 |
+| `trace_state` | `STRING` | W3C trace state。 |
+| `scope_name`、`scope_version` | `STRING` | 埋点作用域。 |
+| `service_name` | `STRING` | 可为空的 Tag 和主键，从 Resource 属性 `service.name` 提取。 |
+| `span_attributes`、`scope_attributes`、`resource_attributes` | `JSON2` | 属性对象，保留嵌套值。 |
+| `span_events`、`span_links` | `JSON` | 事件和链接数组，无内容时为 `[]`。 |
+
+与 v1 不同，v2 在提取 `service_name` 的同时，也会在 `resource_attributes` 中保留
+`service.name`。如果 Resource 未提供可用的服务名称，Tag 值为 `NULL`。
+
+首次写入时会自动建表，默认表名仍为 `opentelemetry_traces`。v2 沿用下文介绍的
+Trace ID 分区规则、`service_name`、`trace_id` 和 `parent_span_id` 上的跳数索引、
+Append-only 模式，以及服务和操作辅助表。
+
+### 选择 v2 写入
+
+在 OTLP/HTTP exporter 中设置以下请求头，例如在 Collector 的 `otlp_http` exporter 配置中：
+
+```yaml
+headers:
+  x-greptime-pipeline-name: "greptime_trace_v2"
+  x-greptime-trace-table-name: "opentelemetry_traces_v2"
+```
+
+从 v1 切换到 v2 时，请使用新表。修改 Pipeline 请求头不会迁移已有数据：标记为 v1 的表
+会拒绝 v2 写入，反之亦然。引用打平属性列的查询也需要改用 JSON2 路径。
+已有 v1 表可以继续使用 v1 Pipeline。
+
+### 查询 v2 属性
+
+OpenTelemetry 属性键通常包含点号。请用双引号包住完整的键名，将其作为字面键读取，
+而不是嵌套路径：
+
+```sql
+SELECT
+    timestamp,
+    trace_id,
+    service_name,
+    span_attributes."http.request.method"::STRING AS method,
+    span_attributes."http.response.status_code"::BIGINT AS status,
+    resource_attributes."service.name"::STRING AS resource_service
+FROM opentelemetry_traces_v2
+WHERE span_attributes."http.response.status_code"::BIGINT >= 500
+ORDER BY timestamp DESC
+LIMIT 20;
+```
+
+例如，`span_attributes."http.request.method"` 读取键 `http.request.method`，而
+`span_attributes.http.request.method` 读取嵌套对象。v1 中的
+`"span_attributes.http.request.method"` 表示打平后的表列，不适用于 v2。
+更多示例请参阅 [JSON2 查询语法](/user-guide/logs/json2.md#点号语法)。
+事件和链接仍使用 [JSON 函数](/reference/sql/functions/json.md)查询。
 
 ## 数据模型
 

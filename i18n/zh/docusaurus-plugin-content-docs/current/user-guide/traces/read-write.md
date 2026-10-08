@@ -114,7 +114,9 @@ GreptimeDB 的 OTEL 端点支持 Basic 认证。详情请参考 [鉴权](/user-g
 
 在 OTLP 接口中，我们要求 HTTP 头 `x-greptime-pipeline-name` 作为必选参数。在这里
 我们复用了日志接口中 Pipeline 的概念作为数据转化的机制。Trace 数据应使用内置的
-`greptime_trace_v1`。自定义的 Pipeline 暂不支持。
+`greptime_trace_v1`（打平属性列）或 `greptime_trace_v2`（JSON2 属性）。
+有关 v2 配置和查询示例，请参阅[Trace 数据模型](./data-model.md)。切换模型时请使用独立的表。
+自定义的 Pipeline 暂不支持。
 
 ### Append-only 模式
 
@@ -145,7 +147,7 @@ Trace 数据也可以通过 SQL 查询。默认 Trace 数据会写入 `opentelem
 SELECT * FROM public.opentelemetry_traces \G
 ```
 
-输出的例子如下：
+使用上面的 v1 配置时，输出示例如下：
 
 ```
 *************************** 1. row ***************************

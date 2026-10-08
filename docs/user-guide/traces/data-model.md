@@ -23,15 +23,87 @@ First, the data types and features in GreptimeDB are evolving. For
 forward-compatibility, we use the pipeline name for data model
 versioning. Currently we have the following built-in pipeline for trace:
 
-- `greptime_trace_v1`: The recommended data model for trace tables.
+- `greptime_trace_v1`: Flattens attributes into individual table columns.
+- `greptime_trace_v2`: Stores attributes in three fixed `JSON2` columns.
 
 Specify the data model in OpenTelemetry OTLP/HTTP requests with the
-`x-greptime-pipeline-name` header. Use
-`x-greptime-pipeline-name: greptime_trace_v1` for new trace tables.
+`x-greptime-pipeline-name` header. Choose v1 for flattened attribute columns,
+or v2 for JSON2 attributes without adding a table column for every attribute key.
 
 We may introduce new data models by adding new available pipeline names. Note
 that a new pipeline may not be compatible with previous ones, so you are
 recommended to use it in a new table.
+
+## JSON2 Data Model (`greptime_trace_v2`)
+
+The v2 model stores one row per span with a fixed set of 19 columns. It uses
+[JSON2](/user-guide/logs/json2.md) for attributes, so new attribute keys do not
+add table columns. JSON2 is currently in Beta.
+
+| Columns | SQL type | Meaning |
+| --- | --- | --- |
+| `timestamp` | `TIMESTAMP(9)` | Span start time; the time index. |
+| `timestamp_end` | `TIMESTAMP(9)` | Span end time. |
+| `duration_nano` | `BIGINT` | Span duration in nanoseconds. |
+| `trace_id`, `span_id`, `parent_span_id` | `STRING` | Trace and span identifiers. |
+| `span_kind`, `span_name` | `STRING` | Span kind and operation name. |
+| `span_status_code`, `span_status_message` | `STRING` | Span status. |
+| `trace_state` | `STRING` | W3C trace state. |
+| `scope_name`, `scope_version` | `STRING` | Instrumentation scope. |
+| `service_name` | `STRING` | Nullable tag and primary key, extracted from the `service.name` resource attribute. |
+| `span_attributes`, `scope_attributes`, `resource_attributes` | `JSON2` | Attribute objects, including nested values. |
+| `span_events`, `span_links` | `JSON` | Event and link arrays; `[]` when empty. |
+
+Unlike v1, v2 keeps `service.name` in `resource_attributes` as well as extracting
+it into `service_name`. If the resource does not provide a usable service name,
+the tag is `NULL`.
+
+The table is created automatically on the first write. The default table name
+is still `opentelemetry_traces`. V2 uses the same trace-ID partitioning, skipping
+indexes on `service_name`, `trace_id`, and `parent_span_id`, append-only mode,
+and auxiliary service/operation tables described below.
+
+### Select v2 for ingestion
+
+Set these headers in your OTLP/HTTP exporter, for example in the Collector's
+`otlp_http` exporter configuration:
+
+```yaml
+headers:
+  x-greptime-pipeline-name: "greptime_trace_v2"
+  x-greptime-trace-table-name: "opentelemetry_traces_v2"
+```
+
+Use a new table when switching from v1 to v2. Changing the pipeline header does
+not migrate existing data: writes using v2 are rejected for a table marked as
+v1, and vice versa. Update queries that reference flattened attribute columns
+to use JSON2 paths. Existing v1 tables can continue using the v1 pipeline.
+
+### Query v2 attributes
+
+OpenTelemetry attribute keys often contain dots. Quote the entire key to read
+it as a literal JSON key rather than a nested path:
+
+```sql
+SELECT
+    timestamp,
+    trace_id,
+    service_name,
+    span_attributes."http.request.method"::STRING AS method,
+    span_attributes."http.response.status_code"::BIGINT AS status,
+    resource_attributes."service.name"::STRING AS resource_service
+FROM opentelemetry_traces_v2
+WHERE span_attributes."http.response.status_code"::BIGINT >= 500
+ORDER BY timestamp DESC
+LIMIT 20;
+```
+
+For example, `span_attributes."http.request.method"` reads the key
+`http.request.method`, while `span_attributes.http.request.method` reads nested
+objects. The v1 form `"span_attributes.http.request.method"` names a flattened
+table column and does not apply to v2. See [JSON2 query syntax](/user-guide/logs/json2.md#dot-syntax)
+for more examples. Events and links continue to use the
+[JSON functions](/reference/sql/functions/json.md).
 
 ## Data Model
 

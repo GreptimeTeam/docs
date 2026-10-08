@@ -292,7 +292,7 @@ GreptimeDB 支持直接写入 OpenTelemetry 协议的 traces 数据，并内置 
   - `Authorization`: `Basic` 认证。
   - `X-Greptime-DB-Name`: `<dbname>`
   - `X-Greptime-Trace-Table-Name`: `<table_name>`（可选）- 存储 traces 的表名。如果未提供，默认表名为 `opentelemetry_traces`。
-  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1`（必选）- 处理 traces 的 pipeline 名称。
+  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1` 或 `greptime_trace_v2`（必选）- 处理 traces 的 pipeline 名称。
 
 GreptimeDB 会通过 **HTTP 协议** 接受 **protobuf 编码的 traces 数据**。
 
@@ -302,7 +302,7 @@ GreptimeDB 会通过 **HTTP 协议** 接受 **protobuf 编码的 traces 数据**
 
 ### 数据模型
 
-GreptimeDB 将 OTLP traces 数据模型映射到表结构。默认情况下，Trace 数据存储在 `opentelemetry_traces` 表中。以下示例展示了新建 trace 表的表结构：
+GreptimeDB 将 OTLP traces 数据模型映射到表结构。默认情况下，Trace 数据存储在 `opentelemetry_traces` 表中。使用 `greptime_trace_v2` 可将属性存储在固定的 JSON2 列中；配置、查询示例和迁移注意事项请参阅[Trace 数据模型](/user-guide/traces/data-model.md)。以下示例展示了新建 `greptime_trace_v1` 表的表结构：
 
 ```sql
 +------------------------------------+---------------------+------+------+---------+---------------+
