@@ -1000,7 +1000,6 @@ transform:
 
 - `path`（必填）：使用点号语法表示 JSON 子路径。如果 JSON key 本身包含点号，请使用双引号包裹对应的路径段。
 - `type`（必填）：支持 `string`、`int64`、`uint64`、`float64` 或 `boolean`。
-- `index`（可选）：设置为 `inverted` 时为该路径创建倒排索引，不支持其他索引类型。
 
 如果目标 JSON2 列已存在，GreptimeDB 会使用该列中保存的配置编码字段值，而不是 pipeline 中的内联 type hint。通过 [`table_suffix`](#table-suffix) 将数据路由到不同表时也是如此。如果字段值不符合实际使用的 type hint，transform 会按照 [`on_failure`](#on_failure-字段) 配置进行处理。
 

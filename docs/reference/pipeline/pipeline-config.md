@@ -982,7 +982,6 @@ Each type hint supports the following fields:
 
 - `path` (required): The JSON subpath in dot notation. Wrap a path segment in double quotes when the JSON key itself contains a dot.
 - `type` (required): One of `string`, `int64`, `uint64`, `float64`, or `boolean`.
-- `index` (optional): Set to `inverted` to create an inverted index on the path. Other index types are not supported.
 
 If the destination JSON2 column already exists, GreptimeDB encodes the value using the settings stored in that column instead of the inline hints. This also applies when [`table_suffix`](#table-suffix) routes records to different tables. Values that violate the applicable type hints follow the transform's [`on_failure`](#the-on_failure-field) setting.
 
