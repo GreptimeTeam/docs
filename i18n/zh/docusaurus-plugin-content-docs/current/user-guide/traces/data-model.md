@@ -34,6 +34,7 @@ Pipeline 的名称来作为数据模型的版本。目前可用的内置 Pipelin
 
 `greptime_trace_v1` 数据模型是非常直观的。默认情况下，Trace 数据存储在名为 `opentelemetry_traces` 的表中。你可以通过在 OTLP/HTTP 请求中指定 `x-greptime-trace-table-name` 请求头来自定义表名。
 
+- 每一行代表一个 Span。
 - 所有常见的 [OpenTelemetry
   Trace](https://opentelemetry.io/docs/concepts/signals/traces/) 数据字段都被映射为 GreptimeDB 的列。
 - `service_name` 从 `resource_attributes["service.name"]` 中提取，并用作 **Tag**（**主键**的一部分）。
@@ -74,6 +75,47 @@ Pipeline 的名称来作为数据模型的版本。目前可用的内置 Pipelin
 | span_events                        | Json                |      | YES  |         | FIELD         |
 | span_links                         | Json                |      | YES  |         | FIELD         |
 +------------------------------------+---------------------+------+------+---------+---------------+
+```
+
+以下是使用 OpenTelemetry Django 埋点生成的一行 Span 数据示例：
+
+```
+timestamp                                  | 2025-05-07 10:03:29.657544
+timestamp_end                              | 2025-05-07 10:03:29.661714
+duration_nano                              | 4169970
+trace_id                                   | fb60d19aa36fdcb7d14a71ca0b9b42ae
+span_id                                    | 49806a2671f2ddcb
+span_kind                                  | SPAN_KIND_SERVER
+span_name                                  | POST todos/
+span_status_code                           | STATUS_CODE_UNSET
+span_status_message                        |
+trace_state                                |
+scope_name                                 | opentelemetry.instrumentation.django
+scope_version                              | 0.51b0
+service_name                               | myproject
+span_attributes.http.request.method        | POST
+span_attributes.url.full                   |
+span_attributes.server.address             | django:8000
+span_attributes.network.peer.address       |
+span_attributes.server.port                | 8000
+span_attributes.network.peer.port          |
+span_attributes.http.response.status_code  | 201
+span_attributes.network.protocol.version   | 1.1
+resource_attributes.telemetry.sdk.language | python
+resource_attributes.telemetry.sdk.name     | opentelemetry
+resource_attributes.telemetry.sdk.version  | 1.30.0
+span_events                                | []
+span_links                                 | []
+parent_span_id                             | eccc18b6fc210f31
+span_attributes.db.system                  |
+span_attributes.db.name                    |
+span_attributes.db.statement               |
+span_attributes.url.scheme                 | http
+span_attributes.url.path                   | /todos/
+span_attributes.client.address             | 10.89.0.5
+span_attributes.client.port                | 44302
+span_attributes.user_agent.original        | python-requests/2.32.3
+span_attributes.http.route                 | todos/
 ```
 
 对于新建的表，可以通过执行 `show create table opentelemetry_traces` 来查看建表语句：
