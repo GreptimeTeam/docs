@@ -296,7 +296,7 @@ To send OpenTelemetry traces data to GreptimeDB through OpenTelemetry SDK librar
   - `Authorization`: `Basic` authentication.
   - `X-Greptime-DB-Name`: `<dbname>`
   - `X-Greptime-Trace-Table-Name`: `<table_name>` (optional) - The table name to store the traces. If not provided, the default table name is `opentelemetry_traces`.
-  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1` (required) - The pipeline name to process the traces.
+  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1` or `greptime_trace_v2` (required) - The pipeline name to process the traces.
 
 GreptimeDB accepts **protobuf encoded traces data** via **HTTP protocol**.
 
@@ -306,45 +306,8 @@ You can directly send OpenTelemetry traces data to GreptimeDB, or use OpenTeleme
 
 ### Data Model
 
-GreptimeDB maps the OTLP traces data model to a table schema. By default, trace data is stored in the `opentelemetry_traces` table. The following example shows the schema of a newly created trace table:
-
-```sql
-+------------------------------------+---------------------+------+------+---------+---------------+
-| Column                             | Type                | Key  | Null | Default | Semantic Type |
-+------------------------------------+---------------------+------+------+---------+---------------+
-| timestamp                          | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
-| timestamp_end                      | TimestampNanosecond |      | YES  |         | FIELD         |
-| duration_nano                      | Int64               |      | YES  |         | FIELD         |
-| parent_span_id                     | String              |      | YES  |         | FIELD         |
-| trace_id                           | String              |      | YES  |         | FIELD         |
-| span_id                            | String              |      | YES  |         | FIELD         |
-| span_kind                          | String              |      | YES  |         | FIELD         |
-| span_name                          | String              |      | YES  |         | FIELD         |
-| span_status_code                   | String              |      | YES  |         | FIELD         |
-| span_status_message                | String              |      | YES  |         | FIELD         |
-| trace_state                        | String              |      | YES  |         | FIELD         |
-| scope_name                         | String              |      | YES  |         | FIELD         |
-| scope_version                      | String              |      | YES  |         | FIELD         |
-| service_name                       | String              | PRI  | YES  |         | TAG           |
-| span_attributes.net.sock.peer.addr | String              |      | YES  |         | FIELD         |
-| span_attributes.peer.service       | String              |      | YES  |         | FIELD         |
-| span_events                        | Json                |      | YES  |         | FIELD         |
-| span_links                         | Json                |      | YES  |         | FIELD         |
-+------------------------------------+---------------------+------+------+---------+---------------+
-```
-
-- Each row represents a single span.
-- `service_name` is used as a **Tag** (part of the **Primary Key**).
-- `timestamp` is used as the **Time Index**.
-- Resource attributes, scope attributes, and span attributes are automatically flattened into separate columns.
-  - Note: `resource_attributes.service.name` is excluded from flattening as it is already stored in the `service_name` column.
-- `span_events` and `span_links` are stored as `JSON` data types by default.
-
-For more details on the data model and auxiliary tables, please refer to [Trace Data Modeling](/user-guide/traces/data-model.md).
-
-Note:
-1. The `greptime_trace_v1` process uses the `trace_id` field to divide data into partitions for better performance. **Please make sure the first letter of the `trace_id` is evenly distributed**.
-2. For non-test scenarios, you might want to set a `ttl` to the trace table to avoid data overload. Set the HTTP header `x-greptime-hints: ttl=7d` would set a `ttl` of 7 days during the table creation, see [here](/reference/sql/create.md#table-options) for more details about `ttl` in table option.
+See [Trace Data Modeling](/user-guide/traces/data-model.md) for table schemas,
+attribute storage, and table options for `greptime_trace_v1` and `greptime_trace_v2`.
 
 ### Schema Evolution and Partial Success
 

@@ -24,7 +24,7 @@ description: greptime.semantic.* 表选项、接入时如何自动写入、如�
 | `greptime.semantic.signal_type` | 表所代表的遥测信号类型。 | `metric` / `trace` / `log` / `event` / `unknown` |
 | `greptime.semantic.source` | 写入数据的接入生态。 | `opentelemetry` / `prometheus` / `influxdb` / `opentsdb` / `loki` / `elasticsearch` / `custom` / `mixed` / `unknown` |
 | `greptime.semantic.source_version` | 来源协议的版本，由 Prometheus remote write 路径写入。 | `1.0` / `2.0` |
-| `greptime.semantic.pipeline` | 内部接入数据模型。它是 `table_data_model` 的后继选项，不依赖具体信号类型。 | `greptime_trace_v1` |
+| `greptime.semantic.pipeline` | 内部接入数据模型。它是 `table_data_model` 的后继选项，不依赖具体信号类型。 | `greptime_trace_v1` / `greptime_trace_v2` |
 
 ### Trace key
 
@@ -53,7 +53,7 @@ description: greptime.semantic.* 表选项、接入时如何自动写入、如�
 | 接入路径 | `signal_type` | `source` | 额外 key |
 | --- | --- | --- | --- |
 | OTLP metrics | `metric` | `opentelemetry` | `metric.type`、`metric.unit`、`metric.temporality`、`metric.metadata_quality` = `declared`、`metric.original_name` |
-| OTLP traces | `trace` | `opentelemetry` | `pipeline` = `greptime_trace_v1`、`trace.conventions` |
+| OTLP traces | `trace` | `opentelemetry` | `pipeline` = `greptime_trace_v1` 或 `greptime_trace_v2`、`trace.conventions` |
 | OTLP logs | `log` | `opentelemetry` | — |
 | Prometheus remote write | `metric` | `prometheus` | `source_version`、`metric.metadata_quality` = `inferred` |
 | InfluxDB line protocol | `metric` | `influxdb` | 仅身份 |

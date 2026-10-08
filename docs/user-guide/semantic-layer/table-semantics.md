@@ -24,7 +24,7 @@ The whitelist is closed: an unrecognized key under the prefix (such as `greptime
 | `greptime.semantic.signal_type` | The telemetry signal the table represents. | `metric` / `trace` / `log` / `event` / `unknown` |
 | `greptime.semantic.source` | The ingestion ecosystem that wrote the data. | `opentelemetry` / `prometheus` / `influxdb` / `opentsdb` / `loki` / `elasticsearch` / `custom` / `mixed` / `unknown` |
 | `greptime.semantic.source_version` | The source protocol version. Stamped by the Prometheus remote write path. | `1.0` / `2.0` |
-| `greptime.semantic.pipeline` | The internal ingestion data model. The signal-agnostic successor to `table_data_model`. | `greptime_trace_v1` |
+| `greptime.semantic.pipeline` | The internal ingestion data model. The signal-agnostic successor to `table_data_model`. | `greptime_trace_v1` / `greptime_trace_v2` |
 
 ### Trace keys
 
@@ -53,7 +53,7 @@ Supported auto-create paths stamp identity (`signal_type` + `source`). OTLP metr
 | Ingestion path | `signal_type` | `source` | Additional keys |
 | --- | --- | --- | --- |
 | OTLP metrics | `metric` | `opentelemetry` | `metric.type`, `metric.unit`, `metric.temporality`, `metric.metadata_quality` = `declared`, `metric.original_name` |
-| OTLP traces | `trace` | `opentelemetry` | `pipeline` = `greptime_trace_v1`, `trace.conventions` |
+| OTLP traces | `trace` | `opentelemetry` | `pipeline` = `greptime_trace_v1` or `greptime_trace_v2`, `trace.conventions` |
 | OTLP logs | `log` | `opentelemetry` | — |
 | Prometheus remote write | `metric` | `prometheus` | `source_version`, `metric.metadata_quality` = `inferred` |
 | InfluxDB line protocol | `metric` | `influxdb` | identity only |

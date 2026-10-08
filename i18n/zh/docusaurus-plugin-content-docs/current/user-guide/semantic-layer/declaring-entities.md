@@ -17,7 +17,7 @@ description: 哪些数据无需配置即可进入语义图、如何在自己的�
 
 ### OTLP trace 表
 
-任何 `table_data_model` = `greptime_trace_v1` 的表，无需任何选项，就会从展开的 resource attributes 得到以下声明：
+`table_data_model` 为 `greptime_trace_v1` 或 `greptime_trace_v2` 的表都会自动获得以下实体声明，无需额外的实体选项。v1 从打平的属性列读取值；v2 从 JSON2 属性中读取值，使用相同的声明名称：
 
 | 实体 | 标识列 | 描述列 |
 | --- | --- | --- |
@@ -88,10 +88,17 @@ greptime.semantic.entity.<entity_type>.scope       = 逗号分隔的列名   （
 
 DDL 阶段强制四条规则：
 
-- 列必须在表上存在。
-- 列必须能渲染成字符串。`Binary`、`Json`、`Vector`、`List`、`Struct`、`Dictionary` 类型会被拒绝；把被引用的列 `ALTER TABLE ... MODIFY COLUMN` 改成这些类型同样会被拒绝。
+- 列必须在表上存在；v2 trace 表还支持下文说明的 JSON2 属性引用。
+- 列必须能渲染成字符串。`Binary`、`Json`、`Json2`、`Vector`、`List`、`Struct`、`Dictionary` 类型会被拒绝；把被引用的列 `ALTER TABLE ... MODIFY COLUMN` 改成这些类型同样会被拒绝。
 - 列可以是 tag，也可以是 field。
 - `id` 列的顺序是身份的一部分。`entity_id` 是这些列的值按该顺序连接的结果，因此声明同一实体类型的各张表必须以相同顺序（从宽到窄）列出它们。
+
+对于 `greptime_trace_v2`，`id`、`descriptive` 和 `scope` 也可以引用
+`resource_attributes.<key>`、`scope_attributes.<key>` 或 `span_attributes.<key>`。
+对应的根列必须存在且为 JSON2。第一个点号之后的全部内容是一个完整的属性键：例如，
+`resource_attributes.host.id` 读取 `resource_attributes` 中的 `"host.id"` 键，
+而不是嵌套对象 `{"host":{"id":...}}`。在表选项值中沿用这一写法，无需加入 SQL 路径的双引号。
+如果存在同名的物理列，则优先使用该列。声明时不要求属性键已存在；读取时缺失或为空的标识值不会生成实体。
 
 ```sql
 CREATE TABLE app_request_latency (
