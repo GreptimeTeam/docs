@@ -67,7 +67,7 @@ The output is as follows:
   - `unknown` — could not be determined when the option was stamped.
 - `source`: The ingestion ecosystem that wrote the data. One of `opentelemetry`, `prometheus`, `influxdb`, `opentsdb`, `elasticsearch`, `loki`, `custom`, `mixed`, or `unknown`. `mixed` means one table received data from more than one source; `unknown` means it could not be determined.
 - `source_version`: The version of the source protocol. The Prometheus remote write path stamps `1.0` or `2.0`; other paths leave it empty.
-- `pipeline`: A free-form identifier of the internal ingestion data model. Today the OTLP trace path stamps `greptime_trace_v1`; other values can be set manually. It is the signal-agnostic successor to the `table_data_model` option.
+- `pipeline`: A free-form identifier of the internal ingestion data model. Today the OTLP trace path stamps `greptime_trace_v1` or `greptime_trace_v2`, depending on the selected pipeline; other values can be set manually. It is the signal-agnostic successor to the `table_data_model` option.
 - `metadata_quality`: How the metric type metadata was obtained — that is, how much you can trust the `metric.type` value. One of:
   - `declared` — the ingestion protocol stated the instrument type explicitly (for example OTLP metrics carry the type). Trustworthy.
   - `inferred` — the type was guessed from the metric name (for example a Prometheus `_total` suffix is read as a counter). May be wrong for non-conventional names.

@@ -188,6 +188,10 @@ Append-only 模式，以及服务和操作辅助表。
 
 从 v1 切换到 v2 时，请使用新表。修改 Pipeline 请求头不会迁移已有数据：标记为 v1 的表会拒绝 v2 写入，反之亦然。已有 v1 表可以继续使用 v1 Pipeline。配置和 SQL 示例请参阅[写入与查询](./read-write.md)。
 
+v2 也支持[语义图](/user-guide/semantic-layer/semantic-graph.md)，包括内置实体声明、
+显式实体声明和关系派生。Span 配对可以跨越 v1 和 v2 表。实体声明沿用 v1 的属性引用名称，
+由系统从 JSON2 中读取对应的属性键，详见[声明实体与关系](/user-guide/semantic-layer/declaring-entities.md)。
+
 ## 通用表行为
 
 以下内容适用于 v1 和 v2。

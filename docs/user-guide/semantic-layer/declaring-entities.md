@@ -17,7 +17,10 @@ Conventions ship with the binary and are not configurable. An explicit declarati
 
 ### OTLP trace tables
 
-Any table with `table_data_model` = `greptime_trace_v1` gets these declarations from its flattened resource attributes, without any option on the table:
+Tables with `table_data_model` set to `greptime_trace_v1` or `greptime_trace_v2`
+receive the following entity declarations without additional entity options. V1
+reads flattened attribute columns; v2 reads JSON2 attributes using the same
+declaration names:
 
 | Entity | Identifying columns | Descriptive columns |
 | --- | --- | --- |
@@ -88,10 +91,20 @@ greptime.semantic.entity.<entity_type>.scope       = comma-separated column name
 
 DDL enforces four rules:
 
-- Every named column must exist on the table.
-- Every named column must render as a string. `Binary`, `Json`, `Vector`, `List`, `Struct`, and `Dictionary` columns are rejected, as is `ALTER TABLE ... MODIFY COLUMN` changing a referenced column to one of those types.
+- Every named column must exist on the table, except for the v2 trace JSON2 attribute references described below.
+- Every named column must render as a string. `Binary`, `Json`, `Json2`, `Vector`, `List`, `Struct`, and `Dictionary` columns are rejected, as is `ALTER TABLE ... MODIFY COLUMN` changing a referenced column to one of those types.
 - Columns may be tags or fields.
 - The order of `id` columns is part of the identity. `entity_id` is the values joined in that order, so every table declaring the same entity type must list them the same way, broad to narrow.
+
+For `greptime_trace_v2`, `id`, `descriptive`, and `scope` may also reference
+`resource_attributes.<key>`, `scope_attributes.<key>`, or `span_attributes.<key>`.
+The root column must exist and have type JSON2. Everything after the first dot
+is one literal attribute key: `resource_attributes.host.id` reads the key
+`"host.id"` in `resource_attributes`, not the nested object `{"host":{"id":...}}`.
+Keep this spelling in table option values; do not add SQL path quotes.
+An existing physical column with the same full name takes precedence. The key
+need not exist when the declaration is set; missing or empty identifying values
+do not produce an entity at query time.
 
 ```sql
 CREATE TABLE app_request_latency (

@@ -216,6 +216,12 @@ not migrate existing data: writes using v2 are rejected for a table marked as
 v1, and vice versa. Existing v1 tables can continue using the v1 pipeline.
 See [Ingestion and Query](./read-write.md) for exporter configuration and SQL examples.
 
+V2 also supports the [semantic graph](/user-guide/semantic-layer/semantic-graph.md),
+including built-in entity declarations, explicit declarations, and relationship
+derivation. Span pairing can cross v1 and v2 tables. Entity declarations retain
+v1 attribute reference names, which resolve to keys in JSON2; see
+[Declaring entities and relationships](/user-guide/semantic-layer/declaring-entities.md).
+
 ## Shared Table Behavior
 
 The following behavior applies to both v1 and v2.
