@@ -29,6 +29,8 @@ Metric 引擎针对会创建大量相似列小型逻辑表的指标工作负载�
 
 File 引擎用于存储通过 `CREATE EXTERNAL TABLE` 创建的表。它可以读取本地存储或对象存储中的 CSV、JSON、Parquet 和 ORC 文件，无需导入或转换数据。File 引擎的表是只读的，并使用 GreptimeDB 查询引擎处理外部文件。这些表可以与普通 GreptimeDB 表共同参与 SQL 查询，适合在决定是否导入前探索外部文件数据，或将其与已有数据关联分析。
 
+完整示例（包括嵌套 JSON 字段的查询方法）请参阅[查询外部数据](/user-guide/query-data/query-external-data.md#查询嵌套-json-字段)。
+
 ## 引擎选择指南
 
 ### 何时使用各种引擎

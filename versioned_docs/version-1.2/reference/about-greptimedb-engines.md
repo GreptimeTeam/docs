@@ -29,6 +29,8 @@ Applications continue to create and query logical tables independently. Sharing 
 
 The File Engine backs tables created with `CREATE EXTERNAL TABLE`. It reads CSV, JSON, Parquet, and ORC files from local or object storage without importing or converting the data. File Engine tables are read-only and use GreptimeDB's query engine when processing external files. They can participate in SQL queries alongside regular GreptimeDB tables, which is useful for exploring or correlating existing file data before deciding whether to import it.
 
+For a complete example of querying nested JSON fields, see [Query External Data](/user-guide/query-data/query-external-data.md#query-nested-json-fields).
+
 ## Engine Selection Guide
 
 ### When to Use Each Engine

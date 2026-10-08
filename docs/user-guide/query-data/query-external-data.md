@@ -127,3 +127,63 @@ SELECT * FROM yellow_tripdata LIMIT 5;
 :::tip Note
 The query result includes the value of the `greptime_timestamp` column, although it does not exist in the original file. All these column values are `1970-01-01 00:00:00+0000`, because when we create an external table, the `greptime_timestamp` column is automatically added with a default value of `1970-01-01 00:00:00+0000`. You can find more details in the [create](/reference/sql/create.md#create-external-table) document.
 :::
+
+## Query nested JSON fields
+
+Use `FORMAT = 'JSON'` for newline-delimited JSON (NDJSON), with one JSON object per line. In a standalone deployment using the default data home, create a sample file under `greptimedb_data/copy`:
+
+```bash
+mkdir -p greptimedb_data/copy/logs
+cat > greptimedb_data/copy/logs/requests.json <<'EOF'
+{"host":"web-01","request":{"status":500,"path":"/api","client":{"ip":"10.0.0.1"}}}
+{"host":"web-02","request":{"status":200,"path":"/health","client":{"ip":"10.0.0.2"}}}
+EOF
+```
+
+Omit the column definitions to infer the schema from the files:
+
+```sql
+CREATE EXTERNAL TABLE logs
+WITH (LOCATION = 'logs/', FORMAT = 'JSON');
+
+DESC TABLE logs;
+```
+
+The inferred column types are:
+
+```text
+host                String
+request             Struct<"client": Struct<"ip": String>, "path": String, "status": Int64>
+greptime_timestamp  TimestampMillisecond
+```
+
+The nested `request` object is a `Struct` column. The automatically added `greptime_timestamp` column is the time index and has the default value `1970-01-01 00:00:00+0000`.
+
+Use brackets to select nested fields and filter by their values:
+
+```sql
+SELECT
+    host,
+    request['status'] AS status,
+    request['path'] AS path
+FROM logs
+WHERE request['status'] >= 500;
+```
+
+```text
++--------+--------+------+
+| host   | status | path |
++--------+--------+------+
+| web-01 | 500    | /api |
++--------+--------+------+
+```
+
+Chain brackets for deeper fields, or use the equivalent `get_field()` function:
+
+```sql
+SELECT host, request['client']['ip'] AS client_ip FROM logs;
+
+SELECT host, get_field(request, 'status') AS status FROM logs;
+```
+
+`request['status']` accesses a field inside the `request` struct. In contrast, `"request.status"` refers to a top-level column whose name contains a dot. Schema inference preserves nested objects as structs; it does not flatten them into dotted column names or convert them into `JSON` or `JSON2` columns.

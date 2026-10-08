@@ -127,3 +127,63 @@ SELECT * FROM yellow_tripdata LIMIT 5;
 :::tip 注意
 查询结果中包含 `greptime_timestamp` 列的值，尽管它在原始文件中并不存在。这个列的所有值均为 `1970-01-01 00:00:00+0000`，这是因为我们在创建外部表时，自动添加列 `greptime_timestamp`，并且默认值为 `1970-01-01 00:00:00+0000`。你可以在 [create](/reference/sql/create.md#create-external-table) 文档中查找更多详情。
 :::
+
+## 查询嵌套 JSON 字段
+
+使用 `FORMAT = 'JSON'` 读取换行分隔的 JSON（NDJSON），每行包含一个 JSON 对象。在使用默认数据目录的单机部署中，将示例文件创建在 `greptimedb_data/copy` 下：
+
+```bash
+mkdir -p greptimedb_data/copy/logs
+cat > greptimedb_data/copy/logs/requests.json <<'EOF'
+{"host":"web-01","request":{"status":500,"path":"/api","client":{"ip":"10.0.0.1"}}}
+{"host":"web-02","request":{"status":200,"path":"/health","client":{"ip":"10.0.0.2"}}}
+EOF
+```
+
+省略列定义，让 GreptimeDB 从文件中推断表结构：
+
+```sql
+CREATE EXTERNAL TABLE logs
+WITH (LOCATION = 'logs/', FORMAT = 'JSON');
+
+DESC TABLE logs;
+```
+
+推断出的列类型如下：
+
+```text
+host                String
+request             Struct<"client": Struct<"ip": String>, "path": String, "status": Int64>
+greptime_timestamp  TimestampMillisecond
+```
+
+嵌套的 `request` 对象被推断为 `Struct` 列。自动添加的 `greptime_timestamp` 列作为时间索引，默认值为 `1970-01-01 00:00:00+0000`。
+
+使用方括号访问嵌套字段，并根据字段值过滤：
+
+```sql
+SELECT
+    host,
+    request['status'] AS status,
+    request['path'] AS path
+FROM logs
+WHERE request['status'] >= 500;
+```
+
+```text
++--------+--------+------+
+| host   | status | path |
++--------+--------+------+
+| web-01 | 500    | /api |
++--------+--------+------+
+```
+
+更深的嵌套字段可以连续使用方括号访问，也可以使用等价的 `get_field()` 函数：
+
+```sql
+SELECT host, request['client']['ip'] AS client_ip FROM logs;
+
+SELECT host, get_field(request, 'status') AS status FROM logs;
+```
+
+`request['status']` 访问 `request` 结构体内部的字段，而 `"request.status"` 引用的是名称中包含点号的顶层列。自动推断会将嵌套对象保留为结构体，不会将它们展平为带点号的列名，也不会转换成 `JSON` 或 `JSON2` 列。
