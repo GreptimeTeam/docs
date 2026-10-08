@@ -28,6 +28,38 @@ Pipeline 的名称来作为数据模型的版本。目前可用的内置 Pipelin
 
 在未来我们可能引入新的 Pipeline 名称，即数据模型版本。新的 Pipeline 可能与老版本不兼容，因此建议创建新的数据表来使用。
 
+## greptime_trace_v2
+
+v2 模型将每个 Span 存储为一行，固定包含 19 列。属性使用
+[JSON2](/user-guide/logs/json2.md) 存储，因此新增属性键不会增加表列。
+
+| 列 | SQL 类型 | 含义 |
+| --- | --- | --- |
+| `timestamp` | `TIMESTAMP(9)` | Span 开始时间，作为时间索引。 |
+| `timestamp_end` | `TIMESTAMP(9)` | Span 结束时间。 |
+| `duration_nano` | `BIGINT` | Span 持续时间，单位为纳秒。 |
+| `trace_id`、`span_id`、`parent_span_id` | `STRING` | Trace 和 Span 标识符。 |
+| `span_kind`、`span_name` | `STRING` | Span 类型和操作名称。 |
+| `span_status_code`、`span_status_message` | `STRING` | Span 状态。 |
+| `trace_state` | `STRING` | W3C trace state。 |
+| `scope_name`、`scope_version` | `STRING` | 埋点作用域。 |
+| `service_name` | `STRING` | 可为空的 Tag 和主键，从 Resource 属性 `service.name` 提取。 |
+| `span_attributes`、`scope_attributes`、`resource_attributes` | `JSON2` | 属性对象，保留嵌套值。 |
+| `span_events`、`span_links` | `JSON` | 事件和链接数组，无内容时为 `[]`。 |
+
+与 v1 不同，v2 在提取 `service_name` 的同时，也会在 `resource_attributes` 中保留
+`service.name`。如果 Resource 未提供可用的服务名称，Tag 值为 `NULL`。
+
+首次写入时会自动建表，默认表名仍为 `opentelemetry_traces`。v2 沿用下文介绍的
+Trace ID 分区规则、`service_name`、`trace_id` 和 `parent_span_id` 上的跳数索引、
+Append-only 模式，以及服务和操作辅助表。
+
+从 v1 切换到 v2 时，请使用新表。修改 Pipeline 请求头不会迁移已有数据：标记为 v1 的表会拒绝 v2 写入，反之亦然。已有 v1 表可以继续使用 v1 Pipeline。配置和 SQL 示例请参阅[写入与查询](./read-write.md)。
+
+v2 也支持[语义图](/user-guide/semantic-layer/semantic-graph.md)，包括内置实体声明、
+显式实体声明和关系派生。Span 配对可以跨越 v1 和 v2 表。实体声明沿用 v1 的属性引用名称，
+由系统从 JSON2 中读取对应的属性键，详见[声明实体与关系](/user-guide/semantic-layer/declaring-entities.md)。
+
 <AnchorAlias id="数据模型" />
 
 ## greptime_trace_v1
@@ -160,38 +192,6 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
              | )
 ```
 
-## greptime_trace_v2
-
-v2 模型将每个 Span 存储为一行，固定包含 19 列。属性使用
-[JSON2](/user-guide/logs/json2.md) 存储，因此新增属性键不会增加表列。
-
-| 列 | SQL 类型 | 含义 |
-| --- | --- | --- |
-| `timestamp` | `TIMESTAMP(9)` | Span 开始时间，作为时间索引。 |
-| `timestamp_end` | `TIMESTAMP(9)` | Span 结束时间。 |
-| `duration_nano` | `BIGINT` | Span 持续时间，单位为纳秒。 |
-| `trace_id`、`span_id`、`parent_span_id` | `STRING` | Trace 和 Span 标识符。 |
-| `span_kind`、`span_name` | `STRING` | Span 类型和操作名称。 |
-| `span_status_code`、`span_status_message` | `STRING` | Span 状态。 |
-| `trace_state` | `STRING` | W3C trace state。 |
-| `scope_name`、`scope_version` | `STRING` | 埋点作用域。 |
-| `service_name` | `STRING` | 可为空的 Tag 和主键，从 Resource 属性 `service.name` 提取。 |
-| `span_attributes`、`scope_attributes`、`resource_attributes` | `JSON2` | 属性对象，保留嵌套值。 |
-| `span_events`、`span_links` | `JSON` | 事件和链接数组，无内容时为 `[]`。 |
-
-与 v1 不同，v2 在提取 `service_name` 的同时，也会在 `resource_attributes` 中保留
-`service.name`。如果 Resource 未提供可用的服务名称，Tag 值为 `NULL`。
-
-首次写入时会自动建表，默认表名仍为 `opentelemetry_traces`。v2 沿用下文介绍的
-Trace ID 分区规则、`service_name`、`trace_id` 和 `parent_span_id` 上的跳数索引、
-Append-only 模式，以及服务和操作辅助表。
-
-从 v1 切换到 v2 时，请使用新表。修改 Pipeline 请求头不会迁移已有数据：标记为 v1 的表会拒绝 v2 写入，反之亦然。已有 v1 表可以继续使用 v1 Pipeline。配置和 SQL 示例请参阅[写入与查询](./read-write.md)。
-
-v2 也支持[语义图](/user-guide/semantic-layer/semantic-graph.md)，包括内置实体声明、
-显式实体声明和关系派生。Span 配对可以跨越 v1 和 v2 表。实体声明沿用 v1 的属性引用名称，
-由系统从 JSON2 中读取对应的属性键，详见[声明实体与关系](/user-guide/semantic-layer/declaring-entities.md)。
-
 ## 通用表行为
 
 以下内容适用于 v1 和 v2。
@@ -236,8 +236,8 @@ table](/reference/sql/alter.md#create-an-index-for-a-column)语句来实现。�
 
 ### TTL
 
-生产环境建议设置 TTL，限制数据保留时间。在 OTLP 请求中设置
-`x-greptime-hints: ttl=7d`，可在建表时配置 7 天的 TTL。
+如果需要为 Trace 表设置 TTL，可以在 OTLP 请求中设置
+`x-greptime-hints: ttl=7d`，在建表时配置 7 天的 TTL。
 详见[表选项](/reference/sql/create.md#表选项)。
 
 可以对 Trace 表应用 [过期时间规则](/reference/sql/alter.md#alter-table-options)。

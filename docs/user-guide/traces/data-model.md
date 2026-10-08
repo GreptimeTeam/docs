@@ -34,6 +34,46 @@ We may introduce new data models by adding new available pipeline names. Note
 that a new pipeline may not be compatible with previous ones, so you are
 recommended to use it in a new table.
 
+## greptime_trace_v2
+
+The v2 model stores one row per span with a fixed set of 19 columns. It uses
+[JSON2](/user-guide/logs/json2.md) for attributes, so new attribute keys do not
+add table columns.
+
+| Columns | SQL type | Meaning |
+| --- | --- | --- |
+| `timestamp` | `TIMESTAMP(9)` | Span start time; the time index. |
+| `timestamp_end` | `TIMESTAMP(9)` | Span end time. |
+| `duration_nano` | `BIGINT` | Span duration in nanoseconds. |
+| `trace_id`, `span_id`, `parent_span_id` | `STRING` | Trace and span identifiers. |
+| `span_kind`, `span_name` | `STRING` | Span kind and operation name. |
+| `span_status_code`, `span_status_message` | `STRING` | Span status. |
+| `trace_state` | `STRING` | W3C trace state. |
+| `scope_name`, `scope_version` | `STRING` | Instrumentation scope. |
+| `service_name` | `STRING` | Nullable tag and primary key, extracted from the `service.name` resource attribute. |
+| `span_attributes`, `scope_attributes`, `resource_attributes` | `JSON2` | Attribute objects, including nested values. |
+| `span_events`, `span_links` | `JSON` | Event and link arrays; `[]` when empty. |
+
+Unlike v1, v2 keeps `service.name` in `resource_attributes` as well as extracting
+it into `service_name`. If the resource does not provide a usable service name,
+the tag is `NULL`.
+
+The table is created automatically on the first write. The default table name
+is still `opentelemetry_traces`. V2 uses the same trace-ID partitioning, skipping
+indexes on `service_name`, `trace_id`, and `parent_span_id`, append-only mode,
+and auxiliary service/operation tables described below.
+
+Use a new table when switching from v1 to v2. Changing the pipeline header does
+not migrate existing data: writes using v2 are rejected for a table marked as
+v1, and vice versa. Existing v1 tables can continue using the v1 pipeline.
+See [Ingestion and Query](./read-write.md) for exporter configuration and SQL examples.
+
+V2 also supports the [semantic graph](/user-guide/semantic-layer/semantic-graph.md),
+including built-in entity declarations, explicit declarations, and relationship
+derivation. Span pairing can cross v1 and v2 tables. Entity declarations retain
+v1 attribute reference names, which resolve to keys in JSON2; see
+[Declaring entities and relationships](/user-guide/semantic-layer/declaring-entities.md).
+
 <AnchorAlias id="data-model" />
 
 ## greptime_trace_v1
@@ -182,46 +222,6 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
              | )
 ```
 
-## greptime_trace_v2
-
-The v2 model stores one row per span with a fixed set of 19 columns. It uses
-[JSON2](/user-guide/logs/json2.md) for attributes, so new attribute keys do not
-add table columns.
-
-| Columns | SQL type | Meaning |
-| --- | --- | --- |
-| `timestamp` | `TIMESTAMP(9)` | Span start time; the time index. |
-| `timestamp_end` | `TIMESTAMP(9)` | Span end time. |
-| `duration_nano` | `BIGINT` | Span duration in nanoseconds. |
-| `trace_id`, `span_id`, `parent_span_id` | `STRING` | Trace and span identifiers. |
-| `span_kind`, `span_name` | `STRING` | Span kind and operation name. |
-| `span_status_code`, `span_status_message` | `STRING` | Span status. |
-| `trace_state` | `STRING` | W3C trace state. |
-| `scope_name`, `scope_version` | `STRING` | Instrumentation scope. |
-| `service_name` | `STRING` | Nullable tag and primary key, extracted from the `service.name` resource attribute. |
-| `span_attributes`, `scope_attributes`, `resource_attributes` | `JSON2` | Attribute objects, including nested values. |
-| `span_events`, `span_links` | `JSON` | Event and link arrays; `[]` when empty. |
-
-Unlike v1, v2 keeps `service.name` in `resource_attributes` as well as extracting
-it into `service_name`. If the resource does not provide a usable service name,
-the tag is `NULL`.
-
-The table is created automatically on the first write. The default table name
-is still `opentelemetry_traces`. V2 uses the same trace-ID partitioning, skipping
-indexes on `service_name`, `trace_id`, and `parent_span_id`, append-only mode,
-and auxiliary service/operation tables described below.
-
-Use a new table when switching from v1 to v2. Changing the pipeline header does
-not migrate existing data: writes using v2 are rejected for a table marked as
-v1, and vice versa. Existing v1 tables can continue using the v1 pipeline.
-See [Ingestion and Query](./read-write.md) for exporter configuration and SQL examples.
-
-V2 also supports the [semantic graph](/user-guide/semantic-layer/semantic-graph.md),
-including built-in entity declarations, explicit declarations, and relationship
-derivation. Span pairing can cross v1 and v2 tables. Entity declarations retain
-v1 attribute reference names, which resolve to keys in JSON2; see
-[Declaring entities and relationships](/user-guide/semantic-layer/declaring-entities.md).
-
 ## Shared Table Behavior
 
 The following behavior applies to both v1 and v2.
@@ -279,9 +279,8 @@ mode](/user-guide/deployments-administration/performance-tuning/design-table.md#
 
 ### TTL
 
-For production workloads, set a TTL to limit retention. Send
-`x-greptime-hints: ttl=7d` with the OTLP request to set a seven-day TTL when the
-table is created. See [table options](/reference/sql/create.md#table-options).
+If you want to set a TTL for a trace table, send `x-greptime-hints: ttl=7d`
+with the OTLP request to set a seven-day TTL when the table is created. See [table options](/reference/sql/create.md#table-options).
 
 You can apply [TTL on trace table](/reference/sql/alter.md#alter-table-options).
 
