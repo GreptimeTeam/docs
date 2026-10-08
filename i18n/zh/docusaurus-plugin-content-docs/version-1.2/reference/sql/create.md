@@ -489,6 +489,8 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [db.]table_name
 
 ### 示例
 
+对于嵌套 JSON 对象，省略列定义可以将其推断为 `Struct` 列，并通过方括号访问内部字段。参见[查询嵌套 JSON 字段](/user-guide/query-data/query-external-data.md#查询嵌套-json-字段)。显式声明列时，文件中的额外字段不会自动添加到表定义中。
+
 你可以在创建外部表时不带有列定义，列定义将会被自动推断：
 
 ```sql

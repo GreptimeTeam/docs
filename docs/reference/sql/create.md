@@ -497,6 +497,8 @@ When creating an external table using the `CREATE EXTERNAL TABLE` statement, you
 
 ### Examples
 
+For nested JSON objects, omitting column definitions allows them to be inferred as `Struct` columns, whose fields can be accessed with brackets. See [Query nested JSON fields](/user-guide/query-data/query-external-data.md#query-nested-json-fields). When columns are explicitly declared, additional fields in the files are not automatically added to the table definition.
+
 You can create an external table without columns definitions, the column definitions will be automatically inferred:
 
 ```sql
