@@ -24,30 +24,33 @@ please visit our [Pricing Page](https://greptime.com/pricing) or [contact us](ht
 GreptimeDB Enterprise includes the following advanced features,
 which are described in detail in the documentation in this section:
 
-- [Active-Active Failover Disaster Recovery Solution](./deployments-administration/disaster-recovery/overview.md): Ensure uninterrupted service and data protection with advanced disaster recovery solution.
-- [Standalone Leader-Follower Mode](./deployments-administration/standalone-follower.md): Deploy standalone nodes with leader election, automatic promotion, and optional follower reads.
-- [LDAP Authentication](./deployments-administration/authentication.md): Secure your system with LDAP-based authentication for access management.
-- [Audit Logging](./deployments-administration/monitoring/audit-logging.md): Track and monitor
-  user activity with detailed audit logs.
-- [Query Guard](./deployments-administration/query-guard.md): Ban `DROP TABLE` / `DROP DATABASE`
-  statements for all users and reject cross-catalog access.
-- [Soft-Drop Tables](./soft-drop.md): Protect tables from accidental `DROP TABLE`
-  operations and restore them from the recycle bin within the retention period.
-- [Automatic region load balance](./autopilot/region-balancer.md): Auto balance
-  datanodes workload by moving regions between them.
-- [Scheduled Compaction](./deployments-administration/scheduled-compaction.md): Periodically submit regular compaction requests for all physical Regions, with HTTP endpoints for manual triggers and job queries.
-- [Elasticsearch query compatibility](./elasticsearch-compatible/overview.md): Use GreptimeDB backed Kibana for your logs.
-- [Greptime Enterprise Management Console](./console-ui.md): An enhanced version of our dashboard UI,
-  carries more cluster management and monitoring features.
-- [Read Replica](./read-replicas/overview.md): Read-only datanode instances for heavy query workloads such as
-  analytical queries.
-- [Triggers](./trigger.md): Periodically evaluate your rules and trigger external
-  webhook. Compatible with Prometheus AlterManager.
-- [Built-in User Management](./user.md): Built-in RBAC and fine-grained ACLs
-  for data security and isolation.
-- Reliability features for Flow.
-- [Iceberg Metadata](./iceberg.md): Expose GreptimeDB tables through an Apache Iceberg REST catalog
-  so pyiceberg, Spark, Trino, DuckDB, and other engines can read the data directly from object storage.
+- **Database Functional Features**
+  - Advanced Prometheus Remote Write and OpenTelemetry OTLP ingestion
+  - [Triggers](./trigger.md): Periodically evaluate your rules and trigger external
+    webhook. Compatible with Prometheus AlterManager.
+  - [Automatic region load balance](./autopilot/region-balancer.md): Auto balance
+    datanodes workload by moving regions between them.
+  - [Scheduled Compaction](./deployments-administration/scheduled-compaction.md): Periodically submit regular compaction requests for all physical Regions, with HTTP endpoints for manual triggers and job queries.
+  - [Read Replica](./read-replicas/overview.md): Read-only datanode instances for heavy query workloads such as
+    analytical queries.
+  - [Iceberg Metadata](./iceberg.md): Expose GreptimeDB tables through an Apache Iceberg REST catalog
+    so pyiceberg, Spark, Trino, DuckDB, and other engines can read the data directly from object storage.
+- **Management Features**
+  - [Greptime Enterprise Management Console](./console-ui.md): An enhanced version of our dashboard UI,
+    carries more cluster management and monitoring features.
+  - [Built-in User Management](./user.md): Built-in RBAC and fine-grained ACLs
+    for data security and isolation.
+  - [LDAP Authentication](./deployments-administration/authentication.md): Secure your system with LDAP-based authentication for access management.
+  - [Audit Logging](./deployments-administration/monitoring/audit-logging.md): Track and monitor
+    user activity with detailed audit logs.
+  - [Query Guard](./deployments-administration/query-guard.md): Ban destructive
+    operations such as `DROP TABLE`, `DELETE`, and `ALTER TABLE DROP COLUMN` for
+    all users and reject cross-catalog access.
+  - [Soft-Drop Tables](./soft-drop.md): Protect tables from accidental `DROP TABLE`
+    operations and restore them from the recycle bin within the retention period.
+- **Advanced Deployment Modes**
+  - [Active-Active Failover Disaster Recovery Solution](./deployments-administration/disaster-recovery/overview.md): Ensure uninterrupted service and data protection with advanced disaster recovery solution.
+  - [Standalone Leader-Follower Mode](./deployments-administration/standalone-follower.md): Deploy standalone nodes with leader election, automatic promotion, and optional follower reads.
 
 ## Release Notes
 
