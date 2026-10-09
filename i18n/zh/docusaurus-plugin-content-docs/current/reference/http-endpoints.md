@@ -219,6 +219,78 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 
 有关 SQL API 的更多信息，请参阅用户指南中的 [HTTP API 文档](/user-guide/protocols/http.md#post-sql-statements)。
 
+### 流式 EXPLAIN ANALYZE API
+
+- **路径**: `/v1/sql/analyze/stream`
+- **方法**: `POST`
+- **描述**: 以 Server-Sent Events (SSE) 的形式流式返回运行中查询的 `EXPLAIN ANALYZE VERBOSE` 或 `TQL ANALYZE VERBOSE` 指标。
+
+该端点仅支持 POST，响应 `Content-Type` 为 `text/event-stream`。由于浏览器的 `EventSource` 只支持 GET 请求，因此无法使用该端点。
+
+#### 请求参数
+
+参数既可以通过查询字符串传递，也可以作为 `application/x-www-form-urlencoded` POST 请求体中的字段传递：
+
+| 参数 | 必填 | 描述 |
+| --- | --- | --- |
+| `sql` | 是 | 要执行的一条 SQL `EXPLAIN ANALYZE VERBOSE` 或 `TQL ANALYZE VERBOSE` 语句。 |
+| `db` | 否 | 执行语句所在的数据库。 |
+| `snapshot_interval_ms` | 否 | `metrics` 快照的发送间隔（毫秒）。默认为 `5000`，取值会被限制在 `[1000, 60000]` 范围内。 |
+
+示例：
+
+```bash
+curl -N -X POST 'http://127.0.0.1:4000/v1/sql/analyze/stream' \
+  -H 'Accept: text/event-stream' \
+  --data-urlencode 'sql=EXPLAIN ANALYZE VERBOSE SELECT * FROM monitor'
+```
+
+#### 语句限制
+
+该端点接受一条 SQL `EXPLAIN ANALYZE VERBOSE` 语句或一条 `TQL ANALYZE VERBOSE` 语句。`FORMAT JSON` 子句可选，不支持其他输出格式。其他请求都会被拒绝，并返回常规的 JSON 错误响应（而非 SSE），包括：
+
+- 非 analyze 语句，例如 `SELECT ...`
+- 不带 `VERBOSE` 的 SQL `EXPLAIN` 或 `EXPLAIN ANALYZE`
+- 使用非 JSON 格式的 analyze 语句，如 `FORMAT TEXT` 或 `FORMAT GRAPHVIZ`
+- 以分号分隔的多条语句
+
+#### SSE 事件
+
+每个事件由 `event:` 行和包含 JSON 负载的 `data:` 行组成，事件之间以空行分隔。流打开期间，服务器每 15 秒发送一行 keep-alive 注释。
+
+负载字段：
+
+| 字段 | 类型 | 描述 |
+| --- | --- | --- |
+| `seq` | 整数 | 事件的单调递增序号。 |
+| `state` | 字符串 | 事件类型：`metrics`、`final`、`canceled` 或 `error`。 |
+| `partial` | 布尔值 | `metrics` 事件为 `true`，终止事件为 `false`。 |
+| `elapsed_ms` | 整数 | 自请求开始以来的耗时（毫秒）。 |
+| `metrics` | 数组 | 可用时，包含 `stage` / `node` / `plan` 快照。可以出现在 `metrics`、`final`、`canceled` 和 `error` 事件中。周期性 `metrics` 事件包含紧凑执行拓扑和运行时指标；终止事件包含详细计划。 |
+| `output` | 对象 | 以 GreptimeDB JSON 格式返回的最终查询结果。仅出现在 `final` 事件中。 |
+| `reason` | 字符串 | 失败或取消的原因。仅出现在 `error` 和 `canceled` 事件中。 |
+| `code` | 整数 | GreptimeDB 状态码。仅出现在 `error` 和 `canceled` 事件中。 |
+
+服务器会发出四种事件类型：
+
+- `metrics` — 查询运行期间周期性发送。每个事件携带截至目前已收集的紧凑执行拓扑和运行时指标的**完整 best-effort 快照**，而不是自上一个事件以来的增量（delta）。快照是 best-effort 的：在收集过程中指标值可能会变化。快照会以自适应间隔进行合并（coalescing）：一旦单个快照负载达到 1 MiB，间隔将提升至至少 10 秒；达到 10 MiB 时，提升至至少 30 秒。快照会被限流但绝不会被截断。慢客户端可能跳过中间快照，因此序列号不一定连续。
+- `final` — 终止事件。查询完成时发送，携带最终指标快照（包括详细计划）以及 `output` 字段中的查询结果。
+- `canceled` — 终止事件。查询在完成前被取消时发送，携带取消原因和 GreptimeDB 状态码 `1005`（`Cancelled`），并在可用时附带指标快照。
+- `error` — 终止事件。查询失败时发送，携带错误原因和 GreptimeDB 状态码，并在可用时附带指标快照。
+
+`metrics` 事件示例：
+
+```text
+event: metrics
+data: {"seq":3,"state":"metrics","partial":true,"elapsed_ms":15234,"metrics":[{"stage":0,"node":0,"plan":{"name":"MergeScanExec","param":"peers=[...]","output_rows":0,"elapsed_compute":0,"metrics":{...},"children":[...]}}]}
+```
+
+#### 客户端断开与生命周期
+
+如果客户端在终止事件之前断开连接，它将不再收到任何事件：SSE 流会被丢弃，底层查询会被 best-effort 取消。断开的客户端永远不会收到 `canceled` 事件。
+
+该流没有 resume、reconnect 或 detached 执行的生命周期：连接会从请求开始保持到终止事件发生，事件只发送给已连接的客户端。
+
 ### 格式化 SQL API
 
 - **路径**: `/v1/sql/format`
