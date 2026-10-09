@@ -23,21 +23,23 @@ GreptimeDB Enterprise 支持开源版中的所有功能，
 GreptimeDB Enterprise 包括以下高级功能，
 详情描述在本章节的文档中：
 
-- [基于双活互备的 DR 解决方案](./deployments-administration/disaster-recovery/overview.md)：通过高级灾难恢复解决方案确保服务不中断和数据保护。
-- [Standalone Leader-Follower 模式](./deployments-administration/standalone-follower.md)：部署支持 Leader 选举、自动升主和可选 Follower 读取的 Standalone 节点。
-- [部署 GreptimeDB](./deployments-administration/overview.md)：设置认证信息及其他关键配置后，将 GreptimeDB 部署在 Kubernetes 上并监控关键指标。
-- [审计日志](./deployments-administration/monitoring/audit-logging.md)：记录数据库用户行为的日志。
-- [Query Guard](./deployments-administration/query-guard.md)：对所有用户（包括管理员）禁止 `DROP TABLE`、`DELETE`、`ALTER TABLE DROP COLUMN` 等破坏性操作，并拒绝跨 catalog 访问。
-- [Soft-Drop Table](./soft-drop.md)：防止误删表，可在保留期内从 recycle bin 中恢复表。
-- [自动分区平衡](./autopilot/region-balancer.md)：通过分区监控和迁移在 datanode 之间自动平衡负载。
-- [定时 Compaction](./deployments-administration/scheduled-compaction.md)：定期为所有物理 Region 提交 regular Compaction 请求，并提供用于人工触发和任务查询的 HTTP endpoints。
-- [Elasticsearch 查询兼容性](./elasticsearch-compatible/overview.md)：在 Kibana 中以 GreptimeDB 作为后端。
-- [Greptime 企业版管理控制台](./console-ui.md)：加强版本的管理界面，提供更多的集群管理和监控功能。
-- [读副本](./read-replicas/overview.md)：专门运行复杂的查询操作的 datanode，避免影响实时写入。
-- [Trigger](./trigger.md)：定时查询和检测预配置的规则，可触发外部 webhook，兼容 Prometheus AlertManager。
-- [内置用户管理](./user.md)：内置 RBAC 和细粒度 ACL，确保数据安全和隔离。
-- Flow 的可靠性功能。
-- [Iceberg 元数据](./iceberg.md)：通过 Apache Iceberg REST catalog 暴露 GreptimeDB 表，使 pyiceberg、Spark、Trino、DuckDB 等引擎可以直接从对象存储读取数据。
+- **数据库功能特性**
+  - 高级 Prometheus Remote Write 和 OpenTelemetry OTLP 数据写入
+  - [Trigger](./trigger.md)：定时查询和检测预配置的规则，可触发外部 webhook，兼容 Prometheus AlertManager。
+  - [自动分区平衡](./autopilot/region-balancer.md)：通过分区监控和迁移在 datanode 之间自动平衡负载。
+  - [定时 Compaction](./deployments-administration/scheduled-compaction.md)：定期为所有物理 Region 提交 regular Compaction 请求，并提供用于人工触发和任务查询的 HTTP endpoints。
+  - [读副本](./read-replicas/overview.md)：专门运行复杂的查询操作的 datanode，避免影响实时写入。
+  - [Iceberg 元数据](./iceberg.md)：通过 Apache Iceberg REST catalog 暴露 GreptimeDB 表，使 pyiceberg、Spark、Trino、DuckDB 等引擎可以直接从对象存储读取数据。
+- **管理功能**
+  - [Greptime 企业版管理控制台](./console-ui.md)：加强版本的管理界面，提供更多的集群管理和监控功能。
+  - [内置用户管理](./user.md)：内置 RBAC 和细粒度 ACL，确保数据安全和隔离。
+  - [LDAP 认证](./deployments-administration/authentication.md)：通过基于 LDAP 的认证进行访问管理，保障系统安全。
+  - [审计日志](./deployments-administration/monitoring/audit-logging.md)：记录数据库用户行为的日志。
+  - [Query Guard](./deployments-administration/query-guard.md)：对所有用户（包括管理员）禁止 `DROP TABLE`、`DELETE`、`ALTER TABLE DROP COLUMN` 等破坏性操作，并拒绝跨 catalog 访问。
+  - [软删除](./soft-drop.md)：防止误删表，可在保留期内从 recycle bin 中恢复表。
+- **高级部署模式**
+  - [基于双活互备的 DR 解决方案](./deployments-administration/disaster-recovery/overview.md)：通过高级灾难恢复解决方案确保服务不中断和数据保护。
+  - [双节点 Leader-Follower 模式](./deployments-administration/standalone-follower.md)：部署支持 Leader 选举、自动升主和可选 Follower 读取的 Standalone 节点。
 
 ## 发布说明
 

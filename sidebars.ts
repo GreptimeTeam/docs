@@ -539,15 +539,6 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
-          label: 'Elasticsearch Compatibility',
-          items: [
-            'enterprise/elasticsearch-compatible/overview',
-            'enterprise/elasticsearch-compatible/query',
-            'enterprise/elasticsearch-compatible/aggregate',
-          ],
-        },
-        {
-          type: 'category',
           label: 'Management Console',
           items: [
             'enterprise/console-ui',
