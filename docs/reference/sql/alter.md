@@ -209,9 +209,6 @@ ALTER TABLE application_logs
 The updated type hints validate subsequent writes and determine the types used
 when querying the corresponding JSON paths.
 
-This operation applies only to existing JSON2 columns that are neither primary
-keys nor time indexes.
-
 ### Set column default value
 
 Set a default value for an existing column:
