@@ -245,23 +245,19 @@ JSON2 支持通过 `json_get` 函数或点号语法访问嵌套字段。
 
 ```sql
 json_get(json_column, 'path.to.field')
-json_get(json_column, 'path.to.field', NULL::TYPE)
 ```
 
-两参数形式的返回类型由 GreptimeDB 推断，具体规则见下文[类型推断](#类型推断)。三
-参数形式通过第三个参数的类型显式指定返回类型，通常写作 `NULL::TYPE`，例如
-`NULL::BIGINT`。第三个参数仅用于指定类型，不是路径缺失时的默认值。通过第三个参数
-显式指定的类型具有最高优先级。
+返回类型由 GreptimeDB 推断，具体规则见下文[类型推断](#类型推断)。
 
 `json_get` 可以用于 `SELECT`、`WHERE`、`GROUP BY` 等接受表达式的 SQL 子句。例如：
 
 ```sql
 SELECT
-    json_get(attrs, 'trace_id', NULL::STRING) AS trace_id,
-    json_get(attrs, 'http.status', NULL::BIGINT) AS status,
-    json_get(attrs, 'latency_ms', NULL::DOUBLE) AS latency_ms
+    json_get(attrs, 'trace_id')::STRING AS trace_id,
+    json_get(attrs, 'http.status')::BIGINT AS status,
+    json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms
 FROM application_logs
-WHERE json_get(attrs, 'http.status', NULL::BIGINT) >= 500;
+WHERE json_get(attrs, 'http.status')::BIGINT >= 500;
 ```
 
 类型明确的提取函数 `json_get_string`、`json_get_int`、`json_get_float` 和
@@ -293,7 +289,7 @@ WHERE attrs.http.status >= 500;
 
 ### 类型推断
 
-使用两参数形式的 `json_get` 或点号语法时，GreptimeDB 按以下规则确定返回类型。
+使用 `json_get` 或点号语法时，GreptimeDB 按以下规则确定返回类型。
 
 如果访问路径声明了 type hint，则返回该 type hint 指定的类型。例如，`http.status`
 声明了 `BIGINT` type hint 时，`json_get(attrs, 'http.status')` 和

@@ -260,26 +260,21 @@ The syntax is:
 
 ```sql
 json_get(json_column, 'path.to.field')
-json_get(json_column, 'path.to.field', NULL::TYPE)
 ```
 
-GreptimeDB infers the return type for the two-argument form. See
-[Type inference](#type-inference) below for details. The three-argument form
-explicitly specifies the return type using the type of the third argument,
-typically written as `NULL::TYPE`, such as `NULL::BIGINT`. The third argument
-only specifies a type; it is not a default value for missing paths. The type
-explicitly specified through the third argument has the highest priority.
+GreptimeDB infers the return type. See
+[Type inference](#type-inference) below for details.
 
 `json_get` can be used in `SELECT`, `WHERE`, `GROUP BY`, and other SQL clauses
 that accept expressions. For example:
 
 ```sql
 SELECT
-    json_get(attrs, 'trace_id', NULL::STRING) AS trace_id,
-    json_get(attrs, 'http.status', NULL::BIGINT) AS status,
-    json_get(attrs, 'latency_ms', NULL::DOUBLE) AS latency_ms
+    json_get(attrs, 'trace_id')::STRING AS trace_id,
+    json_get(attrs, 'http.status')::BIGINT AS status,
+    json_get(attrs, 'latency_ms')::DOUBLE AS latency_ms
 FROM application_logs
-WHERE json_get(attrs, 'http.status', NULL::BIGINT) >= 500;
+WHERE json_get(attrs, 'http.status')::BIGINT >= 500;
 ```
 
 The typed extraction functions `json_get_string`, `json_get_int`,
@@ -313,7 +308,7 @@ A missing path or an out-of-range array subscript returns `NULL`.
 
 ### Type inference
 
-When using the two-argument form of `json_get` or dot syntax, GreptimeDB
+When using `json_get` or dot syntax, GreptimeDB
 determines the return type according to the following rules.
 
 If the accessed path has a type hint, the result uses the type specified by
