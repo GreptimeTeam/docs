@@ -81,7 +81,7 @@ greptime cli data import-v2 \
 
 默认情况下，导出和导入使用 `greptime` catalog。如果需要使用其他 catalog，请添加 `--catalog <catalog>`。
 
-Schema 导出会自动批量发送 `SHOW CREATE` 请求，普通表也适用。对于 manifest v1 和 v2 快照，只要目标端支持 `metric_batch_ddl`，`import-v2` 就会自动批量执行符合条件的逻辑表 `CREATE` 语句，其他 DDL 仍按顺序执行。目标端不支持该能力时，所有 DDL 按顺序执行。这些优化不需要开启 packed 模式。批量请求提交后若失败，导入会停止，不会自动回退或重放。
+Schema 导出会自动批量发送 `SHOW CREATE` 请求，普通表也适用。对于 manifest v1 和 v2 快照，只要目标端支持 `metric_batch_ddl`，`import-v2` 就会自动批量执行符合条件的逻辑表 `CREATE` 语句，其他 DDL 仍按顺序执行。目标端不支持该能力时，所有 DDL 按顺序执行。这些优化不需要 `--pack-metric-data`。批量请求提交后若失败，导入会停止，不会自动回退或重放。
 
 ## 导出到远程对象存储
 
@@ -152,17 +152,17 @@ SHOW VARIABLES experimental_metric_export;
 
 结果必须为 `true`。创建或续传 packed 快照前，CLI 还会检查服务端是否支持 packed 导出。负载均衡后的各个 frontend 必须保持版本和配置一致；某个 frontend 检查通过，并不代表其他 frontend 也已升级或启用该功能。
 
-按快速开始配置好本地 copy root 后，使用 `--metric-data-layout packed` 即可启用 Metric 共享扫描和 packed 输出，导出 `public` schema：
+按快速开始配置好本地 copy root 后，使用 `--pack-metric-data` 即可启用 Metric 共享扫描和 packed 输出，导出 `public` schema：
 
 ```bash
 greptime cli data export-v2 create \
   --addr 127.0.0.1:4000 \
   --to file:///tmp/greptime-snapshots/metric-packed \
   --schemas public \
-  --metric-data-layout packed
+  --pack-metric-data
 ```
 
-使用 S3 或 MinIO 时，在[远程导出示例](#s3-compatible-endpoint)中加入 `--metric-data-layout packed`，并使用新的快照前缀。存储选项和 copy root 要求不变。packed 导出仅支持 Parquet（`--format` 的默认值）；CSV 和 JSON 需使用普通导出。
+使用 S3 或 MinIO 时，在[远程导出示例](#s3-compatible-endpoint)中加入 `--pack-metric-data`，并使用新的快照前缀。存储选项和 copy root 要求不变。packed 导出仅支持 Parquet（`--format` 的默认值）；CSV 和 JSON 需使用普通导出。
 
 验证和导入沿用已有命令；导入会根据 manifest 选择布局，无需额外的 packed 选项：
 
@@ -184,10 +184,10 @@ greptime cli data import-v2 \
 | 导出方式 | Manifest 版本 | 数据布局 |
 | --- | --- | --- |
 | 默认导出 | 1 | 独立文件 |
-| `--metric-data-layout packed`（导出数据） | 2 | 带索引的 packed 和独立 Parquet 对象 |
+| `--pack-metric-data`（导出数据） | 2 | 带索引的 packed 和独立 Parquet 对象 |
 | `--schema-only` | 1 | 无数据文件 |
 
-`--schema-only` 与 `--metric-data-layout packed` 同时使用时，仍生成 manifest v1。该组合会检查服务端的 `experimental_metric_export` 开关，但不要求 packed 数据能力。
+`--schema-only` 与 `--pack-metric-data` 同时使用时，仍生成 manifest v1。该组合会检查服务端的 `experimental_metric_export` 开关，但不要求 packed 数据能力。
 
 新 importer 可读取 manifest v1 和 v2。仅支持 manifest v1 的旧 importer 会在执行目标端 DDL 前拒绝 v2。恢复 packed 快照前，请先升级 importer 和目标服务端。续传会保留原有 manifest 版本和布局，不会把已有快照转换为 packed 格式。
 
@@ -333,7 +333,7 @@ greptime cli data export-v2 create \
   --to file:///tmp/greptime-snapshots/demo
 ```
 
-确认上一次请求已经结束后，再次运行同一条命令即可继续。已有 packed 快照会从 manifest 自动确定布局，续传时无需重复传入 `--metric-data-layout packed`，但服务端开关和 packed 导出能力仍须启用。v1 快照不能在续传时切换为 packed 布局；如需创建 packed 快照，请使用新的快照位置。重试只清理属于该导出的未完成输出，保留已完成的 chunks；未完成 chunk 中若存在意外文件，清理会失败。重试期间，源数据和 DDL 必须保持不变。
+确认上一次请求已经结束后，再次运行同一条命令即可继续。已有 packed 快照会从 manifest 自动确定布局，续传时无需重复传入 `--pack-metric-data`，但服务端开关和 packed 导出能力仍须启用。v1 快照不能在续传时切换为 packed 布局；如需创建 packed 快照，请使用新的快照位置。重试只清理属于该导出的未完成输出，保留已完成的 chunks；未完成 chunk 中若存在意外文件，清理会失败。重试期间，源数据和 DDL 必须保持不变。
 
 对于导入，导入运行时进度会保存在 state 文件中。默认情况下，state 文件位于 `~/.greptime/import_state`。如果希望使用显式的 state 文件位置，可以用 `--state-path` 覆盖：
 
