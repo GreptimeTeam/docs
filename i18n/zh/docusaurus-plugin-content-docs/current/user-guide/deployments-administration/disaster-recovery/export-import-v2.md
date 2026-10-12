@@ -81,8 +81,6 @@ greptime cli data import-v2 \
 
 默认情况下，导出和导入使用 `greptime` catalog。如果需要使用其他 catalog，请添加 `--catalog <catalog>`。
 
-Schema 导出会自动批量发送 `SHOW CREATE` 请求，普通表也适用。对于 manifest v1 和 v2 快照，只要目标端支持 `metric_batch_ddl`，`import-v2` 就会自动批量执行符合条件的逻辑表 `CREATE` 语句，其他 DDL 仍按顺序执行。目标端不支持该能力时，所有 DDL 按顺序执行。这些优化不需要 `--pack-metric-data`。批量请求提交后若失败，导入会停止，不会自动回退或重放。
-
 ## 导出到远程对象存储
 
 Export/Import V2 可以将快照存储到 AWS S3、MinIO 等 S3-compatible 服务、阿里云 OSS、Google Cloud Storage 和 Azure Blob Storage。下面的示例使用 S3 backend，因为 S3 和 MinIO 是常见选择。对于其他对象存储，请使用 [支持的存储后端](#支持的存储后端) 中对应的 backend flag 和选项。

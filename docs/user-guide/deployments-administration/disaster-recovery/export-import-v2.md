@@ -81,8 +81,6 @@ greptime cli data import-v2 \
 
 By default, export and import use the `greptime` catalog. Add `--catalog <catalog>` if you need another catalog.
 
-Schema export automatically batches `SHOW CREATE` requests, including for ordinary tables. For both manifest v1 and v2 snapshots, `import-v2` automatically batches compatible logical-table `CREATE` statements when the target supports `metric_batch_ddl`; other DDL executes in order. Without that capability, it executes ordinary DDL in order. These optimizations do not require `--pack-metric-data`. A failed submitted batch stops the import without automatic fallback or replay.
-
 ## Export to remote object storage
 
 Export/Import V2 can store snapshots in AWS S3, S3-compatible services such as MinIO, Alibaba Cloud OSS, Google Cloud Storage, and Azure Blob Storage. The examples below use the S3 backend because S3 and MinIO are common choices. For other object stores, use the corresponding backend flag and options described in [Supported storage backends](#supported-storage-backends).
