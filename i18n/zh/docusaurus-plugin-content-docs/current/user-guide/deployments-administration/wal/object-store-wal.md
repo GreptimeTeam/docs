@@ -33,7 +33,7 @@ S3、Google Cloud Storage、Azure Blob Storage 和 MinIO 都满足这两个条�
 
 ## 配置
 
-在单机模式配置文件的 `[wal]` 部分进行配置。下面的示例列出了全部选项及其默认值：
+在单机模式配置文件的 `[wal]` 部分进行配置。下面的示例启用了对象存储 WAL，其余选项均为默认值：
 
 ```toml
 [wal]
@@ -105,7 +105,7 @@ export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
 
 调整 `flush_interval` 时：
 
-- 间隔越短，稀疏 `durable` 写入的延迟越低，对象请求数的上限也按比例增加。例如 `10ms` 时每个节点每秒最多创建 100 个对象。
+- 间隔越短，稀疏 `durable` 写入的延迟越低，定时器触发的对象创建速率也按比例增加。例如 `10ms` 时，定时器触发的写出每个节点每秒最多创建 100 个对象；按批次大小或积压触发的写出还会在此之外增加对象数。
 - 如果单个写入方需要接近本地 WAL 的吞吐，请使用 `enqueued` 模式并接受它的损失边界。缩短间隔只能减少一部分等待，无法消除对象创建本身的延迟。
 
 ## 数据损坏
@@ -137,7 +137,7 @@ WAL 会跟踪每个 Region 已经 flush 到的位置，据此计算出一个回�
 | 指标 | 类型 | 含义 |
 | --- | --- | --- |
 | `greptime_logstore_object_store_wal_seal_to_durable_seconds` | Histogram | 从批次写出到对象创建成功的耗时，包含等待创建槽位和重试的时间。 |
-| `greptime_logstore_object_store_wal_append_ack_seconds` | Histogram | `durable` 模式下追加写入等待确认的时间，即客户端看到的写入延迟。 |
+| `greptime_logstore_object_store_wal_append_ack_seconds` | Histogram | `durable` 模式下追加写入等待 WAL 确认的时间，是整体写入延迟的一部分。 |
 | `greptime_logstore_object_store_wal_object_bytes` | Histogram | 每个对象的大小，可以看出批次是按大小还是按定时器写出。 |
 | `greptime_logstore_object_store_wal_object_entries` | Histogram | 每个对象包含的条目数。 |
 | `greptime_logstore_object_store_wal_created_objects_total` | Counter | 成功的对象创建次数，包含内容相同的重试。 |

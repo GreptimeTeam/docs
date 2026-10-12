@@ -61,7 +61,7 @@ Object Store WAL is an experimental WAL provider for standalone mode. It batches
 
 - **Higher write latency**: By default, a write waits until its batch is written as an object. Each object create on a cloud object store takes tens of milliseconds.
 
-- **Request cost**: Every object is one request to the object store, up to 10 per second per node at the default flush interval.
+- **Request cost**: Every object is one request to the object store. Timer-triggered flushes create up to 10 objects per second per node at the default flush interval, and flushes triggered by batch size or backlog can add more.
 
 - **Experimental and standalone only**: It is not supported in cluster mode, and its configuration and behavior may change.
 

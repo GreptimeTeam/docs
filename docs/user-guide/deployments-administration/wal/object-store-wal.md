@@ -33,7 +33,7 @@ One prefix belongs to one Datanode, and only one process at a time may open it. 
 
 ## Configuration
 
-Configure the WAL in the `[wal]` section of the standalone configuration file. The following example lists every option with its default value:
+Configure the WAL in the `[wal]` section of the standalone configuration file. The following example enables the object store WAL and shows the default values of its other options:
 
 ```toml
 [wal]
@@ -105,7 +105,7 @@ In `durable` mode, a client that sends one write at a time waits for the next fl
 
 When tuning `flush_interval`:
 
-- A shorter interval lowers the latency of sparse `durable` writes and raises the maximum number of object requests in proportion. For example, `10ms` allows up to 100 objects per second per node.
+- A shorter interval lowers the latency of sparse `durable` writes and raises the timer-driven object rate in proportion. For example, at `10ms` timer-triggered flushes can create up to 100 objects per second per node. Flushes triggered by batch size or backlog come on top of that.
 - If a single writer needs throughput close to the local WAL, use `enqueued` mode and accept its loss bound. A shorter interval removes part of the wait, but not the latency of the object create.
 
 ## Corrupted data
@@ -137,7 +137,7 @@ The object store WAL exports metrics with the prefix `greptime_logstore_object_s
 | Metric | Type | Meaning |
 | --- | --- | --- |
 | `greptime_logstore_object_store_wal_seal_to_durable_seconds` | Histogram | Time from flushing a batch until its object is created, slot waits and retries included. |
-| `greptime_logstore_object_store_wal_append_ack_seconds` | Histogram | Time an append waits for its acknowledgement in `durable` mode, the write latency the client sees. |
+| `greptime_logstore_object_store_wal_append_ack_seconds` | Histogram | Time an append waits for its WAL acknowledgement in `durable` mode. It is one part of the total write latency. |
 | `greptime_logstore_object_store_wal_object_bytes` | Histogram | Size of each object, which shows whether batches are flushed on size or on the timer. |
 | `greptime_logstore_object_store_wal_object_entries` | Histogram | Number of entries in each object. |
 | `greptime_logstore_object_store_wal_created_objects_total` | Counter | Object creates that succeeded, identical retries included. |
