@@ -81,6 +81,8 @@ greptime cli data import-v2 \
 
 By default, export and import use the `greptime` catalog. Add `--catalog <catalog>` if you need another catalog.
 
+Schema export automatically batches `SHOW CREATE` requests, including for ordinary tables. For both manifest v1 and v2 snapshots, `import-v2` automatically batches compatible logical-table `CREATE` statements when the target supports `metric_batch_ddl`; other DDL executes in order. Without that capability, it executes ordinary DDL in order. These optimizations do not require packed mode. A failed submitted batch stops the import without automatic fallback or replay.
+
 ## Export to remote object storage
 
 Export/Import V2 can store snapshots in AWS S3, S3-compatible services such as MinIO, Alibaba Cloud OSS, Google Cloud Storage, and Azure Blob Storage. The examples below use the S3 backend because S3 and MinIO are common choices. For other object stores, use the corresponding backend flag and options described in [Supported storage backends](#supported-storage-backends).
@@ -148,20 +150,19 @@ Check the source endpoint with SQL:
 SHOW VARIABLES experimental_metric_export;
 ```
 
-It must return `true`. The CLI also checks for packed-export capability before creating a packed snapshot. Keep the frontend versions and configuration consistent behind a load balancer; a successful check against one frontend does not upgrade or enable the others.
+It must return `true`. The CLI also checks for packed-export capability before creating or resuming a packed snapshot. Keep the frontend versions and configuration consistent behind a load balancer; a successful check against one frontend does not upgrade or enable the others.
 
-With the local copy root configured as in the quick start, export the `public` schema with both CLI options:
+With the local copy root configured as in the quick start, export the `public` schema with `--metric-data-layout packed` to enable shared Metric scans and packed output:
 
 ```bash
 greptime cli data export-v2 create \
   --addr 127.0.0.1:4000 \
   --to file:///tmp/greptime-snapshots/metric-packed \
   --schemas public \
-  --experimental-metric-export \
   --metric-data-layout packed
 ```
 
-For S3 or MinIO, add the same two options to the [remote export example](#s3-compatible-endpoint), using a new snapshot prefix. The storage options and copy-root requirements are unchanged. Packed export supports only Parquet, the default `--format`; CSV and JSON require ordinary export. `--metric-data-layout packed` requires `--experimental-metric-export`. The experimental flag alone enables shared Metric scans but still writes standalone files.
+For S3 or MinIO, add `--metric-data-layout packed` to the [remote export example](#s3-compatible-endpoint), using a new snapshot prefix. The storage options and copy-root requirements are unchanged. Packed export supports only Parquet, the default `--format`; CSV and JSON require ordinary export.
 
 Verify and import with the existing commands; import selects the layout from the manifest and needs no packed-mode flag:
 
@@ -174,7 +175,7 @@ greptime cli data import-v2 \
   --from file:///tmp/greptime-snapshots/metric-packed
 ```
 
-For a migration, replace the import `--addr` with the target endpoint. The target must support packed import; it does not need the export configuration switch. Missing packed-import capability stops the import before target DDL or data writes. There is no automatic conversion to ordinary import. When batch logical-table DDL is available, `import-v2` uses it automatically; otherwise it executes ordinary DDL in order, including for packed snapshots. A failed submitted batch stops the import without automatic fallback or replay.
+For a migration, replace the import `--addr` with the target endpoint. The target must support packed import; it does not need the export configuration switch. Missing packed-import capability stops the import before target DDL or data writes. There is no automatic conversion to ordinary import.
 
 ### Snapshot version compatibility
 
@@ -183,8 +184,7 @@ The `v2` in the command names is separate from the manifest version:
 | Export selection | Manifest version | Data layout |
 | --- | --- | --- |
 | Default export | 1 | Standalone files |
-| `--experimental-metric-export` alone | 1 | Standalone Parquet files |
-| Both Metric options above | 2 | Packed and standalone Parquet objects with indexes |
+| `--metric-data-layout packed` | 2 | Packed and standalone Parquet objects with indexes |
 | `--schema-only` | 1 | No data files |
 
 New importers read manifest versions 1 and 2. Older importers that support only manifest v1 reject v2 before executing target DDL. Upgrade the importer and target server before restoring a packed snapshot. Resuming an export preserves its original manifest version and layout; it does not convert an existing snapshot to packed format.
@@ -331,7 +331,7 @@ greptime cli data export-v2 create \
   --to file:///tmp/greptime-snapshots/demo
 ```
 
-After confirming the previous attempt has ended, run the same command again to resume. For a packed export, retain the Metric options from the original command. Retry removes only owned incomplete output and preserves completed chunks; unexpected files in an incomplete chunk cause cleanup to fail. Keep the source data and DDL unchanged across attempts.
+After confirming the previous attempt has ended, run the same command again to resume. An existing packed snapshot supplies its layout from the manifest, so you can omit `--metric-data-layout packed` when resuming. The server switch and packed-export capability must still be enabled. Adding the packed option when resuming a v1 snapshot is rejected; use a new snapshot location to create a packed snapshot. Retry removes only owned incomplete output and preserves completed chunks; unexpected files in an incomplete chunk cause cleanup to fail. Keep the source data and DDL unchanged across attempts.
 
 For import, progress is stored in a state file while the import is running. By default, the state file is under `~/.greptime/import_state`. Override it with `--state-path` when you want an explicit state location:
 
