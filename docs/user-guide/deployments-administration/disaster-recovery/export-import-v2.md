@@ -184,8 +184,10 @@ The `v2` in the command names is separate from the manifest version:
 | Export selection | Manifest version | Data layout |
 | --- | --- | --- |
 | Default export | 1 | Standalone files |
-| `--metric-data-layout packed` | 2 | Packed and standalone Parquet objects with indexes |
+| `--metric-data-layout packed` (data export) | 2 | Packed and standalone Parquet objects with indexes |
 | `--schema-only` | 1 | No data files |
+
+`--schema-only` still produces manifest v1 when combined with `--metric-data-layout packed`. This combination checks the server’s `experimental_metric_export` switch but does not require packed-data capability.
 
 New importers read manifest versions 1 and 2. Older importers that support only manifest v1 reject v2 before executing target DDL. Upgrade the importer and target server before restoring a packed snapshot. Resuming an export preserves its original manifest version and layout; it does not convert an existing snapshot to packed format.
 

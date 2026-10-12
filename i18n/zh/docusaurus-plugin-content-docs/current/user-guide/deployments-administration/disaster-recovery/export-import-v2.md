@@ -184,8 +184,10 @@ greptime cli data import-v2 \
 | 导出方式 | Manifest 版本 | 数据布局 |
 | --- | --- | --- |
 | 默认导出 | 1 | 独立文件 |
-| `--metric-data-layout packed` | 2 | 带索引的 packed 和独立 Parquet 对象 |
+| `--metric-data-layout packed`（导出数据） | 2 | 带索引的 packed 和独立 Parquet 对象 |
 | `--schema-only` | 1 | 无数据文件 |
+
+`--schema-only` 与 `--metric-data-layout packed` 同时使用时，仍生成 manifest v1。该组合会检查服务端的 `experimental_metric_export` 开关，但不要求 packed 数据能力。
 
 新 importer 可读取 manifest v1 和 v2。仅支持 manifest v1 的旧 importer 会在执行目标端 DDL 前拒绝 v2。恢复 packed 快照前，请先升级 importer 和目标服务端。续传会保留原有 manifest 版本和布局，不会把已有快照转换为 packed 格式。
 
