@@ -331,7 +331,7 @@ greptime cli data export-v2 create \
   --to file:///tmp/greptime-snapshots/demo
 ```
 
-确认上一次请求已经结束后，再次运行同一条命令即可继续。已有 packed 快照会从 manifest 自动确定布局，续传时无需重复传入 `--metric-data-layout packed`，但服务端开关和 packed 导出能力仍须启用。续传 v1 快照时添加 packed 选项会被拒绝；如需创建 packed 快照，请使用新的快照位置。重试只清理属于该导出的未完成输出，保留已完成的 chunks；未完成 chunk 中若存在意外文件，清理会失败。重试期间，源数据和 DDL 必须保持不变。
+确认上一次请求已经结束后，再次运行同一条命令即可继续。已有 packed 快照会从 manifest 自动确定布局，续传时无需重复传入 `--metric-data-layout packed`，但服务端开关和 packed 导出能力仍须启用。v1 快照不能在续传时切换为 packed 布局；如需创建 packed 快照，请使用新的快照位置。重试只清理属于该导出的未完成输出，保留已完成的 chunks；未完成 chunk 中若存在意外文件，清理会失败。重试期间，源数据和 DDL 必须保持不变。
 
 对于导入，导入运行时进度会保存在 state 文件中。默认情况下，state 文件位于 `~/.greptime/import_state`。如果希望使用显式的 state 文件位置，可以用 `--state-path` 覆盖：
 

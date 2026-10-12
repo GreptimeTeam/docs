@@ -331,7 +331,7 @@ greptime cli data export-v2 create \
   --to file:///tmp/greptime-snapshots/demo
 ```
 
-After confirming the previous attempt has ended, run the same command again to resume. An existing packed snapshot supplies its layout from the manifest, so you can omit `--metric-data-layout packed` when resuming. The server switch and packed-export capability must still be enabled. Adding the packed option when resuming a v1 snapshot is rejected; use a new snapshot location to create a packed snapshot. Retry removes only owned incomplete output and preserves completed chunks; unexpected files in an incomplete chunk cause cleanup to fail. Keep the source data and DDL unchanged across attempts.
+After confirming the previous attempt has ended, run the same command again to resume. An existing packed snapshot supplies its layout from the manifest, so you can omit `--metric-data-layout packed` when resuming. The server switch and packed-export capability must still be enabled. A v1 snapshot cannot switch to packed layout when resumed; use a new snapshot location to create a packed snapshot. Retry removes only owned incomplete output and preserves completed chunks; unexpected files in an incomplete chunk cause cleanup to fail. Keep the source data and DDL unchanged across attempts.
 
 For import, progress is stored in a state file while the import is running. By default, the state file is under `~/.greptime/import_state`. Override it with `--state-path` when you want an explicit state location:
 
