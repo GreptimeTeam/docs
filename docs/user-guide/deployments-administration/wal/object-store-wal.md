@@ -83,7 +83,7 @@ export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
 
 `ack_mode` decides when a write is acknowledged to the client.
 
-- **`durable`** (default): a write is acknowledged only after it is stored in the object store. Acknowledged writes survive a crash. The cost is latency: each write waits up to one `flush_interval` before its data is sent, plus one object store request.
+- **`durable`** (default): a write is acknowledged only after it is stored in the object store. Acknowledged writes survive a crash. The cost is latency: a write usually waits up to one `flush_interval` plus one object store request, and longer when the object store is slow or earlier writes are still being stored.
 - **`enqueued`**: a write is acknowledged as soon as GreptimeDB accepts it, and it is written to the object store in the background. In measurements on S3, this mode reached the same throughput as the local WAL. The cost is durability: if GreptimeDB crashes, acknowledged writes that have not reached the object store yet are lost.
 
 In `enqueued` mode, `max_unpersisted_bytes` and `max_unpersisted_age` slow down new writes when the object store falls behind, so that the amount of data waiting to be stored does not keep growing. They do not limit how much data a crash can lose during an object store outage, because writes acknowledged before the outage stay in memory until the object store is reachable again.
