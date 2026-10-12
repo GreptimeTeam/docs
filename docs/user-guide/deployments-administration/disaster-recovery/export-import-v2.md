@@ -136,19 +136,7 @@ For AWS S3, use the same `--s3` options but omit `--s3-endpoint` unless you use 
 
 For many small Metric logical tables, packed export can reduce repeated scans and object-store requests. It groups independent Parquet streams into shared objects while preserving each logical table's schema. Large logical tables and ordinary tables use standalone Parquet objects. Benefits depend on the workload and storage latency; packing can increase memory usage.
 
-This feature remains experimental and disabled by default. Use a CLI and servers that support packed snapshots. Enable the following **top-level** option in the source standalone configuration, or in every source frontend configuration behind the endpoint used by the CLI, then restart those services:
-
-```toml
-experimental_metric_export = true
-```
-
-Check the source endpoint with SQL:
-
-```sql
-SHOW VARIABLES experimental_metric_export;
-```
-
-It must return `true`. The CLI also checks for packed-export capability before creating or resuming a packed snapshot. Keep the frontend versions and configuration consistent behind a load balancer; a successful check against one frontend does not upgrade or enable the others.
+This feature remains experimental. Use a CLI and servers that support packed snapshots. The CLI checks for packed-export capability before creating or resuming a packed snapshot.
 
 With the local copy root configured as in the quick start, export the `public` schema with `--pack-metric-data` to enable shared Metric scans and packed output:
 
@@ -173,7 +161,7 @@ greptime cli data import-v2 \
   --from file:///tmp/greptime-snapshots/metric-packed
 ```
 
-For a migration, replace the import `--addr` with the target endpoint. The target must support packed import; it does not need the export configuration switch. Missing packed-import capability stops the import before target DDL or data writes. There is no automatic conversion to ordinary import.
+For a migration, replace the import `--addr` with the target endpoint. The target must support packed import. Missing packed-import capability stops the import before target DDL or data writes. There is no automatic conversion to ordinary import.
 
 ### Snapshot version compatibility
 
@@ -185,7 +173,7 @@ The `v2` in the command names is separate from the manifest version:
 | `--pack-metric-data` (data export) | 2 | Packed and standalone Parquet objects with indexes |
 | `--schema-only` | 1 | No data files |
 
-`--schema-only` still produces manifest v1 when combined with `--pack-metric-data`. This combination checks the server’s `experimental_metric_export` switch but does not require packed-data capability.
+`--schema-only` still produces manifest v1 when combined with `--pack-metric-data`. This combination does not require packed-data capability.
 
 New importers read manifest versions 1 and 2. Older importers that support only manifest v1 reject v2 before executing target DDL. Upgrade the importer and target server before restoring a packed snapshot. Resuming an export preserves its original manifest version and layout; it does not convert an existing snapshot to packed format.
 
@@ -331,7 +319,7 @@ greptime cli data export-v2 create \
   --to file:///tmp/greptime-snapshots/demo
 ```
 
-After confirming the previous attempt has ended, run the same command again to resume. An existing packed snapshot supplies its layout from the manifest, so you can omit `--pack-metric-data` when resuming. The server switch and packed-export capability must still be enabled. A v1 snapshot cannot switch to packed layout when resumed; use a new snapshot location to create a packed snapshot. Retry removes only owned incomplete output and preserves completed chunks; unexpected files in an incomplete chunk cause cleanup to fail. Keep the source data and DDL unchanged across attempts.
+After confirming the previous attempt has ended, run the same command again to resume. An existing packed snapshot supplies its layout from the manifest, so you can omit `--pack-metric-data` when resuming. The source server must still support packed export. A v1 snapshot cannot switch to packed layout when resumed; use a new snapshot location to create a packed snapshot. Retry removes only owned incomplete output and preserves completed chunks; unexpected files in an incomplete chunk cause cleanup to fail. Keep the source data and DDL unchanged across attempts.
 
 For import, progress is stored in a state file while the import is running. By default, the state file is under `~/.greptime/import_state`. Override it with `--state-path` when you want an explicit state location:
 
