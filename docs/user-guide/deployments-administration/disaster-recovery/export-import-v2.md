@@ -132,11 +132,11 @@ greptime cli data import-v2 \
 
 For AWS S3, use the same `--s3` options but omit `--s3-endpoint` unless you use a custom endpoint. If your environment uses instance profiles or another credential provider, explicit access keys may not be required. The S3 backend still requires `--s3` and `--s3-region`.
 
-## Use experimental Metric packed snapshots
+## Use Metric packed snapshots
 
 For many small Metric logical tables, packed export can reduce repeated scans and object-store requests. It groups independent Parquet streams into shared objects while preserving each logical table's schema. Large logical tables and ordinary tables use standalone Parquet objects. Benefits depend on the workload and storage latency; packing can increase memory usage.
 
-This feature remains experimental. Use a CLI and servers that support packed snapshots. The CLI checks for packed-export capability before creating or resuming a packed snapshot.
+Use a CLI and servers that support packed snapshots. The CLI checks for packed-export capability before creating or resuming a packed snapshot.
 
 With the local copy root configured as in the quick start, export the `public` schema with `--pack-metric-data` to enable shared Metric scans and packed output:
 

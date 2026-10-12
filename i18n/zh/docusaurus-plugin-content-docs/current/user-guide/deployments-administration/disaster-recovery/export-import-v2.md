@@ -132,11 +132,11 @@ greptime cli data import-v2 \
 
 对于 AWS S3，请使用相同的 `--s3` 选项；除非使用自定义 endpoint，否则不要传 `--s3-endpoint`。如果你的环境使用 instance profile 或其他凭据提供机制，可能不需要显式传入 access key。S3 backend 仍然需要 `--s3` 和 `--s3-region`。
 
-## 使用实验性的 Metric packed 快照
+## 使用 Metric packed 快照
 
 当 Metric 逻辑表数量多、单表数据量小时，packed 导出可减少重复扫描和对象存储请求。它将独立的 Parquet 数据流打包到共享对象中，每张逻辑表仍保留自己的 schema。较大的逻辑表和普通表使用独立 Parquet 对象。收益取决于工作负载和存储延迟，打包也可能增加内存使用。
 
-该功能仍处于实验阶段。请使用支持 packed 快照的 CLI 和服务端。创建或续传 packed 快照前，CLI 会检查服务端是否支持 packed 导出。
+请使用支持 packed 快照的 CLI 和服务端。创建或续传 packed 快照前，CLI 会检查服务端是否支持 packed 导出。
 
 按快速开始配置好本地 copy root 后，使用 `--pack-metric-data` 即可启用 Metric 共享扫描和 packed 输出，导出 `public` schema：
 
