@@ -426,11 +426,12 @@ Aliyun OSS uses the first available credentials in the following order:
 
 1. AccessKey configured in `storage`.
 2. AccessKey from environment variables.
-3. ECS RAM Role credentials from instance metadata.
-4. OIDC credentials (`AssumeRoleWithOIDC`).
+3. OIDC credentials (`AssumeRoleWithOIDC`), including RRSA roles configured for ACK.
+4. ECS RAM Role credentials from instance metadata.
 
-If the ECS RAM Role and OIDC role have different permissions and you need to use
-the OIDC role, set `ALIBABA_CLOUD_ECS_METADATA_DISABLED=true` to skip ECS metadata.
+On ACK, if both RRSA and ECS RAM Role credentials are available, OSS uses the
+RRSA role. You do not need to set `ALIBABA_CLOUD_ECS_METADATA_DISABLED=true` to
+select it.
 
 ### Storage http client
 
