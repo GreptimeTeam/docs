@@ -136,7 +136,7 @@ greptime cli data import-v2 \
 
 当 Metric 逻辑表数量多、单表数据量小时，packed 导出可减少重复扫描和对象存储请求。它将独立的 Parquet 数据流打包到共享对象中，每张逻辑表仍保留自己的 schema。较大的逻辑表和普通表使用独立 Parquet 对象。收益取决于工作负载和存储延迟，打包也可能增加内存使用。
 
-该功能仍处于实验阶段，默认关闭。请使用支持 packed 快照的 Nightly CLI 和服务端。在源端 standalone 配置中，或 CLI 所用入口背后所有源端 frontend 的配置中，添加以下**顶层**选项，然后重启对应服务：
+该功能仍处于实验阶段，默认关闭。请使用支持 packed 快照的 CLI 和服务端。在源端 standalone 配置中，或 CLI 所用入口背后所有源端 frontend 的配置中，添加以下**顶层**选项，然后重启对应服务：
 
 ```toml
 experimental_metric_export = true

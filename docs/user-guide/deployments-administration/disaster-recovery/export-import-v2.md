@@ -136,7 +136,7 @@ For AWS S3, use the same `--s3` options but omit `--s3-endpoint` unless you use 
 
 For many small Metric logical tables, packed export can reduce repeated scans and object-store requests. It groups independent Parquet streams into shared objects while preserving each logical table's schema. Large logical tables and ordinary tables use standalone Parquet objects. Benefits depend on the workload and storage latency; packing can increase memory usage.
 
-This feature remains experimental and disabled by default. Use a Nightly CLI and servers that support packed snapshots. Enable the following **top-level** option in the source standalone configuration, or in every source frontend configuration behind the endpoint used by the CLI, then restart those services:
+This feature remains experimental and disabled by default. Use a CLI and servers that support packed snapshots. Enable the following **top-level** option in the source standalone configuration, or in every source frontend configuration behind the endpoint used by the CLI, then restart those services:
 
 ```toml
 experimental_metric_export = true
