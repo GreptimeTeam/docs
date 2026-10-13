@@ -39,18 +39,18 @@ The snapshot URI, such as `s3://my-bucket/snapshots/prod`, identifies the snapsh
 
 ## Quick start with local filesystem
 
-Use a local filesystem snapshot only when the path is shared by the CLI client and the GreptimeDB server. For example, this works for a local standalone server when the CLI runs on the same host.
+The examples in this guide use a source standalone instance at `127.0.0.1:4000` and a separate restore target at `127.0.0.1:4100`. Prepare a clean target; import does not clear existing data. If both instances run on the same host, use separate data directories and listening ports. Replace these addresses with your own source and target endpoints.
 
-The examples in this guide store snapshots under `/tmp/greptime-snapshots`. Set this directory as the server's copy root in the GreptimeDB configuration file and restart the server:
+For local filesystem snapshots, the CLI, source, and target must all access the same files.
+
+The examples in this guide store snapshots under `/tmp/greptime-snapshots`. Set this directory as the copy root in both instances' GreptimeDB configuration files and restart both instances:
 
 ```toml
 [storage]
 copy_root = "/tmp/greptime-snapshots"
 ```
 
-Alternatively, keep the default copy root and use a snapshot path under `<storage.data_home>/copy`, such as `file:///path/to/data_home/copy/demo`.
-
-Create the parent directory so that both the server and the CLI can access it:
+Create the parent directory so that the CLI and both instances can access it:
 
 ```bash
 mkdir -p /tmp/greptime-snapshots
@@ -75,7 +75,7 @@ Import from the snapshot:
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo
 ```
 
@@ -120,7 +120,7 @@ greptime cli data export-v2 verify \
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from s3://greptime/snapshots/local-test \
   --s3 \
   --s3-bucket greptime \
@@ -157,11 +157,11 @@ greptime cli data export-v2 verify \
   --snapshot file:///tmp/greptime-snapshots/metric-packed
 
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/metric-packed
 ```
 
-For a migration, replace the import `--addr` with the target endpoint. The target must support packed import. Missing packed-import capability stops the import before target DDL or data writes. There is no automatic conversion to ordinary import.
+The target must support packed import. Missing packed-import capability stops the import before target DDL or data writes. There is no automatic conversion to ordinary import.
 
 ### Snapshot version compatibility
 
@@ -204,7 +204,7 @@ When importing, `--schemas` selects a subset from the snapshot:
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/observability \
   --schemas public
 ```
@@ -226,7 +226,7 @@ Importing a schema-only snapshot restores the schema but does not import data ch
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/schema-only
 ```
 
@@ -325,7 +325,7 @@ For import, progress is stored in a state file while the import is running. By d
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo \
   --state-path /tmp/greptime-import-demo.state
 ```
@@ -342,7 +342,7 @@ Use `--dry-run` to validate the snapshot and import plan without executing DDL o
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo \
   --dry-run
 ```
@@ -398,7 +398,7 @@ For commands that connect to the GreptimeDB HTTP endpoint, such as `export-v2 cr
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo \
   --no-proxy
 ```

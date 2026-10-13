@@ -39,18 +39,18 @@ GreptimeDB server 通过 `COPY DATABASE ... TO` 写入快照数据文件，因�
 
 ## 使用本地文件系统快速开始
 
-只有在 CLI client 和 GreptimeDB server 共享同一路径时，才应使用本地文件系统快照。例如，对于本地 standalone server，如果 CLI 在同一台主机上运行，这种方式可以工作。
+本文示例使用两个 standalone 实例：源端为 `127.0.0.1:4000`，恢复目标端为 `127.0.0.1:4100`。请准备干净的目标实例，导入不会清空已有数据。两个实例运行在同一台机器时，应使用不同的数据目录和监听端口。实际操作时，请替换为自己的源端和目标端地址。
 
-本指南中的示例把快照存放在 `/tmp/greptime-snapshots` 下。请在 GreptimeDB 配置文件中把该目录设置为 server 的 copy root，然后重启 server：
+使用本地文件快照时，CLI、源端和目标端必须访问到同一份文件。
+
+本文示例将快照保存在 `/tmp/greptime-snapshots`。请在两个实例的 GreptimeDB 配置文件中，将该目录设为 copy root，并重启两个实例：
 
 ```toml
 [storage]
 copy_root = "/tmp/greptime-snapshots"
 ```
 
-也可以保留默认的 copy root，改用 `<storage.data_home>/copy` 下的快照路径，例如 `file:///path/to/data_home/copy/demo`。
-
-创建父目录，并确保 server 和 CLI 都能访问它：
+创建父目录，确保 CLI 和两个实例都能访问：
 
 ```bash
 mkdir -p /tmp/greptime-snapshots
@@ -75,7 +75,7 @@ greptime cli data export-v2 verify \
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo
 ```
 
@@ -120,7 +120,7 @@ greptime cli data export-v2 verify \
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from s3://greptime/snapshots/local-test \
   --s3 \
   --s3-bucket greptime \
@@ -157,11 +157,11 @@ greptime cli data export-v2 verify \
   --snapshot file:///tmp/greptime-snapshots/metric-packed
 
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/metric-packed
 ```
 
-迁移时，将导入命令的 `--addr` 替换为目标端入口。目标端必须支持 packed 导入。若目标端缺少 packed 导入能力，导入会在执行目标端 DDL 或写入数据前停止，不会自动转换为普通导入。
+目标端必须支持 packed 导入。若目标端缺少 packed 导入能力，导入会在执行目标端 DDL 或写入数据前停止，不会自动转换为普通导入。
 
 ### 快照版本兼容性
 
@@ -204,7 +204,7 @@ greptime cli data export-v2 create \
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/observability \
   --schemas public
 ```
@@ -226,7 +226,7 @@ greptime cli data export-v2 create \
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/schema-only
 ```
 
@@ -325,7 +325,7 @@ greptime cli data export-v2 create \
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo \
   --state-path /tmp/greptime-import-demo.state
 ```
@@ -342,7 +342,7 @@ greptime cli data import-v2 \
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo \
   --dry-run
 ```
@@ -398,7 +398,7 @@ CLI 请求超时默认为 `60s`。可通过 `--timeout` 调整，例如 `--timeo
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo \
   --no-proxy
 ```
