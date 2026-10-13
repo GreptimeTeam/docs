@@ -26,6 +26,7 @@ which are described in detail in the documentation in this section:
 
 - **Database Functional Features**
   - Advanced Prometheus Remote Write and OpenTelemetry OTLP ingestion
+  - [Ingestion Rate Limit](./ingestion-rate-limit.md): Configure per-database ingestion rates in rows per second for standalone and distributed deployments.
   - [Triggers](./trigger.md): Periodically evaluate your rules and trigger external
     webhook. Compatible with Prometheus AlterManager.
   - [Automatic region load balance](./autopilot/region-balancer.md): Auto balance
