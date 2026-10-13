@@ -337,6 +337,27 @@ pending_rows_flush_interval = "500ms"
 
 有关支持的协议和批量处理行为，请参阅[服务端写入批量处理](/user-guide/deployments-administration/performance-tuning/write-batching.md)。
 
+### 分布式写入重试
+
+在分布式模式下，可以在 Frontend 中配置对可重试写入失败的重试。Standalone 模式不会重试远程写入。
+
+```toml
+[write_retry]
+max_retries = 3
+initial_backoff = "1500ms"
+max_backoff = "10s"
+backoff_multiplier = 2.0
+```
+
+| 选项 | 类型 | 默认值 | 描述 |
+| ---- | ---- | ------ | ---- |
+| `max_retries` | 整数 | `3` | 初次写入后最多重试的次数。设置为 `0` 可禁用重试。 |
+| `initial_backoff` | 字符串 | `1500ms` | 添加抖动前的初始退避时间。必须为正数。 |
+| `max_backoff` | 字符串 | `10s` | 添加抖动前的最大退避时间。必须不小于 `initial_backoff`。 |
+| `backoff_multiplier` | 浮点数 | `2.0` | 退避倍数。必须为有限值且不小于 `1`。 |
+
+退避时间按指数增长，在基础延迟达到 `max_backoff` 后添加抖动。
+
 ### 查询选项
 
 `查询`选项在 standalone、datanode 和 frontend 模式下有效，用于控制查询引擎的行为。

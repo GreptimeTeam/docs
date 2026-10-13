@@ -339,6 +339,27 @@ pending_rows_flush_interval = "500ms"
 
 See [Server-side write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md) for supported protocols and batching behavior.
 
+### Distributed write retries
+
+In distributed mode, configure the Frontend to retry retryable write failures. Standalone mode does not retry remote writes.
+
+```toml
+[write_retry]
+max_retries = 3
+initial_backoff = "1500ms"
+max_backoff = "10s"
+backoff_multiplier = 2.0
+```
+
+| Option | Type | Default | Description |
+| ------ | ---- | ------- | ----------- |
+| `max_retries` | Integer | `3` | Maximum retries after the initial write attempt. Set to `0` to disable retries. |
+| `initial_backoff` | String | `1500ms` | Initial backoff before jitter is applied. Must be positive. |
+| `max_backoff` | String | `10s` | Maximum backoff before jitter is applied. Must be at least `initial_backoff`. |
+| `backoff_multiplier` | Float | `2.0` | Backoff multiplier. Must be finite and at least `1`. |
+
+The backoff increases exponentially. Jitter is added after the base delay reaches `max_backoff`.
+
 ### Query options
 
 The `query` options are valid in standalone, datanode and frontend modes, which controls the query engine's behavior.
