@@ -66,6 +66,16 @@ you only need to configure the required options and do not need to configure all
 - [flownode](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/flownode.example.toml)
 - [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/metasrv.example.toml)
 
+For distributed write retries, add the following settings to the frontend configuration file:
+
+```toml
+[write_retry]
+max_retries = 3
+initial_backoff = "1500ms"
+max_backoff = "10s"
+backoff_multiplier = 2.0
+```
+
 ### Helm Configurations
 
 When deploying GreptimeDB on Kubernetes using Helm charts,
@@ -341,24 +351,16 @@ See [Server-side write batching](/user-guide/deployments-administration/performa
 
 ### Distributed write retries
 
-In distributed mode, configure the Frontend to retry retryable write failures. Standalone mode does not retry remote writes.
-
-```toml
-[write_retry]
-max_retries = 3
-initial_backoff = "1500ms"
-max_backoff = "10s"
-backoff_multiplier = 2.0
-```
+The `write_retry` options configure how Frontend retries failed writes to Datanodes in distributed mode.
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| `max_retries` | Integer | `3` | Maximum retries after the initial write attempt. Set to `0` to disable retries. |
-| `initial_backoff` | String | `1500ms` | Initial backoff before jitter is applied. Must be positive. |
-| `max_backoff` | String | `10s` | Maximum backoff before jitter is applied. Must be at least `initial_backoff`. |
-| `backoff_multiplier` | Float | `2.0` | Backoff multiplier. Must be finite and at least `1`. |
+| `write_retry.max_retries` | Integer | `3` | Maximum retries after the initial write attempt. Set to `0` to disable retries. |
+| `write_retry.initial_backoff` | String | `1500ms` | Initial backoff before jitter. Use a duration greater than `0s`. |
+| `write_retry.max_backoff` | String | `10s` | Maximum backoff before jitter. Use a duration greater than or equal to `initial_backoff`. |
+| `write_retry.backoff_multiplier` | Float | `2.0` | Backoff multiplier after each retry. Use a finite value greater than or equal to `1`. |
 
-The backoff increases exponentially. Jitter is added after the base delay reaches `max_backoff`.
+For retryable errors, the base delay grows by `backoff_multiplier` up to `max_backoff`. Random jitter is added to each delay.
 
 ### Query options
 

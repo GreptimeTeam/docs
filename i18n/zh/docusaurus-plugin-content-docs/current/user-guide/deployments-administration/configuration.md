@@ -65,6 +65,16 @@ greptime standalone start -c standalone.example.toml
 - [流节点](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/flownode.example.toml)
 - [元服务](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/metasrv.example.toml)
 
+在 frontend 配置文件中添加以下配置，可调整分布式写入重试：
+
+```toml
+[write_retry]
+max_retries = 3
+initial_backoff = "1500ms"
+max_backoff = "10s"
+backoff_multiplier = 2.0
+```
+
 ### Helm 配置
 
 当使用 Helm 在 Kubernetes 上部署 GreptimeDB 时，你可以直接在 Helm `values.yaml` 文件中做相应的设置。
@@ -339,24 +349,16 @@ pending_rows_flush_interval = "500ms"
 
 ### 分布式写入重试
 
-在分布式模式下，可以在 Frontend 中配置对可重试写入失败的重试。Standalone 模式不会重试远程写入。
-
-```toml
-[write_retry]
-max_retries = 3
-initial_backoff = "1500ms"
-max_backoff = "10s"
-backoff_multiplier = 2.0
-```
+`write_retry` 选项用于配置分布式模式下 Frontend 向 Datanode 写入失败后的重试。
 
 | 选项 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------ | ---- |
-| `max_retries` | 整数 | `3` | 初次写入后最多重试的次数。设置为 `0` 可禁用重试。 |
-| `initial_backoff` | 字符串 | `1500ms` | 添加抖动前的初始退避时间。必须为正数。 |
-| `max_backoff` | 字符串 | `10s` | 添加抖动前的最大退避时间。必须不小于 `initial_backoff`。 |
-| `backoff_multiplier` | 浮点数 | `2.0` | 退避倍数。必须为有限值且不小于 `1`。 |
+| `write_retry.max_retries` | 整数 | `3` | 初次写入后的最大重试次数。设为 `0` 可禁用重试。 |
+| `write_retry.initial_backoff` | 字符串 | `1500ms` | 添加抖动前的初始退避时间，取值大于 `0s`。 |
+| `write_retry.max_backoff` | 字符串 | `10s` | 添加抖动前的最大退避时间，取值大于或等于 `initial_backoff`。 |
+| `write_retry.backoff_multiplier` | 浮点数 | `2.0` | 每次重试后的退避倍数，取值为大于或等于 `1` 的有限数。 |
 
-退避时间按指数增长，在基础延迟达到 `max_backoff` 后添加抖动。
+遇到可重试错误时，基础退避时间按 `backoff_multiplier` 倍增长，上限为 `max_backoff`，每次等待时间都会添加随机抖动。
 
 ### 查询选项
 
