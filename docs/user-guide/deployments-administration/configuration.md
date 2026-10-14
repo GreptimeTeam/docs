@@ -66,16 +66,6 @@ you only need to configure the required options and do not need to configure all
 - [flownode](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/flownode.example.toml)
 - [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/metasrv.example.toml)
 
-For distributed write retries, add the following settings to the frontend configuration file:
-
-```toml
-[write_retry]
-max_retries = 3
-initial_backoff = "1500ms"
-max_backoff = "10s"
-backoff_multiplier = 2.0
-```
-
 ### Helm Configurations
 
 When deploying GreptimeDB on Kubernetes using Helm charts,
@@ -348,19 +338,6 @@ pending_rows_flush_interval = "500ms"
 ```
 
 See [Server-side write batching](/user-guide/deployments-administration/performance-tuning/write-batching.md) for supported protocols and batching behavior.
-
-### Distributed write retries
-
-The `write_retry` options configure how Frontend retries failed writes to Datanodes in distributed mode.
-
-| Option | Type | Default | Description |
-| ------ | ---- | ------- | ----------- |
-| `write_retry.max_retries` | Integer | `3` | Maximum retries after the initial write attempt. Set to `0` to disable retries. |
-| `write_retry.initial_backoff` | String | `1500ms` | Initial backoff before jitter. Use a duration greater than `0s`. |
-| `write_retry.max_backoff` | String | `10s` | Maximum backoff before jitter. Use a duration greater than or equal to `initial_backoff`. |
-| `write_retry.backoff_multiplier` | Float | `2.0` | Backoff multiplier after each retry. Use a finite value greater than or equal to `1`. |
-
-For retryable errors, the base delay grows by `backoff_multiplier` up to `max_backoff`. Random jitter is added to each delay.
 
 ### Query options
 
@@ -1103,6 +1080,8 @@ For the common runtime options shared by all components, see [Runtime options](#
 The `datanode.client` options configure outbound gRPC connections from Frontend to Datanodes.
 The client message size limits are independent of the `[grpc]` server message size limits.
 
+The `write_retry` options configure the retry count and backoff for writes from Frontend to Datanodes.
+
 ```toml
 [datanode]
 [datanode.client]
@@ -1110,6 +1089,12 @@ connect_timeout = "1s"
 tcp_nodelay = true
 max_recv_message_size = "512MB"
 max_send_message_size = "512MB"
+
+[write_retry]
+max_retries = 3
+initial_backoff = "1500ms"
+max_backoff = "10s"
+backoff_multiplier = 2.0
 ```
 
 | Key                                             | Type   | Default | Description                                            |
@@ -1120,3 +1105,10 @@ max_send_message_size = "512MB"
 | `datanode.client.tcp_nodelay`                   | Bool   | `true`  | `TCP_NODELAY` option for accepted connections.         |
 | `datanode.client.max_recv_message_size`         | String | `512MB` | The maximum receive message size for the gRPC client.  |
 | `datanode.client.max_send_message_size`         | String | `512MB` | The maximum send message size for the gRPC client.     |
+| `write_retry` | -- | -- | Distributed write retry options. |
+| `write_retry.max_retries` | Integer | `3` | Maximum retries after the initial write attempt. Set to `0` to disable retries. |
+| `write_retry.initial_backoff` | String | `1500ms` | Initial backoff before jitter. Use a duration greater than `0s`. |
+| `write_retry.max_backoff` | String | `10s` | Maximum backoff before jitter. Use a duration greater than or equal to `initial_backoff`. |
+| `write_retry.backoff_multiplier` | Float | `2.0` | Backoff multiplier after each retry. Use a finite value greater than or equal to `1`. |
+
+For retryable errors, the base delay grows by `backoff_multiplier` up to `max_backoff`. Random jitter is added to each delay.

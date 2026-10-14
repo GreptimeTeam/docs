@@ -65,16 +65,6 @@ greptime standalone start -c standalone.example.toml
 - [流节点](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/flownode.example.toml)
 - [元服务](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/metasrv.example.toml)
 
-在 frontend 配置文件中添加以下配置，可调整分布式写入重试：
-
-```toml
-[write_retry]
-max_retries = 3
-initial_backoff = "1500ms"
-max_backoff = "10s"
-backoff_multiplier = 2.0
-```
-
 ### Helm 配置
 
 当使用 Helm 在 Kubernetes 上部署 GreptimeDB 时，你可以直接在 Helm `values.yaml` 文件中做相应的设置。
@@ -346,19 +336,6 @@ pending_rows_flush_interval = "500ms"
 ```
 
 有关支持的协议和批量处理行为，请参阅[服务端写入批量处理](/user-guide/deployments-administration/performance-tuning/write-batching.md)。
-
-### 分布式写入重试
-
-`write_retry` 选项用于配置分布式模式下 Frontend 向 Datanode 写入失败后的重试。
-
-| 选项 | 类型 | 默认值 | 描述 |
-| ---- | ---- | ------ | ---- |
-| `write_retry.max_retries` | 整数 | `3` | 初次写入后的最大重试次数。设为 `0` 可禁用重试。 |
-| `write_retry.initial_backoff` | 字符串 | `1500ms` | 添加抖动前的初始退避时间，取值大于 `0s`。 |
-| `write_retry.max_backoff` | 字符串 | `10s` | 添加抖动前的最大退避时间，取值大于或等于 `initial_backoff`。 |
-| `write_retry.backoff_multiplier` | 浮点数 | `2.0` | 每次重试后的退避倍数，取值为大于或等于 `1` 的有限数。 |
-
-遇到可重试错误时，基础退避时间按 `backoff_multiplier` 倍增长，上限为 `max_backoff`，每次等待时间都会添加随机抖动。
 
 ### 查询选项
 
@@ -1090,6 +1067,8 @@ ingest_rt_size = 8
 `datanode.client` 选项用于配置从 Frontend 到 Datanode 的出站 gRPC 连接。
 客户端的消息大小限制独立于 `[grpc]` 服务器的消息大小限制。
 
+`write_retry` 选项用于配置 Frontend 向 Datanode 写入时的重试次数和退避时间。
+
 ```toml
 [datanode]
 [datanode.client]
@@ -1097,6 +1076,12 @@ connect_timeout = "1s"
 tcp_nodelay = true
 max_recv_message_size = "512MB"
 max_send_message_size = "512MB"
+
+[write_retry]
+max_retries = 3
+initial_backoff = "1500ms"
+max_backoff = "10s"
+backoff_multiplier = 2.0
 ```
 
 | Key                                             | Type   | Default | Description                              |
@@ -1107,3 +1092,10 @@ max_send_message_size = "512MB"
 | `datanode.client.tcp_nodelay`                   | 布尔值 | `true`  | 接受连接的 `TCP_NODELAY` 选项。          |
 | `datanode.client.max_recv_message_size`         | 字符串 | `512MB` | gRPC 客户端可接收的最大消息大小。        |
 | `datanode.client.max_send_message_size`         | 字符串 | `512MB` | gRPC 客户端可发送的最大消息大小。        |
+| `write_retry` | -- | -- | 分布式写入重试选项。 |
+| `write_retry.max_retries` | 整数 | `3` | 初次写入后的最大重试次数。设为 `0` 可禁用重试。 |
+| `write_retry.initial_backoff` | 字符串 | `1500ms` | 添加抖动前的初始退避时间，取值大于 `0s`。 |
+| `write_retry.max_backoff` | 字符串 | `10s` | 添加抖动前的最大退避时间，取值大于或等于 `initial_backoff`。 |
+| `write_retry.backoff_multiplier` | 浮点数 | `2.0` | 每次重试后的退避倍数，取值为大于或等于 `1` 的有限数。 |
+
+遇到可重试错误时，基础退避时间按 `backoff_multiplier` 倍增长，上限为 `max_backoff`，每次等待时间都会添加随机抖动。
