@@ -426,11 +426,11 @@ secret_access_key = "<secret access key>"
 
 1. `storage` 中配置的 AccessKey。
 2. 环境变量中的 AccessKey。
-3. 从实例元数据获取的 ECS RAM Role 凭证。
-4. OIDC 凭证（`AssumeRoleWithOIDC`）。
+3. OIDC 凭证（`AssumeRoleWithOIDC`），包括 ACK 中配置的 RRSA 角色。
+4. 从实例元数据获取的 ECS RAM Role 凭证。
 
-如果 ECS RAM Role 和 OIDC 角色的权限不一致，且需要使用 OIDC 角色，
-设置环境变量 `ALIBABA_CLOUD_ECS_METADATA_DISABLED=true`，跳过 ECS metadata。
+在 ACK 中，如果 RRSA 和 ECS RAM Role 凭证同时可用，OSS 会使用 RRSA 角色。
+无需设置 `ALIBABA_CLOUD_ECS_METADATA_DISABLED=true` 来选择该角色。
 
 ### 存储服务的 http 客户端
 
