@@ -12,50 +12,11 @@ GreptimeDB v1.3.0-beta.2 is the second beta of the 1.3 release. This changelog c
 
 ### 👍 Highlights
 
-#### Configurable distributed write retries
+- **Configurable write retries** — Distributed writes automatically retry transient failures with refreshed routing and exponential backoff, including logical metric tables. Configure retry counts and delays through `[write_retry]` ([#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543), [#9574](https://github.com/GreptimeTeam/greptimedb/pull/9574)).
 
-Distributed frontends now retry retryable write failures with exponential backoff and jitter, refreshing routing and partition metadata when requested by the server. The default configuration allows three retries after the initial attempt:
+- **More capable fulltext search** — Bloom indexes support consistent `matches_term` matching across underscores and mixed Chinese/English text, plus index pruning for eligible `LIKE` queries ([#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470)).
 
-```toml
-[write_retry]
-max_retries = 3
-initial_backoff = "1500ms"
-max_backoff = "10s"
-backoff_multiplier = 2.0
-```
-
-Set `max_retries = 0` to disable retries. Successful regions are not replayed; standalone does not enable this distributed retry path. Logical metric table retries resolve partition information through the catalog. See [#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543) and [#9574](https://github.com/GreptimeTeam/greptimedb/pull/9574).
-
-#### Correct fulltext matching and LIKE pruning
-
-Fulltext bloom indexes now use token boundaries consistent with `matches_term`, fixing missing matches around underscores, mixed Han/ASCII text, and Han substrings. They also support pruning for eligible `LIKE` predicates:
-
-```sql
-CREATE TABLE logs (
-    ts TIMESTAMP TIME INDEX,
-    message STRING FULLTEXT INDEX WITH (
-        analyzer = 'English',
-        backend = 'bloom',
-        case_sensitive = 'false'
-    )
-);
-
-INSERT INTO logs VALUES (0, 'worker_error: disk quota exceeded');
-SELECT * FROM logs WHERE matches_term(message, 'error');
-SELECT * FROM logs WHERE lower(message) LIKE '%disk quota exceeded%';
-```
-
-Pruning depends on the pattern and available index; query results remain correct when a scan is required. `matches_term` rewrites also preserve `LIMIT`. See [#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470) and [#9521](https://github.com/GreptimeTeam/greptimedb/pull/9521).
-
-#### PromQL and query correctness
-
-PromQL fixes align NaN comparisons, min/max, topk/bottomk, rounding, and square roots with Prometheus semantics. Subqueries now honor offsets and the absolute evaluation grid; an omitted subquery step defaults to one minute:
-
-```promql
-max_over_time(rate(http_requests_total[5m])[1h:])
-```
-
-This release also fixes label and metric-name preservation, histogram joins that could drop rows, and incorrect ordering assumptions in logical metric scans and scalar calculations that could affect `ORDER BY`, `LIMIT`, and window queries. See [#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479), [#9481](https://github.com/GreptimeTeam/greptimedb/pull/9481), [#9509](https://github.com/GreptimeTeam/greptimedb/pull/9509), [#9522](https://github.com/GreptimeTeam/greptimedb/pull/9522), and [#9523](https://github.com/GreptimeTeam/greptimedb/pull/9523).
+- **Closer Prometheus compatibility** — PromQL gains consistent numeric semantics, subquery evaluation, and label handling, alongside more reliable joins, sorting, and window queries ([#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479), [#9481](https://github.com/GreptimeTeam/greptimedb/pull/9481), [#9509](https://github.com/GreptimeTeam/greptimedb/pull/9509), [#9522](https://github.com/GreptimeTeam/greptimedb/pull/9522), [#9523](https://github.com/GreptimeTeam/greptimedb/pull/9523)).
 
 ### Dashboard
 
