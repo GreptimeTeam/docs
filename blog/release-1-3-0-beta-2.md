@@ -12,11 +12,40 @@ GreptimeDB v1.3.0-beta.2 is the second beta of the 1.3 release. This changelog c
 
 ### 👍 Highlights
 
-- **Configurable write retries** — Distributed writes automatically retry transient failures with refreshed routing and exponential backoff, including logical metric tables. Configure retry counts and delays through `[write_retry]` ([#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543), [#9574](https://github.com/GreptimeTeam/greptimedb/pull/9574)).
+#### Configurable distributed write retries
 
-- **More capable fulltext search** — Bloom indexes support consistent `matches_term` matching across underscores and mixed Chinese/English text, plus index pruning for eligible `LIKE` queries ([#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470)).
+Distributed writes automatically retry transient failures with refreshed routing and exponential backoff, including logical metric tables. Configure retry counts and delays in the frontend:
 
-- **Closer Prometheus compatibility** — PromQL gains consistent numeric semantics, subquery evaluation, and label handling, alongside more reliable joins, sorting, and window queries ([#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479), [#9481](https://github.com/GreptimeTeam/greptimedb/pull/9481), [#9509](https://github.com/GreptimeTeam/greptimedb/pull/9509), [#9522](https://github.com/GreptimeTeam/greptimedb/pull/9522), [#9523](https://github.com/GreptimeTeam/greptimedb/pull/9523)).
+```toml
+[write_retry]
+max_retries = 3
+initial_backoff = "1500ms"
+max_backoff = "10s"
+backoff_multiplier = 2.0
+```
+
+See [#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543) and [#9574](https://github.com/GreptimeTeam/greptimedb/pull/9574).
+
+#### Fulltext matching and LIKE pruning
+
+Bloom indexes support consistent `matches_term` matching across underscores and mixed Chinese/English text, plus pruning for eligible `LIKE` queries. For a `logs` table with a case-insensitive bloom fulltext index on `message`:
+
+```sql
+SELECT * FROM logs WHERE matches_term(message, 'error');
+SELECT * FROM logs WHERE lower(message) LIKE '%disk quota exceeded%';
+```
+
+See [#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470).
+
+#### Closer Prometheus compatibility
+
+PromQL gains consistent numeric semantics, subquery evaluation, and label handling. Subqueries support a one-minute default step when omitted:
+
+```promql
+max_over_time(rate(http_requests_total[5m])[1h:])
+```
+
+Query improvements also cover histogram joins, sorting, and window functions. See [#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479), [#9481](https://github.com/GreptimeTeam/greptimedb/pull/9481), [#9509](https://github.com/GreptimeTeam/greptimedb/pull/9509), [#9522](https://github.com/GreptimeTeam/greptimedb/pull/9522), and [#9523](https://github.com/GreptimeTeam/greptimedb/pull/9523).
 
 ### Dashboard
 
