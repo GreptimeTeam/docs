@@ -73,13 +73,16 @@ The general form is `<prefix>/datanodes/<node_id>/epochs/<generation>/objects/`.
 
 ### Move the WAL
 
-To move the WAL to another storage provider, or to another bucket or root of the same storage provider:
+To move only the WAL to another location, store it in a storage provider of its own:
 
-1. Stop GreptimeDB.
-2. Copy every file under `<prefix>/` from the old location to the same paths in the new location.
-3. Change the configuration and start GreptimeDB.
+1. If the new location is not configured yet, add it as a storage provider in `[[storage.providers]]`, see [Storage engine provider](/user-guide/deployments-administration/configuration.md#storage-engine-provider). Keep the storage providers that your tables use unchanged.
+2. Stop GreptimeDB.
+3. Copy every file under `<prefix>/` from the old location to the same paths in the new location.
+4. Set `storage_provider` to the `name` of the new storage provider and start GreptimeDB.
 
 All tables then open with all their writes.
+
+Changing the bucket or root of a storage provider that tables also use, such as the default storage in `[storage]`, moves the table data as well. Such a change needs the table data to be migrated too, which this procedure does not cover.
 
 If the location changes without the files being copied, or if the files are deleted, tables whose WAL history is missing fail to open with an error saying that the WAL `does not hold the history of region`, and by default GreptimeDB fails to start. The error names the region, the `prefix` and the storage.
 
@@ -174,7 +177,7 @@ Set up these alerts:
 - Any increase of `greptime_logstore_object_store_wal_poisoned_total`: the WAL has stopped accepting writes. Restart GreptimeDB after checking the logs.
 - Any increase of `greptime_logstore_object_store_wal_create_conflicts_total`: check that no other process uses the same storage provider and `prefix`.
 - Any increase of `greptime_logstore_object_store_wal_stalled_appends_total`: writes arrive faster than the object store can store them.
-- Any increase of `greptime_logstore_object_store_wal_missing_history_accepted_total`: tables were opened without their unflushed writes. Set `accept_missing_history` back to `false`.
+- Any increase of `greptime_logstore_object_store_wal_missing_history_accepted_total`: tables were opened without their unflushed writes. Turn `accept_missing_history` off again as described in [Move the WAL](#move-the-wal).
 
 ## Limitations
 
@@ -190,6 +193,6 @@ Set up these alerts:
 
 - Keep the default options, including `ack_mode = "durable"`, unless you have measured a reason to change them.
 - Keep the WAL in the same object store as the data by leaving `storage_provider` empty, unless you have a reason to separate them.
-- Choose the WAL provider when you create the instance, and do not change `provider` or `prefix` afterwards. To move the WAL to another storage provider, bucket or root, copy its files first, see [Move the WAL](#move-the-wal).
+- Choose the WAL provider when you create the instance, and do not change `provider` or `prefix` afterwards. To move the WAL, follow [Move the WAL](#move-the-wal).
 - Flush tables that receive writes but rarely flush on their own, so that old WAL data can be deleted.
 - Alert on `failing`, `poisoned_total`, `create_conflicts_total` and `stalled_appends_total`.

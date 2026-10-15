@@ -73,13 +73,16 @@ wal/datanodes/0/epochs/0/objects/
 
 ### 迁移 WAL
 
-要把 WAL 迁移到另一个存储提供者，或同一存储提供者的另一个 bucket 或根路径：
+如果只想把 WAL 迁移到其他位置，请为它单独使用一个存储提供者：
 
-1. 停止 GreptimeDB。
-2. 把旧位置 `<prefix>/` 下的所有文件复制到新位置的相同路径下。
-3. 修改配置并启动 GreptimeDB。
+1. 如果新位置尚未配置，先在 `[[storage.providers]]` 中把它添加为存储提供者，参见[存储引擎提供商](/user-guide/deployments-administration/configuration.md#存储引擎提供商)。表所使用的存储提供者保持不变。
+2. 停止 GreptimeDB。
+3. 把旧位置 `<prefix>/` 下的所有文件复制到新位置的相同路径下。
+4. 把 `storage_provider` 设为新存储提供者的 `name`，然后启动 GreptimeDB。
 
 这样所有表都能带着全部写入正常打开。
+
+如果修改的是表也在使用的存储提供者（例如 `[storage]` 中的默认存储）的 bucket 或根路径，表数据的位置也会随之改变。这种情况还需要迁移表数据，不在本流程的范围内。
 
 如果更换了位置但没有复制文件，或者这些文件被删除，缺少 WAL 历史的表将无法打开，报错中会提示 WAL `does not hold the history of region`，默认情况下 GreptimeDB 无法启动。报错信息会给出对应的 Region、`prefix` 和存储。
 
@@ -174,7 +177,7 @@ export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
 - `greptime_logstore_object_store_wal_poisoned_total` 有任何增长：WAL 已停止接受写入。检查日志后重启 GreptimeDB。
 - `greptime_logstore_object_store_wal_create_conflicts_total` 有任何增长：检查是否有其他进程使用了同一个存储提供者和 `prefix`。
 - `greptime_logstore_object_store_wal_stalled_appends_total` 有任何增长：写入速度超过了对象存储的写入能力。
-- `greptime_logstore_object_store_wal_missing_history_accepted_total` 有任何增长：有表在丢失未 flush 写入的情况下被打开。请把 `accept_missing_history` 改回 `false`。
+- `greptime_logstore_object_store_wal_missing_history_accepted_total` 有任何增长：有表在丢失未 flush 写入的情况下被打开。请按照[迁移 WAL](#迁移-wal)中的说明关闭 `accept_missing_history`。
 
 ## 限制
 
@@ -190,6 +193,6 @@ export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
 
 - 除非有实测依据，否则保持默认配置，包括 `ack_mode = "durable"`。
 - 除非有明确理由，否则让 `storage_provider` 留空，把 WAL 和数据放在同一个对象存储中。
-- 在创建实例时选定 WAL 提供者，之后不要再修改 `provider` 或 `prefix`。如需把 WAL 迁移到另一个存储提供者、bucket 或根路径，请先复制其文件，参见[迁移 WAL](#迁移-wal)。
+- 在创建实例时选定 WAL 提供者，之后不要再修改 `provider` 或 `prefix`。如需迁移 WAL，请按照[迁移 WAL](#迁移-wal)中的步骤操作。
 - 对于持续有写入但很少自动 flush 的表，定期执行 flush，以便旧的 WAL 数据可以被删除。
 - 对 `failing`、`poisoned_total`、`create_conflicts_total` 和 `stalled_appends_total` 设置告警。
