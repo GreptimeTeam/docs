@@ -298,6 +298,26 @@ ALTER TABLE monitor UNSET 'write_buffer_size';
 ALTER TABLE monitor UNSET 'max_row_group_row_count';
 ```
 
+### Set ingestion rate limit
+
+:::info Enterprise feature
+This option is available in GreptimeDB Enterprise. For details, see [Ingestion Rate Limit](/enterprise/ingestion-rate-limit.md).
+:::
+
+Use `ALTER DATABASE` to change the database's target ingestion rate in rows per
+second with `ingest_rows_rate_limit`. The limit applies to all tables in the
+database. Changes do not require a server restart.
+
+```sql
+ALTER DATABASE logs SET 'ingest_rows_rate_limit' = '20000';
+```
+
+To restore unlimited ingestion, unset the option or set it to `0`:
+
+```sql
+ALTER DATABASE logs UNSET 'ingest_rows_rate_limit';
+```
+
 <AnchorAlias id="set-repartition-column-hint" />
 
 ### Set repartition hints

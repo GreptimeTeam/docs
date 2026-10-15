@@ -25,6 +25,7 @@ GreptimeDB Enterprise 包括以下高级功能，
 
 - **数据库功能特性**
   - 高级 Prometheus Remote Write 和 OpenTelemetry OTLP 数据写入
+  - [写入限流](./ingestion-rate-limit.md)：在单机和分布式部署中按数据库配置每秒写入行数限制。
   - [Trigger](./trigger.md)：定时查询和检测预配置的规则，可触发外部 webhook，兼容 Prometheus AlertManager。
   - [自动分区平衡](./autopilot/region-balancer.md)：通过分区监控和迁移在 datanode 之间自动平衡负载。
   - [定时 Compaction](./deployments-administration/scheduled-compaction.md)：定期为所有物理 Region 提交 regular Compaction 请求，并提供用于人工触发和任务查询的 HTTP endpoints。

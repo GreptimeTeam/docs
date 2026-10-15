@@ -558,6 +558,7 @@ const sidebars: SidebarsConfig = {
         'enterprise/iceberg',
         'enterprise/trigger',
         'enterprise/soft-drop',
+        'enterprise/ingestion-rate-limit',
         'enterprise/user',
         {
           type: 'category',

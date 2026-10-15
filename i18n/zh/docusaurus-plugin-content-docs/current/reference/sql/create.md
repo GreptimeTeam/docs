@@ -43,7 +43,7 @@ CREATE DATABASE [IF NOT EXISTS] db_name [WITH <options>]
 - **其他选项**（`memtable.type`、`append_mode`、`merge_mode`、`skip_wal`、`sst_format`）：这些选项充当**模板变量**，仅在创建新表时应用。更改这些数据库级别的选项不会影响已存在的表——它们仅作为新创建表的默认值。
 :::
 
-在创建表时，如果未提供相应的表选项，将使用在数据库级别配置的选项或者默认值。
+创建表时，如果未指定对应的表选项，则会继承数据库中支持表级配置的选项。
 
 ### 示例
 
@@ -93,6 +93,23 @@ CREATE DATABASE test WITH (
 ```sql
 CREATE DATABASE test WITH ('sst_format'='flat');
 ```
+
+### 设置写入限流
+
+:::info 企业版功能
+该选项仅在 GreptimeDB Enterprise 中可用。详细说明请参考[写入限流](/enterprise/ingestion-rate-limit.md)。
+:::
+
+通过 `ingest_rows_rate_limit` 设置数据库的目标写入速率，单位为行/秒。
+同一数据库中的所有表共享限流额度，该选项不会作为表选项被继承。
+未设置或设置为 `0` 时，写入速率不受限制。
+
+```sql
+CREATE DATABASE logs WITH ('ingest_rows_rate_limit' = '10000');
+```
+
+后续可以通过 [`ALTER DATABASE`](/reference/sql/alter.md#设置写入限流)
+修改或移除限流配置。
 
 ## CREATE TABLE
 

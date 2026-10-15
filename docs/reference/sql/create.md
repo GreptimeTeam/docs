@@ -43,7 +43,7 @@ Database options behave differently:
 - **Other options** (`memtable.type`, `append_mode`, `merge_mode`, `skip_wal`, `sst_format`): These act as template variables that are only applied when creating new tables. Changing these database-level options will NOT affect existing tables - they only serve as defaults for newly created tables.
 :::
 
-When creating a table, if the corresponding table options are not provided, the options configured at the database level will be applied.
+When creating a table, options that support table-level settings are inherited from the database if the corresponding table options are not provided.
 
 ### Examples
 
@@ -93,6 +93,23 @@ Create a database with a specific SST file format:
 ```sql
 CREATE DATABASE test WITH ('sst_format'='flat');
 ```
+
+### Set ingestion rate limit
+
+:::info Enterprise feature
+This option is available in GreptimeDB Enterprise. For details, see [Ingestion Rate Limit](/enterprise/ingestion-rate-limit.md).
+:::
+
+Use `ingest_rows_rate_limit` to set the database's target ingestion rate in rows
+per second. The limit is shared across all tables in the database and is not
+inherited as a table option. If the option is unset or `0`, ingestion is unlimited.
+
+```sql
+CREATE DATABASE logs WITH ('ingest_rows_rate_limit' = '10000');
+```
+
+To change or remove the limit later, use
+[`ALTER DATABASE`](/reference/sql/alter.md#set-ingestion-rate-limit).
 
 ## CREATE TABLE
 

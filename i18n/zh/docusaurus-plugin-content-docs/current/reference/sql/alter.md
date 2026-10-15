@@ -293,6 +293,26 @@ ALTER TABLE monitor UNSET 'write_buffer_size';
 ALTER TABLE monitor UNSET 'max_row_group_row_count';
 ```
 
+### 设置写入限流
+
+:::info 企业版功能
+该选项仅在 GreptimeDB Enterprise 中可用。详细说明请参考[写入限流](/enterprise/ingestion-rate-limit.md)。
+:::
+
+通过 `ALTER DATABASE` 修改数据库选项 `ingest_rows_rate_limit`，以调整目标
+写入速率，单位为行/秒。同一数据库中的所有表共享限流额度，修改后无需
+重启服务。
+
+```sql
+ALTER DATABASE logs SET 'ingest_rows_rate_limit' = '20000';
+```
+
+移除该选项或将值设置为 `0`，即可恢复不限速的写入：
+
+```sql
+ALTER DATABASE logs UNSET 'ingest_rows_rate_limit';
+```
+
 <AnchorAlias id="设置重分区列-hint" />
 
 ### 设置重分区 hint
