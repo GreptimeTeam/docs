@@ -1,12 +1,12 @@
 ---
 keywords: [release, GreptimeDB, changelog, v1.3.0-beta.2]
 description: GreptimeDB v1.3.0-beta.2 Changelog
-date: 2026-10-14
+date: 2026-10-15
 ---
 
 # v1.3.0-beta.2
 
-Release date: October 14, 2026
+Release date: October 15, 2026
 
 GreptimeDB v1.3.0-beta.2 is the second beta of the 1.3 release. This changelog covers changes since v1.3.0-beta.1, with fixes for query correctness, storage consistency, and distributed write retries.
 
@@ -122,6 +122,7 @@ The bundled dashboard advances from v0.13.15 to v0.14.2. Signal Explorer adds dr
 * fix(query): accept narrowed nullability in MergeScan remote schema check by [@killme2008](https://github.com/killme2008) in [#9592](https://github.com/GreptimeTeam/greptimedb/pull/9592)
 * fix(table): stop claiming exact null and distinct counts for append scans by [@killme2008](https://github.com/killme2008) in [#9593](https://github.com/GreptimeTeam/greptimedb/pull/9593)
 * fix: avoid pinning memtables during series-index reconciliation by [@evenyag](https://github.com/evenyag) in [#9588](https://github.com/GreptimeTeam/greptimedb/pull/9588)
+* fix(query): keep state column names unique when splitting aggregates by [@killme2008](https://github.com/killme2008) in [#9594](https://github.com/GreptimeTeam/greptimedb/pull/9594)
 
 ### 🚜 Refactor
 
