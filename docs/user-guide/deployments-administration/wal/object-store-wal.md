@@ -37,6 +37,7 @@ ack_mode = "durable"
 max_unpersisted_bytes = "64MB"
 max_unpersisted_age = "8s"
 on_corrupted_segment = "skip"
+accept_missing_history = false
 ```
 
 In most cases, setting `provider` is enough.
@@ -56,6 +57,7 @@ The configuration injection described in [Common Helm Chart Configurations](/use
 | `max_unpersisted_bytes` | In `enqueued` mode, the amount of acknowledged data not yet in the object store at which new writes wait. | `"64MB"` |
 | `max_unpersisted_age`   | In `enqueued` mode, how long acknowledged data may stay out of the object store before new writes wait. | `"8s"` |
 | `on_corrupted_segment`  | What to do when part of the WAL is corrupted: `skip` or `fail`. See [Corrupted data](#corrupted-data). | `"skip"` |
+| `accept_missing_history` | Whether a table opens even though the WAL at the configured location does not hold its history, for example after the WAL location changed without its files being copied. When `true`, such a table opens without its writes that were not flushed, which are lost. Use it only to recover from a lost WAL, see [Move the WAL](#move-the-wal). | `false` |
 
 The options other than `provider` are used only when `provider` is `experimental_object_store`. `max_unpersisted_bytes` and `max_unpersisted_age` are used only when `ack_mode` is `enqueued`.
 
@@ -68,6 +70,20 @@ wal/datanodes/0/epochs/0/objects/
 ```
 
 The general form is `<prefix>/datanodes/<node_id>/epochs/<generation>/objects/`. GreptimeDB creates and deletes the files under this path itself. Do not modify or delete them manually.
+
+### Move the WAL
+
+To move the WAL to another storage provider, or to another bucket or root of the same storage provider:
+
+1. Stop GreptimeDB.
+2. Copy every file under `<prefix>/` from the old location to the same paths in the new location.
+3. Change the configuration and start GreptimeDB.
+
+All tables then open with all their writes.
+
+If the location changes without the files being copied, or if the files are deleted, tables whose WAL history is missing fail to open with an error saying that the WAL `does not hold the history of region`, and by default GreptimeDB fails to start. The error names the region, the `prefix` and the storage.
+
+If the old WAL is lost for good, start GreptimeDB once with `accept_missing_history = true`. The affected tables open without their writes that were not flushed, which are lost. A warning names each affected region, and `greptime_logstore_object_store_wal_missing_history_accepted_total` counts them. Set the option back to `false` after GreptimeDB has written to the WAL following that start.
 
 ### Environment variables
 
@@ -116,7 +132,7 @@ If a WAL file is damaged in a way that cannot be limited to one region, for exam
 
 ## Garbage collection
 
-GreptimeDB deletes WAL data automatically once it has been flushed to SST files. There is nothing to configure.
+GreptimeDB deletes WAL data automatically once it has been flushed to SST files, or once its table has been dropped. There is nothing to configure.
 
 Things to know:
 
@@ -140,7 +156,9 @@ The object store WAL exports metrics with the prefix `greptime_logstore_object_s
 | `greptime_logstore_object_store_wal_stalled_appends_total` | Counter | Writes that waited because earlier writes to the object store had not completed, or, in `enqueued` mode, because `max_unpersisted_bytes` or `max_unpersisted_age` was reached. |
 | `greptime_logstore_object_store_wal_stalled_append_seconds` | Histogram | How long such a write waited. |
 | `greptime_logstore_object_store_wal_failing` | Gauge | 1 while the object store refuses the acknowledged writes of `enqueued` mode with an error such as denied access or a missing bucket. New writes are rejected meanwhile. |
-| `greptime_logstore_object_store_wal_rejected_appends_total` | Counter | Writes rejected while `failing` is 1. |
+| `greptime_logstore_object_store_wal_rejected_appends_total` | Counter | Writes rejected while `failing` is 1. Table drops whose WAL record is rejected in that state are counted too; the drop itself succeeds and its record is stored later. |
+| `greptime_logstore_object_store_wal_release_records_total` | Counter | Records of dropped tables' regions in the WAL. They let GreptimeDB delete the WAL data of dropped tables, also after a restart. |
+| `greptime_logstore_object_store_wal_missing_history_accepted_total` | Counter | Regions opened without their WAL history because `accept_missing_history` is `true`. Their writes that were not flushed are lost. |
 | `greptime_logstore_object_store_wal_indexed_objects` | Gauge | Number of WAL objects currently kept, which is what GreptimeDB reads at startup. |
 | `greptime_logstore_object_store_wal_indexed_bytes` | Gauge | Total size of the WAL objects currently kept. |
 | `greptime_logstore_object_store_wal_deleted_objects_total` | Counter | WAL objects deleted by garbage collection. |
@@ -156,6 +174,7 @@ Set up these alerts:
 - Any increase of `greptime_logstore_object_store_wal_poisoned_total`: the WAL has stopped accepting writes. Restart GreptimeDB after checking the logs.
 - Any increase of `greptime_logstore_object_store_wal_create_conflicts_total`: check that no other process uses the same storage provider and `prefix`.
 - Any increase of `greptime_logstore_object_store_wal_stalled_appends_total`: writes arrive faster than the object store can store them.
+- Any increase of `greptime_logstore_object_store_wal_missing_history_accepted_total`: tables were opened without their unflushed writes. Set `accept_missing_history` back to `false`.
 
 ## Limitations
 
@@ -164,11 +183,13 @@ Set up these alerts:
 - **Unrecoverable errors**: after an unrecoverable error, such as finding data written by another instance, the WAL rejects all writes until GreptimeDB restarts. Denied access or a missing bucket is not such an error: in `enqueued` mode GreptimeDB keeps retrying, see [Durability modes](#durability-modes).
 - **No switching of an existing instance**: a table keeps the WAL provider it was created with. Tables created under `raft_engine` or `kafka` cannot be opened after you switch an instance to `experimental_object_store`, and the reverse is also true. GreptimeDB reports `Incompatible WAL provider change` and, by default, fails to start. Flushing the tables before switching does not help. Choose the WAL provider when you create the instance.
 - **No prefix change**: tables also keep the WAL `prefix` they were created with. After `prefix` is changed, they fail to open with the error `Object store WAL prefix mismatch`.
+- **WAL history stays where its files are**: after `storage_provider`, or the bucket or root of the storage provider it names, changes without the WAL files being copied, or after the files are deleted, the affected tables fail to open and, by default, GreptimeDB fails to start. See [Move the WAL](#move-the-wal).
+- **Crash while dropping a table**: if GreptimeDB crashes while dropping a table, or crashes after the WAL could not record a drop and before the object store accepts writes again, the dropped table's WAL data is never deleted and keeps other old WAL data from being deleted too. You can recognize this when `indexed_objects` only grows while `deleted_objects_total` stays the same. The first case is tracked in [GreptimeTeam/greptimedb#9577](https://github.com/GreptimeTeam/greptimedb/issues/9577).
 
 ## Best practices
 
 - Keep the default options, including `ack_mode = "durable"`, unless you have measured a reason to change them.
 - Keep the WAL in the same object store as the data by leaving `storage_provider` empty, unless you have a reason to separate them.
-- Choose the WAL provider when you create the instance, and do not change `provider`, `storage_provider` or `prefix` afterwards.
+- Choose the WAL provider when you create the instance, and do not change `provider` or `prefix` afterwards. To move the WAL to another storage provider, bucket or root, copy its files first, see [Move the WAL](#move-the-wal).
 - Flush tables that receive writes but rarely flush on their own, so that old WAL data can be deleted.
 - Alert on `failing`, `poisoned_total`, `create_conflicts_total` and `stalled_appends_total`.

@@ -37,6 +37,7 @@ ack_mode = "durable"
 max_unpersisted_bytes = "64MB"
 max_unpersisted_age = "8s"
 on_corrupted_segment = "skip"
+accept_missing_history = false
 ```
 
 大多数情况下，只需设置 `provider`。
@@ -56,6 +57,7 @@ on_corrupted_segment = "skip"
 | `max_unpersisted_bytes` | `enqueued` 模式下，已确认但尚未写入对象存储的数据达到这个大小时，新的写入会等待。 | `"64MB"` |
 | `max_unpersisted_age`   | `enqueued` 模式下，已确认的数据未写入对象存储的时间达到这个时长时，新的写入会等待。 | `"8s"` |
 | `on_corrupted_segment`  | WAL 中有数据损坏时的处理方式：`skip` 或 `fail`。参见[数据损坏](#数据损坏)。 | `"skip"` |
+| `accept_missing_history` | 当配置的 WAL 位置中没有某张表的 WAL 历史时（例如更换了 WAL 位置但没有复制文件），是否仍然打开这张表。设为 `true` 时，这类表会在丢失未 flush 写入的情况下打开。仅用于 WAL 丢失后的恢复，参见[迁移 WAL](#迁移-wal)。 | `false` |
 
 除 `provider` 外，以上选项仅在 `provider` 为 `experimental_object_store` 时生效；`max_unpersisted_bytes` 和 `max_unpersisted_age` 仅在 `ack_mode` 为 `enqueued` 时生效。
 
@@ -68,6 +70,20 @@ wal/datanodes/0/epochs/0/objects/
 ```
 
 通用格式为 `<prefix>/datanodes/<node_id>/epochs/<generation>/objects/`。该路径下的文件由 GreptimeDB 自行创建和删除，请勿手动修改或删除。
+
+### 迁移 WAL
+
+要把 WAL 迁移到另一个存储提供者，或同一存储提供者的另一个 bucket 或根路径：
+
+1. 停止 GreptimeDB。
+2. 把旧位置 `<prefix>/` 下的所有文件复制到新位置的相同路径下。
+3. 修改配置并启动 GreptimeDB。
+
+这样所有表都能带着全部写入正常打开。
+
+如果更换了位置但没有复制文件，或者这些文件被删除，缺少 WAL 历史的表将无法打开，报错中会提示 WAL `does not hold the history of region`，默认情况下 GreptimeDB 无法启动。报错信息会给出对应的 Region、`prefix` 和存储。
+
+如果旧的 WAL 已经彻底丢失，可以设置 `accept_missing_history = true` 启动一次 GreptimeDB。受影响的表会打开，但未 flush 的写入会丢失。每个受影响的 Region 都会输出一条警告，并计入 `greptime_logstore_object_store_wal_missing_history_accepted_total`。在这次启动之后、GreptimeDB 向 WAL 写入过数据后，请把该选项改回 `false`。
 
 ### 环境变量
 
@@ -116,7 +132,7 @@ export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
 
 ## 垃圾回收
 
-数据 flush 到 SST 文件后，GreptimeDB 会自动删除对应的 WAL 数据，无需任何配置。
+数据 flush 到 SST 文件后，或者所属的表被删除后，GreptimeDB 会自动删除对应的 WAL 数据，无需任何配置。
 
 需要注意：
 
@@ -140,7 +156,9 @@ export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
 | `greptime_logstore_object_store_wal_stalled_appends_total` | Counter | 因之前写往对象存储的数据尚未完成，或在 `enqueued` 模式下达到 `max_unpersisted_bytes` 或 `max_unpersisted_age`，而需要等待的写入数。 |
 | `greptime_logstore_object_store_wal_stalled_append_seconds` | Histogram | 这类写入等待的时间。 |
 | `greptime_logstore_object_store_wal_failing` | Gauge | `enqueued` 模式下，对象存储以没有访问权限、bucket 不存在等错误拒绝已确认的写入时为 1。这期间新的写入会被拒绝。 |
-| `greptime_logstore_object_store_wal_rejected_appends_total` | Counter | `failing` 为 1 期间被拒绝的写入数。 |
+| `greptime_logstore_object_store_wal_rejected_appends_total` | Counter | `failing` 为 1 期间被拒绝的写入数。这期间删除表时 WAL 记录被拒绝的情况也计入其中；删除表本身会成功，记录会在之后保存。 |
+| `greptime_logstore_object_store_wal_release_records_total` | Counter | WAL 中记录的已删除表的 Region 数。GreptimeDB 依据这些记录删除已删除表的 WAL 数据，重启后同样有效。 |
+| `greptime_logstore_object_store_wal_missing_history_accepted_total` | Counter | 因 `accept_missing_history` 为 `true` 而在缺少 WAL 历史的情况下打开的 Region 数，这些 Region 未 flush 的写入已丢失。 |
 | `greptime_logstore_object_store_wal_indexed_objects` | Gauge | 当前保留的 WAL 对象数，也就是启动时需要读取的对象数。 |
 | `greptime_logstore_object_store_wal_indexed_bytes` | Gauge | 当前保留的 WAL 对象的总大小。 |
 | `greptime_logstore_object_store_wal_deleted_objects_total` | Counter | 垃圾回收删除的 WAL 对象数。 |
@@ -156,6 +174,7 @@ export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
 - `greptime_logstore_object_store_wal_poisoned_total` 有任何增长：WAL 已停止接受写入。检查日志后重启 GreptimeDB。
 - `greptime_logstore_object_store_wal_create_conflicts_total` 有任何增长：检查是否有其他进程使用了同一个存储提供者和 `prefix`。
 - `greptime_logstore_object_store_wal_stalled_appends_total` 有任何增长：写入速度超过了对象存储的写入能力。
+- `greptime_logstore_object_store_wal_missing_history_accepted_total` 有任何增长：有表在丢失未 flush 写入的情况下被打开。请把 `accept_missing_history` 改回 `false`。
 
 ## 限制
 
@@ -164,11 +183,13 @@ export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
 - **不可恢复的错误**：遇到不可恢复的错误（例如发现其他实例写入的数据）后，WAL 会拒绝所有写入，直到 GreptimeDB 重启。没有访问权限或 bucket 不存在不属于这类错误：在 `enqueued` 模式下 GreptimeDB 会持续重试，参见[持久性模式](#持久性模式)。
 - **已有实例不能切换提供者**：表会沿用创建时的 WAL 提供者。在 `raft_engine` 或 `kafka` 下创建的表，在实例切换到 `experimental_object_store` 后无法打开，反之亦然。GreptimeDB 会报错 `Incompatible WAL provider change`，默认情况下无法启动。切换前先 flush 也无济于事。请在创建实例时就选定 WAL 提供者。
 - **不能修改前缀**：表也会沿用创建时的 WAL `prefix`。修改 `prefix` 后，这些表打开时会报错 `Object store WAL prefix mismatch`。
+- **WAL 历史只存在于其文件所在的位置**：修改 `storage_provider`，或它所指向存储提供者的 bucket、根路径后没有复制 WAL 文件，或者这些文件被删除时，受影响的表无法打开，默认情况下 GreptimeDB 无法启动。参见[迁移 WAL](#迁移-wal)。
+- **删除表时发生崩溃**：如果 GreptimeDB 在删除表的过程中崩溃，或者在 WAL 未能记录删除操作之后、对象存储恢复接受写入之前崩溃，被删除表的 WAL 数据将不会被删除，还会导致其他旧的 WAL 数据也无法删除。此时可以看到 `indexed_objects` 持续增长，而 `deleted_objects_total` 不再变化。第一种情况由 [GreptimeTeam/greptimedb#9577](https://github.com/GreptimeTeam/greptimedb/issues/9577) 跟踪。
 
 ## 最佳实践
 
 - 除非有实测依据，否则保持默认配置，包括 `ack_mode = "durable"`。
 - 除非有明确理由，否则让 `storage_provider` 留空，把 WAL 和数据放在同一个对象存储中。
-- 在创建实例时选定 WAL 提供者，之后不要再修改 `provider`、`storage_provider` 或 `prefix`。
+- 在创建实例时选定 WAL 提供者，之后不要再修改 `provider` 或 `prefix`。如需把 WAL 迁移到另一个存储提供者、bucket 或根路径，请先复制其文件，参见[迁移 WAL](#迁移-wal)。
 - 对于持续有写入但很少自动 flush 的表，定期执行 flush，以便旧的 WAL 数据可以被删除。
 - 对 `failing`、`poisoned_total`、`create_conflicts_total` 和 `stalled_appends_total` 设置告警。
