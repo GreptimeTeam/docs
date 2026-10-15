@@ -119,6 +119,9 @@ The bundled dashboard advances from v0.13.15 to v0.14.2. Signal Explorer adds dr
 * fix(query): guard deep expressions during query planning by [@evenyag](https://github.com/evenyag) in [#9564](https://github.com/GreptimeTeam/greptimedb/pull/9564)
 * fix(operator): reuse catalog table resolution for write retries by [@WenyXu](https://github.com/WenyXu) in [#9574](https://github.com/GreptimeTeam/greptimedb/pull/9574)
 * fix(json2): support settings in ALTER TABLE ADD COLUMN by [@fengys1996](https://github.com/fengys1996) in [#9472](https://github.com/GreptimeTeam/greptimedb/pull/9472)
+* fix(query): accept narrowed nullability in MergeScan remote schema check by [@killme2008](https://github.com/killme2008) in [#9592](https://github.com/GreptimeTeam/greptimedb/pull/9592)
+* fix(table): stop claiming exact null and distinct counts for append scans by [@killme2008](https://github.com/killme2008) in [#9593](https://github.com/GreptimeTeam/greptimedb/pull/9593)
+* fix: avoid pinning memtables during series-index reconciliation by [@evenyag](https://github.com/evenyag) in [#9588](https://github.com/GreptimeTeam/greptimedb/pull/9588)
 
 ### 🚜 Refactor
 
@@ -133,6 +136,7 @@ The bundled dashboard advances from v0.13.15 to v0.14.2. Signal Explorer adds dr
 
 * perf(catalog): optimize single-table lookups in information_schema.partitions by [@fengyue-xve](https://github.com/fengyue-xve) in [#9473](https://github.com/GreptimeTeam/greptimedb/pull/9473)
 * perf(promql): reduce timestamp payload allocations and use narrow cursor scans by [@discord9](https://github.com/discord9) in [#9417](https://github.com/GreptimeTeam/greptimedb/pull/9417)
+* perf(query): infer safe aggregate input bounds from HAVING by [@v0y4g3r](https://github.com/v0y4g3r) in [#9582](https://github.com/GreptimeTeam/greptimedb/pull/9582)
 
 ### 🧪 Testing
 
