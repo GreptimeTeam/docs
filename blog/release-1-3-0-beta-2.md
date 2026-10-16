@@ -8,15 +8,15 @@ date: 2026-10-15
 
 Release date: October 15, 2026
 
-GreptimeDB v1.3.0-beta.2 is the second beta of the 1.3 release. This changelog covers changes since v1.3.0-beta.1. Most changes fix queries that returned wrong results and storage paths that could lose or hide data. Distributed writes now retry transient failures by default.
+GreptimeDB v1.3.0-beta.2 is the second beta of the 1.3 release and covers changes since v1.3.0-beta.1. Most changes are bug fixes, including fixes for wrong query results and for writes that could be lost or hidden.
 
 ### 👍 Highlights
 
 #### Distributed write retries enabled by default
 
-In distributed clusters, the frontend retries failed writes to datanodes instead of returning the first error. Writes that reach a region during migration, failover, or repartition are retried after refreshing routes and partition rules. Busy regions and `Unavailable`, `Cancelled`, or `DeadlineExceeded` RPC errors are retried with exponential backoff and jitter. Regions whose writes are acknowledged as successful are not retried. Inserts, deletes, bulk inserts, and writes to logical metric tables are covered. Standalone mode does not retry.
+In distributed clusters, the frontend retries failed writes to datanodes. Writes that hit a region during migration, failover, or repartition are retried after a route refresh. Busy regions and `Unavailable`, `Cancelled`, or `DeadlineExceeded` errors are retried with exponential backoff and jitter. Regions that acknowledged success aren't retried. Retries cover inserts, deletes, bulk inserts, and logical metric tables; standalone mode doesn't retry.
 
-Retries are enabled with the following defaults. Set `max_retries = 0` to disable them:
+Retries are on by default with these settings. Set `max_retries = 0` to disable them:
 
 ```toml
 [write_retry]
@@ -30,63 +30,65 @@ See the [Frontend configuration](https://docs.greptime.com/nightly/user-guide/de
 
 #### Signals Explore in the bundled dashboard
 
-The bundled dashboard adds Signals Explore, a drilldown view for metrics, logs, and traces with label filters and links between related signals. Native histogram charts are not supported yet. See [dashboard#651](https://github.com/GreptimeTeam/dashboard/pull/651).
+Signals Explore is a drilldown view for metrics, logs, and traces, with label filters. Logs link to their traces, and traces link to their logs. Native and gauge histograms aren't charted yet. See [dashboard#651](https://github.com/GreptimeTeam/dashboard/pull/651).
 
-#### PromQL and query fixes for silently wrong results
+![Signals Explore Metrics tab showing a grid of metric charts, with metric name prefixes and counts in the left panel.](/release-1-3-0-beta-2-signals-explore-metrics.png)
 
-This release fixes several cases where queries returned wrong results without an error:
+![Signals Explore Logs tab grouping OpenTelemetry logs by service name, with log volume charts and trace ID links on each log line.](/release-1-3-0-beta-2-signals-explore-logs.png)
 
-- Comparisons, `min`/`max`, `topk`/`bottomk`, `sqrt`, and `round` follow Prometheus float semantics. Previously a NaN ratio made `errors / requests > 0.05` true when there was no traffic, so the alert fired ([#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479)).
-- Binary operations on folded histograms, such as `histogram_fraction(...) + on(host) ...`, could drop matching series at query parallelism above 1 ([#9509](https://github.com/GreptimeTeam/greptimedb/pull/9509)).
-- `ORDER BY` and `LIMIT` on logical metric tables could return rows in the wrong order or repeated partial groups ([#9522](https://github.com/GreptimeTeam/greptimedb/pull/9522)). Ordering over TQL `scalar()` results is also fixed ([#9523](https://github.com/GreptimeTeam/greptimedb/pull/9523)).
-- Subqueries without a step use a 60-second step, as Prometheus does by default. Previously `count_over_time(x[5m:])` in an instant query returned 300 instead of 5 ([#9481](https://github.com/GreptimeTeam/greptimedb/pull/9481)).
+#### Fixes for silently wrong query results
 
-Other PromQL fixes cover label functions, nullable matchers, subquery offsets and alignment, and pre-epoch evaluation times; see Bug Fixes.
+The following queries returned wrong results without an error:
+
+- PromQL comparisons, `min`/`max`, `topk`/`bottomk`, `sqrt`, and `round` follow Prometheus float semantics. Previously, `errors / requests > 0.05` was true for a NaN ratio, so alerts fired when there was no traffic ([#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479)).
+- Binary operations on folded histograms, such as `histogram_fraction(...) + on(host, shard) ...`, could drop matching series at query parallelism above 1 ([#9509](https://github.com/GreptimeTeam/greptimedb/pull/9509)).
+- `ORDER BY` and `LIMIT` on logical metric tables could return misordered rows or repeated partial groups ([#9522](https://github.com/GreptimeTeam/greptimedb/pull/9522)). Ordering over TQL `scalar()` results is also fixed ([#9523](https://github.com/GreptimeTeam/greptimedb/pull/9523)).
+- A subquery without a step uses 60 seconds, the Prometheus default. Previously, `count_over_time(x[5m:])` in an instant query returned 300 instead of 5 ([#9481](https://github.com/GreptimeTeam/greptimedb/pull/9481)).
+
+Other PromQL fixes are listed under Bug Fixes.
 
 #### Fulltext bloom index no longer skips matching rows
 
-`matches_term` on a column with a bloom fulltext index could return fewer rows than a full scan. For example, `matches_term(msg, 'world')` missed `hello_world`, and `error` missed `错误error日志`. The index now uses the same token boundaries as `matches_term`: `_` separates tokens, and Han text is stored as bigrams.
+`matches_term` on a bloom fulltext index could return fewer rows than a full scan: `matches_term(msg, 'world')` missed `hello_world`, and `error` missed `错误error日志`. The index now splits text where `matches_term` does: `_` separates tokens, and Han text is stored as bigrams.
 
-Case-sensitive `LIKE` patterns can now use the bloom index for pruning:
+Case-sensitive `LIKE` can now use the index for pruning:
 
 ```sql
 SELECT * FROM logs WHERE message LIKE '%disk quota exceeded%';
 ```
 
-On a case-insensitive index, `lower(message) LIKE ...` and `matches_term(lower(message), ...)` also use it. `ILIKE` does not. Existing SSTs need an index rebuild to benefit; see Upgrade notes. See [#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470).
+On a case-insensitive index, `lower(message) LIKE ...` and `matches_term(lower(message), ...)` also use it; `ILIKE` doesn't. Existing SSTs need an index rebuild, as described in Upgrade notes. See [#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470).
 
-#### Storage and routing correctness
+#### Storage and routing fixes
 
 - Bulk memtable merges and flushes could let an older value override a newer write or delete. Metric engine physical tables and flat-format tables use the bulk memtable ([#9517](https://github.com/GreptimeTeam/greptimedb/pull/9517)).
-- Skip-WAL writes are flushed when a region closes, so they survive a graceful datanode shutdown ([#9440](https://github.com/GreptimeTeam/greptimedb/pull/9440)).
-- Writes during repartition could be routed to the wrong region and become invisible to queries ([#9458](https://github.com/GreptimeTeam/greptimedb/pull/9458)).
+- Closing a region flushes skip-WAL writes, so they survive a graceful datanode shutdown ([#9440](https://github.com/GreptimeTeam/greptimedb/pull/9440)).
+- Writes during repartition could go to the wrong region and be missing from query results ([#9458](https://github.com/GreptimeTeam/greptimedb/pull/9458)).
 
 ### Dashboard
 
-The bundled dashboard advances from v0.13.15 to v0.14.2. Besides Signals Explore, the selected timezone now applies to both display and SQL requests ([dashboard#657](https://github.com/GreptimeTeam/dashboard/pull/657)). The update also fixes log scrolling, table loading, and trace-ID queries with time ranges ([dashboard#655](https://github.com/GreptimeTeam/dashboard/pull/655), [dashboard#656](https://github.com/GreptimeTeam/dashboard/pull/656), [dashboard#658](https://github.com/GreptimeTeam/dashboard/pull/658)).
+The bundled dashboard moves from v0.13.15 to v0.14.2. Besides Signals Explore, it applies the selected timezone to both display and SQL requests ([dashboard#657](https://github.com/GreptimeTeam/dashboard/pull/657)), and fixes log scrolling, table loading, and trace-ID lookups ([dashboard#655](https://github.com/GreptimeTeam/dashboard/pull/655), [dashboard#656](https://github.com/GreptimeTeam/dashboard/pull/656), [dashboard#658](https://github.com/GreptimeTeam/dashboard/pull/658)).
 
 ### Benchmark results
 
-Compared with v1.2.1, measured in the same benchmark run with warm caches:
+Compared with v1.2.1 on the same setup for both versions. The results cover all changes since v1.2.1, not only this beta.
 
-- PromQL range queries over 32 days of node metrics (1,720 series, 158M samples, 30m step): median latency improves 1.14×–1.83× across five queries (geometric mean 1.43×). Throughput improves 16% at concurrency 1 and 6% at concurrency 4 (geometric means); at concurrency 4, one query is 8% slower.
-- SQL queries over 100M agent observability records: median latency improves 1.08×–1.44× across 16 queries (geometric mean 1.20×).
-
-These results include all changes since v1.2.1, not only those in this beta.
+- 30-day PromQL range queries over node metrics (1,720 series, 158M samples, 30m step, warm cache): the five queries are 1.14×–1.83× faster at the median (geometric mean 1.43×). Throughput is 16% higher at concurrency 1 and 6% higher at concurrency 4 (geometric means); one query is 8% slower at concurrency 4.
+- SQL queries over 100M agent observability records (c7i.2xlarge, 8 CPUs and 16 GB for the database): the 16 queries are 1.08×–1.44× faster at the median (geometric mean 1.20×).
 
 ### Upgrade notes
 
-- **Distributed PromQL:** Upgrade datanodes before frontends. The corrected PromQL implementations introduce functions that older datanodes cannot decode in distributed query plans ([#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479)).
-- **Fulltext bloom indexes:** Existing indexes fall back to scans until compaction or `ADMIN BUILD_INDEX('logs')` rebuilds them in the new format. To inspect index versions during rebuilding, check `fulltext.bloom_version` inside the `meta_json` column of `information_schema.ssts_index_meta`. Older binaries also fall back to scans when reading the new format. The bloom backend no longer uses jieba for Chinese text; Han text is stored as bigrams, which can make the index larger. Tantivy-backed fulltext indexes no longer serve `matches_term`, and those queries scan instead ([#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470)).
-- **Write retries:** When every attempt fails, the default backoff adds at least 10.5 seconds (1.5 + 3 + 6) plus jitter before the error returns. Clients with shorter timeouts see a timeout instead of the error. If a write succeeds but its response is lost or times out, retrying it can insert duplicate rows into append-only tables. Set `max_retries = 0` under `[write_retry]` to disable automatic retries ([#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543)).
-- **Flow mirroring:** Under overload, asynchronous Flow mirroring can discard batches to protect frontend memory ([#9421](https://github.com/GreptimeTeam/greptimedb/pull/9421)).
+- **Distributed PromQL:** Upgrade datanodes before frontends. Older datanodes can't decode the new PromQL functions in distributed query plans ([#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479)).
+- **Fulltext bloom indexes:** `matches_term` and `LIKE` scan SSTs with old-format indexes until compaction or `ADMIN BUILD_INDEX('logs')` rebuilds them. To check rebuild progress, read `fulltext.bloom_version` in the `meta_json` column of `information_schema.ssts_index_meta`. After a downgrade, older binaries also scan SSTs with new-format indexes. The bloom backend no longer uses jieba; Han text is stored as bigrams, which can make the index larger. Tantivy-backed indexes no longer serve `matches_term`; those queries scan ([#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470)).
+- **Write retries:** If every attempt fails, the error returns after at least 10.5 seconds of backoff (1.5 + 3 + 6) plus jitter. Clients with shorter timeouts see a timeout instead. If a write succeeds but its response is lost or times out, the retry can insert duplicate rows into append-only tables. Set `max_retries = 0` under `[write_retry]` to disable retries ([#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543)).
+- **Flow mirroring:** When a flownode is slow or unreachable and more than 1M mirrored rows are pending, the frontend drops further mirrored batches to protect its memory. Flow results can have gaps ([#9421](https://github.com/GreptimeTeam/greptimedb/pull/9421)).
 - **Series scans:** The v2 series-scan path is temporarily disabled by default ([#9436](https://github.com/GreptimeTeam/greptimedb/pull/9436)).
 
 ### Breaking changes
 
 - **Expression depth:** Query planning rejects expressions deeper than 128 levels to reduce stack-overflow risk ([#9564](https://github.com/GreptimeTeam/greptimedb/pull/9564)).
-- **PromQL subquery step:** Range queries that relied on `[R:]` following the query step now sample every 60 seconds. The step is not configurable ([#9481](https://github.com/GreptimeTeam/greptimedb/pull/9481)).
-- **Decompressed request size:** Prometheus remote read/write and Loki push bodies larger than 512 MiB after decompression are rejected with 400. When a memory quota is configured, compressed gRPC requests reserve `max_recv_message_size` before decompression, so 429 or `RESOURCE_EXHAUSTED` can occur earlier ([#9264](https://github.com/GreptimeTeam/greptimedb/pull/9264)).
+- **PromQL subquery step:** Range queries that relied on `[R:]` using the query step now sample every 60 seconds. The step isn't configurable ([#9481](https://github.com/GreptimeTeam/greptimedb/pull/9481)).
+- **Decompressed request size:** Prometheus remote read/write and Loki push bodies over 512 MiB after decompression are rejected with 400. With a memory quota configured, compressed gRPC requests reserve `max_recv_message_size` before decompression, so 429 or `RESOURCE_EXHAUSTED` can occur sooner ([#9264](https://github.com/GreptimeTeam/greptimedb/pull/9264)).
 
 ### 🚀 Features
 
@@ -183,7 +185,6 @@ These results include all changes since v1.2.1, not only those in this beta.
 * ci: update dev-builder image tag by [@github-actions[bot]](https://github.com/github-actions[bot]) in [#9469](https://github.com/GreptimeTeam/greptimedb/pull/9469)
 * ci: enhance benchmark workflows with version comparisons and diagnostics by [@WenyXu](https://github.com/WenyXu) in [#9383](https://github.com/GreptimeTeam/greptimedb/pull/9383)
 * ci: benchmark the object store WAL against S3 from an EC2 runner by [@fengjiachun](https://github.com/fengjiachun) in [#9536](https://github.com/GreptimeTeam/greptimedb/pull/9536)
-
 * build: reduce checkout-specific inputs for cache reuse by [@discord9](https://github.com/discord9) in [#9198](https://github.com/GreptimeTeam/greptimedb/pull/9198)
 
 ## New Contributors
