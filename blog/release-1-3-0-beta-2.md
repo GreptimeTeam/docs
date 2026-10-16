@@ -14,7 +14,7 @@ GreptimeDB v1.3.0-beta.2 is the second beta of the 1.3 release. This changelog c
 
 #### Distributed write retries enabled by default
 
-In distributed clusters, the frontend retries failed writes to datanodes instead of returning the first error. Writes that reach a region during migration, failover, or repartition are retried after refreshing routes and partition rules. Busy regions and `Unavailable`, `Cancelled`, or `DeadlineExceeded` RPC errors are retried with exponential backoff and jitter. Regions that already accepted the write are not written again. Inserts, deletes, bulk inserts, and writes to logical metric tables are covered. Standalone mode does not retry.
+In distributed clusters, the frontend retries failed writes to datanodes instead of returning the first error. Writes that reach a region during migration, failover, or repartition are retried after refreshing routes and partition rules. Busy regions and `Unavailable`, `Cancelled`, or `DeadlineExceeded` RPC errors are retried with exponential backoff and jitter. Regions whose writes are acknowledged as successful are not retried. Inserts, deletes, bulk inserts, and writes to logical metric tables are covered. Standalone mode does not retry.
 
 Retries are enabled with the following defaults. Set `max_retries = 0` to disable them:
 
@@ -77,8 +77,8 @@ These results include all changes since v1.2.1, not only those in this beta.
 ### Upgrade notes
 
 - **Distributed PromQL:** Upgrade datanodes before frontends. The corrected PromQL implementations introduce functions that older datanodes cannot decode in distributed query plans ([#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479)).
-- **Fulltext bloom indexes:** Existing indexes fall back to scans until compaction or `ADMIN BUILD_INDEX('logs')` rebuilds them in the new format. Older binaries also fall back to scans when reading the new format. The bloom backend no longer uses jieba for Chinese text; Han text is stored as bigrams, which can make the index larger. Tantivy-backed fulltext indexes no longer serve `matches_term`, and those queries scan instead ([#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470)).
-- **Write retries:** When every attempt fails, the default backoff adds at least 10.5 seconds (1.5 + 3 + 6) plus jitter before the error returns. Clients with shorter timeouts see a timeout instead of the error ([#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543)).
+- **Fulltext bloom indexes:** Existing indexes fall back to scans until compaction or `ADMIN BUILD_INDEX('logs')` rebuilds them in the new format. To inspect index versions during rebuilding, check `fulltext.bloom_version` inside the `meta_json` column of `information_schema.ssts_index_meta`. Older binaries also fall back to scans when reading the new format. The bloom backend no longer uses jieba for Chinese text; Han text is stored as bigrams, which can make the index larger. Tantivy-backed fulltext indexes no longer serve `matches_term`, and those queries scan instead ([#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470)).
+- **Write retries:** When every attempt fails, the default backoff adds at least 10.5 seconds (1.5 + 3 + 6) plus jitter before the error returns. Clients with shorter timeouts see a timeout instead of the error. If a write succeeds but its response is lost or times out, retrying it can insert duplicate rows into append-only tables. Set `max_retries = 0` under `[write_retry]` to disable automatic retries ([#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543)).
 - **Flow mirroring:** Under overload, asynchronous Flow mirroring can discard batches to protect frontend memory ([#9421](https://github.com/GreptimeTeam/greptimedb/pull/9421)).
 - **Series scans:** The v2 series-scan path is temporarily disabled by default ([#9436](https://github.com/GreptimeTeam/greptimedb/pull/9436)).
 
