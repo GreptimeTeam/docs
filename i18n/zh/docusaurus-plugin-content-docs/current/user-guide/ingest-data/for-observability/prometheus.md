@@ -45,7 +45,7 @@ remote_write:
     x-greptime-insert-skip-wal: "true"
 ```
 
-该设置同时适用于 Remote Write 1.0 和 2.0。有关设置范围和数据持久性的影响，请参阅[为单个写入请求禁用 WAL](/user-guide/protocols/http.md#为单个写入请求禁用-wal)。
+该设置同时适用于 Remote Write 1.0 和 2.0，包括服务端的批处理写入。有关设置范围和数据持久性的影响，请参阅[为单个写入请求禁用 WAL](/user-guide/protocols/http.md#为单个写入请求禁用-wal)。
 
 ### 原生直方图
 

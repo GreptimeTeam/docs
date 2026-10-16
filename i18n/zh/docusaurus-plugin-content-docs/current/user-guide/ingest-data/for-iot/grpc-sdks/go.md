@@ -311,6 +311,8 @@ sensor := SensorReadings{
 
 通过在客户端使用 Arrow IPC 编码将多个表或对象聚合，并在一次 gRPC 请求中发送，与常规 Write API 相比，可以显著减少网络开销并提升整体写入性能。
 
+Bulk 写入使用 Arrow Flight `DoPut`。有关通过 `insert_skip_wal` hint 禁用 WAL 的说明，请参阅[为单个写入请求禁用 WAL](/user-guide/protocols/grpc.md#为单个写入请求禁用-wal)。
+
 ### 添加数据
 
 你可以构建的数据对象添加到批量写入器中。

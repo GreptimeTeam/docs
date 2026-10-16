@@ -9,10 +9,14 @@ GreptimeDB offers [gRPC SDKs](/user-guide/ingest-data/for-iot/grpc-sdks/overview
 
 If there is no SDK available for your programming language, you have the option to [create your own SDK](/contributor-guide/how-to/how-to-write-sdk.md) by following the guidelines provided in the contributor guide.
 
-## Disable WAL for a single write request
+## Hints
+
+GreptimeDB supports the `x-greptime-hints` gRPC metadata to pass hints as a comma-separated list of `key=value` pairs.
+
+### Disable WAL for a single write request
 
 Set `insert_skip_wal=true` in the `x-greptime-hints` gRPC metadata to disable the Write-Ahead Log (WAL) for the current insert request.
-For an Arrow Flight DoPut bulk-insert stream, the setting applies to the entire stream.
+For Bulk Write using Arrow Flight `DoPut`, this hint applies to the entire stream.
 
 This setting applies only to the current request and does not change the [table-level `skip_wal` option](/reference/sql/create.md#create-a-table-with-wal-disabled).
 Setting `insert_skip_wal` to `false` or omitting the hint does not enable WAL if the table-level `skip_wal` option is `true`.

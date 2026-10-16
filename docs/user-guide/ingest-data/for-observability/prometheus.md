@@ -44,7 +44,7 @@ remote_write:
     x-greptime-insert-skip-wal: "true"
 ```
 
-This applies to Remote Write 1.0 and 2.0. See [Disable WAL for a single write request](/user-guide/protocols/http.md#disable-wal-for-a-single-write-request) for the setting's scope and durability implications.
+This applies to Remote Write 1.0 and 2.0, including server-side batched writes. See [Disable WAL for a single write request](/user-guide/protocols/http.md#disable-wal-for-a-single-write-request) for the setting's scope and durability implications.
 
 ### Native histograms
 
