@@ -55,9 +55,9 @@ accept_missing_history = false
 | `max_batch_bytes`       | 缓冲数据达到这个大小时立即写到对象存储，不再等待 `flush_interval`。 | `"8MB"` |
 | `ack_mode`              | 写入何时确认：`durable` 或 `enqueued`。参见[持久性模式](#持久性模式)。 | `"durable"` |
 | `max_unpersisted_bytes` | `enqueued` 模式下，已确认但尚未写入对象存储的数据达到这个大小时，新的写入会等待。 | `"64MB"` |
-| `max_unpersisted_age`   | `enqueued` 模式下，已确认的数据未写入对象存储的时间达到这个时长时，新的写入会等待。 | `"8s"` |
+| `max_unpersisted_age`   | `enqueued` 模式下，已确认的数据未写入对象存储的时间达到这个时长时，新的写入会等待。它并不限制这些数据最长滞留多久，参见[持久性模式](#持久性模式)。 | `"8s"` |
 | `on_corrupted_segment`  | WAL 中有数据损坏时的处理方式：`skip` 或 `fail`。参见[数据损坏](#数据损坏)。 | `"skip"` |
-| `accept_missing_history` | 当配置的 WAL 位置中没有某张表的 WAL 历史时（例如更换了 WAL 位置但没有复制文件），是否仍然打开这张表。设为 `true` 时，这类表会在丢失未 flush 写入的情况下打开。仅用于 WAL 丢失后的恢复，参见[迁移 WAL](#迁移-wal)。 | `false` |
+| `accept_missing_history` | 当 GreptimeDB 发现配置的 WAL 位置中没有某张表的 WAL 历史时（例如更换了 WAL 位置但没有复制文件），是否仍然打开这张表。设为 `true` 时，这类表会在丢失未 flush 写入的情况下打开。仅用于 WAL 丢失后的恢复，参见[迁移 WAL](#迁移-wal)。 | `false` |
 
 除 `provider` 外，以上选项仅在 `provider` 为 `experimental_object_store` 时生效；`max_unpersisted_bytes` 和 `max_unpersisted_age` 仅在 `ack_mode` 为 `enqueued` 时生效。
 
@@ -84,7 +84,7 @@ wal/datanodes/0/epochs/0/objects/
 
 如果修改的是表也在使用的存储提供者（例如 `[storage]` 中的默认存储）的 bucket 或根路径，表数据的位置也会随之改变。这种情况还需要迁移表数据，不在本流程的范围内。
 
-如果更换了位置但没有复制文件，或者这些文件被删除，缺少 WAL 历史的表将无法打开，报错中会提示 WAL `does not hold the history of region`，默认情况下 GreptimeDB 无法启动。报错信息会给出对应的 Region、`prefix` 和存储。
+如果更换了位置但没有复制文件，或者这些文件被删除，GreptimeDB 在发现某张表的 WAL 历史缺失时会拒绝打开这张表，即该位置没有任何 WAL 文件，或者那里最新的 WAL 数据比这张表已经 flush 的数据还旧。此时报错中会提示 WAL `does not hold the history of region`，默认情况下 GreptimeDB 无法启动。报错信息会给出对应的 Region、`prefix` 和存储。对于已经存在 WAL 文件的位置，GreptimeDB 不会检查它是否是正确的位置（例如旧的副本或其他实例的 WAL），因此启动前请确认位置无误。
 
 如果旧的 WAL 已经彻底丢失，可以设置 `accept_missing_history = true` 启动一次 GreptimeDB。受影响的表会打开，但未 flush 的写入会丢失。每个受影响的 Region 都会输出一条警告，并计入 `greptime_logstore_object_store_wal_missing_history_accepted_total`。在这次启动之后、GreptimeDB 向 WAL 写入过数据后，请把该选项改回 `false`。
 
@@ -105,7 +105,9 @@ export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
 - **`durable`**（默认）：写入保存到对象存储之后才确认，已确认的写入在崩溃后不会丢失。代价是延迟：一次写入通常要等待最多一个 `flush_interval`，再加上一次对象存储请求的时间；对象存储较慢或之前的写入尚未保存完成时，等待会更久。
 - **`enqueued`**：GreptimeDB 接收写入后立即确认，数据在后台写到对象存储。在 S3 上的测试中，这种模式的吞吐与本地 WAL 持平。代价是持久性：GreptimeDB 崩溃时，已确认但尚未写到对象存储的写入会丢失。
 
-在 `enqueued` 模式下，当对象存储跟不上写入速度时，`max_unpersisted_bytes` 和 `max_unpersisted_age` 会让新的写入放慢，避免待写入的数据持续增长。但在对象存储故障期间，它们并不能限制崩溃时的损失，因为故障前已确认的写入会一直留在内存中，直到对象存储恢复。
+在 `enqueued` 模式下，当对象存储跟不上写入速度时，`max_unpersisted_bytes` 和 `max_unpersisted_age` 会让新的写入放慢，避免待写入的数据持续增长。但在对象存储故障期间，它们并不能限制崩溃时的损失，因为故障前已确认的写入会一直留在内存中，无论故障持续多久，直到对象存储恢复。
+
+在 `enqueued` 模式下停止 GreptimeDB 时，会先上传尚未保存的已确认写入。如果上传失败，这些写入会丢失，GreptimeDB 在停止时会报告该错误。
 
 在 `enqueued` 模式下，如果对象存储以重试也无法解决的错误拒绝写入，例如没有访问权限或 bucket 不存在，GreptimeDB 会把已确认的写入保留在内存中并持续重试，两次尝试之间最多间隔 30 秒。这期间如果发生崩溃，这些写入会丢失。在某次重试成功之前，新的写入会立即失败并返回可重试的错误，InfluxDB 行协议等 HTTP 写入接口返回的状态码为 503。这期间 `greptime_logstore_object_store_wal_failing` 为 1，日志中会记录对象存储返回的错误。修复问题（例如凭证或 bucket）之后，写入会自动恢复，无需重启。在 `durable` 模式下，同样的错误只会让相关写入失败。
 
@@ -186,7 +188,7 @@ export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
 - **不可恢复的错误**：遇到不可恢复的错误（例如发现其他实例写入的数据）后，WAL 会拒绝所有写入，直到 GreptimeDB 重启。没有访问权限或 bucket 不存在不属于这类错误：在 `enqueued` 模式下 GreptimeDB 会持续重试，参见[持久性模式](#持久性模式)。
 - **已有实例不能切换提供者**：表会沿用创建时的 WAL 提供者。在 `raft_engine` 或 `kafka` 下创建的表，在实例切换到 `experimental_object_store` 后无法打开，反之亦然。GreptimeDB 会报错 `Incompatible WAL provider change`，默认情况下无法启动。切换前先 flush 也无济于事。请在创建实例时就选定 WAL 提供者。
 - **不能修改前缀**：表也会沿用创建时的 WAL `prefix`。修改 `prefix` 后，这些表打开时会报错 `Object store WAL prefix mismatch`。
-- **WAL 历史只存在于其文件所在的位置**：修改 `storage_provider`，或它所指向存储提供者的 bucket、根路径后没有复制 WAL 文件，或者这些文件被删除时，受影响的表无法打开，默认情况下 GreptimeDB 无法启动。参见[迁移 WAL](#迁移-wal)。
+- **WAL 历史只存在于其文件所在的位置**：修改 `storage_provider`，或它所指向存储提供者的 bucket、根路径后没有复制 WAL 文件，或者这些文件被删除时，GreptimeDB 发现历史缺失的表将无法打开，默认情况下 GreptimeDB 无法启动。GreptimeDB 并不能识别所有错误的位置。参见[迁移 WAL](#迁移-wal)。
 - **删除表时发生崩溃**：如果 GreptimeDB 在删除表的过程中崩溃，或者在 WAL 未能记录删除操作之后、对象存储恢复接受写入之前崩溃，被删除表的 WAL 数据将不会被删除，还会导致其他旧的 WAL 数据也无法删除。此时可以看到 `indexed_objects` 持续增长，而 `deleted_objects_total` 不再变化。第一种情况由 [GreptimeTeam/greptimedb#9577](https://github.com/GreptimeTeam/greptimedb/issues/9577) 跟踪。
 
 ## 最佳实践
