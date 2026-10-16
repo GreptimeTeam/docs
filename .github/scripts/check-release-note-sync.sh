@@ -10,7 +10,7 @@
 #   Compares every blog/release-*.md changed between <base_sha> and HEAD
 #   against the GitHub Release body of GreptimeTeam/greptimedb (override with
 #   $RELEASE_REPO). The tag is derived from the filename, e.g.
-#   blog/release-1-2-0-beta.1.md -> v1.2.0-beta.1.
+#   blog/release-1-2-0-beta-1.md -> v1.2.0-beta.1.
 #
 # Behavior:
 #   - No GitHub release for the tag yet (404): warn and skip (the blog PR may
@@ -30,9 +30,17 @@ for f in $(git diff --name-only "${BASE_SHA}" HEAD | grep -E '^blog/release-[^/]
   echo "== Checking ${f}"
 
   # derive the release tag from the filename:
-  #   release-1-2-0-beta.1.md -> 1-2-0-beta.1 -> v1.2.0-beta.1
-  tag=$(basename "${f}" .md | sed 's/^release-//' \
-    | awk -F- '{printf "v%s.%s.%s", $1, $2, $3; for (i = 4; i <= NF; i++) printf "-%s", $i; print ""}')
+  #   release-1-2-1.md -> v1.2.1, release-1-2-0-beta-1.md -> v1.2.0-beta.1
+  tag=$(basename "${f}" .md | sed -E \
+    -e 's/^release-([0-9]+)-([0-9]+)-([0-9]+)/v\1.\2.\3/' \
+    -e 's/-(alpha|beta|rc)[-.]([0-9]+)$/-\1.\2/')
+
+  # A malformed tag would 404 below and be skipped as "not published yet".
+  if [[ ! "${tag}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc)\.[0-9]+)?$ ]]; then
+    echo "::error::cannot derive a release tag from ${f} (got ${tag}); expected blog/release-X-Y-Z.md or blog/release-X-Y-Z-beta-N.md"
+    failed=1
+    continue
+  fi
 
   body=$(gh api "repos/${RELEASE_REPO}/releases/tags/${tag}" --jq '.body // empty' 2>/dev/null || true)
 
