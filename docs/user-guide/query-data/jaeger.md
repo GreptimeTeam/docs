@@ -40,7 +40,7 @@ const proxyConfig = {
 | Request | Description |
 | --- | --- |
 | `GET /api/v3/services` | Returns a `services` list. |
-| `GET /api/v3/operations?service={service}` | Returns an `operations` list with `name` and `spanKind`. Requires `service`; optionally filters by `spanKind`. |
+| `GET /api/v3/operations?service={service}` | Returns an `operations` list with `name` and `spanKind`. Requires `service`; optionally filters by `spanKind`, for example `spanKind=client`. Kind names are case-insensitive and omit the `SPAN_KIND_` prefix. |
 | `GET /api/v3/traces/{trace_id}` | Returns a trace by ID, with OTLP JSON data in `result`. |
 | `GET /api/v3/traces` | Searches traces, with OTLP JSON data in `result`. |
 | `GET /api/v3/trace-summaries` | Searches with the same filters and returns `summaries`, including root service and operation names, span counts, and per-service statistics. |
@@ -58,6 +58,8 @@ const proxyConfig = {
 | `query.durationMin`, `query.durationMax` | Optional minimum and maximum span durations, both nonnegative, such as `1.5ms`, `2s`, or `1h2m`. The minimum must not exceed the maximum. |
 | `query.searchDepth` | Optional maximum number of traces to return. Defaults to `100` when omitted or `0`. Accepts `0`–`10000`; values outside this range return an error. |
 | `query.attributes` | Optional JSON object with string keys and values, such as `{"http.method":"GET"}`. Strings that parse as numbers or booleans are used as typed filters. |
+
+A trace matches only if at least one span satisfies all service, operation, time, duration, and attribute filters. Attributes can refer to span or resource attributes. With the v1 trace data model, attribute filters are ignored if the corresponding key is absent from both the span and resource attribute columns in the table schema.
 
 Parameters also accept snake_case names, such as `query.start_time_min`. `query.num_traces` is an alias for `query.searchDepth`.
 
@@ -81,7 +83,7 @@ Invalid parameters return `400`. Trace searches and ID lookups with no results r
 
 The GreptimeDB Jaeger API has these limitations:
 
-- `query.filter` is not supported. Requests containing it return `400`.
+- `query.filter` is not supported. Requests containing it return `400`. Attribute equality filters can use `query.attributes`.
 - Clock-skew correction is not supported. The `rawTraces` parameter is ignored.
 - Jaeger gRPC queries are not supported.
 

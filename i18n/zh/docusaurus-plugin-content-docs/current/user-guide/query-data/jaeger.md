@@ -40,7 +40,7 @@ const proxyConfig = {
 | 请求 | 说明 |
 | --- | --- |
 | `GET /api/v3/services` | 返回服务列表，字段名为 `services`。 |
-| `GET /api/v3/operations?service={service}` | 查询指定服务的操作列表。`service` 必填，`spanKind` 可选。响应中的 `operations` 包含 `name` 和 `spanKind`。 |
+| `GET /api/v3/operations?service={service}` | 查询指定服务的操作列表。`service` 必填，`spanKind` 可选，例如 `spanKind=client`。类型名称不区分大小写，不带 `SPAN_KIND_` 前缀。响应中的 `operations` 包含 `name` 和 `spanKind`。 |
 | `GET /api/v3/traces/{trace_id}` | 按 ID 查询 Trace。`result` 字段中的数据采用 OTLP JSON 格式。 |
 | `GET /api/v3/traces` | 搜索 Trace。`result` 字段中的数据采用 OTLP JSON 格式。 |
 | `GET /api/v3/trace-summaries` | 使用与 Trace 搜索相同的参数，返回 `summaries`。摘要包含根 Span 的服务名和操作名、Span 总数，以及各服务的统计信息。 |
@@ -58,6 +58,8 @@ const proxyConfig = {
 | `query.durationMin`、`query.durationMax` | 可选，Span 耗时的上下限，不能为负数，例如 `1.5ms`、`2s`、`1h2m`。下限不能大于上限。 |
 | `query.searchDepth` | 可选，返回的 Trace 数量上限，取值范围为 `0`–`10000`。省略或设为 `0` 时使用 `100`；超出范围返回错误。 |
 | `query.attributes` | 可选，按属性过滤。使用键和值均为字符串的 JSON 对象，例如 `{"http.method":"GET"}`。如果值能解析为数字或布尔值，则按解析后的类型匹配。 |
+
+只有至少一个 Span 同时满足服务名、操作名、时间、耗时和属性的全部过滤条件，Trace 才会匹配。属性过滤支持 Span 属性和 Resource 属性。使用 v1 Trace 数据模型时，如果表结构中没有对应的 Span 或 Resource 属性列，该属性过滤条件会被忽略。
 
 参数也接受 snake_case 写法，例如 `query.start_time_min`。`query.num_traces` 是 `query.searchDepth` 的别名。
 
@@ -81,7 +83,7 @@ curl -G 'http://localhost:4000/v1/jaeger/api/v3/traces' \
 
 GreptimeDB 的 Jaeger 接口有以下限制：
 
-- 不支持 `query.filter`，传入该参数会返回 `400`。
+- 不支持 `query.filter`，传入该参数会返回 `400`。属性等值过滤可使用 `query.attributes`。
 - 不支持时钟偏移校正，`rawTraces` 参数会被忽略。
 - 不支持 Jaeger gRPC 查询。
 
