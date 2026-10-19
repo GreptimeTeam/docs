@@ -136,6 +136,8 @@ CREATE TABLE logs (
 
 #### LIKE 查询
 
+LIKE 索引剪枝要求过滤条件下推到存储扫描。Nightly 和 v1.3 beta.2 的普通 `WHERE column LIKE ...` 查询中，过滤条件保留在 `MergeScan` 上方，不使用 Bloom 全文索引剪枝；单机和分布式部署均受此限制。通过 `EXPLAIN ANALYZE` 检查扫描器是否包含 LIKE 过滤条件。
+
 Bloom 全文索引支持区分大小写、非否定的 `LIKE` 条件，转义符为默认的反斜杠 `\`。模式必须包含每个匹配值都具有的完整词项或汉字 bigram。例如：
 
 ```sql
@@ -144,7 +146,7 @@ SELECT * FROM logs WHERE message LIKE '%手机%';
 SELECT * FROM logs WHERE lower(message) LIKE '%disk quota exceeded%';
 ```
 
-第一个模式可使用中间完整词项 `quota`；第二个可使用汉字 bigram `手机`。第三个要求索引设置 `case_sensitive=false`。
+过滤条件下推到存储扫描后，第一个模式可使用中间完整词项 `quota`；第二个可使用汉字 bigram `手机`。第三个要求索引设置 `case_sensitive=false`。
 `LIKE '%error%'` 的两端没有词边界保证，因此不使用 Bloom 全文索引剪枝。`ILIKE` 和 `NOT LIKE` 也不使用该索引。
 这些限制只影响索引使用，不改变查询结果。
 

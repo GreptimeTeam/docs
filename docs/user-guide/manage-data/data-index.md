@@ -134,6 +134,8 @@ Index effectiveness depends on the predicate and the distribution of terms acros
 
 #### LIKE queries
 
+LIKE index pruning requires the predicate to reach the storage scan. In Nightly and v1.3 beta.2, a regular `WHERE column LIKE ...` query keeps the filter above `MergeScan` and does not use Bloom full-text pruning, in both standalone and distributed deployments. Use `EXPLAIN ANALYZE` to check whether the scanner receives the LIKE predicate.
+
 The Bloom full-text index supports case-sensitive, non-negated `LIKE` predicates with the default backslash (`\`) escape character. The pattern must contain a complete term or Han bigram that every matching value contains. For example:
 
 ```sql
@@ -142,7 +144,7 @@ SELECT * FROM logs WHERE message LIKE '%手机%';
 SELECT * FROM logs WHERE lower(message) LIKE '%disk quota exceeded%';
 ```
 
-The first pattern can use the complete middle term `quota`; the second can use the Han bigram `手机`. The third requires `case_sensitive=false` on the index.
+When the predicate reaches the storage scan, the first pattern can use the complete middle term `quota`; the second can use the Han bigram `手机`. The third requires `case_sensitive=false` on the index.
 `LIKE '%error%'` has no guaranteed word boundaries and does not use Bloom full-text pruning. `ILIKE` and `NOT LIKE` do not use this index either.
 These restrictions affect index use, not query results.
 
