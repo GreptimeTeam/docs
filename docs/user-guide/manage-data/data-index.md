@@ -102,12 +102,12 @@ When creating or modifying a full-text index, you can specify the following opti
 - `analyzer`: Sets the language analyzer for the full-text index
   - Supported values: `English`, `Chinese`
   - Default: `English`
-  - Note: The Chinese analyzer requires significantly more time to build the index due to the complexity of Chinese text segmentation. Consider using it only when Chinese text search is a primary requirement.
+  - On the `bloom` backend, both settings use word boundaries aligned with `matches_term` and adjacent Han-character pairs (bigrams). Chinese text does not require a different analyzer. The `tantivy` backend uses the selected language analyzer.
 
 - `case_sensitive`: Determines whether the full-text index is case-sensitive
   - Supported values: `true`, `false`
   - Default: `false`
-  - Note: Setting to `true` may slightly improve performance for case-sensitive queries, but will degrade performance for case-insensitive queries. This setting does not affect the results of `matches_term` queries.
+  - This setting does not change the matching semantics of `matches_term` or `LIKE`. `matches_term(lower(column), ...)` and `lower(column) LIKE ...` can use the Bloom full-text index only when `case_sensitive=false`.
 
 - `backend`: Sets the backend for the full-text index
   - Supported values: `bloom`, `tantivy`
@@ -126,10 +126,7 @@ When creating or modifying a full-text index, you can specify the following opti
 GreptimeDB provides two full-text index backends for efficient log searching:
 
 :::note
-The index sizes and performance multipliers below come from Greptime's testing.
-Use them to compare the two backends against each other, not as absolute figures
-for your data: selectivity, term distribution, and cache state all move these
-numbers.
+The index sizes below come from Greptime's testing. Actual sizes depend on the data and index configuration.
 :::
 
 1. **Bloom Backend**
@@ -156,20 +153,38 @@ numbers.
      - Original data: ~10GB
      - Tantivy index: ~10GB
 
+| Backend | Queries that use the index |
+| --- | --- |
+| `bloom` | `matches_term` and `LIKE` predicates with extractable index terms. The index skips blocks that cannot match; remaining rows are evaluated against the original predicate. |
+| `tantivy` | `matches()` queries. `matches_term` does not use the Tantivy index and executes by scanning. |
+
 #### Performance Comparison
 
-The following table shows the performance comparison between different query methods (using Bloom as baseline):
+Index effectiveness depends on the predicate and the distribution of terms across data blocks. Predicates without extractable index terms do not use Bloom full-text pruning. Use `EXPLAIN ANALYZE VERBOSE` to inspect index pruning. The `rg_fulltext_filtered` and `rows_fulltext_filtered` metrics report the row groups and rows skipped by the full-text index. A query can use the index without skipping any rows if all indexed blocks contain candidate matches.
 
-| Query Type | High Selectivity (e.g., TraceID) | Low Selectivity (e.g., "HTTP") |
-|------------|----------------------------------|--------------------------------|
-| LIKE       | 50x slower                      | 1x                            |
-| Tantivy    | 5x faster                       | 5x slower                     |
-| Bloom      | 1x (baseline)                   | 1x (baseline)                 |
+#### LIKE queries
 
-Key observations:
-- For high-selectivity queries (e.g., unique values), Tantivy provides the best performance
-- For low-selectivity queries, Bloom offers more consistent performance
-- Bloom has significant storage advantage over Tantivy (1GB vs 10GB in test case)
+The Bloom full-text index supports case-sensitive, non-negated `LIKE` predicates with the default backslash (`\`) escape character. The pattern must contain a complete term or Han bigram that every matching value contains. For example:
+
+```sql
+SELECT * FROM logs WHERE message LIKE '%disk quota exceeded%';
+SELECT * FROM logs WHERE message LIKE '%手机%';
+SELECT * FROM logs WHERE lower(message) LIKE '%disk quota exceeded%';
+```
+
+The first pattern contains the complete middle term `quota`; the second contains the Han bigram `手机`. The third pattern requires `case_sensitive=false` on the index.
+`LIKE '%error%'` has no guaranteed word boundaries and does not use Bloom full-text pruning. `ILIKE` and `NOT LIKE` do not use this index either.
+These restrictions affect index use, not query results.
+
+#### Rebuild Bloom full-text indexes after upgrading
+
+Legacy Bloom full-text indexes are no longer used for pruning. Existing SST files remain readable, but queries scan them without Bloom full-text pruning until compaction rewrites the files or the indexes are rebuilt manually:
+
+```sql
+ADMIN BUILD_INDEX('logs');
+```
+
+This command also rebuilds Bloom full-text indexes with an outdated format version. See [Build Index](/reference/sql/admin.md#build-index) for details.
 
 #### Examples
 
@@ -178,7 +193,7 @@ Key observations:
 ```sql
 -- Using Bloom backend (recommended for most cases)
 CREATE TABLE logs (
-    timestamp TIMESTAMP(9) TIME INDEX,
+    `timestamp` TIMESTAMP(9) TIME INDEX,
     `message` STRING FULLTEXT INDEX WITH (
         backend = 'bloom',
         analyzer = 'English',
@@ -186,9 +201,9 @@ CREATE TABLE logs (
     )
 );
 
--- Using Tantivy backend (for high-selectivity queries)
+-- Using Tantivy backend for matches() queries
 CREATE TABLE logs (
-    timestamp TIMESTAMP(9) TIME INDEX,
+    `timestamp` TIMESTAMP(9) TIME INDEX,
     `message` STRING FULLTEXT INDEX WITH (
         backend = 'tantivy',
         analyzer = 'English',
@@ -221,11 +236,9 @@ SET FULLTEXT INDEX WITH (
 
 Fulltext index usually comes with following drawbacks:
 
-- Higher storage overhead compared to regular indexes due to storing word tokens and positions
+- Additional storage for index data
 - Increased flush and compaction latency as each text document needs to be tokenized and indexed
 - May not be optimal for simple prefix or suffix matching operations
-
-Consider using full-text index only when you need advanced text search capabilities and flexible query patterns.
 
 ## Modify indexes
 
