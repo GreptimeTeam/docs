@@ -123,6 +123,39 @@ When creating or modifying a full-text index, you can specify the following opti
 
 #### Backend Selection
 
+GreptimeDB provides two full-text index backends for efficient log searching:
+
+:::note
+The index sizes below come from Greptime's testing.
+Use them to compare the two backends against each other, not as absolute figures
+for your data: selectivity, term distribution, and cache state all move these
+numbers.
+:::
+
+1. **Bloom Backend**
+   - Best for: General-purpose log searching
+   - Features:
+     - Uses Bloom filter for efficient filtering
+     - Lower storage overhead
+     - Consistent performance across different query patterns
+   - Limitations:
+     - Slightly slower for high-selectivity queries
+   - Storage Cost Example:
+     - Original data: ~10GB
+     - Bloom index: ~1GB
+
+2. **Tantivy Backend**
+   - Best for: High-selectivity queries (e.g., unique values like TraceID)
+   - Features:
+     - Uses inverted index for fast exact matching
+     - Excellent performance for high-selectivity queries
+   - Limitations:
+     - Higher storage overhead (close to original data size)
+     - Slower performance for low-selectivity queries
+   - Storage Cost Example:
+     - Original data: ~10GB
+     - Tantivy index: ~10GB
+
 | Backend | Supported queries |
 | --- | --- |
 | `bloom` | `matches_term` and `LIKE` predicates with extractable index terms. The index skips blocks that cannot match; remaining rows are evaluated against the original predicate. |
@@ -134,7 +167,7 @@ Index effectiveness depends on the predicate and the distribution of terms acros
 
 #### LIKE queries
 
-LIKE index pruning requires the predicate to reach the storage scan. In Nightly and v1.3 beta.2, a regular `WHERE column LIKE ...` query keeps the filter above `MergeScan` and does not use Bloom full-text pruning, in both standalone and distributed deployments. Use `EXPLAIN ANALYZE` to check whether the scanner receives the LIKE predicate.
+Ordinary `LIKE` queries do not yet use the Bloom full-text index for acceleration.
 
 The Bloom full-text index supports case-sensitive, non-negated `LIKE` predicates with the default backslash (`\`) escape character. The pattern must contain a complete term or Han bigram that every matching value contains. For example:
 
@@ -144,7 +177,7 @@ SELECT * FROM logs WHERE message LIKE '%手机%';
 SELECT * FROM logs WHERE lower(message) LIKE '%disk quota exceeded%';
 ```
 
-When the predicate reaches the storage scan, the first pattern can use the complete middle term `quota`; the second can use the Han bigram `手机`. The third requires `case_sensitive=false` on the index.
+The first pattern contains the complete middle term `quota`; the second contains the Han bigram `手机`. Index support for the third requires `case_sensitive=false`.
 `LIKE '%error%'` has no guaranteed word boundaries and does not use Bloom full-text pruning. `ILIKE` and `NOT LIKE` do not use this index either.
 These restrictions affect index use, not query results.
 
@@ -165,7 +198,7 @@ This command also rebuilds Bloom full-text indexes with an outdated format versi
 ```sql
 -- Using Bloom backend (recommended for most cases)
 CREATE TABLE logs (
-    timestamp TIMESTAMP(9) TIME INDEX,
+    `timestamp` TIMESTAMP(9) TIME INDEX,
     `message` STRING FULLTEXT INDEX WITH (
         backend = 'bloom',
         analyzer = 'English',
@@ -175,7 +208,7 @@ CREATE TABLE logs (
 
 -- Using Tantivy backend for matches() queries
 CREATE TABLE logs (
-    timestamp TIMESTAMP(9) TIME INDEX,
+    `timestamp` TIMESTAMP(9) TIME INDEX,
     `message` STRING FULLTEXT INDEX WITH (
         backend = 'tantivy',
         analyzer = 'English',
