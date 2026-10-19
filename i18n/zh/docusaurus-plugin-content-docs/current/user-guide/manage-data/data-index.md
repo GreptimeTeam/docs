@@ -104,12 +104,12 @@ CREATE TABLE logs (
 - `analyzer`：设置全文索引的语言分析器
   - 支持的值：`English`、`Chinese`
   - 默认值：`English`
-  - 注意：由于中文文本分词的复杂性，中文分析器构建索引需要的时间显著更长。建议仅在中文文本搜索是主要需求时使用。
+  - `bloom` 后端中，两种设置均使用与 `matches_term` 一致的词边界，并将连续汉字按相邻双字切分（bigram）；无需为中文内容切换分析器。`tantivy` 后端仍按所选语言分析器分词。
 
 - `case_sensitive`：决定全文索引是否区分大小写
   - 支持的值：`true`、`false`
   - 默认值：`false`
-  - 注意：设置为 `true` 可能会略微提高区分大小写查询的性能，但会降低不区分大小写查询的性能。此设置不会影响 `matches_term` 查询的结果。
+  - 此设置不会改变 `matches_term` 或 `LIKE` 的匹配语义。`matches_term(lower(column), ...)` 和 `lower(column) LIKE ...` 仅在 `case_sensitive=false` 时可使用 Bloom 全文索引。
 
 - `backend`：设置全文索引的后端实现
   - 支持的值：`bloom`、`tantivy`
@@ -125,52 +125,38 @@ CREATE TABLE logs (
 
 #### 后端选择
 
-GreptimeDB 提供两种全文索引后端用于高效日志搜索：
-
-:::note
-下面的索引体积和性能倍数来自 Greptime 的测试。
-这些数字可以用来横向比较两种后端，但不能直接当作你自己数据上的绝对值：
-选择率、词项分布和缓存状态都会明显改变结果。
-:::
-
-1. **Bloom 后端**
-   - 最适合：通用日志搜索
-   - 特点：
-     - 使用 Bloom 过滤器进行高效过滤
-     - 存储开销较低
-     - 在不同查询模式下性能稳定
-   - 限制：
-     - 对于高选择性查询稍慢
-   - 存储成本示例：
-     - 原始数据：约 10GB
-     - Bloom 索引：约 1GB
-
-2. **Tantivy 后端**
-   - 最适合：高选择性查询（如 TraceID 等唯一值）
-   - 特点：
-     - 使用倒排索引实现快速精确匹配
-     - 对高选择性查询性能优异
-   - 限制：
-     - 存储开销较高（接近原始数据大小）
-     - 对低选择性查询性能较慢
-   - 存储成本示例：
-     - 原始数据：约 10GB
-     - Tantivy 索引：约 10GB
+| 后端 | 支持的查询 |
+| --- | --- |
+| `bloom` | `matches_term` 及可提取索引词项的 `LIKE` 条件。索引跳过不可能匹配的数据块，剩余行仍按原始条件过滤。 |
+| `tantivy` | `matches()` 查询。`matches_term` 不使用 Tantivy 索引，仍可通过扫描执行。 |
 
 #### 性能对比
 
-下表显示了不同查询方法之间的性能对比（以 Bloom 为基准）：
+索引效果取决于查询条件和词项在数据块中的分布。对于无法提取索引词项的条件，Bloom 全文索引不进行剪枝。使用 `EXPLAIN ANALYZE` 检查实际扫描和过滤的行数。
 
-| 查询类型 | 高选择性（如 TraceID） | 低选择性（如 "HTTP"） |
-|------------|----------------------------------|--------------------------------|
-| LIKE       | 慢 50 倍                      | 1 倍                            |
-| Tantivy    | 快 5 倍                       | 慢 5 倍                     |
-| Bloom      | 1 倍（基准）                   | 1 倍（基准）                 |
+#### LIKE 查询
 
-主要观察结果：
-- 对于高选择性查询（如唯一值），Tantivy 提供最佳性能
-- 对于低选择性查询，Bloom 提供更稳定的性能
-- Bloom 在存储方面比 Tantivy 有明显优势（测试案例中为 1GB vs 10GB）
+Bloom 全文索引支持区分大小写、非否定的 `LIKE` 条件，转义符为默认的反斜杠 `\`。模式必须包含每个匹配值都具有的完整词项或汉字 bigram。例如：
+
+```sql
+SELECT * FROM logs WHERE message LIKE '%disk quota exceeded%';
+SELECT * FROM logs WHERE message LIKE '%手机%';
+SELECT * FROM logs WHERE lower(message) LIKE '%disk quota exceeded%';
+```
+
+第一个模式可使用中间完整词项 `quota`；第二个可使用汉字 bigram `手机`。第三个要求索引设置 `case_sensitive=false`。
+`LIKE '%error%'` 的两端没有词边界保证，因此不使用 Bloom 全文索引剪枝。`ILIKE` 和 `NOT LIKE` 也不使用该索引。
+这些限制只影响索引使用，不改变查询结果。
+
+#### 升级后重建 Bloom 全文索引
+
+旧格式的 Bloom 全文索引不再用于剪枝。升级后，旧 SST 仍可查询，但在 compaction 重写文件或手动重建索引之前，查询会扫描这些文件而不使用 Bloom 全文索引剪枝。
+
+```sql
+ADMIN BUILD_INDEX('logs');
+```
+
+该命令也会重建格式版本过旧的 Bloom 全文索引。完整用法参见 [构建索引](/reference/sql/admin.md#构建索引)。
 
 #### 配置示例
 
@@ -187,7 +173,7 @@ CREATE TABLE logs (
     )
 );
 
--- 使用 Tantivy 后端（用于高选择性查询）
+-- Using Tantivy backend for matches() queries
 CREATE TABLE logs (
     timestamp TIMESTAMP(9) TIME INDEX,
     `message` STRING FULLTEXT INDEX WITH (
