@@ -19,9 +19,23 @@ GreptimeDB exposes [Jaeger](https://www.jaegertracing.io/) HTTP query APIs under
 - `/api/traces`: Get traces by query parameters.
 - `/api/traces/{trace_id}`: Get a trace by its ID.
 
+Query trace data in GreptimeDB with [Grafana's Jaeger plugin](https://grafana.com/docs/grafana/latest/datasources/jaeger/) (recommended) or [Jaeger UI](https://github.com/jaegertracing/jaeger-ui).
+
 ## Jaeger UI v2
 
 The HTTP API v3 endpoints used by Jaeger UI v2 are also available under `/v1/jaeger`. Proxy the UI's `/api` requests to `http://localhost:4000/v1/jaeger/api`, preserving the remaining path and query parameters.
+
+For Jaeger UI, set `proxyConfig` in `packages/jaeger-ui/vite.config.mts` to the GreptimeDB address. Preserve the `/api` request path:
+
+```ts
+const proxyConfig = {
+  target: 'http://localhost:4000/v1/jaeger',
+  secure: false,
+  changeOrigin: true,
+  ws: true,
+  xfwd: true,
+};
+```
 
 | Method and path | Behavior |
 | --- | --- |
