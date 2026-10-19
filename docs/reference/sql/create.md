@@ -471,11 +471,11 @@ CREATE TABLE spans (
 SHOW CREATE TABLE spans;
 ```
 
-| Option | Values and behavior |
+| Option | Description |
 | --- | --- |
 | `type` | Compression algorithm. Only `'zstd'` is supported; it is also the default. |
 | `level` | Zstd compression level, an integer from `1` through `22`. Defaults to the SST setting of `1`. |
-| `page_size` | A positive size such as `'64KiB'` or `'8MiB'`. Sets the Parquet data page size limit; defaults to `1MiB`. |
+| `page_size` | Parquet data page size limit. Must be greater than `0`, for example `'64KiB'` or `'8MiB'`. Defaults to `1MiB`. |
 | `encoding` | `'plain'` or `'delta_binary_packed'`. Both disable dictionary encoding for the column. `delta_binary_packed` requires an integer or timestamp column. Omitting this option preserves the default encoding. |
 
 Each option can be set independently. `SHOW CREATE TABLE` displays the column compression settings. These options do not change column values or SQL data types.

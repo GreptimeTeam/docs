@@ -233,7 +233,7 @@ New v1 and v2 trace tables created automatically through OTLP use these column o
 - `span_id` and `parent_span_id`: `encoding='plain'` and `page_size='64KiB'`.
 - `timestamp_end`: `encoding='delta_binary_packed'`.
 
-These settings do not change identifier values, timestamp values, or query results. Existing tables and v0 trace tables retain their settings; `ALTER TABLE` does not support changing these options. See the [`COMPRESSION` column option](/reference/sql/create.md#compression-column-option) for syntax and restrictions.
+These options do not change column values or query results. Existing tables and v0 trace tables retain their settings; `ALTER TABLE` does not support changing these options. See the [`COMPRESSION` column option](/reference/sql/create.md#compression-column-option) for syntax and restrictions.
 
 ### Partition Rules
 

@@ -203,7 +203,7 @@ OTLP 自动创建的 v1 和 v2 Trace 表使用以下列选项：
 - `span_id` 和 `parent_span_id`：`encoding='plain'`、`page_size='64KiB'`。
 - `timestamp_end`：`encoding='delta_binary_packed'`。
 
-这些设置不改变标识符、时间戳的值或查询结果。现有表及 v0 Trace 表保持原有配置；`ALTER TABLE` 不支持修改这些选项。语法和限制参见 [`COMPRESSION` 列选项](/reference/sql/create.md#compression-列选项)。
+这些选项不改变列值或查询结果。已有表和 v0 Trace 表的配置保持不变，不能通过 `ALTER TABLE` 修改这些选项。语法和限制参见 [`COMPRESSION` 列选项](/reference/sql/create.md#compression-列选项)。
 
 ### 分区规则
 

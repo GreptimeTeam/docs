@@ -483,11 +483,11 @@ CREATE TABLE spans (
 SHOW CREATE TABLE spans;
 ```
 
-| 选项 | 取值与行为 |
+| 选项 | 说明 |
 | --- | --- |
-| `type` | 压缩算法，仅支持 `'zstd'`，也是默认值。 |
+| `type` | 压缩算法，仅支持 `'zstd'`，默认值为 `'zstd'`。 |
 | `level` | Zstd 压缩级别，整数 `1`–`22`。未指定时使用 SST 默认值 `1`。 |
-| `page_size` | 正数大小，例如 `'64KiB'` 或 `'8MiB'`。设置 Parquet 数据页大小限制；未指定时使用默认值 `1MiB`。 |
+| `page_size` | Parquet 数据页大小上限，必须大于 `0`，例如 `'64KiB'` 或 `'8MiB'`。默认值为 `1MiB`。 |
 | `encoding` | `'plain'` 或 `'delta_binary_packed'`，两者均禁用该列的字典编码。`delta_binary_packed` 仅支持整数列和时间戳列。未指定时保留默认编码。 |
 
 各选项可独立设置。`SHOW CREATE TABLE` 显示列的压缩配置。这些选项不改变列值或 SQL 数据类型。
@@ -496,7 +496,7 @@ SHOW CREATE TABLE spans;
 
 - `JSON2` 列不支持 `COMPRESSION`。
 - Tag 列要求表使用 `sst_format='flat'` 和 `primary_key_encoding='dense'`。
-- Metric Engine 逻辑表不接受显式 `COMPRESSION` 选项，应在共享物理表上配置。物理表默认使用 sparse 主键编码，因此默认不接受 Tag 列的压缩选项；Field 列不受此限制。
+- Metric Engine 的 `COMPRESSION` 选项必须在共享物理表上配置，不能在逻辑表上指定。物理表默认使用 sparse 主键编码，默认配置下不能为 Tag 列指定压缩选项；Field 列不受此限制。
 - `ALTER TABLE` 不支持修改这些选项。已配置 `delta_binary_packed` 的列不能通过 `MODIFY COLUMN` 改为非整数、非时间戳类型。
 
 ### Region 分区规则
