@@ -126,10 +126,7 @@ When creating or modifying a full-text index, you can specify the following opti
 GreptimeDB provides two full-text index backends for efficient log searching:
 
 :::note
-The index sizes below come from Greptime's testing.
-Use them to compare the two backends against each other, not as absolute figures
-for your data: selectivity, term distribution, and cache state all move these
-numbers.
+The index sizes below come from Greptime's testing. Actual sizes depend on the data and index configuration.
 :::
 
 1. **Bloom Backend**
@@ -167,7 +164,7 @@ Index effectiveness depends on the predicate and the distribution of terms acros
 
 #### LIKE queries
 
-Ordinary `LIKE` queries do not yet use the Bloom full-text index for acceleration.
+Ordinary `LIKE` queries do not use the Bloom full-text index for acceleration.
 
 The Bloom full-text index supports case-sensitive, non-negated `LIKE` predicates with the default backslash (`\`) escape character. The pattern must contain a complete term or Han bigram that every matching value contains. For example:
 
@@ -177,7 +174,7 @@ SELECT * FROM logs WHERE message LIKE '%手机%';
 SELECT * FROM logs WHERE lower(message) LIKE '%disk quota exceeded%';
 ```
 
-The first pattern contains the complete middle term `quota`; the second contains the Han bigram `手机`. Index support for the third requires `case_sensitive=false`.
+The first pattern contains the complete middle term `quota`; the second contains the Han bigram `手机`. The third pattern requires `case_sensitive=false` on the index.
 `LIKE '%error%'` has no guaranteed word boundaries and does not use Bloom full-text pruning. `ILIKE` and `NOT LIKE` do not use this index either.
 These restrictions affect index use, not query results.
 

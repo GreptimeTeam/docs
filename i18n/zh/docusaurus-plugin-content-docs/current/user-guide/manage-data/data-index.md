@@ -104,7 +104,7 @@ CREATE TABLE logs (
 - `analyzer`：设置全文索引的语言分析器
   - 支持的值：`English`、`Chinese`
   - 默认值：`English`
-  - `bloom` 后端中，两种设置均使用与 `matches_term` 一致的词边界，并将连续汉字按相邻双字切分（bigram）；无需为中文内容切换分析器。`tantivy` 后端仍按所选语言分析器分词。
+  - `bloom` 后端的两种分析器使用相同的分词规则：词边界与 `matches_term` 一致，连续汉字按相邻的两个字切分（bigram）。处理中文不需要切换分析器。`tantivy` 后端按所选分析器分词。
 
 - `case_sensitive`：决定全文索引是否区分大小写
   - 支持的值：`true`、`false`
@@ -128,9 +128,7 @@ CREATE TABLE logs (
 GreptimeDB 提供两种全文索引后端用于高效日志搜索：
 
 :::note
-下面的索引体积来自 Greptime 的测试。
-这些数字可以用来横向比较两种后端，但不能直接当作你自己数据上的绝对值：
-选择率、词项分布和缓存状态都会明显改变结果。
+以下索引大小来自 Greptime 的实测，实际大小取决于数据内容和索引配置。
 :::
 
 1. **Bloom 后端**
@@ -168,9 +166,9 @@ GreptimeDB 提供两种全文索引后端用于高效日志搜索：
 
 #### LIKE 查询
 
-普通 `LIKE` 查询尚不使用 Bloom 全文索引加速。
+普通 `LIKE` 查询不使用 Bloom 全文索引加速。
 
-Bloom 全文索引支持区分大小写、非否定的 `LIKE` 条件，转义符为默认的反斜杠 `\`。模式必须包含每个匹配值都具有的完整词项或汉字 bigram。例如：
+Bloom 全文索引支持区分大小写的 `LIKE` 条件，要求使用默认转义符 `\\`。匹配模式必须保证所有匹配结果都包含完整词项或相邻的两个汉字（bigram）。例如：
 
 ```sql
 SELECT * FROM logs WHERE message LIKE '%disk quota exceeded%';
@@ -178,19 +176,19 @@ SELECT * FROM logs WHERE message LIKE '%手机%';
 SELECT * FROM logs WHERE lower(message) LIKE '%disk quota exceeded%';
 ```
 
-第一个模式包含中间完整词项 `quota`；第二个包含汉字 bigram `手机`。第三种模式的索引支持要求设置 `case_sensitive=false`。
+第一个模式包含中间完整词项 `quota`；第二个包含汉字 bigram `手机`。第三种模式要求索引设置 `case_sensitive=false`。
 `LIKE '%error%'` 的两端没有词边界保证，因此不使用 Bloom 全文索引剪枝。`ILIKE` 和 `NOT LIKE` 也不使用该索引。
 这些限制只影响索引使用，不改变查询结果。
 
 #### 升级后重建 Bloom 全文索引
 
-旧格式的 Bloom 全文索引不再用于剪枝。升级后，旧 SST 仍可查询，但在 compaction 重写文件或手动重建索引之前，查询会扫描这些文件而不使用 Bloom 全文索引剪枝。
+升级后，旧 SST 文件仍可查询，但旧格式的 Bloom 全文索引不再用于加速查询。需要等待 compaction 重写文件，或手动重建索引：
 
 ```sql
 ADMIN BUILD_INDEX('logs');
 ```
 
-该命令也会重建格式版本过旧的 Bloom 全文索引。完整用法参见 [构建索引](/reference/sql/admin.md#构建索引)。
+该命令也支持重建旧版本的 Bloom 全文索引。完整用法参见 [构建索引](/reference/sql/admin.md#构建索引)。
 
 #### 配置示例
 
