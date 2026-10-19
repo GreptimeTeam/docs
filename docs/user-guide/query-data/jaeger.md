@@ -23,9 +23,9 @@ Query trace data in GreptimeDB with [Grafana's Jaeger plugin](https://grafana.co
 
 ## Jaeger UI v2
 
-The HTTP API v3 endpoints used by Jaeger UI v2 are also available under `/v1/jaeger`. Proxy the UI's `/api` requests to `http://localhost:4000/v1/jaeger/api`, preserving the remaining path and query parameters.
+GreptimeDB supports the HTTP API v3 used by Jaeger UI v2. Configure the proxy to forward `/api/...` requests to `http://localhost:4000/v1/jaeger/api/...`, preserving query parameters.
 
-For Jaeger UI, set `proxyConfig` in `packages/jaeger-ui/vite.config.mts` to the GreptimeDB address. Preserve the `/api` request path:
+Example Jaeger UI proxy configuration in `packages/jaeger-ui/vite.config.mts`:
 
 ```ts
 const proxyConfig = {
@@ -37,7 +37,7 @@ const proxyConfig = {
 };
 ```
 
-| Method and path | Behavior |
+| Request | Description |
 | --- | --- |
 | `GET /api/v3/services` | Returns a `services` list. |
 | `GET /api/v3/operations?service={service}` | Returns an `operations` list with `name` and `spanKind`. Requires `service`; optionally filters by `spanKind`. |
@@ -49,13 +49,13 @@ const proxyConfig = {
 
 `/api/v3/traces` and `/api/v3/trace-summaries` accept these query parameters:
 
-| Parameter | Values and behavior |
+| Parameter | Description |
 | --- | --- |
 | `query.startTimeMin` | Required RFC 3339 timestamp. Inclusive start of the search window. |
 | `query.startTimeMax` | Required RFC 3339 timestamp. Exclusive end of the search window; must be later than the start. |
 | `query.serviceName` | Optional service name filter. |
 | `query.operationName` | Optional operation name filter. |
-| `query.durationMin`, `query.durationMax` | Optional nonnegative durations, such as `1.5ms`, `2s`, or `1h2m`. The minimum must not exceed the maximum. |
+| `query.durationMin`, `query.durationMax` | Optional minimum and maximum span durations, both nonnegative, such as `1.5ms`, `2s`, or `1h2m`. The minimum must not exceed the maximum. |
 | `query.searchDepth` | Optional maximum number of traces to return. Defaults to `100` when omitted or `0`. Accepts `0`–`10000`; values outside this range return an error. |
 | `query.attributes` | Optional JSON object with string keys and values, such as `{"http.method":"GET"}`. Strings that parse as numbers or booleans are used as typed filters. |
 
@@ -69,9 +69,9 @@ curl -G 'http://localhost:4000/v1/jaeger/api/v3/traces' \
   --data-urlencode 'query.searchDepth=20'
 ```
 
-This example searches for traces from the `checkout` service in the specified window. Replace the service name and time range with values matching the stored data. Filters select trace IDs; responses include all stored spans of each selected trace, including spans outside the search window.
+This example searches for traces from the `checkout` service in the specified window. Replace the service name and time range with values matching the stored data. For each matching trace, the response includes all stored spans, including spans outside the search window.
 
-For lookup by ID, `trace_id` accepts 16 or 32 hexadecimal characters. Optional `startTime` and `endTime` parameters use RFC 3339 timestamps. They are validated as lookup hints and do not truncate the returned spans.
+For lookup by ID, `trace_id` accepts 16 or 32 hexadecimal characters. Optional `startTime` and `endTime` parameters use RFC 3339 timestamps. GreptimeDB validates these parameters but does not use them to filter the returned spans.
 
 Invalid parameters return `400`. Trace searches and ID lookups with no results return `404`; services, operations, and summary queries return empty lists when there are no results. Errors use this response format:
 
@@ -79,7 +79,11 @@ Invalid parameters return `400`. Trace searches and ID lookups with no results r
 {"error":{"httpCode":404,"message":"No traces found"}}
 ```
 
-GreptimeDB does not support `query.filter` and returns `400` when it is provided. The API does not apply clock-skew correction; `rawTraces` does not change this behavior. Jaeger gRPC queries are not supported.
+The GreptimeDB Jaeger API has these limitations:
+
+- `query.filter` is not supported. Requests containing it return `400`.
+- Clock-skew correction is not supported. The `rawTraces` parameter is ignored.
+- Jaeger gRPC queries are not supported.
 
 ## Quick Start
 
