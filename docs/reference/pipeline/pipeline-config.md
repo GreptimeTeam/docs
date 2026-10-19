@@ -121,7 +121,7 @@ We currently provide the following built-in Processors:
 - `simple_extract`: extracts fields from JSON data using simple key.
 - `digest`: extracts the template from a log message by removing variable content.
 - `select`: retain(include) or exclude fields from the pipeline context.
-- `vrl`: runs the [vrl](https://vector.dev/docs/reference/vrl/) script against the pipeline context.
+- `vrl`: runs the [vrl](https://vector.dev/docs/reference/vrl/) script against the pipeline context, subject to [VRL host access restrictions](#vrl-host-access).
 - `filter`: filter out lines if the condition check is meet.
 
 ### Input and output of Processors
@@ -682,6 +682,7 @@ This experimental feature may contain unexpected behavior, have its functionalit
 :::
 
 The `vrl` processor runs a VRL script against the pipeline context. It supports transformations that cannot be expressed with the built-in processors, but executing a script uses more resources than a built-in processor. See the [VRL reference](https://vector.dev/docs/reference/vrl/) for language syntax.
+Some functions and arguments are restricted by default; see [VRL host access](#vrl-host-access).
 
 The `vrl` processor takes one configuration field, `source`:
 ```YAML
@@ -715,7 +716,7 @@ You can use `vrl` processor to set [table options](./write-log-api.md#set-table-
 
 #### VRL host access
 
-VRL host access is disabled by default (`pipeline.allow_vrl_host_access = false`).
+Starting with v1.3.0, VRL host access is disabled by default (`pipeline.allow_vrl_host_access = false`).
 This server setting applies to pipeline creation, execution, and dry-runs, including
 pipelines loaded from storage. A pipeline YAML definition cannot override it.
 
@@ -729,9 +730,12 @@ The following functions are unavailable by default:
 The following argument restrictions also apply:
 
 - `parse_groks` accepts inline `aliases`, but rejects nonempty `alias_sources` (file imports).
-- `parse_timestamp` and `format_timestamp` use UTC as the default timezone. An explicit
-  `timezone` must be a constant named timezone, such as `"UTC"` or `"Asia/Shanghai"`.
+- For `parse_timestamp` and `format_timestamp`, an explicit `timezone` must be a
+  constant named timezone, such as `"UTC"` or `"Asia/Shanghai"`.
   `"local"`, an empty string, and dynamic values such as event fields are rejected.
+
+Regardless of the host access setting, `parse_timestamp` and `format_timestamp`
+use UTC as the default timezone.
 
 Ordinary data transformations, time functions, and random-value functions remain
 available. This setting restricts host access; it does not impose CPU or memory limits.

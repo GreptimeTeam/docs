@@ -49,6 +49,25 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 
 ## 各版本的破坏性变更
 
+### 从 v1.2 升级到 v1.3
+
+#### VRL 默认禁用主机访问
+
+**影响：** 使用受限 VRL 函数或参数的 pipeline
+
+从 v1.3.0 起，`pipeline.allow_vrl_host_access` 默认值为 `false`。
+使用受限函数或参数的现有 pipeline 在升级后首次从存储加载时会编译失败，
+导致使用这些 pipeline 的写入请求失败。
+
+**需要的操作：**
+
+- 检查现有 pipeline 是否使用了[受限的 VRL 函数或参数](/reference/pipeline/pipeline-config.md#vrl-host-access)。
+- 在升级前移除受限调用或参数。如果所有 pipeline 作者都可信，也可以在所有
+  Frontend 或单机服务的 `[pipeline]` 配置中设置 `allow_vrl_host_access = true`，
+  并重启相关服务。
+- 在正式升级前，使用目标版本和计划采用的服务端配置，通过
+  `POST /v1/pipelines/_dryrun` 验证受影响的 pipeline。
+
 ### 从 v1.0 或 v1.1 升级到 v1.2
 
 #### 移除 PromQL `holt_winters`
