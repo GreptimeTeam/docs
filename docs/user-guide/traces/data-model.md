@@ -159,10 +159,10 @@ statement. For a newly created table, an output like this is expected:
 Table        | opentelemetry_traces
 Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (                                           +
              |   "timestamp" TIMESTAMP(9) NOT NULL,                                                    +
-             |   "timestamp_end" TIMESTAMP(9) NULL,                                                    +
+             |   "timestamp_end" TIMESTAMP(9) NULL COMPRESSION WITH(encoding = 'delta_binary_packed', type = 'zstd'), +
              |   "duration_nano" BIGINT NULL,                                                          +
              |   "trace_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),    +
-             |   "span_id" STRING NULL,                                                                +
+             |   "span_id" STRING NULL COMPRESSION WITH(encoding = 'plain', page_size = '64KiB', type = 'zstd'), +
              |   "span_kind" STRING NULL,                                                              +
              |   "span_name" STRING NULL,                                                              +
              |   "span_status_code" STRING NULL,                                                       +
@@ -184,7 +184,7 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
              |   "resource_attributes.telemetry.sdk.version" STRING NULL,                              +
              |   "span_events" JSON NULL,                                                              +
              |   "span_links" JSON NULL,                                                               +
-             |   "parent_span_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),+
+             |   "parent_span_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM') COMPRESSION WITH(encoding = 'plain', page_size = '64KiB', type = 'zstd'), +
              |   "span_attributes.db.system" STRING NULL,                                              +
              |   "span_attributes.db.name" STRING NULL,                                                +
              |   "span_attributes.db.statement" STRING NULL,                                           +
@@ -225,6 +225,15 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
 ## Shared Table Behavior
 
 The following behavior applies to both v1 and v2.
+
+### Column storage options
+
+New v1 and v2 trace tables created automatically through OTLP use these column options:
+
+- `span_id` and `parent_span_id`: `encoding='plain'` and `page_size='64KiB'`.
+- `timestamp_end`: `encoding='delta_binary_packed'`.
+
+These options do not change column values or query results. Existing tables and v0 trace tables retain their settings; `ALTER TABLE` does not support changing these options. See the [`COMPRESSION` column option](/reference/sql/create.md#compression-column-option) for syntax and restrictions.
 
 ### Partition Rules
 

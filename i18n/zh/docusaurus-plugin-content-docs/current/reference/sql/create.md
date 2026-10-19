@@ -120,8 +120,8 @@ CREATE DATABASE logs WITH ('ingest_rows_rate_limit' = '10000');
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name
 (
-    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [indexes] [COMMENT comment1],
-    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [indexes] [COMMENT comment2],
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [indexes] [COMPRESSION WITH (options)] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [indexes] [COMPRESSION WITH (options)] [COMMENT comment2],
     ...
     [TIME INDEX (column)],
     [PRIMARY KEY(column1, column2, ...)],
@@ -422,6 +422,7 @@ GreptimeDB 支持以下列选项：
 | FULLTEXT INDEX    | 创建全文索引，可以加速全文搜索操作。仅适用于字符串类型列 |
 | SKIPPING INDEX    | 创建跳数索引，可以加速查询稀疏数据。                     |
 | INVERTED INDEX    | 创建倒排索引，可以加速查询稠密数据。                     |
+| COMPRESSION WITH | 设置单列的 SST 压缩、数据页大小和编码，参见 [`COMPRESSION` 列选项](#compression-列选项)。 |
 
 表约束 `TIME INDEX` 和 `PRIMARY KEY` 也可以通过列选项设置，但是它们只能在列定义中指定一次，在多个列选项中指定 `PRIMARY KEY` 会报错：
 
@@ -466,6 +467,37 @@ Query OK, 0 rows affected (0.01 sec)
 #### `INDEX` 列选项
 
 更多关于索引配置、性能对比和使用指南的信息，请参考[索引](/user-guide/manage-data/data-index.md)章节。
+
+#### `COMPRESSION` 列选项
+
+在 `CREATE TABLE` 中使用 `COMPRESSION WITH` 设置单列的 SST 压缩、数据页大小和编码：
+
+```sql
+CREATE TABLE spans (
+    ts TIMESTAMP TIME INDEX,
+    prompt STRING COMPRESSION WITH (type = 'zstd', level = 3, page_size = '8MiB'),
+    span_id STRING COMPRESSION WITH (encoding = 'plain', page_size = '64KiB'),
+    timestamp_end TIMESTAMP(9) COMPRESSION WITH (encoding = 'delta_binary_packed')
+);
+
+SHOW CREATE TABLE spans;
+```
+
+| 选项 | 说明 |
+| --- | --- |
+| `type` | 压缩算法，仅支持 `'zstd'`，默认值为 `'zstd'`。 |
+| `level` | Zstd 压缩级别，整数 `1`–`22`。未指定时使用 SST 默认值 `1`。 |
+| `page_size` | Parquet 数据页大小上限，必须大于 `0`，例如 `'64KiB'` 或 `'8MiB'`。默认值为 `1MiB`。 |
+| `encoding` | `'plain'` 或 `'delta_binary_packed'`，两者均禁用该列的字典编码。`delta_binary_packed` 仅支持整数列和时间戳列。未指定时保留默认编码。 |
+
+各选项可独立设置。`SHOW CREATE TABLE` 显示列的压缩配置。这些选项不改变列值或 SQL 数据类型。
+
+限制：
+
+- `JSON2` 列不支持 `COMPRESSION`。
+- Tag 列要求表使用 `sst_format='flat'` 和 `primary_key_encoding='dense'`。
+- Metric Engine 的 `COMPRESSION` 选项必须在共享物理表上配置，不能在逻辑表上指定。物理表默认使用 sparse 主键编码，默认配置下不能为 Tag 列指定压缩选项；Field 列不受此限制。
+- `ALTER TABLE` 不支持修改这些选项。已配置 `delta_binary_packed` 的列不能通过 `MODIFY COLUMN` 改为非整数、非时间戳类型。
 
 ### Region 分区规则
 
