@@ -190,7 +190,6 @@ SeqScan: region=0(1, 0), "partition_count":{"count":2, "mem_ranges":1, "files":1
 | `projection` | Verbose | 投影剪枝后的输出列名。 | 输出 schema 非空时。 |
 | `filters` | Verbose | 下推到扫描器的静态物理谓词表达式。这些谓词可能驱动 row group 剪枝、索引应用和精确过滤。 | 存在静态谓词时。 |
 | `dyn_filters` | Verbose | 计划创建后附加的动态过滤表达式。上游算子产生过滤值时，这些表达式可能变化。 | 存在动态过滤器时。 |
-| `vector_index_k` | Verbose | 向量索引搜索使用的 top-k 值。 | 启用向量索引功能且扫描使用向量索引搜索时。 |
 | `files` | Verbose | 扫描输入中 SST 文件的元数据。 | 存在 SST 文件时。 |
 | `flat_format` | Verbose | 扫描输入是否预期使用 flat format。 | verbose 模式下总是出现。 |
 | `extension_ranges` | Verbose | 附加到扫描的企业版 extension ranges。 | 仅企业版构建且存在 extension ranges 时。 |
@@ -306,13 +305,10 @@ UnorderedScan: region=0(1, 0), {"partition_count":{"count":4, "mem_ranges":1, "f
 | `rg_inverted_filtered` | 全部 | 被倒排索引过滤的 row groups 数量。 | 非零时出现。 |
 | `rg_minmax_filtered` | 全部 | 被 min-max 剪枝过滤的 row groups 数量。 | 非零时出现。 |
 | `rg_bloom_filtered` | 全部 | 被 bloom filter 索引过滤的 row groups 数量。 | 非零时出现。 |
-| `rg_vector_filtered` | 全部 | 被向量索引过滤的 row groups 数量。 | 非零时出现。 |
 | `rows_before_filter` | 全部 | 行级过滤前候选 row groups 中的行数。 | 总是出现。 |
 | `rows_fulltext_filtered` | 全部 | 被全文索引过滤的行数。 | 非零时出现。 |
 | `rows_inverted_filtered` | 全部 | 被倒排索引过滤的行数。 | 非零时出现。 |
 | `rows_bloom_filtered` | 全部 | 被 bloom filter 索引过滤的行数。 | 非零时出现。 |
-| `rows_vector_filtered` | 全部 | 被向量索引过滤的行数。 | 非零时出现。 |
-| `rows_vector_selected` | 全部 | 被向量索引搜索选中的行数。 | 非零时出现。 |
 | `rows_precise_filtered` | 全部 | 被精确行级过滤器过滤的行数。 | 非零时出现。 |
 | `pruner_cache_hit` | 全部 | 构建文件范围时的 pruner builder 缓存命中次数。 | 非零时出现。 |
 | `pruner_cache_miss` | 全部 | 构建文件范围时的 pruner builder 缓存未命中次数。 | 非零时出现。 |

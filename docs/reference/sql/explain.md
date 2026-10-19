@@ -196,7 +196,6 @@ per-partition metrics.
 | `projection` | Verbose | Output column names after projection pruning. | When the output schema is not empty. |
 | `filters` | Verbose | Static physical predicate expressions pushed into the scanner. These predicates may drive row-group pruning, index application, and precise filtering. | When static predicates exist. |
 | `dyn_filters` | Verbose | Dynamic filter expressions attached after plan creation. These can change during execution as upstream operators produce filter values. | When dynamic filters exist. |
-| `vector_index_k` | Verbose | Vector index top-k value used by vector search. | When the vector index feature is enabled and the scan uses vector index search. |
 | `files` | Verbose | SST file metadata for files in the scan input. | When SST files are present. |
 | `flat_format` | Verbose | Whether the scan input is expected to use flat format. | Always in verbose mode. |
 | `extension_ranges` | Verbose | Enterprise extension ranges attached to the scan. | Enterprise builds only, when extension ranges exist. |
@@ -315,13 +314,10 @@ structure for verbose per-partition metrics.
 | `rg_inverted_filtered` | All | Row groups filtered by inverted index. | Nonzero only. |
 | `rg_minmax_filtered` | All | Row groups filtered by min-max pruning. | Nonzero only. |
 | `rg_bloom_filtered` | All | Row groups filtered by bloom filter index. | Nonzero only. |
-| `rg_vector_filtered` | All | Row groups filtered by vector index. | Nonzero only. |
 | `rows_before_filter` | All | Rows in candidate row groups before row-level filtering. | Always. |
 | `rows_fulltext_filtered` | All | Rows filtered by fulltext index. | Nonzero only. |
 | `rows_inverted_filtered` | All | Rows filtered by inverted index. | Nonzero only. |
 | `rows_bloom_filtered` | All | Rows filtered by bloom filter index. | Nonzero only. |
-| `rows_vector_filtered` | All | Rows filtered by vector index. | Nonzero only. |
-| `rows_vector_selected` | All | Rows selected by vector index search. | Nonzero only. |
 | `rows_precise_filtered` | All | Rows filtered by precise row-level filters. | Nonzero only. |
 | `pruner_cache_hit` | All | Pruner builder cache hits while building file ranges. | Nonzero only. |
 | `pruner_cache_miss` | All | Pruner builder cache misses while building file ranges. | Nonzero only. |
