@@ -129,10 +129,10 @@ span_attributes.http.route                 | todos/
 Table        | opentelemetry_traces
 Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (                                           +
              |   "timestamp" TIMESTAMP(9) NOT NULL,                                                    +
-             |   "timestamp_end" TIMESTAMP(9) NULL,                                                    +
+             |   "timestamp_end" TIMESTAMP(9) NULL COMPRESSION WITH(encoding = 'delta_binary_packed', type = 'zstd'), +
              |   "duration_nano" BIGINT NULL,                                                          +
              |   "trace_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),    +
-             |   "span_id" STRING NULL,                                                                +
+             |   "span_id" STRING NULL COMPRESSION WITH(encoding = 'plain', page_size = '64KiB', type = 'zstd'), +
              |   "span_kind" STRING NULL,                                                              +
              |   "span_name" STRING NULL,                                                              +
              |   "span_status_code" STRING NULL,                                                       +
@@ -154,7 +154,7 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
              |   "resource_attributes.telemetry.sdk.version" STRING NULL,                              +
              |   "span_events" JSON NULL,                                                              +
              |   "span_links" JSON NULL,                                                               +
-             |   "parent_span_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),+
+             |   "parent_span_id" STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM') COMPRESSION WITH(encoding = 'plain', page_size = '64KiB', type = 'zstd'), +
              |   "span_attributes.db.system" STRING NULL,                                              +
              |   "span_attributes.db.name" STRING NULL,                                                +
              |   "span_attributes.db.statement" STRING NULL,                                           +
@@ -195,6 +195,15 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
 ## 通用表行为
 
 以下内容适用于 v1 和 v2。
+
+### 列存储选项
+
+OTLP 自动创建的 v1 和 v2 Trace 表使用以下列选项：
+
+- `span_id` 和 `parent_span_id`：`encoding='plain'`、`page_size='64KiB'`。
+- `timestamp_end`：`encoding='delta_binary_packed'`。
+
+这些设置不改变标识符、时间戳的值或查询结果。现有表及 v0 Trace 表保持原有配置；`ALTER TABLE` 不支持修改这些选项。语法和限制参见 [`COMPRESSION` 列选项](/reference/sql/create.md#compression-列选项)。
 
 ### 分区规则
 

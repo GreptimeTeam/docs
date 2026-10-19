@@ -414,7 +414,7 @@ GreptimeDB supports the following column options:
 | FULLTEXT INDEX    | Creates a full-text index to speed up full-text search operations. Applicable only to string-type columns. |
 | SKIPPING INDEX    | Creates a skipping index to speed up query on sparse data.                                                 |
 | INVERTED INDEX    | Creates an inverted index to speed up query on dense data.                                                 |
-| COMPRESSION WITH | Configures SST compression and data page size for a column. See below. |
+| COMPRESSION WITH | Configures SST compression, data page size, and encoding for a column. See below. |
 
 The table constraints `TIME INDEX` and `PRIMARY KEY` can also be set by column option, but they can only be specified once in column definitions. So you can't specify `PRIMARY KEY` for more than one column except by the table constraint `PRIMARY KEY` :
 
@@ -458,12 +458,14 @@ For more information on the `INDEX` column option, please refer to the [Data Ind
 
 #### `COMPRESSION` column option
 
-Use `COMPRESSION WITH` in `CREATE TABLE` to configure SST compression and data page size for an individual column:
+Use `COMPRESSION WITH` in `CREATE TABLE` to configure SST compression, data page size, and encoding for an individual column:
 
 ```sql
 CREATE TABLE spans (
     ts TIMESTAMP TIME INDEX,
-    prompt STRING COMPRESSION WITH (type = 'zstd', level = 3, page_size = '8MiB')
+    prompt STRING COMPRESSION WITH (type = 'zstd', level = 3, page_size = '8MiB'),
+    span_id STRING COMPRESSION WITH (encoding = 'plain', page_size = '64KiB'),
+    timestamp_end TIMESTAMP(9) COMPRESSION WITH (encoding = 'delta_binary_packed')
 );
 
 SHOW CREATE TABLE spans;
@@ -474,6 +476,7 @@ SHOW CREATE TABLE spans;
 | `type` | Compression algorithm. Only `'zstd'` is supported; it is also the default. |
 | `level` | Zstd compression level, an integer from `1` through `22`. Defaults to the SST setting of `1`. |
 | `page_size` | A positive size such as `'64KiB'` or `'8MiB'`. Sets the Parquet data page size limit; defaults to `1MiB`. |
+| `encoding` | `'plain'` or `'delta_binary_packed'`. Both disable dictionary encoding for the column. `delta_binary_packed` requires an integer or timestamp column. Omitting this option preserves the default encoding. |
 
 Each option can be set independently. `SHOW CREATE TABLE` displays the column compression settings. These options do not change column values or SQL data types.
 
@@ -482,7 +485,7 @@ Restrictions:
 - Nested types, including `JSON2`, Struct, and List, are not supported.
 - Tag columns require `sst_format='flat'` and `primary_key_encoding='dense'` on the table.
 - Metric Engine logical tables reject explicit `COMPRESSION` options. Configure the shared physical table instead. Physical tables use sparse primary key encoding by default, so compression options on tag columns are rejected by default; field columns are unaffected.
-- `ALTER TABLE` does not support changing these options.
+- `ALTER TABLE` does not support changing these options. A column configured with `delta_binary_packed` cannot be changed to a non-integer, non-timestamp type with `MODIFY COLUMN`.
 
 ### Region partition rules
 
