@@ -414,7 +414,7 @@ GreptimeDB supports the following column options:
 | FULLTEXT INDEX    | Creates a full-text index to speed up full-text search operations. Applicable only to string-type columns. |
 | SKIPPING INDEX    | Creates a skipping index to speed up query on sparse data.                                                 |
 | INVERTED INDEX    | Creates an inverted index to speed up query on dense data.                                                 |
-| COMPRESSION WITH | Configures SST compression and data page size for a column. See below. |
+| COMPRESSION WITH | Configures SST compression and data page size for a column. See [column compression](#compression-column-option). |
 
 The table constraints `TIME INDEX` and `PRIMARY KEY` can also be set by column option, but they can only be specified once in column definitions. So you can't specify `PRIMARY KEY` for more than one column except by the table constraint `PRIMARY KEY` :
 
@@ -479,7 +479,7 @@ Each option can be set independently. `SHOW CREATE TABLE` displays the column co
 
 Restrictions:
 
-- Nested types, including `JSON2`, Struct, and List, are not supported.
+- `COMPRESSION` is not supported on `JSON2` columns.
 - Tag columns require `sst_format='flat'` and `primary_key_encoding='dense'` on the table.
 - Metric Engine logical tables reject explicit `COMPRESSION` options. Configure the shared physical table instead. Physical tables use sparse primary key encoding by default, so compression options on tag columns are rejected by default; field columns are unaffected.
 - `ALTER TABLE` does not support changing these options.

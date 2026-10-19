@@ -422,7 +422,7 @@ GreptimeDB 支持以下列选项：
 | FULLTEXT INDEX    | 创建全文索引，可以加速全文搜索操作。仅适用于字符串类型列 |
 | SKIPPING INDEX    | 创建跳数索引，可以加速查询稀疏数据。                     |
 | INVERTED INDEX    | 创建倒排索引，可以加速查询稠密数据。                     |
-| COMPRESSION WITH | 设置单列的 SST 压缩和数据页大小，详见下文。 |
+| COMPRESSION WITH | 设置单列的 SST 压缩和数据页大小，参见 [`COMPRESSION` 列选项](#compression-列选项)。 |
 
 表约束 `TIME INDEX` 和 `PRIMARY KEY` 也可以通过列选项设置，但是它们只能在列定义中指定一次，在多个列选项中指定 `PRIMARY KEY` 会报错：
 
@@ -491,7 +491,7 @@ SHOW CREATE TABLE spans;
 
 限制：
 
-- 不支持 `JSON2`、Struct、List 等嵌套类型。
+- `JSON2` 列不支持 `COMPRESSION`。
 - Tag 列要求表使用 `sst_format='flat'` 和 `primary_key_encoding='dense'`。
 - Metric Engine 逻辑表不接受显式 `COMPRESSION` 选项，应在共享物理表上配置。物理表默认使用 sparse 主键编码，因此默认不接受 Tag 列的压缩选项；Field 列不受此限制。
 - `ALTER TABLE` 不支持修改这些选项。
