@@ -107,7 +107,7 @@ When creating or modifying a full-text index, you can specify the following opti
 - `case_sensitive`: Determines whether the full-text index is case-sensitive
   - Supported values: `true`, `false`
   - Default: `false`
-  - This setting does not change the matching semantics of `matches_term` or `LIKE`. `matches_term(lower(column), ...)` can use the Bloom full-text index only when `case_sensitive=false`.
+  - This setting does not change the matching semantics of `matches_term` or `LIKE`. `matches_term(lower(column), ...)` and `lower(column) LIKE ...` can use the Bloom full-text index only when `case_sensitive=false`.
 
 - `backend`: Sets the backend for the full-text index
   - Supported values: `bloom`, `tantivy`
@@ -155,16 +155,16 @@ The index sizes below come from Greptime's testing. Actual sizes depend on the d
 
 | Backend | Queries that use the index |
 | --- | --- |
-| `bloom` | `matches_term` predicates with extractable index terms. The index skips blocks that cannot match; remaining rows are evaluated against the original predicate. |
+| `bloom` | `matches_term` and `LIKE` predicates with extractable index terms. The index skips blocks that cannot match; remaining rows are evaluated against the original predicate. |
 | `tantivy` | `matches()` queries. `matches_term` does not use the Tantivy index and executes by scanning. |
 
 #### Performance Comparison
 
-Index effectiveness depends on the predicate and the distribution of terms across data blocks. Predicates without extractable index terms do not use Bloom full-text pruning. Use `EXPLAIN ANALYZE` to inspect the rows scanned and filtered.
+Index effectiveness depends on the predicate and the distribution of terms across data blocks. Predicates without extractable index terms do not use Bloom full-text pruning. Use `EXPLAIN ANALYZE VERBOSE` to inspect index pruning. The `rg_fulltext_filtered` and `rows_fulltext_filtered` metrics report the row groups and rows skipped by the full-text index. A query can use the index without skipping any rows if all indexed blocks contain candidate matches.
 
 #### LIKE queries
 
-The following `LIKE` queries are valid, but do not use the Bloom full-text index for acceleration:
+The Bloom full-text index supports case-sensitive, non-negated `LIKE` predicates with the default backslash (`\`) escape character. The pattern must contain a complete term or Han bigram that every matching value contains. For example:
 
 ```sql
 SELECT * FROM logs WHERE message LIKE '%disk quota exceeded%';
@@ -172,7 +172,9 @@ SELECT * FROM logs WHERE message LIKE '%手机%';
 SELECT * FROM logs WHERE lower(message) LIKE '%disk quota exceeded%';
 ```
 
-`ILIKE` and `NOT LIKE` queries do not use this index either.
+The first pattern contains the complete middle term `quota`; the second contains the Han bigram `手机`. The third pattern requires `case_sensitive=false` on the index.
+`LIKE '%error%'` has no guaranteed word boundaries and does not use Bloom full-text pruning. `ILIKE` and `NOT LIKE` do not use this index either.
+These restrictions affect index use, not query results.
 
 #### Rebuild Bloom full-text indexes after upgrading
 

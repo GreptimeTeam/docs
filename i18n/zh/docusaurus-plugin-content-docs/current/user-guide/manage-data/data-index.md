@@ -109,7 +109,7 @@ CREATE TABLE logs (
 - `case_sensitive`：决定全文索引是否区分大小写
   - 支持的值：`true`、`false`
   - 默认值：`false`
-  - 此设置不会改变 `matches_term` 或 `LIKE` 的匹配语义。`matches_term(lower(column), ...)` 仅在 `case_sensitive=false` 时可使用 Bloom 全文索引。
+  - 此设置不会改变 `matches_term` 或 `LIKE` 的匹配语义。`matches_term(lower(column), ...)` 和 `lower(column) LIKE ...` 仅在 `case_sensitive=false` 时可使用 Bloom 全文索引。
 
 - `backend`：设置全文索引的后端实现
   - 支持的值：`bloom`、`tantivy`
@@ -157,16 +157,16 @@ GreptimeDB 提供两种全文索引后端用于高效日志搜索：
 
 | 后端 | 使用索引的查询 |
 | --- | --- |
-| `bloom` | 可提取索引词项的 `matches_term` 条件。索引跳过不可能匹配的数据块，剩余行仍按原始条件过滤。 |
+| `bloom` | `matches_term` 及可提取索引词项的 `LIKE` 条件。索引跳过不可能匹配的数据块，剩余行仍按原始条件过滤。 |
 | `tantivy` | `matches()` 查询。`matches_term` 不使用 Tantivy 索引，仍可通过扫描执行。 |
 
 #### 性能对比
 
-索引效果取决于查询条件和词项在数据块中的分布。对于无法提取索引词项的条件，Bloom 全文索引不进行剪枝。使用 `EXPLAIN ANALYZE` 检查实际扫描和过滤的行数。
+索引效果取决于查询条件和词项在数据块中的分布。对于无法提取索引词项的条件，Bloom 全文索引不进行剪枝。使用 `EXPLAIN ANALYZE VERBOSE` 检查索引剪枝效果。`rg_fulltext_filtered` 和 `rows_fulltext_filtered` 分别表示全文索引跳过的行组数和行数。如果所有索引块中都有可能匹配的数据，即使使用了索引，也可能没有跳过任何行。
 
 #### LIKE 查询
 
-以下 `LIKE` 查询均可执行，但不使用 Bloom 全文索引加速：
+Bloom 全文索引支持区分大小写的 `LIKE` 条件，要求使用默认反斜杠转义符（`\`）。匹配模式必须保证所有匹配结果都包含完整词项或相邻的两个汉字（bigram）。例如：
 
 ```sql
 SELECT * FROM logs WHERE message LIKE '%disk quota exceeded%';
@@ -174,7 +174,9 @@ SELECT * FROM logs WHERE message LIKE '%手机%';
 SELECT * FROM logs WHERE lower(message) LIKE '%disk quota exceeded%';
 ```
 
-`ILIKE` 和 `NOT LIKE` 查询也不使用该索引。
+第一个模式包含中间完整词项 `quota`；第二个包含汉字 bigram `手机`。第三种模式要求索引设置 `case_sensitive=false`。
+`LIKE '%error%'` 的两端没有词边界保证，因此不使用 Bloom 全文索引剪枝。`ILIKE` 和 `NOT LIKE` 也不使用该索引。
+这些限制只影响索引使用，不改变查询结果。
 
 #### 升级后重建 Bloom 全文索引
 
