@@ -79,7 +79,7 @@ Invalid parameters return `400`. Trace searches and ID lookups with no results r
 {"error":{"httpCode":404,"message":"No traces found"}}
 ```
 
-`query.filter` is unsupported and returns `400`. The API does not apply clock-skew correction; `rawTraces` does not change this behavior. Jaeger gRPC queries are not supported.
+GreptimeDB does not support `query.filter` and returns `400` when it is provided. The API does not apply clock-skew correction; `rawTraces` does not change this behavior. Jaeger gRPC queries are not supported.
 
 ## Quick Start
 

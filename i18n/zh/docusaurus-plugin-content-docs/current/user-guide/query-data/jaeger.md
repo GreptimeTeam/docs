@@ -79,7 +79,7 @@ curl -G 'http://localhost:4000/v1/jaeger/api/v3/traces' \
 {"error":{"httpCode":404,"message":"No traces found"}}
 ```
 
-不支持 `query.filter`，传入时返回 `400`。接口不执行时钟偏移校正，`rawTraces` 不改变这一行为；不提供 Jaeger gRPC 查询接口。
+GreptimeDB 不支持 `query.filter`，传入时返回 `400`。接口不执行时钟偏移校正，`rawTraces` 不改变这一行为；不提供 Jaeger gRPC 查询接口。
 
 ## 快速开始
 
