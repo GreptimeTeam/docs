@@ -120,8 +120,8 @@ CREATE DATABASE logs WITH ('ingest_rows_rate_limit' = '10000');
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name
 (
-    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [indexes] [COMMENT comment1],
-    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [indexes] [COMMENT comment2],
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [indexes] [COMPRESSION WITH (options)] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [indexes] [COMPRESSION WITH (options)] [COMMENT comment2],
     ...
     [TIME INDEX (column)],
     [PRIMARY KEY(column1, column2, ...)],
@@ -422,6 +422,7 @@ GreptimeDB 支持以下列选项：
 | FULLTEXT INDEX    | 创建全文索引，可以加速全文搜索操作。仅适用于字符串类型列 |
 | SKIPPING INDEX    | 创建跳数索引，可以加速查询稀疏数据。                     |
 | INVERTED INDEX    | 创建倒排索引，可以加速查询稠密数据。                     |
+| COMPRESSION WITH | 设置单列的 SST 压缩和数据页大小，详见下文。 |
 
 表约束 `TIME INDEX` 和 `PRIMARY KEY` 也可以通过列选项设置，但是它们只能在列定义中指定一次，在多个列选项中指定 `PRIMARY KEY` 会报错：
 
@@ -466,6 +467,34 @@ Query OK, 0 rows affected (0.01 sec)
 #### `INDEX` 列选项
 
 更多关于索引配置、性能对比和使用指南的信息，请参考[索引](/user-guide/manage-data/data-index.md)章节。
+
+#### `COMPRESSION` 列选项
+
+在 `CREATE TABLE` 中使用 `COMPRESSION WITH` 设置单列的 SST 压缩和数据页大小：
+
+```sql
+CREATE TABLE spans (
+    ts TIMESTAMP TIME INDEX,
+    prompt STRING COMPRESSION WITH (type = 'zstd', level = 3, page_size = '8MiB')
+);
+
+SHOW CREATE TABLE spans;
+```
+
+| 选项 | 取值与行为 |
+| --- | --- |
+| `type` | 压缩算法，仅支持 `'zstd'`，也是默认值。 |
+| `level` | Zstd 压缩级别，整数 `1`–`22`。未指定时使用 SST 默认值 `1`。 |
+| `page_size` | 正数大小，例如 `'64KiB'` 或 `'8MiB'`。设置 Parquet 数据页大小限制；未指定时使用默认值 `1MiB`。 |
+
+各选项可独立设置。`SHOW CREATE TABLE` 显示列的压缩配置。这些选项不改变列值或 SQL 数据类型。
+
+限制：
+
+- 不支持 `JSON2`、Struct、List 等嵌套类型。
+- Tag 列要求表使用 `sst_format='flat'` 和 `primary_key_encoding='dense'`。
+- Metric Engine 逻辑表不接受显式 `COMPRESSION` 选项，应在共享物理表上配置。物理表默认使用 sparse 主键编码，因此默认不接受 Tag 列的压缩选项；Field 列不受此限制。
+- `ALTER TABLE` 不支持修改这些选项。
 
 ### Region 分区规则
 
