@@ -528,14 +528,16 @@ How to use distributed tracing, please reference [Tracing](/user-guide/deploymen
 
 ### Pipeline options
 
-`frontend` and `standalone` cache pipeline definitions in memory. The cache is configured in the `[pipeline]` section:
+The `[pipeline]` section configures pipeline caching and VRL host access for `frontend` and `standalone`:
 
 ```toml
 [pipeline]
 cache_ttl = "10s"
+allow_vrl_host_access = false
 ```
 
 - `cache_ttl`: Time to live of the local pipeline cache, `10s` by default. In a cluster, a pipeline created or deleted on one Frontend takes effect on the other Frontends after at most this duration. A longer TTL reduces reads of the `greptime_private.pipelines` table and increases that delay.
+- `allow_vrl_host_access`: Whether VRL can access the server environment, filesystem, hostname, local timezone, network, and logs. Defaults to `false`. Applies to pipeline creation, execution, and dry-runs, including stored pipelines; pipeline YAML cannot override it. Set to `true` only for trusted pipeline authors. Changes require a restart; use the same setting on all Frontends in a cluster. See [VRL host access](/reference/pipeline/pipeline-config.md#vrl-host-access) for restricted functions and upgrade considerations.
 
 ### Event recording
 

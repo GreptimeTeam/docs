@@ -729,6 +729,42 @@ processors:
 2. vrl 脚本的返回值中不能包含任何的 `regex` 类型的变量。在脚本的过程中可以使用这种类型，但是在返回之前需要 `del`（删除） 掉。
 3. 由于 pipeline 的类型和 vrl 的类型之前存在转换，经过 vrl 处理的类型会变成最大的容量类型，即 `i64`， `u64` 和 `Timestamp::nanoseconds`。
 
+#### VRL 主机访问 {#vrl-host-access}
+
+VRL 默认禁用主机访问（`pipeline.allow_vrl_host_access = false`）。
+此服务端配置适用于 Pipeline 的创建、执行和试运行，也适用于从存储中加载的 Pipeline。
+Pipeline YAML 定义无法覆盖此配置。
+
+默认情况下，以下函数不可用：
+
+- 环境和系统信息：`get_env_var`、`get_hostname`、`get_timezone_name`。
+- 网络访问：`http_request`、`dns_lookup`、`reverse_dns`。
+- 可读取文件的函数：`encode_proto`、`parse_proto`、`parse_etld`、`validate_json_schema`。
+- 服务端日志：`log`。
+
+以下参数也受到限制：
+
+- `parse_groks` 支持内联 `aliases`，但不允许非空的 `alias_sources`（文件导入）。
+- `parse_timestamp` 和 `format_timestamp` 默认使用 UTC 时区。显式指定的 `timezone`
+  必须是固定的命名时区，例如 `"UTC"` 或 `"Asia/Shanghai"`。
+  不允许使用 `"local"`、空字符串或来自事件字段等动态值。
+
+普通数据转换、时间函数和随机值函数仍然可用。
+此配置限制主机访问，但不限制 CPU 或内存使用量。
+
+:::warning 现有 Pipeline
+使用受限函数或参数的现有 Pipeline 在默认策略下无法通过编译，包括升级后从存储中重新加载的
+Pipeline。请移除这些调用或参数；仅当所有 Pipeline 作者都可信时，才考虑启用主机访问。
+:::
+
+如需恢复完整的 VRL 标准库，请在 `frontend` 或 `standalone`
+的[服务端配置](/user-guide/deployments-administration/configuration.md#pipeline-选项)中添加以下配置，并重启相关服务：
+
+```toml
+[pipeline]
+allow_vrl_host_access = true
+```
+
 #### 一对多展开
 
 `vrl` 处理器支持**一对多**展开：当脚本返回一个数组时，数组中的每个元素都会被写入为独立的行。这在单条日志记录中包含多个事件、需要将其分别存储为独立行时非常有用。

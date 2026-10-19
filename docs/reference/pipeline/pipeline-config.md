@@ -713,6 +713,44 @@ Some notes regarding the `vrl` processor:
 
 You can use `vrl` processor to set [table options](./write-log-api.md#set-table-options) while writing logs.
 
+#### VRL host access
+
+VRL host access is disabled by default (`pipeline.allow_vrl_host_access = false`).
+This server setting applies to pipeline creation, execution, and dry-runs, including
+pipelines loaded from storage. A pipeline YAML definition cannot override it.
+
+The following functions are unavailable by default:
+
+- Environment and system information: `get_env_var`, `get_hostname`, `get_timezone_name`.
+- Network access: `http_request`, `dns_lookup`, `reverse_dns`.
+- Functions that can read files: `encode_proto`, `parse_proto`, `parse_etld`, `validate_json_schema`.
+- Server logging: `log`.
+
+The following argument restrictions also apply:
+
+- `parse_groks` accepts inline `aliases`, but rejects nonempty `alias_sources` (file imports).
+- `parse_timestamp` and `format_timestamp` use UTC as the default timezone. An explicit
+  `timezone` must be a constant named timezone, such as `"UTC"` or `"Asia/Shanghai"`.
+  `"local"`, an empty string, and dynamic values such as event fields are rejected.
+
+Ordinary data transformations, time functions, and random-value functions remain
+available. This setting restricts host access; it does not impose CPU or memory limits.
+
+:::warning Existing pipelines
+Existing pipelines that use restricted functions or arguments fail compilation under
+the default policy, including when reloaded from storage after an upgrade. Remove
+those calls or arguments, or enable host access only if all pipeline authors are trusted.
+:::
+
+To restore the full VRL standard library, set the following in the `frontend` or
+`standalone` [server configuration](/user-guide/deployments-administration/configuration.md#pipeline-options)
+and restart the affected servers:
+
+```toml
+[pipeline]
+allow_vrl_host_access = true
+```
+
 #### One-to-Many Expansion
 
 The `vrl` processor supports **one-to-many** expansion: when the script returns an array, each element of the array is written as a separate row. This is useful when a single incoming log record contains multiple events that should be stored as individual rows.
