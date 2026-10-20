@@ -35,6 +35,14 @@ automatically creates it when the query result is sufficient to infer its schema
 need control over its schema or layout, or when inference is complex. An existing sink table is validated against
 the flow's query result. The source and sink tables must be different tables.
 
+:::warning
+Flow does not automatically add columns to an existing sink table. If the query output gains a column, such as
+a new `service` label in PromQL results, the flow can fail with a schema mismatch.
+
+Manually update the sink schema to match the intended query output, then recreate or replace the flow.
+`CREATE OR REPLACE FLOW` only updates the flow task; it does not alter the source or sink table schemas.
+:::
+
 The sink table has to be compatible with the flow's query result:
 
 - **Column order and type**: For a pre-created SQL sink, match the query output columns in order and type.
