@@ -1,6 +1,6 @@
 ---
 keywords: [配置, 对象存储 WAL, GreptimeDB 单机模式, GreptimeDB, S3, 实验性]
-description: 介绍如何在 GreptimeDB 单机模式下使用实验性的对象存储 WAL，包括使用前提、配置、持久性模式、成本、监控指标和限制。
+description: 介绍如何在 GreptimeDB 单机模式下使用实验性的对象存储 WAL，包括使用前提、配置、持久性模式、成本、故障排查和限制。
 ---
 # 对象存储 WAL
 
@@ -101,7 +101,7 @@ wal/datanodes/0/epochs/0/objects/
 
 ### 写入失败与恢复
 
-在 `enqueued` 模式下，如果对象存储以重试也无法解决的错误拒绝写入，例如没有访问权限或 bucket 不存在，GreptimeDB 会把已确认的写入保留在内存中，并持续尝试将其持久化到对象存储，两次尝试之间最多间隔 30 秒。这期间如果发生崩溃，这些写入会丢失。在某次尝试成功之前，新的写入会立即失败并返回可重试的错误，InfluxDB 行协议等 HTTP 写入接口返回的状态码为 503。这期间 `greptime_logstore_object_store_wal_failing` 为 1，日志中会记录对象存储返回的错误。修复问题（例如凭证或 bucket）之后，写入会自动恢复，无需重启。
+在 `enqueued` 模式下，如果对象存储以重试也无法解决的错误拒绝写入，例如没有访问权限或 bucket 不存在，GreptimeDB 会把已确认的写入保留在内存中，并持续尝试将其持久化到对象存储，两次尝试之间最多间隔 30 秒。这期间如果发生崩溃，这些写入会丢失。在某次尝试成功之前，新的写入会立即失败并返回可重试的错误，InfluxDB 行协议等 HTTP 写入接口返回的状态码为 503。这期间 `greptime_logstore_object_store_wal_failing` 为 1，建议在它大于 0 时告警；日志中也会记录对象存储返回的错误。修复问题（例如凭证或 bucket）之后，写入会自动恢复，无需重启。
 
 在 `durable` 模式下，同样的错误只会让相关写入失败。
 
@@ -132,50 +132,14 @@ wal/datanodes/0/epochs/0/objects/
 
 - 旧的 WAL 数据在 flush 之后的下一次写入时才会删除。因此没有新写入的实例会一直保留旧的 WAL 数据，直到再次有写入。
 - 持续有写入但很少 flush 的表会让 WAL 数据无法删除，其他表的 WAL 数据也会受影响。这会增加存储占用和启动时间。对于这类表，请定期执行 flush，例如使用 [`ADMIN flush_table`](/reference/sql/admin.md)。
-
-## 监控
-
-对象存储 WAL 导出的指标都以 `greptime_logstore_object_store_wal_` 为前缀。直方图按标准方式导出 `_bucket`、`_sum` 和 `_count` 序列。
-
-| 指标 | 类型 | 含义 |
-| --- | --- | --- |
-| `greptime_logstore_object_store_wal_seal_to_durable_seconds` | Histogram | 把缓冲数据持久化到对象存储的耗时。 |
-| `greptime_logstore_object_store_wal_append_ack_seconds` | Histogram | `durable` 模式下写入等待 WAL 的时间，是整体写入延迟的一部分。 |
-| `greptime_logstore_object_store_wal_object_bytes` | Histogram | 每个持久化到对象存储的对象的大小。 |
-| `greptime_logstore_object_store_wal_object_entries` | Histogram | 每个对象包含的 WAL 条目数。 |
-| `greptime_logstore_object_store_wal_created_objects_total` | Counter | 成功写入的对象数。 |
-| `greptime_logstore_object_store_wal_create_failures_total` | Counter | 对象存储未确认的对象写入次数。`durable` 模式下相关写入会失败，`enqueued` 模式下会重试；对象存储拒绝写入期间会逐步拉长重试间隔。 |
-| `greptime_logstore_object_store_wal_create_conflicts_total` | Counter | 写入对象时发现意外已存在对象的次数，通常是有其他进程使用了同一个 `prefix`。 |
-| `greptime_logstore_object_store_wal_poisoned_total` | Counter | WAL 遇到不可恢复错误并停止接受写入的次数。 |
-| `greptime_logstore_object_store_wal_stalled_appends_total` | Counter | 因之前的写入尚未持久化到对象存储，或在 `enqueued` 模式下达到 `max_unpersisted_bytes` 或 `max_unpersisted_age`，而需要等待的写入数。 |
-| `greptime_logstore_object_store_wal_stalled_append_seconds` | Histogram | 这类写入等待的时间。 |
-| `greptime_logstore_object_store_wal_failing` | Gauge | `enqueued` 模式下，对象存储以没有访问权限、bucket 不存在等错误拒绝已确认的写入时为 1。这期间新的写入会被拒绝。 |
-| `greptime_logstore_object_store_wal_rejected_appends_total` | Counter | `failing` 为 1 期间被拒绝的写入数。这期间删除表时 WAL 记录被拒绝的情况也计入其中；删除表本身会成功，记录会在之后持久化。 |
-| `greptime_logstore_object_store_wal_release_records_total` | Counter | WAL 中记录的已删除表的 Region 数。GreptimeDB 依据这些记录删除已删除表的 WAL 数据，重启后同样有效。 |
-| `greptime_logstore_object_store_wal_missing_history_accepted_total` | Counter | 因 `accept_missing_history` 为 `true` 而在缺少 WAL 历史的情况下打开的 Region 数，这些 Region 未 flush 到 SST 文件的写入已丢失。 |
-| `greptime_logstore_object_store_wal_indexed_objects` | Gauge | 当前保留的 WAL 对象数，也就是启动时需要读取的对象数。 |
-| `greptime_logstore_object_store_wal_indexed_bytes` | Gauge | 当前保留的 WAL 对象的总大小。 |
-| `greptime_logstore_object_store_wal_deleted_objects_total` | Counter | 垃圾回收删除的 WAL 对象数。 |
-| `greptime_logstore_object_store_wal_failed_deletes_total` | Counter | 删除失败的 WAL 对象数，之后会重试。 |
-| `greptime_logstore_object_store_wal_recovery_seconds` | Histogram | 启动时加载 WAL 的耗时。 |
-| `greptime_logstore_object_store_wal_recovered_objects_total` | Counter | 启动时加载 WAL 读取的对象数。 |
-| `greptime_logstore_object_store_wal_read_seconds` | Histogram | 为重放一个 Region 读取 WAL 的耗时。 |
-| `greptime_logstore_object_store_wal_skipped_segments_total` | Counter | 重放时跳过的损坏 WAL 数据数。 |
-
-建议设置以下告警：
-
-- `greptime_logstore_object_store_wal_failing` 大于 0：对象存储拒绝了 WAL 写入，新的写入会被拒绝。请检查存储提供商的凭证、权限和 bucket。
-- `greptime_logstore_object_store_wal_poisoned_total` 有任何增长：WAL 已停止接受写入。检查日志后重启 GreptimeDB。
-- `greptime_logstore_object_store_wal_create_conflicts_total` 有任何增长：检查是否有其他进程使用了同一个存储提供商和 `prefix`。
-- `greptime_logstore_object_store_wal_stalled_appends_total` 有任何增长：写入速度超过了对象存储的写入能力。
-- `greptime_logstore_object_store_wal_missing_history_accepted_total` 有任何增长：有表在打开时丢失了未 flush 到 SST 文件的写入。请按照[在 WAL 历史缺失时启动](#在-wal-历史缺失时启动)中的说明关闭 `accept_missing_history`。
+- 如果 `greptime_logstore_object_store_wal_indexed_objects` 持续增长，而 `greptime_logstore_object_store_wal_deleted_objects_total` 不再变化，说明垃圾回收没有进展。请检查是否存在这类表，或者是否出现了[限制](#限制)中“删除表时发生崩溃”的情况。
 
 ## 限制
 
 - **仅支持单机模式**：不支持集群模式。
-- **一个位置只能对应一个实例**：两个实例使用同一个存储提供商和 `prefix` 时，可能无法启动，或者其中一个停止接受写入。
-- **不可恢复的错误**：遇到不可恢复的错误（例如发现其他实例写入的数据）后，WAL 会拒绝所有写入，直到 GreptimeDB 重启。没有访问权限或 bucket 不存在不属于这类错误：在 `enqueued` 模式下 GreptimeDB 会持续重试，参见[写入失败与恢复](#写入失败与恢复)。
+- **一个位置只能对应一个实例**：两个实例使用同一个存储提供商和 `prefix` 时，可能无法启动，或者其中一个停止接受写入。`greptime_logstore_object_store_wal_create_conflicts_total` 增长就是这种情况的迹象。
+- **不可恢复的错误**：遇到不可恢复的错误（例如发现其他实例写入的数据）后，WAL 会拒绝所有写入，直到 GreptimeDB 重启，同时 `greptime_logstore_object_store_wal_poisoned_total` 会增长。重启前请先检查日志。没有访问权限或 bucket 不存在不属于这类错误：在 `enqueued` 模式下 GreptimeDB 会持续重试，参见[写入失败与恢复](#写入失败与恢复)。
 - **已有实例不能切换提供者**：表会沿用创建时的 WAL 提供者。在 `raft_engine` 或 `kafka` 下创建的表，在实例切换到 `experimental_object_store` 后无法打开，反之亦然。GreptimeDB 会报错 `Incompatible WAL provider change`，默认情况下无法启动。即使切换前已执行 flush，仍无法打开这些表。请在创建实例时就选定 WAL 提供者。
 - **不能修改前缀**：表也会沿用创建时的 WAL `prefix`。修改 `prefix` 后，这些表打开时会报错 `Object store WAL prefix mismatch`。
 - **更改 WAL 存储位置**：更改 `storage_provider`，或它所指向存储提供商的 bucket、根路径时，需要先把 WAL 文件复制到新位置，参见[迁移 WAL](#迁移-wal)。如果没有复制，或者这些文件被删除，GreptimeDB 发现历史缺失的表将无法打开，默认情况下 GreptimeDB 无法启动。GreptimeDB 并不能识别所有错误的位置。
-- **删除表时发生崩溃**：如果 GreptimeDB 在删除表的过程中崩溃，或者在 WAL 未能记录删除操作之后、对象存储恢复接受写入之前崩溃，被删除表的 WAL 数据将不会被删除，还会导致其他旧的 WAL 数据也无法删除。此时可以看到 `indexed_objects` 持续增长，而 `deleted_objects_total` 不再变化。第一种情况由 [GreptimeTeam/greptimedb#9577](https://github.com/GreptimeTeam/greptimedb/issues/9577) 跟踪。
+- **删除表时发生崩溃**：如果 GreptimeDB 在删除表的过程中崩溃，或者在 WAL 未能记录删除操作之后、对象存储恢复接受写入之前崩溃，被删除表的 WAL 数据将不会被删除，还会导致其他旧的 WAL 数据也无法删除。此时可以看到 `greptime_logstore_object_store_wal_indexed_objects` 持续增长，而 `greptime_logstore_object_store_wal_deleted_objects_total` 不再变化。第一种情况由 [GreptimeTeam/greptimedb#9577](https://github.com/GreptimeTeam/greptimedb/issues/9577) 跟踪。

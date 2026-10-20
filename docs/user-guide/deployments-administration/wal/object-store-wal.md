@@ -1,6 +1,6 @@
 ---
 keywords: [Configuration, Object Store WAL, GreptimeDB standalone, GreptimeDB, S3, experimental]
-description: This section describes how to use the experimental object store WAL in GreptimeDB standalone, including its requirements, configuration, durability modes, cost, metrics and limitations.
+description: This section describes how to use the experimental object store WAL in GreptimeDB standalone, including its requirements, configuration, durability modes, cost, troubleshooting and limitations.
 ---
 # Object Store WAL
 
@@ -101,7 +101,7 @@ In both modes, data that has already been flushed to SST files is not affected b
 
 ### Write failures and recovery
 
-In `enqueued` mode, if the object store refuses writes with an error that retrying cannot fix, such as denied access or a missing bucket, GreptimeDB keeps the acknowledged writes in memory and keeps trying to store them, waiting up to 30 seconds between attempts. A crash during this time loses them. Until an attempt succeeds, new writes fail at once with a retryable error, which HTTP ingestion APIs such as InfluxDB line protocol return as status 503. `greptime_logstore_object_store_wal_failing` is 1 during this time, and the logs show the object store error. After you fix the cause, for example the credentials or the bucket, writes resume without a restart.
+In `enqueued` mode, if the object store refuses writes with an error that retrying cannot fix, such as denied access or a missing bucket, GreptimeDB keeps the acknowledged writes in memory and keeps trying to store them, waiting up to 30 seconds between attempts. A crash during this time loses them. Until an attempt succeeds, new writes fail at once with a retryable error, which HTTP ingestion APIs such as InfluxDB line protocol return as status 503. `greptime_logstore_object_store_wal_failing` is 1 during this time, so alert when it is above 0, and the logs show the object store error. After you fix the cause, for example the credentials or the bucket, writes resume without a restart.
 
 In `durable` mode, the same errors make the affected writes fail.
 
@@ -132,50 +132,14 @@ Things to know:
 
 - Old WAL data is deleted after the next write that follows a flush, so an instance that receives no writes keeps its old WAL data until it receives writes again.
 - A table that keeps receiving writes but is rarely flushed prevents WAL data from being deleted, also for other tables. This increases storage usage and startup time. Flush such tables regularly, for example with [`ADMIN flush_table`](/reference/sql/admin.md).
-
-## Observability
-
-The object store WAL exports metrics with the prefix `greptime_logstore_object_store_wal_`. Histograms are exported with the standard `_bucket`, `_sum` and `_count` series.
-
-| Metric | Type | Meaning |
-| --- | --- | --- |
-| `greptime_logstore_object_store_wal_seal_to_durable_seconds` | Histogram | Time to write buffered data to the object store. |
-| `greptime_logstore_object_store_wal_append_ack_seconds` | Histogram | Time a write waits for the WAL in `durable` mode. It is one part of the total write latency. |
-| `greptime_logstore_object_store_wal_object_bytes` | Histogram | Size of each object written to the object store. |
-| `greptime_logstore_object_store_wal_object_entries` | Histogram | Number of WAL entries in each object. |
-| `greptime_logstore_object_store_wal_created_objects_total` | Counter | Objects written successfully. |
-| `greptime_logstore_object_store_wal_create_failures_total` | Counter | Object writes that the object store did not confirm. In `durable` mode the affected writes fail; in `enqueued` mode they are retried, with backoff while the object store refuses them. |
-| `greptime_logstore_object_store_wal_create_conflicts_total` | Counter | Object writes that found an unexpected existing object, usually because another process uses the same `prefix`. |
-| `greptime_logstore_object_store_wal_poisoned_total` | Counter | Times the WAL hit an unrecoverable error and stopped accepting writes. |
-| `greptime_logstore_object_store_wal_stalled_appends_total` | Counter | Writes that waited because earlier writes to the object store had not completed, or, in `enqueued` mode, because `max_unpersisted_bytes` or `max_unpersisted_age` was reached. |
-| `greptime_logstore_object_store_wal_stalled_append_seconds` | Histogram | How long such a write waited. |
-| `greptime_logstore_object_store_wal_failing` | Gauge | 1 while the object store refuses the acknowledged writes of `enqueued` mode with an error such as denied access or a missing bucket. New writes are rejected meanwhile. |
-| `greptime_logstore_object_store_wal_rejected_appends_total` | Counter | Writes rejected while `failing` is 1. Table drops whose WAL record is rejected in that state are counted too; the drop itself succeeds and its record is stored later. |
-| `greptime_logstore_object_store_wal_release_records_total` | Counter | Records of dropped tables' regions in the WAL. They let GreptimeDB delete the WAL data of dropped tables, also after a restart. |
-| `greptime_logstore_object_store_wal_missing_history_accepted_total` | Counter | Regions opened without their WAL history because `accept_missing_history` is `true`. Their writes that were not flushed are lost. |
-| `greptime_logstore_object_store_wal_indexed_objects` | Gauge | Number of WAL objects currently kept, which is what GreptimeDB reads at startup. |
-| `greptime_logstore_object_store_wal_indexed_bytes` | Gauge | Total size of the WAL objects currently kept. |
-| `greptime_logstore_object_store_wal_deleted_objects_total` | Counter | WAL objects deleted by garbage collection. |
-| `greptime_logstore_object_store_wal_failed_deletes_total` | Counter | WAL object deletes that failed. They are retried later. |
-| `greptime_logstore_object_store_wal_recovery_seconds` | Histogram | Time spent loading the WAL at startup. |
-| `greptime_logstore_object_store_wal_recovered_objects_total` | Counter | WAL objects read while loading the WAL at startup. |
-| `greptime_logstore_object_store_wal_read_seconds` | Histogram | Time spent reading the WAL to replay one region. |
-| `greptime_logstore_object_store_wal_skipped_segments_total` | Counter | Corrupted WAL data skipped during replay. |
-
-Set up these alerts:
-
-- `greptime_logstore_object_store_wal_failing` above 0: the object store refuses WAL writes and new writes are rejected. Check the credentials, permissions and bucket of the storage provider.
-- Any increase of `greptime_logstore_object_store_wal_poisoned_total`: the WAL has stopped accepting writes. Restart GreptimeDB after checking the logs.
-- Any increase of `greptime_logstore_object_store_wal_create_conflicts_total`: check that no other process uses the same storage provider and `prefix`.
-- Any increase of `greptime_logstore_object_store_wal_stalled_appends_total`: writes arrive faster than the object store can store them.
-- Any increase of `greptime_logstore_object_store_wal_missing_history_accepted_total`: tables were opened without their unflushed writes. Turn `accept_missing_history` off again as described in [Start with missing WAL history](#start-with-missing-wal-history).
+- If `greptime_logstore_object_store_wal_indexed_objects` keeps growing while `greptime_logstore_object_store_wal_deleted_objects_total` stays the same, garbage collection is not making progress. Look for such a table, or for a crash while dropping a table as described in [Limitations](#limitations).
 
 ## Limitations
 
 - **Standalone only**: cluster mode is not supported.
-- **One instance per location**: two instances that use the same storage provider and `prefix` can fail to start, or one of them can stop accepting writes.
-- **Unrecoverable errors**: after an unrecoverable error, such as finding data written by another instance, the WAL rejects all writes until GreptimeDB restarts. Denied access or a missing bucket is not such an error: in `enqueued` mode GreptimeDB keeps retrying, see [Write failures and recovery](#write-failures-and-recovery).
+- **One instance per location**: two instances that use the same storage provider and `prefix` can fail to start, or one of them can stop accepting writes. An increase of `greptime_logstore_object_store_wal_create_conflicts_total` is a sign of this.
+- **Unrecoverable errors**: after an unrecoverable error, such as finding data written by another instance, the WAL rejects all writes until GreptimeDB restarts, and `greptime_logstore_object_store_wal_poisoned_total` increases. Check the logs before you restart. Denied access or a missing bucket is not such an error: in `enqueued` mode GreptimeDB keeps retrying, see [Write failures and recovery](#write-failures-and-recovery).
 - **No switching of an existing instance**: a table keeps the WAL provider it was created with. Tables created under `raft_engine` or `kafka` cannot be opened after you switch an instance to `experimental_object_store`, and the reverse is also true. GreptimeDB reports `Incompatible WAL provider change` and, by default, fails to start. Even if the tables are flushed before the switch, they still cannot be opened. Choose the WAL provider when you create the instance.
 - **No prefix change**: tables also keep the WAL `prefix` they were created with. After `prefix` is changed, they fail to open with the error `Object store WAL prefix mismatch`.
 - **WAL location changes**: changing `storage_provider`, or the bucket or root of the storage provider it names, requires copying the WAL files to the new location first, see [Move the WAL](#move-the-wal). Without the copy, or after the files are deleted, the affected tables fail to open when GreptimeDB finds that their history is missing, and by default GreptimeDB fails to start. GreptimeDB does not detect every wrong location.
-- **Crash while dropping a table**: if GreptimeDB crashes while dropping a table, or crashes after the WAL could not record a drop and before the object store accepts writes again, the dropped table's WAL data is never deleted and keeps other old WAL data from being deleted too. You can recognize this when `indexed_objects` only grows while `deleted_objects_total` stays the same. The first case is tracked in [GreptimeTeam/greptimedb#9577](https://github.com/GreptimeTeam/greptimedb/issues/9577).
+- **Crash while dropping a table**: if GreptimeDB crashes while dropping a table, or crashes after the WAL could not record a drop and before the object store accepts writes again, the dropped table's WAL data is never deleted and keeps other old WAL data from being deleted too. You can recognize this when `greptime_logstore_object_store_wal_indexed_objects` only grows while `greptime_logstore_object_store_wal_deleted_objects_total` stays the same. The first case is tracked in [GreptimeTeam/greptimedb#9577](https://github.com/GreptimeTeam/greptimedb/issues/9577).
