@@ -52,6 +52,43 @@ If you are running a version earlier than v0.16, you must first upgrade to v0.16
 
 ## Breaking Changes by Version
 
+### Unreleased Nightly changes
+
+#### Scan memory accounting changes
+
+These changes apply to Nightly builds containing
+[GreptimeDB PR #9101](https://github.com/GreptimeTeam/greptimedb/pull/9101).
+They change scan admission and accounting even if your configuration is unchanged.
+
+| Existing configuration | New behavior | Upgrade action |
+| --- | --- | --- |
+| `scan_memory_limit` omitted | Defaults to `25%` of cgroup memory, or host memory without a cgroup limit, with `scan_memory_mode = "basic"`. | Explicitly set `scan_memory_limit = "unlimited"` if you need to retain disabled scan-memory enforcement and file-count checks. |
+| Explicit nonzero `scan_memory_limit`, mode omitted | The budget accounts for projected row-group decoding reservations instead of cumulative streamed batches. | Set `scan_memory_mode = "extended"` if you need batch accounting, and review capacity. |
+| `scan_memory_limit = 0` or `"unlimited"` | Scan-memory enforcement remains disabled and file-count checks remain active. Accounting modes and the series-merge query pool still change. | Review the query-memory budget separately. |
+| `scan_memory_on_exhausted = "wait"` or `"wait(<duration>)"` | Configuration loads, but initialization warns and normalizes the policy to `fail`. | Replace the old setting with `"fail"`; scans no longer wait for quota. |
+
+**Extended mode is not an exact legacy mode.** Decoder reservations and cumulative
+streamed batches now share one scan budget, so the same numeric limit can reject
+scans that previously succeeded. Enterprise extension sources remain outside
+row-group accounting and retain `max_concurrent_scan_files` checks.
+
+Internal two-phase series merges now use `query.memory_pool_size` in both modes,
+sharing capacity with other query operators on the executing node and failing
+immediately on exhaustion. Previously, merges used a separate scan operator pool
+configured from `scan_memory_limit`; it was separate from the batch budget.
+Review the query pool even when you explicitly configure a scan limit. An
+unlimited query pool means the scan limit alone no longer bounds merge allocations.
+
+Update dashboards and alerts using `greptime_mito_scan_memory_usage_bytes`:
+`basic` reports decoder reservations; `extended` includes those reservations and
+cumulative streamed batches. Neither this metric nor either memory budget
+represents total process memory. Validate representative scans and concurrent
+queries in staging, including failure handling when either budget is exhausted.
+
+No persisted SST or wire-format migration is required. See
+[scan memory accounting](/user-guide/deployments-administration/configuration.md#scan-memory-accounting)
+for the configuration details.
+
 ### Upgrading from v1.0 or v1.1 to v1.2
 
 #### Removed PromQL `holt_winters`

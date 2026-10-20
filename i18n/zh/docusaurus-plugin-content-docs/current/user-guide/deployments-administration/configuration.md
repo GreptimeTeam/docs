@@ -613,7 +613,8 @@ vector_cache_size = "512MB"
 page_cache_size = "512MB"
 write_cache_size = "5GB"
 write_cache_ttl = "8h"
-scan_memory_limit = "unlimited"
+scan_memory_limit = "25%"
+scan_memory_mode = "basic"
 scan_memory_on_exhausted = "fail"
 min_compaction_interval = "0m"
 schedule_compaction_after_edit = true
@@ -668,10 +669,11 @@ Mito 根据表选项和 SST format 为每个 Region 选择 memtable 实现。`de
 | `range_result_cache_size`                | 字符串 | `512MB`       | Flat range scan 结果的缓存大小。设为 0 可关闭该缓存。<br/>未设置时默认为内存的 1/16，不超过 512MB。                         |
 | `prefilter_result_cache_size`            | 字符串 | `128MB`       | Prefilter 结果的缓存大小。设为 0 可关闭该缓存。<br/>未设置时默认为内存的 1/32，不超过 128MB。                         |
 | `sst_write_buffer_size`                  | 字符串 | `8MB`         | SST 的写缓存大小                                                                                                       |
-| `max_concurrent_scan_files`             | 整数   | `384`         | 最大并发扫描的 SST 文件数量。                                                                                         |
+| `max_concurrent_scan_files` | 整数 | `384` | 禁用扫描内存限制，或扫描包含未纳入 row group 内存计量的企业版扩展数据源时，允许并发扫描的最大 SST 文件数量。 |
 | `allow_stale_entries`                 | 布尔值 | `false`       | 是否允许 replay 时读取陈旧的 WAL 条目。                                                                              |
-| `scan_memory_limit`                   | 字符串 | `unlimited`   | 所有查询的表扫描内存限制。支持绝对大小（如 "2GB"）或系统内存百分比（如 "20%"）。设为 0 或 "unlimited" 可禁用限制。 |
-| `scan_memory_on_exhausted`           | 字符串 | `fail`        | 扫描内存耗尽时的行为。选项：`fail`（快速失败），`wait` 或 `wait(<duration>)`（等待内存）。                       |
+| `scan_memory_limit` | 字符串 | `25%` | Mito 引擎内所有查询和 region 共享的扫描内存预算。支持绝对大小（如 "2GB"）或 cgroup 内存百分比；无 cgroup 限制时使用主机内存。设为 0 或 "unlimited" 可禁用内存限制并恢复文件数量检查。 |
+| `scan_memory_mode` | 字符串 | `basic` | `basic` 在解码期间按投影列的 Parquet row group 未压缩大小预留内存。`extended` 还会累计统计已流出的批次，直到流被释放。两种模式都不代表进程总内存。 |
+| `scan_memory_on_exhausted` | 字符串 | `fail` | 扫描内存预算耗尽时立即失败。旧的 `wait` 和 `wait(<duration>)` 配置仍可加载，但初始化时会输出警告并按 `fail` 处理。此设置不控制独立的查询内存池。 |
 | `min_compaction_interval`           | 字符串 | `0m`          | 两次 compaction 之间的最小时间间隔。设为 "0m"（默认）允许 compactions 立即运行，无限制。                              |
 | `schedule_compaction_after_edit`    | 布尔值 | `true`        | 是否允许在成功的 region edit 之后调度 compaction。<br/>设为 `true` 是在 region edit 后调度 compaction 的必要但不充分条件，`min_compaction_interval` 等其他约束仍可能阻止 compaction 被调度。<br/>设为 `false` 则保证 region edit 后不会调度 compaction。 |
 | `default_flat_format`                | 布尔值 | `true`        | 没有显式设置 `sst_format` 的 Region 是否使用 flat SST。Flat SST 使用 bulk memtable。                                  |
@@ -698,6 +700,23 @@ Mito 根据表选项和 SST format 为每个 Region 选择 memtable 实现。`de
 :::note
 从 v1.2 起，metric 引擎始终启用稀疏主键编码，无法禁用。该编码仅对非空主键列进行编码，可提升写入和查询性能。配置文件中已有的 `sparse_primary_key_encoding` 设置会被接受但不产生任何效果。
 :::
+
+#### 扫描内存计量
+
+扫描预算会在解码投影列的 Parquet row group 前预留内存，缓存读取和旧版本写入的 SST
+也适用。解码预留会在完成、失败或取消时释放。Compaction 不使用此扫描预算。
+启用有限内存预算后，只要预留成功，纳入计量的 sequential scan 和 series scan
+就可以超过 `max_concurrent_scan_files`；包含企业版扩展数据源的扫描仍受文件数量限制。
+
+两种计量模式下，内部 two-phase series merge 都使用 `query.memory_pool_size`，
+与执行节点上的其他查询算子共享容量，内存池耗尽时立即失败。禁用 `scan_memory_limit`
+不会禁用这个独立的查询内存池；如果查询内存池不设限，有限的扫描预算也不会限制 merge
+算子的内存分配。
+
+`greptime_mito_scan_memory_usage_bytes` 在 `basic` 模式下报告解码预留，在 `extended`
+模式下还包括累计流出的批次。该指标不代表进程总内存。切换模式或升级时，请检查相关
+监控面板和告警。配置兼容性说明见
+[扫描内存升级指南](/user-guide/deployments-administration/upgrade.md#扫描内存计量变更)。
 
 ### 设定 meta client
 
