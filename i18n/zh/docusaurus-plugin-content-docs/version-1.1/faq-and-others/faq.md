@@ -40,7 +40,6 @@ GreptimeDB 针对可观测性和时序工作负载做了专门优化，与通用
 
 - **不支持 ACID 事务**：优先保证高吞吐写入，而非事务一致性。
 - **支持删除，但不适合高频删除场景**：GreptimeDB 支持[数据删除](/user-guide/manage-data/overview.md#删除数据)和[基于 TTL 的自动过期](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)，但不适合需要频繁细粒度删除的场景——可观测性数据本身就是追加为主的。
-- **支持 Join，但暂时不是优化重点**：GreptimeDB 支持 SQL Join，但查询引擎主要针对时序数据的过滤-聚合模式优化。简单 Join（如关联查询、metrics 与 logs 的交叉分析）可以正常使用。
 - **面向时序数据**：针对 IoT、metrics、logs、traces 优化，而非通用 OLTP。
 
 ### GreptimeDB 和 InfluxDB 有什么区别？
