@@ -5,11 +5,13 @@ description: This section describes the WAL (Write-Ahead Logging) in GreptimeDB,
 ---
 # Write-Ahead Logging (WAL)
 
-The [Write-Ahead Logging](/contributor-guide/datanode/wal.md#introduction)(WAL) in GreptimeDB persistently records every data modification to ensure no memory-cached data loss. GreptimeDB provides three WAL storage options:
+The [Write-Ahead Logging](/contributor-guide/datanode/wal.md#introduction)(WAL) in GreptimeDB persistently records every data modification to ensure no memory-cached data loss. GreptimeDB provides four WAL storage options:
 
 - **Local WAL**: Uses an embedded storage engine([raft-engine](https://github.com/tikv/raft-engine)) within the [Datanode](/user-guide/concepts/architecture.md).
 
 - **Remote WAL**: Uses [Apache Kafka](https://kafka.apache.org/) as the external(remote) WAL storage component.
+
+- **Object Store WAL**: An experimental provider for standalone mode that stores the WAL as objects in an object store such as S3.
 
 - **Noop WAL**: A no-op WAL provider for emergency situations when WAL becomes unavailable. Does not store any data. 
 
@@ -43,6 +45,28 @@ The [Write-Ahead Logging](/contributor-guide/datanode/wal.md#introduction)(WAL) 
 
 - **Network overhead**: Since WAL data needs to be transmitted over the network, careful planning of cluster network bandwidth is required to ensure low latency and high throughput, especially under write-heavy workloads.
 
+## Object Store WAL
+
+Object Store WAL is an experimental WAL provider for standalone mode. It stores the WAL in an object store such as S3.
+
+### Advantages
+
+- **No extra components**: The WAL can use the same object store as the data files, so nothing else has to be deployed or operated.
+
+- **Object store durability**: By default, a write is acknowledged only after it is durable in the object store, so it is as durable as the object store itself.
+
+- **No persistent volume for the WAL**: The Datanode does not need a local persistent volume for the WAL. Standalone still keeps its metadata under the data home.
+
+### Disadvantages
+
+- **Higher write latency**: By default, a write is acknowledged only after it is stored in the object store, which takes tens of milliseconds on a cloud object store.
+
+- **Request cost**: Every write to the object store is a request. At the default settings, periodic writes alone make up to 10 requests per second per node, and heavy load adds more.
+
+- **Experimental and standalone only**: It is not supported in cluster mode, and its configuration and behavior may change.
+
+For detailed configuration, see the [Object Store WAL](/user-guide/deployments-administration/wal/object-store-wal.md) page.
+
 ## Noop WAL
 
 Noop WAL is a special WAL provider for emergency situations when the configured WAL provider becomes temporarily unavailable. It does not store any WAL data and is only available in cluster mode.
@@ -54,5 +78,7 @@ For detailed configuration, see the [Noop WAL](/user-guide/deployments-administr
 - [Local WAL](/user-guide/deployments-administration/wal/local-wal.md) — configuring the embedded WAL.
 
 - [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) — configuring Kafka as the WAL backend.
+
+- [Object Store WAL](/user-guide/deployments-administration/wal/object-store-wal.md) — storing the WAL in an object store in standalone mode (experimental).
 
 - [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) — the emergency no-op provider.

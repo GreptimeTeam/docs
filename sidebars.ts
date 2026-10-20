@@ -339,6 +339,7 @@ const sidebars: SidebarsConfig = {
                     'user-guide/deployments-administration/wal/remote-wal/manage-kafka',
                   ]
                 },
+                'user-guide/deployments-administration/wal/object-store-wal',
                 'user-guide/deployments-administration/wal/noop-wal',
               ],
             },
