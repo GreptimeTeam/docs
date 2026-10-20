@@ -6,7 +6,7 @@ description: This section describes how to use the experimental object store WAL
 
 :::warning
 
-The object store WAL is experimental and is available in Nightly builds only. It works in standalone mode only. Its configuration and behavior may change in future versions.
+The object store WAL is experimental and works in standalone mode only. Its configuration and behavior may change in future versions.
 
 :::
 
