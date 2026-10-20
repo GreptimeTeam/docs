@@ -10,7 +10,7 @@ The object store WAL is experimental and works in standalone mode only. Its conf
 
 :::
 
-The object store WAL stores the WAL in an object store such as S3, usually the same one that holds your data files. You don't need to deploy or operate any extra component, and the WAL is as durable as the object store itself.
+The object store WAL stores the WAL in an object store such as S3, usually the same one that holds your data files. You don't need to deploy or operate any extra component. In the default `durable` mode, a write is acknowledged only after it is stored in the object store, so acknowledged writes are as durable as the object store itself. The `enqueued` mode acknowledges writes earlier and can lose some of them in a crash, see [Durability modes](#durability-modes).
 
 The provider is named `experimental_object_store`. It is supported only in standalone mode. In cluster mode, the Metasrv does not accept this provider, and a Datanode connected to a Metasrv refuses to start with the error `Object store WAL is only supported in standalone mode`.
 
@@ -18,9 +18,11 @@ If you are interested in how it works internally, see the [object store WAL RFC]
 
 ## Requirements
 
-The object store must support conditional writes (if-not-exists) and strongly consistent listing. S3, Google Cloud Storage, Azure Blob Storage and MinIO meet both requirements. An S3-compatible store that lacks either one is not supported. The local file system storage (`type = "File"`) does not provide the guarantees described on this page.
+Check the following before you enable the object store WAL:
 
-Each standalone instance needs its own WAL location. Do not let two GreptimeDB instances use the same storage provider and `prefix`.
+- **A new instance**: enable it when you create a standalone instance. A table keeps the WAL provider and `prefix` it was created with, so the tables of an existing instance fail to open after the instance switches to this provider, even if they were flushed first. See [Limitations](#limitations).
+- **A supported object store**: the object store that holds the WAL must support conditional writes (if-not-exists) and strongly consistent listing. S3, Google Cloud Storage, Azure Blob Storage and MinIO meet both requirements. An S3-compatible store that lacks either one is not supported. The local file system storage (`type = "File"`) does not provide the guarantees described on this page. By default the WAL uses the storage configured in `[storage]`, so that storage must be one of these object stores unless you set `storage_provider`.
+- **Its own location**: each standalone instance needs its own WAL location. Do not let two GreptimeDB instances use the same storage provider and `prefix`.
 
 ## Configuration
 
@@ -40,7 +42,7 @@ on_corrupted_segment = "skip"
 accept_missing_history = false
 ```
 
-In most cases, setting `provider` is enough.
+For a new instance that meets the [Requirements](#requirements), setting `provider` is enough.
 
 The configuration injection described in [Common Helm Chart Configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md) targets the cluster chart, where this provider is not supported. If you deploy standalone with Helm, see [Deploy GreptimeDB Standalone](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-standalone.md).
 
@@ -57,9 +59,19 @@ The configuration injection described in [Common Helm Chart Configurations](/use
 | `max_unpersisted_bytes` | In `enqueued` mode, the amount of acknowledged data not yet in the object store at which new writes wait. | `"64MB"` |
 | `max_unpersisted_age`   | In `enqueued` mode, the age of the oldest acknowledged data not yet in the object store at which new writes wait. It does not limit how old that data can get, see [Durability modes](#durability-modes). | `"8s"` |
 | `on_corrupted_segment`  | What to do when part of the WAL is corrupted: `skip` or `fail`. See [Corrupted data](#corrupted-data). | `"skip"` |
-| `accept_missing_history` | Whether a table opens when GreptimeDB finds that the WAL at the configured location does not hold its history, for example after the WAL location changed without its files being copied. When `true`, such a table opens without its writes that were not flushed, which are lost. Use it only to recover from a lost WAL, see [Move the WAL](#move-the-wal). | `false` |
+| `accept_missing_history` | Whether a table opens when GreptimeDB finds that the WAL at the configured location does not hold its history, for example after the WAL location changed without its files being copied. When `true`, such a table opens without its writes that were not flushed, which are lost. Use it only to recover from a lost WAL, see [Recover from a lost WAL](#recover-from-a-lost-wal). | `false` |
 
 The options other than `provider` are used only when `provider` is `experimental_object_store`. `max_unpersisted_bytes` and `max_unpersisted_age` are used only when `ack_mode` is `enqueued`.
+
+### Environment variables
+
+Like any other option, the WAL options can be set with [environment variables](/user-guide/deployments-administration/configuration.md#environment-variable) using the `GREPTIMEDB_STANDALONE` prefix:
+
+```bash
+export GREPTIMEDB_STANDALONE__WAL__PROVIDER=experimental_object_store
+export GREPTIMEDB_STANDALONE__WAL__PREFIX=wal
+export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
+```
 
 ### Where the WAL is stored
 
@@ -71,7 +83,7 @@ wal/datanodes/0/epochs/0/objects/
 
 The general form is `<prefix>/datanodes/<node_id>/epochs/<generation>/objects/`. GreptimeDB creates and deletes the files under this path itself. Do not modify or delete them manually.
 
-### Move the WAL
+## Move the WAL
 
 To move only the WAL to another location, store it in a storage provider of its own:
 
@@ -86,45 +98,39 @@ Changing the bucket or root of a storage provider that tables also use, such as 
 
 If the location changes without the files being copied, or if the files are deleted, GreptimeDB refuses to open a table when it finds that the table's WAL history is missing: when the location holds no WAL files, or when the newest WAL data there is older than what the table has already flushed. The table fails to open with an error saying that the WAL `does not hold the history of region`, and by default GreptimeDB fails to start. The error names the region, the `prefix` and the storage. GreptimeDB does not check that a location which already holds WAL files is the right one, for example an older copy or the WAL of another instance, so check the location before you start GreptimeDB.
 
+### Recover from a lost WAL
+
 If the old WAL is lost for good, start GreptimeDB once with `accept_missing_history = true`. The affected tables open without their writes that were not flushed, which are lost. A warning names each affected region, and `greptime_logstore_object_store_wal_missing_history_accepted_total` counts them. Set the option back to `false` after GreptimeDB has written to the WAL following that start.
-
-### Environment variables
-
-Like any other option, the WAL options can be set with [environment variables](/user-guide/deployments-administration/configuration.md#environment-variable) using the `GREPTIMEDB_STANDALONE` prefix:
-
-```bash
-export GREPTIMEDB_STANDALONE__WAL__PROVIDER=experimental_object_store
-export GREPTIMEDB_STANDALONE__WAL__PREFIX=wal
-export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
-```
 
 ## Durability modes
 
 `ack_mode` decides when a write is acknowledged to the client.
 
 - **`durable`** (default): a write is acknowledged only after it is stored in the object store. Acknowledged writes survive a crash. The cost is latency: a write usually waits up to one `flush_interval` plus one object store request, and longer when the object store is slow or earlier writes are still being stored.
-- **`enqueued`**: a write is acknowledged as soon as GreptimeDB accepts it, and it is written to the object store in the background. In measurements on S3, this mode reached the same throughput as the local WAL. The cost is durability: if GreptimeDB crashes, acknowledged writes that have not reached the object store yet are lost.
+- **`enqueued`**: a write is acknowledged as soon as GreptimeDB accepts it, and it is written to the object store in the background. In the S3 measurement described in [Latency and request cost](#latency-and-request-cost), this mode reached the same throughput as the local WAL. The cost is durability: if GreptimeDB crashes, acknowledged writes that have not reached the object store yet are lost.
 
 In `enqueued` mode, `max_unpersisted_bytes` and `max_unpersisted_age` slow down new writes when the object store falls behind, so that the amount of data waiting to be stored does not keep growing. They do not limit how much data a crash can lose during an object store outage, because writes acknowledged before the outage stay in memory until the object store is reachable again, however long that takes.
 
 When GreptimeDB stops in `enqueued` mode, it first uploads the acknowledged writes that are not stored yet. If those uploads fail, the writes are lost and GreptimeDB reports the error as it stops.
 
-In `enqueued` mode, if the object store refuses writes with an error that retrying cannot fix, such as denied access or a missing bucket, GreptimeDB keeps the acknowledged writes in memory and keeps trying to store them, waiting up to 30 seconds between attempts. A crash during this time loses them. Until an attempt succeeds, new writes fail at once with a retryable error, which HTTP ingestion APIs such as InfluxDB line protocol return as status 503. `greptime_logstore_object_store_wal_failing` is 1 during this time, and the logs show the object store error. After you fix the cause, for example the credentials or the bucket, writes resume without a restart. In `durable` mode, the same errors make the affected writes fail.
-
 In both modes, data that has already been flushed to SST files is not affected by a crash.
+
+### Write failures and recovery
+
+In `enqueued` mode, if the object store refuses writes with an error that retrying cannot fix, such as denied access or a missing bucket, GreptimeDB keeps the acknowledged writes in memory and keeps trying to store them, waiting up to 30 seconds between attempts. A crash during this time loses them. Until an attempt succeeds, new writes fail at once with a retryable error, which HTTP ingestion APIs such as InfluxDB line protocol return as status 503. `greptime_logstore_object_store_wal_failing` is 1 during this time, and the logs show the object store error. After you fix the cause, for example the credentials or the bucket, writes resume without a restart.
+
+In `durable` mode, the same errors make the affected writes fail.
 
 ## Latency and request cost
 
 Every write to the object store is one request, which affects both latency and cost:
 
 - GreptimeDB writes buffered data to the object store every `flush_interval`, or earlier when the buffer reaches `max_batch_bytes`. At the default `100ms`, the timer alone produces up to 10 requests per second per node; under heavy load, writes triggered by `max_batch_bytes` add more.
-- On S3, each request took about 50 ms at the median. Under sustained load, about 600 requests per minute per node were measured.
-- In `durable` mode, a client that sends one write at a time completes about one write per `flush_interval`.
-
-When tuning:
-
+- In `durable` mode, a client that sends one write at a time waits for the next `flush_interval` on every write, so `flush_interval` limits how many writes it completes per second.
 - A shorter `flush_interval` lowers the latency of `durable` writes when writes are sparse, and raises the number of requests in proportion. For example, `10ms` allows up to 100 timer-triggered requests per second per node.
 - If you need throughput close to the local WAL from a single writer, use `enqueued` mode and accept its durability trade-off. A shorter `flush_interval` alone does not remove the latency of the object store request.
+
+As an example, one benchmark ran GreptimeDB on an EC2 `c6id.2xlarge` instance in the same region as its S3 bucket (`ap-southeast-1`), with the default WAL options. It wrote 2,000,000 rows of about 900 bytes in batches of 1,000 rows, with 1 and with 8 concurrent clients. An object store request took about 50 ms at the median, sustained writing produced about 600 requests per minute per node, and a single `durable` client completed about one batch per `flush_interval`. Your results depend on the object store, the region and the workload. See the [cloud write path measurements](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/rfcs/2026-09-06-object-store-wal.md#cloud-write-path-measurements) in the RFC for the full results.
 
 ## Corrupted data
 
@@ -179,13 +185,13 @@ Set up these alerts:
 - Any increase of `greptime_logstore_object_store_wal_poisoned_total`: the WAL has stopped accepting writes. Restart GreptimeDB after checking the logs.
 - Any increase of `greptime_logstore_object_store_wal_create_conflicts_total`: check that no other process uses the same storage provider and `prefix`.
 - Any increase of `greptime_logstore_object_store_wal_stalled_appends_total`: writes arrive faster than the object store can store them.
-- Any increase of `greptime_logstore_object_store_wal_missing_history_accepted_total`: tables were opened without their unflushed writes. Turn `accept_missing_history` off again as described in [Move the WAL](#move-the-wal).
+- Any increase of `greptime_logstore_object_store_wal_missing_history_accepted_total`: tables were opened without their unflushed writes. Turn `accept_missing_history` off again as described in [Recover from a lost WAL](#recover-from-a-lost-wal).
 
 ## Limitations
 
 - **Standalone only**: cluster mode is not supported.
 - **One instance per location**: two instances that use the same storage provider and `prefix` can fail to start, or one of them can stop accepting writes.
-- **Unrecoverable errors**: after an unrecoverable error, such as finding data written by another instance, the WAL rejects all writes until GreptimeDB restarts. Denied access or a missing bucket is not such an error: in `enqueued` mode GreptimeDB keeps retrying, see [Durability modes](#durability-modes).
+- **Unrecoverable errors**: after an unrecoverable error, such as finding data written by another instance, the WAL rejects all writes until GreptimeDB restarts. Denied access or a missing bucket is not such an error: in `enqueued` mode GreptimeDB keeps retrying, see [Write failures and recovery](#write-failures-and-recovery).
 - **No switching of an existing instance**: a table keeps the WAL provider it was created with. Tables created under `raft_engine` or `kafka` cannot be opened after you switch an instance to `experimental_object_store`, and the reverse is also true. GreptimeDB reports `Incompatible WAL provider change` and, by default, fails to start. Flushing the tables before switching does not help. Choose the WAL provider when you create the instance.
 - **No prefix change**: tables also keep the WAL `prefix` they were created with. After `prefix` is changed, they fail to open with the error `Object store WAL prefix mismatch`.
 - **WAL history stays where its files are**: after `storage_provider`, or the bucket or root of the storage provider it names, changes without the WAL files being copied, or after the files are deleted, the affected tables fail to open when GreptimeDB finds that their history is missing, and by default GreptimeDB fails to start. GreptimeDB does not detect every wrong location. See [Move the WAL](#move-the-wal).
