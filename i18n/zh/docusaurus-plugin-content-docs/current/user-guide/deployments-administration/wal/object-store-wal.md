@@ -126,7 +126,7 @@ wal/datanodes/0/epochs/0/objects/
 每次写入对象存储都是一次请求，既影响延迟，也影响成本：
 
 - GreptimeDB 每隔 `flush_interval` 把缓冲的数据写到对象存储；缓冲达到 `max_batch_bytes` 时会提前写出。在默认的 `100ms` 下，仅定时写出每个节点每秒最多产生 10 次请求；负载较高时，由 `max_batch_bytes` 触发的写出还会增加请求数。
-- 在 `durable` 模式下，每次只发一个写入的客户端，每次写入都要等到下一个 `flush_interval`，因此它每秒能完成的写入数受 `flush_interval` 限制。
+- 在 `durable` 模式下，每次只发一个小批量写入的客户端，通常每次写入都要等到下一个 `flush_interval`，因此这类写入每秒能完成的数量受 `flush_interval` 限制。单次写入本身就达到 `max_batch_bytes` 时，会立即写出，不必等待定时器。
 - 写入稀疏时，缩短 `flush_interval` 可以降低 `durable` 写入的延迟，请求数也会按比例增加。例如 `10ms` 时，定时写出每个节点每秒最多产生 100 次请求。
 - 如果单个写入方需要接近本地 WAL 的吞吐，请使用 `enqueued` 模式并接受它在持久性上的取舍。只缩短 `flush_interval` 无法消除对象存储请求本身的延迟。
 

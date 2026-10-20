@@ -126,7 +126,7 @@ In `durable` mode, the same errors make the affected writes fail.
 Every write to the object store is one request, which affects both latency and cost:
 
 - GreptimeDB writes buffered data to the object store every `flush_interval`, or earlier when the buffer reaches `max_batch_bytes`. At the default `100ms`, the timer alone produces up to 10 requests per second per node; under heavy load, writes triggered by `max_batch_bytes` add more.
-- In `durable` mode, a client that sends one write at a time waits for the next `flush_interval` on every write, so `flush_interval` limits how many writes it completes per second.
+- In `durable` mode, a client that sends one small write at a time usually waits for the next `flush_interval` on every write, so `flush_interval` limits how many such writes it completes per second. A write that reaches `max_batch_bytes` on its own is sent without waiting for the timer.
 - A shorter `flush_interval` lowers the latency of `durable` writes when writes are sparse, and raises the number of requests in proportion. For example, `10ms` allows up to 100 timer-triggered requests per second per node.
 - If you need throughput close to the local WAL from a single writer, use `enqueued` mode and accept its durability trade-off. A shorter `flush_interval` alone does not remove the latency of the object store request.
 
