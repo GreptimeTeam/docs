@@ -103,7 +103,7 @@ If the old WAL is lost for good, start GreptimeDB once with `accept_missing_hist
 `ack_mode` decides when a write is acknowledged to the client.
 
 - **`durable`** (default): a write is acknowledged only after it is stored in the object store. Acknowledged writes survive a crash. The cost is latency: a write usually waits up to one `flush_interval` plus one object store request, and longer when the object store is slow or earlier writes are still being stored.
-- **`enqueued`**: a write is acknowledged as soon as GreptimeDB accepts it, and it is written to the object store in the background, so writes do not wait for the object store. The cost is durability: if GreptimeDB crashes, acknowledged writes that have not reached the object store yet are lost.
+- **`enqueued`**: a write is acknowledged as soon as GreptimeDB accepts it, and it is written to the object store in the background. The cost is durability: if GreptimeDB crashes, acknowledged writes that have not reached the object store yet are lost.
 
 In `enqueued` mode, `max_unpersisted_bytes` and `max_unpersisted_age` are thresholds for the acknowledged writes not yet stored in the object store: once either is reached, new writes wait. They do not limit how much data a crash can lose during an object store outage, because writes acknowledged before the outage stay in memory until the object store is reachable again, however long that takes.
 
@@ -121,6 +121,7 @@ In `durable` mode, the same errors make the affected writes fail.
 
 Every write to the object store is one request, which affects both latency and cost:
 
+- Start with the default options, including `ack_mode = "durable"`, and change them only when measurements of your workload show a need.
 - GreptimeDB writes buffered data to the object store every `flush_interval`, or earlier when the buffer reaches `max_batch_bytes`. At the default `100ms`, the timer alone produces up to 10 requests per second per node; under heavy load, writes triggered by `max_batch_bytes` add more.
 - In `durable` mode, a client that sends one small write at a time usually waits for the next `flush_interval` on every write, so `flush_interval` limits how many such writes it completes per second. A write that reaches `max_batch_bytes` on its own is sent without waiting for the timer.
 - A shorter `flush_interval` lowers the latency of `durable` writes when writes are sparse, and raises the number of requests in proportion. For example, `10ms` allows up to 100 timer-triggered requests per second per node.

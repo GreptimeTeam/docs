@@ -103,7 +103,7 @@ wal/datanodes/0/epochs/0/objects/
 `ack_mode` 决定写入何时向客户端确认。
 
 - **`durable`**（默认）：写入持久化到对象存储之后才确认，已确认的写入在崩溃后不会丢失。代价是延迟：一次写入通常要等待最多一个 `flush_interval`，再加上一次对象存储请求的时间；对象存储较慢或之前的写入尚未持久化完成时，等待会更久。
-- **`enqueued`**：GreptimeDB 接收写入后立即确认，再在后台把数据持久化到对象存储，因此写入不必等待对象存储。代价是持久性：GreptimeDB 崩溃时，已确认但尚未持久化到对象存储的写入会丢失。
+- **`enqueued`**：GreptimeDB 接收写入后立即确认，再在后台把数据持久化到对象存储。代价是持久性：GreptimeDB 崩溃时，已确认但尚未持久化到对象存储的写入会丢失。
 
 在 `enqueued` 模式下，`max_unpersisted_bytes` 和 `max_unpersisted_age` 是针对已确认但尚未持久化到对象存储的写入的阈值：达到阈值后，新的写入会等待。但在对象存储故障期间，它们并不能限制崩溃时的损失，因为故障前已确认的写入会一直留在内存中，无论故障持续多久，直到对象存储恢复。
 
@@ -119,8 +119,9 @@ wal/datanodes/0/epochs/0/objects/
 
 ## 延迟与请求成本
 
-每次写入对象存储都是一次请求，既影响延迟，也影响成本：
+每次持久化到对象存储都是一次请求，既影响延迟，也影响成本：
 
+- 请先使用默认配置（包括 `ack_mode = "durable"`），只有在针对实际负载的测量表明有需要时才调整。
 - GreptimeDB 每隔 `flush_interval` 把缓冲的数据持久化到对象存储；缓冲达到 `max_batch_bytes` 时会提前持久化。在默认的 `100ms` 下，仅定时持久化每个节点每秒最多产生 10 次请求；负载较高时，由 `max_batch_bytes` 触发的持久化还会增加请求数。
 - 在 `durable` 模式下，每次只发一个小批量写入的客户端，通常每次写入都要等到下一个 `flush_interval`，因此这类写入每秒能完成的数量受 `flush_interval` 限制。单次写入本身就达到 `max_batch_bytes` 时，会立即持久化，不必等待定时器。
 - 写入稀疏时，缩短 `flush_interval` 可以降低 `durable` 写入的延迟，请求数也会按比例增加。例如 `10ms` 时，定时持久化每个节点每秒最多产生 100 次请求。
@@ -152,7 +153,7 @@ wal/datanodes/0/epochs/0/objects/
 | --- | --- | --- |
 | `greptime_logstore_object_store_wal_seal_to_durable_seconds` | Histogram | 把缓冲数据持久化到对象存储的耗时。 |
 | `greptime_logstore_object_store_wal_append_ack_seconds` | Histogram | `durable` 模式下写入等待 WAL 的时间，是整体写入延迟的一部分。 |
-| `greptime_logstore_object_store_wal_object_bytes` | Histogram | 每个写到对象存储的对象的大小。 |
+| `greptime_logstore_object_store_wal_object_bytes` | Histogram | 每个持久化到对象存储的对象的大小。 |
 | `greptime_logstore_object_store_wal_object_entries` | Histogram | 每个对象包含的 WAL 条目数。 |
 | `greptime_logstore_object_store_wal_created_objects_total` | Counter | 成功写入的对象数。 |
 | `greptime_logstore_object_store_wal_create_failures_total` | Counter | 对象存储未确认的对象写入次数。`durable` 模式下相关写入会失败，`enqueued` 模式下会重试；对象存储拒绝写入期间会逐步拉长重试间隔。 |
@@ -179,7 +180,7 @@ wal/datanodes/0/epochs/0/objects/
 - `greptime_logstore_object_store_wal_poisoned_total` 有任何增长：WAL 已停止接受写入。检查日志后重启 GreptimeDB。
 - `greptime_logstore_object_store_wal_create_conflicts_total` 有任何增长：检查是否有其他进程使用了同一个存储提供商和 `prefix`。
 - `greptime_logstore_object_store_wal_stalled_appends_total` 有任何增长：写入速度超过了对象存储的写入能力。
-- `greptime_logstore_object_store_wal_missing_history_accepted_total` 有任何增长：有表在丢失未 flush 写入的情况下被打开。请按照[在 WAL 历史缺失时启动](#在-wal-历史缺失时启动)中的说明关闭 `accept_missing_history`。
+- `greptime_logstore_object_store_wal_missing_history_accepted_total` 有任何增长：有表在打开时丢失了未 flush 到 SST 文件的写入。请按照[在 WAL 历史缺失时启动](#在-wal-历史缺失时启动)中的说明关闭 `accept_missing_history`。
 
 ## 限制
 
