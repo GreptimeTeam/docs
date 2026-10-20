@@ -42,8 +42,6 @@ accept_missing_history = false
 
 For a new instance that meets the [Requirements](#requirements), setting `provider` is enough.
 
-The configuration injection described in [Common Helm Chart Configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md) targets the cluster chart, where this provider is not supported. If you deploy standalone with Helm, see [Deploy GreptimeDB Standalone](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-standalone.md).
-
 ### Options
 
 | Configuration Option    | Description | Default Value |
@@ -60,16 +58,6 @@ The configuration injection described in [Common Helm Chart Configurations](/use
 | `accept_missing_history` | Whether a table opens when GreptimeDB finds that the WAL at the configured location does not hold its history, for example after the WAL location changed without its files being copied. When `true`, such a table opens without its writes that were not flushed, which are lost. Use it only when the old WAL is lost for good, see [Start with missing WAL history](#start-with-missing-wal-history). | `false` |
 
 The options other than `provider` are used only when `provider` is `experimental_object_store`. `max_unpersisted_bytes` and `max_unpersisted_age` are used only when `ack_mode` is `enqueued`.
-
-### Environment variables
-
-Like any other option, the WAL options can be set with [environment variables](/user-guide/deployments-administration/configuration.md#environment-variable) using the `GREPTIMEDB_STANDALONE` prefix:
-
-```bash
-export GREPTIMEDB_STANDALONE__WAL__PROVIDER=experimental_object_store
-export GREPTIMEDB_STANDALONE__WAL__PREFIX=wal
-export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
-```
 
 ### Where the WAL is stored
 

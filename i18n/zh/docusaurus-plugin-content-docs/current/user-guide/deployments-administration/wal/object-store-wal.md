@@ -42,8 +42,6 @@ accept_missing_history = false
 
 对于满足[使用前提](#使用前提)的新实例，只需设置 `provider`。
 
-[常见 Helm Chart 配置项](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)中介绍的配置文件注入方式针对的是集群 Chart，而集群模式不支持这个提供者。如果使用 Helm 部署单机模式，请参考[部署 GreptimeDB 单机版](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-standalone.md)。
-
 ### 选项
 
 | 配置项                  | 描述 | 默认值 |
@@ -60,16 +58,6 @@ accept_missing_history = false
 | `accept_missing_history` | 当 GreptimeDB 发现配置的 WAL 位置中没有某张表的 WAL 历史时（例如更换了 WAL 位置但没有复制文件），是否仍然打开这张表。设为 `true` 时，这类表会打开，但未 flush 到 SST 文件的写入会丢失。仅在旧的 WAL 已彻底丢失时使用，参见[在 WAL 历史缺失时启动](#在-wal-历史缺失时启动)。 | `false` |
 
 除 `provider` 外，以上选项仅在 `provider` 为 `experimental_object_store` 时生效；`max_unpersisted_bytes` 和 `max_unpersisted_age` 仅在 `ack_mode` 为 `enqueued` 时生效。
-
-### 环境变量
-
-和其他配置项一样，WAL 选项也可以通过带 `GREPTIMEDB_STANDALONE` 前缀的[环境变量](/user-guide/deployments-administration/configuration.md#环境变量)设置：
-
-```bash
-export GREPTIMEDB_STANDALONE__WAL__PROVIDER=experimental_object_store
-export GREPTIMEDB_STANDALONE__WAL__PREFIX=wal
-export GREPTIMEDB_STANDALONE__WAL__ACK_MODE=durable
-```
 
 ### WAL 的存放位置
 
