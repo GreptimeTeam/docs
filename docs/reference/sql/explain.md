@@ -42,6 +42,8 @@ The `MergeScan` plan merges the results from multiple regions. The `peers` array
 
 Explains the execution of the plan by `ANALYZE`:
 
+The following ANALYZE outputs are illustrative; timing metrics are abbreviated.
+
 ```sql
 EXPLAIN ANALYZE SELECT * FROM monitor where host='host1'\G
 ```
@@ -57,7 +59,7 @@ stage: 0
 *************************** 2. row ***************************
 stage: 1
  node: 0
- plan:  SeqScan: region=4612794875904(1074, 0), partition_count=0 (0 memtable ranges, 0 file 0 ranges) metrics=[output_rows: 0, mem_used: 0, build_parts_cost: 1, build_reader_cost: 1, elapsed_await: 1, elapsed_poll: 21250, scan_cost: 1, yield_cost: 1, ]
+ plan:  SeqScan: region=4612794875904(1074, 0), "partition_count":{"count":0,"mem_ranges":0,"files":0,"file_ranges":0}, "projection": ["host", "ts", "cpu", "memory"], "filters": ["host = Utf8(\"host1\")"], "file_summary":{"files":0,"rows":0,"row_groups":0,"size":0,"index_size":0} metrics=[output_rows: 0, ...]
 
 *************************** 3. row ***************************
 stage: NULL
@@ -83,7 +85,7 @@ stage: 0
 *************************** 2. row ***************************
 stage: 1
  node: 0
- plan:  SeqScan: region=4612794875904(1074, 0), partition_count=0 (0 memtable ranges, 0 file 0 ranges), projection=["host", "ts", "cpu", "memory"], filters=[host = Utf8("host1")], metrics_per_partition: [[partition=0, {prepare_scan_cost=579.75µs, build_reader_cost=0ns, scan_cost=0ns, convert_cost=0ns, yield_cost=0ns, total_cost=789.708µs, num_rows=0, num_batches=0, num_mem_ranges=0, num_file_ranges=0, build_parts_cost=0ns, rg_total=0, rg_fulltext_filtered=0, rg_inverted_filtered=0, rg_minmax_filtered=0, rg_bloom_filtered=0, rows_before_filter=0, rows_fulltext_filtered=0, rows_inverted_filtered=0, rows_bloom_filtered=0, rows_precise_filtered=0, num_sst_record_batches=0, num_sst_batches=0, num_sst_rows=0, first_poll=785.041µs}]] metrics=[output_rows: 0, mem_used: 0, build_parts_cost: 1, build_reader_cost: 1, elapsed_await: 1, elapsed_poll: 17208, scan_cost: 1, yield_cost: 1, ]
+ plan:  SeqScan: region=4612794875904(1074, 0), {"partition_count":{"count":0,"mem_ranges":0,"files":0,"file_ranges":0}, "projection": ["host", "ts", "cpu", "memory"], "filters": ["host = Utf8(\"host1\")"], "file_summary":{"files":0,"rows":0,"row_groups":0,"size":0,"index_size":0}, "flat_format": true} metrics=[output_rows: 0, ...]
 
 *************************** 3. row ***************************
 stage: NULL
@@ -131,6 +133,9 @@ Verbose mode layout:
   "projection": [...],
   "filters": [...],
   "dyn_filters": [...],
+  "time_range": "TimestampRange{[0ms,6000ms)}",
+  "file_summary": {...},
+  "max_part_range": {...},
   "files": [...],
   "flat_format": true,
   "metrics_per_partition": [
@@ -171,7 +176,7 @@ may include additional runtime fields such as `mem_used`, `elapsed_poll`, and
 Example with synthetic values:
 
 ```text
-SeqScan: region=0(1, 0), "partition_count":{"count":2, "mem_ranges":1, "files":1, "file_ranges":1} metrics=[output_rows: 128, elapsed_compute: 12ms, build_parts_cost: 1.2ms, build_reader_cost: 2.1ms, convert_cost: 300µs, scan_cost: 8.4ms, yield_cost: 900µs, ]
+SeqScan: region=0(1, 0), "partition_count":{"count":2, "mem_ranges":1, "files":1, "file_ranges":1}, "projection": ["host", "ts", "value"], "file_summary":{"files":1,"rows":1024,"row_groups":1,"size":65536,"index_size":4096}, "max_part_range":{"files":1,"rows":1024,"row_groups":1,"size":65536,"index_size":4096,"estimated_rows":1024,"time_range_start":"1000::Millisecond","time_range_end":"2000::Millisecond"} metrics=[output_rows: 128, elapsed_compute: 12ms, build_parts_cost: 1.2ms, build_reader_cost: 2.1ms, convert_cost: 300µs, scan_cost: 8.4ms, yield_cost: 900µs, ]
 ```
 
 ### Scanner Display Fields
@@ -193,13 +198,47 @@ per-partition metrics.
 | `selector` | All | Series row selector attached to the scan. | When a series row selector is attached. |
 | `distribution` | All | Distribution information attached to the scan. | When distribution is attached. |
 | `mode` | All | Series scan mode: `two_phase` for the new scan path or `legacy` for the legacy path. | Always for `SeriesScan`. |
-| `projection` | Verbose | Output column names after projection pruning. | When the output schema is not empty. |
-| `filters` | Verbose | Static physical predicate expressions pushed into the scanner. These predicates may drive row-group pruning, index application, and precise filtering. | When static predicates exist. |
-| `dyn_filters` | Verbose | Dynamic filter expressions attached after plan creation. These can change during execution as upstream operators produce filter values. | When dynamic filters exist. |
+| `projection` | All | Output column names after projection pruning. | When the output schema is not empty. |
+| `filters` | All | Static physical predicate expressions pushed into the scanner. These predicates may drive row-group pruning, index application, and precise filtering. | When static predicates exist. |
+| `dyn_filters` | All | Dynamic filter expressions attached after plan creation. These can change during execution as upstream operators produce filter values. | When dynamic filters exist. |
+| `time_range` | All | Pushed-down scan time range, formatted as a `TimestampRange` string. | When a time range is attached. |
+| `file_summary` | All | Metadata totals for SST files in the scan input. | Always when the scan plan is available, including zero totals for no SSTs. |
+| `max_part_range` | All | Summary of the partition range containing the most distinct SST files. | When at least one range contains an SST file. |
 | `files` | Verbose | SST file metadata for files in the scan input. | When SST files are present. |
 | `flat_format` | Verbose | Whether the scan input is expected to use flat format. | Always in verbose mode. |
 | `extension_ranges` | Verbose | Enterprise extension ranges attached to the scan. | Enterprise builds only, when extension ranges exist. |
 | `metrics_per_partition` | Verbose | Per-partition scanner metrics collected by `PartitionMetrics`. | Verbose mode after partitions have metrics. |
+
+`file_summary` contains the following fields. `max_part_range` contains the same
+fields for the selected range, plus the additional fields listed below.
+
+| Field | Meaning |
+| --- | --- |
+| `files` | Number of distinct SST files. Memtables and enterprise extension sources are excluded. |
+| `rows` | Sum of row counts recorded in the SST metadata. |
+| `row_groups` | Sum of row-group counts recorded in the SST metadata. |
+| `size` | Sum of SST file sizes in bytes. |
+| `index_size` | Sum of index sizes in bytes recorded for these files. |
+| `time_range_start`, `time_range_end` | Only in `max_part_range`: inclusive range bounds, formatted as `value::unit`. |
+| `estimated_rows` | Only in `max_part_range`: estimated rows in the selected partition range. |
+
+These totals describe input file metadata, not rows returned after filtering or
+bytes actually read. Older SSTs can report zero for unknown row or row-group
+counts. A file split into multiple row groups counts once within a range.
+`max_part_range` selects by file count, not bytes or row count, and does not expose
+a range ID. Its `rows` includes full-file metadata counts, whereas
+`estimated_rows` estimates the rows in that range.
+
+The same scan details are available in ordinary nonverbose `EXPLAIN ANALYZE`
+and the first SSE event containing a scan plan from
+`POST /v1/sql/analyze/stream`; an early event can have no scan plan yet. A fast
+query can first expose the plan in its final event. The complete `files` list
+remains verbose-only, including in final verbose SSE output.
+
+In `EXPLAIN ANALYZE FORMAT JSON` and SSE plan nodes, `param` remains a string
+containing scanner diagnostics. These fields do not introduce a `scan_details`
+wrapper or change the JSON node schema. Projection and filter strings are
+JSON-escaped. Scanner diagnostics remain version-dependent text.
 
 Each `files` entry contains:
 
@@ -215,7 +254,7 @@ Each `files` entry contains:
 Example verbose scanner display with synthetic values:
 
 ```text
-UnorderedScan: region=0(1, 0), {"partition_count":{"count":4, "mem_ranges":1, "files":2, "file_ranges":3}, "projection": ["host", "ts", "value"], "filters": ["host = Utf8(\"demo\")"], "dyn_filters": ["ts@1 < @runtime_filter"], "files": [{"file_id":"0(1, 0)/00000000-0000-0000-0000-000000000001","time_range_start":"1000::Millisecond","time_range_end":"2000::Millisecond","rows":1024,"size":65536,"index_size":4096}], "flat_format": true, "metrics_per_partition": [...]}
+UnorderedScan: region=0(1, 0), {"partition_count":{"count":1, "mem_ranges":0, "files":1, "file_ranges":1}, "projection": ["host", "ts", "value"], "filters": ["host = Utf8(\"demo\")"], "dyn_filters": ["ts@1 < @runtime_filter"], "time_range": "TimestampRange{[0ms,6000ms)}", "file_summary":{"files":1,"rows":1024,"row_groups":1,"size":65536,"index_size":4096}, "max_part_range":{"files":1,"rows":1024,"row_groups":1,"size":65536,"index_size":4096,"estimated_rows":1024,"time_range_start":"1000::Millisecond","time_range_end":"2000::Millisecond"}, "files": [{"file_id":"0(1, 0)/00000000-0000-0000-0000-000000000001","time_range_start":"1000::Millisecond","time_range_end":"2000::Millisecond","rows":1024,"size":65536,"index_size":4096}], "flat_format": true, "metrics_per_partition": [...]}
 ```
 
 ### Per-Partition Metrics

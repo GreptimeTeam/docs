@@ -42,6 +42,8 @@ plan_type: physical_plan
 
 使用 `ANALYZE` 解释执行计划：
 
+以下 ANALYZE 输出为示意，耗时指标已省略。
+
 ```sql
 EXPLAIN ANALYZE SELECT * FROM monitor where host='host1'\G
 ```
@@ -57,7 +59,7 @@ stage: 0
 *************************** 2. row ***************************
 stage: 1
  node: 0
- plan:  SeqScan: region=4612794875904(1074, 0), partition_count=0 (0 memtable ranges, 0 file 0 ranges) metrics=[output_rows: 0, mem_used: 0, build_parts_cost: 1, build_reader_cost: 1, elapsed_await: 1, elapsed_poll: 21250, scan_cost: 1, yield_cost: 1, ]
+ plan:  SeqScan: region=4612794875904(1074, 0), "partition_count":{"count":0,"mem_ranges":0,"files":0,"file_ranges":0}, "projection": ["host", "ts", "cpu", "memory"], "filters": ["host = Utf8(\"host1\")"], "file_summary":{"files":0,"rows":0,"row_groups":0,"size":0,"index_size":0} metrics=[output_rows: 0, ...]
 
 *************************** 3. row ***************************
 stage: NULL
@@ -84,7 +86,7 @@ stage: 0
 *************************** 2. row ***************************
 stage: 1
  node: 0
- plan:  SeqScan: region=4612794875904(1074, 0), partition_count=0 (0 memtable ranges, 0 file 0 ranges), projection=["host", "ts", "cpu", "memory"], filters=[host = Utf8("host1")], metrics_per_partition: [[partition=0, {prepare_scan_cost=579.75µs, build_reader_cost=0ns, scan_cost=0ns, convert_cost=0ns, yield_cost=0ns, total_cost=789.708µs, num_rows=0, num_batches=0, num_mem_ranges=0, num_file_ranges=0, build_parts_cost=0ns, rg_total=0, rg_fulltext_filtered=0, rg_inverted_filtered=0, rg_minmax_filtered=0, rg_bloom_filtered=0, rows_before_filter=0, rows_fulltext_filtered=0, rows_inverted_filtered=0, rows_bloom_filtered=0, rows_precise_filtered=0, num_sst_record_batches=0, num_sst_batches=0, num_sst_rows=0, first_poll=785.041µs}]] metrics=[output_rows: 0, mem_used: 0, build_parts_cost: 1, build_reader_cost: 1, elapsed_await: 1, elapsed_poll: 17208, scan_cost: 1, yield_cost: 1, ]
+ plan:  SeqScan: region=4612794875904(1074, 0), {"partition_count":{"count":0,"mem_ranges":0,"files":0,"file_ranges":0}, "projection": ["host", "ts", "cpu", "memory"], "filters": ["host = Utf8(\"host1\")"], "file_summary":{"files":0,"rows":0,"row_groups":0,"size":0,"index_size":0}, "flat_format": true} metrics=[output_rows: 0, ...]
 
 *************************** 3. row ***************************
 stage: NULL
@@ -129,6 +131,9 @@ verbose 模式结构：
   "projection": [...],
   "filters": [...],
   "dyn_filters": [...],
+  "time_range": "TimestampRange{[0ms,6000ms)}",
+  "file_summary": {...},
+  "max_part_range": {...},
   "files": [...],
   "flat_format": true,
   "metrics_per_partition": [
@@ -166,7 +171,7 @@ verbose 模式结构：
 使用合成值的示例：
 
 ```text
-SeqScan: region=0(1, 0), "partition_count":{"count":2, "mem_ranges":1, "files":1, "file_ranges":1} metrics=[output_rows: 128, elapsed_compute: 12ms, build_parts_cost: 1.2ms, build_reader_cost: 2.1ms, convert_cost: 300µs, scan_cost: 8.4ms, yield_cost: 900µs, ]
+SeqScan: region=0(1, 0), "partition_count":{"count":2, "mem_ranges":1, "files":1, "file_ranges":1}, "projection": ["host", "ts", "value"], "file_summary":{"files":1,"rows":1024,"row_groups":1,"size":65536,"index_size":4096}, "max_part_range":{"files":1,"rows":1024,"row_groups":1,"size":65536,"index_size":4096,"estimated_rows":1024,"time_range_start":"1000::Millisecond","time_range_end":"2000::Millisecond"} metrics=[output_rows: 128, elapsed_compute: 12ms, build_parts_cost: 1.2ms, build_reader_cost: 2.1ms, convert_cost: 300µs, scan_cost: 8.4ms, yield_cost: 900µs, ]
 ```
 
 ### 扫描器展示字段
@@ -187,13 +192,43 @@ SeqScan: region=0(1, 0), "partition_count":{"count":2, "mem_ranges":1, "files":1
 | `selector` | 全部 | 附加到扫描的 series row selector。 | 存在 series row selector 时。 |
 | `distribution` | 全部 | 附加到扫描的分布信息。 | 存在 distribution 时。 |
 | `mode` | 全部 | Series scan 模式：`two_phase` 表示新的扫描路径，`legacy` 表示旧版扫描路径。 | `SeriesScan` 中总是出现。 |
-| `projection` | Verbose | 投影剪枝后的输出列名。 | 输出 schema 非空时。 |
-| `filters` | Verbose | 下推到扫描器的静态物理谓词表达式。这些谓词可能驱动 row group 剪枝、索引应用和精确过滤。 | 存在静态谓词时。 |
-| `dyn_filters` | Verbose | 计划创建后附加的动态过滤表达式。上游算子产生过滤值时，这些表达式可能变化。 | 存在动态过滤器时。 |
+| `projection` | 全部 | 投影剪枝后的输出列名。 | 输出 schema 非空时。 |
+| `filters` | 全部 | 下推到扫描器的静态物理谓词表达式。这些谓词可能驱动 row group 剪枝、索引应用和精确过滤。 | 存在静态谓词时。 |
+| `dyn_filters` | 全部 | 计划创建后附加的动态过滤表达式。上游算子产生过滤值时，这些表达式可能变化。 | 存在动态过滤器时。 |
+| `time_range` | 全部 | 下推到扫描的时间范围，以 `TimestampRange` 字符串表示。 | 存在时间范围时。 |
+| `file_summary` | 全部 | 扫描输入中 SST 文件的元数据汇总。 | 扫描计划可用时总是出现，无 SST 时各项为零。 |
+| `max_part_range` | 全部 | 包含最多不同 SST 文件的分区范围的汇总。 | 至少一个范围包含 SST 文件时。 |
 | `files` | Verbose | 扫描输入中 SST 文件的元数据。 | 存在 SST 文件时。 |
 | `flat_format` | Verbose | 扫描输入是否预期使用 flat format。 | verbose 模式下总是出现。 |
 | `extension_ranges` | Verbose | 附加到扫描的企业版 extension ranges。 | 仅企业版构建且存在 extension ranges 时。 |
 | `metrics_per_partition` | Verbose | `PartitionMetrics` 收集的分区级扫描器指标。 | verbose 模式下分区有指标后。 |
+
+`file_summary` 包含下表中的汇总字段。`max_part_range` 包含所选范围的相同汇总字段，
+以及表中标出的额外字段。
+
+| 字段 | 含义 |
+| --- | --- |
+| `files` | 不同 SST 文件的数量，不包括 memtable 和企业版扩展数据源。 |
+| `rows` | SST 元数据中记录的行数之和。 |
+| `row_groups` | SST 元数据中记录的 row group 数量之和。 |
+| `size` | SST 文件大小之和，单位为字节。 |
+| `index_size` | 这些文件记录的索引大小之和，单位为字节。 |
+| `time_range_start`、`time_range_end` | 仅出现在 `max_part_range`：范围的闭区间边界，格式为 `value::unit`。 |
+| `estimated_rows` | 仅出现在 `max_part_range`：所选分区范围的估算行数。 |
+
+这些汇总值描述输入文件的元数据，不是过滤后的返回行数或实际读取的字节数。
+旧 SST 中未知的行数或 row group 数量可能记为零。一个文件即使拆分为多个 row group，
+在同一范围内也只计数一次。`max_part_range` 按文件数量选择范围，不按字节数或行数选择，
+也不暴露范围 ID。它的 `rows` 汇总完整文件的元数据行数，而 `estimated_rows` 估算该范围内的行数。
+
+普通的非 verbose `EXPLAIN ANALYZE` 输出，以及 `POST /v1/sql/analyze/stream`
+首次包含扫描计划的 SSE 事件，都会提供这些扫描详情。较早的事件可能还没有扫描计划；
+执行较快的查询可能直到 final 事件才提供计划。完整的 `files` 列表仍仅在 verbose 模式下
+出现，包括最终的 verbose SSE 输出。
+
+在 `EXPLAIN ANALYZE FORMAT JSON` 和 SSE 计划节点中，`param` 仍是包含扫描诊断信息的
+字符串。这些字段不会引入 `scan_details` 包装层，也不会改变 JSON 节点结构。
+投影列和过滤表达式字符串按 JSON 规则转义。扫描诊断文本仍可能随版本变化。
 
 每个 `files` 项包含：
 
@@ -209,7 +244,7 @@ SeqScan: region=0(1, 0), "partition_count":{"count":2, "mem_ranges":1, "files":1
 使用合成值的 verbose 扫描器展示示例：
 
 ```text
-UnorderedScan: region=0(1, 0), {"partition_count":{"count":4, "mem_ranges":1, "files":2, "file_ranges":3}, "projection": ["host", "ts", "value"], "filters": ["host = Utf8(\"demo\")"], "dyn_filters": ["ts@1 < @runtime_filter"], "files": [{"file_id":"0(1, 0)/00000000-0000-0000-0000-000000000001","time_range_start":"1000::Millisecond","time_range_end":"2000::Millisecond","rows":1024,"size":65536,"index_size":4096}], "flat_format": true, "metrics_per_partition": [...]}
+UnorderedScan: region=0(1, 0), {"partition_count":{"count":1, "mem_ranges":0, "files":1, "file_ranges":1}, "projection": ["host", "ts", "value"], "filters": ["host = Utf8(\"demo\")"], "dyn_filters": ["ts@1 < @runtime_filter"], "time_range": "TimestampRange{[0ms,6000ms)}", "file_summary":{"files":1,"rows":1024,"row_groups":1,"size":65536,"index_size":4096}, "max_part_range":{"files":1,"rows":1024,"row_groups":1,"size":65536,"index_size":4096,"estimated_rows":1024,"time_range_start":"1000::Millisecond","time_range_end":"2000::Millisecond"}, "files": [{"file_id":"0(1, 0)/00000000-0000-0000-0000-000000000001","time_range_start":"1000::Millisecond","time_range_end":"2000::Millisecond","rows":1024,"size":65536,"index_size":4096}], "flat_format": true, "metrics_per_partition": [...]}
 ```
 
 ### 分区级指标
