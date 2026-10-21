@@ -40,7 +40,6 @@ GreptimeDB is optimized for observability and time-series workloads, which means
 
 - **No ACID transactions**: Prioritizes high-throughput writes over transactional consistency.
 - **Delete is supported but not optimized for high-frequency use**: GreptimeDB supports [row deletion](/user-guide/manage-data/overview.md#delete-data) and [TTL-based expiration](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies), but it is not designed for workloads that require frequent, fine-grained deletes — as is typical for append-heavy observability data.
-- **Joins are functional but currently not the primary focus**: GreptimeDB supports SQL joins, but the query engine is optimized for time-series filter-aggregate patterns rather than complex multi-way relational joins. Simple joins (e.g., enrichment lookups, correlating metrics with logs) work well.
 - **Time-series focused**: Optimized for IoT, metrics, logs, and traces rather than general OLTP.
 
 ### What's the difference between GreptimeDB and InfluxDB?
