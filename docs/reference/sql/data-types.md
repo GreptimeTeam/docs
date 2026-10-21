@@ -283,6 +283,19 @@ Output:
 +---------------------------------------------------+
 ```
 
+You can also access JSON fields with dot notation, as a shorthand for extracting
+a path. Dot notation can be used wherever SQL expressions are accepted. Use a
+dot between nested object keys, zero-based subscripts for array elements, and
+double quotes around a path segment when the JSON key contains a dot:
+
+```sql
+SELECT my_json.name AS name FROM json_data;
+```
+
+For example, `my_json.user.name`, `my_json.items[0].name`, and
+`my_json."service.name"` access a nested key, an array element, and a key
+literally named `service.name`, respectively.
+
 ## JSON2 Type (Beta)
 
 `JSON2` stores fields from JSON objects in a structured, columnar layout while

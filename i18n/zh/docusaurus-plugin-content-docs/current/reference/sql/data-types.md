@@ -286,6 +286,18 @@ SELECT json_get_string(my_json, '$.name') as name FROM json_data;
 +---------------------------------------------------+
 ```
 
+也可以使用点号语法作为提取 JSON 路径的简写来读取字段。点号语法可以用于所有接受
+SQL 表达式的场景。嵌套 object 的 key 之间使用点号，数组下标从 0 开始；如果 JSON
+key 本身包含点号，请用双引号包住对应的路径段：
+
+```sql
+SELECT my_json.name AS name FROM json_data;
+```
+
+例如，`my_json.user.name`、`my_json.items[0].name` 和
+`my_json."service.name"` 分别用于访问嵌套字段、数组元素和名为 `service.name`
+的 key。
+
 ## JSON2 类型（Beta）
 
 `JSON2` 将 JSON object 中的字段以结构化列式布局存储，同时保留动态 schema 的字段，适合需要频繁查询的日志和其他半结构化数据。JSON2 列目前只能用于 append-only 表，且每个非 `NULL` root 值都必须是 JSON object。
