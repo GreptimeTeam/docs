@@ -14,7 +14,7 @@ TRUNCATE TABLE monitor WITH (wait = false, timeout = '30s');
 ```
 
 - `wait` 默认为 `true`。设为 `true` 时，语句会等待操作完成，并返回 `Affected Rows: 0`。设为 `false` 时，操作成功提交后会返回 Procedure ID，操作则在后台继续执行。
-- `timeout` 用于限制元数据检查、提交操作以及（`wait` 为 `true` 时）等待操作完成的总时长，默认为 `60s`。如果超时，语句会返回超时错误，但已提交的操作不会取消，仍会在后台继续执行。
+- `timeout` 用于限制元数据检查、提交操作以及（`wait` 为 `true` 时）等待操作完成的总时长，默认为 `60s`。发生超时时，语句会返回超时错误；如果操作已经提交，则不会取消，仍会在后台继续执行。
 
 ```sql
 TRUNCATE TABLE monitor;
