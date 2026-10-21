@@ -34,6 +34,13 @@ flow 把聚合结果写入 sink 表。如果 sink 表不存在，`CREATE FLOW` �
 如果需要控制 schema 或布局，或者查询较复杂难以推断，请预先创建 sink 表。已有 sink 表会根据 flow 查询结果进行校验。
 source 表和 sink 表不能是同一张表。
 
+:::warning
+Flow 不会自动为已有的 sink 表添加列。如果查询输出新增了一列，例如 PromQL 结果中新增了 `service` label，flow 就可能因 schema 不匹配而失败。
+
+需要先手动调整 sink 表的 schema，使其与预期的查询输出兼容，再重新创建或替换 flow。
+`CREATE OR REPLACE FLOW` 只更新 flow 任务本身，不会修改 source 表或 sink 表的 schema。
+:::
+
 sink 表必须与 flow 查询结果兼容，即：
 
 - **列的顺序和类型**：对于预先创建的 SQL sink，列的顺序和类型应与查询输出匹配。
