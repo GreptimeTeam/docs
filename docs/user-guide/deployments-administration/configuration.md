@@ -215,6 +215,8 @@ api_server_addr = "127.0.0.1:4006"
 [grpc]
 bind_addr = "127.0.0.1:4001"
 runtime_size = 8
+enable_cors = false
+# cors_allowed_origins = ["https://example.com"]  # Optional: customize allowed origins
 
 [grpc.tls]
 mode = "disable"
@@ -287,6 +289,8 @@ The following table describes the options in detail:
 | grpc       |                      |         | gRPC server options                                                                                                                                                                                                                                                                                                                                                                        |
 |            | bind_addr            | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                                                                                                                                                                                                                                                                           |
 |            | runtime_size         | Integer | The number of server worker threads, 8 by default                                                                                                                                                                                                                                                                                                                                          |
+|            | enable_cors          | Boolean | Whether to enable CORS for browser-based gRPC-Web clients on the external gRPC server. Disabled by default; the internal gRPC server always disables CORS. |
+|            | cors_allowed_origins | Array   | Origins allowed by gRPC CORS. An empty list (the default) allows any origin when CORS is enabled; set specific origins to restrict browser access. |
 |            | max_connection_age   | String  | Maximum lifetime of a gRPC connection that the server keeps it. Refer to ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/) for details. Defaults to not set. Example: "1h" for 1 hour, "30m" for 30 minutes                                                                                                                                                                   |
 |            | flight_compression   | String  | Compression mode for frontend side Arrow IPC service. Available options: `none`: disable all compression, `transport`: only enable gRPC transport compression (zstd), `arrow_ipc`: only enable Arrow IPC compression (lz4), `all`: enable all compression. Default value is `none`.                                                                                                        |
 | mysql      |                      |         | MySQL server options                                                                                                                                                                                                                                                                                                                                                                       |
