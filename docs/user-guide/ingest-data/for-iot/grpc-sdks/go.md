@@ -313,6 +313,8 @@ For the executable code for inserting JSON data, please refer to the [example](h
 When you need to import data in bulk and require high ingestion throughput, you can use the Bulk Write API. It is designed for batch loading scenarios, where large volumes of data are written efficiently. 
 By using Arrow IPC encoding to aggregate multiple tables or objects on the client side and sending them in a single gRPC request, it significantly reduces network overhead and improves overall write performance compared to the regular Write API.
 
+Bulk Write uses Arrow Flight `DoPut`. To disable WAL with the `insert_skip_wal` hint, see [Disable WAL for a single write request](/user-guide/protocols/grpc.md#disable-wal-for-a-single-write-request).
+
 ### Adding Data
 
 You can build data objects and add them to the bulk writer.

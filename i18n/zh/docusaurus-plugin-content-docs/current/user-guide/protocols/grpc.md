@@ -9,9 +9,14 @@ GreptimeDB 提供了 [gRPC SDK](/user-guide/ingest-data/for-iot/grpc-sdks/overvi
 
 如果没有适用于你的编程语言的 SDK，你可以按照贡献者指南[创建自己的 SDK](/contributor-guide/how-to/how-to-write-sdk.md)。
 
-## 为单个写入请求禁用 WAL
+## Hints
+
+GreptimeDB 支持通过 `x-greptime-hints` gRPC 元数据传递 hint，格式为以逗号分隔的 `key=value` 键值对。
+
+### 为单个写入请求禁用 WAL
 
 在 `x-greptime-hints` gRPC 元数据中设置 `insert_skip_wal=true`，可为当前写入请求禁用预写日志（WAL）。
+对于使用 Arrow Flight `DoPut` 的 Bulk 写入，该 hint 对整个流生效。
 
 此设置仅对当前请求生效，不会修改[表级 `skip_wal` 选项](/reference/sql/create.md#创建禁用-wal-的表)。
 将 `insert_skip_wal` 设置为 `false` 或省略该 hint 时，若表级 `skip_wal` 为 `true`，仍不写入 WAL。

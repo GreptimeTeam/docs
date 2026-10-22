@@ -36,6 +36,17 @@ remote_read:
 - URL 中的 `db` 参数表示要写入的数据库。它是可选的。默认情况下，数据库设置为 `public`。
 - `basic_auth` 是身份鉴权配置。如果 GreptimeDB 启用了鉴权，请填写用户名和密码。请参阅 [鉴权认证文档](/user-guide/deployments-administration/authentication/overview.md)。
 
+如需为 Remote Write 请求跳过 WAL，请配置 `x-greptime-insert-skip-wal` 请求头：
+
+```yaml
+remote_write:
+- url: http://localhost:4000/v1/prometheus/write?db=public
+  headers:
+    x-greptime-insert-skip-wal: "true"
+```
+
+该设置同时适用于 Remote Write 1.0 和 2.0，包括服务端的批处理写入。有关设置范围和数据持久性的影响，请参阅[为单个写入请求禁用 WAL](/user-guide/protocols/http.md#为单个写入请求禁用-wal)。
+
 ### 原生直方图
 
 GreptimeDB 默认支持通过 Prometheus Remote Write 2.0 写入原生直方图，无需额外的 GreptimeDB 配置。
