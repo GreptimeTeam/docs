@@ -49,6 +49,28 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 
 ## 各版本的破坏性变更
 
+### 尚未发布的 Nightly 变更
+
+#### 扫描内存计量变更
+
+升级到 Nightly 后，即使配置没有修改，查询也可能因达到内存限制而失败。
+升级前请检查以下设置：
+
+| 现有配置 | 变化及建议操作 |
+| --- | --- |
+| 未配置 `scan_memory_limit` | 默认值从 `unlimited` 改为可用内存的 `25%`，并遵循容器内存限制。如需继续禁用扫描内存限制，请显式设为 `"unlimited"`。 |
+| 已配置非零 `scan_memory_limit` | 新增的 `scan_memory_mode` 默认为 `basic`。如需继续统计扫描产生的批次，请使用 `extended`，并测试现有限制是否足够。 |
+| `scan_memory_on_exhausted = "wait"` 或 `"wait(<duration>)"` | 查询会立即失败，不再等待内存。请改为 `"fail"`，并检查应用的错误处理逻辑。 |
+
+`extended` 不会完全恢复旧行为：相同的限制可能导致以前能够成功的查询失败。
+同时检查 `query.memory_pool_size`，因为查询现在可能更容易达到这一限制。
+将 `scan_memory_limit` 设为 `0` 或 `"unlimited"` 仍然只会禁用扫描内存限制，
+不会禁用查询内存限制或文件数量检查。
+
+正式升级前，请按预期并发量测试典型查询，并检查使用
+`greptime_mito_scan_memory_usage_bytes` 的告警。该指标不代表进程总内存。
+配置详情见[扫描内存计量](/user-guide/deployments-administration/configuration.md#扫描内存计量)。
+
 ### 从 v1.2 升级到 v1.3
 
 #### VRL 默认禁用主机访问

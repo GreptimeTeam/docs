@@ -52,6 +52,31 @@ If you are running a version earlier than v0.16, you must first upgrade to v0.16
 
 ## Breaking Changes by Version
 
+### Unreleased Nightly changes
+
+#### Scan memory accounting changes
+
+After upgrading to Nightly, queries can reach a memory limit and fail even if
+your configuration is unchanged. Review these settings before upgrading:
+
+| Existing configuration | Change and recommended action |
+| --- | --- |
+| `scan_memory_limit` omitted | The default changes from `unlimited` to `25%` of available memory, respecting container limits. Set it explicitly to `"unlimited"` to keep scan-memory enforcement disabled. |
+| Explicit nonzero `scan_memory_limit` | The new `scan_memory_mode` defaults to `basic`. Use `extended` if you need to continue counting batches produced by scans, and test whether your limit is sufficient. |
+| `scan_memory_on_exhausted = "wait"` or `"wait(<duration>)"` | Queries now fail immediately instead of waiting for memory. Replace these values with `"fail"` and review application error handling. |
+
+`extended` does not exactly restore the previous behavior: the same limit can
+reject queries that previously succeeded. Review `query.memory_pool_size` as
+well, because queries may now reach that limit sooner.
+Setting `scan_memory_limit` to `0` or `"unlimited"` still disables only the scan
+limit; it does not disable the query-memory limit or file-count checks.
+
+Before rolling out the upgrade, test representative queries at your expected
+concurrency and review alerts using `greptime_mito_scan_memory_usage_bytes`.
+This metric does not represent total process memory. See
+[scan memory accounting](/user-guide/deployments-administration/configuration.md#scan-memory-accounting)
+for configuration details.
+
 ### Upgrading from v1.2 to v1.3
 
 #### VRL Host Access Is Now Disabled by Default

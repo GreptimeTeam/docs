@@ -612,7 +612,8 @@ vector_cache_size = "512MB"
 page_cache_size = "512MB"
 write_cache_size = "5GB"
 write_cache_ttl = "8h"
-scan_memory_limit = "unlimited"
+scan_memory_limit = "25%"
+scan_memory_mode = "basic"
 scan_memory_on_exhausted = "fail"
 min_compaction_interval = "0m"
 schedule_compaction_after_edit = true
@@ -667,10 +668,11 @@ Available options:
 | `range_result_cache_size`                | String  | `512MB`       | Cache size for flat range scan results. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/16 of OS memory with a max limitation of 512MB.                                                                                                                                                                                                                                                                                                                                     |
 | `prefilter_result_cache_size`            | String  | `128MB`       | Cache size for prefilter results. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/32 of OS memory with a max limitation of 128MB.                                                                                                                                                                                                                                                                                                                                           |
 | `sst_write_buffer_size`                  | String  | `8MB`         | Buffer size for SST writing.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `max_concurrent_scan_files`             | Integer | `384`         | Maximum number of SST files to scan concurrently.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `max_concurrent_scan_files` | Integer | `384` | Maximum number of SST files to scan concurrently. Applies when `scan_memory_limit` is disabled, and also to scans using enterprise extension sources. |
 | `allow_stale_entries`                 | Bool    | `false`      | Whether to allow stale WAL entries during replay.                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `scan_memory_limit`                   | String  | `unlimited`  | Memory limit for table scans across all queries. Supports absolute size (e.g., "2GB") or percentage of system memory (e.g., "20%"). Setting it to 0 or "unlimited" disables the limit.                                                                                                                                                                                                                           |
-| `scan_memory_on_exhausted`           | String  | `fail`       | Behavior when scan memory is exhausted. Options: `fail` (fail fast), `wait` or `wait(<duration>)` (wait for memory).                                                                                                                                                                                                                                                 |
+| `scan_memory_limit` | String | `25%` | Memory limit shared by table scans across queries. Supports an absolute size (e.g., "2GB") or a percentage of available memory, respecting container memory limits. Set to 0 or "unlimited" to disable this limit. |
+| `scan_memory_mode` | String | `basic` | `basic` counts the estimated memory needed to decode scan data. `extended` also counts the cumulative size of batches produced by a scan until it finishes. The same limit can reject more queries in `extended` mode. |
+| `scan_memory_on_exhausted` | String | `fail` | Queries fail immediately when the scan-memory limit is reached. Legacy `wait` and `wait(<duration>)` values are accepted with a warning but behave as `fail`. |
 | `min_compaction_interval`           | String  | `0m`         | Minimum time interval between two compactions. Set to "0m" (default) to allow compactions to run immediately without restriction.                                                                                                                                                                                                                                             |
 | `schedule_compaction_after_edit`    | Bool    | `true`       | Whether to allow scheduling a compaction after a successful region edit.<br/>Setting this to `true` is a necessary but not sufficient condition for scheduling compaction after a region edit. Other constraints, such as `min_compaction_interval`, may still prevent compaction from being scheduled.<br/>Setting this to `false` guarantees that compaction will not be scheduled after a region edit. |
 | `default_flat_format`                | Bool    | `true`       | Whether Regions without an explicit `sst_format` use flat SSTs. Flat SSTs use the bulk memtable.                                                                                                                                                                                                                                                                      |
@@ -698,6 +700,18 @@ The `metric` engine is optimized for handling metrics data with a large number o
 :::note
 Starting from v1.2, sparse primary key encoding is always enabled for the metric engine and cannot be disabled. It encodes only non-null primary key columns, improving write and query performance. Any `sparse_primary_key_encoding` setting in your configuration file is accepted but has no effect.
 :::
+
+#### Scan memory accounting
+
+Use `scan_memory_limit` to control memory consumed by concurrent table scans.
+It is separate from `query.memory_pool_size`; neither setting limits total
+process memory. If queries fail because of memory limits, review both settings
+and the number of concurrent queries.
+
+`greptime_mito_scan_memory_usage_bytes` reports memory counted by the selected
+scan mode. Review its alert thresholds when changing modes or upgrading. See the
+[scan-memory upgrade guidance](/user-guide/deployments-administration/upgrade.md#scan-memory-accounting-changes)
+for changes that affect existing configurations.
 
 ### Specify meta client
 
