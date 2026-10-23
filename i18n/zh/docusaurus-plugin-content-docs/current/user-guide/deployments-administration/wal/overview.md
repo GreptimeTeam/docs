@@ -5,12 +5,14 @@ description: 介绍 GreptimeDB 中的 WAL（预写日志），包括本地 WAL �
 ---
 # 预写日志（WAL）
 
-[预写日志](/contributor-guide/datanode/wal.md#introduction)(WAL) 持久化记录每次数据修改操作，以确保内存中的数据在故障发生时不会丢失。GreptimeDB 支持三种 WAL 存储方案：
+[预写日志](/contributor-guide/datanode/wal.md#introduction)(WAL) 持久化记录每次数据修改操作，以确保内存中的数据在故障发生时不会丢失。GreptimeDB 支持四种 WAL 存储方案：
 
 
 - **本地 WAL**: 使用嵌入式存储引擎 [raft-engine](https://github.com/tikv/raft-engine) ，直接集成在 [Datanode](/user-guide/concepts/architecture.md) 服务中。
 
 - **Remote WAL**: 使用 [Apache Kafka](https://kafka.apache.org/) 作为外部的 WAL 存储组件。
+
+- **对象存储 WAL**: 实验性的单机模式 WAL 提供者，把 WAL 以对象的形式写入 S3 等对象存储。
 
 - **Noop WAL**: 无操作 WAL 提供者，用于 WAL 暂时不可用的紧急情况，不存储任何数据。
 
@@ -46,6 +48,28 @@ description: 介绍 GreptimeDB 中的 WAL（预写日志），包括本地 WAL �
 
 - **网络开销**: WAL 数据需通过网络传输，需合理规划集群网络带宽，确保低延迟与高吞吐量，尤其在写入密集型负载下。
 
+## 对象存储 WAL
+
+对象存储 WAL 是单机模式下的实验性 WAL 提供者，它把 WAL 存放在 S3 等对象存储中。
+
+### 优点
+
+- **无需额外组件**：WAL 可以和数据文件共用同一个对象存储，不需要再部署和运维其他组件。
+
+- **对象存储级别的持久性**：默认情况下，写入只有在对象存储中持久化之后才会确认，持久性与对象存储本身一致。
+
+- **WAL 无需持久卷**：Datanode 不需要为 WAL 准备本地持久卷。不过单机模式的元数据仍然保存在数据目录下。
+
+### 缺点
+
+- **写入延迟更高**：默认情况下，写入保存到对象存储后才会确认，在云对象存储上需要几十毫秒。
+
+- **请求成本**：每次写入对象存储都是一次请求。默认配置下，仅定时写出每个节点每秒最多 10 次，负载较高时还会更多。
+
+- **实验性且仅支持单机模式**：不支持集群模式，配置和行为后续可能调整。
+
+详细配置说明请参阅[对象存储 WAL](/user-guide/deployments-administration/wal/object-store-wal.md)。
+
 ## Noop WAL
 
 Noop WAL 是一种特殊的 WAL 提供者，用于 WAL 暂时不可用的紧急情况。它不会存储任何 WAL 数据，仅在集群模式下可用。
@@ -57,5 +81,7 @@ Noop WAL 是一种特殊的 WAL 提供者，用于 WAL 暂时不可用的紧急�
 - [本地 WAL](/user-guide/deployments-administration/wal/local-wal.md)——内置 WAL 的配置方式。
 
 - [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md)——把 Kafka 作为 WAL 后端的配置方式。
+
+- [对象存储 WAL](/user-guide/deployments-administration/wal/object-store-wal.md)——单机模式下把 WAL 存入对象存储的配置方式（实验性）。
 
 - [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md)——应急用的空实现 provider。

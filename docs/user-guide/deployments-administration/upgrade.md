@@ -89,6 +89,27 @@ No persisted SST or wire-format migration is required. See
 [scan memory accounting](/user-guide/deployments-administration/configuration.md#scan-memory-accounting)
 for the configuration details.
 
+### Upgrading from v1.2 to v1.3
+
+#### VRL Host Access Is Now Disabled by Default
+
+**Impact:** Pipelines that use restricted VRL functions or arguments
+
+Starting with v1.3.0, `pipeline.allow_vrl_host_access` defaults to `false`.
+Existing pipelines that use restricted functions or arguments fail compilation
+when first loaded from storage after an upgrade. Ingestion requests that use
+these pipelines fail as a result.
+
+**Action Required:**
+
+- Review existing pipelines for [restricted VRL functions and arguments](/reference/pipeline/pipeline-config.md#vrl-host-access).
+- Remove the restricted calls or arguments before upgrading. If all pipeline
+  authors are trusted, you can instead set `allow_vrl_host_access = true` in the
+  `[pipeline]` configuration on every Frontend or the standalone server and
+  restart the affected servers.
+- Use `POST /v1/pipelines/_dryrun` to validate affected pipelines with the target
+  version and intended server configuration before rolling out the upgrade.
+
 ### Upgrading from v1.0 or v1.1 to v1.2
 
 #### Removed PromQL `holt_winters`
