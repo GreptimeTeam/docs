@@ -44,7 +44,7 @@ GreptimeDB 部署中包含几类不同的状态：
 GreptimeDB 支持：
 
 - 本地文件系统；
-- Amazon S3 及 S3 兼容服务，包括 MinIO、DigitalOcean Spaces、腾讯云对象存储和百度对象存储；
+- Amazon S3 及 S3 兼容服务，包括 MinIO、RustFS、DigitalOcean Spaces、腾讯云对象存储和百度对象存储；
 - Google Cloud Storage；
 - Azure Blob Storage；
 - 阿里云 OSS。

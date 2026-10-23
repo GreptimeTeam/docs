@@ -344,6 +344,7 @@ const sidebars: SidebarsConfig = {
               ],
             },
             'user-guide/deployments-administration/configuration',
+            'user-guide/deployments-administration/rustfs-object-storage',
             {
               type: 'category',
               label: 'Authentication',
