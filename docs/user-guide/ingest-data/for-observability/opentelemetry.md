@@ -115,16 +115,18 @@ For more information on the example code, please refer to the official documenta
 
 ### Prometheus Compatibility
 
-GreptimeDB supports a Prometheus-compatible mode for OTLP metrics ingestion.
-If the metrics data is persisted using the Prometheus-compatible format, you should be able to query them using PromQL, just like any Prometheus metrics.
+GreptimeDB always uses the Prometheus-compatible format for OTLP metrics ingestion.
+You can query these metrics using PromQL.
 
-GreptimeDB selects the ingestion format once for each OTLP export request:
-
-- If none of the referenced metric tables exists, GreptimeDB uses the Prometheus-compatible format.
-- If all referenced existing tables use the same format, GreptimeDB uses that format for every metric in the request, including any tables created by the request.
-- If the request references existing tables in both formats, GreptimeDB rejects the request.
-
-Send legacy and Prometheus-compatible metrics in separate OTLP export requests.
+:::warning Upgrading from the legacy OTLP format
+The legacy conversion path has been removed. The `otlp_metric_compat` table option
+is still accepted as metadata, but no longer selects an ingestion format.
+Existing data is not rewritten. New writes use the name translation, attribute
+selection, and data model described below, which can change destination table
+names and schemas. Before upgrading, check your exporters, existing tables, and
+queries against these mappings. Separating requests or setting
+`otlp_metric_compat='legacy'` does not restore the old behavior.
+:::
 
 GreptimeDB pre-processes the incoming data before persisting them, including:
 1. Converting the metric names(table names) and the label names to the Prometheus style(e.g: replace `.` with `_`). By default, GreptimeDB also adds Prometheus-style suffixes based on the metric unit and type. See [here](https://opentelemetry.io/docs/specs/otel/compatibility/prometheus_and_openmetrics/#metric-metadata-1) for details.
@@ -145,8 +147,10 @@ GreptimeDB pre-processes the incoming data before persisting them, including:
 
 2. Discarding some resource attributes and all scope attributes by default. The kept resource attributes name list can be found [here](https://prometheus.io/docs/guides/opentelemetry/#promoting-resource-attributes). This behavior is configurable.
 
-Note, `Sum` and `Histogram` data in OTLP can have delta temporality.
-GreptimeDB saves their value directly without calculating the cumulative value.
+OTLP `Sum`, `Histogram`, and `ExponentialHistogram` metrics can have delta temporality.
+GreptimeDB stores their raw interval values with the tag
+`otlp_aggregation_temporality="delta"`, without accumulating values across points
+or requests. This tag separates delta and cumulative series in the same table.
 See [here](https://grafana.com/blog/2023/09/26/opentelemetry-metrics-a-guide-to-delta-vs.-cumulative-temporality-trade-offs/) for some context.
 
 You can set the HTTP headers to configure the pre-processing behaviors. Here are the options:
@@ -175,21 +179,74 @@ The Prometheus-compatible OTLP metrics data model is mapped to the GreptimeDB da
 - The name of the Metric will be used as the name of the GreptimeDB table, and the table will be automatically created if it does not exist.
 - Only selected resource attributes are kept by default. See above for details and configuration options. Attributes are used as tag columns in the GreptimeDB table.
 - You can refer to the [Prometheus Data Model](./prometheus.md#data-model) for other details.
-- Cumulative `ExponentialHistogram` metrics are supported by default via OTLP/HTTP.
+- Explicit `Histogram` points are represented as `_bucket`, `_sum`, and `_count`
+  series. Bucket counts are prefix-summed within each point, including delta points.
+  The `_sum` series is emitted only when the point includes a sum.
+- `Summary` quantiles are stored as rows with a `quantile` tag and a
+  `greptime_value` field, with separate `_sum` and `_count` series.
+- Cumulative and delta `ExponentialHistogram` metrics are supported by default via OTLP/HTTP.
   Each point is stored as a native histogram in a Struct field named
   `greptime_native_histogram` by default, rather than separate `_bucket`, `_sum`, and
-  `_count` series. Delta and unspecified temporality are rejected.
+  `_count` series. Unspecified or unrecognized temporality is rejected.
 
-Invalid exponential histogram points are rejected while valid points in the same
-OTLP/HTTP request can still be ingested. Such requests return partial success;
-requests with only rejected points return an `InvalidArgument` error.
 OTel Arrow does not support exponential histograms because its wire format omits
 `zero_threshold`.
 
-If you are using a table that was created by an older OTLP metrics ingestion format, the existing table keeps that format. Here are some mapping differences:
+With the metric engine enabled, incoming timestamps are aligned to the destination
+table's time-index precision. New logical tables inherit the physical table's
+precision; automatically created physical tables use milliseconds. Without the
+metric engine, OTLP metrics use millisecond timestamps.
 
-- All attributes, including resource attributes, scope attributes, and data point attributes, will be used as tag columns of the GreptimeDB table.
-- Each quantile of the Summary data type will be used as a separated data column of GreptimeDB, and the column name is `greptime_pxx`, where xx is the quantile, such as 90/99, etc.
+### Query Delta Exponential Histograms
+
+Each delta exponential histogram stores one interval's count, sum, and buckets.
+Use `sum_over_time` to combine intervals, and divide by the query range duration in
+seconds for a per-second histogram. For a metric stored as `request_duration`:
+
+```promql
+sum_over_time(request_duration{otlp_aggregation_temporality="delta"}[3m])
+sum_over_time(request_duration{otlp_aggregation_temporality="delta"}[3m]) / 180
+histogram_count(sum_over_time(request_duration{otlp_aggregation_temporality="delta"}[3m]))
+histogram_sum(sum_over_time(request_duration{otlp_aggregation_temporality="delta"}[3m]))
+```
+
+The range selects samples by their end timestamp, excluding the left boundary and
+including the right boundary. Each selected sample contributes its entire
+interval, even if its start precedes the range. For example, counts of `10`, `20`,
+and `15` ending at seconds `60`, `120`, and `180` give a count of `45` over `[3m]`
+at second `180`, or `0.25` observations per second after division by `180`.
+Missing intervals do not shorten the divisor. A single sample contributes its
+full value; an empty window returns no sample. There is no prorating or
+extrapolation.
+
+Do not use native-histogram `rate()` or `increase()` for raw delta histograms:
+these functions retain counter semantics regardless of the temporality tag.
+For delta `Sum` and explicit `Histogram` float series carrying this tag,
+GreptimeDB's `increase()` sums interval values and `rate()` divides that sum by
+the range duration.
+
+Under default storage settings, points with the same table, tags, and stored
+timestamp replace the previous value; their buckets are not added together.
+Timestamp alignment can make distinct endpoints share a stored timestamp.
+The interval start is not part of the key.
+
+Upgrade all ingestion frontends before enabling delta exponential histogram senders.
+
+### Partial Success
+
+Point-level conversion and schema errors reject the affected source data points
+while allowing valid points in the same OTLP/HTTP request to be ingested. This
+applies to gauges, sums, explicit histograms, summaries, and exponential histograms.
+If a point produces multiple rows or series, such as `_bucket`, `_sum`, and
+`_count`, a validation failure in any output rejects all outputs of that point.
+Conflicting new column definitions reject all points contributing to the conflict,
+including conflicts between logical tables sharing a physical metric table.
+
+Requests with both accepted and rejected points return HTTP `200` with
+`partial_success.rejected_data_points` and an error message. The count is the number
+of rejected source points, not generated rows. Requests with only rejected points
+return HTTP `400` with an `InvalidArgument` error. Authentication, authorization,
+and storage failures can still fail the request as a whole.
 
 ## Logs
 

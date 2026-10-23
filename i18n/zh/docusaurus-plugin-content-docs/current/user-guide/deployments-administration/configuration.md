@@ -269,7 +269,8 @@ prom_validation_mode = "strict"
 ```
 
 启用相应协议后，GreptimeDB 默认支持写入 Prometheus Remote Write 2.0 原生直方图和
-OTLP/HTTP 累积指数直方图。
+OTLP/HTTP 累积或增量指数直方图。
+原始增量数据的查询语义请参阅[查询增量指数直方图](/user-guide/ingest-data/for-observability/opentelemetry.md#查询增量指数直方图)。
 
 下表描述了每个选项的详细信息：
 

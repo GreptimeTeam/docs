@@ -7,7 +7,7 @@ description: Configure server-side write batching in the GreptimeDB standalone a
 
 GreptimeDB can batch writes before flushing them to storage. Configure it in the standalone or frontend configuration file. Write batching is disabled by default.
 
-`[pending_rows_batcher]` batches writes to ordinary tables. `[pending_rows_batcher.logical_table]` batches Prometheus Remote Write and Prometheus-compatible OTLP metrics that use metric engine logical tables.
+`[pending_rows_batcher]` batches writes to ordinary tables. `[pending_rows_batcher.logical_table]` batches Prometheus Remote Write and OTLP metrics that use metric engine logical tables.
 
 ## Ordinary-table batching
 
@@ -25,7 +25,7 @@ Prometheus Remote Write uses this batcher only when the metric engine is disable
 
 ## Metric-engine logical-table batching
 
-This batcher supports only `prom` and `otlp`. When the metric engine is enabled, it handles Prometheus Remote Write and Prometheus-compatible OTLP metrics:
+This batcher supports only `prom` and `otlp`. When the metric engine is enabled, it handles Prometheus Remote Write and OTLP metrics:
 
 ```toml
 [prom_store]
@@ -36,7 +36,7 @@ protocols = ["prom"]
 pending_rows_flush_interval = "500ms"
 ```
 
-Logs, traces, and OTLP metrics that use the legacy ingestion format do not use this batcher. Its settings are independent of `[pending_rows_batcher]`. Omitted values use this section's defaults, not the parent section's values.
+Logs and traces do not use this batcher. Its settings are independent of `[pending_rows_batcher]`. Omitted values use this section's defaults, not the parent section's values.
 
 An empty `protocols` array or a `0s` interval disables batching for logical tables, without falling back to the legacy settings.
 
@@ -71,4 +71,4 @@ GreptimeDB flushes a batch when either of these conditions is met:
 
 By default, GreptimeDB responds after it writes the batch to storage. Set `PENDING_ROWS_BATCH_SYNC` to `false` to respond after GreptimeDB accepts the request for batching. Storage errors after that point cannot be returned to the client. In synchronous mode, writes over a single connection and `INSERT SELECT` can wait for a flush.
 
-In synchronous mode, GreptimeDB compares a non-zero `http.timeout` with the largest active flush interval from `[pending_rows_batcher]` and `[pending_rows_batcher.logical_table]`. If the timeout is no greater than that interval plus 1 second, GreptimeDB raises it to that value. This applies to Prometheus Remote Write, Prometheus-compatible OTLP metrics with the metric engine enabled, and HTTP writes to ordinary tables. MySQL and PostgreSQL batching does not change the HTTP timeout. Set `http.timeout = "0s"` to disable it.
+In synchronous mode, GreptimeDB compares a non-zero `http.timeout` with the largest active flush interval from `[pending_rows_batcher]` and `[pending_rows_batcher.logical_table]`. If the timeout is no greater than that interval plus 1 second, GreptimeDB raises it to that value. This applies to Prometheus Remote Write, OTLP metrics with the metric engine enabled, and HTTP writes to ordinary tables. MySQL and PostgreSQL batching does not change the HTTP timeout. Set `http.timeout = "0s"` to disable it.

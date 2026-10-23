@@ -269,8 +269,10 @@ with_metric_engine = true
 prom_validation_mode = "strict"
 ```
 
-Prometheus Remote Write 2.0 native histograms and cumulative OTLP/HTTP exponential
-histograms are ingested by default when their respective protocols are enabled.
+Prometheus Remote Write 2.0 native histograms and cumulative or delta OTLP/HTTP
+exponential histograms are ingested by default when their respective protocols
+are enabled. See [Query Delta Exponential Histograms](/user-guide/ingest-data/for-observability/opentelemetry.md#query-delta-exponential-histograms)
+for raw delta query semantics.
 
 The following table describes the options in detail:
 
