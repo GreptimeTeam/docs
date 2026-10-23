@@ -124,7 +124,7 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `simple_extract`: 使用简单的 key 从 JSON 数据中提取字段。
 - `digest`: 提取日志消息模板。
 - `select`: 从 pipeline 执行上下文中保留或移除字段。
-- `vrl`: 使用 pipeline 上下文执行 [vrl](https://vector.dev/docs/reference/vrl/) 脚本。
+- `vrl`: 使用 pipeline 上下文执行 [vrl](https://vector.dev/docs/reference/vrl/) 脚本，受 [VRL 主机访问策略](#vrl-host-access)限制。
 - `filter`: 过滤不需要写入的行数据。
 
 ### Processor 的输入和输出
@@ -701,6 +701,7 @@ processors:
 :::
 
 `vrl` 处理器在 pipeline 上下文中运行 VRL 脚本，可以实现内置处理器无法表达的转换，但执行脚本比使用内置处理器消耗更多资源。语言语法参见 [VRL 文档](https://vector.dev/docs/reference/vrl/)。
+部分函数和参数默认受到限制，参见 [VRL 主机访问](#vrl-host-access)。
 
 `vrl` 处理器目前只有一个配置项，就是 `source`（源码）。以下是一个示例：
 ```YAML
@@ -728,6 +729,44 @@ processors:
 1. 整个脚本必须以单独的 `.`（返回整个上下文作为单行数据）或一个对象数组（一对多展开，每个元素写入为单独的行）作为结尾。
 2. vrl 脚本的返回值中不能包含任何的 `regex` 类型的变量。在脚本的过程中可以使用这种类型，但是在返回之前需要 `del`（删除） 掉。
 3. 由于 pipeline 的类型和 vrl 的类型之前存在转换，经过 vrl 处理的类型会变成最大的容量类型，即 `i64`， `u64` 和 `Timestamp::nanoseconds`。
+
+#### VRL 主机访问 {#vrl-host-access}
+
+从 v1.3.0 起，VRL 默认禁用主机访问（`pipeline.allow_vrl_host_access = false`）。
+此服务端配置适用于 Pipeline 的创建、执行和试运行，也适用于从存储中加载的 Pipeline。
+Pipeline YAML 定义无法覆盖此配置。
+
+默认情况下，以下函数不可用：
+
+- 环境和系统信息：`get_env_var`、`get_hostname`、`get_timezone_name`。
+- 网络访问：`http_request`、`dns_lookup`、`reverse_dns`。
+- 可读取文件的函数：`encode_proto`、`parse_proto`、`parse_etld`、`validate_json_schema`。
+- 服务端日志：`log`。
+
+以下参数也受到限制：
+
+- `parse_groks` 支持内联 `aliases`，但不允许非空的 `alias_sources`（文件导入）。
+- 对于 `parse_timestamp` 和 `format_timestamp`，显式指定的 `timezone` 必须是固定的
+  命名时区，例如 `"UTC"` 或 `"Asia/Shanghai"`。
+  不允许使用 `"local"`、空字符串或来自事件字段等动态值。
+
+无论是否启用主机访问，`parse_timestamp` 和 `format_timestamp` 默认都使用 UTC 时区。
+
+普通数据转换、时间函数和随机值函数仍然可用。
+此配置限制主机访问，但不限制 CPU 或内存使用量。
+
+:::warning 现有 Pipeline
+使用受限函数或参数的现有 Pipeline 在默认策略下无法通过编译，包括升级后从存储中重新加载的
+Pipeline。请移除这些调用或参数；仅当所有 Pipeline 作者都可信时，才考虑启用主机访问。
+:::
+
+如需恢复完整的 VRL 标准库，请在 `frontend` 或 `standalone`
+的[服务端配置](/user-guide/deployments-administration/configuration.md#pipeline-选项)中添加以下配置，并重启相关服务：
+
+```toml
+[pipeline]
+allow_vrl_host_access = true
+```
 
 #### 一对多展开
 

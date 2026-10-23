@@ -493,7 +493,7 @@ enable_refill_cache_on_read = true
 
 ### WAL 选项
 
-GreptimeDB 支持三种 WAL 存储方式：本地 WAL、Remote WAL 和 Noop WAL。关于它们的对比，请参见 [WAL 概述](/user-guide/deployments-administration/wal/overview.md)。具体配置可参考 [本地 WAL](/user-guide/deployments-administration/wal/local-wal.md)、[Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) 和 [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) 文档。
+GreptimeDB 支持四种 WAL 存储方式：本地 WAL、Remote WAL、对象存储 WAL（实验性，仅支持单机模式）和 Noop WAL。关于它们的对比，请参见 [WAL 概述](/user-guide/deployments-administration/wal/overview.md)。具体配置可参考 [本地 WAL](/user-guide/deployments-administration/wal/local-wal.md)、[Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md)、[对象存储 WAL](/user-guide/deployments-administration/wal/object-store-wal.md) 和 [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) 文档。
 
 
 ### Logging 选项
@@ -529,14 +529,16 @@ default_ratio = 1.0
 
 ### Pipeline 选项
 
-frontend 和 standalone 会在内存中缓存 Pipeline 定义，缓存配置位于 `[pipeline]` 部分：
+`[pipeline]` 部分用于配置 `frontend` 和 `standalone` 的 Pipeline 缓存和 VRL 主机访问：
 
 ```toml
 [pipeline]
 cache_ttl = "10s"
+allow_vrl_host_access = false
 ```
 
 - `cache_ttl`：本地 Pipeline 缓存的存活时间，默认值为 `10s`。在集群中，在某个 Frontend 上创建或删除 Pipeline 后，最多经过该时间才会在其他 Frontend 上生效。调大该值会减少对 `greptime_private.pipelines` 表的读取，同时增加上述延迟。
+- `allow_vrl_host_access`：是否允许 VRL 访问服务端的环境变量、文件系统、主机名、本地时区、网络和日志。默认值为 `false`。适用于 Pipeline 的创建、执行和试运行，包括已存储的 Pipeline；Pipeline YAML 无法覆盖此配置。仅当 Pipeline 作者可信时才设置为 `true`。修改后需要重启；集群中所有 Frontend 应使用相同配置。受限函数及升级注意事项参见 [VRL 主机访问](/reference/pipeline/pipeline-config.md#vrl-host-access)。
 
 ### 事件记录配置
 

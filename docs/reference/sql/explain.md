@@ -42,7 +42,9 @@ The `MergeScan` plan merges the results from multiple regions. The `peers` array
 
 Explains the execution of the plan by `ANALYZE`:
 
-The following ANALYZE outputs are illustrative; timing metrics are abbreviated.
+The following ANALYZE outputs are illustrative; timing metrics are abbreviated,
+and some scanner display fields are omitted. For example, these scans also
+include an unbounded `time_range` even though the query has no time predicate.
 
 ```sql
 EXPLAIN ANALYZE SELECT * FROM monitor where host='host1'\G

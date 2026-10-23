@@ -42,7 +42,8 @@ plan_type: physical_plan
 
 使用 `ANALYZE` 解释执行计划：
 
-以下 ANALYZE 输出为示意，耗时指标已省略。
+以下 ANALYZE 输出为示意，耗时指标已简化，部分扫描器展示字段也已省略。
+例如，即使查询没有时间谓词，这些扫描也会包含无界的 `time_range`。
 
 ```sql
 EXPLAIN ANALYZE SELECT * FROM monitor where host='host1'\G
