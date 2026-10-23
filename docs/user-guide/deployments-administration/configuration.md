@@ -110,6 +110,20 @@ The environment variable also accepts lists that are separated by commas `,`, fo
 GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003
 ```
 
+Options whose value is a list of named entries, such as `region_engine`, are addressed by the
+entry name instead of its position in the list. Since v1.4.0 you can set the options of a named
+engine with environment variables, for example on a datanode:
+
+```sh
+export GREPTIMEDB_DATANODE__REGION_ENGINE__MITO__GLOBAL_WRITE_BUFFER_REJECT_SIZE=4GB
+```
+
+The variable overrides the field on top of that entry's default value; fields and entries it does
+not mention keep their values, and a numeric index is rejected. `region_engine` defaults to `mito`
+and `file`, and the `metric` engine is always registered, so addressing `metric` only supplies its
+options. As with any other list-valued option, once a `[[region_engine]]` entry appears in the
+configuration file the whole list comes from the file, and these variables are ignored for it.
+
 ## Options
 
 In this section, we will introduce some main configuration options.
@@ -593,7 +607,9 @@ batch_gc, wal_prune
 
 ### Region engine options
 
-The parameters corresponding to different storage engines can be configured for `datanode` and `standalone` in the `[region_engine]` section. Currently, options for `mito` and `metric` region engines are available.
+The parameters corresponding to different storage engines can be configured for `datanode` and `standalone` in the `[region_engine]` section. The default configuration lists the `mito` and `file` engines; the `metric` engine is always registered, so naming it only supplies its options rather than enabling the engine.
+
+Since v1.4.0, the options of a named engine can also be set with environment variables; see [Environment variable rules](#environment-variable-rules).
 
 Frequently used options:
 
