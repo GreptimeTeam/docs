@@ -668,11 +668,11 @@ Available options:
 | `range_result_cache_size`                | String  | `512MB`       | Cache size for flat range scan results. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/16 of OS memory with a max limitation of 512MB.                                                                                                                                                                                                                                                                                                                                     |
 | `prefilter_result_cache_size`            | String  | `128MB`       | Cache size for prefilter results. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/32 of OS memory with a max limitation of 128MB.                                                                                                                                                                                                                                                                                                                                           |
 | `sst_write_buffer_size`                  | String  | `8MB`         | Buffer size for SST writing.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `max_concurrent_scan_files` | Integer | `384` | Maximum number of SST files to scan concurrently when scan memory enforcement is disabled or the scan includes enterprise extension sources not covered by row-group accounting. |
+| `max_concurrent_scan_files` | Integer | `384` | Maximum number of SST files to scan concurrently. Applies when `scan_memory_limit` is disabled, and also to scans using enterprise extension sources. |
 | `allow_stale_entries`                 | Bool    | `false`      | Whether to allow stale WAL entries during replay.                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `scan_memory_limit` | String | `25%` | Shared scan-memory budget across queries and regions within a Mito engine. Supports an absolute size (e.g., "2GB") or a percentage of cgroup memory, falling back to host memory when no cgroup limit is available. Set to 0 or "unlimited" to disable enforcement and restore file-count checks. |
-| `scan_memory_mode` | String | `basic` | `basic` reserves projected Parquet columns' uncompressed row-group sizes while decoding. `extended` additionally accounts for cumulative streamed batches until the stream is dropped. Neither mode measures total process memory. |
-| `scan_memory_on_exhausted` | String | `fail` | Scan allocations fail immediately when the budget is exhausted. Legacy `wait` and `wait(<duration>)` values remain accepted, but initialization warns and normalizes them to `fail`. This setting does not control the separate query-memory pool. |
+| `scan_memory_limit` | String | `25%` | Memory limit shared by table scans across queries. Supports an absolute size (e.g., "2GB") or a percentage of available memory, respecting container memory limits. Set to 0 or "unlimited" to disable this limit. |
+| `scan_memory_mode` | String | `basic` | `basic` counts the estimated memory needed to decode scan data. `extended` also counts the cumulative size of batches produced by a scan until it finishes. The same limit can reject more queries in `extended` mode. |
+| `scan_memory_on_exhausted` | String | `fail` | Queries fail immediately when the scan-memory limit is reached. Legacy `wait` and `wait(<duration>)` values are accepted with a warning but behave as `fail`. |
 | `min_compaction_interval`           | String  | `0m`         | Minimum time interval between two compactions. Set to "0m" (default) to allow compactions to run immediately without restriction.                                                                                                                                                                                                                                             |
 | `schedule_compaction_after_edit`    | Bool    | `true`       | Whether to allow scheduling a compaction after a successful region edit.<br/>Setting this to `true` is a necessary but not sufficient condition for scheduling compaction after a region edit. Other constraints, such as `min_compaction_interval`, may still prevent compaction from being scheduled.<br/>Setting this to `false` guarantees that compaction will not be scheduled after a region edit. |
 | `default_flat_format`                | Bool    | `true`       | Whether Regions without an explicit `sst_format` use flat SSTs. Flat SSTs use the bulk memtable.                                                                                                                                                                                                                                                                      |
@@ -703,25 +703,15 @@ Starting from v1.2, sparse primary key encoding is always enabled for the metric
 
 #### Scan memory accounting
 
-The scan budget reserves memory before decoding projected Parquet row groups,
-including cached reads and SSTs written by older versions. Decoder reservations
-are released on completion, failure, or cancellation. Compaction does not use
-this scan budget. With a finite limit, covered sequential and series scans can
-exceed `max_concurrent_scan_files` when their reservations fit; scans containing
-enterprise extension sources still retain file-count checks.
+Use `scan_memory_limit` to control memory consumed by concurrent table scans.
+It is separate from `query.memory_pool_size`; neither setting limits total
+process memory. If queries fail because of memory limits, review both settings
+and the number of concurrent queries.
 
-In both accounting modes, internal two-phase series merges use
-`query.memory_pool_size`, sharing capacity with other query operators on the
-executing node. They fail immediately when that pool is exhausted. Disabling
-`scan_memory_limit` does not disable this separate query pool, and a finite scan
-limit does not bound merge allocations when the query pool is unlimited.
-
-`greptime_mito_scan_memory_usage_bytes` reports decoder reservations in `basic`
-mode and additionally includes cumulative streamed batches in `extended` mode.
-It is not a measurement of total process memory. Review dashboards and alerts
-when changing modes or upgrading. See the
+`greptime_mito_scan_memory_usage_bytes` reports memory counted by the selected
+scan mode. Review its alert thresholds when changing modes or upgrading. See the
 [scan-memory upgrade guidance](/user-guide/deployments-administration/upgrade.md#scan-memory-accounting-changes)
-for configuration compatibility.
+for changes that affect existing configurations.
 
 ### Specify meta client
 

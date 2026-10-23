@@ -53,34 +53,23 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 
 #### 扫描内存计量变更
 
-以下变更适用于包含
-[GreptimeDB PR #9101](https://github.com/GreptimeTeam/greptimedb/pull/9101)
-的 Nightly 构建。即使配置文件没有修改，扫描准入和内存计量行为也会变化。
+升级到 Nightly 后，即使配置没有修改，查询也可能因达到内存限制而失败。
+升级前请检查以下设置：
 
-| 现有配置 | 新行为 | 升级操作 |
-| --- | --- | --- |
-| 未配置 `scan_memory_limit` | 默认为 cgroup 内存的 `25%`，无 cgroup 限制时使用主机内存，默认模式为 `scan_memory_mode = "basic"`。 | 如果需要保持禁用扫描内存限制并使用文件数量检查，请显式设置 `scan_memory_limit = "unlimited"`。 |
-| 已配置非零 `scan_memory_limit`，未指定模式 | 预算改为统计投影列的 row group 解码预留，不再累计统计流出的批次。 | 如果需要批次计量，请设置 `scan_memory_mode = "extended"` 并重新评估容量。 |
-| `scan_memory_limit = 0` 或 `"unlimited"` | 扫描内存限制仍被禁用，文件数量检查仍生效，但计量模式和 series merge 的查询内存池仍有变化。 | 单独检查查询内存预算。 |
-| `scan_memory_on_exhausted = "wait"` 或 `"wait(<duration>)"` | 配置仍可加载，但初始化时会输出警告并按 `fail` 处理。 | 将旧配置改为 `"fail"`；扫描不再等待内存配额释放。 |
+| 现有配置 | 变化及建议操作 |
+| --- | --- |
+| 未配置 `scan_memory_limit` | 默认值从 `unlimited` 改为可用内存的 `25%`，并遵循容器内存限制。如需继续禁用扫描内存限制，请显式设为 `"unlimited"`。 |
+| 已配置非零 `scan_memory_limit` | 新增的 `scan_memory_mode` 默认为 `basic`。如需继续统计扫描产生的批次，请使用 `extended`，并测试现有限制是否足够。 |
+| `scan_memory_on_exhausted = "wait"` 或 `"wait(<duration>)"` | 查询会立即失败，不再等待内存。请改为 `"fail"`，并检查应用的错误处理逻辑。 |
 
-**Extended 模式并不完全兼容旧行为。** 解码预留和累计流出的批次现在共享一个扫描预算，
-因此相同的数值限制可能会拒绝以前能够成功的扫描。企业版扩展数据源仍不纳入 row group
-计量，继续受 `max_concurrent_scan_files` 限制。
+`extended` 不会完全恢复旧行为：相同的限制可能导致以前能够成功的查询失败。
+同时检查 `query.memory_pool_size`，因为查询现在可能更容易达到这一限制。
+将 `scan_memory_limit` 设为 `0` 或 `"unlimited"` 仍然只会禁用扫描内存限制，
+不会禁用查询内存限制或文件数量检查。
 
-两种模式下，内部 two-phase series merge 现在都使用 `query.memory_pool_size`，
-与执行节点上的其他查询算子共享容量，耗尽时立即失败。此前 merge 使用由
-`scan_memory_limit` 配置的独立扫描算子内存池，与批次预算分开计量。
-即使已经显式配置了扫描内存限制，也应检查查询内存池。如果查询内存池不设限，
-仅靠扫描限制将无法约束 merge 算子的内存分配。
-
-请更新使用 `greptime_mito_scan_memory_usage_bytes` 的监控面板和告警：
-`basic` 模式报告解码预留，`extended` 模式还包括累计流出的批次。
-该指标和这两个内存预算都不代表进程总内存。请在预发布环境中验证典型扫描和并发查询，
-包括任一预算耗尽时的失败处理。
-
-无需迁移已持久化的 SST 或网络传输格式。配置详情见
-[扫描内存计量](/user-guide/deployments-administration/configuration.md#扫描内存计量)。
+正式升级前，请按预期并发量测试典型查询，并检查使用
+`greptime_mito_scan_memory_usage_bytes` 的告警。该指标不代表进程总内存。
+配置详情见[扫描内存计量](/user-guide/deployments-administration/configuration.md#扫描内存计量)。
 
 ### 从 v1.2 升级到 v1.3
 
