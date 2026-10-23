@@ -11,6 +11,9 @@ mode, users are stored in the standalone metadata backend. The system supports
 Role-Based Access Control (RBAC) and fine-grained
 Access Control Lists (ACLs) to ensure data security and isolation.
 
+For programmatic account management, see the
+[User Management API](/enterprise/user/api.md).
+
 ## Key Features
 
 - **Built-in User Management**: User accounts and permissions are persisted in
