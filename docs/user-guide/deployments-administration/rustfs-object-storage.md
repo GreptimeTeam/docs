@@ -19,7 +19,7 @@ Port `9000` serves the S3 API and port `9001` serves the web console. The defaul
 
 ## Create a bucket
 
-GreptimeDB does not create the bucket automatically. Create it in RustFS first, through the console at `http://127.0.0.1:9001` or with any S3 client. The configuration below uses a bucket named `greptimedb`.
+GreptimeDB does not create the bucket automatically. Create it in RustFS first, through the console at `http://127.0.0.1:9001/rustfs/console/` or with any S3 client. The configuration below uses a bucket named `greptimedb`. If the bucket is missing, GreptimeDB still starts, but the first `CREATE TABLE` fails with a 404 error from the object store.
 
 ## Configure GreptimeDB
 
@@ -37,5 +37,3 @@ region = "us-east-1"
 ```
 
 RustFS serves path-style requests. GreptimeDB sends path-style requests to a custom endpoint by default, so you do not need to set `enable_virtual_host_style`. See [Storage options](/user-guide/deployments-administration/configuration.md#storage-options) for the other S3 options.
-
-This setup has been verified with RustFS v1.0.3 and the GreptimeDB main branch as of October 2026.

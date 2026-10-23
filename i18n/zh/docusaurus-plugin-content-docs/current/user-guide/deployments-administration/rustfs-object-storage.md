@@ -19,7 +19,7 @@ docker run -d --name rustfs -p 9000:9000 -p 9001:9001 rustfs/rustfs:latest
 
 ## 创建 bucket
 
-GreptimeDB 不会自动创建 bucket，请先在 RustFS 中创建，可以通过控制台 `http://127.0.0.1:9001` 或任意 S3 客户端完成。下面的配置使用名为 `greptimedb` 的 bucket。
+GreptimeDB 不会自动创建 bucket，请先在 RustFS 中创建，可以通过控制台 `http://127.0.0.1:9001/rustfs/console/` 或任意 S3 客户端完成。下面的配置使用名为 `greptimedb` 的 bucket。如果 bucket 不存在，GreptimeDB 仍能正常启动，但第一条 `CREATE TABLE` 会因对象存储返回 404 而失败。
 
 ## 配置 GreptimeDB
 
@@ -37,5 +37,3 @@ region = "us-east-1"
 ```
 
 RustFS 使用 path-style 请求。GreptimeDB 对自定义 endpoint 默认就使用 path-style，因此无需设置 `enable_virtual_host_style`。其他 S3 配置项请参考[存储选项](/user-guide/deployments-administration/configuration.md#存储选项)。
-
-以上配置已在 RustFS v1.0.3 与 GreptimeDB main 分支（2026 年 10 月）上验证通过。
