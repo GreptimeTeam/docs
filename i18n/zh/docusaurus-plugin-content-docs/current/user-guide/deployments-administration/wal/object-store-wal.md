@@ -19,8 +19,35 @@ description: 介绍如何在 GreptimeDB 单机模式下使用实验性的对象�
 启用对象存储 WAL 之前，请确认以下几点：
 
 - **新实例**：请在创建单机实例时启用。表会沿用创建时的 WAL 提供者和 `prefix`，因此已有实例切换到这个提供者后，原有的表将无法打开，即使事先 flush 过也一样。参见[限制](#限制)。
-- **受支持的对象存储**：存放 WAL 的对象存储需要支持条件写入（if-not-exists）和强一致的列举（LIST）。S3、Google Cloud Storage、Azure Blob Storage 和 MinIO 都满足要求；缺少其中任意一项的 S3 兼容存储不受支持。本地文件系统存储（`type = "File"`）无法提供本文所述的保证。默认情况下 WAL 使用 `[storage]` 中配置的存储，因此除非设置了 `storage_provider`，该存储必须是上述对象存储之一。
+- **受支持的对象存储**：存放 WAL 的对象存储需要支持条件创建（只在对象不存在时才写入）和强一致的列举（LIST），参见[受支持的对象存储](#受支持的对象存储)。缺少其中任意一项的 S3 兼容存储不受支持。本地文件系统存储（`type = "File"`）无法提供本文所述的保证。默认情况下 WAL 使用 `[storage]` 中配置的存储，因此除非设置了 `storage_provider`，该存储必须满足上述要求。
 - **独立的存放位置**：每个单机实例都需要独立的 WAL 存放位置。不要让两个 GreptimeDB 实例使用同一个存储提供商和 `prefix`。
+
+### 受支持的对象存储
+
+每个 WAL 文件都通过条件创建写入，`type = "S3"` 发送的是 `If-None-Match: *`。有些对象存储接受这个条件却不执行，直接覆盖已有对象。在这样的存储上，WAL 可能覆盖自己的文件，丢失已确认的写入，而且不报任何错误。
+
+GreptimeDB 在启动时、读取 WAL 之前检查这一点：在 `<prefix>/datanodes/<node_id>/epochs/<generation>/probes/` 下用唯一的名字创建同一个对象两次，对象存储必须拒绝第二次创建，然后删除这个对象。如果对象存储接受了第二次创建，GreptimeDB 拒绝启动，报 `Invalid WAL object store` 错误，说明对象存储在条件创建时覆盖了已有对象。每次启动这项检查需要两次写入和一次删除。如果删除失败，GreptimeDB 会记录一条警告，对象会留下来；GreptimeDB 不会读取它，可以手动删除。这项检查能发现忽略条件的存储，但发现不了只在部分情况下执行条件的存储，所以还请核对下面的版本要求。
+
+已知支持条件创建的对象存储：
+
+| 对象存储 | `type` | 说明 |
+| --- | --- | --- |
+| Amazon S3 | `S3` | S3 on Outposts 除外。 |
+| Cloudflare R2 | `S3` | |
+| Azure Blob Storage | `Azblob` | |
+| Google Cloud Storage | `Gcs` | 请使用 `type = "Gcs"`。它的 S3 兼容端点会忽略条件。 |
+| 阿里云 OSS | `Oss` | 使用未开启版本控制的 bucket。 |
+| MinIO | `S3` | RELEASE.2024-05-07T06-41-25Z 及以后的版本。 |
+| Ceph RGW | `S3` | 未开启版本控制的 bucket；开启版本控制的 bucket 需要 Tentacle v20.2.1 及以后的版本。 |
+| SeaweedFS | `S3` | 4.18 及以后的版本；有多个 filer 时需要 4.46 及以后的版本。 |
+| OpenStack Swift（s3api） | `S3` | 2.36.0 及以后的版本。 |
+
+其他对象存储和版本的已知限制：
+
+- 以下存储会忽略条件、直接覆盖对象：通过 S3 兼容端点访问的 Google Cloud Storage、NetApp StorageGRID 12.0 及更早版本、Garage、Scality CloudServer、RELEASE.2024-05-07T06-41-25Z 之前的 MinIO，以及 Tentacle v20.2.1 之前 Ceph RGW 开启版本控制的 bucket。
+- 以下存储会拒绝条件，GreptimeDB 因此无法启动：通过 `type = "S3"` 访问的阿里云 OSS，以及 2.36.0 之前的 OpenStack Swift s3api。
+- 阿里云 OSS、腾讯云 COS 和火山引擎 TOS 的文档说明，它们各自的禁止覆盖请求头在开启版本控制的 bucket 上不起作用。`type = "Oss"` 时 GreptimeDB 发送的就是 OSS 的这个请求头，因此不要使用开启版本控制的 bucket。
+- MinIO 社区版在拿不到读 quorum 时可能跳过条件。修复（[minio/minio#21653](https://github.com/minio/minio/pull/21653)）没有进入任何社区版二进制发布。
 
 ## 配置
 
