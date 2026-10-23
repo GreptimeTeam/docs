@@ -44,7 +44,7 @@ For recovery planning, see [Disaster Recovery](/user-guide/deployments-administr
 GreptimeDB supports:
 
 - local file storage;
-- Amazon S3 and S3-compatible services, including MinIO, DigitalOcean Spaces, Tencent Cloud Object Storage, and Baidu Object Storage;
+- Amazon S3 and S3-compatible services, including MinIO, RustFS, DigitalOcean Spaces, Tencent Cloud Object Storage, and Baidu Object Storage;
 - Google Cloud Storage;
 - Azure Blob Storage;
 - Alibaba Cloud OSS.
