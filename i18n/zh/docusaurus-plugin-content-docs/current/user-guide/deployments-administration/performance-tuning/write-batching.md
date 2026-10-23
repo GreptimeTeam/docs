@@ -7,7 +7,7 @@ description: 在 GreptimeDB standalone 或 frontend 配置文件中配置服务�
 
 GreptimeDB 可以在将写入刷写到存储之前进行批量处理。请在 standalone 或 frontend 配置文件中配置。写入批量处理默认关闭。
 
-`[pending_rows_batcher]` 对写入普通表的请求进行批量处理。`[pending_rows_batcher.logical_table]` 对使用 metric engine 逻辑表的 Prometheus Remote Write 和 Prometheus 兼容格式的 OTLP 指标进行批量处理。
+`[pending_rows_batcher]` 对写入普通表的请求进行批量处理。`[pending_rows_batcher.logical_table]` 对使用 metric engine 逻辑表的 Prometheus Remote Write 和 OTLP 指标进行批量处理。
 
 ## 普通表批量处理
 
@@ -25,7 +25,7 @@ pending_rows_flush_interval = "500ms"
 
 ## Metric engine 逻辑表批量处理
 
-此批量写入器仅支持 `prom` 和 `otlp`。启用 metric engine 后，它处理 Prometheus Remote Write 和 Prometheus 兼容格式的 OTLP 指标：
+此批量写入器仅支持 `prom` 和 `otlp`。启用 metric engine 后，它处理 Prometheus Remote Write 和 OTLP 指标：
 
 ```toml
 [prom_store]
@@ -36,7 +36,7 @@ protocols = ["prom"]
 pending_rows_flush_interval = "500ms"
 ```
 
-日志、追踪和使用旧写入格式的 OTLP 指标不使用此批量写入器。它的配置独立于 `[pending_rows_batcher]`。省略的字段使用该配置节的默认值，不会继承父配置节的值。
+日志和追踪不使用此批量写入器。它的配置独立于 `[pending_rows_batcher]`。省略的字段使用该配置节的默认值，不会继承父配置节的值。
 
 配置空 `protocols` 数组或 `0s` 间隔会禁用逻辑表批量处理，且不会回退到旧配置。
 
@@ -71,4 +71,4 @@ pending_rows_flush_interval = "500ms"
 
 默认情况下，GreptimeDB 在将批次写入存储后返回响应。将 `PENDING_ROWS_BATCH_SYNC` 设为 `false` 后，GreptimeDB 接受请求进行批量处理后即返回响应。此后发生的存储错误无法返回给客户端。同步模式下，单连接写入和 `INSERT SELECT` 可能需要等待一次刷写。
 
-同步模式下，GreptimeDB 会将非零的 `http.timeout` 与 `[pending_rows_batcher]` 和 `[pending_rows_batcher.logical_table]` 中当前启用的最大刷写间隔比较。如果超时不大于该间隔加 1 秒，GreptimeDB 会将其提高到该值。此规则适用于 Prometheus Remote Write、启用 metric engine 的 Prometheus 兼容格式 OTLP 指标和写入普通表的 HTTP 请求。MySQL 和 PostgreSQL 的批量写入不会调整 HTTP 超时。将 `http.timeout = "0s"` 设为可禁用 HTTP 超时。
+同步模式下，GreptimeDB 会将非零的 `http.timeout` 与 `[pending_rows_batcher]` 和 `[pending_rows_batcher.logical_table]` 中当前启用的最大刷写间隔比较。如果超时不大于该间隔加 1 秒，GreptimeDB 会将其提高到该值。此规则适用于 Prometheus Remote Write、启用 metric engine 的 OTLP 指标和写入普通表的 HTTP 请求。MySQL 和 PostgreSQL 的批量写入不会调整 HTTP 超时。将 `http.timeout = "0s"` 设为可禁用 HTTP 超时。

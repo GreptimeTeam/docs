@@ -117,16 +117,15 @@ exporter = OTLPMetricExporter(
 
 ### 兼容 Prometheus
 
-GreptimeDB 支持以 Prometheus 兼容模式写入 OTLP 指标。
-如果指标以这种兼容模式写入，你可以像查询 Prometheus 原生指标一样使用 PromQL 直接查询这些指标。
+GreptimeDB 始终使用 Prometheus 兼容格式写入 OTLP 指标。
+你可以使用 PromQL 查询这些指标。
 
-GreptimeDB 会为每个 OTLP 导出请求统一选择写入格式：
-
-- 如果请求涉及的指标表都不存在，GreptimeDB 使用 Prometheus 兼容格式。
-- 如果请求涉及的已有表都使用同一种格式，GreptimeDB 对请求中的所有指标使用该格式，包括由该请求新建的表。
-- 如果请求同时涉及两种格式的已有表，GreptimeDB 会拒绝该请求。
-
-如需同时写入旧格式和 Prometheus 兼容格式的指标，请将它们拆分到不同的 OTLP 导出请求中。
+:::warning 从旧版 OTLP 格式升级
+旧版转换路径已移除。`otlp_metric_compat` 表选项仍可作为元数据保留，但不再决定写入格式。
+已有数据不会被重写。新的写入使用下文所述的名称转换、属性筛选和数据模型，
+目标表名和表结构可能因此发生变化。升级前，请根据这些映射检查 exporter、已有表和查询。
+拆分请求或设置 `otlp_metric_compat='legacy'` 均无法恢复旧行为。
+:::
 
 GreptimeDB 会首先对数据进行预处理，包括：
 1. 将指标名（表名）和标签名转换成 Prometheus 风格的命名（例如：将 `.` 替换为 `_`）。默认情况下，GreptimeDB 还会根据指标单位和类型添加 Prometheus 风格的后缀。具体信息请参考[这里](https://opentelemetry.io/docs/specs/otel/compatibility/prometheus_and_openmetrics/#metric-metadata-1)
@@ -147,8 +146,9 @@ GreptimeDB 会首先对数据进行预处理，包括：
 
 2. 默认丢弃一些 resource 属性和全部的 scope 属性。默认保存的 resource 属性列表可以参考[这里](https://prometheus.io/docs/guides/opentelemetry/#promoting-resource-attributes)。你可以通过配置项对这个行为进行调整
 
-注意： OTLP 的 `Sum` 和 `Histogram` 指标的数据可能是增量时序（delta temporality）类型的。
-GreptimeDB 将会直接保存它们，不会进行累计值（cumulative value）的计算。
+OTLP 的 `Sum`、`Histogram` 和 `ExponentialHistogram` 指标都可以使用增量时序（delta temporality）。
+GreptimeDB 保存原始区间值，并添加 `otlp_aggregation_temporality="delta"` 标签，
+不会跨数据点或请求累加。该标签用于区分同一表中的增量序列和累积序列。
 参考[这里](https://grafana.com/blog/2023/09/26/opentelemetry-metrics-a-guide-to-delta-vs.-cumulative-temporality-trade-offs/)获取更多背景信息。
 
 你可以通过设置 HTTP 请求头来调整预处理的行为。以下是选项列表：
@@ -177,18 +177,66 @@ GreptimeDB 将会直接保存它们，不会进行累计值（cumulative value�
 - Metric 的名称将被作为 GreptimeDB 表的名称，当表不存在时会自动创建。
 - 只有特定 resource 属性会被默认保留。详情和配置选项见上一小节。属性在 GreptimeDB 表中会被作为 tag 列。
 - 参考 [Prometheus 数据模型](./prometheus.md#数据模型)了解更多数据模型信息。
-- 默认支持通过 OTLP/HTTP 写入累积（cumulative temporality）的 `ExponentialHistogram` 指标。
+- 显式 `Histogram` 数据点存储为 `_bucket`、`_sum` 和 `_count` 序列。
+  每个数据点内的桶计数会转换为前缀和，增量数据点也遵循此规则。
+  仅当数据点包含 sum 时才生成 `_sum` 序列。
+- `Summary` 的分位数存储为带有 `quantile` 标签和 `greptime_value` 字段的行，
+  并生成独立的 `_sum` 和 `_count` 序列。
+- 默认支持通过 OTLP/HTTP 写入累积（cumulative temporality）和增量（delta temporality）的 `ExponentialHistogram` 指标。
   每个数据点以原生直方图的形式存储在 Struct 字段中，字段名默认为 `greptime_native_histogram`，
-  而不是拆分为 `_bucket`、`_sum` 和 `_count` 序列。增量时序（delta temporality）和未指定时序的指标会被拒绝。
+  而不是拆分为 `_bucket`、`_sum` 和 `_count` 序列。未指定或无法识别的时序类型会被拒绝。
 
-无效的指数直方图数据点会被拒绝，同一 OTLP/HTTP 请求中的有效数据点仍可写入。
-这类请求返回部分成功；如果请求中只有被拒绝的数据点，则返回 `InvalidArgument` 错误。
 OTel Arrow 的传输格式缺少 `zero_threshold`，因此不支持指数直方图。
 
-如果某张表是由旧版 OTLP 指标写入格式创建的，这张表会继续保留原有格式。以下是数据模型在映射上的差别：
+启用 metric engine 时，传入的时间戳会对齐到目标表的时间索引精度。
+新建逻辑表继承物理表的精度；自动创建的物理表使用毫秒精度。
+未启用 metric engine 时，OTLP 指标使用毫秒时间戳。
 
-- 所有的 Attribute，包含 resource 级别、scope 级别和 data_point 级别，都被作为 GreptimeDB 表的 tag 列。
-- Summary 类型的每个 quantile 被作为单独的数据列，列名 `greptime_pxx`，其中 xx 是 quantile 的数据，如 90 / 99 等。
+### 查询增量指数直方图
+
+每个增量指数直方图保存一个区间内的计数、总和与桶数据。
+使用 `sum_over_time` 合并多个区间，再除以查询范围的秒数，即可得到每秒的直方图值。
+假设指标存储在 `request_duration` 表中：
+
+```promql
+sum_over_time(request_duration{otlp_aggregation_temporality="delta"}[3m])
+sum_over_time(request_duration{otlp_aggregation_temporality="delta"}[3m]) / 180
+histogram_count(sum_over_time(request_duration{otlp_aggregation_temporality="delta"}[3m]))
+histogram_sum(sum_over_time(request_duration{otlp_aggregation_temporality="delta"}[3m]))
+```
+
+查询范围根据数据点的结束时间戳选择样本，左边界不包含、右边界包含。
+每个选中的样本贡献整个区间的值，即使区间起点早于查询范围。
+例如，在第 `60`、`120`、`180` 秒结束的三个区间计数分别为 `10`、`20`、`15`，
+则在第 `180` 秒查询 `[3m]` 范围得到的总计数为 `45`，除以 `180` 后为每秒 `0.25` 次观测。
+缺失区间不会缩短分母所用的时长。只有一个样本时使用其完整值，空窗口不返回样本。
+不会按区间重叠比例折算，也不会外推。
+
+不要对原始增量直方图使用原生直方图的 `rate()` 或 `increase()`：
+无论是否带有时序标签，这两个函数都保留计数器语义。
+对于带有该标签的增量 `Sum` 和显式 `Histogram` 浮点序列，
+GreptimeDB 的 `increase()` 会对区间值求和，`rate()` 则将该总和除以查询范围的时长。
+
+在默认存储配置下，表名、标签和存储时间戳均相同的数据点会覆盖此前的值，而不会累加桶计数。
+时间戳对齐可能使不同的结束时间落在同一个存储时间戳上。区间起点不属于主键。
+
+请先升级所有接收写入的 frontend，再启用发送端的增量指数直方图。
+
+### 部分成功
+
+数据点转换或表结构校验失败时，GreptimeDB 会拒绝受影响的源数据点，
+同一 OTLP/HTTP 请求中的有效数据点仍可写入。
+此行为适用于 gauge、sum、显式直方图、summary 和指数直方图。
+如果一个数据点生成多行或多个序列，例如 `_bucket`、`_sum` 和 `_count`，
+任一输出校验失败都会拒绝该数据点的全部输出。
+新列定义存在冲突时，所有参与冲突的数据点都会被拒绝，
+包括共享同一物理指标表的不同逻辑表之间的冲突。
+
+请求中既有接受的数据点也有拒绝的数据点时，返回 HTTP `200`，
+响应包含 `partial_success.rejected_data_points` 和错误信息。
+该计数表示被拒绝的源数据点数，而不是生成的行数。
+如果请求中只有被拒绝的数据点，则返回 HTTP `400` 和 `InvalidArgument` 错误。
+身份认证、权限校验和存储故障仍可能导致整个请求失败。
 
 ## Logs
 
