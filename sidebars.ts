@@ -560,7 +560,12 @@ const sidebars: SidebarsConfig = {
         'enterprise/trigger',
         'enterprise/soft-drop',
         'enterprise/ingestion-rate-limit',
-        'enterprise/user',
+        {
+          type: 'category',
+          label: 'Built-in User Management',
+          link: { type: 'doc', id: 'enterprise/user' },
+          items: ['enterprise/user/api'],
+        },
         {
           type: 'category',
           label: 'Releases',
