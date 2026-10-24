@@ -7,7 +7,7 @@ description: 介绍本地存储和对象存储部署，以及数据文件、WAL�
 
 GreptimeDB 可以把持久化数据文件放在本地文件系统或对象存储中。本地存储适合 standalone 部署；需要计算存储分离的分布式部署通常使用共享对象存储。
 
-存储位置和 table engine 是两层不同的抽象。[Mito Engine 和 Metric Engine](/reference/about-greptimedb-engines.md)决定表数据如何组织和处理；本地文件系统、Amazon S3、Google Cloud Storage、Azure Blob Storage 等 storage provider 负责保存引擎生成的数据文件。Metric Engine 基于 Mito Engine，并复用其存储能力。
+存储位置和 table engine 是两层不同的抽象。[Mito Engine 和 Metric Engine](/reference/about-greptimedb-engines.md)决定表数据如何组织和处理；本地文件系统、Amazon S3、Google Cloud Storage、Azure Blob Storage、HDFS 等 storage provider 负责保存引擎生成的数据文件。Metric Engine 基于 Mito Engine，并复用其存储能力。
 
 <AnchorAlias id="本地文件结构" />
 
@@ -47,7 +47,8 @@ GreptimeDB 支持：
 - Amazon S3 及 S3 兼容服务，包括 MinIO、DigitalOcean Spaces、腾讯云对象存储和百度对象存储；
 - Google Cloud Storage；
 - Azure Blob Storage；
-- 阿里云 OSS。
+- 阿里云 OSS；
+- HDFS（Hadoop Distributed File System）。
 
 完整配置项和当前支持列表参见[存储选项](/user-guide/deployments-administration/configuration.md#storage-options)。
 
