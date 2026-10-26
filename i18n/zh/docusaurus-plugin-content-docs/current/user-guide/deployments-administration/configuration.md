@@ -361,7 +361,7 @@ parallelism = 0
 
 `存储`选项在 `datanode` 和 `standalone` 模式下有效，它指定了数据库数据目录和其他存储相关的选项。
 
-GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容服务（比如 MinIO、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
+GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容服务（比如 MinIO、RustFS、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
 
 | 选项    | 键                | 类型   | 描述                                                |
 | ------- | ----------------- | ------ | --------------------------------------------------- |
