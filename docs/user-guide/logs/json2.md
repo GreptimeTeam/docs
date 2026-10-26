@@ -223,7 +223,7 @@ frequently used in filters, add `INVERTED INDEX` after the type to enable
 indexing. Indexes must be declared explicitly for each path; declaring a type
 hint or automatically expanding a path does not create an index.
 
-For example, create a table:
+The following example creates a table with indexed JSON subpaths:
 
 ```sql
 CREATE TABLE indexed_logs (
@@ -238,9 +238,9 @@ CREATE TABLE indexed_logs (
 This statement creates inverted indexes on the `service.name` and `http.status`
 subpaths in `attrs`.
 
-In `WHERE` clauses, use dot syntax or `json_get` to read these subpaths and use
-inverted indexes to accelerate filtering. You do not need to specify the index
-explicitly. For example:
+Queries using dot syntax or `json_get` in `WHERE` clauses can use these indexes
+to accelerate filtering. You do not need to specify the indexes explicitly.
+For example:
 
 ```sql
 SELECT * FROM indexed_logs
