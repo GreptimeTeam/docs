@@ -41,6 +41,19 @@ CREATE TABLE monitoring_data (
 
 However, when a column has very high cardinality, the inverted index may not be the best choice due to the overhead of maintaining the index. It may bring high memory consumption and large index size. In this case, you may consider using the skipping index.
 
+JSON2 also supports inverted indexes on subpaths with explicit type hints.
+Add `INVERTED INDEX` after the path's type:
+
+```sql
+CREATE TABLE indexed_logs (
+    ts TIMESTAMP TIME INDEX,
+    attrs JSON2 (
+        service.name STRING INVERTED INDEX,
+        http.status BIGINT INVERTED INDEX
+    )
+) WITH ('append_mode' = 'true');
+```
+
 ### Skipping Index
 
 Skipping index suits for columnar data systems like GreptimeDB. It maintains metadata about value ranges within data blocks, allowing the query engine to skip irrelevant data blocks during range queries efficiently. This index also has smaller size compare to others.

@@ -88,7 +88,7 @@ GreptimeDB provides two JSON column types:
 - The experimental [`JSON`](/reference/sql/data-types.md#json-type-experimental) type stores general JSON values and works with [JSON functions](/reference/sql/functions/json.md).
 - [`JSON2`](/user-guide/logs/json2.md), available since v1.2 and currently Beta, stores subpaths in a structured columnar form for logs and other semi-structured data. It supports dot-path access, `json_get`, and optional type hints. JSON2 currently requires an append-only table.
 
-Neither type currently provides index options for JSON subpaths. Put stable, frequently filtered attributes in typed columns when they need inverted, full-text, or skipping indexes. See [Data Indexes](/user-guide/manage-data/data-index.md).
+JSON2 supports [inverted indexes](/user-guide/logs/json2.md#inverted-indexes-on-subpaths) on subpaths with explicit type hints to accelerate common filters. The `JSON` type still does not support subpath indexes. Store attributes in typed columns if they need full-text or skipping indexes. See [Data Indexes](/user-guide/manage-data/data-index.md).
 
 ## More Questions?
 

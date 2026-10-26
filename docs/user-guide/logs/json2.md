@@ -1,6 +1,6 @@
 ---
 keywords: [JSON2, JSON, logs, structured logs, type hints, json_get]
-description: Learn how to use the JSON2 type in GreptimeDB, including table creation, type hints, JSON field access, and current limitations.
+description: Learn how to use the JSON2 type in GreptimeDB, including table creation, type hints, subpath inverted indexes, JSON field access, and current limitations.
 ---
 
 # JSON2 Type
@@ -168,7 +168,7 @@ The syntax for declaring type hints is:
 
 ```sql
 json_column JSON2 (
-    path.to.field DATA_TYPE
+    path.to.field DATA_TYPE [INVERTED INDEX]
 )
 ```
 
@@ -215,6 +215,43 @@ CREATE TABLE application_logs (
     'append_mode' = 'true'
 );
 ```
+
+#### Inverted indexes on subpaths
+
+You can create inverted indexes on JSON subpaths with type hints. For subpaths
+frequently used in filters, add `INVERTED INDEX` after the type to enable
+indexing. Indexes must be declared explicitly for each path; declaring a type
+hint or automatically expanding a path does not create an index.
+
+For example, create a table:
+
+```sql
+CREATE TABLE indexed_logs (
+    ts TIMESTAMP TIME INDEX,
+    attrs JSON2 (
+        service.name STRING INVERTED INDEX,
+        http.status BIGINT INVERTED INDEX
+    )
+) WITH ('append_mode' = 'true');
+```
+
+This statement creates inverted indexes on the `service.name` and `http.status`
+subpaths in `attrs`.
+
+In `WHERE` clauses, use dot syntax or `json_get` to read these subpaths and use
+inverted indexes to accelerate filtering. You do not need to specify the index
+explicitly. For example:
+
+```sql
+SELECT * FROM indexed_logs
+WHERE attrs.service.name = 'api' AND attrs.http.status >= 500;
+
+SELECT * FROM indexed_logs
+WHERE json_get(attrs, 'http.status') IN (400, 404, 500);
+```
+
+Inverted indexes support filters such as equality, range comparisons, `BETWEEN`,
+`IN`, and string regular expression matching with `~`.
 
 ### Control automatic path expansion
 

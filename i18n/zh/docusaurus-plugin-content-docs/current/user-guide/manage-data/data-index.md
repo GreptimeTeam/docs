@@ -41,6 +41,19 @@ CREATE TABLE monitoring_data (
 
 需要注意的是，当列的基数非常大时，倒排索引可能会带来较高的维护成本，导致内存占用增加和索引体积膨胀。这种情况下，建议考虑使用跳数索引作为替代方案。
 
+JSON2 也支持为显式声明 type hint 的子路径建立倒排索引，在路径类型后添加
+`INVERTED INDEX` 即可：
+
+```sql
+CREATE TABLE indexed_logs (
+    ts TIMESTAMP TIME INDEX,
+    attrs JSON2 (
+        service.name STRING INVERTED INDEX,
+        http.status BIGINT INVERTED INDEX
+    )
+) WITH ('append_mode' = 'true');
+```
+
 <AnchorAlias id="skipping-index" />
 
 ### 跳数索引
