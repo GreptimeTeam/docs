@@ -11,7 +11,7 @@ If there is no SDK available for your programming language, you have the option 
 
 ## Hints
 
-GreptimeDB supports the `x-greptime-hints` gRPC metadata to pass hints as a comma-separated list of `key=value` pairs.
+Use the `x-greptime-hints` gRPC metadata to pass hints as a comma-separated list of `key=value` pairs.
 
 ### Disable WAL for a single write request
 

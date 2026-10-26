@@ -11,7 +11,7 @@ GreptimeDB 提供了 [gRPC SDK](/user-guide/ingest-data/for-iot/grpc-sdks/overvi
 
 ## Hints
 
-GreptimeDB 支持通过 `x-greptime-hints` gRPC 元数据传递 hint，格式为以逗号分隔的 `key=value` 键值对。
+通过 `x-greptime-hints` gRPC 元数据传递 hint，使用逗号分隔多个 `key=value` 键值对。
 
 ### 为单个写入请求禁用 WAL
 

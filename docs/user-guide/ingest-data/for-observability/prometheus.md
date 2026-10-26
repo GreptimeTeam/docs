@@ -35,7 +35,7 @@ remote_read:
 - The `db` parameter in the URL represents the database to which we want to write data. It is optional. By default, the database is set to `public`.
 - `basic_auth` is the authentication configuration. Fill in the username and password if GreptimeDB authentication is enabled. Please refer to the [authentication document](/user-guide/deployments-administration/authentication/overview.md).
 
-To skip WAL for Remote Write requests, configure the `x-greptime-insert-skip-wal` header:
+To disable GreptimeDB's WAL for Remote Write requests, set the `x-greptime-insert-skip-wal` header to `true`:
 
 ```yaml
 remote_write:
@@ -44,7 +44,9 @@ remote_write:
     x-greptime-insert-skip-wal: "true"
 ```
 
-This applies to Remote Write 1.0 and 2.0, including server-side batched writes. See [Disable WAL for a single write request](/user-guide/protocols/http.md#disable-wal-for-a-single-write-request) for the setting's scope and durability implications.
+This header applies to Remote Write 1.0 and 2.0, including writes batched by GreptimeDB.
+When WAL is disabled, unflushed data is lost if the process restarts.
+See [Disable WAL for a single write request](/user-guide/protocols/http.md#disable-wal-for-a-single-write-request) for details.
 
 ### Native histograms
 
