@@ -6,17 +6,22 @@ description: The overview of GreptimeDB User and Permission mechanism.
 # Built-in User Management
 
 GreptimeDB Enterprise provides a built-in user and permission system backed by
-the Metasrv. It supports Role-Based Access Control (RBAC) and fine-grained
+metadata storage. In cluster mode, the Metasrv manages this storage; in standalone
+mode, users are stored in the standalone metadata backend. The system supports
+Role-Based Access Control (RBAC) and fine-grained
 Access Control Lists (ACLs) to ensure data security and isolation.
+
+For programmatic account management, see the
+[User Management API](/enterprise/user/api.md).
 
 ## Key Features
 
-- **Built-in User Management**: User accounts and permissions are stored in the
-  Metasrv, ensuring consistent management across the cluster.
+- **Built-in User Management**: User accounts and permissions are persisted in
+  metadata storage and shared across frontend nodes in a cluster.
 - **Role-Based Access Control (RBAC)**: Assign global privileges to users,
   controlling operations like `SELECT`, `INSERT`, `CREATE TABLE`, and more.
-- **Fine-grained ACLs**: Control table-level access within specific databases
-  using exact matches or regular expressions.
+- **Fine-grained ACLs**: Select databases and tables using exact names or regular
+  expressions.
 - **Dynamic Management**: Manage users dynamically via HTTP APIs without
   restarting the server.
 - **Initial Seeding**: Support for seeding initial accounts from a password
@@ -89,9 +94,13 @@ Then start frontend with the configuration file:
 ### 2. Initial Account Seeding (Optional)
 
 The password file uses the following format:
-`<username>[:<role>]=<password>`
+`[<catalog>/]<username>[:<role>]=<password>`
+
+The catalog prefix is optional. Entries without it belong to the default
+catalog, `greptime`.
 
 Available roles:
+
 - `admin`: Full privileges, including user management.
 - `readonly` (or `ro`): Read-only access (`SqlSelect`).
 - `writeonly` (or `wo`): Write-only access (e.g., `SqlInsert`, `TableCreate`).
@@ -100,16 +109,34 @@ Available roles:
 Example `passwords.txt`:
 
 ```text
-# username[:role]=password
+# [catalog/]username[:role]=password
 superuser:admin=strong_password
 alice:ro=alice_pwd
 bob:rw=bob_pwd
+tenant_a/carol:ro=carol_pwd
 ```
 
-Seeded users are granted full access (`AclType::All`) to the `public` database by default.
+The username `admin` is reserved and skipped during seeding. Use another name,
+such as `superuser`, for a seeded administrator.
 
-Seed accounts are created only once. If a seeded user already exists on later
-startups, it is skipped. You can modify seeded users later through the UI.
+Seeded users are granted full access (`AclType::All`) to the `public` database
+in their catalog, subject to their global privileges.
+
+Seed accounts are created only once. Existing users are skipped, and deleting a
+seeded user does not cause it to be recreated on later startups. You can modify
+seeded users later through the UI or HTTP API.
+
+## Catalog Scope
+
+Usernames are unique within a catalog. The HTTP user-management APIs at
+`/v1/users` list and manage users in the request's current catalog, which defaults
+to `greptime`. To select another catalog, use the `db` query parameter or
+`x-greptime-db-name` header with a value such as `tenant_a-public`. The `catalog`
+field in a create-user request body does not select the target catalog.
+
+HTTP, gRPC, and PostgreSQL authentication look up users in the selected catalog.
+MySQL password authentication and the admin-password CLI still look up users in
+the default catalog.
 
 ## Privileges and ACLs
 
@@ -149,8 +176,10 @@ following privilege combinations:
 
 ### Access Control Lists (ACLs)
 
-ACLs provide table-level security within a database. Each ACL entry is scoped to a
-database and controls which tables in that database the user can access.
+ACLs control access to databases and their tables. In the HTTP API, `acl_map`
+maps database selectors to lists of table ACL entries.
+
+#### Table ACLs
 
 The `all` ACL grants access to every table in the database. Use it when a user
 should be able to read or write all current and future tables in that database,
@@ -162,18 +191,58 @@ other tables with similar names.
 
 The `regex` ACL grants access to tables whose names match a regular expression.
 Use it when tables follow a naming convention and should be managed as a group.
-For example, `mem_.*` matches table names that start with `mem_`,
-`.*_metrics` matches table names that end with `_metrics`, and
-`sensor_[0-9]+` matches names such as `sensor_1` and `sensor_2024`.
-Regex ACLs are evaluated against table names within the configured database, so
-use specific patterns when possible to avoid granting access to more tables than
-intended.
+Table regexes match substrings unless explicitly anchored. For example,
+`mem_.*` also matches `old_mem_usage`, and `.*_metrics` also matches
+`cpu_metrics_backup`. Use `^mem_.*$` for names that start with `mem_`,
+`^.*_metrics$` for names that end with `_metrics`, and `^sensor_[0-9]+$` for
+complete names such as `sensor_1` and `sensor_2024`.
+
+#### Database Selectors
+
+A normal `acl_map` key, such as `public`, selects one database by exact name.
+A key with the reserved `~regex:` prefix selects databases by regular expression:
+
+```json
+{
+  "acl_map": {
+    "~regex:tenant_[0-9]+": [{"type": "all"}]
+  }
+}
+```
+
+Database regexes always match the entire name. This example grants access to all
+tables in `tenant_42`, but not `archive_tenant_42` or `tenant_42_backup`. It applies
+to current and future matching databases, regardless of who created them.
+
+If exact and regex selectors match the same database, their table ACL entries
+are combined. An `all` entry in any matching selector grants access to every
+table in that database. Invalid database or table regexes, and empty database
+regexes, are rejected when users are created or updated.
+
+#### Database Operations and System Tables
+
+A non-admin user with `DatabaseCreate` can create a database in their catalog
+without an existing ACL for that database. Creation atomically grants the creator
+effective `all` access to the new database and refreshes the submitting session's
+permissions. Database selectors do not restrict which names the user can create.
+`CREATE DATABASE IF NOT EXISTS` does not grant access to an existing database.
+
+`DROP DATABASE` and `COPY DATABASE` require effective `all` access to the target
+database, in addition to the relevant global privilege. For ordinary databases,
+`SHOW DATABASES`, `SHOW TABLES`, `SHOW TABLE STATUS`, and `SHOW VIEWS` filter their
+results according to the user's ACLs.
+
+Some system tables have separate rules. Reading catalog-scoped
+`information_schema` tables and `information_schema.build_info` requires
+`SqlSelect` but bypasses table ACLs. Other `information_schema` tables require
+`Admin`.
 
 ## Validation Rules
 
 ### Username
 
 Usernames must:
+
 - Start with a letter (`a-z` or `A-Z`)
 - Contain only letters, digits, and underscores
 - Match the pattern `[a-zA-Z][a-zA-Z0-9_]*`
@@ -183,7 +252,26 @@ Usernames must:
 Password validation depends on how the user is created or updated:
 
 - Seeded account passwords must not be empty.
-- Passwords created or updated through the UI must be 6 to 64 characters long.
+- Local passwords created or updated through the UI or HTTP API must be 6 to 64
+  characters long.
+- LDAP users have no local password; their passwords are managed in LDAP.
+
+## External Authentication
+
+The built-in user provider supports optional authentication plugins on the
+standalone server or frontend nodes that receive client requests:
+
+- **LDAP (`ldap_auth`)**: Configure the plugin's `config_file` with the path to
+  an LDAP connection configuration. Register each LDAP user through the HTTP API
+  with `auth_source: "ldap"` and omit `password`. LDAP verifies the password,
+  while the stored user record supplies privileges and ACLs. Valid LDAP
+  credentials alone do not create a GreptimeDB user. Local users can coexist
+  with LDAP users.
+- **JWT (`jwt_auth`)**: Configure a trusted verification key or JWKS endpoint.
+  The token's username claim (default: `sub`) must identify an existing user in
+  the selected catalog; the stored privileges and ACLs still apply. For HTTP,
+  send `Authorization: Bearer <token>`. For MySQL and PostgreSQL, use `*` as the
+  username and the JWT as the password.
 
 ## User Management in the Enterprise Dashboard
 
@@ -195,8 +283,8 @@ The following screenshot shows the Enterprise Dashboard login page:
     <img src="/ent_user/login.png" alt="login page"/>
 </p>
 
-You can log in with the automatically created admin account or with an account
-defined in the seeding file.
+You can log in with an account defined in the seeding file, or with the fallback
+`admin` account if one was created.
 
 Only accounts with the `Admin` privilege can see the database management menu.
 Non-admin accounts can only access the query page, similar to the open-source
@@ -209,7 +297,7 @@ corner to open the user management page:
     <img src="/ent_user/list.png" alt="login page"/>
 </p>
 
-This page lists all current users. From here, you can:
+This page lists users in the current catalog. From here, you can:
 
 1. Create users
 2. Update existing users
@@ -240,10 +328,14 @@ expression form:
 
 ## Reference
 
-- **Admin Account**: On the system's first startup, GreptimeDB Enterprise
-  automatically creates a default `admin` account if it doesn't already exist.
+- **Admin Account**: After account seeding, GreptimeDB Enterprise creates a
+  fallback `admin` account in the default catalog, `greptime`, only if that
+  catalog has no user with the `Admin` privilege and the username `admin` is
+  unused. Existing accounts are never overwritten. For example, the
+  `superuser:admin` entry above suppresses fallback account creation.
   - If the environment variable `GREPTIME_ENTERPRISE_ADMIN_PASSWORD` is set,
-    it uses that value as the password.
+    it uses that value as the fallback account's password. Set it on the Metasrv
+    in cluster mode or on the standalone process in standalone mode.
   - If the environment variable is not set, it generates a random UUID as the
     password.
 - **Checking Auto-generated Password**: If a random password was generated,
@@ -251,19 +343,25 @@ expression form:
   ```text
   Created admin user with auto-generated password <UUID>
   ```
-- **Resetting the Admin Password**: You can reset the `admin` password using the
-  CLI without manually editing the KV store. The command reads backend storage
-  settings from a Metasrv config file and supports the standard
+- **Resetting the Admin Password**: You can reset the existing local `admin`
+  account's password in the default catalog using the CLI. The command reads
+  backend storage settings from a Metasrv config file and supports the standard
   `GREPTIMEDB_METASRV__...` environment variable overrides.
   ```shell
   ./greptime-ee cli user admin-password \
     --new-password <new-password> \
     --config-file /path/to/metasrv.toml
   ```
-  This command must be invoked from a Metasrv instance. The `--config-file`
-  should point to the same Metasrv config file used by your Metasrv (or
-  standalone) deployment, so the CLI can locate the correct backend storage
-  (etcd, MySQL, or PostgreSQL).
-- **Persistence**: User information is persisted in the Metasrv's KV store,
-  making it available across all frontend nodes in a cluster.
+  The command connects directly to etcd, MySQL, or PostgreSQL and can run on any
+  host with access to the backend. Use the deployment's Metasrv configuration,
+  including its storage endpoints, metadata table, schema where applicable, and
+  key prefix.
+  The command does not support standalone's default Raft Engine backend. For
+  standalone deployments using MySQL or PostgreSQL metadata storage, prepare a
+  separate Metasrv-format configuration pointing to the same storage; do not
+  pass the standalone configuration file directly. The command does not create
+  a missing `admin` account or reset LDAP passwords.
+- **Persistence**: In cluster mode, user information is persisted in the
+  Metasrv's KV store and shared across frontend nodes. In standalone mode, it is
+  persisted in the standalone metadata backend, which defaults to Raft Engine.
 - **Admin Protection**: The built-in `admin` user cannot be deleted via the API.
