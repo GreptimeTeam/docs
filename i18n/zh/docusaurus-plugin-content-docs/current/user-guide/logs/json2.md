@@ -1,6 +1,6 @@
 ---
 keywords: [JSON2, JSON, logs, structured logs, type hints, json_get]
-description: 介绍 GreptimeDB 中 JSON2 类型的使用方式，包括建表、type hint、JSON 字段读取以及当前限制。
+description: 介绍 GreptimeDB 中 JSON2 类型的使用方式，包括建表、type hint、子路径倒排索引、JSON 字段读取以及当前限制。
 ---
 
 # JSON2 类型
@@ -159,7 +159,7 @@ JSON2 支持使用 type hint 为指定的子路径声明确定的数据类型。
 
 ```sql
 json_column JSON2 (
-    path.to.field DATA_TYPE
+    path.to.field DATA_TYPE [INVERTED INDEX]
 )
 ```
 
@@ -204,6 +204,40 @@ CREATE TABLE application_logs (
     'append_mode' = 'true'
 );
 ```
+
+#### 子路径倒排索引
+
+可以为声明了 type hint 的 JSON 子路径创建倒排索引。对于经常用于过滤的子路径，
+可以在类型后添加 `INVERTED INDEX` 来启用。索引需要逐路径显式声明；仅声明
+type hint 或自动展开路径不会自动创建索引。
+
+下面是一个建表示例：
+
+```sql
+CREATE TABLE indexed_logs (
+    ts TIMESTAMP TIME INDEX,
+    attrs JSON2 (
+        service.name STRING INVERTED INDEX,
+        http.status BIGINT INVERTED INDEX
+    )
+) WITH ('append_mode' = 'true');
+```
+
+上述建表语句为 `attrs` 中的 `service.name` 和 `http.status` 两个子路径创建
+倒排索引。
+
+在 `WHERE` 条件中，可以通过点号语法或 `json_get` 读取这些子路径，并利用倒排索引
+加速过滤，无需显式指定索引。例如：
+
+```sql
+SELECT * FROM indexed_logs
+WHERE attrs.service.name = 'api' AND attrs.http.status >= 500;
+
+SELECT * FROM indexed_logs
+WHERE json_get(attrs, 'http.status') IN (400, 404, 500);
+```
+
+倒排索引支持等值、范围、`BETWEEN`、`IN` 和字符串正则匹配 `~` 等过滤条件。
 
 ### 控制路径自动展开
 
