@@ -282,6 +282,8 @@ StreamWriter<Table, WriteOk> writer = client.streamWriter(1000);
 
 The Bulk Write API provides a high-performance, memory-efficient mechanism for ingesting large volumes of time-series data into GreptimeDB. It leverages off-heap memory management to achieve optimal throughput when writing batches of data.
 
+Bulk Write uses Arrow Flight `DoPut`. To disable WAL with the `insert_skip_wal` hint, see [Disable WAL for a single write request](/user-guide/protocols/grpc.md#disable-wal-for-a-single-write-request).
+
 **Important**:
 1. **Manual Table Creation Required**: Bulk API does **not** create tables automatically. You must create the table beforehand using either:
    - Insert API (which supports auto table creation), or
