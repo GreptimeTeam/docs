@@ -109,6 +109,14 @@ export GREPTIMEDB_DATANODE__STORAGE__DATA_HOME=/data/greptimedb
 GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003
 ```
 
+对于取值为具名条目列表的配置项（例如 `region_engine`），环境变量使用条目名而不是条目在列表中的位置来定位。从 v1.4.0 开始，可以用环境变量设置某个引擎的选项，例如在 datanode 上：
+
+```sh
+export GREPTIMEDB_DATANODE__REGION_ENGINE__MITO__GLOBAL_WRITE_BUFFER_REJECT_SIZE=4GB
+```
+
+该变量会在对应条目的默认值之上覆盖这个字段；未提及的字段和条目保持原有取值，使用数字下标会被拒绝。`region_engine` 默认包含 `mito` 和 `file`，`metric` 引擎始终会被注册，因此指定 `metric` 只是为其提供配置项。与其它列表型配置一样，一旦配置文件中出现 `[[region_engine]]`，整个列表都来自配置文件，这些环境变量对该配置项不再生效。
+
 ## 配置项
 
 本节将介绍主要的配置项，请前往 GitHub 查看[所有配置项](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/config.md)。
@@ -595,7 +603,9 @@ batch_gc, wal_prune
 
 ### Region 引擎选项
 
-datanode 和 standalone 在 `[region_engine]` 部分可以配置不同存储引擎的对应参数。目前可以配置 `mito` 和 `metric` 存储引擎的选项。
+datanode 和 standalone 在 `[region_engine]` 部分可以配置不同存储引擎的对应参数。默认配置列出 `mito` 和 `file` 两个引擎；`metric` 引擎始终会被注册，写上它只是提供其选项，而不是启用该引擎。
+
+从 v1.4.0 开始，也可以通过环境变量设置某个引擎的选项，参见上文的“环境变量规则”。
 
 部分常用的选项如下
 
