@@ -5,7 +5,7 @@ date: 2026-10-28
 ---
 # v1.3.0
 
-Release date: TBD
+Release date: October 28, 2026
 
 GreptimeDB v1.3.0 adds native histogram ingestion, an opt-in trace schema with JSON2 attributes, and automatic retries for distributed writes. It also fixes incorrect SQL and PromQL results, write routing during schema changes, and storage recovery failures.
 
