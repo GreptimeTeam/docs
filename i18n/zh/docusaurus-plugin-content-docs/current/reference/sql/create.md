@@ -495,6 +495,7 @@ SHOW CREATE TABLE spans;
 限制：
 
 - `JSON2` 列不支持 `COMPRESSION`。
+- `JSON2` 列不能用作主键。
 - Tag 列要求表使用 `sst_format='flat'` 和 `primary_key_encoding='dense'`。
 - Metric Engine 的 `COMPRESSION` 选项必须在共享物理表上配置，不能在逻辑表上指定。物理表默认使用 sparse 主键编码，默认配置下不能为 Tag 列指定压缩选项；Field 列不受此限制。
 - `ALTER TABLE` 不支持修改这些选项。已配置 `delta_binary_packed` 的列不能通过 `MODIFY COLUMN` 改为非整数、非时间戳类型。

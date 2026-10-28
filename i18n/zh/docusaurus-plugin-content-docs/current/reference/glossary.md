@@ -98,7 +98,7 @@ GreptimeDB 的全托管数据库服务，提供托管的 GreptimeDB 实例，并
 ## J
 
 ### JSON2
-[`JSON2`](/user-guide/logs/json2.md) 是面向 logs 和其他半结构化数据的 Beta 列类型。它以结构化列式形式保存 JSON 子路径，支持点号路径、`json_get` 和可选的 type hint。目前 JSON2 只能用于 append-only 表。
+[`JSON2`](/user-guide/logs/json2.md) 是面向 logs 和其他半结构化数据的 Beta 列类型。它以结构化列式形式保存 JSON 子路径，支持点号路径、`json_get` 和可选的 type hint。非 append-only 表中的 JSON2 列支持 `last_row` 和 `last_non_null` merge mode，但不能用作主键。
 
 ---
 

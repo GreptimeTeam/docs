@@ -98,7 +98,7 @@ The ability of systems to exchange data through compatible interfaces. GreptimeD
 ## J
 
 ### JSON2
-[`JSON2`](/user-guide/logs/json2.md) is a Beta column type for logs and other semi-structured data. It stores JSON subpaths in a structured columnar form and supports dot-path access, `json_get`, and optional type hints. JSON2 currently requires an append-only table.
+[`JSON2`](/user-guide/logs/json2.md) is a Beta column type for logs and other semi-structured data. It stores JSON subpaths in a structured columnar form and supports dot-path access, `json_get`, and optional type hints. JSON2 works with `last_row` and `last_non_null` merge modes on non-append-only tables, but cannot be a primary key.
 
 ---
 
