@@ -1,0 +1,166 @@
+---
+keywords: [GreptimeDB events, event data model]
+description: Understand the GreptimeDB events table data model.
+---
+
+# Event data model
+
+`greptime_private.events` has the following common columns.
+
+| Column          | Meaning                                                     |
+| --------------- | ----------------------------------------------------------- |
+| `type`          | Event type, such as `create_table` or `region_migration`.   |
+| `timestamp`     | Time at which the row was recorded.                         |
+| `payload`       | JSON data for the event type.                               |
+| `actor`         | Database user recorded as the operation's initiator; SQL `NULL` when the event is not associated with a user request. |
+| `event_context` | JSON describing why the event was triggered when available. |
+
+## Event actor {#actor}
+
+The `actor` is the database user recorded as the initiator of an operation. Use
+it to identify who ran an `ADMIN` statement or submitted a Procedure.
+
+When an operation starts a Procedure, GreptimeDB records the database user as
+its `actor`. The Procedure and any child Procedures it starts keep the same
+`actor` throughout their lifecycle. Events that are not associated with a user
+request have a SQL `NULL` actor.
+
+When [authentication](/user-guide/deployments-administration/authentication/overview.md)
+is enabled, `actor` is the authenticated database user. Without authentication,
+`actor` does not verify who sent the request. MySQL and PostgreSQL record the
+username supplied by the client, while HTTP and gRPC record the default user
+`greptime`.
+
+## Procedure event columns
+
+Procedure events also have the following columns:
+
+| Column              | Meaning                                                                                                                                                     |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `procedure_id`      | Unique Procedure ID.                                                                                                                                        |
+| `procedure_state`   | Procedure state when the event was recorded. Values are `Running`, `Done`, `Retrying`, `PrepareRollback`, `RollingBack`, `Failed`, and `Poisoned`.          |
+| `procedure_trigger` | Procedure event trigger in JSON. Its `type` is `Submitted`, `Recovered`, `ChildSubmitted`, `Retrying`, `RollingBack`, `Succeeded`, `Failed`, or `Poisoned`. |
+| `procedure_error`   | Debug-formatted error when the Procedure fails; an empty string otherwise.                                                                                  |
+
+Rows with trigger type `Submitted` normally have state `Running`. When a Procedure
+succeeds, the completed event has state `Done` and trigger type `Succeeded`. The completed
+row is generated from the Procedure's final state, so its fields can differ from
+the submitted row. Events are recorded asynchronously; a recording failure does
+not change the Procedure result.
+
+`event_context` is written only on `Submitted` rows. When it is available, its
+stable `reason` value is one of
+`manual`, `auto_create`, `auto_alter`, `auto_repartition`, `auto_rebalance`,
+`region_failover`, `scheduled_gc`, or `unknown`. For example, a MySQL-submitted
+event can contain `{"protocol":"mysql","reason":"manual"}`.
+
+In addition to `Submitted` and `Succeeded`, a Procedure can emit the following
+trigger types when applicable. Not every Procedure emits every trigger type, and rows are
+not guaranteed to appear in the order shown:
+
+| `type`           | Meaning and fields                                                                                                                                                                       |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Recovered`      | The root Procedure was recovered from persisted state.                                                                                                                                   |
+| `ChildSubmitted` | A child Procedure submission was attempted. `procedure_trigger` includes the child `procedure_id` and its `outcome` (`Accepted`, `AlreadyAccepted`, `ManagerStopped`, or `SpawnFailed`). |
+| `Retrying`       | Procedure execution or rollback is being retried. `procedure_trigger` includes the retry `phase` (`Execute` or `Rollback`) and `attempt`.                                                |
+| `RollingBack`    | Procedure rollback is starting.                                                                                                                                                          |
+| `Failed`         | The Procedure reached a failed terminal state. Inspect `procedure_error` for failure details.                                                                                            |
+| `Poisoned`       | The Procedure cannot proceed. Inspect `procedure_error` for the failure details.                                                                                                         |
+
+## ADMIN function event columns
+
+An `admin_function` event records the result returned by an `ADMIN` statement.
+
+| Column                   | Meaning                                                                                                                                |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `admin_function_name`    | The name of the executed ADMIN function.                                                                                              |
+| `admin_function_status`  | The execution status: `Succeeded` or `Failed`.                                                                                        |
+| `admin_function_output`  | JSON containing `result` when the function succeeds or `error` when it fails.                                                         |
+
+The event `payload` contains the function arguments. If the result is a
+Procedure ID, query the Procedure events for that ID to track its progress.
+
+## Query JSON fields
+
+See the [JSON functions](/reference/sql/functions/json.md) reference for
+details. In event queries, `json_to_string` converts a JSON value to readable
+text, `json_get_string` extracts a value by path, `json_path_match` evaluates a
+JSON predicate, and `json_is_null` checks whether a value is the JSON `null`
+value. Use `IS NULL` separately to check for SQL `NULL`.
+
+For example, this query extracts fields from a `create_table` row that contains
+`event_context`:
+
+```sql
+SELECT procedure_state,
+       json_get_string(procedure_trigger, 'type') AS trigger_type,
+       json_path_match(procedure_trigger, '$.type == "Submitted"') AS is_submitted,
+       json_get_string(event_context, 'reason') AS reason
+FROM greptime_private.events
+WHERE type = 'create_table'
+  AND timestamp >= now() - INTERVAL '1' hour
+  AND schema_name = '<database_name>'
+  AND table_name = '<table_name>'
+  AND event_context IS NOT NULL
+ORDER BY timestamp;
+```
+
+```sql
++-----------------+--------------+--------------+--------+
+| procedure_state | trigger_type | is_submitted | reason |
++-----------------+--------------+--------------+--------+
+| Running         | Submitted    |            1 | manual |
++-----------------+--------------+--------------+--------+
+```
+
+## JSON `null` and SQL `NULL`
+
+In the `create_table` example and DDL/repartition events after a Procedure completes, a terminal
+`payload` can be JSON `null` rather than SQL `NULL`:
+
+```sql
+SELECT procedure_state, json_to_string(payload) AS payload,
+       payload IS NULL AS payload_is_sql_null,
+       json_is_null(payload) AS payload_is_json_null,
+       json_get_string(procedure_trigger, 'type') AS trigger_type
+FROM greptime_private.events
+WHERE type = 'create_table'
+  AND timestamp >= now() - INTERVAL '1' hour
+  AND schema_name = '<database_name>'
+  AND table_name = '<table_name>'
+ORDER BY timestamp;
+```
+
+```sql
++-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
+| procedure_state | payload                                                    | payload_is_sql_null | payload_is_json_null | trigger_type |
++-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
+| Running         | {"create_if_not_exists":false,"engine":"mito","version":1} | 0                   | 0                    | Submitted    |
+| Done            | null                                                       | 0                   | 1                    | Succeeded    |
++-----------------+------------------------------------------------------------+---------------------+----------------------+--------------+
+```
+
+## Procedure event type-specific columns
+
+The following columns are populated only by the listed event types. An SQL `NULL`
+value in one of these columns is normal when it does not apply.
+
+- **Database, table, and view events:** `catalog_name`, `schema_name`, and the
+  applicable table or view name and ID columns identify the affected object.
+  Flow events use `catalog_name` and `flow_name`; their `schema_name` is SQL
+  `NULL`. `physical_table_id` applies only to `create_logical_tables` and
+  `alter_logical_tables`. See [DDL events](/user-guide/deployments-administration/monitoring/events/ddl-events.md).
+- **Region migration:** `region_id` and `region_number` identify the Region.
+  `region_migration_trigger_reason`, `region_migration_src_node_id`,
+  `region_migration_src_peer_addr`, `region_migration_dst_node_id`, and
+  `region_migration_dst_peer_addr` describe why and where it moved.
+- **Repartition:** `catalog_name`, `schema_name`, `table_name`, and `table_id`
+  identify the affected table. `parent_procedure_id` links a child procedure to
+  its parent; `repartition_group_id` identifies a group operation. `source_region_id`,
+  `source_region_number`, `source_partition_expr`, `target_region_id`,
+  `target_region_number`, and `target_partition_expr` describe the affected
+  Regions and partition expressions.
+- **Batch GC:** `region_id`, `region_number`, and `gc_report` describe the
+  Regions processed and their GC result.
+- **WAL pruning:** `topic_name`, `prunable_entry_id`, and `latest_offset`
+  identify the topic, requested prune boundary, and exclusive latest offset.

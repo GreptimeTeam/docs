@@ -14,6 +14,19 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 
 完整的版本历史和功能新增，请参见[发行说明](/release-notes/)。
 
+## 升级到 v1.3 的路径
+
+### 从 v1.2 到 v1.3
+
+如果你当前运行的是 v1.2，可以直接升级到 v1.3。升级前，请先查看
+[从 v1.2 升级到 v1.3](#从-v12-升级到-v13)，并完成
+[升级检查清单](#升级检查清单)中的相关检查。
+
+### 从 v1.1 或更早版本到 v1.3
+
+如果你要从 v1.1 或更早版本升级到 v1.3，请先查看[升级到 v1.2 的路径](#升级到-v12-的路径)，
+再处理 [v1.3 的破坏性变更](#从-v12-升级到-v13)。
+
 ## 升级到 v1.2 的路径
 
 ### 从 v1.0 或 v1.1 到 v1.2
@@ -49,28 +62,6 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 
 ## 各版本的破坏性变更
 
-### 尚未发布的 Nightly 变更
-
-#### 扫描内存计量变更
-
-升级到 Nightly 后，即使配置没有修改，查询也可能因达到内存限制而失败。
-升级前请检查以下设置：
-
-| 现有配置 | 变化及建议操作 |
-| --- | --- |
-| 未配置 `scan_memory_limit` | 默认值从 `unlimited` 改为可用内存的 `25%`，并遵循容器内存限制。如需继续禁用扫描内存限制，请显式设为 `"unlimited"`。 |
-| 已配置非零 `scan_memory_limit` | 新增的 `scan_memory_mode` 默认为 `basic`。如需继续统计扫描产生的批次，请使用 `extended`，并测试现有限制是否足够。 |
-| `scan_memory_on_exhausted = "wait"` 或 `"wait(<duration>)"` | 查询会立即失败，不再等待内存。请改为 `"fail"`，并检查应用的错误处理逻辑。 |
-
-`extended` 不会完全恢复旧行为：相同的限制可能导致以前能够成功的查询失败。
-同时检查 `query.memory_pool_size`，因为查询现在可能更容易达到这一限制。
-将 `scan_memory_limit` 设为 `0` 或 `"unlimited"` 仍然只会禁用扫描内存限制，
-不会禁用查询内存限制或文件数量检查。
-
-正式升级前，请按预期并发量测试典型查询，并检查使用
-`greptime_mito_scan_memory_usage_bytes` 的告警。该指标不代表进程总内存。
-配置详情见[扫描内存计量](/user-guide/deployments-administration/configuration.md#扫描内存计量)。
-
 ### 从 v1.2 升级到 v1.3
 
 #### VRL 默认禁用主机访问
@@ -89,6 +80,26 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
   并重启相关服务。
 - 在正式升级前，使用目标版本和计划采用的服务端配置，通过
   `POST /v1/pipelines/_dryrun` 验证受影响的 pipeline。
+
+#### 扫描内存计量变更
+
+升级到 v1.3 后，即使配置没有修改，查询也可能因达到内存限制而失败。
+升级前请检查以下设置：
+
+| 现有配置 | 变化及建议操作 |
+| --- | --- |
+| 未配置 `scan_memory_limit` | 默认值从 `unlimited` 改为可用内存的 `25%`，并遵循容器内存限制。如需继续禁用扫描内存限制，请显式设为 `"unlimited"`。 |
+| 已配置非零 `scan_memory_limit` | 新增的 `scan_memory_mode` 默认为 `basic`。如需继续统计扫描产生的批次，请使用 `extended`，并测试现有限制是否足够。 |
+| `scan_memory_on_exhausted = "wait"` 或 `"wait(<duration>)"` | 查询会立即失败，不再等待内存。请改为 `"fail"`，并检查应用的错误处理逻辑。 |
+
+`extended` 不会完全恢复旧行为：相同的限制可能导致以前能够成功的查询失败。
+同时检查 `query.memory_pool_size`，因为查询现在可能更容易达到这一限制。
+将 `scan_memory_limit` 设为 `0` 或 `"unlimited"` 仍然只会禁用扫描内存限制，
+不会禁用查询内存限制或文件数量检查。
+
+正式升级前，请按预期并发量测试典型查询，并检查使用
+`greptime_mito_scan_memory_usage_bytes` 的告警。该指标不代表进程总内存。
+配置详情见[扫描内存计量](/user-guide/deployments-administration/configuration.md#扫描内存计量)。
 
 ### 从 v1.0 或 v1.1 升级到 v1.2
 
@@ -431,6 +442,7 @@ SELECT * FROM table;
 - [ ] 如果升级到 v1.2，搜索 PromQL 资产中的 `holt_winters(`、`fill(`、`fill_left(` 和 `fill_right(`
 - [ ] 如果升级到 v1.2，识别引用本地文件路径的 `COPY` 工作流和外部表
 - [ ] 如果升级到 v1.2，检查会把值缩窄到 `int8`/`int16`/`int32`/`uint8`/`uint16`/`uint32` 的 pipeline，以及会把负值写入无符号类型的 pipeline
+- [ ] 如果升级到 v1.3，检查 pipeline 是否使用了[受限的 VRL 函数或参数](/reference/pipeline/pipeline-config.md#vrl-host-access)
 - [ ] 识别使用有序集聚合函数的查询（如果从 v0.16 或更早版本升级）
 - [ ] 识别使用 `greptime_identity` 处理 JSON 数据的 pipeline
 - [ ] 检查是否使用了已废弃的 Jaeger HTTP header（如果从 v0.17 或更早版本升级）
@@ -443,6 +455,7 @@ SELECT * FROM table;
 - [ ] 更新配置文件（移除已废弃的缓存设置）
 - [ ] 如果升级到 v1.0，按需更新 metric engine 配置（`sparse_primary_key_encoding`）
 - [ ] 如果升级到 v1.2，移除已被忽略的 `sparse_primary_key_encoding` 和 `experimental_sparse_primary_key_encoding` 覆盖项
+- [ ] 如果升级到 v1.3，按照[扫描内存计量变更](#扫描内存计量变更)检查 `scan_memory_limit`、`scan_memory_mode` 和 `scan_memory_on_exhausted`
 - [ ] 更新 pipeline 配置（移除 `flatten_json_object`，如需要添加 `max_nested_levels`）
 - [ ] 如果升级到 v1.2 且为单机部署，在默认沙箱路径不适用时设置 `storage.copy_root`
 

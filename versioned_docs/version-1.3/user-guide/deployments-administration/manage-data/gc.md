@@ -1,0 +1,90 @@
+---
+keywords: [GC, Garbage Collection, Mito, Repartition, GreptimeDB]
+description: GC keeps SST/index files until all references are released, protecting long queries and repartition workflows.
+---
+# Garbage Collection (GC)
+
+GreptimeDB GC delays physical deletion of SST/index files until all references (running queries, [repartition](./repartition.md) cross-region file refs) are released. The configuration contains two parts:
+
+- Metasrv Configuration
+- Datanode Configuration
+
+## How it works
+
+- **Roles**: Meta decides when/where to clean; datanodes perform the actual delete while keeping in-use files safe.
+- **Safety windows**: `lingering_time` holds known-removed files a bit longer; `unknown_file_lingering_time` is a rare-case guard that only applies during full listing GC.
+- **Listing modes**: Fast mode removes files the system already marked; full listing walks storage to catch stragglers/orphans.
+
+![GC workflow](/gc-flow.svg)
+
+## Metasrv Configuration
+
+On the Metasrv side, GC schedules cleanup tasks for regions and coordinates when to run GC.
+
+```toml
+[gc]
+enable = true              # Enable meta GC scheduler. default to be false; must match datanode.
+gc_cooldown_period = "5m"   # Minimum gap before the same region is GCed again.
+
+[gc.experimental_soft_drop]
+enable = false             # Enable soft-drop tables (GreptimeDB Enterprise only). Requires gc.enable = true.
+retention = "7d"            # How long soft-dropped tables are retained before purge.
+```
+
+### Options
+
+| Configuration Option | Description |
+| --- | --- |
+| `enable` | Enable the meta GC scheduler. Must match datanode GC enablement. |
+| `gc_cooldown_period` | Minimum interval before the same region is scheduled for GC again; keep datanode `lingering_time` longer than this. |
+| `experimental_soft_drop.enable` | Enable [soft-drop tables](/enterprise/soft-drop.md) (GreptimeDB Enterprise only). Requires `gc.enable = true`. |
+| `experimental_soft_drop.retention` | How long soft-dropped tables are retained before automatic purge. |
+
+## Datanode Configuration
+
+The Datanode side performs the actual deletion while protecting files still in use.
+
+```toml
+[[region_engine]]
+[region_engine.mito]
+[region_engine.mito.gc]
+enable = true                   # Turn on datanode GC worker; must match meta.
+lingering_time = "10m"           # Keep known-removed files this long for active queries.
+unknown_file_lingering_time = "1d" # Keep files without expel time; rare safeguard.
+```
+
+### Options
+
+| Configuration Option | Description |
+| --- | --- |
+| `enable` | Enable the datanode GC worker. Must match meta GC `enable`. |
+| `lingering_time` | How long to keep manifest-removed files before deletion to protect long follower-region queries/cross-region references; set longer than `gc_cooldown_period`. Use `"0s"` to delete immediately. |
+| `unknown_file_lingering_time` | Safety hold for files without expel time (not tracked in manifest). Applies only during full listing GC. Defaults to `1d`. |
+
+For an active or open region, an unknown file is deleted only once its object-store
+last-modified timestamp is older than `now - unknown_file_lingering_time`. If the object
+store does not report a last-modified timestamp, the file is kept. Unknown files belonging
+to dropped regions are deleted immediately, without waiting for this window.
+
+:::warning
+Keep `unknown_file_lingering_time` generous. A long-running flush or compaction writes
+files before they appear in the manifest, so a short window can delete data that is still
+being written.
+:::
+
+:::warning
+`gc.enable` must be set consistently on metasrv and all datanodes. Mismatched flags cause GC to be skipped or stuck.
+:::
+
+## When to enable
+
+- GC only applies when tables use object storage; tables on local filesystems ignore GC settings.
+- Turn on GC if need to repartition so cross-region references can drain safely before deletion.
+- For clusters with long-running follower-region queries, turn on GC and set `lingering_time` longer than `gc_cooldown_period` so files created or referenced during a GC cycle stay alive (in-use or lingering) until at least the next cycle.
+- Leave GC off if you are not repartitioning and do not need delayed deletion.
+
+## Operational notes
+
+- GC is designed for object storage backends (with list/delete support); ensure your store credentials and permissions allow listing and deletion.
+- Deleted files live in object storage until GC removes them; ensure storage listing/deletion permissions are in place.
+- After enabling, restart metasrv and datanodes to apply config changes.

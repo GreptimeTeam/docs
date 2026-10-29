@@ -15,6 +15,21 @@ mean you need to install each one; follow the supported upgrade paths below.
 
 For complete version history and feature additions, see the [Release Notes](/release-notes/).
 
+## Upgrade Paths to v1.3
+
+### From v1.2 to v1.3
+
+If you are running v1.2, you can upgrade directly to v1.3.
+Review [Upgrading from v1.2 to v1.3](#upgrading-from-v12-to-v13) and complete
+the related checks in the [Upgrade Checklist](#upgrade-checklist) before the
+rollout.
+
+### From v1.1 or Earlier
+
+If you are upgrading to v1.3 from v1.1 or an earlier release, first review the
+[upgrade paths to v1.2](#upgrade-paths-to-v12) and then apply the
+[v1.3 breaking changes](#upgrading-from-v12-to-v13).
+
 ## Upgrade Paths to v1.2
 
 ### From v1.0 or v1.1 to v1.2
@@ -52,31 +67,6 @@ If you are running a version earlier than v0.16, you must first upgrade to v0.16
 
 ## Breaking Changes by Version
 
-### Unreleased Nightly changes
-
-#### Scan memory accounting changes
-
-After upgrading to Nightly, queries can reach a memory limit and fail even if
-your configuration is unchanged. Review these settings before upgrading:
-
-| Existing configuration | Change and recommended action |
-| --- | --- |
-| `scan_memory_limit` omitted | The default changes from `unlimited` to `25%` of available memory, respecting container limits. Set it explicitly to `"unlimited"` to keep scan-memory enforcement disabled. |
-| Explicit nonzero `scan_memory_limit` | The new `scan_memory_mode` defaults to `basic`. Use `extended` if you need to continue counting batches produced by scans, and test whether your limit is sufficient. |
-| `scan_memory_on_exhausted = "wait"` or `"wait(<duration>)"` | Queries now fail immediately instead of waiting for memory. Replace these values with `"fail"` and review application error handling. |
-
-`extended` does not exactly restore the previous behavior: the same limit can
-reject queries that previously succeeded. Review `query.memory_pool_size` as
-well, because queries may now reach that limit sooner.
-Setting `scan_memory_limit` to `0` or `"unlimited"` still disables only the scan
-limit; it does not disable the query-memory limit or file-count checks.
-
-Before rolling out the upgrade, test representative queries at your expected
-concurrency and review alerts using `greptime_mito_scan_memory_usage_bytes`.
-This metric does not represent total process memory. See
-[scan memory accounting](/user-guide/deployments-administration/configuration.md#scan-memory-accounting)
-for configuration details.
-
 ### Upgrading from v1.2 to v1.3
 
 #### VRL Host Access Is Now Disabled by Default
@@ -97,6 +87,29 @@ these pipelines fail as a result.
   restart the affected servers.
 - Use `POST /v1/pipelines/_dryrun` to validate affected pipelines with the target
   version and intended server configuration before rolling out the upgrade.
+
+#### Scan memory accounting changes
+
+After upgrading to v1.3, queries can reach a memory limit and fail even if
+your configuration is unchanged. Review these settings before upgrading:
+
+| Existing configuration | Change and recommended action |
+| --- | --- |
+| `scan_memory_limit` omitted | The default changes from `unlimited` to `25%` of available memory, respecting container limits. Set it explicitly to `"unlimited"` to keep scan-memory enforcement disabled. |
+| Explicit nonzero `scan_memory_limit` | The new `scan_memory_mode` defaults to `basic`. Use `extended` if you need to continue counting batches produced by scans, and test whether your limit is sufficient. |
+| `scan_memory_on_exhausted = "wait"` or `"wait(<duration>)"` | Queries now fail immediately instead of waiting for memory. Replace these values with `"fail"` and review application error handling. |
+
+`extended` does not exactly restore the previous behavior: the same limit can
+reject queries that previously succeeded. Review `query.memory_pool_size` as
+well, because queries may now reach that limit sooner.
+Setting `scan_memory_limit` to `0` or `"unlimited"` still disables only the scan
+limit; it does not disable the query-memory limit or file-count checks.
+
+Before rolling out the upgrade, test representative queries at your expected
+concurrency and review alerts using `greptime_mito_scan_memory_usage_bytes`.
+This metric does not represent total process memory. See
+[scan memory accounting](/user-guide/deployments-administration/configuration.md#scan-memory-accounting)
+for configuration details.
 
 ### Upgrading from v1.0 or v1.1 to v1.2
 
@@ -455,6 +468,7 @@ Before upgrading to your target version, complete the following checklist:
 - [ ] If upgrading to v1.2, search PromQL assets for `holt_winters(`, `fill(`, `fill_left(`, and `fill_right(`
 - [ ] If upgrading to v1.2, identify `COPY` workflows and external tables that reference local file paths
 - [ ] If upgrading to v1.2, review pipelines that narrow values into `int8`/`int16`/`int32`/`uint8`/`uint16`/`uint32`, or that write negative values into unsigned targets
+- [ ] If upgrading to v1.3, check pipelines for [restricted VRL functions and arguments](/reference/pipeline/pipeline-config.md#vrl-host-access)
 - [ ] Identify queries using ordered-set aggregate functions (if upgrading from v0.16 or earlier)
 - [ ] Identify pipelines using `greptime_identity` with JSON data
 - [ ] Check for usage of deprecated Jaeger HTTP header (if upgrading from v0.17 or earlier)
@@ -467,6 +481,7 @@ Before upgrading to your target version, complete the following checklist:
 - [ ] Update configuration files (remove deprecated cache settings)
 - [ ] If upgrading to v1.0, update metric engine configuration if needed (`sparse_primary_key_encoding`)
 - [ ] If upgrading to v1.2, remove the now-ignored `sparse_primary_key_encoding` and `experimental_sparse_primary_key_encoding` overrides
+- [ ] If upgrading to v1.3, review `scan_memory_limit`, `scan_memory_mode`, and `scan_memory_on_exhausted` as described in [Scan memory accounting changes](#scan-memory-accounting-changes)
 - [ ] Update pipeline configurations (remove `flatten_json_object`, add `max_nested_levels` if needed)
 - [ ] If upgrading to v1.2 standalone deployments, set `storage.copy_root` if the default sandbox path does not fit your workflow
 

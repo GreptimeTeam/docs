@@ -1,0 +1,238 @@
+---
+keywords: [Trace, OpenTelemetry, Jaeger, Grafana]
+description: Covers basics of trace data ingestion and query in GreptimeDB.
+---
+
+# Ingestion and Query
+
+:::warning
+
+This section currently in the experimental stage and may be adjusted in future versions.
+
+:::
+
+In this section, we will get started with trace data in GreptimeDB from
+ingestion and query.
+
+GreptimeDB doesn't invent new protocols for trace, it follows existing standard
+and widely adopted protocols.
+
+## Ingestion
+
+GreptimeDB uses OpenTelemetry OTLP/HTTP protocol as the primary trace data
+ingestion protocol. OpenTelemetry Trace is the most adopted subprotocol in
+OpenTelemetry family.
+
+### OpenTelemetry SDK
+
+If OpenTelemetry SDK/API is used in your application, you can configure an
+OTLP/HTTP exporter to write trace data directly to GreptimeDB.
+
+We covered this part in our [OpenTelemetry protocol
+docs](/user-guide/ingest-data/for-observability/opentelemetry.md). You can
+follow the guide for endpoint and parameters.
+
+### OpenTelemetry Collector
+
+[OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) is a
+vendor-neutral service for collecting and processing OpenTelemetry data. You can
+also configure it to send trace data to GreptimeDB using OTLP/HTTP.
+
+#### Start OpenTelemetry Collector
+
+You can use the following command to quickly start an OpenTelemetry Collector
+instance, which will listen on ports `4317` (gRPC) and `4318` (HTTP):
+
+```shell
+docker run --rm \
+  --network host \
+  -p 4317:4317 \
+  -p 4318:4318 \
+  -v $(pwd)/config.yaml:/etc/otelcol-contrib/config.yaml \
+  otel/opentelemetry-collector-contrib:0.159.0
+```
+
+The content of the `config.yaml` file is as follows:
+
+```yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+exporters:
+  otlp_http:
+    endpoint: "http://greptimedb:4000/v1/otlp" # Replace greptimedb with your setup
+    headers:
+      x-greptime-pipeline-name: "greptime_trace_v1"
+      #authorization: "Basic <base64(username:password)>"
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlp_http]
+```
+
+#### Ingest with greptime_trace_v2
+
+The complete configuration above uses v1. To use v2, replace its `exporters`
+section with the following; keep the receivers and service configuration:
+
+```yaml
+exporters:
+  otlp_http:
+    endpoint: "http://greptimedb:4000/v1/otlp"
+    headers:
+      x-greptime-pipeline-name: "greptime_trace_v2"
+      x-greptime-trace-table-name: "opentelemetry_traces_v2"
+      #authorization: "Basic <base64(username:password)>"
+    tls:
+      insecure: true
+```
+
+Use a new table to avoid sending v2 data to an existing v1 table. Sending traces
+as described below automatically creates `opentelemetry_traces_v2` with JSON2
+attributes. Use the same headers when writing directly from an SDK.
+
+#### Write Trace Data to OpenTelemetry Collector
+
+You can configure the corresponding exporter to write traces data to the
+OpenTelemetry Collector. For example, you can use the environment variable
+`OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` to configure the endpoint of the exporter:
+
+```shell
+export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="http://localhost:4318/v1/traces"
+```
+
+For convenience, you can use the tool
+[`telemetrygen`](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/cmd/telemetrygen)
+to quickly generate traces data and write it to the OpenTelemetry Collector. For
+more details, please refer to the [OpenTelemetry Collector official
+documentation](https://opentelemetry.io/docs/collector/quick-start/).
+
+You can use the following command to install `telemetrygen` (please ensure you
+have installed Go):
+
+```shell
+go install github.com/open-telemetry/opentelemetry-collector-contrib/cmd/telemetrygen@latest
+```
+
+Then you can use the following command to generate traces data and write it to
+the OpenTelemetry Collector:
+
+```shell
+telemetrygen traces --otlp-insecure --traces 3
+```
+
+The above command will generate 3 traces data and write it to the OpenTelemetry
+Collector via gRPC protocol, and eventually stored into GreptimeDB.
+
+### Authorization
+
+The GreptimeDB OTEL endpoint supports Basic authentication. For details, please refer to the [authentication](/user-guide/protocols/http.md#authentication) documentation.
+
+### GreptimeDB Pipeline
+
+The HTTP header `x-greptime-pipeline-name` is required for ingesting trace
+data. Here we reuse the Pipeline concept of GreptimeDB for data
+transformation. Use the built-in `greptime_trace_v1` pipeline for flattened
+attribute columns, or `greptime_trace_v2` for JSON2 attributes. See
+[Trace Data Modeling](./data-model.md) for model differences and table options.
+Use a separate table when switching models.
+No custom pipeline is allowed for the moment.
+
+### Append-only Mode
+
+By default, trace table created by OpenTelemetry API are in [append only
+mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
+
+## Query
+
+To query the trace data, GreptimeDB has two types of API provided. The Jaeger
+compatible API and GreptimeDB's original SQL based query interfaces, which is
+available in HTTP, MySQL and Postgres protocols.
+
+### Jaeger
+
+We build Jaeger compatibility layer into GreptimeDB so you can reuse your Jaeger
+frontend or any other integrations like Grafana's Jaeger data source.
+
+For detail of Jaeger's endpoint and parameters, check [our Jaeger protocol
+docs](/user-guide/query-data/jaeger.md).
+
+### SQL
+
+#### greptime_trace_v1
+
+All data in GreptimeDB is available for query using SQL, via MySQL and other
+transport protocol.
+
+By default, trace data is written into the table called
+`opentelemetry_traces`. The table name is customizable via header
+`x-greptime-trace-table-name`. You can run SQL queries against the table:
+
+```sql
+SELECT * FROM public.opentelemetry_traces \G
+```
+
+For the v1 configuration above, an example output is like
+
+```
+*************************** 1. row ***************************
+                         timestamp: 2025-05-07 10:03:29.657544
+                     timestamp_end: 2025-05-07 10:03:29.661714
+                     duration_nano: 4169970
+                    parent_span_id: eccc18b6fc210f31
+                          trace_id: fb60d19aa36fdcb7d14a71ca0b9b42ae
+                           span_id: 49806a2671f2ddcb
+                         span_kind: SPAN_KIND_SERVER
+                         span_name: POST todos/
+                  span_status_code: STATUS_CODE_UNSET
+               span_status_message:
+                       trace_state:
+                        scope_name: opentelemetry.instrumentation.django
+                     scope_version: 0.51b0
+                      service_name: myproject
+span_attributes.http.request.method: POST
+             span_attributes.url.full:
+                       span_events: []
+                        span_links: []
+...
+```
+
+#### greptime_trace_v2
+
+OpenTelemetry attribute keys often contain dots. Quote the entire key to read
+it as a literal JSON key rather than a nested path:
+
+```sql
+SELECT * FROM public.opentelemetry_traces_v2 LIMIT 10;
+
+SELECT
+    timestamp,
+    trace_id,
+    service_name,
+    span_attributes."http.request.method"::STRING AS method,
+    span_attributes."http.response.status_code"::BIGINT AS status,
+    resource_attributes."service.name"::STRING AS resource_service
+FROM public.opentelemetry_traces_v2
+WHERE span_attributes."http.response.status_code"::BIGINT >= 500
+ORDER BY timestamp DESC
+LIMIT 20;
+```
+
+For example, `span_attributes."http.request.method"` reads the key
+`http.request.method`, while `span_attributes.http.request.method` reads nested
+objects. The v1 form `"span_attributes.http.request.method"` names a flattened
+table column and does not apply to v2. See [JSON2 query syntax](/user-guide/logs/json2.md#dot-syntax)
+for more examples. Events and links continue to use the
+[JSON functions](/reference/sql/functions/json.md).
+
+We will cover more information about the table structure in [Data
+Model](./data-model.md) section.
