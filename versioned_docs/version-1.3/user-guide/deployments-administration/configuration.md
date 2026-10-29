@@ -370,7 +370,7 @@ parallelism = 0
 #### Experimental disk spilling and memory allocation
 
 These `[query]` options apply to standalone, datanode, and frontend.
-`memory_pool_size` accepts an absolute size such as `"2GiB"` or a percentage of available memory such as `"50%"`. It is unlimited by default; `0` or `"unlimited"` disables the limit.
+`memory_pool_size` accepts an absolute size such as `"2GiB"` or a percentage such as `"50%"`. Percentages use the cgroup memory limit, or total host memory when no cgroup limit is set. It is unlimited by default; set `memory_pool_size = "0"` or `memory_pool_size = "unlimited"` to disable the limit.
 
 | Option | Default | Description |
 | --- | --- | --- |

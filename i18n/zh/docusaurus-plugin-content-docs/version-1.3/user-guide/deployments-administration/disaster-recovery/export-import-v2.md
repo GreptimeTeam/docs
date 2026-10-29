@@ -187,7 +187,7 @@ greptime cli data import-v2 \
 
 ## Metric 表导出与 packed 布局
 
-Metric 表导出通过共享物理表扫描读取逻辑表数据，仅支持 Parquet。packed 布局将各逻辑表的独立 Parquet 数据流写入共享对象，快照使用 manifest v2；仅导出 schema 时仍使用 manifest v1。
+普通 Metric 表导出按逻辑表分别导出，支持 Parquet、CSV 和 JSON。启用 `--experimental-metric-export` 后，导出通过共享物理表扫描读取逻辑表数据，仅支持 Parquet。packed 布局将各逻辑表的独立 Parquet 数据流写入共享对象，快照使用 manifest v2；仅导出 schema 时仍使用 manifest v1。
 
 在源服务的 frontend 或 standalone 配置文件顶层启用实验性导出，并重启服务：
 

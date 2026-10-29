@@ -368,7 +368,7 @@ parallelism = 0
 #### 实验性磁盘溢写和内存分配
 
 以下 `[query]` 配置适用于 standalone、datanode 和 frontend。
-`memory_pool_size` 支持绝对大小（如 `"2GiB"`）或可用内存百分比（如 `"50%"`）；默认不限制，`0` 或 `"unlimited"` 禁用该限制。
+`memory_pool_size` 支持绝对大小（如 `"2GiB"`）或百分比（如 `"50%"`）。百分比基于 cgroup 内存限额计算；未设置 cgroup 限额时，使用主机总内存。默认不限制；设置 `memory_pool_size = "0"` 或 `memory_pool_size = "unlimited"` 可禁用限制。
 
 | 配置项 | 默认值 | 描述 |
 | --- | --- | --- |

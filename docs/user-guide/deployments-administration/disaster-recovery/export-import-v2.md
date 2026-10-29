@@ -187,7 +187,7 @@ greptime cli data import-v2 \
 
 ## Metric table export and packed layout
 
-Metric table export reads logical-table data through shared physical-table scans and supports Parquet only. The packed layout writes independent logical-table Parquet streams into shared objects and uses manifest v2. Schema-only snapshots retain manifest v1.
+Ordinary Metric table export exports each logical table separately and supports Parquet, CSV, and JSON. Enabling `--pack-metric-data` reads logical-table data through shared physical-table scans and requires Parquet. The packed layout writes independent logical-table Parquet streams into shared objects and uses manifest v2. Schema-only snapshots retain manifest v1.
 
 `--pack-metric-data` enables shared scans and the packed layout. The source server must support packed export.
 
