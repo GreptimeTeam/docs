@@ -11,6 +11,26 @@ GreptimeDB v1.3.0 adds native histogram ingestion, an opt-in trace schema with J
 
 ### 👍 Highlights
 
+#### Ingest native histograms without experimental switches
+
+Prometheus Remote Write v2 native histograms and cumulative OTLP/HTTP exponential histograms are accepted by default. PromQL can query native histograms, including quantiles and fractions. Remote Write v1 native histograms, native histogram Remote Read, and OTel Arrow exponential histograms remain unsupported. ([#9301](https://github.com/GreptimeTeam/greptimedb/pull/9301), [#8758](https://github.com/GreptimeTeam/greptimedb/pull/8758), [#8874](https://github.com/GreptimeTeam/greptimedb/pull/8874))
+
+#### Trace V2: JSON2 attributes with Jaeger and Semantic Graph support
+
+The opt-in `greptime_trace_v2` pipeline stores span, scope, and resource attributes in three JSON2 columns instead of adding a SQL column for every attribute. Its 19-column schema also preserves span events and links as JSON arrays. Jaeger queries and Semantic Graph derivation support the new model.
+
+Select `greptime_trace_v2` with the `x-greptime-pipeline-name` header on OTLP trace ingestion requests and use a separate destination table from Trace V1. After ingesting into a table named `traces_v2`, query typed attributes directly:
+
+```sql
+SELECT
+    trace_id,
+    span_attributes."http.status_code"::BIGINT AS http_status,
+    resource_attributes."service.name"::STRING AS service_name
+FROM traces_v2;
+```
+
+Existing Trace V1 tables are not automatically migrated. Events and links use JSON in this release; `ARRAY(JSON2)` is deferred. See [#9192](https://github.com/GreptimeTeam/greptimedb/pull/9192), [#9232](https://github.com/GreptimeTeam/greptimedb/pull/9232), [#9257](https://github.com/GreptimeTeam/greptimedb/pull/9257), and [#9278](https://github.com/GreptimeTeam/greptimedb/pull/9278).
+
 #### Retry distributed writes without replaying successful entries
 
 Frontends retry transient distributed write failures up to three times by default, refreshing routes when regions move or partitions change. Per-datanode batches remain intact, and partial-failure responses let the frontend retry failed entries without replaying acknowledged successes. Whole-RPC failures can still have an uncertain outcome; retries do not provide exactly-once ingestion. ([#9542](https://github.com/GreptimeTeam/greptimedb/pull/9542), [#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543), [#9728](https://github.com/GreptimeTeam/greptimedb/pull/9728), [#9720](https://github.com/GreptimeTeam/greptimedb/pull/9720))
@@ -27,25 +47,33 @@ backoff_multiplier = 2.0
 
 Set `max_retries = 0` to disable retries. These settings apply to distributed frontends, not standalone deployments.
 
-#### Ingest native histograms without experimental switches
+#### Improved compaction algorithms and TWCS tuning
 
-Prometheus Remote Write v2 native histograms and cumulative OTLP/HTTP exponential histograms are accepted by default. PromQL can query native histograms, including quantiles and fractions. Remote Write v1 native histograms, native histogram Remote Read, and OTel Arrow exponential histograms remain unsupported. ([#9301](https://github.com/GreptimeTeam/greptimedb/pull/9301), [#8758](https://github.com/GreptimeTeam/greptimedb/pull/8758), [#8874](https://github.com/GreptimeTeam/greptimedb/pull/8874))
+The multiway merge used by compaction now uses a winner tree for its active input streams, reducing comparison work when merging overlapping sorted data. TWCS also applies different selection policies to active and inactive time windows: active windows favor separate merges of newly flushed and previously compacted files to avoid repeated rewrites, while inactive windows have additional consolidation paths. Serial automatic compaction selects one output at a time and replans against the updated SST state before selecting further work.
 
-#### Keep trace attributes in JSON2 columns
+Three new tuning options accompany the renamed active-window file-count trigger. The following example sets the table-level options to their defaults:
 
-Select the opt-in `greptime_trace_v2` pipeline with the `x-greptime-pipeline-name` OTLP request header. It stores span, scope, and resource attributes in three JSON2 columns within a fixed 19-column schema; events and links remain JSON arrays. Jaeger queries can read this layout, and limited trace searches now return traces with the most recent matching spans. Use a separate destination table when moving from Trace V1; existing tables are not migrated automatically. ([#9192](https://github.com/GreptimeTeam/greptimedb/pull/9192), [#9232](https://github.com/GreptimeTeam/greptimedb/pull/9232), [#9257](https://github.com/GreptimeTeam/greptimedb/pull/9257), [#9595](https://github.com/GreptimeTeam/greptimedb/pull/9595))
+```sql
+ALTER TABLE my_table SET
+    'compaction.twcs.active_window.trigger_file_num' = '4',
+    'compaction.twcs.active_window.l1_merge_trigger' = '16',
+    'compaction.twcs.inactive_window.trigger_file_num' = '2',
+    'compaction.twcs.inactive_window.l1_merge_trigger' = '8';
+```
 
-#### Preserve rows and ordering when filtering through casts
+The existing `compaction.twcs.trigger_file_num` option remains accepted as an alias for `compaction.twcs.active_window.trigger_file_num`; inactive windows now use their own thresholds. See [#8989](https://github.com/GreptimeTeam/greptimedb/pull/8989), [#9064](https://github.com/GreptimeTeam/greptimedb/pull/9064), and [#9011](https://github.com/GreptimeTeam/greptimedb/pull/9011).
 
-Queries such as `WHERE CAST(k AS BIGINT) = 1 ORDER BY k` no longer lose matching fractional values during partition pruning or drop the requested sort. For example, both `1.0` and `1.5` remain eligible and are returned in the requested order. ([#9600](https://github.com/GreptimeTeam/greptimedb/pull/9600), [#10026](https://github.com/GreptimeTeam/greptimedb/pull/10026))
+#### Query and write correctness fixes
 
-#### Prevent false PromQL alerts on NaN
-
-PromQL comparisons now follow IEEE 754 semantics: a no-traffic ratio such as `0 / 0` no longer satisfies `errors / requests > 0.05`. `min` and `max` ignore NaN unless every sample is NaN, and `topk` and `bottomk` rank NaN last. ([#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479))
+- SQL and PromQL fixes preserve matching rows and requested ordering, retain `IGNORE NULLS` semantics, and prevent NaN ratios from triggering false alerts. They also correct folded-histogram operations and logical metric-table ordering. ([#9600](https://github.com/GreptimeTeam/greptimedb/pull/9600), [#10026](https://github.com/GreptimeTeam/greptimedb/pull/10026), [#9601](https://github.com/GreptimeTeam/greptimedb/pull/9601), [#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479), [#9509](https://github.com/GreptimeTeam/greptimedb/pull/9509), [#9522](https://github.com/GreptimeTeam/greptimedb/pull/9522))
+- Fulltext bloom indexes no longer skip matching rows containing underscores or mixed Han and ASCII text. Eligible case-sensitive `LIKE` patterns can also use bloom pruning; see Upgrade notes for rebuilding existing indexes. ([#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470))
+- Storage fixes preserve newer writes during bulk merges, flush skip-WAL writes on graceful region close, and keep repartition routing consistent. Flush and compaction also retain SSTs after ambiguous manifest-save failures instead of deleting files that may already be referenced. ([#9517](https://github.com/GreptimeTeam/greptimedb/pull/9517), [#9440](https://github.com/GreptimeTeam/greptimedb/pull/9440), [#9458](https://github.com/GreptimeTeam/greptimedb/pull/9458), [#9898](https://github.com/GreptimeTeam/greptimedb/pull/9898))
 
 #### Dashboard
 
-The bundled Dashboard v0.14.2 adds **Signals Explore** for exploring metrics, logs, and traces. Timezone settings apply consistently to display and SQL requests, including the browser's IANA timezone when **Browser** is selected. This version also fixes log scrolling, loading indicators, and trace-ID queries. ([Signals Explore](https://github.com/GreptimeTeam/dashboard/pull/651), [timezone settings](https://github.com/GreptimeTeam/dashboard/pull/657), [v0.14.2](https://github.com/GreptimeTeam/dashboard/releases/tag/v0.14.2))
+The bundled Dashboard v0.14.2 adds **Signals Explore** for exploring metrics, logs, and traces with label filters and links between logs and traces. Native and gauge histograms are not charted yet. Timezone settings apply consistently to display and SQL requests, including the browser's IANA timezone when **Browser** is selected. This version also fixes log scrolling, loading indicators, and trace-ID queries. ([Signals Explore](https://github.com/GreptimeTeam/dashboard/pull/651), [timezone settings](https://github.com/GreptimeTeam/dashboard/pull/657), [v0.14.2](https://github.com/GreptimeTeam/dashboard/releases/tag/v0.14.2))
+
+JSON result columns also retain the per-column action to show or hide null fields introduced during beta.1 ([dashboard#653](https://github.com/GreptimeTeam/dashboard/pull/653)).
 
 ### Upgrade notes
 
