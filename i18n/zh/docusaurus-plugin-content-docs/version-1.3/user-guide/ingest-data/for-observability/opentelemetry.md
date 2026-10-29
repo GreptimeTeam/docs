@@ -23,7 +23,7 @@ OpenTelemetry Protocol (OTLP) 定义了观测数据在观测源和中间进程�
 
 GreptimeDB 通过原生支持 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) 协议，可以作为后端存储服务来接收 OpenTelemetry 指标数据。
 
-指标时间戳按目标表的时间索引精度存储。纳秒精度物理表的建表示例见 [Metric 表的时间戳精度](./prometheus.md#metric-表的时间戳精度)。
+指标时间戳按目标表的时间索引精度存储。保留纳秒精度时，先按 [Metric 表的时间戳精度](./prometheus.md#metric-表的时间戳精度)中的示例创建 `metrics_ns`，再通过请求头 `x-greptime-hints: physical_table=metrics_ns` 指定该物理表。OTLP 不读取 `physical_table` URL 参数。
 
 ### OTLP/HTTP API
 
@@ -44,7 +44,7 @@ GreptimeDB 通过原生支持 [OTLP/HTTP](https://opentelemetry.io/docs/specs/ot
 
 ### 示例代码
 
-下面是一些编程语言设置请求的示例代码：
+以下示例将指标写入预先创建的 `metrics_ns` 物理表。
 
 <Tabs>
 
@@ -57,6 +57,7 @@ const exporter = new OTLPMetricExporter({
   headers: {
     Authorization: `Basic ${auth}`,
     'X-Greptime-DB-Name': db,
+    'x-greptime-hints': 'physical_table=metrics_ns',
   },
   timeoutMillis: 5000,
 })
@@ -74,6 +75,7 @@ exporter, err := otlpmetrichttp.New(
     otlpmetrichttp.WithURLPath("/v1/otlp/v1/metrics"),
     otlpmetrichttp.WithHeaders(map[string]string{
         "X-Greptime-DB-Name": *dbName,
+        "x-greptime-hints": "physical_table=metrics_ns",
         "Authorization":      "Basic " + auth,
     }),
     otlpmetrichttp.WithTimeout(time.Second*5),
@@ -91,6 +93,7 @@ String b64Auth = new String(Base64.getEncoder().encode(auth.getBytes()));
 OtlpHttpMetricExporter exporter = OtlpHttpMetricExporter.builder()
                 .setEndpoint(endpoint)
                 .addHeader("X-Greptime-DB-Name", db)
+                .addHeader("x-greptime-hints", "physical_table=metrics_ns")
                 .addHeader("Authorization", String.format("Basic %s", b64Auth))
                 .setTimeout(Duration.ofSeconds(5))
                 .build();
@@ -106,7 +109,11 @@ b64_auth = base64.b64encode(auth.encode()).decode("ascii")
 endpoint = f"https://{host}/v1/otlp/v1/metrics"
 exporter = OTLPMetricExporter(
     endpoint=endpoint,
-    headers={"Authorization": f"Basic {b64_auth}", "X-Greptime-DB-Name": db},
+    headers={
+        "Authorization": f"Basic {b64_auth}",
+        "X-Greptime-DB-Name": db,
+        "x-greptime-hints": "physical_table=metrics_ns",
+    },
     timeout=5)
 ```
 

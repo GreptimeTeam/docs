@@ -22,7 +22,7 @@ This unified endpoint is useful when sending multiple signal types (metrics, log
 
 GreptimeDB is an observability backend to consume OpenTelemetry Metrics natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
 
-Metric timestamps are stored at the target table’s time-index precision. See [Metric table timestamp precision](./prometheus.md#metric-table-timestamp-precision) for a nanosecond-precision physical-table example.
+Metric timestamps are stored at the target table’s time-index precision. To retain nanosecond precision, create `metrics_ns` as shown in [Metric table timestamp precision](./prometheus.md#metric-table-timestamp-precision), then select it with the `x-greptime-hints: physical_table=metrics_ns` request header. OTLP does not read the `physical_table` URL parameter.
 
 ### OTLP/HTTP API
 
@@ -43,7 +43,7 @@ For more information about the OpenTelemetry SDK, please refer to the official d
 
 ### Example Code
 
-Here are some example codes about how to setup the request in different languages:
+These examples write metrics to the pre-created `metrics_ns` physical table.
 
 <Tabs>
 
@@ -56,6 +56,7 @@ const exporter = new OTLPMetricExporter({
   headers: {
     Authorization: `Basic ${auth}`,
     'X-Greptime-DB-Name': db,
+    'x-greptime-hints': 'physical_table=metrics_ns',
   },
   timeoutMillis: 5000,
 })
@@ -73,6 +74,7 @@ exporter, err := otlpmetrichttp.New(
     otlpmetrichttp.WithURLPath("/v1/otlp/v1/metrics"),
     otlpmetrichttp.WithHeaders(map[string]string{
         "X-Greptime-DB-Name": *dbName,
+        "x-greptime-hints": "physical_table=metrics_ns",
         "Authorization":      "Basic " + auth,
     }),
     otlpmetrichttp.WithTimeout(time.Second*5),
@@ -90,6 +92,7 @@ String b64Auth = new String(Base64.getEncoder().encode(auth.getBytes()));
 OtlpHttpMetricExporter exporter = OtlpHttpMetricExporter.builder()
                 .setEndpoint(endpoint)
                 .addHeader("X-Greptime-DB-Name", db)
+                .addHeader("x-greptime-hints", "physical_table=metrics_ns")
                 .addHeader("Authorization", String.format("Basic %s", b64Auth))
                 .setTimeout(Duration.ofSeconds(5))
                 .build();
@@ -105,7 +108,11 @@ b64_auth = base64.b64encode(auth.encode()).decode("ascii")
 endpoint = f"https://{host}/v1/otlp/v1/metrics"
 exporter = OTLPMetricExporter(
     endpoint=endpoint,
-    headers={"Authorization": f"Basic {b64_auth}", "X-Greptime-DB-Name": db},
+    headers={
+        "Authorization": f"Basic {b64_auth}",
+        "X-Greptime-DB-Name": db,
+        "x-greptime-hints": "physical_table=metrics_ns",
+    },
     timeout=5)
 ```
 
