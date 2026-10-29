@@ -5,7 +5,7 @@ description: Guide on using Prometheus Query Language (PromQL) in GreptimeDB, in
 
 # Prometheus Query Language
 
-GreptimeDB can be used as a drop-in replacement for Prometheus in Grafana, because GreptimeDB supports PromQL (Prometheus Query Language). GreptimeDB has reimplemented PromQL natively in Rust and exposes the ability to several interfaces, including the HTTP API of Prometheus, the HTTP API of GreptimeDB, and the SQL interface.
+GreptimeDB implements PromQL in Rust and exposes it through the Prometheus HTTP API, the GreptimeDB HTTP API, and SQL. Grafana can connect through its Prometheus data source. See [Limitations](#limitations) for supported features and known differences.
 
 ## Prometheus' HTTP API
 
@@ -20,10 +20,8 @@ context `/v1/prometheus/`:
 - Label names `/api/v1/labels`
 - Label values `/api/v1/label/<label_name>/values`
 
-It shares same input and output format with original Prometheus HTTP API. You
-can also use GreptimeDB as an in-place replacement of Prometheus. For example in
-Grafana Prometheus data source, set `http://localhost:4000/v1/prometheus/` as
-context root of Prometheus URL.
+These endpoints use Prometheus HTTP API request and response formats. In Grafana,
+set the Prometheus data source URL to `http://localhost:4000/v1/prometheus/`.
 
 Consult [Prometheus
 documents](https://prometheus.io/docs/prometheus/latest/querying/api) for usage
@@ -136,13 +134,35 @@ Note that only `=` is supported for database matcher.
 
 ## Limitations
 
-Though GreptimeDB supports a rich set of data types, the PromQL implementation is still limited to the following types:
+PromQL queries support float samples and native histogram samples. Float metrics use a timestamp column, string labels, and `Double` values. Native histogram support and ingestion requirements are described in [Native histograms](/user-guide/ingest-data/for-observability/prometheus.md#native-histograms).
 
-- timestamp: `Timestamp`
-- tag: `String`
-- value: `Double`
+### v1.3.0 compatibility test results
 
-We have over 90% promql supported in GreptimeDB. Here attaches the compatibility list. You can also check our latest compliance report in this [tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/1042).
+The [v1.3.0 release measurements](https://github.com/GreptimeTeam/greptimedb/releases/tag/v1.3.0) use [promql-compat revision `1203cd8`](https://github.com/GreptimeTeam/promql-compat/tree/1203cd8d1abec9934830d913a88fa0a9d014a5d1) with Prometheus v3.15.0 as the reference. The target is GreptimeDB v1.3.0.
+
+| Test suite | Cases counted | Cases excluded | Including `__name__` | Ignoring only `__name__` |
+| --- | ---: | ---: | ---: | ---: |
+| Prometheus test corpus | 852 | 1391 | 53.52% (456/852) | 88.50% (754/852) |
+| Prometheus compliance queries | 539 | 0 | 54.17% (292/539) | 94.81% (511/539) |
+| Generated queries (seed 1) | 1999 | 1 | 63.83% (1276/1999) | 93.35% (1866/1999) |
+
+Each percentage is the fraction of counted **test cases** that pass, not the fraction of PromQL functions implemented. A case must pass all its checks. Corpus cases use upstream expected results and include `@` variants and range-query checks. The compliance suite runs each query at three instants and over two time ranges against an embedded Prometheus engine. Generated queries use the same engine and test dataset.
+
+Both pass-rate columns compare result types, timestamps, labels, and sample values. The “Ignoring only `__name__`” column tolerates differences in `__name__`, the metric-name label; it still checks other labels. A query can return the expected numbers while producing different series labels, which affects label-based matching and alert output.
+
+The comparator allows floating-point tolerance. Matching empty results and errors count as passes; error-message text, warning/info annotations, and matrix series order do not affect the rates. The [harness comparison rules](https://github.com/GreptimeTeam/promql-compat/blob/1203cd8d1abec9934830d913a88fa0a9d014a5d1/README.md#limitations) describe the numeric tolerances.
+
+Excluded cases are outside both denominators. The corpus exclusions cover native histograms, experimental features, start timestamps, and delayed metric-name removal. One generated query is excluded because reference results vary between runs. These rates do not measure native histogram compatibility or predict the pass rate of a particular dashboard or alert-rule set.
+
+### Known differences in v1.3.0
+
+| Query behavior | Difference from Prometheus |
+| --- | --- |
+| Metric-name labels | Some expressions retain or restore `__name__` when Prometheus removes it. For example, `sum(x > 0)` can return `{__name__="x"}` instead of `{}`. |
+| `first_over_time` | Not implemented. |
+| `absent_over_time` | Implemented, but some empty-window queries return no series instead of the expected value `1` and labels. |
+| `vector(time())` in nested expressions | Some compositions fail planning, such as `sum_over_time(vector(time())[100s:1s] @ 3000)`. |
+| Dynamic scalar parameters | Some uses of `scalar()` as an argument to `quantile_over_time` or `topk` fail planning. |
 
 ### Literal
 
@@ -157,45 +177,44 @@ Both instant and range selector are supported. Label matching on the metric name
 
 Time duration, offset, and `@` modifier (including `@ start()` and `@ end()`) are supported.
 
-When selecting non-existent columns, they will be treated as columns filled with empty string values (`""`). This behavior aligns with both Prometheus and VictoriaMetrics.
+Subqueries support an explicit step; an omitted step defaults to one minute, independently of the outer query step. Use `[range:step]` for another interval. Instant queries can return range vectors; range queries reject a range-vector root expression.
 
-For selectors referencing non-existent columns, the behavior aligns with Prometheus: no error is raised, and the selector is silently ignored. However, for `__name__` selectors referencing non-existent metrics (or equivalent forms), GreptimeDB will report an error.
+When selecting non-existent columns, they will be treated as columns filled with empty string values (`""`). This behavior aligns with both Prometheus and VictoriaMetrics.
 
 ### Timestamp precision
 
-The timestamp precision in PromQL is limited by its query syntax, only supporting calculations up to millisecond precision. However, GreptimeDB supports storing high-precision timestamps, such as microseconds and nanoseconds. When using PromQL for calculations, these high-precision timestamps are implicitly converted to millisecond precision.
+PromQL evaluation times and steps use millisecond precision. Sample selection preserves stored microsecond or nanosecond timestamps; `timestamp()` converts the selected sample timestamp to milliseconds, then returns floating-point seconds.
 
 ### Binary
 
 - Supported:
     | Operator |
     | :------- |
-    | add      |
-    | sub      |
-    | mul      |
-    | div      |
-    | mod      |
-    | eqlc     |
-    | neq      |
-    | gtr      |
-    | lss      |
-    | gte      |
-    | lte      |
-    | power    |
+    | `+` |
+    | `-` |
+    | `*` |
+    | `/` |
+    | `%` |
+    | `==` |
+    | `!=` |
+    | `>` |
+    | `<` |
+    | `>=` |
+    | `<=` |
+    | `^` |
     | atan2    |
     | and      |
     | or       |
     | unless   |
 
-- Unsupported:
-
-None
+Vector matching supports `on`, `ignoring`, `group_left`, and `group_right`. Arithmetic and comparison operations reject invalid many-to-many matches and duplicate result label sets.
 
 ### Aggregators
 
 - Supported:
     | Aggregator   | Example                                      |
     | :----------- | :------------------------------------------- |
+    | group        | `group by (foo)(metric)` |
     | sum          | `sum by (foo)(metric)`                       |
     | avg          | `avg by (foo)(metric)`                       |
     | min          | `min by (foo)(metric)`                       |
@@ -208,12 +227,9 @@ None
     | count        | `count (metric)`                             |
     | quantile     | `quantile(0.9, cpu_usage)`                   |
 
-- Unsupported:
-    | Aggregator | Progress |
-    | :--------- | :------- |
-    | grouping   | TBD      |
-
 ### Instant Functions
+
+The following functions are implemented; composition limits are listed under [Known differences in v1.3.0](#known-differences-in-v130). `histogram_count`, `histogram_sum`, `histogram_avg`, `histogram_stddev`, and `histogram_stdvar` operate on native histogram samples.
 
 - Supported:
     | Function           | Example                           |
@@ -241,6 +257,12 @@ None
     | timestamp          | `timestamp(metric)`               |
     | sort               | `sort(http_requests_total)`       |
     | sort_desc          | `sort_desc(http_requests_total)`  |
+    | histogram_fraction | `histogram_fraction(0, 1, request_duration)` |
+    | histogram_count | `histogram_count(request_duration)` |
+    | histogram_sum | `histogram_sum(request_duration)` |
+    | histogram_avg | `histogram_avg(request_duration)` |
+    | histogram_stddev | `histogram_stddev(request_duration)` |
+    | histogram_stdvar | `histogram_stdvar(request_duration)` |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
     | predict_linear     | `predict_linear(metric[5m], 120)` |
     | absent             | `absent(nonexistent{job="myjob"})`|
@@ -253,19 +275,22 @@ None
     | clamp_max          | `clamp_max(metric, 12)`           |
     | clamp_min          | `clamp_min(metric, 0)`            |
 
-
-- Unsupported:
-    | Function                   | Progress / Example |
-    | :------------------------- | :----------------- |
-    | *other multiple input fns* | TBD                |
-
 ### Range Functions
+
+See [Known differences in v1.3.0](#known-differences-in-v130) for `absent_over_time` behavior and the unimplemented `first_over_time`.
 
 - Supported:
     | Function           | Example                        |
     | :----------------- | :----------------------------- |
     | idelta             | `idelta(metric[5m])`           |
-    | \<aggr\>_over_time | `count_over_time(metric[5m])`  |
+    | avg_over_time | `avg_over_time(metric[5m])` |
+    | min_over_time | `min_over_time(metric[5m])` |
+    | max_over_time | `max_over_time(metric[5m])` |
+    | sum_over_time | `sum_over_time(metric[5m])` |
+    | count_over_time | `count_over_time(metric[5m])` |
+    | last_over_time | `last_over_time(metric[5m])` |
+    | present_over_time | `present_over_time(metric[5m])` |
+    | quantile_over_time | `quantile_over_time(0.9, metric[5m])` |
     | stddev_over_time   | `stddev_over_time(metric[5m])` |
     | stdvar_over_time   | `stdvar_over_time(metric[5m])` |
     | changes            | `changes(metric[5m])`          |
@@ -276,10 +301,6 @@ None
     | irate              | `irate(metric[5m])`            |
     | resets             | `resets(metric[5m])`           |
 
-- Unsupported:
-
-None
-
 ### Label & Other Functions
 
 - Supported:
@@ -289,7 +310,3 @@ None
     | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`            |
     | sort_by_label | `sort_by_label(metric, "foo", "bar")`            |
     | sort_by_label_desc | `sort_by_label_desc(metric, "foo", "bar")`            |
-
-- Unsupported:
-
-None
