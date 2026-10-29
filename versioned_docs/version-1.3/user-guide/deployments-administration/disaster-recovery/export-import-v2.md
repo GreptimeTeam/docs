@@ -187,15 +187,15 @@ greptime cli data import-v2 \
 
 ## Metric table export and packed layout
 
-Ordinary Metric table export exports each logical table separately and supports Parquet, CSV, and JSON. Enabling `--experimental-metric-export` reads logical-table data through shared physical-table scans and requires Parquet. The packed layout writes independent logical-table Parquet streams into shared objects and uses manifest v2. Schema-only snapshots retain manifest v1.
+Metric table export writes each logical table separately and supports Parquet, CSV, and JSON. `--experimental-metric-export` enables shared physical-table scans and requires Parquet.
+
+`--metric-data-layout packed` writes independent logical-table Parquet streams into shared objects and uses manifest v2. Omitting this option retains separate files for logical tables. Schema-only snapshots retain manifest v1.
 
 Enable experimental export at the top level of the source frontend or standalone configuration file, then restart the service:
 
 ```toml
 experimental_metric_export = true
 ```
-
-`--experimental-metric-export` enables shared scans. `--metric-data-layout packed` enables the packed layout; omitting it retains separate files for logical tables.
 
 ```bash
 greptime cli data export-v2 create \

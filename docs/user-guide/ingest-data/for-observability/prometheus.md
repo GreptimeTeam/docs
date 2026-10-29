@@ -431,4 +431,4 @@ WITH (physical_metric_table = '');
 ```
 
 Automatically created logical tables inherit the physical table's time-index precision. Ingestion converts timestamps to the target table's precision; conversion to a lower precision truncates the sub-unit portion.
-Prometheus source timestamps have millisecond precision. A higher table precision does not add precision to source data. OTLP metric nanosecond timestamps can be retained by pre-creating a physical table with nanosecond precision.
+Prometheus source timestamps have millisecond precision. OTLP metric nanosecond timestamps can be retained by pre-creating a physical table with nanosecond precision.

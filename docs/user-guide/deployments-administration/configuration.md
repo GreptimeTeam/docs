@@ -161,7 +161,6 @@ compact_rt_max_blocking_threads = 4
 
 `[runtime.experimental_workload_scheduler]` configures weighted scheduling for query and write tasks in datanode and standalone. It is disabled by default. Frontend accepts the configuration but does not activate the scheduler.
 When both workloads have pending tasks, the scheduler allocates runtime according to their weights. When one workload is idle, the other can use the available time.
-The weights do not limit thread counts or memory.
 
 ```toml
 [runtime.experimental_workload_scheduler]
@@ -491,8 +490,6 @@ name_node = "hdfs://127.0.0.1:9000"
 "dfs.client.block.write.replace-datanode-on-failure.enable" = "true"
 ```
 
-`root` sets the data root in HDFS, `name_node` sets the NameNode address, and `options` passes string key-value pairs to the HDFS client.
-
 #### Aliyun OSS credentials
 
 Aliyun OSS uses the first available credentials in the following order:
@@ -587,7 +584,7 @@ max_log_dir_size = "0B"
 default_ratio = 1.0
 ```
 
-- `dir`: log output directory.
+- `dir`: Log output directory. All components resolve an empty `dir` to a default directory: datanode, standalone, and metasrv use their respective `<data_home>/logs`; frontend and flownode use `./greptimedb_data/logs`.
 - `level`: output log level, available log level are `info`, `debug`, `error`, `warn`, the default level is `info`.
 - `enable_otlp_tracing`: whether to turn on tracing, not turned on by default.
 - `enable_per_region_metrics`: whether to expose Prometheus per-region query load metrics, including `greptime_mito_region_query_cpu_time` and `greptime_mito_region_query_scanned_bytes`. This option is disabled by default because it creates one time series per region. Query stats reported through heartbeats and exposed in `INFORMATION_SCHEMA.REGION_STATISTICS` are not controlled by this option.
@@ -595,7 +592,7 @@ default_ratio = 1.0
 - `otlp_export_protocol`: The OTLP export protocol for traces. Available values: `http` (HTTP with binary protobuf) and `grpc`. Defaults to `http`.
 - `otlp_headers`: Additional HTTP headers sent with OTLP export requests, configured as key-value pairs in the `[logging.otlp_headers]` table. Only takes effect when `otlp_export_protocol` is `http`.
 - `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
-- `enable_file_logging`: Whether to write log files. Defaults to `true`; set to `false` to disable file output. All components resolve an empty `dir` to a default directory: datanode, standalone, and metasrv use their respective `<data_home>/logs`; frontend and flownode use `./greptimedb_data/logs`. An empty value does not disable file output.
+- `enable_file_logging`: Whether to write log files. Defaults to `true`; set to `false` to disable file output.
 - `max_log_dir_size`: The maximum total size of managed log files in `dir`. Old closed log files are removed before writing when necessary, while active files may exceed the limit. Set to `0B` to disable.
 - `tracing_sample_ratio`: This field can configure the sampling rate of tracing. How to use `tracing_sample_ratio`, please refer to [How to configure tracing sampling rate](/user-guide/deployments-administration/monitoring/tracing.md#guide-how-to-configure-tracing-sampling-rate).
 

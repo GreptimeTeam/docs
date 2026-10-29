@@ -187,9 +187,9 @@ greptime cli data import-v2 \
 
 ## Metric 表导出与 packed 布局
 
-普通 Metric 表导出按逻辑表分别导出，支持 Parquet、CSV 和 JSON。启用 `--pack-metric-data` 后，导出通过共享物理表扫描读取逻辑表数据，仅支持 Parquet。packed 布局将各逻辑表的独立 Parquet 数据流写入共享对象，快照使用 manifest v2；仅导出 schema 时仍使用 manifest v1。
+普通 Metric 表导出按逻辑表分别导出，支持 Parquet、CSV 和 JSON。`--pack-metric-data` 启用共享物理表扫描，仅支持 Parquet。
 
-`--pack-metric-data` 启用共享扫描和 packed 布局。服务端需要支持 packed 导出。
+该选项使用 packed 布局，将各逻辑表的独立 Parquet 数据流写入共享对象，快照使用 manifest v2；仅导出 schema 时仍使用 manifest v1。
 
 ```bash
 greptime cli data export-v2 create \

@@ -153,7 +153,6 @@ compact_rt_max_blocking_threads = 4
 
 `[runtime.experimental_workload_scheduler]` 配置 datanode 和 standalone 的查询与写入任务加权调度，默认禁用。Frontend 可解析该配置，但不会启用调度器。
 查询和写入均有待执行任务时，调度器按权重分配运行时间；一侧空闲时，另一侧可以使用剩余时间。
-权重不限制线程数量或内存。
 
 ```toml
 [runtime.experimental_workload_scheduler]
@@ -484,8 +483,6 @@ name_node = "hdfs://127.0.0.1:9000"
 "dfs.client.block.write.replace-datanode-on-failure.enable" = "true"
 ```
 
-`root` 指定 HDFS 中的数据根目录，`name_node` 指定 NameNode 地址，`options` 将字符串键值对传给 HDFS 客户端。
-
 #### 阿里云 OSS 凭证
 
 阿里云 OSS 按以下顺序获取凭证，使用第一个可用的凭证：
@@ -581,7 +578,7 @@ max_log_dir_size = "0B"
 default_ratio = 1.0
 ```
 
-- `dir`: log 输出目录。
+- `dir`：日志输出目录。各组件都会为空的 `dir` 填入默认目录：datanode、standalone 和 metasrv 使用各自的 `<data_home>/logs`；frontend 和 flownode 使用 `./greptimedb_data/logs`。
 - `level`: log 输出的日志等级，日志等级有 `info`, `debug`, `error`, `warn`，默认等级为 `info`。
 - `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
 - `enable_per_region_metrics`：是否暴露 Prometheus 的 Region 维度查询负载指标，包括 `greptime_mito_region_query_cpu_time` 和 `greptime_mito_region_query_scanned_bytes`。该选项默认关闭，因为它会为每个 Region 产生一条时间序列。通过 heartbeat 上报并在 `INFORMATION_SCHEMA.REGION_STATISTICS` 中暴露的查询统计信息不受该选项控制。
@@ -589,7 +586,7 @@ default_ratio = 1.0
 - `otlp_export_protocol`：导出 tracing 使用的 OTLP 协议，可选值为 `http`（HTTP + 二进制 protobuf）和 `grpc`，默认为 `http`。
 - `otlp_headers`：OTLP 导出请求附带的 HTTP 请求头，在 `[logging.otlp_headers]` 表中以键值对配置。仅在 `otlp_export_protocol` 为 `http` 时生效。
 - `append_stdout`：是否将日志打印到 stdout。默认是`true`。
-- `enable_file_logging`：是否写入日志文件，默认值为 `true`。设为 `false` 可关闭文件输出。各组件都会为空的 `dir` 填入默认目录：datanode、standalone 和 metasrv 使用各自的 `<data_home>/logs`；frontend 和 flownode 使用 `./greptimedb_data/logs`。空值不会关闭文件输出。
+- `enable_file_logging`：是否写入日志文件，默认值为 `true`。设为 `false` 可关闭文件输出。
 - `max_log_dir_size`：`dir` 中受管理日志文件的最大总大小。必要时会在写入前删除较旧的已关闭日志文件，但活动文件可能会超过此限制。设置为 `0B` 可禁用此限制。
 - `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
 
