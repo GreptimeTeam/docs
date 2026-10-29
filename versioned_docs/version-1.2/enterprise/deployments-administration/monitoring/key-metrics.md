@@ -35,10 +35,13 @@ The following reference alert rules are **not built in** to GreptimeDB and need 
 | `sum by (instance) (increase(greptime_datanode_region_failed_insert_count[5m]))` | Datanode region insert failures | Greater than 0 in the last 5 minutes |
 | `sum by (instance) (increase(greptime_meta_region_migration_fail[5m]))` | Metasrv region migration failures | Greater than 0 in the last 5 minutes |
 | `sum by (instance) (increase(greptime_meta_reconciliation_procedure_error[5m]))` | Metasrv reconciliation errors | Greater than 0 in the last 5 minutes |
-| `sum by (instance) (increase(greptime_flow_errors[5m]))` | Flow engine errors | Greater than 0 in the last 5 minutes |
-| `sum by (instance) (increase(greptime_trigger_evaluate_failure_count[5m]) + increase(greptime_trigger_send_alert_failure_count[5m]) + increase(greptime_trigger_save_alert_record_failure_count[5m]))` | Trigger evaluation/send failures | Greater than 0 in the last 5 minutes |
+| `sum by (instance) (increase(greptime_flow_batching_error_count[5m]))` | Flow engine errors | Greater than 0 in the last 5 minutes |
+| `sum by (instance) (increase(greptime_flow_errors[5m]))` | Legacy streaming flow engine errors | Greater than 0 in the last 5 minutes |
+| `sum by (instance) (increase(greptime_trigger_evaluate_failure_count[5m]))` | Trigger evaluation failures | Greater than 0 in the last 5 minutes |
+| `sum by (instance) (increase(greptime_trigger_send_alert_failure_count[5m]))` | Trigger alert sending failures | Greater than 0 in the last 5 minutes |
+| `sum by (instance) (increase(greptime_trigger_save_alert_record_failure_count[5m]))` | Trigger alert record saving failures | Greater than 0 in the last 5 minutes |
 | `sum by (instance) (increase(greptime_pending_rows_flush_failures[5m]) + increase(greptime_pending_rows_flush_dropped_rows[5m]))` | Buffered ingestion data loss | Greater than 0 in the last 5 minutes |
-| `sum by (instance) (greptime_prom_store_pending_rows)` | Prometheus remote-write backlog | Greater than 100000 for more than 5 minutes |
+| `sum by (instance) (greptime_prom_store_pending_rows)` | Prometheus remote-write batching buffer size | Near `max_batch_rows` (default 100000) for more than 5 minutes |
 
 We also recommend configuring disk alerts at the Pod level to trigger when disk usage exceeds a certain threshold.
 Additionally, you can monitor the following events based on keywords from error logs listed in the operational [key logs](key-logs.md):

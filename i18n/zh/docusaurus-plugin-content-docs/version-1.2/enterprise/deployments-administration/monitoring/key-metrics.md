@@ -35,10 +35,13 @@ description: 监控 GreptimeDB 集群的关键指标，包括 CPU、内存、磁
 | `sum by (instance) (increase(greptime_datanode_region_failed_insert_count[5m]))` | datanode region 插入失败 | 最近 5 分钟内大于 0 |
 | `sum by (instance) (increase(greptime_meta_region_migration_fail[5m]))` | metasrv region 迁移失败 | 最近 5 分钟内大于 0 |
 | `sum by (instance) (increase(greptime_meta_reconciliation_procedure_error[5m]))` | metasrv 协调错误 | 最近 5 分钟内大于 0 |
-| `sum by (instance) (increase(greptime_flow_errors[5m]))` | Flow 引擎错误 | 最近 5 分钟内大于 0 |
-| `sum by (instance) (increase(greptime_trigger_evaluate_failure_count[5m]) + increase(greptime_trigger_send_alert_failure_count[5m]) + increase(greptime_trigger_save_alert_record_failure_count[5m]))` | Trigger 求值/发送失败 | 最近 5 分钟内大于 0 |
+| `sum by (instance) (increase(greptime_flow_batching_error_count[5m]))` | Flow 引擎错误 | 最近 5 分钟内大于 0 |
+| `sum by (instance) (increase(greptime_flow_errors[5m]))` | 旧版流式 Flow 引擎错误 | 最近 5 分钟内大于 0 |
+| `sum by (instance) (increase(greptime_trigger_evaluate_failure_count[5m]))` | Trigger 求值失败 | 最近 5 分钟内大于 0 |
+| `sum by (instance) (increase(greptime_trigger_send_alert_failure_count[5m]))` | Trigger 告警发送失败 | 最近 5 分钟内大于 0 |
+| `sum by (instance) (increase(greptime_trigger_save_alert_record_failure_count[5m]))` | Trigger 告警记录保存失败 | 最近 5 分钟内大于 0 |
 | `sum by (instance) (increase(greptime_pending_rows_flush_failures[5m]) + increase(greptime_pending_rows_flush_dropped_rows[5m]))` | 缓冲数据丢失 | 最近 5 分钟内大于 0 |
-| `sum by (instance) (greptime_prom_store_pending_rows)` | Prometheus remote-write 写入积压 | 大于 100000 超过 5 分钟 |
+| `sum by (instance) (greptime_prom_store_pending_rows)` | Prometheus remote-write 批处理缓冲区大小 | 接近 `max_batch_rows`（默认 100000）超过 5 分钟 |
 
 Pod 维度还建议配置磁盘告警，当磁盘水位超过某个阈值后进行告警。
 此外，也可以根据运维[关键日志](key-logs.md)中所列举的错误日志中的关键字监控以下事件：
