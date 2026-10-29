@@ -14,10 +14,9 @@ The GreptimeDB Enterprise Management Console extends the open-source [GreptimeDB
 
 ## Sign In
 
-The console supports password login and, with compatible Dashboard and
-GreptimeDB builds, OIDC SSO. Available login methods come from GreptimeDB's public
-`/v1/auth/config` endpoint; no separate Okta configuration is needed in the
-console. For setup, account provisioning, session renewal, and troubleshooting,
+Sign in with a username and password, or select the SSO button after configuring
+Okta. Use compatible Dashboard and GreptimeDB builds; no separate Okta settings
+are needed in the console. For setup, user provisioning, and login instructions,
 see [SSO Authentication](/enterprise/deployments-administration/sso.md).
 
 ## Data Management

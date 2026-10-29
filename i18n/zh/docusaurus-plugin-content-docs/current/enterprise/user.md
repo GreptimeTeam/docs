@@ -238,8 +238,8 @@ ACL 控制数据库及其表的访问权限。在 HTTP API 中，`acl_map` 将�
 精确的已存储名称。例如，`Alice@Example.com` 登录时对应 `alice@example.com`，
 但通过 API 创建 `Alice@Example.com` 会被拒绝，不会静默改名。
 
-SSO 账号按用户名关联，不持久化 `(issuer, sub)` 绑定。IdP 用户名归一化后必须唯一，
-且不要复用离职用户的名称。参阅 [SSO 身份验证](/enterprise/deployments-administration/sso.md)。
+使用 SSO 时，Okta 和 GreptimeDB 中的用户名应一致。确保用户名归一化后唯一，
+不要将旧用户名分配给其他人。参阅 [SSO 身份验证](/enterprise/deployments-administration/sso.md)。
 
 ### 密码
 
@@ -259,15 +259,11 @@ SSO 账号按用户名关联，不持久化 `(issuer, sub)` 绑定。IdP 用户�
   `password`。密码由 LDAP 验证，权限和 ACL 来自存储的用户记录。
   仅有有效的 LDAP 凭据不会自动创建 GreptimeDB 用户。本地用户可以与 LDAP
   用户共存。
-- **SSO 与 token (`jwt_auth`)**：可以只配置 issuer/client ID 进行远程 OIDC
-  验证，也可以指定 JWT 验证密钥或 JWKS 端点。远程 OIDC 默认读取
-  `UserInfo.preferred_username`，显式 JWT 模式默认读取 `sub` claim。
-  解析出的用户名对应选定 catalog 中的账号，权限和 ACL 仍取自存储的用户记录。
-  默认拒绝缺失用户，除非开启受限自动开户；自动开户仅在默认 catalog `greptime`
-  创建用户。token 不能映射到内置的小写 `admin` 账号。HTTP 使用
-  `Authorization: Bearer <access_token>`；MySQL 和 PostgreSQL 在 TLS 连接中将
-  用户名设为 `*`、token 作为密码。Okta 接入、验证模式、默认值与开户策略详见
-  [SSO 身份验证](/enterprise/deployments-administration/sso.md)。
+- **SSO 与 token (`jwt_auth`)**：通过 issuer 和 client ID 配置 Okta SSO，
+  或使用受信任的密钥、JWKS URL 配置 JWT 认证。预建对应的数据库用户，或开启受限
+  自动开户，然后在 GreptimeDB 中分配权限和 ACL。自动开户仅在默认 catalog
+  `greptime` 创建用户，内置的小写 `admin` 不能使用 token。Okta 配置、登录和
+  客户端用法详见 [SSO 身份验证](/enterprise/deployments-administration/sso.md)。
 
 ## Enterprise Dashboard 中的用户管理
 
@@ -279,8 +275,8 @@ SSO 账号按用户名关联，不持久化 `(issuer, sub)` 绑定。IdP 用户�
 </p>
 
 使用密码登录时，可以选择导入文件中定义的账号，或系统创建的后备 `admin` 账号。
-[配置 SSO](/enterprise/deployments-administration/sso.md) 后，支持 SSO 的 Dashboard
-还会展示 GreptimeDB 发布的 OIDC 登录方式。
+[配置 SSO](/enterprise/deployments-administration/sso.md) 后，用户还可以在兼容的
+Dashboard 中选择 SSO 登录。
 
 只有拥有 `Admin` 权限的账号才能看到数据库管理菜单。非 admin 账号只能访问
 查询页面，体验与开源版 dashboard 类似。

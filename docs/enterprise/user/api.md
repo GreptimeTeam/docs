@@ -33,8 +33,8 @@ The token must identify an existing user unless restricted automatic
 provisioning is enabled; provisioning creates users only in the default catalog,
 `greptime`. Tokens cannot authenticate as the built-in lowercase `admin` account.
 Use an access token, not an OIDC ID token. See
-[SSO Authentication](/enterprise/deployments-administration/sso.md) for remote
-OIDC and explicit JWT verification, provisioning, and username mapping.
+[SSO Authentication](/enterprise/deployments-administration/sso.md) for setup,
+user provisioning, and client usage.
 
 All `/v1/users` operations use the request's current catalog, which defaults to
 `greptime`. Usernames are unique within a catalog. Select another catalog with
@@ -323,9 +323,8 @@ Success: `200 OK`, with the number of usable keys in the current key set:
 {"keys": 2}
 ```
 
-If token authentication is disabled, uses a static key, or uses remote OIDC
-introspection/UserInfo instead of a JWKS URL, the endpoint returns `400`.
-It does not refresh OIDC login sessions or access tokens. A failed JWKS refresh
+If `jwt_auth` is not configured with a JWKS URL, the endpoint returns `400`.
+This endpoint does not renew SSO sessions or access tokens. A failed JWKS refresh
 returns `502` and keeps the previous cached key set.
 
 ## Errors

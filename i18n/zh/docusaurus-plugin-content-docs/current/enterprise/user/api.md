@@ -30,8 +30,8 @@ curl -H 'Authorization: Bearer <token>' \
 
 默认情况下，token 必须标识已有用户；开启受限自动开户后，可以在默认 catalog
 `greptime` 中创建缺失用户。token 不能登录内置的小写 `admin` 账号。请使用
-access token，而不是 OIDC ID token。远程 OIDC、显式 JWT 验证、开户和用户名
-映射详见 [SSO 身份验证](/enterprise/deployments-administration/sso.md)。
+access token，而不是 OIDC ID token。配置、用户开通和客户端用法详见
+[SSO 身份验证](/enterprise/deployments-administration/sso.md)。
 
 所有 `/v1/users` 操作都以请求的当前 catalog 为范围，默认值为 `greptime`。
 用户名在同一个 catalog 内唯一。通过 `db` 查询参数或 `x-greptime-db-name`
@@ -307,9 +307,8 @@ curl -X POST -u '<admin-user>:<admin-password>' \
 {"keys": 2}
 ```
 
-未启用 token 身份验证、使用静态密钥，或使用远程 OIDC introspection/UserInfo
-而不是 JWKS URL 时，返回 `400`。该接口不会刷新 OIDC 登录会话或 access token。
-JWKS 刷新失败时返回 `502`，并保留之前缓存的密钥集。
+`jwt_auth` 未配置 JWKS URL 时，返回 `400`。该接口不会续期 SSO 会话或
+access token。JWKS 刷新失败时返回 `502`，并保留之前缓存的密钥集。
 
 ## 错误响应
 

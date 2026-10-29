@@ -14,10 +14,9 @@ GreptimeDB 企业版管理控制台在开源 [GreptimeDB 控制台](/getting-sta
 
 ## 登录
 
-控制台支持密码登录；使用兼容的 Dashboard 和 GreptimeDB 构建时，还支持 OIDC SSO。
-可用登录方式来自 GreptimeDB 的公开接口 `/v1/auth/config`，无需在控制台单独配置
-Okta。配置、账号开通、会话续期及排查方法详见
-[SSO 身份验证](/enterprise/deployments-administration/sso.md)。
+使用用户名和密码登录，或在配置 Okta 后选择 SSO 登录按钮。请使用兼容的
+Dashboard 和 GreptimeDB 构建，无需在控制台单独配置 Okta。
+配置、用户开通和登录步骤详见 [SSO 身份验证](/enterprise/deployments-administration/sso.md)。
 
 ## Data Management
 
