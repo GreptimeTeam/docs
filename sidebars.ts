@@ -498,6 +498,7 @@ const sidebars: SidebarsConfig = {
             'enterprise/deployments-administration/standalone-follower',
             'enterprise/deployments-administration/env-affinity-region-placement',
             'enterprise/deployments-administration/authentication',
+            'enterprise/deployments-administration/sso',
             'enterprise/deployments-administration/query-guard',
             {
               type: 'category',

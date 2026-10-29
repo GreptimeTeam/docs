@@ -28,8 +28,10 @@ curl -H 'Authorization: Bearer <token>' \
   'http://localhost:4000/v1/users/current'
 ```
 
-token 必须标识一个已存在的用户。身份验证插件与已存储用户权限之间的关系，
-请参阅[外部身份验证](/enterprise/user.md#外部身份验证)。
+默认情况下，token 必须标识已有用户；开启受限自动开户后，可以在默认 catalog
+`greptime` 中创建缺失用户。token 不能登录内置的小写 `admin` 账号。请使用
+access token，而不是 OIDC ID token。远程 OIDC、显式 JWT 验证、开户和用户名
+映射详见 [SSO 身份验证](/enterprise/deployments-administration/sso.md)。
 
 所有 `/v1/users` 操作都以请求的当前 catalog 为范围，默认值为 `greptime`。
 用户名在同一个 catalog 内唯一。通过 `db` 查询参数或 `x-greptime-db-name`
@@ -187,7 +189,7 @@ curl -u '<admin-user>:<admin-password>' \
 
 | 字段 | 类型 | 是否必填 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- |
-| `username` | string | 是 | — | 必须匹配 `^[a-zA-Z][a-zA-Z0-9_]*$`。 |
+| `username` | string | 是 | — | ASCII 标识符或受约束的邮箱形状，最多 128 字节；邮箱形状的名称必须为小写，详见[用户名校验](/enterprise/user.md#用户名)。 |
 | `password` | string | 本地用户必填 | — | 本地密码，长度为 6 到 64 个字符。LDAP 用户必须省略。 |
 | `auth_source` | string | 否 | `"local"` | `"local"` 或 `"ldap"`。 |
 | `catalog` | string | 否 | 当前 catalog | 如果提供，必须与请求的当前 catalog 一致。 |
@@ -231,6 +233,8 @@ LDAP 用户不能设置本地密码。
 ```
 
 当前 catalog 中已存在同名用户时，返回 `409 Conflict`。
+创建请求中的邮箱形状名称必须已为小写；`Alice@Example.com` 这样的非规范形式会
+返回 `400`。查询、更新和删除路径使用精确的已存储名称，并按需对路径字符进行 URL 编码。
 
 ## 更新用户
 
@@ -284,6 +288,9 @@ curl -X DELETE -u '<admin-user>:<admin-password>' \
 
 用户不存在时返回 `404`。
 
+删除自动创建的 SSO 用户不能撤销访问：后续有效 token 登录可能重新创建该账号。
+应在 IdP 侧撤销访问，详见[自动开户](/enterprise/deployments-administration/sso.md#首次登录自动创建用户)。
+
 ## 刷新 JWKS 密钥
 
 `POST /v1/jwks/refresh` 要求 `Admin` 权限，立即从配置的 JWKS URL 刷新 JWT
@@ -300,8 +307,9 @@ curl -X POST -u '<admin-user>:<admin-password>' \
 {"keys": 2}
 ```
 
-未启用 JWT 身份验证，或使用静态密钥而不是 JWKS URL 时，返回 `400`。
-刷新失败时返回 `502`，并保留之前缓存的密钥集。
+未启用 token 身份验证、使用静态密钥，或使用远程 OIDC introspection/UserInfo
+而不是 JWKS URL 时，返回 `400`。该接口不会刷新 OIDC 登录会话或 access token。
+JWKS 刷新失败时返回 `502`，并保留之前缓存的密钥集。
 
 ## 错误响应
 

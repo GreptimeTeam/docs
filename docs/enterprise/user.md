@@ -241,11 +241,24 @@ Some system tables have separate rules. Reading catalog-scoped
 
 ### Username
 
-Usernames must:
+Usernames must be ASCII, no more than 128 bytes, and use one of these forms:
 
-- Start with a letter (`a-z` or `A-Z`)
-- Contain only letters, digits, and underscores
-- Match the pattern `[a-zA-Z][a-zA-Z0-9_]*`
+- An identifier matching `^[a-zA-Z][a-zA-Z0-9_]*$`, such as `alice` or
+  `service_reader`. These names are case-sensitive.
+- An email-shaped name such as `alice.smith@example.com`. The local part accepts
+  letters, digits, `_`, `%`, `+`, and `-`, with optional dot-separated non-empty
+  segments. The domain must have at least two dot-separated labels containing
+  letters, digits, or internal hyphens. This is a constrained format, not full
+  RFC email-address support.
+
+Names containing `@` are normalized to lowercase for login. Account creation
+must supply the lowercase spelling; management APIs use the exact stored name.
+For example, `Alice@Example.com` logs in as `alice@example.com`, but an API
+request to create `Alice@Example.com` is rejected rather than silently renamed.
+
+SSO accounts are associated by username, not by a persisted `(issuer, sub)`
+binding. Keep IdP usernames unique after normalization and do not reuse a former
+user's name. See [SSO Authentication](/enterprise/deployments-administration/sso.md).
 
 ### Password
 
@@ -267,11 +280,18 @@ standalone server or frontend nodes that receive client requests:
   while the stored user record supplies privileges and ACLs. Valid LDAP
   credentials alone do not create a GreptimeDB user. Local users can coexist
   with LDAP users.
-- **JWT (`jwt_auth`)**: Configure a trusted verification key or JWKS endpoint.
-  The token's username claim (default: `sub`) must identify an existing user in
-  the selected catalog; the stored privileges and ACLs still apply. For HTTP,
-  send `Authorization: Bearer <token>`. For MySQL and PostgreSQL, use `*` as the
-  username and the JWT as the password.
+- **SSO and tokens (`jwt_auth`)**: Configure issuer/client-ID-only remote OIDC
+  verification, or an explicit JWT verification key/JWKS endpoint. Remote OIDC
+  reads `UserInfo.preferred_username` by default; explicit JWT mode defaults to
+  the `sub` claim. The resolved username identifies an account in the selected
+  catalog, whose stored privileges and ACLs still apply. Missing users are
+  rejected unless restricted automatic provisioning is enabled; provisioning
+  only creates users in the default catalog, `greptime`. Tokens can never map to
+  the built-in lowercase `admin` account. For HTTP, send
+  `Authorization: Bearer <access_token>`; MySQL and PostgreSQL use `*` as the
+  username and the token as the password over TLS. See
+  [SSO Authentication](/enterprise/deployments-administration/sso.md) for Okta,
+  verification modes, defaults, and provisioning policies.
 
 ## User Management in the Enterprise Dashboard
 
@@ -283,8 +303,10 @@ The following screenshot shows the Enterprise Dashboard login page:
     <img src="/ent_user/login.png" alt="login page"/>
 </p>
 
-You can log in with an account defined in the seeding file, or with the fallback
-`admin` account if one was created.
+For password login, use an account defined in the seeding file, or the fallback
+`admin` account if one was created. An SSO-capable Dashboard also offers the OIDC
+login method advertised by GreptimeDB when
+[SSO is configured](/enterprise/deployments-administration/sso.md).
 
 Only accounts with the `Admin` privilege can see the database management menu.
 Non-admin accounts can only access the query page, similar to the open-source

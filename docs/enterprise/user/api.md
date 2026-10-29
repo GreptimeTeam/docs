@@ -29,9 +29,12 @@ curl -H 'Authorization: Bearer <token>' \
   'http://localhost:4000/v1/users/current'
 ```
 
-The token must identify an existing user. See
-[External Authentication](/enterprise/user.md#external-authentication) for the
-relationship between authentication plugins and stored user permissions.
+The token must identify an existing user unless restricted automatic
+provisioning is enabled; provisioning creates users only in the default catalog,
+`greptime`. Tokens cannot authenticate as the built-in lowercase `admin` account.
+Use an access token, not an OIDC ID token. See
+[SSO Authentication](/enterprise/deployments-administration/sso.md) for remote
+OIDC and explicit JWT verification, provisioning, and username mapping.
 
 All `/v1/users` operations use the request's current catalog, which defaults to
 `greptime`. Usernames are unique within a catalog. Select another catalog with
@@ -197,7 +200,7 @@ Success: `200 OK` with a [user object](#user-object). A missing user returns `40
 
 | Field | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
-| `username` | string | Yes | — | Must match `^[a-zA-Z][a-zA-Z0-9_]*$`. |
+| `username` | string | Yes | — | ASCII identifier or constrained email-shaped name, at most 128 bytes. Email-shaped names must be lowercase; see [username validation](/enterprise/user.md#username). |
 | `password` | string | For local users | — | Local password, 6 to 64 characters. Omit for LDAP users. |
 | `auth_source` | string | No | `"local"` | `"local"` or `"ldap"`. |
 | `catalog` | string | No | Current catalog | Must match the request's current catalog if supplied. |
@@ -241,6 +244,9 @@ Success: `201 Created`.
 ```
 
 An existing username in the current catalog returns `409 Conflict`.
+Email-shaped names must already be lowercase in create requests; a noncanonical
+spelling such as `Alice@Example.com` returns `400`. For lookup, update, and delete
+paths, use the exact stored name and URL-encode path characters as needed.
 
 ## Update a User
 
@@ -296,6 +302,10 @@ Success: `200 OK`.
 
 A missing user returns `404`.
 
+Deleting an automatically provisioned SSO user does not revoke access: a later
+valid token login can recreate the account. Revoke access at the IdP; see
+[automatic provisioning](/enterprise/deployments-administration/sso.md#automatic-user-provisioning).
+
 ## Refresh JWKS Keys
 
 `POST /v1/jwks/refresh` requires `Admin` and requests an immediate refresh of the
@@ -313,9 +323,10 @@ Success: `200 OK`, with the number of usable keys in the current key set:
 {"keys": 2}
 ```
 
-If JWT authentication is disabled or uses a static key instead of a JWKS URL,
-the endpoint returns `400`. A failed refresh returns `502` and keeps the previous
-cached key set.
+If token authentication is disabled, uses a static key, or uses remote OIDC
+introspection/UserInfo instead of a JWKS URL, the endpoint returns `400`.
+It does not refresh OIDC login sessions or access tokens. A failed JWKS refresh
+returns `502` and keeps the previous cached key set.
 
 ## Errors
 

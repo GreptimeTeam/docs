@@ -12,6 +12,13 @@ GreptimeDB 企业版管理控制台在开源 [GreptimeDB 控制台](/getting-sta
 | **Data Management** | 查询、写入与管理数据 — 与开源版 Dashboard 功能一致 |
 | **Operation** | 集群可观测性与治理 — 企业版专有 |
 
+## 登录
+
+控制台支持密码登录；使用兼容的 Dashboard 和 GreptimeDB 构建时，还支持 OIDC SSO。
+可用登录方式来自 GreptimeDB 的公开接口 `/v1/auth/config`，无需在控制台单独配置
+Okta。配置、账号开通、会话续期及排查方法详见
+[SSO 身份验证](/enterprise/deployments-administration/sso.md)。
+
 ## Data Management
 
 **Data Management** 涵盖查询、写入、pipeline、Flow 和 Visualization，与开源 Dashboard 功能一致。详见 [GreptimeDB 控制台](/getting-started/installation/greptimedb-dashboard.md)。

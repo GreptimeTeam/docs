@@ -12,6 +12,14 @@ The GreptimeDB Enterprise Management Console extends the open-source [GreptimeDB
 | **Data Management** | Query, ingest, and manage data — same features as the open-source Dashboard |
 | **Operation** | Cluster observability and administration — enterprise only |
 
+## Sign In
+
+The console supports password login and, with compatible Dashboard and
+GreptimeDB builds, OIDC SSO. Available login methods come from GreptimeDB's public
+`/v1/auth/config` endpoint; no separate Okta configuration is needed in the
+console. For setup, account provisioning, session renewal, and troubleshooting,
+see [SSO Authentication](/enterprise/deployments-administration/sso.md).
+
 ## Data Management
 
 **Data Management** covers query, ingest, pipelines, Flow, and Visualization — the same features as the open-source Dashboard. See [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md) for details.
