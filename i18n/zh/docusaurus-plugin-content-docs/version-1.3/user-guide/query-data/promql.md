@@ -154,19 +154,14 @@ PromQL 查询支持浮点样本和原生直方图样本。浮点指标使用时�
 
 | 查询行为 | 示例 | 与 Prometheus 的差异 |
 | --- | --- | --- |
-| 函数和聚合结果中的指标名称 | `rate(x[1m])`、`avg_over_time(x[5m])`、`abs(x)`、`sum(rate(x[1m]))` | GreptimeDB 在这些结果中保留 `__name__`，Prometheus 会移除它。`histogram_quantile` 的结果也有此差异，会影响 Grafana 图例，以及告警和 recording rule 使用的标签。v1.2.1 也存在此行为。 |
-| 带参数的日期函数 | `year(vector(1136239445))` | 使用样本时间戳，而不是样本值。查询时刻在 2026 年时，此查询返回 `2026`；Prometheus 将样本值解释为 Unix 秒数，返回 `2006`。`month`、`day_of_month`、`day_of_week`、`day_of_year`、`days_in_month`、`hour` 和 `minute` 也有此问题。 |
+| 函数和聚合结果中的指标名称 | `rate(x[1m])`、`abs(x)`、`sum(rate(x[1m]))`、`sum(x > 0)` | 函数结果保留 `__name__`，对其进行不带分组的聚合时也可能保留，影响 Grafana 图例及告警和 recording rule 的标签。v1.3 不带 `bool` 的过滤比较还可能重新附加已移除的指标名。 |
+| 带参数的日期函数 | `year(vector(1136239445))` | 使用样本时间戳，而不是样本值。影响 `year`、`month`、`day_of_month`、`day_of_week`、`day_of_year`、`days_in_month`、`hour` 和 `minute`。 |
 | 不带指标名的选择器 | `{job="demo"}` | 返回 `Expect a metric matcher, but not found`。必须指定指标名或显式的 `__name__` 匹配器。 |
 | `vector(time())` | `vector(time())` | 瞬时查询和范围查询均返回 `Invalid function argument for unknown`，单独调用也会失败。 |
 | `absent_over_time` | `absent_over_time(nonexistent_metric[5m])` | 部分查询返回的序列与 Prometheus 不同，既可能缺少预期序列，也可能多返回序列。此例不返回序列，Prometheus 会返回值为 `1` 的序列。 |
 | 动态 scalar 参数 | `topk(scalar(foo), x)`、`quantile_over_time(scalar(foo), x[5m])` | 将 `scalar()` 用作参数时，部分查询无法生成执行计划。 |
 | `first_over_time` | `first_over_time(x[5m])` | 返回 `Unsupported expr type`，尚未实现。 |
-| 重复标签集 | `ceil({__name__=~"testmetric1\|testmetric2"})`、`-{__name__=~"testmetric1\|testmetric2"}` | 移除指标名后出现重复标签集时，Prometheus 会报错。GreptimeDB 可能保留指标名，或返回重复标签集而不报错。 |
-| 重复向量匹配 | `scalar_metric > on() dup_metric` | Prometheus 因重复匹配报错时，GreptimeDB 可能返回结果。例如，`scalar_metric{} = 3`，两个标签不同的 `dup_metric` 序列值分别为 `1` 和 `2` 时，GreptimeDB 返回 `{} => 3`。 |
-| `clamp` 下界大于上界 | `clamp(x, 10, 1)` | 返回执行错误，Prometheus 返回空结果。 |
-| UTF-8 目标标签名 | `label_replace(x, "~invalid", "v", "__name__", ".*")` | 拒绝该目标标签名，Prometheus 3 将其作为 UTF-8 标签名接受。 |
-
-示例中的 `x` 是查询区间内有样本的已有浮点指标，`foo` 包含一条序列。重复标签集示例中的 `testmetric1` 和 `testmetric2` 除 `__name__` 外标签相同，且样本时间戳相同。`nonexistent_metric` 必须不存在。
+| 校验差异 | `scalar_metric > on() dup_metric`、`clamp(x, 10, 1)` | 重复标签集和重复匹配可能返回结果，而 Prometheus 会报错；`clamp` 上下界写反时返回错误，而 Prometheus 返回空结果；`label_replace` 拒绝 Prometheus 3 接受的 UTF-8 目标标签名。 |
 
 ### 字面量
 

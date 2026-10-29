@@ -152,19 +152,14 @@ Percentages are test-case pass rates, with excluded cases omitted from the denom
 
 | Query behavior | Example | Difference from Prometheus |
 | --- | --- | --- |
-| Metric-name labels in function and aggregation results | `rate(x[1m])`, `avg_over_time(x[5m])`, `abs(x)`, `sum(rate(x[1m]))` | GreptimeDB retains `__name__` in these results; Prometheus removes it. This also affects `histogram_quantile` results, Grafana legends, and labels consumed by alerting and recording rules. The behavior also exists in v1.2.1. |
-| Date functions with an argument | `year(vector(1136239445))` | Uses sample timestamps instead of sample values. At a query time in 2026, this returns `2026`; Prometheus interprets the value as Unix seconds and returns `2006`. The same issue affects `month`, `day_of_month`, `day_of_week`, `day_of_year`, `days_in_month`, `hour`, and `minute`. |
+| Metric-name labels in function and aggregation results | `rate(x[1m])`, `abs(x)`, `sum(rate(x[1m]))`, `sum(x > 0)` | Functions retain `__name__`, and aggregations without grouping can retain it from their inputs, affecting Grafana legends and alert/recording-rule labels. In v1.3, filtering comparisons without `bool` can also restore a removed metric name. |
+| Date functions with an argument | `year(vector(1136239445))` | Uses the sample timestamp instead of the sample value. Affects `year`, `month`, `day_of_month`, `day_of_week`, `day_of_year`, `days_in_month`, `hour`, and `minute`. |
 | Selectors without a metric name | `{job="demo"}` | Returns `Expect a metric matcher, but not found`. A metric name or an explicit `__name__` matcher is required. |
 | `vector(time())` | `vector(time())` | Fails with `Invalid function argument for unknown` in both instant and range queries, including when used alone. |
 | `absent_over_time` | `absent_over_time(nonexistent_metric[5m])` | Some queries return different series than Prometheus: expected series can be missing, or extra series can appear. This example returns no series; Prometheus returns a series with value `1`. |
 | Dynamic scalar parameters | `topk(scalar(foo), x)`, `quantile_over_time(scalar(foo), x[5m])` | Some uses of `scalar()` as a parameter fail planning. |
 | `first_over_time` | `first_over_time(x[5m])` | Returns `Unsupported expr type`; the function is not implemented. |
-| Duplicate label sets | `ceil({__name__=~"testmetric1\|testmetric2"})`, `-{__name__=~"testmetric1\|testmetric2"}` | Prometheus rejects duplicate label sets after removing metric names. GreptimeDB can retain the names or return duplicate label sets without an error. |
-| Duplicate vector matches | `scalar_metric > on() dup_metric` | Can return a result when Prometheus rejects duplicate matches. With `scalar_metric{} = 3` and two `dup_metric` series with different labels and values `1` and `2`, GreptimeDB returns `{} => 3`. |
-| Reversed `clamp` bounds | `clamp(x, 10, 1)` | Returns an execution error; Prometheus returns an empty result. |
-| UTF-8 destination labels | `label_replace(x, "~invalid", "v", "__name__", ".*")` | Rejects the destination label name; Prometheus 3 accepts it as a UTF-8 label name. |
-
-Examples using `x` require an existing float metric with samples in the queried interval; `foo` has one series. The duplicate-label examples use `testmetric1` and `testmetric2` with identical labels other than `__name__` and samples at the same timestamp. `nonexistent_metric` must not exist.
+| Validation differences | `scalar_metric > on() dup_metric`, `clamp(x, 10, 1)` | Duplicate label sets and duplicate matches can return results where Prometheus raises an error; reversed `clamp` bounds return an error where Prometheus returns an empty result; `label_replace` rejects UTF-8 destination labels accepted by Prometheus 3. |
 
 ### Literal
 
