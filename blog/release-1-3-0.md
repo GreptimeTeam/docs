@@ -92,6 +92,50 @@ JSON result columns also retain the per-column action to show or hide null field
 
 Bearer-token authentication is now supported over HTTP and SQL protocols, and MySQL authentication methods can be selected per user. ([#8719](https://github.com/GreptimeTeam/greptimedb/pull/8719), [#8899](https://github.com/GreptimeTeam/greptimedb/pull/8899), [#9078](https://github.com/GreptimeTeam/greptimedb/pull/9078))
 
+### PromQL compatibility
+
+Measured with [promql-compat](https://github.com/GreptimeTeam/promql-compat) (rev `1203cd8`) against the Prometheus v3.15.0 engine. The following rates compare labels and values while ignoring differences only in `__name__`.
+
+| Suite | v1.2.1 | v1.3.0 |
+|---|---|---|
+| Prometheus test corpus (852 cases) | 6.7% | 88.5% |
+| PromQL compliance tester (539 cases) | 88.7% | 94.8% |
+| Fuzz (1999 queries, seed 1) | 79.0% | 93.4% |
+
+With `__name__` included, v1.3.0 scores:
+
+| Suite | v1.3.0 |
+|---|---|
+| Prometheus test corpus | 53.5% |
+| PromQL compliance tester | 54.2% |
+| Fuzz | 63.8% |
+
+1391 corpus cases (native histograms, experimental features, start timestamps, delayed name removal, nondeterministic results) and 1 fuzz query are excluded from all rates. These rates do not assess the excluded cases.
+
+Improvements since v1.2.1:
+
+- `@` modifier, including timestamps before 1970.
+- Subqueries evaluated at timestamps not aligned to the step.
+- `group_left` / `group_right` joins against aggregated operands.
+- Duplicate-series and many-to-many matching errors are now raised in cases where they were previously missed.
+- `label_replace` no longer fails with "vector cannot contain metrics with the same labelset" on valid input.
+- `histogram_fraction` is supported.
+- Panics in `count_values` over range functions are fixed.
+
+Known issue: a filtering comparison (without `bool`) re-attaches `__name__` even when its left operand has none, and aggregations and `*_over_time` functions over the result keep it. For example, `sum(x > 0)` returns `{__name__="x"}` instead of `{}`.
+
+Remaining gaps: `__name__` handling in general, `first_over_time`, `vector(time())` as a function argument, `absent_over_time`, and `scalar()` as a `quantile_over_time` / `topk` parameter.
+
+### Benchmark results
+
+Compared with v1.2.1 using the same hardware and data for both versions, with warm caches.
+
+- 30-day PromQL range queries over 1,720 series and 158.5M samples, with a 30-minute step (c7i.2xlarge, 8 vCPUs, 16 GiB): median latency decreased by 9.9%–41.8% for four of five queries.
+- SQL queries over 100M agent observability records (c7i.2xlarge, 8 vCPUs, 16 GiB): median latency decreased by 6.3%–32.8% across the 16 measured queries.
+- Queries over 100.1M spans (m7i.2xlarge, 8 vCPUs, 32 GiB): median latency decreased by 6.0%–94.0% for six of eight queries, including client-side processing.
+
+These are single-run diagnostic results.
+
 ### Upgrade notes
 
 - Keep metasrv maintenance mode enabled throughout a rolling upgrade so Batch GC does not run against mixed metasrv/datanode versions: its new packed protocol has no legacy fallback. Disable maintenance mode only after the upgrade is complete. ([#9009](https://github.com/GreptimeTeam/greptimedb/pull/9009))
