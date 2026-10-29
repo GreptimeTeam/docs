@@ -255,7 +255,7 @@ Parameters can be passed in the URL query string or an `application/x-www-form-u
 | --- | --- | --- |
 | `sql` | Required | One `EXPLAIN ANALYZE VERBOSE` or `TQL ANALYZE VERBOSE` statement. Omit the format or use `FORMAT JSON`; other formats are unsupported. |
 | `db` | Optional | Database. Defaults to `public`. |
-| `snapshot_interval_ms` | Optional | Metrics snapshot interval in milliseconds. Defaults to `5000` and is clamped to `1000`–`60000`. Large snapshots increase the interval. |
+| `snapshot_interval_ms` | Optional | Metrics snapshot interval in milliseconds. Defaults to `5000` and is clamped to `1000`–`60000`. For snapshot payloads of at least 1 MiB, the interval is at least 10 seconds; at least 10 MiB raises it to at least 30 seconds. |
 
 Example request:
 

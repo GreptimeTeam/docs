@@ -68,4 +68,4 @@ slowQuery:
   ttl: "90d"
 ```
 
-`record_type = "log"` 的输出不受 `logging.level` 过滤。`logging.append_stdout = true` 时输出到标准输出；`logging.enable_file_logging = true` 且 `logging.dir` 非空时，写入该目录下的 `greptimedb-slow-queries.*` 文件。输出格式和文件保留策略使用 `[logging]` 配置。
+`record_type = "log"` 的输出不受 `logging.level` 过滤。`logging.append_stdout = true` 时输出到标准输出；`logging.enable_file_logging = true` 时，写入日志目录下的 `greptimedb-slow-queries.*` 文件。关闭文件输出需设置 `logging.enable_file_logging = false`；Standalone 的 `logging.dir` 为空时会使用 `<data_home>/logs`。输出格式和文件保留策略使用 `[logging]` 配置。

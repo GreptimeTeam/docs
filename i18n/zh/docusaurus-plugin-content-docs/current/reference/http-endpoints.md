@@ -255,7 +255,7 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 | --- | --- | --- |
 | `sql` | 必填 | 单条 `EXPLAIN ANALYZE VERBOSE` 或 `TQL ANALYZE VERBOSE` 语句。可省略格式，也可指定 `FORMAT JSON`；其他格式不受支持。 |
 | `db` | 可选 | 数据库，默认 `public`。 |
-| `snapshot_interval_ms` | 可选 | 指标快照间隔，单位为毫秒，默认 `5000`，限制在 `1000` 到 `60000` 之间。较大的快照会延长发送间隔。 |
+| `snapshot_interval_ms` | 可选 | 指标快照间隔，单位为毫秒，默认 `5000`，限制在 `1000` 到 `60000` 之间。快照 payload 达到 1 MiB 时，间隔至少为 10 秒；达到 10 MiB 时，至少为 30 秒。 |
 
 请求示例：
 

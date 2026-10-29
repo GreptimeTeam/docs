@@ -143,7 +143,7 @@ compact_rt_max_blocking_threads = 4
 
 #### 实验性查询与写入调度
 
-`[runtime.experimental_workload_scheduler]` 配置查询和写入任务的加权调度。默认禁用。
+`[runtime.experimental_workload_scheduler]` 配置 datanode 和 standalone 的查询与写入任务加权调度，默认禁用。Frontend 可解析该配置，但不会启用调度器。
 查询和写入均有待执行任务时，调度器按权重分配运行时间；一侧空闲时，另一侧可以使用剩余时间。
 权重不限制线程数量或内存。
 
@@ -396,7 +396,7 @@ experimental_spill_compression = "zstd"
 
 `存储`选项在 `datanode` 和 `standalone` 模式下有效，它指定了数据库数据目录和其他存储相关的选项。
 
-GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容服务（比如 MinIO、RustFS、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
+GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容服务（比如 MinIO、RustFS、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage、阿里云 OSS 和 HDFS。
 
 | 选项    | 键                | 类型   | 描述                                                |
 | ------- | ----------------- | ------ | --------------------------------------------------- |
@@ -436,6 +436,11 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 |         | scope             | 字符串 | GCS 权限                                            |
 |         | credential_path   | 字符串 | GCS 访问证书                                        |
 |         | endpoint          | 字符串 | GCS 的 API 端点                                     |
+| Hdfs | | | HDFS 存储选项，`type="Hdfs"` 时生效。 |
+| | name | String | 存储后端名称。 |
+| | root | String | HDFS 数据根目录。 |
+| | name_node | String | NameNode URI，例如 `hdfs://127.0.0.1:9000`。 |
+| | options | Map | 传给 HDFS 客户端的字符串键值对。 |
 
 文件存储配置范例：
 
@@ -575,7 +580,7 @@ default_ratio = 1.0
 - `otlp_export_protocol`：导出 tracing 使用的 OTLP 协议，可选值为 `http`（HTTP + 二进制 protobuf）和 `grpc`，默认为 `http`。
 - `otlp_headers`：OTLP 导出请求附带的 HTTP 请求头，在 `[logging.otlp_headers]` 表中以键值对配置。仅在 `otlp_export_protocol` 为 `http` 时生效。
 - `append_stdout`：是否将日志打印到 stdout。默认是`true`。
-- `enable_file_logging`：是否写入日志文件，默认值为 `true`。文件输出还要求 `dir` 非空。
+- `enable_file_logging`：是否写入日志文件，默认值为 `true`。设为 `false` 可关闭文件输出。Standalone 的 `dir` 为空时会使用 `<data_home>/logs`，不会关闭文件输出。
 - `max_log_dir_size`：`dir` 中受管理日志文件的最大总大小。必要时会在写入前删除较旧的已关闭日志文件，但活动文件可能会超过此限制。设置为 `0B` 可禁用此限制。
 - `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
 

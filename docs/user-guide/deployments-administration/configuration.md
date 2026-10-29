@@ -159,7 +159,7 @@ compact_rt_max_blocking_threads = 4
 
 #### Experimental query and write scheduling
 
-`[runtime.experimental_workload_scheduler]` configures weighted scheduling for query and write tasks. It is disabled by default.
+`[runtime.experimental_workload_scheduler]` configures weighted scheduling for query and write tasks in datanode and standalone. It is disabled by default. Frontend accepts the configuration but does not activate the scheduler.
 When both workloads have pending tasks, the scheduler allocates runtime according to their weights. When one workload is idle, the other can use the available time.
 The weights do not limit thread counts or memory.
 
@@ -412,7 +412,7 @@ experimental_spill_compression = "zstd"
 
 The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.
 
-GreptimeDB supports storing data in local file system, AWS S3 and compatible services (including MinIO, RustFS, digitalocean space, Tencent Cloud Object Storage(COS), Baidu Object Storage(BOS) and so on), Azure Blob Storage and Aliyun OSS.
+GreptimeDB supports storing data in local file system, AWS S3 and compatible services (including MinIO, RustFS, digitalocean space, Tencent Cloud Object Storage(COS), Baidu Object Storage(BOS) and so on), Azure Blob Storage, Aliyun OSS, and HDFS.
 
 | Option  | Key                       | Type    | Description                                                                      |
 | ------- | ------------------------- | ------- | -------------------------------------------------------------------------------- |
@@ -452,6 +452,11 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | scope                     | String  | The GCS service scope                                                            |
 |         | credential_path           | String  | The GCS credentials path                                                         |
 |         | endpoint                  | String  | The API endpoint of GCS                                                          |
+| Hdfs | | | HDFS storage options, valid when `type="Hdfs"`. |
+| | name | String | Storage provider name. |
+| | root | String | Data root in HDFS. |
+| | name_node | String | NameNode URI, such as `hdfs://127.0.0.1:9000`. |
+| | options | Map | String key-value options passed to the HDFS client. |
 
 A file storage sample configuration:
 
@@ -590,7 +595,7 @@ default_ratio = 1.0
 - `otlp_export_protocol`: The OTLP export protocol for traces. Available values: `http` (HTTP with binary protobuf) and `grpc`. Defaults to `http`.
 - `otlp_headers`: Additional HTTP headers sent with OTLP export requests, configured as key-value pairs in the `[logging.otlp_headers]` table. Only takes effect when `otlp_export_protocol` is `http`.
 - `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
-- `enable_file_logging`: Whether to write log files. Defaults to `true`. File output also requires a nonempty `dir`.
+- `enable_file_logging`: Whether to write log files. Defaults to `true`; set to `false` to disable file output. Standalone resolves an empty `dir` to `<data_home>/logs`, so an empty value does not disable file output.
 - `max_log_dir_size`: The maximum total size of managed log files in `dir`. Old closed log files are removed before writing when necessary, while active files may exceed the limit. Set to `0B` to disable.
 - `tracing_sample_ratio`: This field can configure the sampling rate of tracing. How to use `tracing_sample_ratio`, please refer to [How to configure tracing sampling rate](/user-guide/deployments-administration/monitoring/tracing.md#guide-how-to-configure-tracing-sampling-rate).
 

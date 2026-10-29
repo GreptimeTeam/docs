@@ -86,18 +86,18 @@ v1.3 Frontend write retries depend on per-entry Datanode results. Mixing them wi
 | `median`, `approx_median`, and `approx_percentile_cont` return floating-point results for integer inputs. Exact median interpolates even-sized inputs. | Check types in views, Flow sink tables, and other fixed-schema consumers. |
 | `REPLACE(s, '', replacement)` returns the original string. Generated column names for struct `unnest` change. | Review empty search strings and give expanded columns explicit aliases. |
 | PostgreSQL result metadata reports OID aliases such as `REGCLASS` and `REGTYPE`. | Check client handling of result types. |
-| Invalid JSONPath expressions return errors. | Use `$` for the root; replace invalid paths such as `.` and `$.`. |
+| `json_get*` and JSON2 field access return errors for invalid JSONPath expressions. | Use `$` or an empty string for the root; replace invalid paths such as `.` and `$.`. `json_path_match` still returns NULL for invalid paths. |
 | SQL expression depth above `128` fails planning. | Simplify deeply nested generated queries. |
 
 #### Write requests and JSON2
 
-Prometheus Remote Read, Remote Write, and Loki requests return HTTP 400 when their decompressed bodies exceed 512 MiB.
+Prometheus Remote Read, Remote Write, and Loki protobuf/Snappy push requests return HTTP 400 when their decompressed bodies exceed 512 MiB. This decompression limit does not apply to the Loki JSON push path.
 When `max_in_flight_write_bytes` is configured, HTTP admission also counts decoded bodies and streamed bytes beyond `Content-Length`. Quota exhaustion returns HTTP 429 or gRPC `RESOURCE_EXHAUSTED`.
 Compressed gRPC requests reserve `max_recv_message_size` before decoding. Size client batches and server quotas for decompressed data.
 
 JSON2 type hints no longer accept `nullable` or `default`. Hinted fields are nullable, and missing values return NULL.
 Supported types are `STRING`, `BIGINT`, `BIGINT UNSIGNED`, `DOUBLE`, and `BOOLEAN`, with aliases `INT64`, `UINT64`, and `FLOAT64`. Remove the old options and replace unsupported types.
-JSON2 uses flat SSTs; CREATE and ALTER reject incompatible SST formats. JSON2 Bulk Write is unsupported.
+JSON2 uses flat SSTs; CREATE and ALTER reject incompatible SST formats.
 
 #### Flow mirror write limits
 
@@ -109,7 +109,7 @@ Monitor `greptime_table_operator_mirror_pending_rows` and `greptime_operator_dis
 #### Configuration and indexes
 
 - The Mito default `auto_flush_interval` changes from `30m` to `10m`. Explicit global and table-level settings remain unchanged.
-- Remove obsolete native-histogram experimental switches. They are ignored, including values set to `false`. Keep `prom_validation_mode` under `[prom_store]`.
+- Remove obsolete native-histogram experimental switches. They are ignored, including values set to `false`. Move `prom_validation_mode` from `[http]` to `[prom_store]`, preserving its value. The old location is ignored and falls back to `strict`; writes previously accepted with `lossy` or `unchecked` can then be rejected.
 - Streaming query analysis is enabled by default. Remove the ignored `experimental_enable_explain_analyze_stream` key.
 - Duplicate region-engine configurations fail startup. Retain one configuration per engine type.
 - Rebuild legacy fulltext bloom indexes through compaction or `ADMIN BUILD_INDEX`. Data remains readable, but legacy indexes do not prune scans until rebuilt. After a downgrade, v2 indexes also fall back to scans. Tantivy-backed `matches_term` uses a full scan; `matches()` is unchanged.

@@ -68,4 +68,4 @@ slowQuery:
   ttl: "90d"
 ```
 
-With `record_type = "log"`, slow-query output is independent of `logging.level`. It goes to stdout when `logging.append_stdout = true`, and to `greptimedb-slow-queries.*` files when `logging.enable_file_logging = true` and `logging.dir` is nonempty. Output uses the format and file-retention settings in `[logging]`.
+With `record_type = "log"`, slow-query output is independent of `logging.level`. It goes to stdout when `logging.append_stdout = true`, and to `greptimedb-slow-queries.*` files when `logging.enable_file_logging = true`. Set `logging.enable_file_logging = false` to disable file output. Standalone resolves an empty `logging.dir` to `<data_home>/logs`. Output uses the format and file-retention settings in `[logging]`.
