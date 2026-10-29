@@ -589,7 +589,7 @@ default_ratio = 1.0
 - `otlp_export_protocol`：导出 tracing 使用的 OTLP 协议，可选值为 `http`（HTTP + 二进制 protobuf）和 `grpc`，默认为 `http`。
 - `otlp_headers`：OTLP 导出请求附带的 HTTP 请求头，在 `[logging.otlp_headers]` 表中以键值对配置。仅在 `otlp_export_protocol` 为 `http` 时生效。
 - `append_stdout`：是否将日志打印到 stdout。默认是`true`。
-- `enable_file_logging`：是否写入日志文件，默认值为 `true`。设为 `false` 可关闭文件输出。Standalone 的 `dir` 为空时会使用 `<data_home>/logs`，不会关闭文件输出。
+- `enable_file_logging`：是否写入日志文件，默认值为 `true`。设为 `false` 可关闭文件输出。各组件都会为空的 `dir` 填入默认目录：datanode、standalone 和 metasrv 使用各自的 `<data_home>/logs`；frontend 和 flownode 使用 `./greptimedb_data/logs`。空值不会关闭文件输出。
 - `max_log_dir_size`：`dir` 中受管理日志文件的最大总大小。必要时会在写入前删除较旧的已关闭日志文件，但活动文件可能会超过此限制。设置为 `0B` 可禁用此限制。
 - `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
 

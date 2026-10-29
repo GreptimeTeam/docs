@@ -579,7 +579,7 @@ default_ratio = 1.0
 - `otlp_export_protocol`: The OTLP export protocol for traces. Available values: `http` (HTTP with binary protobuf) and `grpc`. Defaults to `http`.
 - `otlp_headers`: Additional HTTP headers sent with OTLP export requests, configured as key-value pairs in the `[logging.otlp_headers]` table. Only takes effect when `otlp_export_protocol` is `http`.
 - `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
-- `enable_file_logging`: Whether to write log files. Defaults to `true`; set to `false` to disable file output. Standalone resolves an empty `dir` to `<data_home>/logs`, so an empty value does not disable file output.
+- `enable_file_logging`: Whether to write log files. Defaults to `true`; set to `false` to disable file output. All components resolve an empty `dir` to a default directory: datanode, standalone, and metasrv use their respective `<data_home>/logs`; frontend and flownode use `./greptimedb_data/logs`. An empty value does not disable file output.
 - `max_log_dir_size`: The maximum total size of managed log files in `dir`. Old closed log files are removed before writing when necessary, while active files may exceed the limit. Set to `0B` to disable.
 - `tracing_sample_ratio`: This field can configure the sampling rate of tracing. How to use `tracing_sample_ratio`, please refer to [How to configure tracing sampling rate](/user-guide/deployments-administration/monitoring/tracing.md#guide-how-to-configure-tracing-sampling-rate).
 

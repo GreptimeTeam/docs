@@ -262,7 +262,7 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 ```bash
 curl -N -X POST 'http://127.0.0.1:4000/v1/sql/analyze/stream' \
   --data-urlencode 'db=public' \
-  --data-urlencode 'sql=EXPLAIN ANALYZE VERBOSE SELECT sum(number) FROM numbers' \
+  --data-urlencode 'sql=EXPLAIN ANALYZE VERBOSE SELECT count(*) FROM information_schema.tables' \
   --data-urlencode 'snapshot_interval_ms=1000'
 ```
 
