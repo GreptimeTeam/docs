@@ -155,7 +155,9 @@ ADMIN COMPACT_TABLE(
 1 row in set (0.01 sec)
 ```
 
-When executing this statement, GreptimeDB will split each SST file into segments with a time span of 1 hour (3600 seconds) and merge these segments into a single output, ensuring no overlapping files remain.
+This statement reorganizes SST files into one-hour (3600-second) windows.
+
+SWCS uses `compaction.twcs.max_output_file_size` as its output-file size threshold, resolved from table settings, database settings, then the built-in default. The default is `512MB`; `0` disables the size limit. Files split at time-series boundaries, so a single series can make a file exceed the threshold.
 
 You can also specify the `parallelism` parameter to speed up compaction by processing multiple files concurrently:
 

@@ -185,6 +185,25 @@ greptime cli data import-v2 \
   --from file:///tmp/greptime-snapshots/schema-only
 ```
 
+## Metric table export and packed layout
+
+Metric table export reads logical-table data through shared physical-table scans and supports Parquet only. The packed layout writes independent logical-table Parquet streams into shared objects and uses manifest v2. Schema-only snapshots retain manifest v1.
+
+`--pack-metric-data` enables shared scans and the packed layout. The source server must support packed export.
+
+```bash
+greptime cli data export-v2 create \
+  --addr 127.0.0.1:4000 \
+  --to file:///tmp/greptime-snapshots/metric-packed \
+  --format parquet \
+  --pack-metric-data
+```
+
+The local path must meet this page's shared-filesystem and `storage.copy_root` requirements. For a bounded time range, the start must precede the end.
+Use a CLI that supports manifest v2 for `verify` and `import-v2`. Import reads the layout from the manifest and requires no export flag.
+
+Before resuming an export, confirm that the previous export and its storage writes have ended. An HTTP timeout does not establish this. Retain the original export parameters and storage configuration when resuming.
+
 ## Choose the data file format
 
 Use `--format` to choose the data file format. Supported values are `parquet`, `csv`, and `json`. The default is `parquet`.

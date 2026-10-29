@@ -185,6 +185,25 @@ greptime cli data import-v2 \
   --from file:///tmp/greptime-snapshots/schema-only
 ```
 
+## Metric 表导出与 packed 布局
+
+Metric 表导出通过共享物理表扫描读取逻辑表数据，仅支持 Parquet。packed 布局将各逻辑表的独立 Parquet 数据流写入共享对象，快照使用 manifest v2；仅导出 schema 时仍使用 manifest v1。
+
+`--pack-metric-data` 启用共享扫描和 packed 布局。服务端需要支持 packed 导出。
+
+```bash
+greptime cli data export-v2 create \
+  --addr 127.0.0.1:4000 \
+  --to file:///tmp/greptime-snapshots/metric-packed \
+  --format parquet \
+  --pack-metric-data
+```
+
+本地路径须满足本页的共享文件系统和 `storage.copy_root` 要求。指定时间范围时，开始时间必须早于结束时间。
+使用支持 manifest v2 的 CLI 执行 `verify` 和 `import-v2`；导入从 manifest 识别布局，无需传入导出开关。
+
+恢复导出前，确认上一次导出及其存储写入已经结束。HTTP 超时不代表服务端已停止写入。恢复时保留原有导出参数和存储配置。
+
 ## 选择数据文件格式
 
 使用 `--format` 选择数据文件格式。支持的值为 `parquet`、`csv` 和 `json`，默认值为 `parquet`。

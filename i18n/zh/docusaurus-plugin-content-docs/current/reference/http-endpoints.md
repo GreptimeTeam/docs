@@ -244,6 +244,40 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 
 有关 PromQL API 的更多信息，请参阅 [PromQL 文档](/user-guide/query-data/promql.md)。
 
+### 流式查询分析
+
+`POST /v1/sql/analyze/stream` 返回 `text/event-stream` 格式的 Server-Sent Events（SSE），用于获取执行中的查询指标。
+该端点默认可用，无需配置开关。
+
+参数通过 URL 查询字符串或 `application/x-www-form-urlencoded` 请求体传入；同名参数以 URL 中的值为准。
+
+| 参数 | 要求 | 描述 |
+| --- | --- | --- |
+| `sql` | 必填 | 单条 `EXPLAIN ANALYZE VERBOSE` 或 `TQL ANALYZE VERBOSE` 语句。可省略格式，也可指定 `FORMAT JSON`；其他格式不受支持。 |
+| `db` | 可选 | 数据库，默认 `public`。 |
+| `snapshot_interval_ms` | 可选 | 指标快照间隔，单位为毫秒，默认 `5000`，限制在 `1000` 到 `60000` 之间。较大的快照会延长发送间隔。 |
+
+请求示例：
+
+```bash
+curl -N -X POST 'http://127.0.0.1:4000/v1/sql/analyze/stream' \
+  --data-urlencode 'db=public' \
+  --data-urlencode 'sql=EXPLAIN ANALYZE VERBOSE SELECT sum(number) FROM numbers' \
+  --data-urlencode 'snapshot_interval_ms=1000'
+```
+
+每个事件的 `data` 是 JSON 对象，包含 `seq`、`state`、`partial` 和 `elapsed_ms`。存在执行计划时还包含 `metrics`。
+
+| 事件 | 行为 |
+| --- | --- |
+| `metrics` | 完整指标快照，`partial = true`。慢客户端可能跳过中间快照，因此 `seq` 不保证连续。 |
+| `final` | 成功结束，`partial = false`，`output` 包含分析结果。 |
+| `error` | 执行失败，`partial = false`，`reason` 和 `code` 给出错误信息与 GreptimeDB 状态码。 |
+| `canceled` | 查询取消，`partial = false`，包含 `reason` 和 `code`。 |
+
+`final`、`error` 和 `canceled` 都是终止事件。快速完成的查询可能直接返回 `final`。建立事件流前的校验错误返回普通 JSON 错误响应。
+客户端断开连接后，服务端尽力取消查询；断开连接的客户端不会收到 `canceled` 事件。浏览器原生 `EventSource` 不支持此 POST 接口，需要使用支持流式响应的 HTTP 客户端。
+
 ## 协议端点
 
 这些端点实现 InfluxDB、Prometheus、OpenTelemetry、Loki、Splunk HEC 和 OpenTSDB 的部分 API。

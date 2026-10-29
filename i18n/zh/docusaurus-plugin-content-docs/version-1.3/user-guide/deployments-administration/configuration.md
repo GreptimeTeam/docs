@@ -141,6 +141,22 @@ compact_rt_max_blocking_threads = 4
 | `runtime.compact_rt_size`               | 整数   | `max(num_cpus / 2, 1)`   | 执行 compaction 操作的线程数。                                                                                                          |
 | `runtime.compact_rt_max_blocking_threads` | 整数 | `max(num_cpus / 2, 1)`   | compaction 操作的最大阻塞线程数。compaction picker 的 CPU 工作运行在该阻塞线程池中。显式设置为 `0` 时会被调整为 `1`。                    |
 
+#### 实验性查询与写入调度
+
+`[runtime.experimental_workload_scheduler]` 配置查询和写入任务的加权调度。默认禁用。
+查询和写入均有待执行任务时，调度器按权重分配运行时间；一侧空闲时，另一侧可以使用剩余时间。
+权重不限制线程数量或内存。
+
+```toml
+[runtime.experimental_workload_scheduler]
+enable = false
+query_weight = 2
+write_weight = 8
+sample_every_polls = 16
+```
+
+`query_weight` 和 `write_weight` 的默认值分别为 `2` 和 `8`，均须大于 `0`。`sample_every_polls` 指定两次公平性采样之间的 poll 次数，默认值为 `16`，必须大于 `0`。
+
 ### 写入内存限制选项
 
 内存限制选项控制所有协议（HTTP、gRPC 和 Arrow Flight）并发写入请求使用的总内存。
@@ -161,27 +177,22 @@ write_bytes_exhausted_policy = "wait"
 | `max_in_flight_write_bytes`     | 字符串 | `0`     | 所有并发写入请求体和消息（HTTP、gRPC、Flight）的最大总内存。设置为 `0` 表示禁用限制（无限制）。支持的单位：`B`、`KB`、`MB`、`GB` 等。示例：`1GB` 将并发写入总量限制为 1GB。                              |
 | `write_bytes_exhausted_policy`  | 字符串 | `wait`  | 写入字节配额耗尽时的策略。可选值：`wait`（默认，等待最多 10 秒）、`wait(<duration>)`（自定义超时时间，例如 `wait(30s)`）、`fail`（立即拒绝请求）。                                                      |
 
-### Datanode 查询并发限制
+<AnchorAlias id="datanode-查询并发限制" />
 
-这些选项用于限制单个 datanode 上可同时运行的读取查询数量。
-查询会一直计入并发限制，直到查询完成或客户端关闭结果流。
-如果达到并发限制，新查询最多等待 `concurrent_query_limiter_timeout` 配置的时间；如果仍然没有可用名额，查询将失败。
+### 查询并发限制
 
-这些选项适用于 `datanode` 子命令。
+这些选项适用于 `datanode` 和 `standalone`。限制按并发的 region 读取流计数，一条查询可能占用多个名额。
+读取流结束或关闭后释放名额。达到限制时，新读取流等待可用名额；超过等待时间后查询失败。
 
 ```toml
-# Datanode 上允许同时运行的最大读取查询数量。
-# 设置为 0 表示禁用限制（默认为无限制）。
 max_concurrent_queries = 0
-
-# 当达到 max_concurrent_queries 时，查询等待可用名额的最长时间。
 concurrent_query_limiter_timeout = "100ms"
 ```
 
-| 配置项                             | 类型   | 默认值    | 描述                                                                                                            |
-| ---------------------------------- | ------ | --------- | --------------------------------------------------------------------------------------------------------------- |
-| `max_concurrent_queries`           | 整数   | `0`       | Datanode 上允许同时运行的最大读取查询数量。设置为 `0` 表示禁用限制。                                  |
-| `concurrent_query_limiter_timeout` | 字符串 | `100ms` | 当达到 `max_concurrent_queries` 后，查询等待可用名额的最长时间。如果超时后仍然没有可用名额，查询将失败。 |
+| 配置项 | 类型 | 默认值 | 描述 |
+| --- | --- | --- | --- |
+| `max_concurrent_queries` | 整数 | `0` | 单个进程中并发的 region 读取流数量上限。`0` 表示不限制。 |
+| `concurrent_query_limiter_timeout` | 字符串 | `100ms` | 等待可用名额的最长时间。 |
 
 <AnchorAlias id="protocol-options" />
 
@@ -354,6 +365,31 @@ pending_rows_flush_interval = "500ms"
 parallelism = 0
 ```
 
+#### 实验性磁盘溢写和内存分配
+
+以下 `[query]` 配置适用于 standalone、datanode 和 frontend。
+`memory_pool_size` 支持绝对大小（如 `"2GiB"`）或可用内存百分比（如 `"50%"`）；默认不限制，`0` 或 `"unlimited"` 禁用该限制。
+
+| 配置项 | 默认值 | 描述 |
+| --- | --- | --- |
+| `experimental_memory_pool_policy` | `"greedy"` | `greedy` 按申请顺序分配内存；`fair` 将不可溢写预留之外的可用内存均分给可溢写预留。仅在 `memory_pool_size` 为非零限制时生效。 |
+| `experimental_spill_mode` | `"default"` | `default` 使用 DataFusion 默认的系统临时目录；`custom` 启用自定义目录、配额和压缩；`disabled` 禁止创建溢写文件，需要溢写的查询会失败。 |
+| `experimental_spill_path` | 未设置 | 溢写目录。仅在 `custom` 模式下生效；未设置时使用系统临时目录。 |
+| `experimental_spill_max_temp_directory_size` | `"1GiB"` | 溢写文件的总大小上限，仅在 `custom` 模式下生效。 |
+| `experimental_spill_compression` | `"uncompressed"` | `uncompressed`、`lz4_frame` 或 `zstd`，仅在 `custom` 模式下生效。 |
+
+配置示例：
+
+```toml
+[query]
+memory_pool_size = "2GiB"
+experimental_memory_pool_policy = "fair"
+experimental_spill_mode = "custom"
+experimental_spill_path = "/var/lib/greptimedb/spill"
+experimental_spill_max_temp_directory_size = "10GiB"
+experimental_spill_compression = "zstd"
+```
+
 <AnchorAlias id="storage-options" />
 
 ### 存储选项
@@ -419,6 +455,22 @@ root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
+
+#### HDFS
+
+`datanode` 和 `standalone` 支持通过 `Hdfs` 后端保存数据文件。官方默认构建包含 HDFS 支持；自定义构建需要启用 `hdfs-object-store` feature。
+
+```toml
+[storage]
+type = "Hdfs"
+root = "/greptimedb"
+name_node = "hdfs://127.0.0.1:9000"
+
+[storage.options]
+"dfs.client.block.write.replace-datanode-on-failure.enable" = "true"
+```
+
+`root` 指定 HDFS 中的数据根目录，`name_node` 指定 NameNode 地址，`options` 将字符串键值对传给 HDFS 客户端。
 
 #### 阿里云 OSS 凭证
 
@@ -509,6 +561,7 @@ enable_per_region_metrics = false
 otlp_endpoint = "http://localhost:4318/v1/traces"
 otlp_export_protocol = "http"
 append_stdout = true
+enable_file_logging = true
 max_log_dir_size = "0B"
 [logging.tracing_sample_ratio]
 default_ratio = 1.0
@@ -522,6 +575,7 @@ default_ratio = 1.0
 - `otlp_export_protocol`：导出 tracing 使用的 OTLP 协议，可选值为 `http`（HTTP + 二进制 protobuf）和 `grpc`，默认为 `http`。
 - `otlp_headers`：OTLP 导出请求附带的 HTTP 请求头，在 `[logging.otlp_headers]` 表中以键值对配置。仅在 `otlp_export_protocol` 为 `http` 时生效。
 - `append_stdout`：是否将日志打印到 stdout。默认是`true`。
+- `enable_file_logging`：是否写入日志文件，默认值为 `true`。文件输出还要求 `dir` 非空。
 - `max_log_dir_size`：`dir` 中受管理日志文件的最大总大小。必要时会在写入前删除较旧的已关闭日志文件，但活动文件可能会超过此限制。设置为 `0B` 可禁用此限制。
 - `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
 

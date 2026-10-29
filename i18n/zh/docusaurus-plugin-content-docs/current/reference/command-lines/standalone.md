@@ -19,6 +19,8 @@ greptime standalone start --help
 | `--data-home <DATA_HOME>`         | Standalone 实例的工作目录                         |
 | `--env-prefix <ENV_PREFIX>`       | 配置的环境变量前缀，默认为`GREPTIMEDB_STANDALONE` |
 | `--http-addr <HTTP_ADDR>`         | HTTP 服务器地址                                   |
+| `--http-api-server-addr <HTTP_API_SERVER_ADDR>` | 启动独立的公共 HTTP API 服务，并设置监听地址。该服务提供 `/v1` 和 `/dashboard`。 |
+| `-d`/`--daemon` | 在后台启动 standalone，仅适用于 Unix。 |
 | `-i`/`--influxdb-enable`          | 是否启用 InfluxDB 协议                            |
 | `--log-dir <LOG_DIR>`             | 日志目录                                          |
 | `--log-level <LOG_LEVEL>`         | 日志级别                                          |

@@ -5,7 +5,7 @@ description: 介绍如何在 GreptimeDB 中配置和使用慢查询日志进行�
 
 # 慢查询（实验性功能）
 
-GreptimeDB 提供了慢查询日志功能，帮助您发现和修复慢查询。默认情况下，慢查询会输出到系统表 `greptime_private.slow_queries` 中，阈值为 `30s`，采样率为 `1.0`，TTL 为 `30d`。
+GreptimeDB 提供了慢查询日志功能，帮助您发现和修复慢查询。默认情况下，慢查询会输出到系统表 `greptime_private.slow_queries` 中，阈值为 `30s`，采样率为 `1.0`，TTL 为 `90d`。
 
 `greptime_private.slow_queries` 表的架构如下：
 
@@ -53,8 +53,8 @@ threshold = "30s"
 ## 慢查询日志的采样率。值应在 (0, 1] 范围内。例如，`0.1` 表示 10% 的慢查询将被记录，`1.0` 表示所有慢查询将被记录。
 sample_ratio = 1.0
 
-## `slow_queries` 系统表的 TTL。当 `record_type` 为 `system_table` 时，默认值为 `30d`。
-ttl = "30d"
+## `slow_queries` 系统表的 TTL。当 `record_type` 为 `system_table` 时，默认值为 `90d`。
+ttl = "90d"
 ```
 
 如果你使用 Helm 部署 GreptimeDB，可以在 `values.yaml` 文件中配置慢查询，例如：
@@ -65,7 +65,7 @@ slowQuery:
   recordType: "system_table"
   threshold: "30s"
   sampleRatio: "1.0"
-  ttl: "30d"
+  ttl: "90d"
 ```
 
-如果使用 `log` 作为记录类型，慢查询将记录在日志文件 `greptimedb-slow-queries.*` 中。默认情况下，日志文件位于 `${data_home}/logs` 目录。
+`record_type = "log"` 的输出不受 `logging.level` 过滤。`logging.append_stdout = true` 时输出到标准输出；`logging.enable_file_logging = true` 且 `logging.dir` 非空时，写入该目录下的 `greptimedb-slow-queries.*` 文件。输出格式和文件保留策略使用 `[logging]` 配置。

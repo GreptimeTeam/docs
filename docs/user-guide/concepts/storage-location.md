@@ -5,7 +5,7 @@ description: Explains local and object-storage deployments, the roles of data fi
 
 # Storage Location
 
-GreptimeDB can keep persistent data files on a local file system or in object storage. Local storage is the default fit for standalone deployments. Shared object storage is commonly used by distributed deployments that need compute-storage separation.
+GreptimeDB can keep persistent data files on a local file system, in object storage, or in HDFS. Local storage is the default fit for standalone deployments. Shared object storage is commonly used by distributed deployments that need compute-storage separation.
 
 Storage location is separate from table engine selection. [Mito Engine and Metric Engine](/reference/about-greptimedb-engines.md) define how table data is organized and processed; local file systems, Amazon S3, Google Cloud Storage, and Azure Blob Storage are storage providers used to persist the resulting data files. Metric Engine is built on Mito Engine and uses its storage capabilities.
 
@@ -47,7 +47,8 @@ GreptimeDB supports:
 - Amazon S3 and S3-compatible services, including MinIO, RustFS, DigitalOcean Spaces, Tencent Cloud Object Storage, and Baidu Object Storage;
 - Google Cloud Storage;
 - Azure Blob Storage;
-- Alibaba Cloud OSS.
+- Alibaba Cloud OSS;
+- HDFS.
 
 See [Storage Options](/user-guide/deployments-administration/configuration.md#storage-options) for the complete configuration keys and current provider list.
 

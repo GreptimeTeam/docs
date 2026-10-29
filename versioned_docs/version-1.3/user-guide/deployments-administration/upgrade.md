@@ -69,6 +69,56 @@ If you are running a version earlier than v0.16, you must first upgrade to v0.16
 
 ### Upgrading from v1.2 to v1.3
 
+#### Cluster upgrade and rollback order
+
+Keep Metasrv [maintenance mode](/user-guide/deployments-administration/maintenance/maintenance-mode.md) enabled throughout the rolling upgrade. Disable it after all components have been upgraded. Batch GC in v1.3 uses a packed protocol with no legacy fallback; maintenance mode prevents it from running with mixed Metasrv and Datanode versions.
+
+Upgrade all Datanodes before Frontends. Roll back Frontends before Datanodes, including rollbacks managed by the Operator.
+v1.3 Frontend write retries depend on per-entry Datanode results. Mixing them with old Datanodes can replay successful writes and duplicate rows in append-mode tables. v1.3 PromQL plans also use functions unavailable on old Datanodes.
+
+#### Query and client compatibility
+
+| Change | Pre-upgrade check |
+| --- | --- |
+| MySQL text output truncates timestamp fractional seconds to microseconds. Stored nanoseconds remain unchanged. | Use an explicit string or integer cast in SQL when clients require full nanosecond precision. |
+| PromQL subqueries without a step use a fixed one-minute step. | Specify `[range:step]` for a different interval. |
+| PromQL range queries reject a range-vector root expression. | Use an instant query or reduce the range vector to an instant vector. |
+| `median`, `approx_median`, and `approx_percentile_cont` return floating-point results for integer inputs. Exact median interpolates even-sized inputs. | Check types in views, Flow sink tables, and other fixed-schema consumers. |
+| `REPLACE(s, '', replacement)` returns the original string. Generated column names for struct `unnest` change. | Review empty search strings and give expanded columns explicit aliases. |
+| PostgreSQL result metadata reports OID aliases such as `REGCLASS` and `REGTYPE`. | Check client handling of result types. |
+| Invalid JSONPath expressions return errors. | Use `$` for the root; replace invalid paths such as `.` and `$.`. |
+| SQL expression depth above `128` fails planning. | Simplify deeply nested generated queries. |
+
+#### Write requests and JSON2
+
+Prometheus Remote Read, Remote Write, and Loki requests return HTTP 400 when their decompressed bodies exceed 512 MiB.
+When `max_in_flight_write_bytes` is configured, HTTP admission also counts decoded bodies and streamed bytes beyond `Content-Length`. Quota exhaustion returns HTTP 429 or gRPC `RESOURCE_EXHAUSTED`.
+Compressed gRPC requests reserve `max_recv_message_size` before decoding. Size client batches and server quotas for decompressed data.
+
+JSON2 type hints no longer accept `nullable` or `default`. Hinted fields are nullable, and missing values return NULL.
+Supported types are `STRING`, `BIGINT`, `BIGINT UNSIGNED`, `DOUBLE`, and `BOOLEAN`, with aliases `INT64`, `UINT64`, and `FLOAT64`. Remove the old options and replace unsupported types.
+JSON2 uses flat SSTs; CREATE and ALTER reject incompatible SST formats. JSON2 Bulk Write is unsupported.
+
+#### Flow mirror write limits
+
+Flow mirroring has a pending budget of 1,000,000 rows. Copies sent to different Flownodes count separately.
+When the budget is exhausted, ordinary table writes can succeed while their Flow mirror batches are dropped, leaving gaps in Flow output.
+Instant-TTL writes are rejected before Datanode dispatch. Split any single batch that exceeds the budget.
+Monitor `greptime_table_operator_mirror_pending_rows` and `greptime_operator_dist_mirror_dropped_rows`.
+
+#### Configuration and indexes
+
+- The Mito default `auto_flush_interval` changes from `30m` to `10m`. Explicit global and table-level settings remain unchanged.
+- Remove obsolete native-histogram experimental switches. They are ignored, including values set to `false`. Keep `prom_validation_mode` under `[prom_store]`.
+- Streaming query analysis is enabled by default. Remove the ignored `experimental_enable_explain_analyze_stream` key.
+- Duplicate region-engine configurations fail startup. Retain one configuration per engine type.
+- Rebuild legacy fulltext bloom indexes through compaction or `ADMIN BUILD_INDEX`. Data remains readable, but legacy indexes do not prune scans until rebuilt. After a downgrade, v2 indexes also fall back to scans. Tantivy-backed `matches_term` uses a full scan; `matches()` is unchanged.
+
+#### UDDSketch state compatibility
+
+`uddsketch_state` and `uddsketch_merge` produce a new binary format. v1.3 reads legacy states, but v1.2.1 cannot read new states.
+Preserve pre-upgrade state data if rollback is required, and do not send newly generated states to old readers.
+
 #### VRL Host Access Is Now Disabled by Default
 
 **Impact:** Pipelines that use restricted VRL functions or arguments

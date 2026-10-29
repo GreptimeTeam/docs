@@ -22,6 +22,8 @@ This unified endpoint is useful when sending multiple signal types (metrics, log
 
 GreptimeDB is an observability backend to consume OpenTelemetry Metrics natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
 
+Metric timestamps are stored at the target table’s time-index precision. See [Metric table timestamp precision](./prometheus.md#metric-table-timestamp-precision) for a nanosecond-precision physical-table example.
+
 ### OTLP/HTTP API
 
 To send OpenTelemetry Metrics to GreptimeDB through OpenTelemetry SDK libraries, use the following information:

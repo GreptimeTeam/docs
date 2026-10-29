@@ -409,3 +409,19 @@ GreptimeDB 也支持这个变种。只需将 GreptimeDB 的 Remote Write URL 配
 ```shell
 vmagent -remoteWrite.url=http://localhost:4000/v1/prometheus/write
 ```
+
+## Metric 表的时间戳精度
+
+Metric 物理表的时间索引支持 `TIMESTAMP(0)`、`TIMESTAMP(3)`、`TIMESTAMP(6)` 和 `TIMESTAMP(9)`，分别表示秒、毫秒、微秒和纳秒。
+自动创建的物理表使用毫秒精度。需要其他精度时，在写入前创建物理表，并通过 `physical_table` 选择该表：
+
+```sql
+CREATE TABLE metrics_ns (
+    greptime_timestamp TIMESTAMP(9) TIME INDEX,
+    greptime_value DOUBLE
+) ENGINE = metric
+WITH (physical_metric_table = '');
+```
+
+自动创建的逻辑表继承物理表的时间索引精度。写入时，时间戳转换为目标表的精度；转换到较低精度会截断不足一个单位的部分。
+Prometheus 样本的源时间戳为毫秒，提高表精度不会增加源数据的精度。OTLP 指标的纳秒时间戳可通过预先创建的纳秒精度物理表保存。

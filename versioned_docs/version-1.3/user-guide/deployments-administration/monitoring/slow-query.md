@@ -5,7 +5,7 @@ description: Guide on configuring and using slow query logging in GreptimeDB for
 
 # Slow Query (Experimental)
 
-GreptimeDB provides a slow query log to help you find and fix slow queries. By default, the slow queries are output to the system table `greptime_private.slow_queries` with `30s` threshold and `1.0` sample ratio with `30d` TTL.
+GreptimeDB provides a slow query log to help you find and fix slow queries. By default, the slow queries are output to the system table `greptime_private.slow_queries` with `30s` threshold and `1.0` sample ratio with `90d` TTL.
 
 The schema of the `greptime_private.slow_queries` table is as follows:
 
@@ -53,8 +53,8 @@ threshold = "30s"
 ## The sampling ratio of slow query log. The value should be in the range of (0, 1]. For example, `0.1` means 10% of the slow queries will be logged and `1.0` means all slow queries will be logged.
 sample_ratio = 1.0
 
-## The TTL of the `slow_queries` system table. Default is `30d` when `record_type` is `system_table`.
-ttl = "30d"
+## The TTL of the `slow_queries` system table. Default is `90d` when `record_type` is `system_table`.
+ttl = "90d"
 ```
 
 If you use the Helm chart to deploy GreptimeDB, you can configure the slow query in the `values.yaml` file, for example:
@@ -65,7 +65,7 @@ slowQuery:
   recordType: "system_table"
   threshold: "30s"
   sampleRatio: "1.0"
-  ttl: "30d"
+  ttl: "90d"
 ```
 
-If you use `log` as the record type, the slow queries will be logged in a log file `greptimedb-slow-queries.*`. By default, the log file is located in the `${data_home}/logs` directory.
+With `record_type = "log"`, slow-query output is independent of `logging.level`. It goes to stdout when `logging.append_stdout = true`, and to `greptimedb-slow-queries.*` files when `logging.enable_file_logging = true` and `logging.dir` is nonempty. Output uses the format and file-retention settings in `[logging]`.

@@ -23,6 +23,8 @@ OpenTelemetry Protocol (OTLP) 定义了观测数据在观测源和中间进程�
 
 GreptimeDB 通过原生支持 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) 协议，可以作为后端存储服务来接收 OpenTelemetry 指标数据。
 
+指标时间戳按目标表的时间索引精度存储。纳秒精度物理表的建表示例见 [Metric 表的时间戳精度](./prometheus.md#metric-表的时间戳精度)。
+
 ### OTLP/HTTP API
 
 使用下面的信息通过 Opentelemetry SDK 库发送 Metrics 到 GreptimeDB：

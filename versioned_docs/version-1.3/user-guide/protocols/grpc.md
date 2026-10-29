@@ -25,3 +25,10 @@ Setting `insert_skip_wal` to `false` or omitting the hint does not enable WAL if
 When WAL is disabled, unflushed data is lost if the process restarts.
 Use this option only when the data can be ingested again from its source.
 :::
+
+## Bulk Write schema updates
+
+Arrow Flight `DoPut` Bulk Write requires an existing target table. When automatic schema updates are enabled, the server checks the stream's Arrow schema before processing the first data batch and adds missing columns to the table.
+New columns are fields, not primary-key columns. Define primary-key columns with SQL before writing.
+
+Automatic column addition does not support nested Arrow types or Dictionary types. Input must satisfy the target table's type, time-index, and nullability constraints. JSON2 Bulk Write is unsupported.

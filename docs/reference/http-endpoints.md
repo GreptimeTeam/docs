@@ -244,6 +244,40 @@ For more information on the Format SQL API, refer to the [HTTP API documentation
   
 For more information on the PromQL API, refer to the [PromQL documentation](/user-guide/query-data/promql.md).
 
+### Streaming query analysis
+
+`POST /v1/sql/analyze/stream` returns Server-Sent Events (SSE) with content type `text/event-stream` for query metrics during execution.
+The endpoint is available by default and requires no configuration switch.
+
+Parameters can be passed in the URL query string or an `application/x-www-form-urlencoded` body. URL parameters take precedence over body parameters with the same name.
+
+| Parameter | Requirement | Description |
+| --- | --- | --- |
+| `sql` | Required | One `EXPLAIN ANALYZE VERBOSE` or `TQL ANALYZE VERBOSE` statement. Omit the format or use `FORMAT JSON`; other formats are unsupported. |
+| `db` | Optional | Database. Defaults to `public`. |
+| `snapshot_interval_ms` | Optional | Metrics snapshot interval in milliseconds. Defaults to `5000` and is clamped to `1000`–`60000`. Large snapshots increase the interval. |
+
+Example request:
+
+```bash
+curl -N -X POST 'http://127.0.0.1:4000/v1/sql/analyze/stream' \
+  --data-urlencode 'db=public' \
+  --data-urlencode 'sql=EXPLAIN ANALYZE VERBOSE SELECT sum(number) FROM numbers' \
+  --data-urlencode 'snapshot_interval_ms=1000'
+```
+
+Each event's `data` is a JSON object with `seq`, `state`, `partial`, and `elapsed_ms`. It also includes `metrics` when an execution plan is available.
+
+| Event | Behavior |
+| --- | --- |
+| `metrics` | A complete metrics snapshot with `partial = true`. Slow clients can skip intermediate snapshots, so `seq` is not necessarily consecutive. |
+| `final` | Successful completion with `partial = false`; `output` contains the analysis result. |
+| `error` | Execution failure with `partial = false`; `reason` and `code` contain the error message and GreptimeDB status code. |
+| `canceled` | Query cancellation with `partial = false`, `reason`, and `code`. |
+
+`final`, `error`, and `canceled` are terminal events. A short query can return `final` without a metrics event. Validation failures before streaming return a regular JSON error response.
+On client disconnect, the server makes a best-effort attempt to cancel the query; the disconnected client receives no `canceled` event. Browser `EventSource` does not support this POST endpoint. Use an HTTP client that supports streaming responses.
+
 ## Protocol Endpoints
 
 These endpoints implement selected APIs from InfluxDB, Prometheus, OpenTelemetry, Loki, Splunk HEC, and OpenTSDB.

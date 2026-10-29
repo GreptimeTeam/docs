@@ -233,7 +233,7 @@ a range ID. Its `rows` includes full-file metadata counts, whereas
 
 The same scan details are available in ordinary nonverbose `EXPLAIN ANALYZE`
 and the first SSE event containing a scan plan from
-`POST /v1/sql/analyze/stream`; an early event can have no scan plan yet. A fast
+[`POST /v1/sql/analyze/stream`](/reference/http-endpoints.md#streaming-query-analysis); an early event can have no scan plan yet. A fast
 query can first expose the plan in its final event. The complete `files` list
 remains verbose-only, including in final verbose SSE output.
 
