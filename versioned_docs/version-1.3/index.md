@@ -8,7 +8,7 @@ import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
 # GreptimeDB Documentation
 
-**GreptimeDB** is an open-source observability database that stores metrics, logs, and traces in one engine. Run it as the single OpenTelemetry backend in place of Prometheus, Loki, and Elasticsearch, keep the data on object storage, and query all of it with [SQL](/user-guide/query-data/sql.md) and [PromQL](/user-guide/query-data/promql.md).
+**GreptimeDB** is an open-source [observability database](/user-guide/concepts/why-greptimedb.md#what-an-observability-database-is) that stores metrics, logs, and traces in one engine. Run it as the single OpenTelemetry backend in place of Prometheus, Loki, and Elasticsearch, keep the data on object storage, and query all of it with [SQL](/user-guide/query-data/sql.md) and [PromQL](/user-guide/query-data/promql.md).
 
 <HomeCards>
 
@@ -46,7 +46,7 @@ Installation, ingestion, queries, configuration — answered from this documenta
 
 **Give agents one query interface.** In [Agent RCA Bench](https://rca-bench.greptime.com/), six models investigated the same 14 incidents on GreptimeDB and on Prometheus, Loki, and Tempo: 40% fewer wrong diagnoses, 48% fewer input tokens read, about 45% lower cost to run.
 
-More in [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) and [Observability 2.0 and wide events](/user-guide/concepts/observability-2.md).
+More in [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) and [What an Observability Database Is](/user-guide/concepts/why-greptimedb.md#what-an-observability-database-is).
 
 ## Build with AI agents
 

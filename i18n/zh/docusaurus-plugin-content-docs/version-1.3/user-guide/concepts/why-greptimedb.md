@@ -13,6 +13,16 @@ GreptimeDB 是开源的可观测性数据库。它用同一个列式引擎存储
 
 GreptimeDB 不是通用事务数据库。它的存储、索引、留存和查询路径面向以追加写入为主的时间索引数据，例如可观测数据和 IoT 数据。
 
+## 什么是可观测性数据库
+
+可观测性数据库存储和查询遥测数据，包括 metrics、logs、traces 和宽事件，并根据这些数据的语义决定如何存储、建索引、查询和扩展。在 GreptimeDB 中：
+
+- **统一的逻辑模型和查询引擎。** 每种信号都是一张使用 [Tag、Timestamp、Field](./data-model.md) 列的表。SQL 可以查询任意表，PromQL 运行在同一个查询引擎上。
+- **保留写入时的语义。** 写入协议声明的语义，例如 OTLP 指标的类型、单位和 temporality，会记录为表选项，并通过[语义层](./semantic-layer.md)对外可见。
+- **按信号设计物理存储。** Prometheus 和 OTLP 指标写入 Metric Engine，多张逻辑指标表共享一张物理表；OTLP trace 写入按 `trace_id` 分区、带 skipping index 的 append-only 表。表选项和写入 hint 可以覆盖这些默认设置。
+
+关于这个概念的由来，以及它与可观测性平台、通用分析型数据库的区别，参见博客文章 [Observability Database：数据库该理解遥测数据吗？](https://greptime.cn/blogs/2026-08-26-what-is-an-observability-database)。
+
 <AnchorAlias id="问题三种信号三套系统" />
 <AnchorAlias id="统一处理可观测数据" />
 

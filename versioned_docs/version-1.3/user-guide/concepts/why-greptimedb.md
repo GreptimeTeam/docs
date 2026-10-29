@@ -13,6 +13,16 @@ GreptimeDB is an open-source observability database. It stores and queries metri
 
 GreptimeDB is not a general-purpose transactional database. Its storage, indexing, retention, and query paths are designed for append-heavy, time-indexed workloads such as observability and IoT data.
 
+## What an Observability Database Is
+
+An observability database stores and queries telemetry — metrics, logs, traces, and wide events — and uses the meaning of that data to decide how it is stored, indexed, queried, and scaled. In GreptimeDB:
+
+- **One logical model and query engine.** Every signal is a table with [Tag, Timestamp, and Field](./data-model.md) columns. SQL queries any table, and PromQL runs on the same query engine.
+- **Semantics kept from ingestion.** Semantics declared by the ingestion protocol, such as the metric type, unit, and temporality in OTLP, are stored as table options and exposed through the [semantic layer](./semantic-layer.md).
+- **Physical design per signal.** Prometheus and OTLP metrics go to the Metric Engine, where logical metric tables share a physical table. OTLP traces go to an append-only table partitioned by `trace_id` with skipping indexes. Table options and ingestion hints override these defaults.
+
+For the reasoning behind the term and how it differs from observability platforms and general-purpose analytical databases, read [Observability Database: Should the Database Understand Telemetry?](https://greptime.com/blogs/2026-08-26-what-is-an-observability-database).
+
 <AnchorAlias id="the-problem-three-systems-for-three-signals" />
 <AnchorAlias id="unified-processing-for-observability-data" />
 
