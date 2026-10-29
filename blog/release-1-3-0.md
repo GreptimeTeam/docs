@@ -83,9 +83,10 @@ The bundled Dashboard v0.14.2 adds **Signals Explore** for exploring metrics, lo
 
 JSON result columns also retain the per-column action to show or hide null fields introduced during beta.1 ([dashboard#653](https://github.com/GreptimeTeam/dashboard/pull/653)).
 
-![Signals Explore Metrics tab showing a grid of metric charts, with metric name prefixes and counts in the left panel.](https://docs.greptime.com/release-1-3-0-beta-2-signals-explore-metrics.png)
-
-![Signals Explore Logs tab grouping OpenTelemetry logs by service name, with log volume charts and trace ID links on each log line.](https://docs.greptime.com/release-1-3-0-beta-2-signals-explore-logs.png)
+<p>
+  <img src="https://raw.githubusercontent.com/GreptimeTeam/docs/08621814e68ff13d28c3554b8efae8847d75e24e/static/release-1-3-0-beta-2-signals-explore-metrics.png" alt="Signals Explore Metrics tab showing a grid of metric charts, with metric name prefixes and counts in the left panel." width="49%" />
+  <img src="https://raw.githubusercontent.com/GreptimeTeam/docs/08621814e68ff13d28c3554b8efae8847d75e24e/static/release-1-3-0-beta-2-signals-explore-logs.png" alt="Signals Explore Logs tab grouping OpenTelemetry logs by service name, with log volume charts and trace ID links on each log line." width="49%" />
+</p>
 
 #### Authentication
 
