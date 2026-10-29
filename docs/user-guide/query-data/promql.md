@@ -146,23 +146,25 @@ The [v1.3.0 release measurements](https://github.com/GreptimeTeam/greptimedb/rel
 | Prometheus compliance queries | 539 | 0 | 54.17% (292/539) | 94.81% (511/539) |
 | Generated queries (seed 1) | 1999 | 1 | 63.83% (1276/1999) | 93.35% (1866/1999) |
 
-Each percentage is the fraction of counted **test cases** that pass, not the fraction of PromQL functions implemented. A case must pass all its checks. Corpus cases use upstream expected results and include `@` variants and range-query checks. The compliance suite runs each query at three instants and over two time ranges against an embedded Prometheus engine. Generated queries use the same engine and test dataset.
-
-Both pass-rate columns compare result types, timestamps, labels, and sample values. The “Ignoring only `__name__`” column tolerates differences in `__name__`, the metric-name label; it still checks other labels. A query can return the expected numbers while producing different series labels, which affects label-based matching and alert output.
-
-The comparator allows floating-point tolerance. Matching empty results and errors count as passes; error-message text, warning/info annotations, and matrix series order do not affect the rates. The [harness comparison rules](https://github.com/GreptimeTeam/promql-compat/blob/1203cd8d1abec9934830d913a88fa0a9d014a5d1/README.md#limitations) describe the numeric tolerances.
-
-Excluded cases are outside both denominators. The corpus exclusions cover native histograms, experimental features, start timestamps, and delayed metric-name removal. One generated query is excluded because reference results vary between runs. These rates do not measure native histogram compatibility or predict the pass rate of a particular dashboard or alert-rule set.
+Percentages are test-case pass rates, with excluded cases omitted from the denominators; the last column ignores differences only in `__name__`. See the [promql-compat methodology](https://github.com/GreptimeTeam/promql-compat/blob/1203cd8d1abec9934830d913a88fa0a9d014a5d1/README.md#report).
 
 ### Known differences in v1.3.0
 
-| Query behavior | Difference from Prometheus |
-| --- | --- |
-| Metric-name labels | Some expressions retain or restore `__name__` when Prometheus removes it. For example, `sum(x > 0)` can return `{__name__="x"}` instead of `{}`. |
-| `first_over_time` | Not implemented. |
-| `absent_over_time` | Implemented, but some empty-window queries return no series instead of the expected value `1` and labels. |
-| `vector(time())` in nested expressions | Some compositions fail planning, such as `sum_over_time(vector(time())[100s:1s] @ 3000)`. |
-| Dynamic scalar parameters | Some uses of `scalar()` as an argument to `quantile_over_time` or `topk` fail planning. |
+| Query behavior | Example | Difference from Prometheus |
+| --- | --- | --- |
+| Metric-name labels in function and aggregation results | `rate(x[1m])`, `avg_over_time(x[5m])`, `abs(x)`, `sum(rate(x[1m]))` | GreptimeDB retains `__name__` in these results; Prometheus removes it. This also affects `histogram_quantile` results, Grafana legends, and labels consumed by alerting and recording rules. The behavior also exists in v1.2.1. |
+| Date functions with an argument | `year(vector(1136239445))` | Uses sample timestamps instead of sample values. At a query time in 2026, this returns `2026`; Prometheus interprets the value as Unix seconds and returns `2006`. The same issue affects `month`, `day_of_month`, `day_of_week`, `day_of_year`, `days_in_month`, `hour`, and `minute`. |
+| Selectors without a metric name | `{job="demo"}` | Returns `Expect a metric matcher, but not found`. A metric name or an explicit `__name__` matcher is required. |
+| `vector(time())` | `vector(time())` | Fails with `Invalid function argument for unknown` in both instant and range queries, including when used alone. |
+| `absent_over_time` | `absent_over_time(nonexistent_metric[5m])` | Some queries return different series than Prometheus: expected series can be missing, or extra series can appear. This example returns no series; Prometheus returns a series with value `1`. |
+| Dynamic scalar parameters | `topk(scalar(foo), x)`, `quantile_over_time(scalar(foo), x[5m])` | Some uses of `scalar()` as a parameter fail planning. |
+| `first_over_time` | `first_over_time(x[5m])` | Returns `Unsupported expr type`; the function is not implemented. |
+| Duplicate label sets | `ceil({__name__=~"testmetric1\|testmetric2"})`, `-{__name__=~"testmetric1\|testmetric2"}` | Prometheus rejects duplicate label sets after removing metric names. GreptimeDB can retain the names or return duplicate label sets without an error. |
+| Duplicate vector matches | `scalar_metric > on() dup_metric` | Can return a result when Prometheus rejects duplicate matches. With `scalar_metric{} = 3` and two `dup_metric` series with different labels and values `1` and `2`, GreptimeDB returns `{} => 3`. |
+| Reversed `clamp` bounds | `clamp(x, 10, 1)` | Returns an execution error; Prometheus returns an empty result. |
+| UTF-8 destination labels | `label_replace(x, "~invalid", "v", "__name__", ".*")` | Rejects the destination label name; Prometheus 3 accepts it as a UTF-8 label name. |
+
+Examples using `x` require an existing float metric with samples in the queried interval; `foo` has one series. The duplicate-label examples use `testmetric1` and `testmetric2` with identical labels other than `__name__` and samples at the same timestamp. `nonexistent_metric` must not exist.
 
 ### Literal
 
@@ -170,7 +172,7 @@ Both string and float literals are supported, with the same [rule](https://prome
 
 ### Selector
 
-Both instant and range selector are supported. Label matching on the metric name (`__name__`) has the following restrictions:
+Instant and range selectors require a metric name or an explicit `__name__` matcher. A selector with only ordinary labels, such as `{job="demo"}`, returns an error. Metric-name matching has the following restrictions:
 
 - In [`TQL`](#sql), only equal-matching is supported, for example `{__name__="request_count"}`.
 - The [Prometheus HTTP API](#prometheus-http-api) also supports regex-matching and negative matching, for example `{__name__=~"request_.*"}` or `{__name__!="request_count", host="h1"}`. These matchers only match tables created by the metric engine, such as tables written through Prometheus Remote Write.
@@ -207,7 +209,7 @@ PromQL evaluation times and steps use millisecond precision. Sample selection pr
     | or       |
     | unless   |
 
-Vector matching supports `on`, `ignoring`, `group_left`, and `group_right`. Arithmetic and comparison operations reject invalid many-to-many matches and duplicate result label sets.
+Vector matching supports `on`, `ignoring`, `group_left`, and `group_right`. Some duplicate matches and duplicate label sets are not rejected; see [Known differences in v1.3.0](#known-differences-in-v130) for examples.
 
 ### Aggregators
 
@@ -229,11 +231,22 @@ Vector matching supports `on`, `ignoring`, `group_left`, and `group_right`. Arit
 
 ### Instant Functions
 
-The following functions are implemented; composition limits are listed under [Known differences in v1.3.0](#known-differences-in-v130). `histogram_count`, `histogram_sum`, `histogram_avg`, `histogram_stddev`, and `histogram_stdvar` operate on native histogram samples.
+The following functions are implemented; behavior differences and argument limits are listed under [Known differences in v1.3.0](#known-differences-in-v130). `histogram_count`, `histogram_sum`, `histogram_avg`, `histogram_stddev`, and `histogram_stdvar` operate on native histogram samples.
 
 - Supported:
     | Function           | Example                           |
     | :----------------- | :-------------------------------- |
+    | round | `round(metric)` |
+    | vector | `vector(1)` |
+    | time | `time()` |
+    | year | `year()` |
+    | month | `month()` |
+    | day_of_month | `day_of_month()` |
+    | day_of_week | `day_of_week()` |
+    | day_of_year | `day_of_year()` |
+    | days_in_month | `days_in_month()` |
+    | hour | `hour()` |
+    | minute | `minute()` |
     | abs                | `abs(metric)`                     |
     | ceil               | `ceil(metric)`                    |
     | exp                | `exp(metric)`                     |

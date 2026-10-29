@@ -148,23 +148,25 @@ PromQL 查询支持浮点样本和原生直方图样本。浮点指标使用时�
 | Prometheus compliance 查询集 | 539 | 0 | 54.17% (292/539) | 94.81% (511/539) |
 | 随机生成的查询（seed 1） | 1999 | 1 | 63.83% (1276/1999) | 93.35% (1866/1999) |
 
-百分比表示计入统计的**测试用例通过率**，不是已实现的 PromQL 函数占比。一个用例中的所有检查都通过，才计为通过。Prometheus 用例集采用上游的预期结果，并包含 `@` 变体和范围查询检查。Compliance 查询集将每条查询在三个时刻和两个时间范围内的结果与内嵌 Prometheus 引擎比较；随机查询使用同一引擎和测试数据集。
-
-两种通过率都比较结果类型、时间戳、标签和样本值。「仅忽略 `__name__` 差异」一列只允许指标名称标签 `__name__` 不同，其他标签仍须匹配。查询可能返回相同的数值，但结果标签不同，影响后续按标签匹配和告警输出。
-
-比较允许浮点误差。双方都返回空结果或错误也计为通过；错误消息文本、warning/info 注解和 matrix 中的序列排列顺序不影响通过率。数值容差见[测试工具的比较规则](https://github.com/GreptimeTeam/promql-compat/blob/1203cd8d1abec9934830d913a88fa0a9d014a5d1/README.md#limitations)。
-
-排除的用例不计入任一列的分母。Prometheus 用例集排除了原生直方图、实验性特性、起始时间戳和延迟移除指标名称的相关用例；另有一条随机查询因参考结果在多次运行间不一致而被排除。这些通过率不衡量原生直方图兼容性，也不代表某组仪表盘或告警规则的通过率。
+百分比为测试用例通过率，排除项不计入分母；最后一列仅忽略 `__name__` 差异。测试方法见 [promql-compat README](https://github.com/GreptimeTeam/promql-compat/blob/1203cd8d1abec9934830d913a88fa0a9d014a5d1/README.md#report)。
 
 ### v1.3.0 已知差异
 
-| 查询行为 | 与 Prometheus 的差异 |
-| --- | --- |
-| 指标名称标签 | 部分表达式会保留或重新附加 Prometheus 已移除的 `__name__`。例如，`sum(x > 0)` 可能返回 `{__name__="x"}`，而不是 `{}`。 |
-| `first_over_time` | 尚未实现。 |
-| `absent_over_time` | 已实现，但部分空窗口查询不返回序列，而不是预期的值 `1` 及对应标签。 |
-| 嵌套表达式中的 `vector(time())` | 部分组合无法生成执行计划，例如 `sum_over_time(vector(time())[100s:1s] @ 3000)`。 |
-| 动态 scalar 参数 | 将 `scalar()` 用作 `quantile_over_time` 或 `topk` 的参数时，部分查询无法生成执行计划。 |
+| 查询行为 | 示例 | 与 Prometheus 的差异 |
+| --- | --- | --- |
+| 函数和聚合结果中的指标名称 | `rate(x[1m])`、`avg_over_time(x[5m])`、`abs(x)`、`sum(rate(x[1m]))` | GreptimeDB 在这些结果中保留 `__name__`，Prometheus 会移除它。`histogram_quantile` 的结果也有此差异，会影响 Grafana 图例，以及告警和 recording rule 使用的标签。v1.2.1 也存在此行为。 |
+| 带参数的日期函数 | `year(vector(1136239445))` | 使用样本时间戳，而不是样本值。查询时刻在 2026 年时，此查询返回 `2026`；Prometheus 将样本值解释为 Unix 秒数，返回 `2006`。`month`、`day_of_month`、`day_of_week`、`day_of_year`、`days_in_month`、`hour` 和 `minute` 也有此问题。 |
+| 不带指标名的选择器 | `{job="demo"}` | 返回 `Expect a metric matcher, but not found`。必须指定指标名或显式的 `__name__` 匹配器。 |
+| `vector(time())` | `vector(time())` | 瞬时查询和范围查询均返回 `Invalid function argument for unknown`，单独调用也会失败。 |
+| `absent_over_time` | `absent_over_time(nonexistent_metric[5m])` | 部分查询返回的序列与 Prometheus 不同，既可能缺少预期序列，也可能多返回序列。此例不返回序列，Prometheus 会返回值为 `1` 的序列。 |
+| 动态 scalar 参数 | `topk(scalar(foo), x)`、`quantile_over_time(scalar(foo), x[5m])` | 将 `scalar()` 用作参数时，部分查询无法生成执行计划。 |
+| `first_over_time` | `first_over_time(x[5m])` | 返回 `Unsupported expr type`，尚未实现。 |
+| 重复标签集 | `ceil({__name__=~"testmetric1\|testmetric2"})`、`-{__name__=~"testmetric1\|testmetric2"}` | 移除指标名后出现重复标签集时，Prometheus 会报错。GreptimeDB 可能保留指标名，或返回重复标签集而不报错。 |
+| 重复向量匹配 | `scalar_metric > on() dup_metric` | Prometheus 因重复匹配报错时，GreptimeDB 可能返回结果。例如，`scalar_metric{} = 3`，两个标签不同的 `dup_metric` 序列值分别为 `1` 和 `2` 时，GreptimeDB 返回 `{} => 3`。 |
+| `clamp` 下界大于上界 | `clamp(x, 10, 1)` | 返回执行错误，Prometheus 返回空结果。 |
+| UTF-8 目标标签名 | `label_replace(x, "~invalid", "v", "__name__", ".*")` | 拒绝该目标标签名，Prometheus 3 将其作为 UTF-8 标签名接受。 |
+
+示例中的 `x` 是查询区间内有样本的已有浮点指标，`foo` 包含一条序列。重复标签集示例中的 `testmetric1` 和 `testmetric2` 除 `__name__` 外标签相同，且样本时间戳相同。`nonexistent_metric` 必须不存在。
 
 ### 字面量
 
@@ -172,7 +174,7 @@ PromQL 查询支持浮点样本和原生直方图样本。浮点指标使用时�
 
 ### 选择器
 
-Instant 选择器和 Range 选择器均已支持。指标名称（`__name__`）的标签匹配有以下限制：
+Instant 选择器和 Range 选择器均已支持。选择器必须指定指标名或显式的 `__name__` 匹配器；只有普通标签的选择器（如 `{job="demo"}`）会报错。指标名称匹配有以下限制：
 
 - 在 [`TQL`](#sql) 中只支持等值匹配，例如 `{__name__="request_count"}`。
 - [Prometheus HTTP API](#prometheus-的-http-api) 还支持正则匹配和反向匹配，例如 `{__name__=~"request_.*"}` 或 `{__name__!="request_count", host="h1"}`。这些匹配只作用于 metric engine 创建的表，例如通过 Prometheus Remote Write 写入的表。
@@ -209,7 +211,7 @@ PromQL 的求值时刻和步长使用毫秒精度。样本选择保留存储的�
     | or       |
     | unless   |
 
-支持 `on`、`ignoring`、`group_left` 和 `group_right` 向量匹配修饰符。算术和比较运算会拒绝不允许的多对多匹配，以及产生重复标签集的结果。
+支持 `on`、`ignoring`、`group_left` 和 `group_right` 向量匹配修饰符。部分重复匹配和重复标签集未被拒绝，示例见 [v1.3.0 已知差异](#v130-已知差异)。
 
 ### Aggregators
 
@@ -231,11 +233,22 @@ PromQL 的求值时刻和步长使用毫秒精度。样本选择保留存储的�
 
 ### Instant Functions
 
-以下列表包含已实现的函数；已知组合限制见 [v1.3.0 已知差异](#v130-已知差异)。`histogram_count`、`histogram_sum`、`histogram_avg`、`histogram_stddev` 和 `histogram_stdvar` 用于原生直方图样本。
+以下列表包含已实现的函数；行为差异和参数限制见 [v1.3.0 已知差异](#v130-已知差异)。`histogram_count`、`histogram_sum`、`histogram_avg`、`histogram_stddev` 和 `histogram_stdvar` 用于原生直方图样本。
 
 - 支持：
     | Function           | Example                           |
     | :----------------- | :-------------------------------- |
+    | round | `round(metric)` |
+    | vector | `vector(1)` |
+    | time | `time()` |
+    | year | `year()` |
+    | month | `month()` |
+    | day_of_month | `day_of_month()` |
+    | day_of_week | `day_of_week()` |
+    | day_of_year | `day_of_year()` |
+    | days_in_month | `days_in_month()` |
+    | hour | `hour()` |
+    | minute | `minute()` |
     | abs                | `abs(metric)`                     |
     | ceil               | `ceil(metric)`                    |
     | exp                | `exp(metric)`                     |
