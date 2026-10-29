@@ -1,0 +1,641 @@
+---
+keywords: [release, GreptimeDB, changelog, v1.3.0]
+description: GreptimeDB v1.3.0 Changelog
+date: 2026-10-28
+---
+# v1.3.0
+
+Release date: October 28, 2026
+
+GreptimeDB v1.3.0 adds native histogram ingestion, a semantic entity graph over metrics and traces, an opt-in trace schema with JSON2 attributes, and automatic retries for distributed writes. It also fixes incorrect SQL and PromQL results, write routing during schema changes, and storage recovery failures.
+
+### 👍 Highlights
+
+#### Ingest native histograms without experimental switches
+
+Prometheus Remote Write v2 native histograms and cumulative OTLP/HTTP exponential histograms are accepted by default. PromQL can query native histograms, including quantiles and fractions. Remote Write v1 native histograms, native histogram Remote Read, and OTel Arrow exponential histograms remain unsupported. ([#9301](https://github.com/GreptimeTeam/greptimedb/pull/9301), [#8758](https://github.com/GreptimeTeam/greptimedb/pull/8758), [#8874](https://github.com/GreptimeTeam/greptimedb/pull/8874))
+
+#### Trace V2: JSON2 attributes with Jaeger and semantic entity graph support
+
+The opt-in `greptime_trace_v2` pipeline stores span, scope, and resource attributes in three JSON2 columns instead of adding a SQL column for every attribute. Its 19-column schema also preserves span events and links as JSON arrays. Jaeger queries and [semantic entity graph](#semantic-entity-graph-experimental) derivation support the new model.
+
+Select `greptime_trace_v2` with the `x-greptime-pipeline-name` header on OTLP trace ingestion requests. Use a separate destination table from Trace V1. After ingesting into a table named `traces_v2`, query typed attributes directly:
+
+```sql
+SELECT
+    trace_id,
+    span_attributes."http.status_code"::BIGINT AS http_status,
+    resource_attributes."service.name"::STRING AS service_name
+FROM traces_v2;
+```
+
+Existing Trace V1 tables are not automatically migrated. Events and links use JSON in this release; `ARRAY(JSON2)` is deferred. See [#9192](https://github.com/GreptimeTeam/greptimedb/pull/9192), [#9232](https://github.com/GreptimeTeam/greptimedb/pull/9232), [#9257](https://github.com/GreptimeTeam/greptimedb/pull/9257), and [#9278](https://github.com/GreptimeTeam/greptimedb/pull/9278).
+
+#### Semantic entity graph (experimental)
+
+**Semantic entity graph is experimental. Future releases may introduce breaking changes.**
+
+GreptimeDB derives an entity graph of services, hosts, containers, and Kubernetes objects from metrics and traces at query time, using built-in conventions for OpenTelemetry, Prometheus, and Kubernetes data. Query it with SQL through `greptime_private.semantic_entities` and `greptime_private.semantic_relationships`. `information_schema.table_semantics` shows what each table contributes to the graph, and `ALTER TABLE ... SET/UNSET` adjusts a table’s semantic options. [GreptimeDB MCP Server](https://github.com/GreptimeTeam/greptimedb-mcp-server) v0.6.0 and later lets AI agents query the graph through `query_semantic_graph` and find tables by concept through `search_table_semantics`.
+
+See [#8614](https://github.com/GreptimeTeam/greptimedb/pull/8614), [#8854](https://github.com/GreptimeTeam/greptimedb/pull/8854), [#8880](https://github.com/GreptimeTeam/greptimedb/pull/8880), [#8904](https://github.com/GreptimeTeam/greptimedb/pull/8904), [#8936](https://github.com/GreptimeTeam/greptimedb/pull/8936).
+
+#### Retry distributed writes without replaying successful entries
+
+Frontends retry transient distributed write failures up to three times by default, refreshing routes when regions move or partitions change. Per-datanode batches remain intact, and partial-failure responses let the frontend retry failed entries without replaying acknowledged successes. Whole-RPC failures can still have an uncertain outcome. Retries do not provide exactly-once ingestion. ([#9542](https://github.com/GreptimeTeam/greptimedb/pull/9542), [#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543), [#9728](https://github.com/GreptimeTeam/greptimedb/pull/9728), [#9720](https://github.com/GreptimeTeam/greptimedb/pull/9720))
+
+The frontend defaults are:
+
+```toml
+[write_retry]
+max_retries = 3
+initial_backoff = "1500ms"
+max_backoff = "10s"
+backoff_multiplier = 2.0
+```
+
+Set `max_retries = 0` to disable retries. These settings apply to distributed frontends, not standalone deployments.
+
+#### Improved compaction algorithms and TWCS tuning
+
+TWCS reduces repeated rewrites for continuously ingested time-series data and lets you tune compaction separately for active and inactive time windows.
+
+Three new tuning options accompany the renamed active-window file-count trigger; the example below shows their defaults:
+
+```sql
+ALTER TABLE my_table SET
+    'compaction.twcs.active_window.trigger_file_num' = '4',
+    'compaction.twcs.active_window.l1_merge_trigger' = '16',
+    'compaction.twcs.inactive_window.trigger_file_num' = '2',
+    'compaction.twcs.inactive_window.l1_merge_trigger' = '8';
+```
+
+The existing `compaction.twcs.trigger_file_num` option remains accepted as an alias for `compaction.twcs.active_window.trigger_file_num`; inactive windows now use their own thresholds. See [#8989](https://github.com/GreptimeTeam/greptimedb/pull/8989), [#9064](https://github.com/GreptimeTeam/greptimedb/pull/9064), and [#9011](https://github.com/GreptimeTeam/greptimedb/pull/9011).
+
+#### Query and write correctness fixes
+
+- SQL and PromQL fixes preserve matching rows and requested ordering, retain `IGNORE NULLS` semantics, and prevent NaN ratios from triggering false alerts. They also correct folded-histogram operations and logical metric-table ordering. ([#9600](https://github.com/GreptimeTeam/greptimedb/pull/9600), [#10026](https://github.com/GreptimeTeam/greptimedb/pull/10026), [#9601](https://github.com/GreptimeTeam/greptimedb/pull/9601), [#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479), [#9509](https://github.com/GreptimeTeam/greptimedb/pull/9509), [#9522](https://github.com/GreptimeTeam/greptimedb/pull/9522))
+- Fulltext bloom indexes no longer skip matching rows containing underscores or mixed Han and ASCII text. Eligible case-sensitive `LIKE` patterns can also use bloom pruning; see Upgrade notes for rebuilding existing indexes. ([#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470))
+- Storage fixes preserve newer writes during bulk merges, flush skip-WAL writes on graceful region close, and keep repartition routing consistent. Flush and compaction also retain SSTs after ambiguous manifest-save failures instead of deleting files that may already be referenced. ([#9517](https://github.com/GreptimeTeam/greptimedb/pull/9517), [#9440](https://github.com/GreptimeTeam/greptimedb/pull/9440), [#9458](https://github.com/GreptimeTeam/greptimedb/pull/9458), [#9898](https://github.com/GreptimeTeam/greptimedb/pull/9898))
+
+#### Dashboard
+
+The bundled Dashboard v0.14.2 adds **Signals Explore** for exploring metrics, logs, and traces with label filters and links between logs and traces. Native and gauge histograms are not charted yet. Timezone settings apply consistently to display and SQL requests, including the browser's IANA timezone when **Browser** is selected. This version also fixes log scrolling, loading indicators, and trace-ID queries. ([Signals Explore](https://github.com/GreptimeTeam/dashboard/pull/651), [timezone settings](https://github.com/GreptimeTeam/dashboard/pull/657), [v0.14.2](https://github.com/GreptimeTeam/dashboard/releases/tag/v0.14.2))
+
+JSON result columns also retain the per-column action to show or hide null fields introduced during beta.1 ([dashboard#653](https://github.com/GreptimeTeam/dashboard/pull/653)).
+
+<p>
+  <img src="https://raw.githubusercontent.com/GreptimeTeam/docs/08621814e68ff13d28c3554b8efae8847d75e24e/static/release-1-3-0-beta-2-signals-explore-metrics.png" alt="Signals Explore Metrics tab showing a grid of metric charts, with metric name prefixes and counts in the left panel." width="49%" />
+  <img src="https://raw.githubusercontent.com/GreptimeTeam/docs/08621814e68ff13d28c3554b8efae8847d75e24e/static/release-1-3-0-beta-2-signals-explore-logs.png" alt="Signals Explore Logs tab grouping OpenTelemetry logs by service name, with log volume charts and trace ID links on each log line." width="49%" />
+</p>
+
+#### Authentication
+
+Bearer-token authentication is now supported over HTTP and SQL protocols, and MySQL authentication methods can be selected per user. ([#8719](https://github.com/GreptimeTeam/greptimedb/pull/8719), [#8899](https://github.com/GreptimeTeam/greptimedb/pull/8899), [#9078](https://github.com/GreptimeTeam/greptimedb/pull/9078))
+
+### Upgrade notes
+
+- Keep metasrv maintenance mode enabled throughout a rolling upgrade so Batch GC does not run against mixed metasrv/datanode versions: its new packed protocol has no legacy fallback. Disable maintenance mode only after the upgrade is complete. ([#9009](https://github.com/GreptimeTeam/greptimedb/pull/9009))
+- Upgrade all datanodes before frontends; roll back frontends before datanodes. New frontend write retries require per-entry datanode results: mixing new frontends with old datanodes can replay successful writes and duplicate rows in append-mode tables. New PromQL plans also use functions absent from older datanodes; operator-managed rollbacks must also stage frontends first. ([#9720](https://github.com/GreptimeTeam/greptimedb/pull/9720), [#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479))
+- Review `region_engine.mito.scan_memory_limit`, which now defaults to `25%` of available system memory, and `scan_memory_mode`, which defaults to `basic` and accounts for projected Parquet row-group decoding. Existing explicit nonzero limits also change behavior: `basic` no longer charges cumulative streamed batches. Use `extended` to account for both decoding and streamed batches, but review capacity because the same limit may now reject previously successful scans. Explicitly set `scan_memory_limit = "unlimited"` to retain disabled scan enforcement and file-count checks; this does not restore the old series-merge memory pool. ([#9101](https://github.com/GreptimeTeam/greptimedb/pull/9101))
+- Replace `scan_memory_on_exhausted = "wait"` or `"wait(<duration>)"` with `"fail"`: old values still load but are normalized to immediate failure. Review `query.memory_pool_size`, now shared by internal two-phase series merges, and scan-memory alerts, whose usage metric now reflects decoder reservations in basic mode and reservations plus streamed batches in extended mode. ([#9101](https://github.com/GreptimeTeam/greptimedb/pull/9101))
+- Check existing VRL pipelines for environment, filesystem, hostname, local-timezone, network, and explicit logging functions. These functions, Grok file imports, and local or dynamic timezone arguments are rejected by default, including when stored pipelines reload; set `pipeline.allow_vrl_host_access = true` only if those capabilities are required. ([#9610](https://github.com/GreptimeTeam/greptimedb/pull/9610))
+- Rebuild legacy fulltext bloom indexes through compaction or `ADMIN BUILD_INDEX` to regain pruning. Table data remains readable, but legacy bloom index blobs are bypassed until rebuilt. New v2 blobs also fall back to scans after downgrade, and Han bigram tokenization can increase index size. Tantivy-backed `matches_term` now uses a full scan; `matches()` is unchanged. ([#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470))
+- Remove the obsolete native-histogram experimental switches: they are ignored, including values set to `false`. Keep `prom_validation_mode` under `[prom_store]`. ([#8744](https://github.com/GreptimeTeam/greptimedb/pull/8744), [#9301](https://github.com/GreptimeTeam/greptimedb/pull/9301))
+- Review automatic flush frequency if it was not configured: the Mito default changes from 30 minutes to 10 minutes. Explicit global and per-table overrides remain unchanged. ([#8971](https://github.com/GreptimeTeam/greptimedb/pull/8971))
+- Flow mirroring has a one-million-row pending budget, counting copies sent to each flownode. Ordinary writes can succeed while their Flow mirror batches are dropped, leaving gaps in Flow output; instant-TTL writes are rejected before datanode dispatch when the budget is exhausted, and a single oversized instant-TTL batch must be split. Monitor `greptime_table_operator_mirror_pending_rows` and `greptime_operator_dist_mirror_dropped_rows`. ([#9421](https://github.com/GreptimeTeam/greptimedb/pull/9421))
+- Existing JSON2 regions recover with flat SST output; CREATE and ALTER reject incompatible SST formats. JSON2 bulk inserts remain unsupported and are rejected before WAL persistence. ([#9893](https://github.com/GreptimeTeam/greptimedb/pull/9893), [#9698](https://github.com/GreptimeTeam/greptimedb/pull/9698))
+
+### Breaking changes
+
+- `uddsketch_state` and `uddsketch_merge` now produce a new binary format. v1.3 reads legacy states, but v1.2.1 readers do not understand newly produced states; preserve pre-upgrade state data if rollback is required, and do not send new states to old readers. ([#8867](https://github.com/GreptimeTeam/greptimedb/pull/8867))
+- OTLP metrics with a nonempty `service.namespace` now use `job="<namespace>/<service.name>"` instead of just the service name. Update dashboard selectors and alert rules; existing rows are not relabeled, so queries spanning the upgrade may need both label values. This change applies even when `otlp.experimental_enable_resource_info` is disabled. ([#8904](https://github.com/GreptimeTeam/greptimedb/pull/8904))
+- OTLP delta metrics use the reserved `otlp_aggregation_temporality="delta"` label. Existing series carrying this label also use raw-delta semantics for PromQL `rate()` and `increase()`; OTLP attributes resolving to the reserved label are rejected. Fixed-schema tables need the nullable tag to accept delta writes. ([#8970](https://github.com/GreptimeTeam/greptimedb/pull/8970))
+- DataFusion 55.1 changes integer-input `median`, `approx_median`, and `approx_percentile_cont` results to floating point; exact median interpolates even-sized inputs. Review fixed-schema consumers such as views and Flow sinks, and expect approximate aggregate results to differ. ([#8555](https://github.com/GreptimeTeam/greptimedb/pull/8555), [#9177](https://github.com/GreptimeTeam/greptimedb/pull/9177))
+- `REPLACE(s, '', replacement)` returns `s` unchanged; generated struct `unnest` column names change, so use explicit aliases. PostgreSQL result metadata now reports OID aliases such as `REGCLASS` and `REGTYPE` rather than only their former integer or string types. ([#8555](https://github.com/GreptimeTeam/greptimedb/pull/8555))
+- MySQL timestamp text output truncates fractional seconds to microseconds. Stored nanoseconds remain unchanged; use an explicit string or integer cast when a client needs the full precision. ([#9831](https://github.com/GreptimeTeam/greptimedb/pull/9831))
+- SQL expression depth above 128 is rejected during planning. Simplify deeply nested generated predicates. ([#9564](https://github.com/GreptimeTeam/greptimedb/pull/9564))
+- Decompressed Prometheus Remote Read/Write and Loki bodies above 512 MiB return HTTP 400. With `max_in_flight_write_bytes` configured, HTTP admission also charges decoded bodies and streamed bytes beyond `Content-Length`; quota exhaustion returns HTTP 429 or gRPC `RESOURCE_EXHAUSTED`. Compressed gRPC requests reserve `max_recv_message_size` before decoding, so review the quota and client batch sizes rather than relying on compressed wire size. ([#9264](https://github.com/GreptimeTeam/greptimedb/pull/9264))
+- JSON2 type hints no longer accept `nullable` or `default`; hinted fields are nullable and missing values produce NULL. Supported hint types are STRING, BIGINT, BIGINT UNSIGNED, DOUBLE, and BOOLEAN, plus INT64, UINT64, and FLOAT64 aliases; types requiring implicit widening are rejected. ([#9213](https://github.com/GreptimeTeam/greptimedb/pull/9213), [#9316](https://github.com/GreptimeTeam/greptimedb/pull/9316))
+- Invalid JSONPath expressions now return errors instead of silently returning NULL; use `$` for root access instead of `.` or `$.`. ([#9192](https://github.com/GreptimeTeam/greptimedb/pull/9192))
+- PromQL vector matching now derives result labels from `on`/`ignoring` and group modifiers, and rejects ambiguous many-to-many or duplicate-result matches. Review joins and alert label templates; eligible comparisons now retain `__name__`. ([#9306](https://github.com/GreptimeTeam/greptimedb/pull/9306), [#9332](https://github.com/GreptimeTeam/greptimedb/pull/9332))
+- PromQL stepless subqueries use a fixed one-minute step rather than the outer query step; specify `[range:step]` explicitly if a different interval is required. Range queries over a range-vector root are rejected; use an instant query or reduce the range vector to an instant vector. ([#9481](https://github.com/GreptimeTeam/greptimedb/pull/9481), [#9477](https://github.com/GreptimeTeam/greptimedb/pull/9477))
+- Finite Prometheus sample strings can change textual formatting while retaining the same floating-point value. Compare parsed numbers instead of exact response strings. ([#8815](https://github.com/GreptimeTeam/greptimedb/pull/8815))
+- Type changes to columns referenced by persisted partition expressions are rejected unless they widen a timestamp unit and all bounds remain representable. Check partition bounds before changing time precision, especially dates outside the nanosecond timestamp range. ([#9487](https://github.com/GreptimeTeam/greptimedb/pull/9487))
+- Duplicate region-engine configuration entries now fail startup instead of silently overriding each other. Keep one entry per engine type. ([#9281](https://github.com/GreptimeTeam/greptimedb/pull/9281))
+- Bulk inserts now reject mismatched Arrow types, invalid nulls, and duplicate or unknown columns before persistence. Some representations previously converted by primary-key-format regions are rejected; send the region's declared Arrow types. ([#9698](https://github.com/GreptimeTeam/greptimedb/pull/9698))
+- Streaming SQL analyze is always enabled; the removed `experimental_enable_explain_analyze_stream` configuration key is ignored. Downstream Rust integrations must remove the corresponding `HttpOptions` field. ([#8966](https://github.com/GreptimeTeam/greptimedb/pull/8966))
+- Downstream DDL configurators must accept the shared peer-discovery interface. This release includes only the DDL-hook adaptation from the original change, not its affinity-resolver or scheduling infrastructure. ([#9977](https://github.com/GreptimeTeam/greptimedb/pull/9977))
+
+* refactor!: move native histogram config and `prom_validation_mode` to prom_store by [@shuiyisong](https://github.com/shuiyisong) in [#8744](https://github.com/GreptimeTeam/greptimedb/pull/8744)
+* perf(servers)!: speed up Prometheus JSON response building with ryu and per-series entry reuse by [@discord9](https://github.com/discord9) in [#8815](https://github.com/GreptimeTeam/greptimedb/pull/8815)
+* feat!: stabilize streaming analyze metrics by [@discord9](https://github.com/discord9) in [#8966](https://github.com/GreptimeTeam/greptimedb/pull/8966)
+* feat!: upgrade DataFusion to 55 by [@discord9](https://github.com/discord9) in [#8555](https://github.com/GreptimeTeam/greptimedb/pull/8555)
+* feat(json2)!: remove nullable and default type hint options by [@fengys1996](https://github.com/fengys1996) in [#9213](https://github.com/GreptimeTeam/greptimedb/pull/9213)
+* feat!: upgrade DataFusion fork to 55.1.0 by [@discord9](https://github.com/discord9) in [#9177](https://github.com/GreptimeTeam/greptimedb/pull/9177)
+* fix(pipeline)!: disable VRL host access by default by [@shuiyisong](https://github.com/shuiyisong) in [#9610](https://github.com/GreptimeTeam/greptimedb/pull/9610)
+* feat(mito2)!: account SST decoding against shared scan memory limits by [@evenyag](https://github.com/evenyag) in [#9101](https://github.com/GreptimeTeam/greptimedb/pull/9101)
+* fix(mysql)!: cap timestamp output at microsecond precision by [@MichaelScofield](https://github.com/MichaelScofield) in [#9831](https://github.com/GreptimeTeam/greptimedb/pull/9831)
+
+### 🚀 Features
+
+* feat(query): plan native histogram functions by [@shuiyisong](https://github.com/shuiyisong) in [#8705](https://github.com/GreptimeTeam/greptimedb/pull/8705)
+* feat(logging): add enable_file_logging option to disable file logging by [@xhwhis](https://github.com/xhwhis) in [#8721](https://github.com/GreptimeTeam/greptimedb/pull/8721)
+* feat(function): add json_object_keys scalar function by [@xhwhis](https://github.com/xhwhis) in [#8722](https://github.com/GreptimeTeam/greptimedb/pull/8722)
+* feat: update dashboard to v0.13.11 by [@sunchanglong](https://github.com/sunchanglong) in [#8737](https://github.com/GreptimeTeam/greptimedb/pull/8737)
+* feat: add health-aware gRPC client routing by [@WenyXu](https://github.com/WenyXu) in [#8684](https://github.com/GreptimeTeam/greptimedb/pull/8684)
+* feat(grafana): add events dashboard by [@WenyXu](https://github.com/WenyXu) in [#8725](https://github.com/GreptimeTeam/greptimedb/pull/8725)
+* feat: add admin function registrar by [@fengjiachun](https://github.com/fengjiachun) in [#8762](https://github.com/GreptimeTeam/greptimedb/pull/8762)
+* feat(promql): define native histogram semantics by [@shuiyisong](https://github.com/shuiyisong) in [#8758](https://github.com/GreptimeTeam/greptimedb/pull/8758)
+* feat(mito2): add range-based metric series reader by [@evenyag](https://github.com/evenyag) in [#8703](https://github.com/GreptimeTeam/greptimedb/pull/8703)
+* feat: read-time entity relationships graph over telemetry (M0+M1) by [@killme2008](https://github.com/killme2008) in [#8614](https://github.com/GreptimeTeam/greptimedb/pull/8614)
+* feat(protocol): validate native histogram ingestion by [@shuiyisong](https://github.com/shuiyisong) in [#8775](https://github.com/GreptimeTeam/greptimedb/pull/8775)
+* feat: support generic heartbeat response extension accumulation by [@fengjiachun](https://github.com/fengjiachun) in [#8786](https://github.com/GreptimeTeam/greptimedb/pull/8786)
+* feat: support old-stage datanode config overlays by [@discord9](https://github.com/discord9) in [#8647](https://github.com/GreptimeTeam/greptimedb/pull/8647)
+* feat: update opentelemetry family to 0.32 series by [@sunng87](https://github.com/sunng87) in [#8776](https://github.com/GreptimeTeam/greptimedb/pull/8776)
+* feat: add riscv64 cross-build support by [@v0y4g3r](https://github.com/v0y4g3r) in [#8820](https://github.com/GreptimeTeam/greptimedb/pull/8820)
+* feat(auth): support HTTP bearer-token authentication by [@sunng87](https://github.com/sunng87) in [#8719](https://github.com/GreptimeTeam/greptimedb/pull/8719)
+* feat(promql): support mixed sample ranges by [@shuiyisong](https://github.com/shuiyisong) in [#8784](https://github.com/GreptimeTeam/greptimedb/pull/8784)
+* feat: declared edges and the derivation contract for the entity graph by [@killme2008](https://github.com/killme2008) in [#8794](https://github.com/GreptimeTeam/greptimedb/pull/8794)
+* feat(servers): stamp prometheus remote write v2 metadata as semantic table options by [@killme2008](https://github.com/killme2008) in [#8797](https://github.com/GreptimeTeam/greptimedb/pull/8797)
+* feat(promql): support native histogram vector operators by [@shuiyisong](https://github.com/shuiyisong) in [#8798](https://github.com/GreptimeTeam/greptimedb/pull/8798)
+* feat: complete the derived-edge vocabulary of the entity graph by [@killme2008](https://github.com/killme2008) in [#8836](https://github.com/GreptimeTeam/greptimedb/pull/8836)
+* feat(servers): expose native histograms over Prometheus HTTP by [@shuiyisong](https://github.com/shuiyisong) in [#8850](https://github.com/GreptimeTeam/greptimedb/pull/8850)
+* feat(promql): support native histogram aggregations by [@shuiyisong](https://github.com/shuiyisong) in [#8848](https://github.com/GreptimeTeam/greptimedb/pull/8848)
+* feat: embedded convention pack for the entity graph (prom/k8s, gen_ai naming) by [@killme2008](https://github.com/killme2008) in [#8854](https://github.com/GreptimeTeam/greptimedb/pull/8854)
+* feat(mito2): introduce two-phase metric series scans by [@evenyag](https://github.com/evenyag) in [#8826](https://github.com/GreptimeTeam/greptimedb/pull/8826)
+* feat: add json_object function and use it in the entity-graph derivation by [@killme2008](https://github.com/killme2008) in [#8870](https://github.com/GreptimeTeam/greptimedb/pull/8870)
+* feat: update dashboard to v0.13.12 by [@sunchanglong](https://github.com/sunchanglong) in [#8882](https://github.com/GreptimeTeam/greptimedb/pull/8882)
+* feat: add incremental primary key index writer by [@evenyag](https://github.com/evenyag) in [#8788](https://github.com/GreptimeTeam/greptimedb/pull/8788)
+* feat: manage semantic table options via ALTER TABLE SET/UNSET by [@killme2008](https://github.com/killme2008) in [#8880](https://github.com/GreptimeTeam/greptimedb/pull/8880)
+* feat(otlp): report the cause of rejected trace spans by [@killme2008](https://github.com/killme2008) in [#8897](https://github.com/GreptimeTeam/greptimedb/pull/8897)
+* feat: otlp duration_nano and trace_flag signed integer coercion by [@sunng87](https://github.com/sunng87) in [#8816](https://github.com/GreptimeTeam/greptimedb/pull/8816)
+* feat: support quantile and fraction queries on mixed histograms by [@shuiyisong](https://github.com/shuiyisong) in [#8874](https://github.com/GreptimeTeam/greptimedb/pull/8874)
+* feat(otlp): support cumulative exponential histograms by [@shuiyisong](https://github.com/shuiyisong) in [#8900](https://github.com/GreptimeTeam/greptimedb/pull/8900)
+* feat(cmd): add parquet development tools by [@evenyag](https://github.com/evenyag) in [#8939](https://github.com/GreptimeTeam/greptimedb/pull/8939)
+* feat(mito2): add series index searcher by [@evenyag](https://github.com/evenyag) in [#8926](https://github.com/GreptimeTeam/greptimedb/pull/8926)
+* feat(cmd): improve parquet rewrite fidelity and scanbench output by [@evenyag](https://github.com/evenyag) in [#8947](https://github.com/GreptimeTeam/greptimedb/pull/8947)
+* feat(function): expose uddsketch rank by [@v0y4g3r](https://github.com/v0y4g3r) in [#8929](https://github.com/GreptimeTeam/greptimedb/pull/8929)
+* feat: synthesize OTLP resource descriptor for the semantic entity graph by [@killme2008](https://github.com/killme2008) in [#8904](https://github.com/GreptimeTeam/greptimedb/pull/8904)
+* feat: update dashboard to v0.13.14 by [@sunchanglong](https://github.com/sunchanglong) in [#8968](https://github.com/GreptimeTeam/greptimedb/pull/8968)
+* feat: harden frontend heartbeat extensions by [@v0y4g3r](https://github.com/v0y4g3r) in [#8803](https://github.com/GreptimeTeam/greptimedb/pull/8803)
+* feat(meta): record physical table reconciliation events by [@dhruvxvaishnav](https://github.com/dhruvxvaishnav) in [#8935](https://github.com/GreptimeTeam/greptimedb/pull/8935)
+* feat: expose missing SST manifest fields by [@evenyag](https://github.com/evenyag) in [#8965](https://github.com/GreptimeTeam/greptimedb/pull/8965)
+* feat: Add built-in daemon mode for standalone service by [@tian1220A](https://github.com/tian1220A) in [#8960](https://github.com/GreptimeTeam/greptimedb/pull/8960)
+* feat: report what the graph derives and fix two duplicate-node bugs by [@killme2008](https://github.com/killme2008) in [#8936](https://github.com/GreptimeTeam/greptimedb/pull/8936)
+* feat(function): add mergeable stddev_pop state functions by [@v0y4g3r](https://github.com/v0y4g3r) in [#8972](https://github.com/GreptimeTeam/greptimedb/pull/8972)
+* feat(mito2): add SST range index writer by [@evenyag](https://github.com/evenyag) in [#8954](https://github.com/GreptimeTeam/greptimedb/pull/8954)
+* feat(query): add experimental DataFusion spill-to-disk controls by [@discord9](https://github.com/discord9) in [#8884](https://github.com/GreptimeTeam/greptimedb/pull/8884)
+* feat(mito2): add write cache upload hook by [@v0y4g3r](https://github.com/v0y4g3r) in [#8992](https://github.com/GreptimeTeam/greptimedb/pull/8992)
+* feat(flow): add generic delta merge for incremental aggregates by [@discord9](https://github.com/discord9) in [#8938](https://github.com/GreptimeTeam/greptimedb/pull/8938)
+* feat: allow widening the time index column's timestamp unit via ALTER TABLE, mito2 table only by [@sunng87](https://github.com/sunng87) in [#8894](https://github.com/GreptimeTeam/greptimedb/pull/8894)
+* feat: derive k8s.node from OTLP resource attributes by [@killme2008](https://github.com/killme2008) in [#9002](https://github.com/GreptimeTeam/greptimedb/pull/9002)
+* feat(runtime): add weighted workload scheduler by [@discord9](https://github.com/discord9) in [#8736](https://github.com/GreptimeTeam/greptimedb/pull/8736)
+* feat(flow): add row inserts to frontend client by [@fengys1996](https://github.com/fengys1996) in [#9006](https://github.com/GreptimeTeam/greptimedb/pull/9006)
+* feat: preserve row sequences and support exact sequence-range reads by [@discord9](https://github.com/discord9) in [#8865](https://github.com/GreptimeTeam/greptimedb/pull/8865)
+* feat(mito2): pass operation type to write cache upload hook by [@v0y4g3r](https://github.com/v0y4g3r) in [#9012](https://github.com/GreptimeTeam/greptimedb/pull/9012)
+* feat(mito2): add SST range index searcher by [@evenyag](https://github.com/evenyag) in [#9003](https://github.com/GreptimeTeam/greptimedb/pull/9003)
+* feat: support raw OTLP delta metrics by [@shuiyisong](https://github.com/shuiyisong) in [#8970](https://github.com/GreptimeTeam/greptimedb/pull/8970)
+* feat(flow): support eval schedule offsets by [@discord9](https://github.com/discord9) in [#8878](https://github.com/GreptimeTeam/greptimedb/pull/8878)
+* feat(client): compress insert transport by [@v0y4g3r](https://github.com/v0y4g3r) in [#9036](https://github.com/GreptimeTeam/greptimedb/pull/9036)
+* feat(meta): record logical-table reconciliation events by [@dhruvxvaishnav](https://github.com/dhruvxvaishnav) in [#8941](https://github.com/GreptimeTeam/greptimedb/pull/8941)
+* feat: add scanbench query suites and structured results by [@evenyag](https://github.com/evenyag) in [#9050](https://github.com/GreptimeTeam/greptimedb/pull/9050)
+* feat: update dashboard to v0.13.15 by [@sunchanglong](https://github.com/sunchanglong) in [#9051](https://github.com/GreptimeTeam/greptimedb/pull/9051)
+* feat(auth): support bearer token authentication over SQL protocols by [@shuiyisong](https://github.com/shuiyisong) in [#8899](https://github.com/GreptimeTeam/greptimedb/pull/8899)
+* feat(telemetry): add log directory size retention by [@WenyXu](https://github.com/WenyXu) in [#8997](https://github.com/GreptimeTeam/greptimedb/pull/8997)
+* feat(mito2): add series index catalog and lifecycle foundation by [@evenyag](https://github.com/evenyag) in [#9053](https://github.com/GreptimeTeam/greptimedb/pull/9053)
+* feat(auth): support per-user MySQL authentication methods by [@shuiyisong](https://github.com/shuiyisong) in [#9078](https://github.com/GreptimeTeam/greptimedb/pull/9078)
+* feat: make the series index resilient to time index unit widening by [@sunng87](https://github.com/sunng87) in [#8996](https://github.com/GreptimeTeam/greptimedb/pull/8996)
+* feat(mito2): introduce TWCS active window compaction by [@v0y4g3r](https://github.com/v0y4g3r) in [#9011](https://github.com/GreptimeTeam/greptimedb/pull/9011)
+* feat: add repartition partition count hint by [@WenyXu](https://github.com/WenyXu) in [#9080](https://github.com/GreptimeTeam/greptimedb/pull/9080)
+* feat(json2): support ALTER syntax for JSON column settings by [@fengys1996](https://github.com/fengys1996) in [#9094](https://github.com/GreptimeTeam/greptimedb/pull/9094)
+* feat: support request-level insert WAL skipping by [@WenyXu](https://github.com/WenyXu) in [#9088](https://github.com/GreptimeTeam/greptimedb/pull/9088)
+* feat(meta): record catalog and database reconciliation events by [@dhruvxvaishnav](https://github.com/dhruvxvaishnav) in [#8896](https://github.com/GreptimeTeam/greptimedb/pull/8896)
+* feat(mito2): add series index planning and builders by [@evenyag](https://github.com/evenyag) in [#9085](https://github.com/GreptimeTeam/greptimedb/pull/9085)
+* feat: support request-level WAL skipping for bulk inserts by [@WenyXu](https://github.com/WenyXu) in [#9110](https://github.com/GreptimeTeam/greptimedb/pull/9110)
+* feat(mito2): add opt-in byte-stream-split encoding for float SST fields by [@discord9](https://github.com/discord9) in [#9069](https://github.com/GreptimeTeam/greptimedb/pull/9069)
+* feat(mito2): reconcile series indexes in background by [@evenyag](https://github.com/evenyag) in [#9086](https://github.com/GreptimeTeam/greptimedb/pull/9086)
+* feat: export logical tables from Metric physical scans by [@fengjiachun](https://github.com/fengjiachun) in [#9159](https://github.com/GreptimeTeam/greptimedb/pull/9159)
+* feat: allow re-enabling WAL after disabling by [@dhruvxvaishnav](https://github.com/dhruvxvaishnav) in [#9130](https://github.com/GreptimeTeam/greptimedb/pull/9130)
+* feat: use exact sequence ranges for incremental Flow reads by [@discord9](https://github.com/discord9) in [#9165](https://github.com/GreptimeTeam/greptimedb/pull/9165)
+* feat: add prepared batch write primitives by [@WenyXu](https://github.com/WenyXu) in [#9186](https://github.com/GreptimeTeam/greptimedb/pull/9186)
+* feat(wal): add the object store WAL provider identity and configuration by [@fengjiachun](https://github.com/fengjiachun) in [#9203](https://github.com/GreptimeTeam/greptimedb/pull/9203)
+* feat: add ordinary table batching workers by [@WenyXu](https://github.com/WenyXu) in [#9187](https://github.com/GreptimeTeam/greptimedb/pull/9187)
+* feat(log-store): add the object store WAL object format by [@fengjiachun](https://github.com/fengjiachun) in [#9200](https://github.com/GreptimeTeam/greptimedb/pull/9200)
+* feat: batch ordinary table writes across HTTP protocols by [@WenyXu](https://github.com/WenyXu) in [#9115](https://github.com/GreptimeTeam/greptimedb/pull/9115)
+* feat(otlp): add trace v2 ingestion with JSON2 attributes by [@MichaelScofield](https://github.com/MichaelScofield) in [#9192](https://github.com/GreptimeTeam/greptimedb/pull/9192)
+* feat(ci): add observability benchmark and lifecycle summaries by [@WenyXu](https://github.com/WenyXu) in [#9215](https://github.com/GreptimeTeam/greptimedb/pull/9215)
+* feat: prepare and execute database Metric exports by [@fengjiachun](https://github.com/fengjiachun) in [#9180](https://github.com/GreptimeTeam/greptimedb/pull/9180)
+* feat(ci): add long-range metrics benchmark on ECS by [@WenyXu](https://github.com/WenyXu) in [#9218](https://github.com/GreptimeTeam/greptimedb/pull/9218)
+* feat(flow): expose extension-owned batching execution hooks by [@discord9](https://github.com/discord9) in [#9171](https://github.com/GreptimeTeam/greptimedb/pull/9171)
+* feat(function): add mergeable binary average states by [@discord9](https://github.com/discord9) in [#9062](https://github.com/GreptimeTeam/greptimedb/pull/9062)
+* feat(log-store): add the object store WAL batch, catalog and I/O by [@fengjiachun](https://github.com/fengjiachun) in [#9216](https://github.com/GreptimeTeam/greptimedb/pull/9216)
+* feat(otlp): preserve trace v2 events and links as JSON (follow-up to #9192) by [@MichaelScofield](https://github.com/MichaelScofield) in [#9232](https://github.com/GreptimeTeam/greptimedb/pull/9232)
+* feat(flow): admit mergeable average states in incremental plans by [@discord9](https://github.com/discord9) in [#9235](https://github.com/GreptimeTeam/greptimedb/pull/9235)
+* feat(log-store): add object store WAL store construction and recovery by [@fengjiachun](https://github.com/fengjiachun) in [#9238](https://github.com/GreptimeTeam/greptimedb/pull/9238)
+* feat: expose region min/max timestamp in region_statistics by [@sainad2222](https://github.com/sainad2222) in [#9060](https://github.com/GreptimeTeam/greptimedb/pull/9060)
+* feat: add status label to datanode failed-insert metric by [@dhruvxvaishnav](https://github.com/dhruvxvaishnav) in [#9191](https://github.com/GreptimeTeam/greptimedb/pull/9191)
+* feat(mito2): make range index reads and builds opt-in by [@evenyag](https://github.com/evenyag) in [#9219](https://github.com/GreptimeTeam/greptimedb/pull/9219)
+* feat(json2): respect type hints during JSON2 type concretization by [@fengys1996](https://github.com/fengys1996) in [#9222](https://github.com/GreptimeTeam/greptimedb/pull/9222)
+* feat(mito2): split SWCS output files by size threshold by [@v0y4g3r](https://github.com/v0y4g3r) in [#9259](https://github.com/GreptimeTeam/greptimedb/pull/9259)
+* feat(trace): support Jaeger queries for Trace V2 and optimize writes (follow-up to #9192) by [@MichaelScofield](https://github.com/MichaelScofield) in [#9257](https://github.com/GreptimeTeam/greptimedb/pull/9257)
+* feat: update pgwire to 0.41 by [@sunng87](https://github.com/sunng87) in [#9025](https://github.com/GreptimeTeam/greptimedb/pull/9025)
+* feat: add database ingestion admission through metering by [@shuiyisong](https://github.com/shuiyisong) in [#9239](https://github.com/GreptimeTeam/greptimedb/pull/9239)
+* feat: add experimental Metric export to V2 snapshots by [@fengjiachun](https://github.com/fengjiachun) in [#9233](https://github.com/GreptimeTeam/greptimedb/pull/9233)
+* feat: restore packed metric snapshots by [@fengjiachun](https://github.com/fengjiachun) in [#9250](https://github.com/GreptimeTeam/greptimedb/pull/9250)
+* feat(trace): support Semantic Graph for Trace V2 (follow-up to #9192) by [@MichaelScofield](https://github.com/MichaelScofield) in [#9278](https://github.com/GreptimeTeam/greptimedb/pull/9278)
+* feat: add experimental Jev SQL filtering by [@v0y4g3r](https://github.com/v0y4g3r) in [#9265](https://github.com/GreptimeTeam/greptimedb/pull/9265)
+* feat(log-store): add object store WAL reads and obsolete watermarks by [@fengjiachun](https://github.com/fengjiachun) in [#9248](https://github.com/GreptimeTeam/greptimedb/pull/9248)
+* feat(json2): support altering JSON2 settings by [@fengys1996](https://github.com/fengys1996) in [#9029](https://github.com/GreptimeTeam/greptimedb/pull/9029)
+* feat: add AI matching, classification, and scoring functions by [@v0y4g3r](https://github.com/v0y4g3r) in [#9300](https://github.com/GreptimeTeam/greptimedb/pull/9300)
+* feat: share logical table batching with OTLP metrics by [@WenyXu](https://github.com/WenyXu) in [#9288](https://github.com/GreptimeTeam/greptimedb/pull/9288)
+* feat(flow): allow execution hook to rewrite completed plans by [@discord9](https://github.com/discord9) in [#9290](https://github.com/GreptimeTeam/greptimedb/pull/9290)
+* feat: support pending rows batching for MySQL and PostgreSQL by [@WenyXu](https://github.com/WenyXu) in [#9302](https://github.com/GreptimeTeam/greptimedb/pull/9302)
+* feat: expose region open failure metrics by [@evenyag](https://github.com/evenyag) in [#9283](https://github.com/GreptimeTeam/greptimedb/pull/9283)
+* feat(flow): freeze recovery windows and retention bounds for incremental flows by [@discord9](https://github.com/discord9) in [#9312](https://github.com/GreptimeTeam/greptimedb/pull/9312)
+* feat: add schema metadata stream to SchemaManager by [@shuiyisong](https://github.com/shuiyisong) in [#9325](https://github.com/GreptimeTeam/greptimedb/pull/9325)
+* feat: enable native histogram ingestion by default by [@shuiyisong](https://github.com/shuiyisong) in [#9301](https://github.com/GreptimeTeam/greptimedb/pull/9301)
+* feat(mito): limit approximate series index disk usage by [@evenyag](https://github.com/evenyag) in [#9313](https://github.com/GreptimeTeam/greptimedb/pull/9313)
+* feat(log-store): chain object store WAL objects and recover the latest chain by [@fengjiachun](https://github.com/fengjiachun) in [#9334](https://github.com/GreptimeTeam/greptimedb/pull/9334)
+* feat(otlp): add histogram rejection metrics and compact zero buckets by [@shuiyisong](https://github.com/shuiyisong) in [#9321](https://github.com/GreptimeTeam/greptimedb/pull/9321)
+* feat: add manual series index reconciliation by [@evenyag](https://github.com/evenyag) in [#9323](https://github.com/GreptimeTeam/greptimedb/pull/9323)
+* feat(log-store): add the object store WAL durable write path by [@fengjiachun](https://github.com/fengjiachun) in [#9320](https://github.com/GreptimeTeam/greptimedb/pull/9320)
+* feat: allow customized time index unit for metric engine table by [@sunng87](https://github.com/sunng87) in [#9236](https://github.com/GreptimeTeam/greptimedb/pull/9236)
+* feat: add HDFS object storage backend by [@Minghan2005](https://github.com/Minghan2005) in [#8701](https://github.com/GreptimeTeam/greptimedb/pull/8701)
+* feat(log-store): add the enqueued acknowledgement mode to the object store WAL by [@fengjiachun](https://github.com/fengjiachun) in [#9358](https://github.com/GreptimeTeam/greptimedb/pull/9358)
+* feat(query): implement PromQL @ modifier on vector and matrix selectors by [@discord9](https://github.com/discord9) in [#9224](https://github.com/GreptimeTeam/greptimedb/pull/9224)
+* feat: support non-millisecond time index units in the logical batcher by [@sunng87](https://github.com/sunng87) in [#9346](https://github.com/GreptimeTeam/greptimedb/pull/9346)
+* feat: export Metric snapshots with packed Parquet objects by [@fengjiachun](https://github.com/fengjiachun) in [#9382](https://github.com/GreptimeTeam/greptimedb/pull/9382)
+* feat: support automatic column addition for Flight bulk inserts by [@v0y4g3r](https://github.com/v0y4g3r) in [#9285](https://github.com/GreptimeTeam/greptimedb/pull/9285)
+* feat(json2): json_get respect type hints by [@fengys1996](https://github.com/fengys1996) in [#9349](https://github.com/GreptimeTeam/greptimedb/pull/9349)
+* feat: update dashboard to v0.14.0 by [@sunchanglong](https://github.com/sunchanglong) in [#9510](https://github.com/GreptimeTeam/greptimedb/pull/9510)
+* feat(catalog): declare information-schema table scopes by [@shuiyisong](https://github.com/shuiyisong) in [#9504](https://github.com/GreptimeTeam/greptimedb/pull/9504)
+* feat(cmd): add `--http-api-server-addr` CLI flags by [@daviderli614](https://github.com/daviderli614) in [#9512](https://github.com/GreptimeTeam/greptimedb/pull/9512)
+* feat(client): support region request reuse and route refresh hints by [@WenyXu](https://github.com/WenyXu) in [#9540](https://github.com/GreptimeTeam/greptimedb/pull/9540)
+* feat(operator): retry failed writes with refreshed partitions by [@WenyXu](https://github.com/WenyXu) in [#9542](https://github.com/GreptimeTeam/greptimedb/pull/9542)
+* feat(frontend): retry transient distributed write failures by [@WenyXu](https://github.com/WenyXu) in [#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543)
+* feat(meta-client): forward actor and event context for region follower RPCs by [@sunng87](https://github.com/sunng87) in [#9568](https://github.com/GreptimeTeam/greptimedb/pull/9568)
+* feat: update dashboard to v0.14.2 by [@sunchanglong](https://github.com/sunchanglong) in [#9570](https://github.com/GreptimeTeam/greptimedb/pull/9570)
+* feat: improve SQL analyze scan diagnostics by [@evenyag](https://github.com/evenyag) in [#9565](https://github.com/GreptimeTeam/greptimedb/pull/9565)
+* feat: return per-entry region write failures by [@WenyXu](https://github.com/WenyXu) in [#9728](https://github.com/GreptimeTeam/greptimedb/pull/9728)
+* feat(mito): add an environment switch to disable compaction by [@WenyXu](https://github.com/WenyXu) in [#9863](https://github.com/GreptimeTeam/greptimedb/pull/9863)
+* feat(mito): expose scan concurrency metrics and dashboard by [@evenyag](https://github.com/evenyag) in [#9758](https://github.com/GreptimeTeam/greptimedb/pull/9758)
+* feat: support query concurrency limits in standalone by [@evenyag](https://github.com/evenyag) in [#9958](https://github.com/GreptimeTeam/greptimedb/pull/9958)
+
+### 🐛 Bug Fixes
+
+* fix(mito2): prioritize newer compaction windows by [@v0y4g3r](https://github.com/v0y4g3r) in [#8714](https://github.com/GreptimeTeam/greptimedb/pull/8714)
+* fix(auth): warn when credential load disables Postgres SCRAM or drops a line by [@killme2008](https://github.com/killme2008) in [#8652](https://github.com/GreptimeTeam/greptimedb/pull/8652)
+* fix(object-store): skip removed-entry lister test on Windows by [@discord9](https://github.com/discord9) in [#8735](https://github.com/GreptimeTeam/greptimedb/pull/8735)
+* fix(query): preserve remote dynamic filter target by [@discord9](https://github.com/discord9) in [#8615](https://github.com/GreptimeTeam/greptimedb/pull/8615)
+* fix(operator): invalidate local cache after dropping view by [@WenyXu](https://github.com/WenyXu) in [#8748](https://github.com/GreptimeTeam/greptimedb/pull/8748)
+* fix(ci): render query regression bot comment as compact table plus threshold details by [@discord9](https://github.com/discord9) in [#8774](https://github.com/GreptimeTeam/greptimedb/pull/8774)
+* fix(mito2): avoid region worker panic when building a WAL entry fails by [@fengjiachun](https://github.com/fengjiachun) in [#8810](https://github.com/GreptimeTeam/greptimedb/pull/8810)
+* fix(ci): identify team members by repository permission by [@killme2008](https://github.com/killme2008) in [#8822](https://github.com/GreptimeTeam/greptimedb/pull/8822)
+* fix(tests): make two Windows CI failures deterministic (Nightly CI #8837) by [@discord9](https://github.com/discord9) in [#8840](https://github.com/GreptimeTeam/greptimedb/pull/8840)
+* fix(ci): grant pull-requests write and stop counting drafts by [@killme2008](https://github.com/killme2008) in [#8844](https://github.com/GreptimeTeam/greptimedb/pull/8844)
+* fix(mito2): publish committed sequence only after rows are installed by [@discord9](https://github.com/discord9) in [#8862](https://github.com/GreptimeTeam/greptimedb/pull/8862)
+* fix: cap default runtime sizes to a minimum of 2 threads by [@v0y4g3r](https://github.com/v0y4g3r) in [#8908](https://github.com/GreptimeTeam/greptimedb/pull/8908)
+* fix(meta): avoid blocking runtime on stats cache lock by [@WenyXu](https://github.com/WenyXu) in [#8910](https://github.com/GreptimeTeam/greptimedb/pull/8910)
+* fix(flow): restore FrontendClient::sql API by [@WenyXu](https://github.com/WenyXu) in [#8963](https://github.com/GreptimeTeam/greptimedb/pull/8963)
+* fix(flow): avoid insert select HTTP/2 stalls by [@discord9](https://github.com/discord9) in [#8962](https://github.com/GreptimeTeam/greptimedb/pull/8962)
+* fix(operator): whitelist private system table auto create by [@WenyXu](https://github.com/WenyXu) in [#8930](https://github.com/GreptimeTeam/greptimedb/pull/8930)
+* fix(cmd): configure meta client in frontend plugin test by [@v0y4g3r](https://github.com/v0y4g3r) in [#8977](https://github.com/GreptimeTeam/greptimedb/pull/8977)
+* fix: increase system disk size to 50 GiB for ECS instances by [@paomian](https://github.com/paomian) in [#8986](https://github.com/GreptimeTeam/greptimedb/pull/8986)
+* fix(cmd): gate daemon integration test on Unix by [@discord9](https://github.com/discord9) in [#8987](https://github.com/GreptimeTeam/greptimedb/pull/8987)
+* fix(mito2): avoid chained L1 rewrites in TWCS by [@v0y4g3r](https://github.com/v0y4g3r) in [#8981](https://github.com/GreptimeTeam/greptimedb/pull/8981)
+* fix: add disk usage logging to GitHub step summary in query regression workflow by [@paomian](https://github.com/paomian) in [#9005](https://github.com/GreptimeTeam/greptimedb/pull/9005)
+* fix(client): isolate query and control transports by [@discord9](https://github.com/discord9) in [#8990](https://github.com/GreptimeTeam/greptimedb/pull/8990)
+* fix(mito2): harden flat merge and use winner_tree by [@v0y4g3r](https://github.com/v0y4g3r) in [#9064](https://github.com/GreptimeTeam/greptimedb/pull/9064)
+* fix: prevent catalog testing feature from leaking into production builds by [@evenyag](https://github.com/evenyag) in [#9063](https://github.com/GreptimeTeam/greptimedb/pull/9063)
+* fix(ci): avoid cross-references in PR limit comments by [@evenyag](https://github.com/evenyag) in [#9065](https://github.com/GreptimeTeam/greptimedb/pull/9065)
+* fix(servers): return text[] for SELECT array[null] in PostgreSQL protocol by [@Tyagiquamar](https://github.com/Tyagiquamar) in [#9058](https://github.com/GreptimeTeam/greptimedb/pull/9058)
+* fix(ci): strip pre-release extension when creating nightly release version by [@sunng87](https://github.com/sunng87) in [#9081](https://github.com/GreptimeTeam/greptimedb/pull/9081)
+* fix(ci): check Windows test targets before merge by [@WenyXu](https://github.com/WenyXu) in [#9116](https://github.com/GreptimeTeam/greptimedb/pull/9116)
+* fix(ci): increase query regression ECS disk to 80 GiB by [@discord9](https://github.com/discord9) in [#9123](https://github.com/GreptimeTeam/greptimedb/pull/9123)
+* fix(promql): preserve native timestamps through sample selection by [@discord9](https://github.com/discord9) in [#9070](https://github.com/GreptimeTeam/greptimedb/pull/9070)
+* fix: configure series indexes with an enable flag by [@evenyag](https://github.com/evenyag) in [#9141](https://github.com/GreptimeTeam/greptimedb/pull/9141)
+* fix(mito2): deliver complete WAL entries without waiting for next input by [@discord9](https://github.com/discord9) in [#8916](https://github.com/GreptimeTeam/greptimedb/pull/8916)
+* fix(servers): resolve port from IPv6 bind addresses by [@immanuwell](https://github.com/immanuwell) in [#9142](https://github.com/GreptimeTeam/greptimedb/pull/9142)
+* fix(mito2): preserve effective sequences during compaction by [@v0y4g3r](https://github.com/v0y4g3r) in [#9147](https://github.com/GreptimeTeam/greptimedb/pull/9147)
+* fix: register region migration procedures before returning IDs by [@fengjiachun](https://github.com/fengjiachun) in [#9163](https://github.com/GreptimeTeam/greptimedb/pull/9163)
+* fix: preserve structured query errors through distributed execution by [@discord9](https://github.com/discord9) in [#9161](https://github.com/GreptimeTeam/greptimedb/pull/9161)
+* fix(promql): skip empty batches in SeriesDivide stream by [@discord9](https://github.com/discord9) in [#9178](https://github.com/GreptimeTeam/greptimedb/pull/9178)
+* fix(ci): rerun semantic PR checks after pushes by [@evenyag](https://github.com/evenyag) in [#9190](https://github.com/GreptimeTeam/greptimedb/pull/9190)
+* fix(mito2): preserve last-non-null values across compaction by [@v0y4g3r](https://github.com/v0y4g3r) in [#9169](https://github.com/GreptimeTeam/greptimedb/pull/9169)
+* fix: support exact sequence ranges in two-phase series scans by [@discord9](https://github.com/discord9) in [#9096](https://github.com/GreptimeTeam/greptimedb/pull/9096)
+* fix(ci): repair agent observability dispatch and runner cleanup by [@WenyXu](https://github.com/WenyXu) in [#9204](https://github.com/GreptimeTeam/greptimedb/pull/9204)
+* fix(json): fix JSONPath panic with jsonb 0.5.6 (follow-up to #9192) by [@MichaelScofield](https://github.com/MichaelScofield) in [#9228](https://github.com/GreptimeTeam/greptimedb/pull/9228)
+* fix(servers): merge duplicate timeseries across RecordBatches in Prometheus remote read by [@Tyagiquamar](https://github.com/Tyagiquamar) in [#9032](https://github.com/GreptimeTeam/greptimedb/pull/9032)
+* fix(prometheus): honor label matchers in __name__ values query by [@killme2008](https://github.com/killme2008) in [#9134](https://github.com/GreptimeTeam/greptimedb/pull/9134)
+* fix(mito2): hold the bulk compact permit for the whole blocking task by [@killme2008](https://github.com/killme2008) in [#9252](https://github.com/GreptimeTeam/greptimedb/pull/9252)
+* fix: make database export assertions portable on Windows by [@fengjiachun](https://github.com/fengjiachun) in [#9256](https://github.com/GreptimeTeam/greptimedb/pull/9256)
+* fix(mito2): cancel cache construction for incomplete scans by [@killme2008](https://github.com/killme2008) in [#9254](https://github.com/GreptimeTeam/greptimedb/pull/9254)
+* fix(mito2): compare primary key ranges across schema versions by [@v0y4g3r](https://github.com/v0y4g3r) in [#9205](https://github.com/GreptimeTeam/greptimedb/pull/9205)
+* fix(query): insert MergeScan into nested scalar subqueries by [@discord9](https://github.com/discord9) in [#9261](https://github.com/GreptimeTeam/greptimedb/pull/9261)
+* fix(ci): stabilize long-range benchmark execution and artifact collection by [@WenyXu](https://github.com/WenyXu) in [#9241](https://github.com/GreptimeTeam/greptimedb/pull/9241)
+* fix(promql): keep value-field grouping labels out of matching filter propagation by [@discord9](https://github.com/discord9) in [#9242](https://github.com/GreptimeTeam/greptimedb/pull/9242)
+* fix: release completed SST write buffers during compaction by [@v0y4g3r](https://github.com/v0y4g3r) in [#9243](https://github.com/GreptimeTeam/greptimedb/pull/9243)
+* fix: fail startup on duplicate region engine configs by [@v0y4g3r](https://github.com/v0y4g3r) in [#9281](https://github.com/GreptimeTeam/greptimedb/pull/9281)
+* fix(query): stop encoding oversized dynamic filters by [@killme2008](https://github.com/killme2008) in [#9267](https://github.com/GreptimeTeam/greptimedb/pull/9267)
+* fix(meta): populate physical metric table column ids by [@dhruvxvaishnav](https://github.com/dhruvxvaishnav) in [#9286](https://github.com/GreptimeTeam/greptimedb/pull/9286)
+* fix(postgres): return empty responses for comment-only SQL by [@houyuwushang](https://github.com/houyuwushang) in [#9295](https://github.com/GreptimeTeam/greptimedb/pull/9295)
+* fix(ci): build tests-integration lib with meta-srv/mock by [@killme2008](https://github.com/killme2008) in [#9299](https://github.com/GreptimeTeam/greptimedb/pull/9299)
+* fix: keep compaction pruning, metadata, and index work on compact runtime by [@v0y4g3r](https://github.com/v0y4g3r) in [#9304](https://github.com/GreptimeTeam/greptimedb/pull/9304)
+* fix: serialize struct to json in postgres by [@sunng87](https://github.com/sunng87) in [#9170](https://github.com/GreptimeTeam/greptimedb/pull/9170)
+* fix: address Windows test failures and run full Windows CI by [@WenyXu](https://github.com/WenyXu) in [#9305](https://github.com/GreptimeTeam/greptimedb/pull/9305)
+* fix(json2): restrict JSON2 type hints by [@fengys1996](https://github.com/fengys1996) in [#9316](https://github.com/GreptimeTeam/greptimedb/pull/9316)
+* fix(ci): repair draft PR command dispatch by [@WenyXu](https://github.com/WenyXu) in [#9271](https://github.com/GreptimeTeam/greptimedb/pull/9271)
+* fix(promql): derive vector matching result labels and reject ambiguous matchings by [@killme2008](https://github.com/killme2008) in [#9306](https://github.com/GreptimeTeam/greptimedb/pull/9306)
+* fix(ci): grant PR write permission for CI command replies by [@WenyXu](https://github.com/WenyXu) in [#9331](https://github.com/GreptimeTeam/greptimedb/pull/9331)
+* fix: merge every state row in geo_path and json_encode_path by [@killme2008](https://github.com/killme2008) in [#9339](https://github.com/GreptimeTeam/greptimedb/pull/9339)
+* fix: only push down aggregates grouped by the partition columns themselves by [@killme2008](https://github.com/killme2008) in [#9337](https://github.com/GreptimeTeam/greptimedb/pull/9337)
+* fix: align ordered aggregate state type with the accumulator output by [@killme2008](https://github.com/killme2008) in [#9340](https://github.com/GreptimeTeam/greptimedb/pull/9340)
+* fix(query): keep count_values generated label in enclosing expressions by [@discord9](https://github.com/discord9) in [#9223](https://github.com/GreptimeTeam/greptimedb/pull/9223)
+* fix: make vector aggregates work with GROUP BY and partial aggregation by [@killme2008](https://github.com/killme2008) in [#9338](https://github.com/GreptimeTeam/greptimedb/pull/9338)
+* fix: preserve primary key order when syncing columns by [@WenyXu](https://github.com/WenyXu) in [#9189](https://github.com/GreptimeTeam/greptimedb/pull/9189)
+* fix(mito2): stop parallel flat scan tasks once the receiver is dropped by [@killme2008](https://github.com/killme2008) in [#9368](https://github.com/GreptimeTeam/greptimedb/pull/9368)
+* fix(query): preserve global limits with DataFusion optimizer fixes by [@discord9](https://github.com/discord9) in [#9071](https://github.com/GreptimeTeam/greptimedb/pull/9071)
+* fix(auth): follow symlink chains in watch_file_user_provider by [@DeviousCardi](https://github.com/DeviousCardi) in [#9365](https://github.com/GreptimeTeam/greptimedb/pull/9365)
+* fix(client): complete transport lane isolation by [@discord9](https://github.com/discord9) in [#9030](https://github.com/GreptimeTeam/greptimedb/pull/9030)
+* fix(ci): teach check-builder-rust-version.sh to handle stable channels by [@sunng87](https://github.com/sunng87) in [#9369](https://github.com/GreptimeTeam/greptimedb/pull/9369)
+* fix(ci): update the shared Actions runner to v2.337.0 by [@WenyXu](https://github.com/WenyXu) in [#9376](https://github.com/GreptimeTeam/greptimedb/pull/9376)
+* fix(meta-srv): use NoTls for disabled and Unix socket Postgres KV backends by [@Tyagiquamar](https://github.com/Tyagiquamar) in [#9059](https://github.com/GreptimeTeam/greptimedb/pull/9059)
+* fix(promql): apply offset to subquery evaluation window by [@DeviousCardi](https://github.com/DeviousCardi) in [#9364](https://github.com/GreptimeTeam/greptimedb/pull/9364)
+* fix(client): yield Flight batches and affected rows without waiting for next message by [@discord9](https://github.com/discord9) in [#8918](https://github.com/GreptimeTeam/greptimedb/pull/8918)
+* fix(promql): resolve dotted column names as unqualified columns by [@killme2008](https://github.com/killme2008) in [#9391](https://github.com/GreptimeTeam/greptimedb/pull/9391)
+* fix: bound decompressed request size and close memory-admission gaps for compressed requests by [@sunng87](https://github.com/sunng87) in [#9264](https://github.com/GreptimeTeam/greptimedb/pull/9264)
+* fix(promql): align timestamp(), label_join and label_replace with Prometheus semantics by [@killme2008](https://github.com/killme2008) in [#9385](https://github.com/GreptimeTeam/greptimedb/pull/9385)
+* fix(mito2): truncate parquet column index min/max for SST writes by [@killme2008](https://github.com/killme2008) in [#9420](https://github.com/GreptimeTeam/greptimedb/pull/9420)
+* fix(catalog): skip backend batch_get on full cache hits by [@WenyXu](https://github.com/WenyXu) in [#9431](https://github.com/GreptimeTeam/greptimedb/pull/9431)
+* fix: temporarily disable v2 series scan by default by [@evenyag](https://github.com/evenyag) in [#9436](https://github.com/GreptimeTeam/greptimedb/pull/9436)
+* fix: coalesce equal histogram quantile bucket boundaries by [@evenyag](https://github.com/evenyag) in [#9451](https://github.com/GreptimeTeam/greptimedb/pull/9451)
+* fix: accept a bool value for the CLI --auto-create-schema flag by [@fengyue-xve](https://github.com/fengyue-xve) in [#9450](https://github.com/GreptimeTeam/greptimedb/pull/9450)
+* fix(otlp): coerce empty and "-" trace attribute strings to null by [@killme2008](https://github.com/killme2008) in [#9461](https://github.com/GreptimeTeam/greptimedb/pull/9461)
+* fix(meta-client): bound heartbeat handshake timeout by [@Aetherance](https://github.com/Aetherance) in [#9438](https://github.com/GreptimeTeam/greptimedb/pull/9438)
+* fix(partition): preserve region mapping during repartition by [@killme2008](https://github.com/killme2008) in [#9458](https://github.com/GreptimeTeam/greptimedb/pull/9458)
+* fix(promql): restore exact filtering for nullable label matchers by [@killme2008](https://github.com/killme2008) in [#9418](https://github.com/GreptimeTeam/greptimedb/pull/9418)
+* fix(json2): preserve metadata when adding columns via alter table by [@fengys1996](https://github.com/fengys1996) in [#8696](https://github.com/GreptimeTeam/greptimedb/pull/8696)
+* fix(metasrv): retry failed heartbeat address updates by [@WenyXu](https://github.com/WenyXu) in [#9437](https://github.com/GreptimeTeam/greptimedb/pull/9437)
+* fix: align TWCS assignment with half-open time windows by [@v0y4g3r](https://github.com/v0y4g3r) in [#9464](https://github.com/GreptimeTeam/greptimedb/pull/9464)
+* fix(operator): bound FlowMirrorTask pending rows to prevent frontend OOM by [@discord9](https://github.com/discord9) in [#9421](https://github.com/GreptimeTeam/greptimedb/pull/9421)
+* fix(json2): support settings in ALTER TABLE ADD COLUMN by [@fengys1996](https://github.com/fengys1996) in [#9472](https://github.com/GreptimeTeam/greptimedb/pull/9472)
+* fix(promql): align subqueries to the absolute evaluation grid by [@discord9](https://github.com/discord9) in [#9400](https://github.com/GreptimeTeam/greptimedb/pull/9400)
+* build(deps): update opensrv-mysql to fix MariaDB 12.3 USE information_schema hang by [@tian1220A](https://github.com/tian1220A) in [#9357](https://github.com/GreptimeTeam/greptimedb/pull/9357)
+* fix(promql): keep vector labels when a computed scalar is on the right by [@killme2008](https://github.com/killme2008) in [#9478](https://github.com/GreptimeTeam/greptimedb/pull/9478)
+* fix(otlp): convert boolean metric attributes into label values by [@fengyue-xve](https://github.com/fengyue-xve) in [#9468](https://github.com/GreptimeTeam/greptimedb/pull/9468)
+* fix(promql): return no point for zero-interval irate/idelta by [@niladrix719](https://github.com/niladrix719) in [#9455](https://github.com/GreptimeTeam/greptimedb/pull/9455)
+* fix(metasrv): stop parking the heartbeat response on the region supervisor queue by [@lczllx](https://github.com/lczllx) in [#9474](https://github.com/GreptimeTeam/greptimedb/pull/9474)
+* fix(promql): keep metric name for comparison operators by [@Aumnertic](https://github.com/Aumnertic) in [#9332](https://github.com/GreptimeTeam/greptimedb/pull/9332)
+* fix(metasrv): stop holding the pusher registry lock across mailbox sends by [@lczllx](https://github.com/lczllx) in [#9445](https://github.com/GreptimeTeam/greptimedb/pull/9445)
+* fix(mito): flush memtables containing skip-WAL writes on region close by [@WenyXu](https://github.com/WenyXu) in [#9440](https://github.com/GreptimeTeam/greptimedb/pull/9440)
+* fix(promql): accept evaluation times before the Unix epoch by [@killme2008](https://github.com/killme2008) in [#9480](https://github.com/GreptimeTeam/greptimedb/pull/9480)
+* fix: unify unknown flow option rejection across OSS and enterprise builds by [@discord9](https://github.com/discord9) in [#9319](https://github.com/GreptimeTeam/greptimedb/pull/9319)
+* fix(promql): return range-vector results for instant queries by [@killme2008](https://github.com/killme2008) in [#9477](https://github.com/GreptimeTeam/greptimedb/pull/9477)
+* fix(query): stop reporting region scans as hash partitioned by [@discord9](https://github.com/discord9) in [#9491](https://github.com/GreptimeTeam/greptimedb/pull/9491)
+* fix(table): require complete primary keys for hash partitioning by [@discord9](https://github.com/discord9) in [#9507](https://github.com/GreptimeTeam/greptimedb/pull/9507)
+* fix(deps): bump OpenDAL to 0.59.4 for OSS RRSA credentials by [@WenyXu](https://github.com/WenyXu) in [#9520](https://github.com/GreptimeTeam/greptimedb/pull/9520)
+* fix(promql): follow IEEE 754 float semantics in comparisons and aggregations by [@killme2008](https://github.com/killme2008) in [#9479](https://github.com/GreptimeTeam/greptimedb/pull/9479)
+* fix(promql): default a stepless subquery to a one-minute step by [@killme2008](https://github.com/killme2008) in [#9481](https://github.com/GreptimeTeam/greptimedb/pull/9481)
+* fix(query): keep filter fetch when rewriting matches term by [@discord9](https://github.com/discord9) in [#9521](https://github.com/GreptimeTeam/greptimedb/pull/9521)
+* fix(mito): preserve version ordering in bulk merges and flushes by [@evenyag](https://github.com/evenyag) in [#9517](https://github.com/GreptimeTeam/greptimedb/pull/9517)
+* fix(mito2): ignore missing inverted indexes in old SSTs by [@WenyXu](https://github.com/WenyXu) in [#9545](https://github.com/GreptimeTeam/greptimedb/pull/9545)
+* fix: prevent stale leader metadata after concurrent writes by [@fengjiachun](https://github.com/fengjiachun) in [#9549](https://github.com/GreptimeTeam/greptimedb/pull/9549)
+* fix(promql): stop fabricating histogram fold hash partitioning by [@discord9](https://github.com/discord9) in [#9509](https://github.com/GreptimeTeam/greptimedb/pull/9509)
+* fix(table): stop claiming tag order for logical metric scans by [@discord9](https://github.com/discord9) in [#9522](https://github.com/GreptimeTeam/greptimedb/pull/9522)
+* fix(promql): stop claiming scalar calculate preserves order by [@discord9](https://github.com/discord9) in [#9523](https://github.com/GreptimeTeam/greptimedb/pull/9523)
+* fix(query): guard deep expressions during query planning by [@evenyag](https://github.com/evenyag) in [#9564](https://github.com/GreptimeTeam/greptimedb/pull/9564)
+* fix: align fulltext bloom tokens with matches_term and use them for LIKE by [@killme2008](https://github.com/killme2008) in [#9470](https://github.com/GreptimeTeam/greptimedb/pull/9470)
+* fix(operator): reuse catalog table resolution for write retries by [@WenyXu](https://github.com/WenyXu) in [#9574](https://github.com/GreptimeTeam/greptimedb/pull/9574)
+* fix(hdfs): clean up temporary file when an atomic write fails by [@fengyue-xve](https://github.com/fengyue-xve) in [#9483](https://github.com/GreptimeTeam/greptimedb/pull/9483)
+* fix(query): accept narrowed nullability in MergeScan remote schema check by [@killme2008](https://github.com/killme2008) in [#9592](https://github.com/GreptimeTeam/greptimedb/pull/9592)
+* fix(table): stop claiming exact null and distinct counts for append scans by [@killme2008](https://github.com/killme2008) in [#9593](https://github.com/GreptimeTeam/greptimedb/pull/9593)
+* fix: avoid pinning memtables during series-index reconciliation by [@evenyag](https://github.com/evenyag) in [#9588](https://github.com/GreptimeTeam/greptimedb/pull/9588)
+* fix(query): keep state column names unique when splitting aggregates by [@killme2008](https://github.com/killme2008) in [#9594](https://github.com/GreptimeTeam/greptimedb/pull/9594)
+* fix(jaeger): return the most recent traces when a search hits its limit by [@killme2008](https://github.com/killme2008) in [#9595](https://github.com/GreptimeTeam/greptimedb/pull/9595)
+* fix(pprof): initialize framehop before signal sampling by [@v0y4g3r](https://github.com/v0y4g3r) in [#9612](https://github.com/GreptimeTeam/greptimedb/pull/9612)
+* fix(prom): return empty remote read results for missing metrics by [@fengys1996](https://github.com/fengys1996) in [#9613](https://github.com/GreptimeTeam/greptimedb/pull/9613)
+* fix(ci): compare release validation against the previous stable version by [@paomian](https://github.com/paomian) in [#9636](https://github.com/GreptimeTeam/greptimedb/pull/9636)
+* fix(mito): avoid pinning region version when rebuilding indexes by [@v0y4g3r](https://github.com/v0y4g3r) in [#9597](https://github.com/GreptimeTeam/greptimedb/pull/9597)
+* fix(mito2): keep processing bulk requests after one fails to encode by [@fengjiachun](https://github.com/fengjiachun) in [#9638](https://github.com/GreptimeTeam/greptimedb/pull/9638)
+* fix(promql): honor @ modifier on subqueries by [@DeviousCardi](https://github.com/DeviousCardi) in [#9446](https://github.com/GreptimeTeam/greptimedb/pull/9446)
+* fix(mito2): validate bulk insert batches against the region schema by [@fengjiachun](https://github.com/fengjiachun) in [#9698](https://github.com/GreptimeTeam/greptimedb/pull/9698)
+* fix(mito2): fence writes before a graceful downgrade by [@fengjiachun](https://github.com/fengjiachun) in [#9716](https://github.com/GreptimeTeam/greptimedb/pull/9716)
+* fix(mito2): build indexes for encoded bulk parts flushed in sync mode by [@killme2008](https://github.com/killme2008) in [#9722](https://github.com/GreptimeTeam/greptimedb/pull/9722)
+* fix(meta): validate persisted partition bounds before altering regions by [@fengyue-xve](https://github.com/fengyue-xve) in [#9487](https://github.com/GreptimeTeam/greptimedb/pull/9487)
+* fix(partition): route NULLs like row inserts and accept signed-minimum bounds by [@killme2008](https://github.com/killme2008) in [#9697](https://github.com/GreptimeTeam/greptimedb/pull/9697)
+* fix(mito2): re-check a filled write as sent after a schema change by [@fengjiachun](https://github.com/fengjiachun) in [#9701](https://github.com/GreptimeTeam/greptimedb/pull/9701)
+* fix: record slow INSERT SELECT queries by [@shuiyisong](https://github.com/shuiyisong) in [#9733](https://github.com/GreptimeTeam/greptimedb/pull/9733)
+* fix(query): push LIKE filters down into MergeScan remote plans by [@killme2008](https://github.com/killme2008) in [#9648](https://github.com/GreptimeTeam/greptimedb/pull/9648)
+* fix: decouple slow-query logging from the global log level by [@shuiyisong](https://github.com/shuiyisong) in [#9765](https://github.com/GreptimeTeam/greptimedb/pull/9765)
+* fix(mito2): apply SST internal column encodings to bulk-encoded parts by [@killme2008](https://github.com/killme2008) in [#9735](https://github.com/GreptimeTeam/greptimedb/pull/9735)
+* fix(query): forward scalar subquery filters to region scans by [@killme2008](https://github.com/killme2008) in [#9738](https://github.com/GreptimeTeam/greptimedb/pull/9738)
+* fix(partition): coerce partition exprs against the batch schema before routing by [@sunng87](https://github.com/sunng87) in [#9752](https://github.com/GreptimeTeam/greptimedb/pull/9752)
+* fix: avoid exact scan row counts for SSTs with unknown counts by [@Aumnertic](https://github.com/Aumnertic) in [#9759](https://github.com/GreptimeTeam/greptimedb/pull/9759)
+* fix: avoid duplicate keys in update flow metadata txn by [@v0y4g3r](https://github.com/v0y4g3r) in [#9816](https://github.com/GreptimeTeam/greptimedb/pull/9816)
+* fix(ci): increase release integration test stack size by [@evenyag](https://github.com/evenyag) in [#9817](https://github.com/GreptimeTeam/greptimedb/pull/9817)
+* fix(datanode): release region map guard before awaiting role changes by [@WenyXu](https://github.com/WenyXu) in [#9824](https://github.com/GreptimeTeam/greptimedb/pull/9824)
+* fix(mito): return from manual index builds only after the index is published by [@killme2008](https://github.com/killme2008) in [#9643](https://github.com/GreptimeTeam/greptimedb/pull/9643)
+* fix: preserve datanode write batches when retrying by [@WenyXu](https://github.com/WenyXu) in [#9720](https://github.com/GreptimeTeam/greptimedb/pull/9720)
+* fix(query): preserve Arrow types when decoding dictionary output by [@MichaelScofield](https://github.com/MichaelScofield) in [#9858](https://github.com/GreptimeTeam/greptimedb/pull/9858)
+* fix(meta): release all PostgreSQL election advisory locks on step-down by [@WenyXu](https://github.com/WenyXu) in [#9864](https://github.com/GreptimeTeam/greptimedb/pull/9864)
+* fix(ci): align nightly Windows and macOS artifact test stack sizes by [@evenyag](https://github.com/evenyag) in [#9860](https://github.com/GreptimeTeam/greptimedb/pull/9860)
+* fix(test): avoid MinIO connection reuse after conditional writes by [@WenyXu](https://github.com/WenyXu) in [#9877](https://github.com/GreptimeTeam/greptimedb/pull/9877)
+* fix(ci): move monitoring datanodeStorage out of standalone base by [@daviderli614](https://github.com/daviderli614) in [#9902](https://github.com/GreptimeTeam/greptimedb/pull/9902)
+* fix(pipeline): accept auto-transformed values in existing JSON columns by [@MichaelScofield](https://github.com/MichaelScofield) in [#9895](https://github.com/GreptimeTeam/greptimedb/pull/9895)
+* fix(mito2): require flat SST output for JSON2 by [@shuiyisong](https://github.com/shuiyisong) in [#9893](https://github.com/GreptimeTeam/greptimedb/pull/9893)
+* fix(ci): specify Kind storage class for datanodes by [@WenyXu](https://github.com/WenyXu) in [#9908](https://github.com/GreptimeTeam/greptimedb/pull/9908)
+* fix(mito2): keep SSTs when a manifest save ends with RateLimited or PermissionDenied by [@fengjiachun](https://github.com/fengjiachun) in [#9898](https://github.com/GreptimeTeam/greptimedb/pull/9898)
+* fix: upload staging manifests in chunks by [@WenyXu](https://github.com/WenyXu) in [#9919](https://github.com/GreptimeTeam/greptimedb/pull/9919)
+* fix(query): avoid lossy casts in partition pruning by [@discord9](https://github.com/discord9) in [#9600](https://github.com/GreptimeTeam/greptimedb/pull/9600)
+* fix(query): preserve IGNORE NULLS semantics in distributed queries by [@discord9](https://github.com/discord9) in [#9601](https://github.com/GreptimeTeam/greptimedb/pull/9601)
+* fix(meta): share peer discovery with DDL plugin hooks (release-specific adaptation) by [@WenyXu](https://github.com/WenyXu) in [#9977](https://github.com/GreptimeTeam/greptimedb/pull/9977)
+* fix(mito2): stop the series distributor from stalling on unread partitions by [@killme2008](https://github.com/killme2008) in [#9991](https://github.com/GreptimeTeam/greptimedb/pull/9991)
+* fix(query): stop windowed sort on precision-lowering time casts by [@discord9](https://github.com/discord9) in [#9524](https://github.com/GreptimeTeam/greptimedb/pull/9524)
+* fix(query): keep requested sort when filtering on a lossy cast by [@discord9](https://github.com/discord9) in [#10026](https://github.com/GreptimeTeam/greptimedb/pull/10026)
+
+### 🚜 Refactor
+
+* refactor(mito2): revise compaction trigger behavior by [@v0y4g3r](https://github.com/v0y4g3r) in [#8706](https://github.com/GreptimeTeam/greptimedb/pull/8706)
+* refactor: port query regression runner to Rust by [@discord9](https://github.com/discord9) in [#8651](https://github.com/GreptimeTeam/greptimedb/pull/8651)
+* refactor(operator): split semantic_graph relationship builders into a submodule by [@killme2008](https://github.com/killme2008) in [#8841](https://github.com/GreptimeTeam/greptimedb/pull/8841)
+* refactor: remove trivial tests by [@v0y4g3r](https://github.com/v0y4g3r) in [#8877](https://github.com/GreptimeTeam/greptimedb/pull/8877)
+* refactor(udaf): replace uddsketch implementation by [@v0y4g3r](https://github.com/v0y4g3r) in [#8867](https://github.com/GreptimeTeam/greptimedb/pull/8867)
+* refactor(mito2): rename pk index to series index by [@evenyag](https://github.com/evenyag) in [#8893](https://github.com/GreptimeTeam/greptimedb/pull/8893)
+* refactor: remove open metrics parser by [@sunng87](https://github.com/sunng87) in [#8905](https://github.com/GreptimeTeam/greptimedb/pull/8905)
+* refactor: centralize native histogram encoding in common-query by [@shuiyisong](https://github.com/shuiyisong) in [#8945](https://github.com/GreptimeTeam/greptimedb/pull/8945)
+* refactor(flight): add request builder and defer DoGet execution by [@WenyXu](https://github.com/WenyXu) in [#8953](https://github.com/GreptimeTeam/greptimedb/pull/8953)
+* refactor(mito2): prioritize file count in TWCS picker by [@v0y4g3r](https://github.com/v0y4g3r) in [#8765](https://github.com/GreptimeTeam/greptimedb/pull/8765)
+* refactor: support plugin-backed admin functions by [@v0y4g3r](https://github.com/v0y4g3r) in [#9083](https://github.com/GreptimeTeam/greptimedb/pull/9083)
+* refactor: remove constant vector and replicate operation by [@evenyag](https://github.com/evenyag) in [#8999](https://github.com/GreptimeTeam/greptimedb/pull/8999)
+* refactor(json2): JSON2 parquet projection and schema alignment by [@fengys1996](https://github.com/fengys1996) in [#9137](https://github.com/GreptimeTeam/greptimedb/pull/9137)
+* refactor: reuse common batching components in Prom ingestion by [@WenyXu](https://github.com/WenyXu) in [#9114](https://github.com/GreptimeTeam/greptimedb/pull/9114)
+* refactor(flow): execute streaming flows with DataFusion by [@discord9](https://github.com/discord9) in [#8976](https://github.com/GreptimeTeam/greptimedb/pull/8976)
+* refactor: migrate partition_statistics to statistics_from_inputs by [@discord9](https://github.com/discord9) in [#9175](https://github.com/GreptimeTeam/greptimedb/pull/9175)
+* refactor: reorganize logical table batching and isolate encoding by [@WenyXu](https://github.com/WenyXu) in [#9210](https://github.com/GreptimeTeam/greptimedb/pull/9210)
+* refactor: isolate logical batch scheduling and flushing by [@WenyXu](https://github.com/WenyXu) in [#9211](https://github.com/GreptimeTeam/greptimedb/pull/9211)
+* refactor: isolate logical table preparation and reuse Flow notifications by [@WenyXu](https://github.com/WenyXu) in [#9212](https://github.com/GreptimeTeam/greptimedb/pull/9212)
+* refactor: remove experimental vector index by [@killme2008](https://github.com/killme2008) in [#9345](https://github.com/GreptimeTeam/greptimedb/pull/9345)
+* refactor(promql): split planner into focused modules by [@discord9](https://github.com/discord9) in [#9354](https://github.com/GreptimeTeam/greptimedb/pull/9354)
+* refactor: expose OTLP write and batching helpers for downstream routers by [@shuiyisong](https://github.com/shuiyisong) in [#9401](https://github.com/GreptimeTeam/greptimedb/pull/9401)
+* refactor(operator): centralize write partitioning and dispatch by [@WenyXu](https://github.com/WenyXu) in [#9541](https://github.com/GreptimeTeam/greptimedb/pull/9541)
+
+### 📚 Documentation
+
+* docs: rework README release badges, drop star history, fix grpc flag by [@killme2008](https://github.com/killme2008) in [#8743](https://github.com/GreptimeTeam/greptimedb/pull/8743)
+* docs: align wal.sync_period documented default with actual fallback (5s) by [@fengjiachun](https://github.com/fengjiachun) in [#8753](https://github.com/GreptimeTeam/greptimedb/pull/8753)
+* docs: refine coding agent maps by [@killme2008](https://github.com/killme2008) in [#8790](https://github.com/GreptimeTeam/greptimedb/pull/8790)
+* docs: refresh README product copy by [@killme2008](https://github.com/killme2008) in [#8886](https://github.com/GreptimeTeam/greptimedb/pull/8886)
+* docs: fix README canary release badge resolving to stable version by [@sunng87](https://github.com/sunng87) in [#9109](https://github.com/GreptimeTeam/greptimedb/pull/9109)
+* docs: restructure README and add a cross-signal SQL example by [@killme2008](https://github.com/killme2008) in [#9136](https://github.com/GreptimeTeam/greptimedb/pull/9136)
+* docs: propose Metric export and import optimizations by [@fengjiachun](https://github.com/fengjiachun) in [#9121](https://github.com/GreptimeTeam/greptimedb/pull/9121)
+* docs: refine Rust style guide by [@WenyXu](https://github.com/WenyXu) in [#9220](https://github.com/GreptimeTeam/greptimedb/pull/9220)
+* docs(agents): clarify the documentation-update checklist item by [@killme2008](https://github.com/killme2008) in [#9255](https://github.com/GreptimeTeam/greptimedb/pull/9255)
+* docs: make packed snapshots part of the Metric export/import RFC by [@fengjiachun](https://github.com/fengjiachun) in [#9247](https://github.com/GreptimeTeam/greptimedb/pull/9247)
+* docs(config): align example configs and config.md with actual defaults by [@killme2008](https://github.com/killme2008) in [#9460](https://github.com/GreptimeTeam/greptimedb/pull/9460)
+
+### ⚡ Performance
+
+* perf(promql): avoid repeated scans in sliding range evaluation by [@discord9](https://github.com/discord9) in [#8646](https://github.com/GreptimeTeam/greptimedb/pull/8646)
+* avoid cloning final Prometheus remote write row by [@lyang24](https://github.com/lyang24) in [#8733](https://github.com/GreptimeTeam/greptimedb/pull/8733)
+* perf: reduce ingestion and flat-merge overhead by [@shuiyisong](https://github.com/shuiyisong) in [#8778](https://github.com/GreptimeTeam/greptimedb/pull/8778)
+* perf: reduce cold workspace compile time by [@shuiyisong](https://github.com/shuiyisong) in [#8801](https://github.com/GreptimeTeam/greptimedb/pull/8801)
+* perf(mito2): optimize dictionary primary key sorting by [@lyang24](https://github.com/lyang24) in [#8767](https://github.com/GreptimeTeam/greptimedb/pull/8767)
+* perf(query): choose bounded CTE as hash join build side by [@fengjiachun](https://github.com/fengjiachun) in [#8807](https://github.com/GreptimeTeam/greptimedb/pull/8807)
+* perf: optimize Prometheus remote write v2 decoding by [@shuiyisong](https://github.com/shuiyisong) in [#8873](https://github.com/GreptimeTeam/greptimedb/pull/8873)
+* perf(mito2): postpone covered time index filters by [@evenyag](https://github.com/evenyag) in [#8998](https://github.com/GreptimeTeam/greptimedb/pull/8998)
+* perf(mito2): blazing-fast tournament tree merger by [@v0y4g3r](https://github.com/v0y4g3r) in [#8989](https://github.com/GreptimeTeam/greptimedb/pull/8989)
+* perf(promql): push down last row for instant queries by [@discord9](https://github.com/discord9) in [#9034](https://github.com/GreptimeTeam/greptimedb/pull/9034)
+* perf(table): filter decoded rows with dynamic predicates by [@discord9](https://github.com/discord9) in [#9004](https://github.com/GreptimeTeam/greptimedb/pull/9004)
+* perf(servers): defer Prometheus sample value formatting to serialization by [@killme2008](https://github.com/killme2008) in [#9091](https://github.com/GreptimeTeam/greptimedb/pull/9091)
+* perf(servers): drop the output sort for Prometheus range queries by [@killme2008](https://github.com/killme2008) in [#9090](https://github.com/GreptimeTeam/greptimedb/pull/9090)
+* perf(mito2): skip proven all-match prefilters by [@discord9](https://github.com/discord9) in [#9066](https://github.com/GreptimeTeam/greptimedb/pull/9066)
+* perf(promql): avoid per-window allocations in simple range functions by [@discord9](https://github.com/discord9) in [#9104](https://github.com/GreptimeTeam/greptimedb/pull/9104)
+* perf(query): check Substrait encodability once per plan by [@killme2008](https://github.com/killme2008) in [#9095](https://github.com/GreptimeTeam/greptimedb/pull/9095)
+* perf(gc): pack file reference exchange by [@discord9](https://github.com/discord9) in [#9009](https://github.com/GreptimeTeam/greptimedb/pull/9009)
+* perf: avoid directory listing for explicit COPY input files by [@fengjiachun](https://github.com/fengjiachun) in [#9126](https://github.com/GreptimeTeam/greptimedb/pull/9126)
+* perf(servers): group Prometheus response rows by label runs by [@killme2008](https://github.com/killme2008) in [#9092](https://github.com/GreptimeTeam/greptimedb/pull/9092)
+* perf(metric-engine): avoid deep-cloning physical column metadata in verify_rows by [@v0y4g3r](https://github.com/v0y4g3r) in [#9162](https://github.com/GreptimeTeam/greptimedb/pull/9162)
+* perf(servers): avoid rebuilding JSON records payload by [@discord9](https://github.com/discord9) in [#9160](https://github.com/GreptimeTeam/greptimedb/pull/9160)
+* Perf/http sql limit materialization by [@lyang24](https://github.com/lyang24) in [#9148](https://github.com/GreptimeTeam/greptimedb/pull/9148)
+* perf(mito2): lazily extract sparse primary key index values by [@v0y4g3r](https://github.com/v0y4g3r) in [#9176](https://github.com/GreptimeTeam/greptimedb/pull/9176)
+* perf(mito2): optimize materialized column index updates by [@v0y4g3r](https://github.com/v0y4g3r) in [#9182](https://github.com/GreptimeTeam/greptimedb/pull/9182)
+* perf(promql): reuse sliding min and max candidates by [@discord9](https://github.com/discord9) in [#9099](https://github.com/GreptimeTeam/greptimedb/pull/9099)
+* perf(servers): coalesce ready Flight record batches by [@discord9](https://github.com/discord9) in [#9167](https://github.com/GreptimeTeam/greptimedb/pull/9167)
+* perf(mito2): use series and range indexes in two-phase series scans by [@evenyag](https://github.com/evenyag) in [#9153](https://github.com/GreptimeTeam/greptimedb/pull/9153)
+* perf(promql): avoid concatenating constant series tags by [@discord9](https://github.com/discord9) in [#9108](https://github.com/GreptimeTeam/greptimedb/pull/9108)
+* perf(mito2): lazily materialize sparse primary key tags by [@v0y4g3r](https://github.com/v0y4g3r) in [#9199](https://github.com/GreptimeTeam/greptimedb/pull/9199)
+* perf: add flight coalesce regression case with high-cardinality aggregations by [@discord9](https://github.com/discord9) in [#9214](https://github.com/GreptimeTeam/greptimedb/pull/9214)
+* perf(promql): propagate matching-label filters between binary operands by [@killme2008](https://github.com/killme2008) in [#9202](https://github.com/GreptimeTeam/greptimedb/pull/9202)
+* perf(mito-codec): streamline sparse label extraction and buffer sizing by [@v0y4g3r](https://github.com/v0y4g3r) in [#9217](https://github.com/GreptimeTeam/greptimedb/pull/9217)
+* perf(otlp): share trace resource and scope attributes by [@killme2008](https://github.com/killme2008) in [#9253](https://github.com/GreptimeTeam/greptimedb/pull/9253)
+* perf(servers): reduce temporary memory in protocol handling by [@killme2008](https://github.com/killme2008) in [#9249](https://github.com/GreptimeTeam/greptimedb/pull/9249)
+* perf(servers): stream Prometheus HTTP responses incrementally by [@discord9](https://github.com/discord9) in [#9229](https://github.com/GreptimeTeam/greptimedb/pull/9229)
+* perf(telemetry): remove the shared lock from TraceLayer by [@killme2008](https://github.com/killme2008) in [#9269](https://github.com/GreptimeTeam/greptimedb/pull/9269)
+* perf(promql): push label filters into grouped join inputs by [@killme2008](https://github.com/killme2008) in [#9280](https://github.com/GreptimeTeam/greptimedb/pull/9280)
+* perf(mito2): lazily decode dense primary key columns by [@v0y4g3r](https://github.com/v0y4g3r) in [#9226](https://github.com/GreptimeTeam/greptimedb/pull/9226)
+* perf: bound concurrent Metric export writers by [@fengjiachun](https://github.com/fengjiachun) in [#9296](https://github.com/GreptimeTeam/greptimedb/pull/9296)
+* perf(index): batch bloom filter searches across row groups by [@killme2008](https://github.com/killme2008) in [#9361](https://github.com/GreptimeTeam/greptimedb/pull/9361)
+* perf(mito2): batch index page loads and share cached bloom metadata by [@killme2008](https://github.com/killme2008) in [#9360](https://github.com/GreptimeTeam/greptimedb/pull/9360)
+* perf(index): cut allocations when building bloom and inverted indexes by [@killme2008](https://github.com/killme2008) in [#9359](https://github.com/GreptimeTeam/greptimedb/pull/9359)
+* perf(catalog): optimize single-table lookups in information_schema.partitions by [@fengyue-xve](https://github.com/fengyue-xve) in [#9473](https://github.com/GreptimeTeam/greptimedb/pull/9473)
+* perf(promql): reduce timestamp payload allocations and use narrow cursor scans by [@discord9](https://github.com/discord9) in [#9417](https://github.com/GreptimeTeam/greptimedb/pull/9417)
+* perf(query): infer safe aggregate input bounds from HAVING by [@v0y4g3r](https://github.com/v0y4g3r) in [#9582](https://github.com/GreptimeTeam/greptimedb/pull/9582)
+* perf(mito2): gather last rows with one take per input batch by [@killme2008](https://github.com/killme2008) in [#9737](https://github.com/GreptimeTeam/greptimedb/pull/9737)
+* perf: stream and prune SST manifest scans by [@WenyXu](https://github.com/WenyXu) in [#9931](https://github.com/GreptimeTeam/greptimedb/pull/9931)
+* perf(mito2): index encoded bulk parts from memory during flush by [@killme2008](https://github.com/killme2008) in [#9913](https://github.com/GreptimeTeam/greptimedb/pull/9913)
+
+### 🧪 Testing
+
+* test: rename internal bug numbers in tests to semantic names by [@discord9](https://github.com/discord9) in [#8779](https://github.com/GreptimeTeam/greptimedb/pull/8779)
+* test(mito2): isolate sequence publication barrier by [@discord9](https://github.com/discord9) in [#8876](https://github.com/GreptimeTeam/greptimedb/pull/8876)
+* test: cover request-level insert WAL skipping end to end by [@WenyXu](https://github.com/WenyXu) in [#9093](https://github.com/GreptimeTeam/greptimedb/pull/9093)
+* test: regenerate expired TLS certificates for integration fixtures by [@discord9](https://github.com/discord9) in [#9196](https://github.com/GreptimeTeam/greptimedb/pull/9196)
+* test(flow): stabilize FLUSH_FLOW assertions after async source-table mirrors by [@discord9](https://github.com/discord9) in [#9230](https://github.com/GreptimeTeam/greptimedb/pull/9230)
+* test: exclude testing feature completely by [@sunng87](https://github.com/sunng87) in [#9072](https://github.com/GreptimeTeam/greptimedb/pull/9072)
+* test: make export chunk deletion failure deterministic by [@fengjiachun](https://github.com/fengjiachun) in [#9291](https://github.com/GreptimeTeam/greptimedb/pull/9291)
+* test: cut integration test time and make the storage matrix meaningful by [@killme2008](https://github.com/killme2008) in [#9308](https://github.com/GreptimeTeam/greptimedb/pull/9308)
+* test(sqlness): run environments concurrently and drop redundant restarts and sleeps by [@killme2008](https://github.com/killme2008) in [#9333](https://github.com/GreptimeTeam/greptimedb/pull/9333)
+* test: remove unused legacy compatibility test suites by [@killme2008](https://github.com/killme2008) in [#9378](https://github.com/GreptimeTeam/greptimedb/pull/9378)
+* test(sqlness): wait for mirrored inserts before flushing streaming flows by [@killme2008](https://github.com/killme2008) in [#9424](https://github.com/GreptimeTeam/greptimedb/pull/9424)
+* test(promql): cover label_replace normalization with distinct series by [@fengyue-xve](https://github.com/fengyue-xve) in [#9485](https://github.com/GreptimeTeam/greptimedb/pull/9485)
+
+### ⚙️ Miscellaneous Tasks
+
+* feat(ci): run query regression on ephemeral Aliyun ECS runners by [@paomian](https://github.com/paomian) in [#8937](https://github.com/GreptimeTeam/greptimedb/pull/8937)
+* ci: optimize fuzz and split workflows by [@WenyXu](https://github.com/WenyXu) in [#8710](https://github.com/GreptimeTeam/greptimedb/pull/8710)
+* chore: check enterprise-gated files are listed in both license configs by [@killme2008](https://github.com/killme2008) in [#8750](https://github.com/GreptimeTeam/greptimedb/pull/8750)
+* ci: automate compatibility version window by [@discord9](https://github.com/discord9) in [#8608](https://github.com/GreptimeTeam/greptimedb/pull/8608)
+* ci: stop running enterprise tests in OSS CI by [@v0y4g3r](https://github.com/v0y4g3r) in [#8795](https://github.com/GreptimeTeam/greptimedb/pull/8795)
+* chore(ci): warn when a member has too many open pull requests by [@killme2008](https://github.com/killme2008) in [#8813](https://github.com/GreptimeTeam/greptimedb/pull/8813)
+* ci: update dev-builder image tag by [@github-actions](https://github.com/github-actions) in [#8831](https://github.com/GreptimeTeam/greptimedb/pull/8831)
+* ci: update code owners by [@evenyag](https://github.com/evenyag) in [#8843](https://github.com/GreptimeTeam/greptimedb/pull/8843)
+* chore: update mysql test drivers and lru by [@sunng87](https://github.com/sunng87) in [#8868](https://github.com/GreptimeTeam/greptimedb/pull/8868)
+* chore: add v2 version label to prom metrics by [@shuiyisong](https://github.com/shuiyisong) in [#8885](https://github.com/GreptimeTeam/greptimedb/pull/8885)
+* chore(mito2): reduce default auto flush interval by [@evenyag](https://github.com/evenyag) in [#8971](https://github.com/GreptimeTeam/greptimedb/pull/8971)
+* ci: trigger downstream updates for prereleases by [@WenyXu](https://github.com/WenyXu) in [#9008](https://github.com/GreptimeTeam/greptimedb/pull/9008)
+* ci: add workflow to auto-create backport PRs from backport labels by [@sunng87](https://github.com/sunng87) in [#9028](https://github.com/GreptimeTeam/greptimedb/pull/9028)
+* ci: skip bumping helm charts and homebrew and downstream repository for pre-releases by [@daviderli614](https://github.com/daviderli614) in [#9031](https://github.com/GreptimeTeam/greptimedb/pull/9031)
+* chore(ci): Implement /query-regression command handling and admission workflow by [@paomian](https://github.com/paomian) in [#8975](https://github.com/GreptimeTeam/greptimedb/pull/8975)
+* ci(backport): fix issue creation on cherry-pick conflict by [@sunng87](https://github.com/sunng87) in [#9048](https://github.com/GreptimeTeam/greptimedb/pull/9048)
+* ci(backport): label backport PRs with their version name by [@sunng87](https://github.com/sunng87) in [#9073](https://github.com/GreptimeTeam/greptimedb/pull/9073)
+* chore(ci): update compatibility versions by [@MichaelScofield](https://github.com/MichaelScofield) in [#9075](https://github.com/GreptimeTeam/greptimedb/pull/9075)
+* chore: select cmd package when building greptime by [@fengys1996](https://github.com/fengys1996) in [#9113](https://github.com/GreptimeTeam/greptimedb/pull/9113)
+* ci(backport): assign backport-failure issue to the original PR author by [@sunng87](https://github.com/sunng87) in [#9122](https://github.com/GreptimeTeam/greptimedb/pull/9122)
+* chore(ci): update compatibility test window to v1.2.1 by [@discord9](https://github.com/discord9) in [#9193](https://github.com/GreptimeTeam/greptimedb/pull/9193)
+* ci: add manual agent observability benchmarks on Aliyun ECS by [@WenyXu](https://github.com/WenyXu) in [#9179](https://github.com/GreptimeTeam/greptimedb/pull/9179)
+* chore: reduce duplicate table auto-creation logs by [@shuiyisong](https://github.com/shuiyisong) in [#9188](https://github.com/GreptimeTeam/greptimedb/pull/9188)
+* ci: gate draft PR checks behind slash commands by [@WenyXu](https://github.com/WenyXu) in [#9221](https://github.com/GreptimeTeam/greptimedb/pull/9221)
+* ci: pin crate-ci/typos to v1.50.2 by [@killme2008](https://github.com/killme2008) in [#9246](https://github.com/GreptimeTeam/greptimedb/pull/9246)
+* ci: use mold in dev-builder by [@sunng87](https://github.com/sunng87) in [#9262](https://github.com/GreptimeTeam/greptimedb/pull/9262)
+* ci: update dev-builder image tag by [@github-actions](https://github.com/github-actions) in [#9270](https://github.com/GreptimeTeam/greptimedb/pull/9270)
+* ci: create docs follow-up issue on PR merge instead of on label by [@sunng87](https://github.com/sunng87) in [#9237](https://github.com/GreptimeTeam/greptimedb/pull/9237)
+* ci: update cargo fuzz command to use nightly toolchain explicitly by [@sunng87](https://github.com/sunng87) in [#9298](https://github.com/GreptimeTeam/greptimedb/pull/9298)
+* ci: add optional AWS runners for observability benchmarks by [@WenyXu](https://github.com/WenyXu) in [#9322](https://github.com/GreptimeTeam/greptimedb/pull/9322)
+* chore(toolchain): switch to stable Rust 1.96.1 and remove all nightly feature gates by [@sunng87](https://github.com/sunng87) in [#9303](https://github.com/GreptimeTeam/greptimedb/pull/9303)
+* ci: update dev-builder image tag by [@github-actions](https://github.com/github-actions) in [#9355](https://github.com/GreptimeTeam/greptimedb/pull/9355)
+* ci: deploy MinIO chart with Silo images by [@killme2008](https://github.com/killme2008) in [#9362](https://github.com/GreptimeTeam/greptimedb/pull/9362)
+* ci: add manually triggered tracesbench workflow by [@WenyXu](https://github.com/WenyXu) in [#9372](https://github.com/GreptimeTeam/greptimedb/pull/9372)
+* ci(query-regression): bump RUNNER_IMAGE_EPOCH to 6 by [@MichaelScofield](https://github.com/MichaelScofield) in [#9381](https://github.com/GreptimeTeam/greptimedb/pull/9381)
+* chore: remove leftover flow worker config docs and unused flow metrics by [@killme2008](https://github.com/killme2008) in [#9375](https://github.com/GreptimeTeam/greptimedb/pull/9375)
+* chore: remove dead code left behind by removed features by [@killme2008](https://github.com/killme2008) in [#9377](https://github.com/GreptimeTeam/greptimedb/pull/9377)
+* chore: disable unstable rustfmt features by [@sunng87](https://github.com/sunng87) in [#9379](https://github.com/GreptimeTeam/greptimedb/pull/9379)
+* chore: add cargo min-publish-age of 7 days by [@killme2008](https://github.com/killme2008) in [#9384](https://github.com/GreptimeTeam/greptimedb/pull/9384)
+* chore: add mold back to nix flake by [@sunng87](https://github.com/sunng87) in [#9388](https://github.com/GreptimeTeam/greptimedb/pull/9388)
+* ci(query-regression): bump RUNNER_IMAGE_EPOCH to 7 by [@MichaelScofield](https://github.com/MichaelScofield) in [#9395](https://github.com/GreptimeTeam/greptimedb/pull/9395)
+* ci: retry failed nightly release on following weekdays by [@sunng87](https://github.com/sunng87) in [#9394](https://github.com/GreptimeTeam/greptimedb/pull/9394)
+* ci: upgrade EC2 runner action to restore runner registration by [@evenyag](https://github.com/evenyag) in [#9430](https://github.com/GreptimeTeam/greptimedb/pull/9430)
+* ci: make query regression non-blocking for scheduled nightly releases by [@sunng87](https://github.com/sunng87) in [#9434](https://github.com/GreptimeTeam/greptimedb/pull/9434)
+* chore: update rust toolchain to 1.98.1 by [@sunng87](https://github.com/sunng87) in [#9429](https://github.com/GreptimeTeam/greptimedb/pull/9429)
+* ci: update dev-builder image tag by [@github-actions](https://github.com/github-actions) in [#9469](https://github.com/GreptimeTeam/greptimedb/pull/9469)
+* ci: enhance benchmark workflows with version comparisons and diagnostics by [@WenyXu](https://github.com/WenyXu) in [#9383](https://github.com/GreptimeTeam/greptimedb/pull/9383)
+* build: reduce checkout-specific inputs for cache reuse by [@discord9](https://github.com/discord9) in [#9198](https://github.com/GreptimeTeam/greptimedb/pull/9198)
+* ci: benchmark the object store WAL against S3 from an EC2 runner by [@fengjiachun](https://github.com/fengjiachun) in [#9536](https://github.com/GreptimeTeam/greptimedb/pull/9536)
+* chore: bump rustls to 0.23.46 by [@v0y4g3r](https://github.com/v0y4g3r) in [#9614](https://github.com/GreptimeTeam/greptimedb/pull/9614)
+* ci: fix CI setup steps that fail on Ubuntu 26.04 runners by [@killme2008](https://github.com/killme2008) in [#9901](https://github.com/GreptimeTeam/greptimedb/pull/9901)
+
+### ◀️ Revert
+
+* revert(ci): pin the query-regression runner toolchain to nightly-2026-03-21 by [@sunng87](https://github.com/sunng87) in [#9389](https://github.com/GreptimeTeam/greptimedb/pull/9389)
+
+## New Contributors
+
+* [@Aetherance](https://github.com/Aetherance) made their first released contribution in [#9438](https://github.com/GreptimeTeam/greptimedb/pull/9438).
+* [@Aumnertic](https://github.com/Aumnertic) made their first released contribution in [#9332](https://github.com/GreptimeTeam/greptimedb/pull/9332).
+* [@DeviousCardi](https://github.com/DeviousCardi) made their first released contribution in [#9365](https://github.com/GreptimeTeam/greptimedb/pull/9365).
+* [@Minghan2005](https://github.com/Minghan2005) made their first released contribution in [#8701](https://github.com/GreptimeTeam/greptimedb/pull/8701).
+* [@Tyagiquamar](https://github.com/Tyagiquamar) made their first released contribution in [#9058](https://github.com/GreptimeTeam/greptimedb/pull/9058).
+* [@dhruvxvaishnav](https://github.com/dhruvxvaishnav) made their first released contribution in [#8935](https://github.com/GreptimeTeam/greptimedb/pull/8935).
+* [@fengyue-xve](https://github.com/fengyue-xve) made their first released contribution in [#9450](https://github.com/GreptimeTeam/greptimedb/pull/9450).
+* [@houyuwushang](https://github.com/houyuwushang) made their first released contribution in [#9295](https://github.com/GreptimeTeam/greptimedb/pull/9295).
+* [@immanuwell](https://github.com/immanuwell) made their first released contribution in [#9142](https://github.com/GreptimeTeam/greptimedb/pull/9142).
+* [@lczllx](https://github.com/lczllx) made their first released contribution in [#9474](https://github.com/GreptimeTeam/greptimedb/pull/9474).
+* [@niladrix719](https://github.com/niladrix719) made their first released contribution in [#9455](https://github.com/GreptimeTeam/greptimedb/pull/9455).
+* [@sainad2222](https://github.com/sainad2222) made their first released contribution in [#9060](https://github.com/GreptimeTeam/greptimedb/pull/9060).
+* [@tian1220A](https://github.com/tian1220A) made their first released contribution in [#8960](https://github.com/GreptimeTeam/greptimedb/pull/8960).
+* [@xhwhis](https://github.com/xhwhis) made their first released contribution in [#8721](https://github.com/GreptimeTeam/greptimedb/pull/8721).
+
+## All Contributors
+
+We would like to thank the following contributors from the GreptimeDB community:
+
+[@Aetherance](https://github.com/Aetherance), [@Aumnertic](https://github.com/Aumnertic), [@DeviousCardi](https://github.com/DeviousCardi), [@MichaelScofield](https://github.com/MichaelScofield), [@Minghan2005](https://github.com/Minghan2005), [@Tyagiquamar](https://github.com/Tyagiquamar), [@WenyXu](https://github.com/WenyXu), [@daviderli614](https://github.com/daviderli614), [@dhruvxvaishnav](https://github.com/dhruvxvaishnav), [@discord9](https://github.com/discord9), [@evenyag](https://github.com/evenyag), [@fengjiachun](https://github.com/fengjiachun), [@fengys1996](https://github.com/fengys1996), [@fengyue-xve](https://github.com/fengyue-xve), [@houyuwushang](https://github.com/houyuwushang), [@immanuwell](https://github.com/immanuwell), [@killme2008](https://github.com/killme2008), [@lczllx](https://github.com/lczllx), [@lyang24](https://github.com/lyang24), [@niladrix719](https://github.com/niladrix719), [@paomian](https://github.com/paomian), [@sainad2222](https://github.com/sainad2222), [@shuiyisong](https://github.com/shuiyisong), [@sunchanglong](https://github.com/sunchanglong), [@sunng87](https://github.com/sunng87), [@tian1220A](https://github.com/tian1220A), [@v0y4g3r](https://github.com/v0y4g3r), [@xhwhis](https://github.com/xhwhis)
