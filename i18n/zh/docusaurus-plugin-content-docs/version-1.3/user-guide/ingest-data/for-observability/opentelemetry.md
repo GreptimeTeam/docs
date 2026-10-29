@@ -149,8 +149,11 @@ GreptimeDB 会首先对数据进行预处理，包括：
 
 2. 默认丢弃一些 resource 属性和全部的 scope 属性。默认保存的 resource 属性列表可以参考[这里](https://prometheus.io/docs/guides/opentelemetry/#promoting-resource-attributes)。你可以通过配置项对这个行为进行调整
 
-注意： OTLP 的 `Sum` 和 `Histogram` 指标的数据可能是增量时序（delta temporality）类型的。
-GreptimeDB 将会直接保存它们，不会进行累计值（cumulative value）的计算。
+OTLP 的 `Sum` 和 `Histogram` 指标可以使用增量时序（delta temporality）。
+GreptimeDB 保存原始区间值，并添加 `otlp_aggregation_temporality="delta"` 标签，
+不会跨数据点或请求累加。该标签用于区分同一表中的增量序列和累积序列。
+对于带有该标签的增量 `Sum` 和显式 `Histogram` 浮点序列，
+GreptimeDB 的 `increase()` 会对区间值求和，`rate()` 则将该总和除以查询范围的时长。
 参考[这里](https://grafana.com/blog/2023/09/26/opentelemetry-metrics-a-guide-to-delta-vs.-cumulative-temporality-trade-offs/)获取更多背景信息。
 
 你可以通过设置 HTTP 请求头来调整预处理的行为。以下是选项列表：

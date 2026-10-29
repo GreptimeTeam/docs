@@ -147,8 +147,13 @@ GreptimeDB pre-processes the incoming data before persisting them, including:
 
 2. Discarding some resource attributes and all scope attributes by default. The kept resource attributes name list can be found [here](https://prometheus.io/docs/guides/opentelemetry/#promoting-resource-attributes). This behavior is configurable.
 
-Note, `Sum` and `Histogram` data in OTLP can have delta temporality.
-GreptimeDB saves their value directly without calculating the cumulative value.
+OTLP `Sum` and `Histogram` metrics can have delta temporality.
+GreptimeDB stores their raw interval values with the tag
+`otlp_aggregation_temporality="delta"`, without accumulating values across points
+or requests. This tag separates delta and cumulative series in the same table.
+For delta `Sum` and explicit `Histogram` float series carrying this tag,
+GreptimeDB's `increase()` sums interval values and `rate()` divides that sum by
+the range duration.
 See [here](https://grafana.com/blog/2023/09/26/opentelemetry-metrics-a-guide-to-delta-vs.-cumulative-temporality-trade-offs/) for some context.
 
 You can set the HTTP headers to configure the pre-processing behaviors. Here are the options:

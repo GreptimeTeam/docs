@@ -226,11 +226,20 @@ ACL 控制数据库及其表的访问权限。在 HTTP API 中，`acl_map` 将�
 
 ### 用户名
 
-用户名必须：
+用户名必须为 ASCII，最多 128 字节，且符合以下形式之一：
 
-- 以字母开头（`a-z` 或 `A-Z`）
-- 仅包含字母、数字和下划线
-- 匹配 `[a-zA-Z][a-zA-Z0-9_]*` 模式
+- 匹配 `^[a-zA-Z][a-zA-Z0-9_]*$` 的标识符，例如 `alice` 或
+  `service_reader`。此类名称大小写敏感。
+- 邮箱形状的名称，例如 `alice.smith@example.com`。本地部分允许字母、数字、
+  `_`、`%`、`+` 和 `-`，可用点分隔非空片段；域名至少包含两个以点分隔的标签，
+  标签允许字母、数字及内部连字符。这是受约束的格式，不支持完整 RFC 邮箱语法。
+
+包含 `@` 的名称在登录时统一转为小写。创建账号必须使用小写形式，管理 API 使用
+精确的已存储名称。例如，`Alice@Example.com` 登录时对应 `alice@example.com`，
+但通过 API 创建 `Alice@Example.com` 会被拒绝，不会静默改名。
+
+使用 SSO 时，Okta 和 GreptimeDB 中的用户名应一致。确保用户名归一化后唯一，
+不要将旧用户名分配给其他人。参阅 [SSO 身份验证](/enterprise/deployments-administration/sso.md)。
 
 ### 密码
 
@@ -250,11 +259,11 @@ ACL 控制数据库及其表的访问权限。在 HTTP API 中，`acl_map` 将�
   `password`。密码由 LDAP 验证，权限和 ACL 来自存储的用户记录。
   仅有有效的 LDAP 凭据不会自动创建 GreptimeDB 用户。本地用户可以与 LDAP
   用户共存。
-- **JWT (`jwt_auth`)**：配置受信任的验证密钥或 JWKS 端点。
-  token 中的用户名声明（默认为 `sub`）必须对应选定 catalog 中的已有用户，
-  存储的权限和 ACL 仍然生效。使用 HTTP 时，发送
-  `Authorization: Bearer <token>` 请求头；使用 MySQL 和 PostgreSQL 时，
-  将用户名设为 `*`，并将 JWT 作为密码。
+- **SSO 与 token (`jwt_auth`)**：通过 issuer 和 client ID 配置 Okta SSO，
+  或使用受信任的密钥、JWKS URL 配置 JWT 认证。预建对应的数据库用户，或开启受限
+  自动开户，然后在 GreptimeDB 中分配权限和 ACL。自动开户仅在默认 catalog
+  `greptime` 创建用户，内置的小写 `admin` 不能使用 token。Okta 配置、登录和
+  客户端用法详见 [SSO 身份验证](/enterprise/deployments-administration/sso.md)。
 
 ## Enterprise Dashboard 中的用户管理
 
@@ -265,8 +274,9 @@ ACL 控制数据库及其表的访问权限。在 HTTP API 中，`acl_map` 将�
     <img src="/ent_user/login.png" alt="login page"/>
 </p>
 
-你可以使用导入文件中定义的账号登录；如果系统创建了后备 `admin` 账号，
-也可以使用该账号登录。
+使用密码登录时，可以选择导入文件中定义的账号，或系统创建的后备 `admin` 账号。
+[配置 SSO](/enterprise/deployments-administration/sso.md) 后，用户还可以在兼容的
+Dashboard 中选择 SSO 登录。
 
 只有拥有 `Admin` 权限的账号才能看到数据库管理菜单。非 admin 账号只能访问
 查询页面，体验与开源版 dashboard 类似。
