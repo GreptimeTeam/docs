@@ -1,0 +1,24 @@
+---
+keywords: [函数概述, Datafusion 函数, GreptimeDB 函数, SQL 查询, 数据库函数]
+description: 提供了 GreptimeDB 中函数的概述，包括函数的分类、定义和使用方法。
+---
+
+# 函数
+
+这里是 GreptimeDB 函数文档的导览入口。
+
+## 文档导航
+
+- [DataFusion 函数](./df-functions.md)
+- GreptimeDB 函数
+  - [核心函数（字符串/数学/时间/系统/管理）](./greptimedb.md)
+  - [地理空间函数](./geo.md)
+  - [IP 函数](./ip.md)
+  - [JSON 函数](./json.md)
+  - [向量函数](./vector.md)
+  - [近似函数](./approximate.md)
+  - [异常检测函数](./anomaly.md)
+- [AI 函数（实验功能）](./ai/overview.md)
+  - [ai_match — 自然语言匹配概率](./ai/functions.md#ai_match)
+  - [ai_choose — 分类](./ai/functions.md#ai_choose)
+  - [ai_score — 评分与置信度](./ai/functions.md#ai_score)

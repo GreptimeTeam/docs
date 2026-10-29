@@ -1,0 +1,224 @@
+---
+keywords: [Trace, OpenTelemetry, Jaeger, Grafana]
+description: 介绍 GreptimeDB 中的 Trace 的数据写入和查询。
+---
+
+# 写入与查询
+
+:::warning
+
+本章内容目前仍处于实验阶段，在未来的版本中可能会有所调整。
+
+:::
+
+本节我们将从 Trace 数据的写入和查询开始使用 GreptimeDB.
+
+GreptimeDB 并未为 Trace 数据引入新的协议，而是尽可能使用以后的广泛接受的协议。
+
+## 写入
+
+GreptimeDB 使用 OpenTelemetry 的 OTLP/HTTP 协议作为主要的 Trace 数据写入协议。
+Trace 也是 OpenTelemetry 中最广为接受的子协议，包含了良好的生态。
+
+### OpenTelemetry SDK
+
+如果你在应用中使用了 OpenTelemetry 的 SDK/API 库，你可以直接配置一个 OTLP/HTTP
+的导出模块来将 trace 数据写入 GreptimeDB。
+
+在我们的 [OpenTelemetry 协议文档
+里](/user-guide/ingest-data/for-observability/opentelemetry.md) 介绍了关于这部分
+接口的使用，包含相应的写入路径和配置项。
+
+### OpenTelemetry Collector
+
+[OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) 是一个厂商中
+立的用于收集和处理 OpenTelemetry 数据的服务。本文我们将介绍如何使用
+OpenTelemetry Collector 将 traces 数据写入到 GreptimeDB。
+
+#### 启动 OpenTelemetry Collector
+
+你可以使用如下命令来快速启动一个 OpenTelemetry Collector 实例，此时 collector 会监听 `4317`（gRPC） 和 `4318`（HTTP） 端口：
+
+```shell
+docker run --rm \
+  --network host \
+  -p 4317:4317 \
+  -p 4318:4318 \
+  -v $(pwd)/config.yaml:/etc/otelcol-contrib/config.yaml \
+  otel/opentelemetry-collector-contrib:0.159.0
+```
+
+其中 `config.yaml` 文件内容如下：
+
+```yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+exporters:
+  otlp_http:
+    endpoint: "http://greptimedb:4000/v1/otlp" # GreptimeDB 的 OTLP 路径
+    headers:
+      x-greptime-pipeline-name: "greptime_trace_v1"
+      #authorization: "Basic <base64(username:password)>"
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlp_http]
+```
+
+#### 使用 greptime_trace_v2 写入
+
+上面的完整配置使用 v1。要使用 v2，请将其中的 `exporters` 配置替换为以下内容，
+其余 receivers 和 service 配置保持不变：
+
+```yaml
+exporters:
+  otlp_http:
+    endpoint: "http://greptimedb:4000/v1/otlp"
+    headers:
+      x-greptime-pipeline-name: "greptime_trace_v2"
+      x-greptime-trace-table-name: "opentelemetry_traces_v2"
+      #authorization: "Basic <base64(username:password)>"
+    tls:
+      insecure: true
+```
+
+请使用新表，避免向已有 v1 表写入 v2 数据。按下文发送 Trace 后，GreptimeDB 会自动
+创建 `opentelemetry_traces_v2`，并将属性存储为 JSON2。SDK 直接写入时也使用相同的请求头。
+
+#### 将 Trace 数据写入到 OpenTelemetry Collector
+
+你可以给应用配置相应的 exporter 来将 traces 数据写入到 OpenTelemetry Collector。
+比如你可以使用环境变量 `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` 来配置 exporter 的
+endpoint：
+
+```shell
+export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="http://localhost:4318/v1/traces"
+```
+
+此处为了方便，我们可使用工具
+[`telemetrygen`](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/cmd/telemetrygen)
+来快速生成 traces 数据并写入到 OpenTelemetry Collector 中，更多细节可参考
+[OpenTelemetry Collector 官方文
+档](https://opentelemetry.io/docs/collector/quick-start/)。
+
+我们可以用如下命令安装 `telemetrygen`（请确保你已经安装了 Go）：
+
+```shell
+go install github.com/open-telemetry/opentelemetry-collector-contrib/cmd/telemetrygen@latest
+```
+
+然后我们就可以使用如下命令来生成 traces 数据并写入到 OpenTelemetry Collector 中：
+
+```shell
+telemetrygen traces --otlp-insecure --traces 3
+```
+
+上面这条命令将生成 3 条 traces 数据，并通过 gRPC 协议写入到 OpenTelemetry Collector 中。
+
+
+### 认证
+
+GreptimeDB 的 OTEL 端点支持 Basic 认证。详情请参考 [鉴权](/user-guide/protocols/http.md#鉴权) 文档。
+
+### GreptimeDB Pipeline
+
+在 OTLP 接口中，我们要求 HTTP 头 `x-greptime-pipeline-name` 作为必选参数。在这里
+我们复用了日志接口中 Pipeline 的概念作为数据转化的机制。Trace 数据应使用内置的
+`greptime_trace_v1`（打平属性列）或 `greptime_trace_v2`（JSON2 属性）。
+有关模型差异和表选项，请参阅[Trace 数据模型](./data-model.md)。切换模型时请使用独立的表。
+自定义的 Pipeline 暂不支持。
+
+### Append-only 模式
+
+通过此接口创建的表，默认为[Append-only 模
+式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表).
+
+<AnchorAlias id="query" />
+
+## 查询
+
+GreptimeDB 提供了两种 Trace 数据的查询接口，分别是 Jaeger API 兼容接口和
+GreptimeDB 原生的 SQL 查询接口，后者可以运行在 HTTP, MySQL 或者 Postgres 等协议
+上。
+
+### Jaeger
+
+GreptimeDB 内置的 Jaeger 兼容层使得用户可以直接复用市面上的 Jaeger 生态工具，例
+如 Grafana 的 Jaeger 数据源。
+
+我们在 [Jaeger 协议文档](/user-guide/query-data/jaeger.md)里对此做了具体描述。
+
+### SQL
+
+#### greptime_trace_v1
+
+Trace 数据也可以通过 SQL 查询。默认 Trace 数据会写入 `opentelemetry_traces` 表中，
+这个表名也可以在写入时通过 `x-greptime-trace-table-name` 来指定。通过 SQL 查询：
+
+```sql
+SELECT * FROM public.opentelemetry_traces \G
+```
+
+使用上面的 v1 配置时，输出示例如下：
+
+```
+*************************** 1. row ***************************
+                         timestamp: 2025-05-07 10:03:29.657544
+                     timestamp_end: 2025-05-07 10:03:29.661714
+                     duration_nano: 4169970
+                    parent_span_id: eccc18b6fc210f31
+                          trace_id: fb60d19aa36fdcb7d14a71ca0b9b42ae
+                           span_id: 49806a2671f2ddcb
+                         span_kind: SPAN_KIND_SERVER
+                         span_name: POST todos/
+                  span_status_code: STATUS_CODE_UNSET
+               span_status_message:
+                       trace_state:
+                        scope_name: opentelemetry.instrumentation.django
+                     scope_version: 0.51b0
+                      service_name: myproject
+span_attributes.http.request.method: POST
+             span_attributes.url.full:
+                       span_events: []
+                        span_links: []
+...
+```
+
+#### greptime_trace_v2
+
+OpenTelemetry 属性键通常包含点号。请用双引号包住完整的键名，将其作为字面键读取，
+而不是嵌套路径：
+
+```sql
+SELECT * FROM public.opentelemetry_traces_v2 LIMIT 10;
+
+SELECT
+    timestamp,
+    trace_id,
+    service_name,
+    span_attributes."http.request.method"::STRING AS method,
+    span_attributes."http.response.status_code"::BIGINT AS status,
+    resource_attributes."service.name"::STRING AS resource_service
+FROM public.opentelemetry_traces_v2
+WHERE span_attributes."http.response.status_code"::BIGINT >= 500
+ORDER BY timestamp DESC
+LIMIT 20;
+```
+
+例如，`span_attributes."http.request.method"` 读取键 `http.request.method`，而
+`span_attributes.http.request.method` 读取嵌套对象。v1 中的
+`"span_attributes.http.request.method"` 表示打平后的表列，不适用于 v2。
+更多示例请参阅 [JSON2 查询语法](/user-guide/logs/json2.md#点号语法)。
+事件和链接仍使用 [JSON 函数](/reference/sql/functions/json.md)查询。
+
+在下一节[数据模型](./data-model.md) 中我们会对这个表结构做详细介绍。

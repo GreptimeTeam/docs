@@ -1,0 +1,519 @@
+---
+keywords: [GreptimeDB upgrade, upgrade example]
+description: Introduce how to upgrade GreptimeDB to the latest version, including some incompatible changes and specific upgrade steps.
+---
+
+# Upgrade
+
+## Overview
+
+This guide provides upgrade instructions for GreptimeDB, including compatibility information and breaking changes for each version. Before upgrading, ensure you review the relevant breaking changes for your upgrade path.
+
+For each upgrade, review the changes introduced after your current version up
+to and including your target version. Reviewing intermediate releases does not
+mean you need to install each one; follow the supported upgrade paths below.
+
+For complete version history and feature additions, see the [Release Notes](/release-notes/).
+
+## Upgrade Paths to v1.3
+
+### From v1.2 to v1.3
+
+If you are running v1.2, you can upgrade directly to v1.3.
+Review [Upgrading from v1.2 to v1.3](#upgrading-from-v12-to-v13) and complete
+the related checks in the [Upgrade Checklist](#upgrade-checklist) before the
+rollout.
+
+### From v1.1 or Earlier
+
+If you are upgrading to v1.3 from v1.1 or an earlier release, first review the
+[upgrade paths to v1.2](#upgrade-paths-to-v12) and then apply the
+[v1.3 breaking changes](#upgrading-from-v12-to-v13).
+
+## Upgrade Paths to v1.2
+
+### From v1.0 or v1.1 to v1.2
+
+If you are currently running v1.0 or v1.1, you can upgrade directly to v1.2.
+Review [Upgrading from v1.0 or v1.1 to v1.2](#upgrading-from-v10-or-v11-to-v12)
+and complete the related checks in the [Upgrade Checklist](#upgrade-checklist)
+before the rollout.
+If you are starting from v1.0, also review [Metric Engine changes in v1.1](/1.1/user-guide/deployments-administration/upgrade/#metric-engine-changes-in-v11).
+
+### From v0.17 or Earlier
+
+If you are upgrading to v1.2 from v0.17 or an earlier release, first review the
+relevant v1.0 upgrade path below and then apply the
+[v1.2 breaking changes](#upgrading-from-v10-or-v11-to-v12).
+
+For Metric Engine, also review the [v1.0 compaction guidance](/1.0/user-guide/deployments-administration/upgrade/#metric-engine-compaction-changes-in-v10)
+and [Metric Engine changes in v1.1](/1.1/user-guide/deployments-administration/upgrade/#metric-engine-changes-in-v11).
+
+## Upgrade Paths to v1.0
+
+### From v0.16 to v1.0
+
+If you are currently running v0.16, you can upgrade directly to v1.0. See [Upgrading from v0.16 to v1.0](#upgrading-from-v016-to-v10) for all relevant breaking changes.
+
+### From v0.17 to v1.0
+
+If you are currently running v0.17, you can upgrade directly to v1.0. See [Upgrading from v0.17 to v1.0](#upgrading-from-v017-to-v10) for breaking changes.
+
+### From Earlier Versions
+
+**Important:** This guide only covers upgrades from v0.16 and later versions.
+
+If you are running a version earlier than v0.16, you must first upgrade to v0.16 by following the upgrade documentation for your current version. Once you have successfully upgraded to v0.16, you can then use this guide to upgrade to v1.0.
+
+## Breaking Changes by Version
+
+### Upgrading from v1.2 to v1.3
+
+#### VRL Host Access Is Now Disabled by Default
+
+**Impact:** Pipelines that use restricted VRL functions or arguments
+
+Starting with v1.3.0, `pipeline.allow_vrl_host_access` defaults to `false`.
+Existing pipelines that use restricted functions or arguments fail compilation
+when first loaded from storage after an upgrade. Ingestion requests that use
+these pipelines fail as a result.
+
+**Action Required:**
+
+- Review existing pipelines for [restricted VRL functions and arguments](/reference/pipeline/pipeline-config.md#vrl-host-access).
+- Remove the restricted calls or arguments before upgrading. If all pipeline
+  authors are trusted, you can instead set `allow_vrl_host_access = true` in the
+  `[pipeline]` configuration on every Frontend or the standalone server and
+  restart the affected servers.
+- Use `POST /v1/pipelines/_dryrun` to validate affected pipelines with the target
+  version and intended server configuration before rolling out the upgrade.
+
+#### Scan memory accounting changes
+
+After upgrading to v1.3, queries can reach a memory limit and fail even if
+your configuration is unchanged. Review these settings before upgrading:
+
+| Existing configuration | Change and recommended action |
+| --- | --- |
+| `scan_memory_limit` omitted | The default changes from `unlimited` to `25%` of available memory, respecting container limits. Set it explicitly to `"unlimited"` to keep scan-memory enforcement disabled. |
+| Explicit nonzero `scan_memory_limit` | The new `scan_memory_mode` defaults to `basic`. Use `extended` if you need to continue counting batches produced by scans, and test whether your limit is sufficient. |
+| `scan_memory_on_exhausted = "wait"` or `"wait(<duration>)"` | Queries now fail immediately instead of waiting for memory. Replace these values with `"fail"` and review application error handling. |
+
+`extended` does not exactly restore the previous behavior: the same limit can
+reject queries that previously succeeded. Review `query.memory_pool_size` as
+well, because queries may now reach that limit sooner.
+Setting `scan_memory_limit` to `0` or `"unlimited"` still disables only the scan
+limit; it does not disable the query-memory limit or file-count checks.
+
+Before rolling out the upgrade, test representative queries at your expected
+concurrency and review alerts using `greptime_mito_scan_memory_usage_bytes`.
+This metric does not represent total process memory. See
+[scan memory accounting](/user-guide/deployments-administration/configuration.md#scan-memory-accounting)
+for configuration details.
+
+### Upgrading from v1.0 or v1.1 to v1.2
+
+#### Removed PromQL `holt_winters`
+
+**Impact:** PromQL query parsing
+
+The `holt_winters` name has been removed. It was an alias kept for backward
+compatibility; the function itself is unchanged and remains available as
+`double_exponential_smoothing`, which GreptimeDB supported before v1.2 as well.
+
+**Action Required:**
+
+- Search dashboards, recording rules, alert rules, and API callers for
+  `holt_winters(`
+- Rename each call to `double_exponential_smoothing(...)`. The arguments and
+  the results are identical:
+
+  ```promql
+  # Before v1.2
+  holt_winters(prom_series[10s], 0.5, 0.1)
+
+  # v1.2 and later
+  double_exponential_smoothing(prom_series[10s], 0.5, 0.1)
+  ```
+
+- Re-run the affected queries in a staging environment after the change
+
+#### Rejected `fill`, `fill_left`, and `fill_right` PromQL Modifiers
+
+**Impact:** PromQL compatibility tightening to avoid incorrect query plans
+
+v1.2 upgrades the PromQL parser, which makes the binary-operator modifiers
+`fill`, `fill_left`, and `fill_right` syntactically valid for the first time,
+as in `metric_a + fill(0) metric_b`. GreptimeDB does not implement the
+outer-join semantics they require, so it rejects them, whether used directly or
+nested, rather than planning them as ordinary inner joins.
+
+Earlier releases could not parse these modifiers at all, so no query that
+worked before v1.2 is affected. This is also unrelated to the SQL
+`RANGE ... FILL` clause, which is unchanged.
+
+**Action Required:**
+
+- Search PromQL expressions for `fill(`, `fill_left(`, and `fill_right(`
+- Rewrite any affected query so it does not depend on these modifiers
+
+#### Pipeline Integer Narrowing Now Uses `on_failure`
+
+**Impact:** Pipeline type coercion correctness
+
+When a pipeline converts an integral input or a numeric string into a declared
+integer type that cannot represent it, the value no longer wraps with modulo
+semantics. It now follows the transform's `on_failure` policy. Previously `-1`
+written to `uint8` was stored as `255`, and `256` written to `int8` was stored
+as `0`.
+
+This applies to `int8`, `int16`, `int32`, `uint8`, `uint16`, and `uint32`, and
+to cross-sign conversions into `int64` and `uint64`. Float-to-integer behavior
+is unchanged in this release.
+
+**Action Required:**
+
+- Review pipelines that write into narrow integer targets, or that may write
+  negative values into unsigned targets
+- If those pipelines relied on wraparound behavior, widen the target type or
+  configure an explicit `on_failure` policy before upgrading
+- Use `POST /v1/pipelines/_dryrun` or representative staging data to verify
+  that boundary values now produce the expected error, default, or null outcome
+
+#### Local SQL File Access Is Now Sandboxed
+
+**Impact:** `COPY` and external-table workflows that read or write local files
+
+Standalone deployments now resolve local SQL file paths inside
+`storage.copy_root` (default `<data_home>/copy`). Distributed deployments reject
+local-file SQL access entirely.
+
+**Action Required:**
+
+- Identify `COPY` statements and external tables that reference local paths
+- If you run standalone, move those files under the sandbox, set
+  `storage.copy_root` to a dedicated directory, or switch the workflow to
+  object storage
+- If you run distributed services, migrate local-file workflows to S3, OSS,
+  GCS, or AzBlob before upgrading
+- Follow [Migrate Local SQL File Access](/user-guide/deployments-administration/migrate-local-sql-file-access.md)
+  for the detailed migration procedure
+
+#### Removed `sparse_primary_key_encoding` Configuration
+
+**Impact:** Metric engine configuration cleanup
+
+GreptimeDB now always uses sparse primary key encoding for metric tables, and
+the `sparse_primary_key_encoding` option has been removed. A configuration file
+that still sets the key loads without error; the key is ignored.
+
+**Action Required:**
+
+- Remove `sparse_primary_key_encoding` from the `[region_engine.metric]` block
+  in your configuration files, Helm values, and automation templates. Drop the
+  older `experimental_sparse_primary_key_encoding` key as well if it is still
+  present.
+- If you previously set `sparse_primary_key_encoding = false`, note that v1.2
+  no longer provides an opt-out
+- Restart a staging environment with the cleaned configuration to confirm your
+  deployment no longer depends on the removed setting
+
+### Upgrading from v1.0.x to v1.1.4
+
+#### OSS credential precedence
+
+**Impact:** OSS authentication can use a different RAM role after an upgrade.
+
+When upgrading from v1.0.x to v1.1.4, OSS tries ECS RAM Role credentials before
+OIDC credentials. If both are available and the ECS role lacks the required OSS
+permissions, table creation or writes can fail with `403 PermissionDenied`.
+
+**Action Required:**
+
+If you need to use the OIDC role, set `ALIBABA_CLOUD_ECS_METADATA_DISABLED=true`
+in the GreptimeDB process environment and restart the affected instances.
+See [Aliyun OSS credentials](/user-guide/deployments-administration/configuration.md#aliyun-oss-credentials)
+for the credential lookup order.
+
+### Upgrading from v0.17 to v1.0
+
+For Metric Engine tables, review the [compaction guidance](/1.0/user-guide/deployments-administration/upgrade/#metric-engine-compaction-changes-in-v10) before
+upgrading from v0.17 to v1.0 or later.
+
+#### Jaeger HTTP Header Removal
+
+**Impact:** HTTP header deprecation
+
+The HTTP header `x-greptime-jaeger-time-range-for-operations` has been deprecated and removed.
+
+**Action Required:**
+
+- If you configured this header in your Jaeger data source or proxy, remove it from your configuration
+- The header will no longer have any effect
+
+#### Metric Engine Default Sparse Primary Key Encoding
+
+**Impact:** Default configuration change with performance improvements
+
+Metric Engine now enables **sparse primary key encoding** by default to improve storage efficiency and query performance for metric scenarios.
+
+**Configuration Changes:**
+
+- **NEW default:** `sparse_primary_key_encoding = true`
+- **DEPRECATED:** `experimental_sparse_primary_key_encoding` (use `sparse_primary_key_encoding` instead)
+
+**Action Required:**
+
+- This change does not cause data format compatibility issues
+- All metric tables will automatically use sparse encoding by default
+- If you want to continue using the old encoding method, explicitly set:
+  ```toml
+  [[region_engine]]
+  [region_engine.metric]
+  sparse_primary_key_encoding = false
+  ```
+
+#### `greptime_identity` Pipeline JSON Behavior Change
+
+**Impact:** JSON processing logic change
+
+The JSON processing logic in `greptime_identity` pipeline has changed significantly:
+
+**New Behavior:**
+
+- Nested JSON objects are automatically flattened into separate columns using dot notation (e.g., `object.a`, `object.b`)
+- Arrays are stored as JSON strings instead of JSON objects
+- The `flatten_json_object` parameter has been removed
+- A new `max_nested_levels` parameter controls flattening depth (default: 10 levels)
+- When the depth limit is exceeded, remaining nested structures are serialized as JSON strings
+
+**Action Required:**
+
+1. Review your pipeline configurations that use `greptime_identity`
+2. Remove any usage of the deprecated `flatten_json_object` parameter
+3. Adjust queries that reference nested JSON fields to use the new dot notation
+4. If you have deeply nested JSON (>10 levels), consider setting `max_nested_levels` appropriately
+
+**Example:**
+
+Before (v0.17):
+
+```json
+{ "user": { "name": "Alice", "age": 30 } }
+```
+
+Stored as a single JSON column.
+
+After (v1.0):
+
+```
+user.name = "Alice"
+user.age = 30
+```
+
+Stored as separate columns.
+
+#### Metric Engine TSID Generation Algorithm Change
+
+**Impact:** Time Series ID generation optimization with query implications
+
+The TSID (Time Series ID) generation algorithm has been optimized by replacing `mur3::Hasher128` with the higher-performance `fxhash::FxHasher`, including a fast-path for series without NULL labels.
+
+**Performance Improvements:**
+
+- Regular scenarios: 5-6x faster
+- Scenarios with NULL labels: ~2.5x faster
+
+**Breaking Change Impact:**
+
+This is a **breaking change** that affects time series identification:
+
+- **Before upgrade (time < t):** Data uses the old algorithm to generate TSIDs
+- **After upgrade (time > t):** Data uses the new algorithm to generate TSIDs
+
+**Query Behavior:**
+
+- Queries with time ranges that **span the upgrade time `t`** may experience slight discrepancies in time series matching near time `t`
+- Queries with time ranges that **do not include `t`** are not affected
+
+**Action Required:**
+
+Choose one of the following upgrade strategies:
+
+1. **Direct Upgrade (Recommended for most users):**
+   - Accept minor query discrepancies near the upgrade time
+   - Suitable if approximate results near the upgrade time are acceptable
+
+2. **Export-Upgrade-Import (For zero tolerance):**
+   - If you cannot accept any discrepancies, use this fully compatible upgrade method:
+     1. Export all data before upgrading
+     2. Upgrade to v1.0
+     3. Import data back into the new version
+   - Refer to [Backup & Restore Documentation](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data/)
+
+### Upgrading from v0.16 to v1.0
+
+If you are upgrading from v0.16, you need to review:
+
+1. **All breaking changes from v0.17 to v1.0** (listed above)
+2. **v0.17.0 breaking changes** (listed below)
+
+This ensures you're aware of all changes that occurred between v0.16 and v1.0.
+
+### v0.17.0 Breaking Changes
+
+#### Ordered-Set Aggregate Functions
+
+**Impact:** SQL syntax change
+
+Ordered-set aggregate functions now require a `WITHIN GROUP (ORDER BY …)` clause.
+
+**Before:**
+
+```sql
+SELECT approx_percentile_cont(latency, 0.95) FROM metrics;
+```
+
+**After:**
+
+```sql
+SELECT approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) FROM metrics;
+```
+
+**Action Required:** Update all queries using ordered-set aggregate functions (`approx_percentile_cont`, `approx_percentile_cont_weight`, etc.) to include the `WITHIN GROUP (ORDER BY …)` clause.
+
+#### MySQL Protocol Comment Styling
+
+**Impact:** Comment syntax strictness
+
+Incorrect comment styling is no longer allowed in MySQL protocol. Comments must start with `--` instead of `---`.
+
+**Before:**
+
+```sql
+--- This is a comment
+SELECT * FROM table;
+```
+
+**After:**
+
+```sql
+-- This is a comment
+SELECT * FROM table;
+```
+
+**Action Required:** Update any SQL scripts or queries that use `---` style comments to use the standard `--` format.
+
+## Additional v1.0 Changes (Non-Breaking)
+
+### v1.0.0-beta.3
+
+#### Cache Configuration Improvements
+
+The cache architecture has been refactored for better performance:
+
+**New Configuration:**
+
+- `region_engine.mito.manifest_cache_size` (default: 256MB) - specialized manifest file cache
+
+**Removed Configuration:**
+
+- `storage.cache_path`
+- `storage.enable_read_cache`
+- `storage.cache_capacity`
+
+**Action Required:** Update your configuration files to use the new `manifest_cache_size` setting and remove the deprecated storage cache options.
+
+### v1.0.0-beta.2
+
+#### Improved Database Compatibility
+
+- Numeric type aliases aligned with PostgreSQL and MySQL standards
+- Better PostgreSQL extended query support
+- Improved MySQL binary protocol handling
+
+**Action Required:** Test your applications to ensure compatibility with the improved behavior.
+
+## Minimizing Business Impact During Upgrade
+
+Before upgrading GreptimeDB, it is essential to perform a comprehensive backup of your data to safeguard against potential data loss. This backup acts as a safety measure in the event of any issues during the upgrade process.
+
+### Best Practices
+
+#### Rolling Upgrade
+
+Utilize [rolling upgrades](https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/) on Kubernetes to update GreptimeDB instances incrementally. This approach replaces old instances with new ones while maintaining service availability and minimizing downtime.
+
+#### Automatic Retries
+
+Configure client applications to enable automatic retries with exponential backoff. This helps handle temporary service interruptions gracefully.
+
+#### Temporary Pause of Write Operations
+
+For applications that can tolerate brief maintenance windows, consider pausing write operations during the upgrade to ensure data consistency.
+
+#### Double Writing
+
+Implement double writing to both the old and new versions of GreptimeDB, then switch to the new version once you have verified that it is functioning correctly. This allows you to verify data consistency and gradually redirect read traffic to the upgraded version.
+
+## Upgrade Checklist
+
+Before upgrading to your target version, complete the following checklist:
+
+### Pre-Upgrade
+
+- [ ] If using OSS, review the [credential precedence](#oss-credential-precedence) and disable ECS metadata if needed
+- [ ] Review all breaking changes relevant to your upgrade path
+- [ ] **Backup all data and configurations**
+- [ ] If upgrading to v1.2, search PromQL assets for `holt_winters(`, `fill(`, `fill_left(`, and `fill_right(`
+- [ ] If upgrading to v1.2, identify `COPY` workflows and external tables that reference local file paths
+- [ ] If upgrading to v1.2, review pipelines that narrow values into `int8`/`int16`/`int32`/`uint8`/`uint16`/`uint32`, or that write negative values into unsigned targets
+- [ ] If upgrading to v1.3, check pipelines for [restricted VRL functions and arguments](/reference/pipeline/pipeline-config.md#vrl-host-access)
+- [ ] Identify queries using ordered-set aggregate functions (if upgrading from v0.16 or earlier)
+- [ ] Identify pipelines using `greptime_identity` with JSON data
+- [ ] Check for usage of deprecated Jaeger HTTP header (if upgrading from v0.17 or earlier)
+- [ ] Review metric tables if using Metric Engine
+- [ ] If upgrading from v0.17 to v1.0 or later, follow the [Metric Engine compaction guidance](/1.0/user-guide/deployments-administration/upgrade/#metric-engine-compaction-changes-in-v10) to choose a window and decide whether to run SWCS before upgrading
+- [ ] If upgrading from a version earlier than v1.1 to v1.1 or later, review [Metric Engine changes in v1.1](/1.1/user-guide/deployments-administration/upgrade/#metric-engine-changes-in-v11)
+
+### Configuration Updates
+
+- [ ] Update configuration files (remove deprecated cache settings)
+- [ ] If upgrading to v1.0, update metric engine configuration if needed (`sparse_primary_key_encoding`)
+- [ ] If upgrading to v1.2, remove the now-ignored `sparse_primary_key_encoding` and `experimental_sparse_primary_key_encoding` overrides
+- [ ] If upgrading to v1.3, review `scan_memory_limit`, `scan_memory_mode`, and `scan_memory_on_exhausted` as described in [Scan memory accounting changes](#scan-memory-accounting-changes)
+- [ ] Update pipeline configurations (remove `flatten_json_object`, add `max_nested_levels` if needed)
+- [ ] If upgrading to v1.2 standalone deployments, set `storage.copy_root` if the default sandbox path does not fit your workflow
+
+### Code Updates
+
+- [ ] If upgrading to v1.2, rename PromQL `holt_winters(...)` calls to `double_exponential_smoothing(...)`
+- [ ] If upgrading to v1.2, rewrite PromQL queries that use `fill`, `fill_left`, or `fill_right`
+- [ ] If upgrading to v1.2, update pipelines that relied on integer wraparound and set an explicit `on_failure` policy when needed
+- [ ] Update SQL queries with ordered-set aggregates to use `WITHIN GROUP (ORDER BY ...)`
+- [ ] Update SQL scripts using `---` comments to use `--`
+- [ ] Update queries that access nested JSON fields to use dot notation
+- [ ] Remove Jaeger header configuration if present
+
+### Testing & Deployment
+
+- [ ] Test the upgrade in a non-production environment
+- [ ] If upgrading from v0.17 to v1.0 or later, test with historical SSTs and monitor memory usage, compaction progress, and query failures
+- [ ] If upgrading to v1.2, dry-run representative pipeline inputs that hit integer boundaries and verify the expected `on_failure` result
+- [ ] If upgrading to v1.2, validate the updated PromQL queries in staging
+- [ ] If upgrading to v1.2, verify local-file `COPY` and external-table workflows after moving them into the sandbox or object storage
+- [ ] Verify query results, especially for:
+  - Ordered-set aggregate functions
+  - Nested JSON data access
+  - Metric queries (if affected by TSID change)
+- [ ] Plan for rolling upgrade or maintenance window
+- [ ] Prepare rollback plan in case of issues
+- [ ] Monitor system behavior after upgrade
+
+### Special Considerations for Metric Engine Users
+
+If you cannot accept query discrepancies near the upgrade time due to TSID algorithm change:
+
+- [ ] Plan for export-upgrade-import process
+- [ ] Allocate sufficient time for data export and import
+- [ ] Refer to [Backup & Restore Documentation](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data/)
