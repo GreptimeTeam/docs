@@ -126,6 +126,16 @@ Known issue: a filtering comparison (without `bool`) re-attaches `__name__` even
 
 Remaining gaps: `__name__` handling in general, `first_over_time`, `vector(time())` as a function argument, `absent_over_time`, and `scalar()` as a `quantile_over_time` / `topk` parameter.
 
+### Benchmark results
+
+Compared with v1.2.1 using the same hardware and data for both versions, with warm caches.
+
+- 30-day PromQL range queries over 1,720 series and 158.5M samples, with a 30-minute step (c7i.2xlarge, 8 vCPUs, 16 GiB): median latency decreased by 9.9%–41.8% for four of five queries.
+- SQL queries over 100M agent observability records (c7i.2xlarge, 8 vCPUs, 16 GiB): median latency decreased by 6.3%–32.8% across the 16 measured queries.
+- Queries over 100.1M spans (m7i.2xlarge, 8 vCPUs, 32 GiB): median latency decreased by 6.0%–94.0% for six of eight queries, including client-side processing.
+
+These are single-run diagnostic results.
+
 ### Upgrade notes
 
 - Keep metasrv maintenance mode enabled throughout a rolling upgrade so Batch GC does not run against mixed metasrv/datanode versions: its new packed protocol has no legacy fallback. Disable maintenance mode only after the upgrade is complete. ([#9009](https://github.com/GreptimeTeam/greptimedb/pull/9009))
