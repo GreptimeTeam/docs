@@ -7,7 +7,7 @@ date: 2026-10-28
 
 Release date: October 28, 2026
 
-GreptimeDB v1.3.0 adds native histogram ingestion, an opt-in trace schema with JSON2 attributes, and automatic retries for distributed writes. It also fixes incorrect SQL and PromQL results, write routing during schema changes, and storage recovery failures.
+GreptimeDB v1.3.0 adds native histogram ingestion, a semantic entity graph over metrics and traces, an opt-in trace schema with JSON2 attributes, and automatic retries for distributed writes. It also fixes incorrect SQL and PromQL results, write routing during schema changes, and storage recovery failures.
 
 ### 👍 Highlights
 
@@ -15,11 +15,11 @@ GreptimeDB v1.3.0 adds native histogram ingestion, an opt-in trace schema with J
 
 Prometheus Remote Write v2 native histograms and cumulative OTLP/HTTP exponential histograms are accepted by default. PromQL can query native histograms, including quantiles and fractions. Remote Write v1 native histograms, native histogram Remote Read, and OTel Arrow exponential histograms remain unsupported. ([#9301](https://github.com/GreptimeTeam/greptimedb/pull/9301), [#8758](https://github.com/GreptimeTeam/greptimedb/pull/8758), [#8874](https://github.com/GreptimeTeam/greptimedb/pull/8874))
 
-#### Trace V2: JSON2 attributes with Jaeger and Semantic Graph support
+#### Trace V2: JSON2 attributes with Jaeger and semantic entity graph support
 
-The opt-in `greptime_trace_v2` pipeline stores span, scope, and resource attributes in three JSON2 columns instead of adding a SQL column for every attribute. Its 19-column schema also preserves span events and links as JSON arrays. Jaeger queries and Semantic Graph derivation support the new model.
+The opt-in `greptime_trace_v2` pipeline stores span, scope, and resource attributes in three JSON2 columns instead of adding a SQL column for every attribute. Its 19-column schema also preserves span events and links as JSON arrays. Jaeger queries and [semantic entity graph](#semantic-entity-graph-experimental) derivation support the new model.
 
-Select `greptime_trace_v2` with the `x-greptime-pipeline-name` header on OTLP trace ingestion requests and use a separate destination table from Trace V1. After ingesting into a table named `traces_v2`, query typed attributes directly:
+Select `greptime_trace_v2` with the `x-greptime-pipeline-name` header on OTLP trace ingestion requests. Use a separate destination table from Trace V1. After ingesting into a table named `traces_v2`, query typed attributes directly:
 
 ```sql
 SELECT
@@ -31,13 +31,17 @@ FROM traces_v2;
 
 Existing Trace V1 tables are not automatically migrated. Events and links use JSON in this release; `ARRAY(JSON2)` is deferred. See [#9192](https://github.com/GreptimeTeam/greptimedb/pull/9192), [#9232](https://github.com/GreptimeTeam/greptimedb/pull/9232), [#9257](https://github.com/GreptimeTeam/greptimedb/pull/9257), and [#9278](https://github.com/GreptimeTeam/greptimedb/pull/9278).
 
-#### Semantic entity graph
+#### Semantic entity graph (experimental)
+
+**Semantic entity graph is experimental. Future releases may introduce breaking changes.**
 
 GreptimeDB derives an entity graph of services, hosts, containers, and Kubernetes objects from metrics and traces at query time, using built-in conventions for OpenTelemetry, Prometheus, and Kubernetes data. Query it with SQL through `greptime_private.semantic_entities` and `greptime_private.semantic_relationships`. `information_schema.table_semantics` shows what each table contributes to the graph, and `ALTER TABLE ... SET/UNSET` adjusts a table’s semantic options. [GreptimeDB MCP Server](https://github.com/GreptimeTeam/greptimedb-mcp-server) v0.6.0 and later lets AI agents query the graph through `query_semantic_graph` and find tables by concept through `search_table_semantics`.
 
+See [#8614](https://github.com/GreptimeTeam/greptimedb/pull/8614), [#8854](https://github.com/GreptimeTeam/greptimedb/pull/8854), [#8880](https://github.com/GreptimeTeam/greptimedb/pull/8880), [#8904](https://github.com/GreptimeTeam/greptimedb/pull/8904), [#8936](https://github.com/GreptimeTeam/greptimedb/pull/8936).
+
 #### Retry distributed writes without replaying successful entries
 
-Frontends retry transient distributed write failures up to three times by default, refreshing routes when regions move or partitions change. Per-datanode batches remain intact, and partial-failure responses let the frontend retry failed entries without replaying acknowledged successes. Whole-RPC failures can still have an uncertain outcome; retries do not provide exactly-once ingestion. ([#9542](https://github.com/GreptimeTeam/greptimedb/pull/9542), [#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543), [#9728](https://github.com/GreptimeTeam/greptimedb/pull/9728), [#9720](https://github.com/GreptimeTeam/greptimedb/pull/9720))
+Frontends retry transient distributed write failures up to three times by default, refreshing routes when regions move or partitions change. Per-datanode batches remain intact, and partial-failure responses let the frontend retry failed entries without replaying acknowledged successes. Whole-RPC failures can still have an uncertain outcome. Retries do not provide exactly-once ingestion. ([#9542](https://github.com/GreptimeTeam/greptimedb/pull/9542), [#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543), [#9728](https://github.com/GreptimeTeam/greptimedb/pull/9728), [#9720](https://github.com/GreptimeTeam/greptimedb/pull/9720))
 
 The frontend defaults are:
 
@@ -53,9 +57,9 @@ Set `max_retries = 0` to disable retries. These settings apply to distributed fr
 
 #### Improved compaction algorithms and TWCS tuning
 
-The multiway merge used by compaction now uses a winner tree for its active input streams, reducing comparison work when merging overlapping sorted data. TWCS also applies different selection policies to active and inactive time windows: active windows favor separate merges of newly flushed and previously compacted files to avoid repeated rewrites, while inactive windows have additional consolidation paths. Serial automatic compaction selects one output at a time and replans against the updated SST state before selecting further work.
+TWCS reduces repeated rewrites for continuously ingested time-series data and lets you tune compaction separately for active and inactive time windows.
 
-Three new tuning options accompany the renamed active-window file-count trigger. The following example sets the table-level options to their defaults:
+Three new tuning options accompany the renamed active-window file-count trigger; the example below shows their defaults:
 
 ```sql
 ALTER TABLE my_table SET
@@ -78,6 +82,14 @@ The existing `compaction.twcs.trigger_file_num` option remains accepted as an al
 The bundled Dashboard v0.14.2 adds **Signals Explore** for exploring metrics, logs, and traces with label filters and links between logs and traces. Native and gauge histograms are not charted yet. Timezone settings apply consistently to display and SQL requests, including the browser's IANA timezone when **Browser** is selected. This version also fixes log scrolling, loading indicators, and trace-ID queries. ([Signals Explore](https://github.com/GreptimeTeam/dashboard/pull/651), [timezone settings](https://github.com/GreptimeTeam/dashboard/pull/657), [v0.14.2](https://github.com/GreptimeTeam/dashboard/releases/tag/v0.14.2))
 
 JSON result columns also retain the per-column action to show or hide null fields introduced during beta.1 ([dashboard#653](https://github.com/GreptimeTeam/dashboard/pull/653)).
+
+![Signals Explore Metrics tab showing a grid of metric charts, with metric name prefixes and counts in the left panel.](https://docs.greptime.com/release-1-3-0-beta-2-signals-explore-metrics.png)
+
+![Signals Explore Logs tab grouping OpenTelemetry logs by service name, with log volume charts and trace ID links on each log line.](https://docs.greptime.com/release-1-3-0-beta-2-signals-explore-logs.png)
+
+#### Authentication
+
+Bearer-token authentication is now supported over HTTP and SQL protocols, and MySQL authentication methods can be selected per user. ([#8719](https://github.com/GreptimeTeam/greptimedb/pull/8719), [#8899](https://github.com/GreptimeTeam/greptimedb/pull/8899), [#9078](https://github.com/GreptimeTeam/greptimedb/pull/9078))
 
 ### Upgrade notes
 
@@ -157,7 +169,6 @@ JSON result columns also retain the per-column action to show or hide null field
 * feat(cmd): improve parquet rewrite fidelity and scanbench output by [@evenyag](https://github.com/evenyag) in [#8947](https://github.com/GreptimeTeam/greptimedb/pull/8947)
 * feat(function): expose uddsketch rank by [@v0y4g3r](https://github.com/v0y4g3r) in [#8929](https://github.com/GreptimeTeam/greptimedb/pull/8929)
 * feat: synthesize OTLP resource descriptor for the semantic entity graph by [@killme2008](https://github.com/killme2008) in [#8904](https://github.com/GreptimeTeam/greptimedb/pull/8904)
-* feat(ci): run query regression on ephemeral Aliyun ECS runners by [@paomian](https://github.com/paomian) in [#8937](https://github.com/GreptimeTeam/greptimedb/pull/8937)
 * feat: update dashboard to v0.13.14 by [@sunchanglong](https://github.com/sunchanglong) in [#8968](https://github.com/GreptimeTeam/greptimedb/pull/8968)
 * feat: harden frontend heartbeat extensions by [@v0y4g3r](https://github.com/v0y4g3r) in [#8803](https://github.com/GreptimeTeam/greptimedb/pull/8803)
 * feat(meta): record physical table reconciliation events by [@dhruvxvaishnav](https://github.com/dhruvxvaishnav) in [#8935](https://github.com/GreptimeTeam/greptimedb/pull/8935)
@@ -543,6 +554,7 @@ JSON result columns also retain the per-column action to show or hide null field
 
 ### ⚙️ Miscellaneous Tasks
 
+* feat(ci): run query regression on ephemeral Aliyun ECS runners by [@paomian](https://github.com/paomian) in [#8937](https://github.com/GreptimeTeam/greptimedb/pull/8937)
 * ci: optimize fuzz and split workflows by [@WenyXu](https://github.com/WenyXu) in [#8710](https://github.com/GreptimeTeam/greptimedb/pull/8710)
 * chore: check enterprise-gated files are listed in both license configs by [@killme2008](https://github.com/killme2008) in [#8750](https://github.com/GreptimeTeam/greptimedb/pull/8750)
 * ci: automate compatibility version window by [@discord9](https://github.com/discord9) in [#8608](https://github.com/GreptimeTeam/greptimedb/pull/8608)
