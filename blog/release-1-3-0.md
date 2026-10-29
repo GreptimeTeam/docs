@@ -31,6 +31,10 @@ FROM traces_v2;
 
 Existing Trace V1 tables are not automatically migrated. Events and links use JSON in this release; `ARRAY(JSON2)` is deferred. See [#9192](https://github.com/GreptimeTeam/greptimedb/pull/9192), [#9232](https://github.com/GreptimeTeam/greptimedb/pull/9232), [#9257](https://github.com/GreptimeTeam/greptimedb/pull/9257), and [#9278](https://github.com/GreptimeTeam/greptimedb/pull/9278).
 
+#### Semantic entity graph
+
+GreptimeDB derives an entity graph of services, hosts, containers, and Kubernetes objects from metrics and traces at query time, using built-in conventions for OpenTelemetry, Prometheus, and Kubernetes data. Query it with SQL through `greptime_private.semantic_entities` and `greptime_private.semantic_relationships`. `information_schema.table_semantics` shows what each table contributes to the graph, and `ALTER TABLE ... SET/UNSET` adjusts a table’s semantic options. [GreptimeDB MCP Server](https://github.com/GreptimeTeam/greptimedb-mcp-server) v0.6.0 and later lets AI agents query the graph through `query_semantic_graph` and find tables by concept through `search_table_semantics`.
+
 #### Retry distributed writes without replaying successful entries
 
 Frontends retry transient distributed write failures up to three times by default, refreshing routes when regions move or partitions change. Per-datanode batches remain intact, and partial-failure responses let the frontend retry failed entries without replaying acknowledged successes. Whole-RPC failures can still have an uncertain outcome; retries do not provide exactly-once ingestion. ([#9542](https://github.com/GreptimeTeam/greptimedb/pull/9542), [#9543](https://github.com/GreptimeTeam/greptimedb/pull/9543), [#9728](https://github.com/GreptimeTeam/greptimedb/pull/9728), [#9720](https://github.com/GreptimeTeam/greptimedb/pull/9720))
