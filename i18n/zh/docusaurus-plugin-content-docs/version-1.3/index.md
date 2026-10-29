@@ -8,7 +8,7 @@ import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
 # GreptimeDB 文档
 
-**GreptimeDB** 是一个开源可观测性数据库，用一个引擎存储指标、日志和链路追踪。它可以作为唯一的 OpenTelemetry 后端，替代 Prometheus、Loki 和 Elasticsearch，数据放在对象存储上，用 [SQL](/user-guide/query-data/sql.md) 和 [PromQL](/user-guide/query-data/promql.md) 查询。
+**GreptimeDB** 是一个开源[可观测性数据库](/user-guide/concepts/why-greptimedb.md#什么是可观测性数据库)，用一个引擎存储指标、日志和链路追踪。它可以作为唯一的 OpenTelemetry 后端，替代 Prometheus、Loki 和 Elasticsearch，数据放在对象存储上，用 [SQL](/user-guide/query-data/sql.md) 和 [PromQL](/user-guide/query-data/promql.md) 查询。
 
 <HomeCards>
 
@@ -46,7 +46,7 @@ import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
 **给 agent 一个统一的查询接口。** 在 [Agent RCA Bench](https://rca-bench.greptime.com/#zh) 中，6 个模型分别在 GreptimeDB 和 Prometheus + Loki + Tempo 上排查同样的 14 个故障：错误诊断少 40%，读取的输入 token 少 48%，整体成本低约 45%。
 
-详见[为什么选择 GreptimeDB](/user-guide/concepts/why-greptimedb.md)和 [Observability 2.0 与宽事件](/user-guide/concepts/observability-2.md)。
+详见[为什么选择 GreptimeDB](/user-guide/concepts/why-greptimedb.md)和[什么是可观测性数据库](/user-guide/concepts/why-greptimedb.md#什么是可观测性数据库)。
 
 ## 与 AI agent 集成
 
