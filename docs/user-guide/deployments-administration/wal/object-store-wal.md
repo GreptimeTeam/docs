@@ -19,8 +19,35 @@ The provider is named `experimental_object_store`. It is supported only in stand
 Check the following before you enable the object store WAL:
 
 - **A new instance**: enable it when you create a standalone instance. A table keeps the WAL provider and `prefix` it was created with, so the tables of an existing instance fail to open after the instance switches to this provider, even if they were flushed first. See [Limitations](#limitations).
-- **A supported object store**: the object store that holds the WAL must support conditional writes (if-not-exists) and strongly consistent listing. S3, Google Cloud Storage, Azure Blob Storage and MinIO meet both requirements. An S3-compatible store that lacks either one is not supported. The local file system storage (`type = "File"`) does not provide the guarantees described on this page. By default the WAL uses the storage configured in `[storage]`, so that storage must be one of these object stores unless you set `storage_provider`.
+- **A supported object store**: the object store that holds the WAL must support conditional create, which writes an object only if it does not exist yet, and strongly consistent listing. See [Supported object stores](#supported-object-stores). An S3-compatible store that lacks either one is not supported. The local file system storage (`type = "File"`) does not provide the guarantees described on this page. By default the WAL uses the storage configured in `[storage]`, so that storage must meet these requirements unless you set `storage_provider`.
 - **Its own location**: each standalone instance needs its own WAL location. Do not let two GreptimeDB instances use the same storage provider and `prefix`.
+
+### Supported object stores
+
+Every WAL file is written with a conditional create, which `type = "S3"` sends as `If-None-Match: *`. Some object stores accept this condition but ignore it and overwrite the existing object. On such a store, the WAL can overwrite its own files and lose acknowledged writes without any error.
+
+GreptimeDB checks this at startup, before it reads the WAL. It creates an object with a unique name under `<prefix>/datanodes/<node_id>/epochs/<generation>/probes/` twice, and the object store must refuse the second create. Then GreptimeDB deletes the object. If the object store accepts the second create, GreptimeDB refuses to start with an `Invalid WAL object store` error that says the object store overwrote an existing object on a conditional create. The check costs two writes and one delete per start. If the delete fails, GreptimeDB logs a warning and the object stays; GreptimeDB never reads it, and you can delete it. The check finds a store that ignores the condition, but not one that enforces it only some of the time, so also check the versions below.
+
+The following object stores are known to support conditional create:
+
+| Object store | `type` | Notes |
+| --- | --- | --- |
+| Amazon S3 | `S3` | Not S3 on Outposts. |
+| Cloudflare R2 | `S3` | |
+| Azure Blob Storage | `Azblob` | |
+| Google Cloud Storage | `Gcs` | Use `type = "Gcs"`. Its S3-compatible endpoint ignores the condition. |
+| Alibaba Cloud OSS | `Oss` | A bucket without versioning. |
+| MinIO | `S3` | RELEASE.2024-05-07T06-41-25Z or later. |
+| Ceph RGW | `S3` | Buckets without versioning, or versioned buckets from Tentacle v20.2.1. |
+| SeaweedFS | `S3` | 4.18 or later, or 4.46 or later with more than one filer. |
+| OpenStack Swift (s3api) | `S3` | 2.36.0 or later. |
+
+Known limitations of other object stores and versions:
+
+- These ignore the condition and overwrite the object: Google Cloud Storage through its S3-compatible endpoint, NetApp StorageGRID 12.0 and earlier, Garage, Scality CloudServer, MinIO before RELEASE.2024-05-07T06-41-25Z, and Ceph RGW versioned buckets before Tentacle v20.2.1.
+- These reject the condition, so GreptimeDB fails to start: Alibaba Cloud OSS through `type = "S3"`, and OpenStack Swift s3api before 2.36.0.
+- Alibaba Cloud OSS, Tencent Cloud COS and Volcengine TOS document that their own no-overwrite headers have no effect on versioned buckets. GreptimeDB sends the OSS header for `type = "Oss"`, so do not use a versioned bucket there.
+- MinIO community releases can skip the condition when they cannot reach a read quorum. The fix ([minio/minio#21653](https://github.com/minio/minio/pull/21653)) is not in any community binary release.
 
 ## Configuration
 
