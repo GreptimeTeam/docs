@@ -678,6 +678,10 @@ These are single-run diagnostic results.
 * [@tian1220A](https://github.com/tian1220A) made their first released contribution in [#8960](https://github.com/GreptimeTeam/greptimedb/pull/8960).
 * [@xhwhis](https://github.com/xhwhis) made their first released contribution in [#8721](https://github.com/GreptimeTeam/greptimedb/pull/8721).
 
+## Security Acknowledgements
+
+We thank [@Mikelteller4](https://github.com/Mikelteller4) for reporting unrestricted host access through VRL pipelines, and [@shuiyisong](https://github.com/shuiyisong) for implementing restrictions that disable host access by default ([#9610](https://github.com/GreptimeTeam/greptimedb/pull/9610)).
+
 ## All Contributors
 
 We would like to thank the following contributors from the GreptimeDB community:
