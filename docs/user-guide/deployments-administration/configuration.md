@@ -411,12 +411,12 @@ experimental_spill_compression = "zstd"
 
 The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.
 
-GreptimeDB supports storing data in local file system, AWS S3 and compatible services (including MinIO, RustFS, digitalocean space, Tencent Cloud Object Storage(COS), Baidu Object Storage(BOS) and so on), Azure Blob Storage, Aliyun OSS, and HDFS.
+GreptimeDB supports storing data in local file system, AWS S3 and compatible services (including MinIO, RustFS, digitalocean space, Tencent Cloud Object Storage(COS), Baidu Object Storage(BOS) and so on), Azure Blob Storage, Aliyun OSS, and Hadoop Distributed File System (HDFS).
 
 | Option  | Key                       | Type    | Description                                                                      |
 | ------- | ------------------------- | ------- | -------------------------------------------------------------------------------- |
 | storage |                           |         | Storage options                                                                  |
-|         | type                      | String  | Storage type, supports "File", "S3" and "Oss" etc.                               |
+|         | type                      | String  | Storage type, supports "File", "S3", "Gcs", "Azblob", "Oss", and "Hdfs".         |
 | File    |                           |         | Local file storage options, valid when type="File"                               |
 |         | data_home                 | String  | Database storage root directory, "./greptimedb_data" by default                  |
 |         | copy_root                 | String  | Root directory for standalone SQL access to local files (default `<data_home>/copy`). Relative paths in `COPY` and external tables are resolved below this directory; absolute paths are accepted only when they fall inside it. Distributed deployments always reject local-file SQL access. See [Migrate Local SQL File Access](/user-guide/deployments-administration/migrate-local-sql-file-access.md) for upgrade guidance. |

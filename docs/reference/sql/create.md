@@ -483,6 +483,7 @@ Each option can be set independently. `SHOW CREATE TABLE` displays the column co
 Restrictions:
 
 - `COMPRESSION` is not supported on `JSON2` columns.
+- `JSON2` columns cannot be primary keys.
 - Tag columns require `sst_format='flat'` and `primary_key_encoding='dense'` on the table.
 - Metric Engine logical tables reject explicit `COMPRESSION` options. Configure the shared physical table instead. Physical tables use sparse primary key encoding by default, so compression options on tag columns are rejected by default; field columns are unaffected.
 - `ALTER TABLE` does not support changing these options. A column configured with `delta_binary_packed` cannot be changed to a non-integer, non-timestamp type with `MODIFY COLUMN`.

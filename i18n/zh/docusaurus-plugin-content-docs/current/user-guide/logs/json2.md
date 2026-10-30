@@ -20,8 +20,13 @@ JSON2 目前处于 Beta 阶段，部分功能仍在持续完善中。
 
 ### 创建表
 
-在建表时，可以使用 `JSON2` 类型声明 JSON2 列。 当前 JSON2 只能在 append-only 表
-中使用，因此建表时需要设置 `'append_mode' = 'true'`。
+在建表时，可以使用 `JSON2` 类型声明 JSON2 列。JSON2 列既可用于 append-only 表，也可
+用于非 append-only 表。非 append-only 表支持 `last_row`（默认值）和 `last_non_null`
+两种 merge mode。JSON2 列不能用作主键。
+
+在 `last_non_null` 模式下，GreptimeDB 将 JSON2 列作为整体值合并，而不是逐个合并 JSON
+路径。较新的 JSON object 会完整替换之前的 object；只有 SQL `NULL` 才允许保留之前的
+非 `NULL` object。空 object 是非 `NULL` 值，因此会替换之前的 object。
 
 ```sql
 CREATE TABLE application_logs (
@@ -368,7 +373,7 @@ FROM application_logs;
 
 JSON2 目前处于 Beta 阶段，存在以下限制：
 
-- JSON2 列只能用于 append-only 表。
+- JSON2 列不能用作主键。
 - JSON root 必须是 object，不支持以 array、string、number、boolean 或 JSON literal `null` 作为 root。
 - Type hint 仅支持上文列出的类型，且路径不能穿过 array。
 - 结构化展开和 type hint path 最多支持 50 层嵌套。更深且未声明 type hint 的值仍保留在特殊的 `remainder` 字段中并可查询。
