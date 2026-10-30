@@ -244,6 +244,54 @@ For more information on the Format SQL API, refer to the [HTTP API documentation
   
 For more information on the PromQL API, refer to the [PromQL documentation](/user-guide/query-data/promql.md).
 
+### Streaming query analysis
+
+`POST /v1/sql/analyze/stream` returns Server-Sent Events (SSE) with content type `text/event-stream` for query metrics during execution.
+The endpoint is available by default and requires no configuration switch.
+
+Parameters can be passed in the URL query string or an `application/x-www-form-urlencoded` body. URL parameters take precedence over body parameters with the same name.
+
+| Parameter | Requirement | Description |
+| --- | --- | --- |
+| `sql` | Required | One `EXPLAIN ANALYZE VERBOSE` or `TQL ANALYZE VERBOSE` statement. Omit the format or use `FORMAT JSON`; other formats are unsupported. |
+| `db` | Optional | Database. Defaults to `public`. |
+| `snapshot_interval_ms` | Optional | Metrics snapshot interval in milliseconds. Defaults to `5000` and is clamped to `1000`–`60000`. For snapshot payloads of at least 1 MiB, the interval is at least 10 seconds; at least 10 MiB raises it to at least 30 seconds. |
+
+Example request:
+
+```bash
+curl -N -X POST 'http://127.0.0.1:4000/v1/sql/analyze/stream' \
+  --data-urlencode 'db=public' \
+  --data-urlencode 'sql=EXPLAIN ANALYZE VERBOSE SELECT count(*) FROM information_schema.tables' \
+  --data-urlencode 'snapshot_interval_ms=1000'
+```
+
+Each event has an `event:` line and a `data:` line containing JSON, separated from the next event by a blank line. The server sends a keep-alive comment every 15 seconds while the connection remains open.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `seq` | Integer | Monotonically increasing event sequence number. |
+| `state` | String | `metrics`, `final`, `canceled`, or `error`. |
+| `partial` | Boolean | `true` for `metrics` events; `false` for terminal events. |
+| `elapsed_ms` | Integer | Milliseconds since the request started. |
+| `metrics` | Array | A `stage` / `node` / `plan` snapshot, when available. Periodic events contain compact execution topology and runtime metrics; terminal events include verbose plan details. |
+| `output` | Object | Final query result, present only in `final` events. |
+| `reason` | String | Failure or cancellation reason, present only in `error` and `canceled` events. |
+| `code` | Integer | GreptimeDB status code, present only in `error` and `canceled` events; cancellation uses `1005` (`Cancelled`). |
+
+Snapshots contain all collected metrics, not deltas; values can change during collection. Snapshots are throttled but never truncated.
+
+| Event | Behavior |
+| --- | --- |
+| `metrics` | A complete metrics snapshot. Slow clients can skip intermediate snapshots, so `seq` is not necessarily consecutive. |
+| `final` | Query completed. |
+| `error` | Query failed. |
+| `canceled` | Query canceled. |
+
+`final`, `error`, and `canceled` are terminal events. A short query can return `final` without a metrics event. Validation failures before streaming return a regular JSON error response.
+On client disconnect, the server makes a best-effort attempt to cancel the query; the disconnected client receives no `canceled` event. Browser `EventSource` does not support this POST endpoint. Use an HTTP client that supports streaming responses.
+Events are delivered only to the current connection. The stream does not support resume, reconnect, or detached execution.
+
 ## Protocol Endpoints
 
 These endpoints implement selected APIs from InfluxDB, Prometheus, OpenTelemetry, Loki, Splunk HEC, and OpenTSDB.

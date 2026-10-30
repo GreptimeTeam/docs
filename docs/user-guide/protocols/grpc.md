@@ -25,3 +25,11 @@ Setting `insert_skip_wal` to `false` or omitting the hint does not enable WAL if
 When WAL is disabled, unflushed data is lost if the process restarts.
 Use this option only when the data can be ingested again from its source.
 :::
+
+## Bulk Write schema updates
+
+Arrow Flight `DoPut` Bulk Write requires an existing target table. By default, the server checks the stream's Arrow schema before processing the first data batch and adds missing columns to the table.
+The frontend/standalone top-level `auto_create_table` configuration and request metadata `x-greptime-hint-auto_create_table` both default to `true`. Setting either to `false` disables automatic schema updates for ordinary tables. A request value of `true` does not override a server value of `false`.
+New columns are fields, not primary-key columns. Define primary-key columns with SQL before writing.
+
+Automatic column addition does not support nested Arrow types or Dictionary types. Input must satisfy the target table's type, time-index, and nullability constraints.

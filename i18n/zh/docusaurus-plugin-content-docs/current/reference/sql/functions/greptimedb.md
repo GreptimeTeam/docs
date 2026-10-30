@@ -388,6 +388,45 @@ select database();
 +------------+
 ```
 
+## 可合并的聚合状态
+
+以下函数将聚合状态保存为 `BINARY`，再合并多个状态并计算结果。`avg` 和 `stddev_pop` 两组状态不能混用。
+
+| 函数 | 输入 | 返回类型 | 行为 |
+| --- | --- | --- | --- |
+| `avg_state(value)` | `DOUBLE` | `BINARY` | 聚合非 NULL 值的数量与总和。 |
+| `avg_merge(state)` | `BINARY` | `BINARY` | 合并平均值状态。 |
+| `avg_calc(state)` | `BINARY` | `DOUBLE` | 从状态计算平均值。 |
+| `stddev_pop_state(value)` | `DOUBLE` | `BINARY` | 使用 Welford 算法聚合总体标准差状态。 |
+| `stddev_pop_merge(state)` | `BINARY` | `BINARY` | 合并总体标准差状态。 |
+| `stddev_pop_calc(state)` | `BINARY` | `DOUBLE` | 从状态计算总体标准差。 |
+
+`*_state` 和 `*_merge` 是聚合函数，忽略 NULL 输入；`*_calc` 是标量函数。空输入产生空状态，空状态或 NULL 状态的计算结果为 NULL。只有一个非 NULL 值时，总体标准差为 `0`。
+
+`avg_merge`、`avg_calc` 和 `stddev_pop_merge` 遇到无效状态时返回错误；`stddev_pop_calc` 遇到无效状态时返回 NULL。总体标准差的状态函数拒绝非有限值和产生非有限中间结果的运算。
+
+以下查询先按组生成状态，再合并为整体统计结果：
+
+```sql
+WITH samples AS (
+    SELECT * FROM (VALUES
+        ('a', 1.0::DOUBLE), ('a', 2.0::DOUBLE),
+        ('b', 3.0::DOUBLE), ('b', 4.0::DOUBLE)
+    ) AS t(group_id, value)
+), states AS (
+    SELECT group_id,
+           avg_state(value) AS mean_state,
+           stddev_pop_state(value) AS deviation_state
+    FROM samples
+    GROUP BY group_id
+)
+SELECT avg_calc(avg_merge(mean_state)) AS mean,
+       round(stddev_pop_calc(stddev_pop_merge(deviation_state)), 6) AS deviation
+FROM states;
+```
+
+结果为 `mean = 2.5`、`deviation = 1.118034`。中间状态可写入表的 `BINARY` 列，供后续汇总使用。
+
 ## 管理函数
 
 GreptimeDB 提供 `ADMIN` 语句来运行管理函数，详见 [ADMIN](/reference/sql/admin.md) 文档。

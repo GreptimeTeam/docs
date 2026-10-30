@@ -159,7 +159,7 @@ A GreptimeDB configuration that parses and transforms incoming data before stora
 One or more Tag columns that identify a series or record group. In a table that uses deduplication, the primary key and time index identify rows that are merged according to the table's merge mode. It is not a general relational uniqueness constraint: append-only tables can omit the primary key and can retain repeated keys and timestamps as separate rows.
 
 ### PromQL (Prometheus Query Language)
-The query language used by Prometheus for time-series data. GreptimeDB provides near 100% PromQL compatibility, including support for existing Prometheus dashboards and alerting rules. See the [documented limitations and compatibility list](/user-guide/query-data/promql.md#limitations).
+The query language used by Prometheus for time-series data. GreptimeDB provides PromQL query interfaces for clients such as Grafana’s Prometheus data source. See [PromQL compatibility](/user-guide/query-data/promql.md#limitations) for test results, supported features, and known differences.
 
 ---
 

@@ -24,3 +24,11 @@ GreptimeDB 提供了 [gRPC SDK](/user-guide/ingest-data/for-iot/grpc-sdks/overvi
 :::warning
 禁用 WAL 后，进程重启会导致尚未刷盘的数据丢失。请仅在数据可以从源端重新写入时使用。
 :::
+
+## Bulk Write schema 更新
+
+Arrow Flight `DoPut` Bulk Write 要求目标表已存在。服务端默认在处理首个数据批次前检查流的 Arrow schema，并将缺失的列添加到表中。
+Frontend/standalone 顶层配置 `auto_create_table` 和请求 metadata `x-greptime-hint-auto_create_table` 均默认为 `true`；任一设为 `false` 即禁用普通表的自动 schema 更新。请求设为 `true` 不能覆盖服务端的 `false`。
+新增列按字段列处理，不会自动成为主键。主键列需要通过 SQL 预先定义。
+
+自动添加列不支持嵌套 Arrow 类型或 Dictionary 类型。写入数据仍须满足目标表的类型、时间索引和非空约束。

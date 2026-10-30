@@ -7,7 +7,7 @@ description: 介绍如何使用 export-v2 和 import-v2 CLI 命令导出、验�
 
 Export/Import V2 会创建可移植的 GreptimeDB 数据快照。你可以使用它备份数据、恢复数据，或在 GreptimeDB 实例之间迁移数据。
 
-V2 快照包含 schema 元数据、manifest 和数据文件。数据文件会被拆分为 chunks，因此中断的导出和导入任务可以从之前的进度继续执行。
+Export/Import V2 快照包含 schema 元数据、manifest 和数据文件。数据文件会被拆分为 chunks，因此中断的导出和导入任务可以从之前的进度继续执行。
 
 本指南使用以下命令：
 
@@ -39,18 +39,18 @@ GreptimeDB server 通过 `COPY DATABASE ... TO` 写入快照数据文件，因�
 
 ## 使用本地文件系统快速开始
 
-只有在 CLI client 和 GreptimeDB server 共享同一路径时，才应使用本地文件系统快照。例如，对于本地 standalone server，如果 CLI 在同一台主机上运行，这种方式可以工作。
+本文示例使用两个 standalone 实例：源端为 `127.0.0.1:4000`，恢复目标端为 `127.0.0.1:4100`。请准备干净的目标实例，导入不会清空已有数据。两个实例运行在同一台机器时，应使用不同的数据目录和监听端口。实际操作时，请替换为自己的源端和目标端地址。
 
-本指南中的示例把快照存放在 `/tmp/greptime-snapshots` 下。请在 GreptimeDB 配置文件中把该目录设置为 server 的 copy root，然后重启 server：
+使用本地文件快照时，CLI、源端和目标端必须访问到同一份文件。
+
+本文示例将快照保存在 `/tmp/greptime-snapshots`。请在两个实例的 GreptimeDB 配置文件中，将该目录设为 copy root，并重启两个实例：
 
 ```toml
 [storage]
 copy_root = "/tmp/greptime-snapshots"
 ```
 
-也可以保留默认的 copy root，改用 `<storage.data_home>/copy` 下的快照路径，例如 `file:///path/to/data_home/copy/demo`。
-
-创建父目录，并确保 server 和 CLI 都能访问它：
+创建父目录，确保 CLI 和两个实例都能访问：
 
 ```bash
 mkdir -p /tmp/greptime-snapshots
@@ -75,7 +75,7 @@ greptime cli data export-v2 verify \
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo
 ```
 
@@ -91,7 +91,7 @@ Export/Import V2 可以将快照存储到 AWS S3、MinIO 等 S3-compatible 服�
 
 ### S3-compatible endpoint
 
-对于 MinIO，请传入 `--s3-endpoint`：
+对于 MinIO，请传入 `--s3-endpoint`。运行以下示例前，请在 shell 中将 `S3_ACCESS_KEY_ID` 和 `S3_SECRET_ACCESS_KEY` 设置为有权访问 bucket 的凭证：
 
 ```bash
 greptime cli data export-v2 create \
@@ -100,8 +100,8 @@ greptime cli data export-v2 create \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id superpower_ci_user \
-  --s3-secret-access-key superpower_password \
+  --s3-access-key-id "${S3_ACCESS_KEY_ID}" \
+  --s3-secret-access-key "${S3_SECRET_ACCESS_KEY}" \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
@@ -113,24 +113,69 @@ greptime cli data export-v2 verify \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id superpower_ci_user \
-  --s3-secret-access-key superpower_password \
+  --s3-access-key-id "${S3_ACCESS_KEY_ID}" \
+  --s3-secret-access-key "${S3_SECRET_ACCESS_KEY}" \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from s3://greptime/snapshots/local-test \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id superpower_ci_user \
-  --s3-secret-access-key superpower_password \
+  --s3-access-key-id "${S3_ACCESS_KEY_ID}" \
+  --s3-secret-access-key "${S3_SECRET_ACCESS_KEY}" \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
 对于 AWS S3，请使用相同的 `--s3` 选项；除非使用自定义 endpoint，否则不要传 `--s3-endpoint`。如果你的环境使用 instance profile 或其他凭据提供机制，可能不需要显式传入 access key。S3 backend 仍然需要 `--s3` 和 `--s3-region`。
+
+## 使用 Metric packed 快照
+
+packed 导出将较小的 Metric 逻辑表打包到共享对象中，可减少重复扫描和对象存储请求。每张表保留自己的 schema，较大的逻辑表和普通表使用独立对象。打包可能增加内存使用。
+
+普通 Metric 表导出按逻辑表分别写入，支持 Parquet、CSV 和 JSON。使用支持 packed 快照的 CLI 和服务端。创建或续传 packed 快照前，CLI 会检查服务端是否支持 packed 导出。
+
+按快速开始配置好本地 copy root 后，使用 `--pack-metric-data` 启用 Metric 共享扫描和 packed 输出，导出 `public` schema：
+
+```bash
+greptime cli data export-v2 create \
+  --addr 127.0.0.1:4000 \
+  --to file:///tmp/greptime-snapshots/metric-packed \
+  --schemas public \
+  --pack-metric-data
+```
+
+使用 S3 或 MinIO 时，在[远程导出示例](#s3-compatible-endpoint)中加入 `--pack-metric-data`，并使用新的快照前缀。存储选项和 copy root 要求不变。packed 导出仅支持 Parquet（`--format` 的默认值）；CSV 和 JSON 需使用普通导出。
+
+验证和导入沿用已有命令；导入会根据 manifest 选择布局，无需额外的 packed 选项：
+
+```bash
+greptime cli data export-v2 verify \
+  --snapshot file:///tmp/greptime-snapshots/metric-packed
+
+greptime cli data import-v2 \
+  --addr 127.0.0.1:4100 \
+  --from file:///tmp/greptime-snapshots/metric-packed
+```
+
+目标端必须支持 packed 导入，否则导入会在执行 DDL 或写入数据前停止。
+
+### 快照版本兼容性
+
+命令名中的 `v2` 与 manifest 版本是两个概念：
+
+| 导出方式 | Manifest 版本 | 数据布局 |
+| --- | --- | --- |
+| 默认导出 | 1 | 独立文件 |
+| `--pack-metric-data`（导出数据） | 2 | 带索引的 packed 和独立 Parquet 对象 |
+| `--schema-only` | 1 | 无数据文件 |
+
+`--schema-only` 与 `--pack-metric-data` 同时使用时，仍生成 manifest v1。该组合不要求 packed 数据能力。
+
+恢复 packed 快照需要支持 manifest v2 的 importer，它也能读取 v1 快照。仅支持 v1 的旧 importer 会在执行 DDL 前拒绝 v2。
 
 ## 导出指定 schemas
 
@@ -159,7 +204,7 @@ greptime cli data export-v2 create \
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/observability \
   --schemas public
 ```
@@ -181,7 +226,7 @@ greptime cli data export-v2 create \
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/schema-only
 ```
 
@@ -212,16 +257,16 @@ greptime cli data export-v2 create \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id superpower_ci_user \
-  --s3-secret-access-key superpower_password \
+  --s3-access-key-id "${S3_ACCESS_KEY_ID}" \
+  --s3-secret-access-key "${S3_SECRET_ACCESS_KEY}" \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
-`--chunk-time-window` 需要同时指定 `--start-time` 和 `--end-time`。
+`--chunk-time-window` 需要同时指定 `--start-time` 和 `--end-time`。packed 导出的开始时间必须早于结束时间。
 
 Chunks 会按时间窗口创建。例如，15 分钟的范围配合 `--chunk-time-window 5m` 会创建 3 个 chunks。导入时，数据任务按 chunk 和 schema 调度。如果快照包含 3 个 chunks，且有 2 个 schema 包含数据，则导入会调度 6 个数据任务。
 
-快照数据文件也会按 schema 和 chunk 组织。例如，一个多 chunk 快照可能包含如下路径：
+默认的独立文件布局按 schema 和 chunk 组织数据文件。例如，一个多 chunk 快照可能包含如下路径：
 
 ```text
 data/logs/1/app_logs.parquet
@@ -253,7 +298,11 @@ data/public/3/host_metrics.parquet
 
 ## 恢复中断的导出或导入
 
-Export/Import V2 设计上支持恢复中断的工作。
+:::warning
+
+HTTP 超时或 CLI 退出，并不代表服务端请求或存储写入已经停止。在续传、清理未完成输出或使用 `--force` 前，必须确认原导出/导入请求及其写入已经结束。不要对同一快照或恢复目标并发重试。
+
+:::
 
 对于导出：
 
@@ -268,20 +317,24 @@ greptime cli data export-v2 create \
   --to file:///tmp/greptime-snapshots/demo
 ```
 
-中断后再次运行同一条命令即可继续。
+续传保留快照原有布局。对于 packed 快照，续传时无需重复传入 `--pack-metric-data`，但源服务端仍须支持 packed 导出。将 v1 快照改为 packed 布局，需要在新位置重新创建快照。
+
+重试会清理未完成输出，保留已完成的 chunks。未完成 chunk 中存在无法识别的文件时，清理会失败。重试期间，源数据和表定义必须保持不变。
 
 对于导入，导入运行时进度会保存在 state 文件中。默认情况下，state 文件位于 `~/.greptime/import_state`。如果希望使用显式的 state 文件位置，可以用 `--state-path` 覆盖：
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo \
   --state-path /tmp/greptime-import-demo.state
 ```
 
 `--dry-run` 不会创建 import state 文件。真正的导入如果失败或中断，会保留 state 文件，因此下一次运行可以恢复已完成的数据任务。导入成功后，import-v2 会自动删除 state 文件，因为已经没有需要恢复的剩余工作。相同前缀的 `.lock` 文件可能保留下来；它是锁文件，不是导入状态内容。
 
-如果你确实想在失败或中断后从头重新运行导入，请使用不同的 `--state-path`，或在确认安全后删除之前的 state 文件。
+导入失败后，已完成的 DDL 和已写入的数据会保留在目标端。续传可能重新执行 DDL 和未完成的 schema/chunk 数据任务，包括已写入的行。重试前检查目标端状态。
+
+如果需要从头恢复，先确认原请求已经结束并准备干净的目标端，再使用新的 `--state-path` 或删除旧 state 文件。仅更换 state 文件不会清除已部分恢复的数据。
 
 ## Dry-run 导入
 
@@ -289,7 +342,7 @@ greptime cli data import-v2 \
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo \
   --dry-run
 ```
@@ -305,7 +358,9 @@ greptime cli data export-v2 verify \
   --snapshot file:///tmp/greptime-snapshots/demo
 ```
 
-列出父路径下的快照：
+`verify` 检查快照结构和完整性，包括 packed 索引和对象字节范围，不比对数据值或验证内容校验和。导入后的数据需另行验证。
+
+列出父路径下的快照，查看已完成 chunk 数量，以及根据 manifest 得出的状态（`complete`、`incomplete`、`schema-only` 或 `unsupported`）：
 
 ```bash
 greptime cli data export-v2 list \
@@ -328,8 +383,8 @@ greptime cli data export-v2 delete \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id superpower_ci_user \
-  --s3-secret-access-key superpower_password \
+  --s3-access-key-id "${S3_ACCESS_KEY_ID}" \
+  --s3-secret-access-key "${S3_SECRET_ACCESS_KEY}" \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
@@ -337,13 +392,13 @@ greptime cli data export-v2 delete \
 
 如果 GreptimeDB 实例启用了 basic authentication，请使用 `--auth-basic <username>:<password>` 传入凭据。
 
-使用 `--timeout` 设置请求超时时间，例如 `--timeout 60s` 或 `--timeout 5m`。
+CLI 请求超时默认为 `60s`。可通过 `--timeout` 调整，例如 `--timeout 5m`，为数据任务预留足够时间。超时不代表请求已取消，重试前请遵循[恢复注意事项](#恢复中断的导出或导入)。
 
 对于会连接 GreptimeDB HTTP endpoint 的命令，例如 `export-v2 create` 和 `import-v2`，可以使用 `--proxy` 设置 HTTP 代理，或使用 `--no-proxy` 禁用代理：
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo \
   --no-proxy
 ```
@@ -401,7 +456,7 @@ Local filesystem path '/tmp/greptime-snapshots/demo/data/greptime_private/1/' is
 
 ### `--chunk-time-window` 校验失败
 
-`--chunk-time-window` 需要同时指定 `--start-time` 和 `--end-time`。请添加有界时间范围，或移除 `--chunk-time-window`。
+`--chunk-time-window` 需要同时指定 `--start-time` 和 `--end-time`。packed 导出的开始时间必须早于结束时间。请添加有界时间范围，或移除 `--chunk-time-window`。
 
 ### S3 或 MinIO 返回 `NoSuchBucket` 或 `NoSuchKey`
 
@@ -427,6 +482,8 @@ Import 会从 state 文件恢复。如果之前的导入已经将任务标记为
 ## 限制
 
 - Export/Import V2 快照与 legacy export/import 输出不是同一种格式。
+- 导出及续传期间，所选源数据和表定义必须保持稳定。这不是跨表或跨 chunk 的事务一致性在线备份。导入期间保持快照文件不变，并避免并发修改目标表。
+- packed 导出的单次数据写入或 multipart part 最大为 8 MiB；整个打包对象和逻辑表不受此大小限制。
 - Schema filter 的粒度是 schema-level。该命令不覆盖 table-level filter。
 - Time-range chunking 面向时间序列数据设计。稀疏数据可能需要更大的 chunk window。
 - Schema-only 快照不包含数据文件。

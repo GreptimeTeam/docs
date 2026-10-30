@@ -157,6 +157,21 @@ compact_rt_max_blocking_threads = 4
 | `runtime.compact_rt_size`            | Integer | `max(num_cpus / 2, 1)`   | The number of threads to execute compaction operations.                                                                                                                                    |
 | `runtime.compact_rt_max_blocking_threads` | Integer | `max(num_cpus / 2, 1)` | The maximum number of blocking threads for compaction operations. Compaction picker CPU work runs on this blocking thread pool. An explicit `0` is clamped to `1`.                          |
 
+#### Experimental query and write scheduling
+
+`[runtime.experimental_workload_scheduler]` configures weighted scheduling for query and write tasks in datanode and standalone. It is disabled by default. Frontend accepts the configuration but does not activate the scheduler.
+When both workloads have pending tasks, the scheduler allocates runtime according to their weights. When one workload is idle, the other can use the available time.
+
+```toml
+[runtime.experimental_workload_scheduler]
+enable = false
+query_weight = 2
+write_weight = 8
+sample_every_polls = 16
+```
+
+`query_weight` and `write_weight` default to `2` and `8` and must both be greater than `0`. `sample_every_polls` sets the number of polls between fairness samples, defaults to `16`, and must be greater than `0`.
+
 ### Write memory limiter options
 
 Memory limiter options control the total memory used by concurrent write requests across all protocols (HTTP, gRPC, and Arrow Flight).
@@ -177,27 +192,22 @@ write_bytes_exhausted_policy = "wait"
 | `max_in_flight_write_bytes`     | String | `0`    | Maximum total memory for all concurrent write request bodies and messages (HTTP, gRPC, Flight). Set to `0` to disable the limit (unlimited). Supports units: `B`, `KB`, `MB`, `GB`, etc. Example: `1GB` limits total concurrent writes to 1GB. |
 | `write_bytes_exhausted_policy`  | String | `wait` | Policy when write bytes quota is exhausted. Options: `wait` (default, waits up to 10 seconds), `wait(<duration>)` (custom timeout, e.g., `wait(30s)`), `fail` (immediately reject the request).                                             |
 
-### Datanode query concurrency limit
+<AnchorAlias id="datanode-query-concurrency-limit" />
 
-These options limit how many read queries can run at the same time on a datanode.
-A query counts toward the limit until it finishes or the client closes the result stream.
-If the limit is reached, a new query waits up to `concurrent_query_limiter_timeout` for an available slot before it fails.
+### Query concurrency limit
 
-These options are valid in the `datanode` subcommand.
+These options apply to `datanode` and `standalone`. The limit counts concurrent region-read streams. One query can consume multiple slots.
+A slot is held until its stream finishes or closes. When the limit is reached, a new stream waits for a slot; the query fails if the wait times out.
 
 ```toml
-# Maximum number of read queries that can run at the same time on the datanode.
-# Set to 0 to disable the limit (unlimited by default).
 max_concurrent_queries = 0
-
-# Maximum time a query waits for an available slot when max_concurrent_queries is reached.
 concurrent_query_limiter_timeout = "100ms"
 ```
 
-| Option                             | Type    | Default   | Description                                                                                                                                              |
-| ---------------------------------- | ------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `max_concurrent_queries`           | Integer | `0`       | Maximum number of read queries that can run at the same time on the datanode. Set to `0` to disable the limit.                              |
-| `concurrent_query_limiter_timeout` | String  | `100ms` | Maximum time a query waits for an available slot after `max_concurrent_queries` is reached. The query fails if no slot is available in time. |
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `max_concurrent_queries` | Integer | `0` | Maximum concurrent region-read streams per process. `0` disables the limit. |
+| `concurrent_query_limiter_timeout` | String | `100ms` | Maximum wait for an available slot. |
 
 ### Protocol options
 
@@ -372,6 +382,31 @@ A sample configuration:
 parallelism = 0
 ```
 
+#### Experimental disk spilling and memory allocation
+
+These `[query]` options apply to standalone, datanode, and frontend.
+`memory_pool_size` accepts an absolute size such as `"2GiB"` or a percentage such as `"50%"`. Percentages use the cgroup memory limit, or total host memory when no cgroup limit is set. It is unlimited by default; set `memory_pool_size = "0"` or `memory_pool_size = "unlimited"` to disable the limit.
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `experimental_memory_pool_policy` | `"greedy"` | `greedy` allocates memory in request order. `fair` divides memory remaining after unspillable reservations among spillable reservations. Applies when `memory_pool_size` is a nonzero limit. |
+| `experimental_spill_mode` | `"default"` | `default` uses DataFusion's default OS temporary directory. `custom` enables the path, quota, and compression settings. `disabled` rejects spill-file creation, causing queries that need to spill to fail. |
+| `experimental_spill_path` | Unset | Spill directory. Applies in `custom` mode; uses the OS temporary directory when unset. |
+| `experimental_spill_max_temp_directory_size` | `"1GiB"` | Maximum total spill-file size. Applies in `custom` mode. |
+| `experimental_spill_compression` | `"uncompressed"` | `uncompressed`, `lz4_frame`, or `zstd`. Applies in `custom` mode. |
+
+Example configuration:
+
+```toml
+[query]
+memory_pool_size = "2GiB"
+experimental_memory_pool_policy = "fair"
+experimental_spill_mode = "custom"
+experimental_spill_path = "/var/lib/greptimedb/spill"
+experimental_spill_max_temp_directory_size = "10GiB"
+experimental_spill_compression = "zstd"
+```
+
 ### Storage options
 
 The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.
@@ -416,10 +451,11 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | scope                     | String  | The GCS service scope                                                            |
 |         | credential_path           | String  | The GCS credentials path                                                         |
 |         | endpoint                  | String  | The API endpoint of GCS                                                          |
-| Hdfs    |                           |         | HDFS storage options, valid when type="Hdfs"                                     |
-|         | root                      | String  | The root path in HDFS                                                            |
-|         | name_node                 | String  | The HDFS NameNode URI, for example `hdfs://127.0.0.1:9000`                      |
-|         | options                   | Map     | Additional options passed to the native HDFS client                              |
+| Hdfs | | | HDFS storage options, valid when `type="Hdfs"`. |
+| | name | String | Storage provider name. |
+| | root | String | Data root in HDFS. |
+| | name_node | String | NameNode URI, such as `hdfs://127.0.0.1:9000`. |
+| | options | Map | String key-value options passed to the HDFS client. |
 
 A file storage sample configuration:
 
@@ -440,14 +476,18 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
-A HDFS storage sample configuration (using the native Rust client):
+#### HDFS
+
+`datanode` and `standalone` support HDFS for data files through the `Hdfs` backend. Official default builds include HDFS support; custom builds require the `hdfs-object-store` feature.
 
 ```toml
 [storage]
 type = "Hdfs"
 root = "/greptimedb"
 name_node = "hdfs://127.0.0.1:9000"
-options = { "dfs.client.block.write.replace-datanode-on-failure.enable" = "true" }
+
+[storage.options]
+"dfs.client.block.write.replace-datanode-on-failure.enable" = "true"
 ```
 
 #### Aliyun OSS credentials
@@ -538,12 +578,13 @@ enable_per_region_metrics = false
 otlp_endpoint = "http://localhost:4318/v1/traces"
 otlp_export_protocol = "http"
 append_stdout = true
+enable_file_logging = true
 max_log_dir_size = "0B"
 [logging.tracing_sample_ratio]
 default_ratio = 1.0
 ```
 
-- `dir`: log output directory.
+- `dir`: Log output directory. All components resolve an empty `dir` to a default directory: datanode, standalone, and metasrv use their respective `<data_home>/logs`; frontend and flownode use `./greptimedb_data/logs`.
 - `level`: output log level, available log level are `info`, `debug`, `error`, `warn`, the default level is `info`.
 - `enable_otlp_tracing`: whether to turn on tracing, not turned on by default.
 - `enable_per_region_metrics`: whether to expose Prometheus per-region query load metrics, including `greptime_mito_region_query_cpu_time` and `greptime_mito_region_query_scanned_bytes`. This option is disabled by default because it creates one time series per region. Query stats reported through heartbeats and exposed in `INFORMATION_SCHEMA.REGION_STATISTICS` are not controlled by this option.
@@ -551,6 +592,7 @@ default_ratio = 1.0
 - `otlp_export_protocol`: The OTLP export protocol for traces. Available values: `http` (HTTP with binary protobuf) and `grpc`. Defaults to `http`.
 - `otlp_headers`: Additional HTTP headers sent with OTLP export requests, configured as key-value pairs in the `[logging.otlp_headers]` table. Only takes effect when `otlp_export_protocol` is `http`.
 - `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
+- `enable_file_logging`: Whether to write log files. Defaults to `true`; set to `false` to disable file output.
 - `max_log_dir_size`: The maximum total size of managed log files in `dir`. Old closed log files are removed before writing when necessary, while active files may exceed the limit. Set to `0B` to disable.
 - `tracing_sample_ratio`: This field can configure the sampling rate of tracing. How to use `tracing_sample_ratio`, please refer to [How to configure tracing sampling rate](/user-guide/deployments-administration/monitoring/tracing.md#guide-how-to-configure-tracing-sampling-rate).
 

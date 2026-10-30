@@ -390,6 +390,45 @@ select database();
 +------------+
 ```
 
+## Mergeable aggregate states
+
+These functions store aggregate states as `BINARY`, merge multiple states, and calculate a result. Average states and population-standard-deviation states are not interchangeable.
+
+| Function | Input | Return type | Behavior |
+| --- | --- | --- | --- |
+| `avg_state(value)` | `DOUBLE` | `BINARY` | Aggregate the count and sum of non-NULL values. |
+| `avg_merge(state)` | `BINARY` | `BINARY` | Merge average states. |
+| `avg_calc(state)` | `BINARY` | `DOUBLE` | Calculate the average from a state. |
+| `stddev_pop_state(value)` | `DOUBLE` | `BINARY` | Aggregate population-standard-deviation state using Welford's algorithm. |
+| `stddev_pop_merge(state)` | `BINARY` | `BINARY` | Merge population-standard-deviation states. |
+| `stddev_pop_calc(state)` | `BINARY` | `DOUBLE` | Calculate the population standard deviation from a state. |
+
+`*_state` and `*_merge` are aggregate functions and ignore NULL inputs. `*_calc` functions are scalar functions. Empty input produces an empty state; calculating an empty or NULL state returns NULL. A population with one non-NULL value has a standard deviation of `0`.
+
+`avg_merge`, `avg_calc`, and `stddev_pop_merge` return an error for invalid states. `stddev_pop_calc` returns NULL for an invalid state. Population-standard-deviation state functions reject non-finite values and arithmetic that produces non-finite intermediate results.
+
+This query creates states per group, then merges them into overall statistics:
+
+```sql
+WITH samples AS (
+    SELECT * FROM (VALUES
+        ('a', 1.0::DOUBLE), ('a', 2.0::DOUBLE),
+        ('b', 3.0::DOUBLE), ('b', 4.0::DOUBLE)
+    ) AS t(group_id, value)
+), states AS (
+    SELECT group_id,
+           avg_state(value) AS mean_state,
+           stddev_pop_state(value) AS deviation_state
+    FROM samples
+    GROUP BY group_id
+)
+SELECT avg_calc(avg_merge(mean_state)) AS mean,
+       round(stddev_pop_calc(stddev_pop_merge(deviation_state)), 6) AS deviation
+FROM states;
+```
+
+The result is `mean = 2.5` and `deviation = 1.118034`. Intermediate states can be stored in `BINARY` columns for later rollups.
+
 ## Admin Functions
 
 GreptimeDB provides `ADMIN` statement to run the administration functions, please refer to [ADMIN](/reference/sql/admin.md) reference.

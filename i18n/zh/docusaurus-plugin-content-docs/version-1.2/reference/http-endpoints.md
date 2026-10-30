@@ -244,6 +244,54 @@ curl -X POST 'http://127.0.0.1:4000/debug/prof/mem/gdump' -d 'activate=true'
 
 有关 PromQL API 的更多信息，请参阅 [PromQL 文档](/user-guide/query-data/promql.md)。
 
+### 流式查询分析
+
+`POST /v1/sql/analyze/stream` 返回 `text/event-stream` 格式的 Server-Sent Events（SSE），用于获取执行中的查询指标。
+该实验性端点由 `http.experimental_enable_explain_analyze_stream` 控制，默认为 `true`。禁用后，端点不注册，请求返回 `404 Not Found`。
+
+参数通过 URL 查询字符串或 `application/x-www-form-urlencoded` 请求体传入；同名参数以 URL 中的值为准。
+
+| 参数 | 要求 | 描述 |
+| --- | --- | --- |
+| `sql` | 必填 | 单条 `EXPLAIN ANALYZE VERBOSE` 语句。可省略格式，也可指定 `FORMAT JSON`；其他格式不受支持。 |
+| `db` | 可选 | 数据库，默认 `public`。 |
+| `snapshot_interval_ms` | 可选 | 指标快照间隔，单位为毫秒，默认 `5000`，限制在 `1000` 到 `60000` 之间。快照 payload 达到 1 MiB 时，间隔至少为 10 秒；达到 10 MiB 时，至少为 30 秒。 |
+
+请求示例：
+
+```bash
+curl -N -X POST 'http://127.0.0.1:4000/v1/sql/analyze/stream' \
+  --data-urlencode 'db=public' \
+  --data-urlencode 'sql=EXPLAIN ANALYZE VERBOSE SELECT count(*) FROM information_schema.tables' \
+  --data-urlencode 'snapshot_interval_ms=1000'
+```
+
+每个事件由 `event:` 行和包含 JSON 的 `data:` 行组成，事件之间以空行分隔。连接保持期间，每 15 秒发送一行 keep-alive 注释。
+
+| 字段 | 类型 | 描述 |
+| --- | --- | --- |
+| `seq` | 整数 | 单调递增的事件序号。 |
+| `state` | 字符串 | `metrics`、`final`、`canceled` 或 `error`。 |
+| `partial` | 布尔值 | `metrics` 事件为 `true`，终止事件为 `false`。 |
+| `elapsed_ms` | 整数 | 自请求开始以来的毫秒数。 |
+| `metrics` | 数组 | 可用时返回 `stage` / `node` / `plan` 快照。 |
+| `output` | 对象 | 最终查询结果，仅出现在 `final` 事件中。 |
+| `reason` | 字符串 | 错误或取消原因，仅出现在 `error` 和 `canceled` 事件中。 |
+| `code` | 整数 | GreptimeDB 状态码，仅出现在 `error` 和 `canceled` 事件中；取消状态码为 `1005`（`Cancelled`）。 |
+
+快照包含已收集的完整指标，不是增量；收集期间指标值可能变化。快照会被限流，但不会被截断。
+
+| 事件 | 行为 |
+| --- | --- |
+| `metrics` | 完整指标快照。 |
+| `final` | 查询完成。 |
+| `error` | 查询失败。 |
+| `canceled` | 查询取消。 |
+
+`final`、`error` 和 `canceled` 都是终止事件。快速完成的查询可能直接返回 `final`。建立事件流前的校验错误返回普通 JSON 错误响应。
+客户端断开连接后，服务端尽力取消查询；断开连接的客户端不会收到 `canceled` 事件。浏览器原生 `EventSource` 不支持此 POST 接口，需要使用支持流式响应的 HTTP 客户端。
+事件仅发送到当前连接，不支持断线续传、自动重连或脱离连接执行。
+
 ## 协议端点
 
 这些端点实现 InfluxDB、Prometheus、OpenTelemetry、Loki、Splunk HEC 和 OpenTSDB 的部分 API。

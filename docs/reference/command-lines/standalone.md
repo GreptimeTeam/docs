@@ -19,6 +19,8 @@ greptime standalone start --help
 | `--data-home <DATA_HOME>`         | Working directory of the standalone instance                            |
 | `--env-prefix <ENV_PREFIX>`       | The prefix of environment variables, default is `GREPTIMEDB_STANDALONE` |
 | `--http-addr <HTTP_ADDR>`         | HTTP server address                                                     |
+| `--http-api-server-addr <HTTP_API_SERVER_ADDR>` | Enable the dedicated public HTTP API server and set its bind address. Serves `/v1` and `/dashboard`. |
+| `-d`/`--daemon` | Start standalone in the background. Available on Unix only. |
 | `-i`/`--influxdb-enable`          | Whether to enable InfluxDB protocol in HTTP API                         |
 | `--log-dir <LOG_DIR>`             | Log directory                                                           |
 | `--log-level <LOG_LEVEL>`         | Log level                                                               |

@@ -152,7 +152,11 @@ ADMIN COMPACT_TABLE(
 1 row in set (0.01 sec)
 ```
 
-执行此语句时，GreptimeDB 会将每个 SST 文件按 1 小时（3600 秒）的时间跨度拆分成多个分块，并将这些分块合并为一个输出文件，确保没有重叠的文件。
+执行此语句时，GreptimeDB 按 1 小时（3600 秒）的窗口重新组织 SST 文件。
+
+SWCS 使用 `compaction.twcs.max_output_file_size` 作为输出文件大小阈值，默认值为 `512MB`；设为 `0` 时不限制大小。文件在时间序列边界处拆分，同一序列的数据可能使单个文件超过阈值。
+
+表级 compaction 配置会覆盖数据库的整组配置，不会按单个键合并。未设置表级配置时，使用数据库配置；数据库未配置时使用内置默认值。在数据库级别设置 `compaction.twcs.max_output_file_size` 时，还须设置 `compaction.type = 'twcs'`。
 
 你还可以指定 `parallelism` 参数来通过并发处理多个文件以加速压缩：
 

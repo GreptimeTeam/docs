@@ -64,6 +64,56 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 
 ### 从 v1.2 升级到 v1.3
 
+#### 集群升级和回滚顺序
+
+整个滚动升级期间保持 Metasrv [维护模式](/user-guide/deployments-administration/maintenance/maintenance-mode.md)开启，全部组件升级完成后再关闭。v1.3 的 Batch GC 使用 packed 协议，不支持向旧协议回退；维护模式可防止它在 Metasrv 与 Datanode 版本混用时运行。
+
+先升级全部 Datanode，再升级 Frontend。回滚时先回滚 Frontend，再回滚 Datanode；通过 Operator 管理的回滚也需要遵循此顺序。
+v1.3 Frontend 的写入重试依赖 Datanode 返回逐条写入结果，与旧 Datanode 混用时可能重放已成功的写入，导致 append-mode 表出现重复行。v1.3 的 PromQL 执行计划也会使用旧 Datanode 不支持的函数。
+
+#### 查询和客户端兼容性
+
+| 变化 | 升级前检查 |
+| --- | --- |
+| MySQL 文本协议将时间戳的小数秒截断到微秒；存储的纳秒值不变。 | 需要完整纳秒精度的客户端应在 SQL 中显式转换为字符串或整数。 |
+| 未指定步长的 PromQL 子查询使用固定的 1 分钟步长。 | 需要其他步长时显式使用 `[range:step]`。 |
+| PromQL 范围查询拒绝 range-vector 根表达式。 | 改用瞬时查询，或先将 range vector 归约为 instant vector。 |
+| 整数输入的 `median`、`approx_median` 和 `approx_percentile_cont` 返回浮点数；精确中位数对偶数个输入插值。 | 检查视图、Flow 输出表及其他固定 schema 消费方的类型。 |
+| `REPLACE(s, '', replacement)` 返回原字符串；struct `unnest` 自动生成的列名发生变化。 | 检查空匹配字符串的用法，并为展开列指定别名。 |
+| PostgreSQL 结果元数据返回 `REGCLASS`、`REGTYPE` 等 OID 别名。 | 检查客户端对结果类型的处理。 |
+| `json_get*` 和 JSON2 字段访问遇到非法 JSONPath 时返回错误。 | 根路径可使用 `$` 或空字符串；替换 `.`、`$.` 等非法路径。`json_path_match` 对非法路径仍返回 NULL。 |
+| SQL 表达式深度超过 `128` 时规划失败。 | 简化深度嵌套的生成式查询。 |
+
+#### 写入请求和 JSON2
+
+Prometheus Remote Read、Remote Write 和 Loki protobuf/Snappy push 请求的解压后正文超过 512 MiB 时返回 HTTP 400。该解压限制不适用于 Loki JSON push 路径。
+配置 `max_in_flight_write_bytes` 后，HTTP 准入还会计入解码后的正文和超出 `Content-Length` 的流式数据；配额不足时返回 HTTP 429 或 gRPC `RESOURCE_EXHAUSTED`。
+压缩的 gRPC 请求在解码前按 `max_recv_message_size` 预留配额。按解压后的大小调整客户端批次和服务端配额。
+
+JSON2 type hint 不再接受 `nullable` 和 `default`。指定类型的字段均可为 NULL，缺失值返回 NULL。
+支持的类型为 `STRING`、`BIGINT`、`BIGINT UNSIGNED`、`DOUBLE`、`BOOLEAN`，以及别名 `INT64`、`UINT64`、`FLOAT64`。移除旧选项，并替换不受支持的类型。
+JSON2 使用 flat SST；CREATE 和 ALTER 拒绝不兼容的 SST 格式。
+
+#### Flow 镜像写入限制
+
+Flow 镜像写入的待处理预算为 1,000,000 行，发往不同 Flownode 的副本分别计数。
+达到预算时，普通表写入仍可能成功，但对应的 Flow 镜像批次会被丢弃，造成 Flow 输出缺失。
+instant-TTL 写入在向 Datanode 发送前被拒绝；单批超过预算时，需要拆分批次。
+监控 `greptime_table_operator_mirror_pending_rows` 和 `greptime_operator_dist_mirror_dropped_rows`。
+
+#### 配置和索引
+
+- Mito 的默认 `auto_flush_interval` 从 `30m` 改为 `10m`。显式配置的全局值和表级值保持不变。
+- 移除旧的 native histogram 实验开关；这些开关会被忽略，包括设为 `false` 的情况。将 `prom_validation_mode` 从 `[http]` 移到 `[prom_store]`，保留原值。旧位置的配置会被忽略，回退到默认值 `strict`；原来使用 `lossy` 或 `unchecked` 的写入可能因此被拒绝。
+- 流式查询分析默认启用，旧配置项 `experimental_enable_explain_analyze_stream` 被忽略，可移除。
+- 重复的 region engine 配置会导致启动失败；每种引擎只保留一份配置。
+- 通过 compaction 或 `ADMIN BUILD_INDEX` 重建旧 fulltext bloom 索引。数据仍可读取，但旧索引在重建前不参与剪枝。回滚后，v2 索引同样退回扫描。Tantivy 的 `matches_term` 使用全表扫描，`matches()` 行为不变。
+
+#### UDDSketch 状态兼容性
+
+`uddsketch_state` 和 `uddsketch_merge` 生成新的二进制格式。v1.3 可读取旧状态，v1.2.1 无法读取新状态。
+需要回滚时保留升级前的状态数据，并避免将新生成的状态传给旧版本读取端。
+
 #### VRL 默认禁用主机访问
 
 **影响：** 使用受限 VRL 函数或参数的 pipeline

@@ -222,7 +222,7 @@ SeqScan: region=0(1, 0), "partition_count":{"count":2, "mem_ranges":1, "files":1
 在同一范围内也只计数一次。`max_part_range` 按文件数量选择范围，不按字节数或行数选择，
 也不暴露范围 ID。它的 `rows` 汇总完整文件的元数据行数，而 `estimated_rows` 估算该范围内的行数。
 
-普通的非 verbose `EXPLAIN ANALYZE` 输出，以及 `POST /v1/sql/analyze/stream`
+普通的非 verbose `EXPLAIN ANALYZE` 输出，以及 [`POST /v1/sql/analyze/stream`](/reference/http-endpoints.md#流式查询分析)
 首次包含扫描计划的 SSE 事件，都会提供这些扫描详情。较早的事件可能还没有扫描计划；
 执行较快的查询可能直到 final 事件才提供计划。完整的 `files` 列表仍仅在 verbose 模式下
 出现，包括最终的 verbose SSE 输出。

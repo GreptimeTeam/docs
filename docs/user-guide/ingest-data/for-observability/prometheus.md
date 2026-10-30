@@ -416,3 +416,19 @@ write url for `vmagent`. For example, if you have GreptimeDB installed locally:
 ```shell
 vmagent -remoteWrite.url=http://localhost:4000/v1/prometheus/write
 ```
+
+## Metric table timestamp precision
+
+Metric physical-table time indexes support `TIMESTAMP(0)`, `TIMESTAMP(3)`, `TIMESTAMP(6)`, and `TIMESTAMP(9)` for seconds, milliseconds, microseconds, and nanoseconds.
+Automatically created physical tables use millisecond precision. For another precision, create the physical table before ingestion and select it with `physical_table`:
+
+```sql
+CREATE TABLE metrics_ns (
+    greptime_timestamp TIMESTAMP(9) TIME INDEX,
+    greptime_value DOUBLE
+) ENGINE = metric
+WITH (physical_metric_table = '');
+```
+
+Automatically created logical tables inherit the physical table's time-index precision. Ingestion converts timestamps to the target table's precision; conversion to a lower precision truncates the sub-unit portion.
+Prometheus source timestamps have millisecond precision. OTLP metric nanosecond timestamps can be retained by pre-creating a physical table with nanosecond precision.

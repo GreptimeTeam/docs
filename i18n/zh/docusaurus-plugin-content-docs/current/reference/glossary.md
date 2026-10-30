@@ -157,7 +157,7 @@ GreptimeDB 在数据写入存储前执行解析和转换的配置。Processor �
 由一列或多列 Tag 组成，用于标识一组时间序列或记录。对于开启去重的表，主键与时间索引共同标识按 merge mode 合并的数据行。它不是通用关系数据库中的唯一约束：append-only 表可以不设置主键，也可以把主键和时间戳重复的写入保留为不同数据行。
 
 ### PromQL (Prometheus 查询语言)
-Prometheus 用于查询时序数据的语言。GreptimeDB 提供接近 100% 的 PromQL 兼容性，并支持使用已有的 Prometheus 仪表盘和告警规则。具体限制和范围参见[兼容性列表](/user-guide/query-data/promql.md#局限)。
+Prometheus 用于查询时序数据的语言。GreptimeDB 提供 PromQL 查询接口，可供 Grafana 的 Prometheus 数据源使用。测试结果、支持范围和已知差异见 [PromQL 兼容性说明](/user-guide/query-data/promql.md#局限)。
 
 ---
 

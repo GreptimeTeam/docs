@@ -5,7 +5,7 @@ description: 介绍 GreptimeDB 对 Prometheus 查询语言（PromQL）的支持�
 
 # Prometheus Query Language
 
-GreptimeDB 可以作为 Grafana 中 Prometheus 的替代品，因为 GreptimeDB 支持 PromQL（Prometheus Query Language）。GreptimeDB 在 Rust 中重新实现了 PromQL，并通过接口将能力开放，包括 Prometheus 的 HTTP API、GreptimeDB 的 HTTP API 和 SQL 接口。
+GreptimeDB 提供基于 Rust 的 PromQL 实现，可通过 Prometheus HTTP API、GreptimeDB HTTP API 和 SQL 接口查询。Grafana 可通过 Prometheus 数据源连接 GreptimeDB。支持范围与已知差异见[局限](#局限)。
 
 <AnchorAlias id="prometheus-http-api" />
 
@@ -23,9 +23,8 @@ GreptimeDB 实现了兼容 Prometheus 的一系列 API，通过 `/v1/prometheus`
 - Label names `/api/v1/labels`
 - Label values `/api/v1/label/<label_name>/values`
 
-这些接口的输入和输出与原生的 Prometheus HTTP API 相同，用户可以把 GreptimeDB 当
-作 Prometheus 的直接替换。例如，在 Grafana 中我们可以设置
-`http://localhost:4000/v1/prometheus/` 作为其 Prometheus 数据源的地址。
+这些接口使用 Prometheus HTTP API 的请求和响应格式。在 Grafana 中，将
+`http://localhost:4000/v1/prometheus/` 设置为 Prometheus 数据源地址。
 
 访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/api)
 获得更详细的说明。
@@ -137,64 +136,84 @@ metric{__database__="mydatabase"}
 
 ## 局限
 
-尽管 GreptimeDB 支持丰富的数据类型，但 PromQL 的实现仍然局限于以下类型：
+PromQL 查询支持浮点样本和原生直方图样本。浮点指标使用时间戳列、字符串标签和 `Double` 值。原生直方图的支持范围和写入要求见[原生直方图](/user-guide/ingest-data/for-observability/prometheus.md#原生直方图)。
 
-- timestamp: `Timestamp`
-- tag: `String`
-- value: `Double`
+### v1.3.0 兼容性测试结果
 
-GreptimeDB 目前已实现了大部分（超过 90%）的 PromQL 功能。您可以在下方查看详细的兼容性列表，或者通过此 [issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) 了解我们最新的功能支持情况。
+[v1.3.0 发布测试](https://github.com/GreptimeTeam/greptimedb/releases/tag/v1.3.0)使用 [promql-compat `1203cd8`](https://github.com/GreptimeTeam/promql-compat/tree/1203cd8d1abec9934830d913a88fa0a9d014a5d1)，以 Prometheus v3.15.0 为参考。测试对象为 GreptimeDB v1.3.0。
 
-选择器引用不存在的列时，其行为与 Prometheus 一致：不报错且选择器会被静默忽略。但若 `__name__` 选择器引用了不存在的指标（或等效形式），GreptimeDB 则会报告错误。
+| 测试集 | 计入统计的用例 | 排除的用例 | 比较 `__name__` | 仅忽略 `__name__` 差异 |
+| --- | ---: | ---: | ---: | ---: |
+| Prometheus 测试用例集 | 852 | 1391 | 53.52% (456/852) | 88.50% (754/852) |
+| Prometheus compliance 查询集 | 539 | 0 | 54.17% (292/539) | 94.81% (511/539) |
+| 随机生成的查询（seed 1） | 1999 | 1 | 63.83% (1276/1999) | 93.35% (1866/1999) |
+
+百分比为测试用例通过率，排除项不计入分母；最后一列仅忽略 `__name__` 差异。测试方法见 [promql-compat README](https://github.com/GreptimeTeam/promql-compat/blob/1203cd8d1abec9934830d913a88fa0a9d014a5d1/README.md#report)。
+
+### v1.3.0 已知差异
+
+| 查询行为 | 示例 | 与 Prometheus 的差异 |
+| --- | --- | --- |
+| 函数和聚合结果中的指标名称 | `rate(x[1m])`、`abs(x)`、`sum(rate(x[1m]))`、`sum(x > 0)` | 函数结果保留 `__name__`，对其进行不带分组的聚合时也可能保留，影响 Grafana 图例及告警和 recording rule 的标签。v1.3 不带 `bool` 的过滤比较还可能重新附加已移除的指标名。 |
+| 带参数的日期函数 | `year(vector(1136239445))` | 使用样本时间戳，而不是样本值。影响 `year`、`month`、`day_of_month`、`day_of_week`、`day_of_year`、`days_in_month`、`hour` 和 `minute`。 |
+| 不带指标名的选择器 | `{job="demo"}` | 返回 `Expect a metric matcher, but not found`。必须指定指标名或显式的 `__name__` 匹配器。 |
+| `vector(time())` | `vector(time())` | 瞬时查询和范围查询均返回 `Invalid function argument for unknown`，单独调用也会失败。 |
+| `absent_over_time` | `absent_over_time(nonexistent_metric[5m])` | 部分查询返回的序列与 Prometheus 不同，既可能缺少预期序列，也可能多返回序列。此例不返回序列，Prometheus 会返回值为 `1` 的序列。 |
+| 动态 scalar 参数 | `topk(scalar(foo), x)`、`quantile_over_time(scalar(foo), x[5m])` | 将 `scalar()` 用作参数时，部分查询无法生成执行计划。 |
+| `first_over_time` | `first_over_time(x[5m])` | 返回 `Unsupported expr type`，尚未实现。 |
+| 校验差异 | `scalar_metric > on() dup_metric`、`clamp(x, 10, 1)` | 重复标签集和重复匹配可能返回结果，而 Prometheus 会报错；`clamp` 上下界写反时返回错误，而 Prometheus 返回空结果；`label_replace` 拒绝 Prometheus 3 接受的 UTF-8 目标标签名。 |
+
+### 字面量
 
 支持字符串和浮点数，与 PromQL 的[规则](https://prometheus.io/docs/prometheus/latest/querying/basics/#literals)相同。
 
 ### 选择器
 
-Instant 选择器和 Range 选择器均已支持。指标名称（`__name__`）的标签匹配有以下限制：
+Instant 选择器和 Range 选择器均已支持。选择器必须指定指标名或显式的 `__name__` 匹配器；只有普通标签的选择器（如 `{job="demo"}`）会报错。指标名称匹配有以下限制：
 
 - 在 [`TQL`](#sql) 中只支持等值匹配，例如 `{__name__="request_count"}`。
 - [Prometheus HTTP API](#prometheus-的-http-api) 还支持正则匹配和反向匹配，例如 `{__name__=~"request_.*"}` 或 `{__name__!="request_count", host="h1"}`。这些匹配只作用于 metric engine 创建的表，例如通过 Prometheus Remote Write 写入的表。
 
 时间区间、时间偏移修饰符和 `@` 修饰符（包括 `@ start()` 和 `@ end()`）均已支持。
 
+子查询支持显式步长；省略步长时使用固定的 1 分钟，与外层查询步长无关。需要其他步长时使用 `[range:step]`。瞬时查询可返回 range vector；范围查询不接受 range-vector 根表达式。
+
 当选择不存在的列时，它们将被视为一个所有值都为 `""` 的列。该行为与 Prometheus 和 VictoriaMetrics 一致。
 
 ### 时间精度
 
-PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒级精度的计算。然而，GreptimeDB 支持存储微秒和纳秒等高精度时间。在使用 PromQL 进行计算时，这些高精度时间将被隐式转换为毫秒精度进行计算。
+PromQL 的求值时刻和步长使用毫秒精度。样本选择保留存储的微秒或纳秒时间戳；`timestamp()` 将选中样本的时间戳转换到毫秒，再以秒为单位返回浮点数。
 
 ### Binary
 
 - 支持：
     | Operator |
     | :------- |
-    | add      |
-    | sub      |
-    | mul      |
-    | div      |
-    | mod      |
-    | eqlc     |
-    | neq      |
-    | gtr      |
-    | lss      |
-    | gte      |
-    | lte      |
-    | power    |
+    | `+` |
+    | `-` |
+    | `*` |
+    | `/` |
+    | `%` |
+    | `==` |
+    | `!=` |
+    | `>` |
+    | `<` |
+    | `>=` |
+    | `<=` |
+    | `^` |
     | atan2    |
     | and      |
     | or       |
     | unless   |
 
-- 不支持：
-
-无
+支持 `on`、`ignoring`、`group_left` 和 `group_right` 向量匹配修饰符。部分重复匹配和重复标签集未被拒绝，示例见 [v1.3.0 已知差异](#v130-已知差异)。
 
 ### Aggregators
 
 - 支持：
     | Aggregator   | Example                                      |
     | :----------- | :------------------------------------------- |
+    | group        | `group by (foo)(metric)` |
     | sum          | `sum by (foo)(metric)`                       |
     | avg          | `avg by (foo)(metric)`                       |
     | min          | `min by (foo)(metric)`                       |
@@ -207,17 +226,24 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | count        | `count (metric)`                             |
     | quantile     | `quantile(0.9, cpu_usage)`                   |
 
-- 不支持：
-    | Aggregator | Progress |
-    | :--------- | :------- |
-    | count      | TBD      |
-    | grouping   | TBD      |
-
 ### Instant Functions
+
+以下列表包含已实现的函数；行为差异和参数限制见 [v1.3.0 已知差异](#v130-已知差异)。`histogram_count`、`histogram_sum`、`histogram_avg`、`histogram_stddev` 和 `histogram_stdvar` 用于原生直方图样本。
 
 - 支持：
     | Function           | Example                           |
     | :----------------- | :-------------------------------- |
+    | round | `round(metric)` |
+    | vector | `vector(1)` |
+    | time | `time()` |
+    | year | `year()` |
+    | month | `month()` |
+    | day_of_month | `day_of_month()` |
+    | day_of_week | `day_of_week()` |
+    | day_of_year | `day_of_year()` |
+    | days_in_month | `days_in_month()` |
+    | hour | `hour()` |
+    | minute | `minute()` |
     | abs                | `abs(metric)`                     |
     | ceil               | `ceil(metric)`                    |
     | exp                | `exp(metric)`                     |
@@ -241,6 +267,12 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | timestamp          | `timestamp(metric)`               |
     | sort               | `sort(http_requests_total)`       |
     | sort_desc          | `sort_desc(http_requests_total)`  |
+    | histogram_fraction | `histogram_fraction(0, 1, request_duration)` |
+    | histogram_count | `histogram_count(request_duration)` |
+    | histogram_sum | `histogram_sum(request_duration)` |
+    | histogram_avg | `histogram_avg(request_duration)` |
+    | histogram_stddev | `histogram_stddev(request_duration)` |
+    | histogram_stdvar | `histogram_stdvar(request_duration)` |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
     | predict_linear     | `predict_linear(metric[5m], 120)` |
     | absent             | `absent(nonexistent{job="myjob"})`|
@@ -253,18 +285,22 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | clamp_max          | `clamp_max(metric, 12)`           |
     | clamp_min          | `clamp_min(metric, 0)`            |
 
-- 不支持：
-    | Function                   | Progress |
-    | :------------------------- | :------- |
-    | *other multiple input fns* | TBD      |
-
 ### Range Functions
+
+`absent_over_time` 的行为差异和未实现的 `first_over_time` 见 [v1.3.0 已知差异](#v130-已知差异)。
 
 - 支持：
     | Function           | Example                        |
     | :----------------- | :----------------------------- |
     | idelta             | `idelta(metric[5m])`           |
-    | \<aggr\>_over_time | `count_over_time(metric[5m])`  |
+    | avg_over_time | `avg_over_time(metric[5m])` |
+    | min_over_time | `min_over_time(metric[5m])` |
+    | max_over_time | `max_over_time(metric[5m])` |
+    | sum_over_time | `sum_over_time(metric[5m])` |
+    | count_over_time | `count_over_time(metric[5m])` |
+    | last_over_time | `last_over_time(metric[5m])` |
+    | present_over_time | `present_over_time(metric[5m])` |
+    | quantile_over_time | `quantile_over_time(0.9, metric[5m])` |
     | stddev_over_time   | `stddev_over_time(metric[5m])` |
     | stdvar_over_time   | `stdvar_over_time(metric[5m])` |
     | changes            | `changes(metric[5m])`          |
@@ -275,10 +311,6 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | irate              | `irate(metric[5m])`            |
     | resets             | `resets(metric[5m])`           |
 
-- 不支持：
-
-无
-
 ### Label 及其他函数
 
 - 支持：
@@ -288,7 +320,3 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`            |
     | sort_by_label | `sort_by_label(metric, "foo", "bar")`            |
     | sort_by_label_desc | `sort_by_label_desc(metric, "foo", "bar")`            |
-
-- 不支持：
-
-无

@@ -5,7 +5,7 @@ description: Guide on using Prometheus Query Language (PromQL) in GreptimeDB, in
 
 # Prometheus Query Language
 
-GreptimeDB can be used as a drop-in replacement for Prometheus in Grafana, because GreptimeDB supports PromQL (Prometheus Query Language). GreptimeDB has reimplemented PromQL natively in Rust and exposes the ability to several interfaces, including the HTTP API of Prometheus, the HTTP API of GreptimeDB, and the SQL interface.
+GreptimeDB implements PromQL in Rust and exposes it through the Prometheus HTTP API, the GreptimeDB HTTP API, and SQL. Grafana can connect through its Prometheus data source. See [Limitations](#limitations) for supported features and known differences.
 
 ## Prometheus' HTTP API
 
@@ -20,10 +20,8 @@ context `/v1/prometheus/`:
 - Label names `/api/v1/labels`
 - Label values `/api/v1/label/<label_name>/values`
 
-It shares same input and output format with original Prometheus HTTP API. You
-can also use GreptimeDB as an in-place replacement of Prometheus. For example in
-Grafana Prometheus data source, set `http://localhost:4000/v1/prometheus/` as
-context root of Prometheus URL.
+These endpoints use Prometheus HTTP API request and response formats. In Grafana,
+set the Prometheus data source URL to `http://localhost:4000/v1/prometheus/`.
 
 Consult [Prometheus
 documents](https://prometheus.io/docs/prometheus/latest/querying/api) for usage
@@ -136,13 +134,32 @@ Note that only `=` is supported for database matcher.
 
 ## Limitations
 
-Though GreptimeDB supports a rich set of data types, the PromQL implementation is still limited to the following types:
+PromQL queries support float samples and native histogram samples. Float metrics use a timestamp column, string labels, and `Double` values. Native histogram support and ingestion requirements are described in [Native histograms](/user-guide/ingest-data/for-observability/prometheus.md#native-histograms).
 
-- timestamp: `Timestamp`
-- tag: `String`
-- value: `Double`
+### v1.3.0 compatibility test results
 
-We have over 90% promql supported in GreptimeDB. Here attaches the compatibility list. You can also check our latest compliance report in this [tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/1042).
+The [v1.3.0 release measurements](https://github.com/GreptimeTeam/greptimedb/releases/tag/v1.3.0) use [promql-compat revision `1203cd8`](https://github.com/GreptimeTeam/promql-compat/tree/1203cd8d1abec9934830d913a88fa0a9d014a5d1) with Prometheus v3.15.0 as the reference. These are v1.3.0 results, not measurements of Nightly builds.
+
+| Test suite | Cases counted | Cases excluded | Including `__name__` | Ignoring only `__name__` |
+| --- | ---: | ---: | ---: | ---: |
+| Prometheus test corpus | 852 | 1391 | 53.52% (456/852) | 88.50% (754/852) |
+| Prometheus compliance queries | 539 | 0 | 54.17% (292/539) | 94.81% (511/539) |
+| Generated queries (seed 1) | 1999 | 1 | 63.83% (1276/1999) | 93.35% (1866/1999) |
+
+Percentages are test-case pass rates, with excluded cases omitted from the denominators; the last column ignores differences only in `__name__`. See the [promql-compat methodology](https://github.com/GreptimeTeam/promql-compat/blob/1203cd8d1abec9934830d913a88fa0a9d014a5d1/README.md#report).
+
+### Known differences in v1.3.0
+
+| Query behavior | Example | Difference from Prometheus |
+| --- | --- | --- |
+| Metric-name labels in function and aggregation results | `rate(x[1m])`, `abs(x)`, `sum(rate(x[1m]))`, `sum(x > 0)` | Functions retain `__name__`, and aggregations without grouping can retain it from their inputs, affecting Grafana legends and alert/recording-rule labels. In v1.3, filtering comparisons without `bool` can also restore a removed metric name. |
+| Date functions with an argument | `year(vector(1136239445))` | Uses the sample timestamp instead of the sample value. Affects `year`, `month`, `day_of_month`, `day_of_week`, `day_of_year`, `days_in_month`, `hour`, and `minute`. |
+| Selectors without a metric name | `{job="demo"}` | Returns `Expect a metric matcher, but not found`. A metric name or an explicit `__name__` matcher is required. |
+| `vector(time())` | `vector(time())` | Fails with `Invalid function argument for unknown` in both instant and range queries, including when used alone. |
+| `absent_over_time` | `absent_over_time(nonexistent_metric[5m])` | Some queries return different series than Prometheus: expected series can be missing, or extra series can appear. This example returns no series; Prometheus returns a series with value `1`. |
+| Dynamic scalar parameters | `topk(scalar(foo), x)`, `quantile_over_time(scalar(foo), x[5m])` | Some uses of `scalar()` as a parameter fail planning. |
+| `first_over_time` | `first_over_time(x[5m])` | Returns `Unsupported expr type`; the function is not implemented. |
+| Validation differences | `scalar_metric > on() dup_metric`, `clamp(x, 10, 1)` | Duplicate label sets and duplicate matches can return results where Prometheus raises an error; reversed `clamp` bounds return an error where Prometheus returns an empty result; `label_replace` rejects UTF-8 destination labels accepted by Prometheus 3. |
 
 ### Literal
 
@@ -150,52 +167,51 @@ Both string and float literals are supported, with the same [rule](https://prome
 
 ### Selector
 
-Both instant and range selector are supported. Label matching on the metric name (`__name__`) has the following restrictions:
+Instant and range selectors require a metric name or an explicit `__name__` matcher. A selector with only ordinary labels, such as `{job="demo"}`, returns an error. Metric-name matching has the following restrictions:
 
 - In [`TQL`](#sql), only equal-matching is supported, for example `{__name__="request_count"}`.
 - The [Prometheus HTTP API](#prometheus-http-api) also supports regex-matching and negative matching, for example `{__name__=~"request_.*"}` or `{__name__!="request_count", host="h1"}`. These matchers only match tables created by the metric engine, such as tables written through Prometheus Remote Write.
 
 Time duration, offset, and `@` modifier (including `@ start()` and `@ end()`) are supported.
 
-When selecting non-existent columns, they will be treated as columns filled with empty string values (`""`). This behavior aligns with both Prometheus and VictoriaMetrics.
+Subqueries support an explicit step; an omitted step defaults to one minute, independently of the outer query step. Use `[range:step]` for another interval. Instant queries can return range vectors; range queries reject a range-vector root expression.
 
-For selectors referencing non-existent columns, the behavior aligns with Prometheus: no error is raised, and the selector is silently ignored. However, for `__name__` selectors referencing non-existent metrics (or equivalent forms), GreptimeDB will report an error.
+When selecting non-existent columns, they will be treated as columns filled with empty string values (`""`). This behavior aligns with both Prometheus and VictoriaMetrics.
 
 ### Timestamp precision
 
-The timestamp precision in PromQL is limited by its query syntax, only supporting calculations up to millisecond precision. However, GreptimeDB supports storing high-precision timestamps, such as microseconds and nanoseconds. When using PromQL for calculations, these high-precision timestamps are implicitly converted to millisecond precision.
+PromQL evaluation times and steps use millisecond precision. Sample selection preserves stored microsecond or nanosecond timestamps; `timestamp()` converts the selected sample timestamp to milliseconds, then returns floating-point seconds.
 
 ### Binary
 
 - Supported:
     | Operator |
     | :------- |
-    | add      |
-    | sub      |
-    | mul      |
-    | div      |
-    | mod      |
-    | eqlc     |
-    | neq      |
-    | gtr      |
-    | lss      |
-    | gte      |
-    | lte      |
-    | power    |
+    | `+` |
+    | `-` |
+    | `*` |
+    | `/` |
+    | `%` |
+    | `==` |
+    | `!=` |
+    | `>` |
+    | `<` |
+    | `>=` |
+    | `<=` |
+    | `^` |
     | atan2    |
     | and      |
     | or       |
     | unless   |
 
-- Unsupported:
-
-None
+Vector matching supports `on`, `ignoring`, `group_left`, and `group_right`. Some duplicate matches and duplicate label sets are not rejected; see [Known differences in v1.3.0](#known-differences-in-v130) for examples.
 
 ### Aggregators
 
 - Supported:
     | Aggregator   | Example                                      |
     | :----------- | :------------------------------------------- |
+    | group        | `group by (foo)(metric)` |
     | sum          | `sum by (foo)(metric)`                       |
     | avg          | `avg by (foo)(metric)`                       |
     | min          | `min by (foo)(metric)`                       |
@@ -208,16 +224,24 @@ None
     | count        | `count (metric)`                             |
     | quantile     | `quantile(0.9, cpu_usage)`                   |
 
-- Unsupported:
-    | Aggregator | Progress |
-    | :--------- | :------- |
-    | grouping   | TBD      |
-
 ### Instant Functions
+
+The following functions are implemented; behavior differences and argument limits are listed under [Known differences in v1.3.0](#known-differences-in-v130). `histogram_count`, `histogram_sum`, `histogram_avg`, `histogram_stddev`, and `histogram_stdvar` operate on native histogram samples.
 
 - Supported:
     | Function           | Example                           |
     | :----------------- | :-------------------------------- |
+    | round | `round(metric)` |
+    | vector | `vector(1)` |
+    | time | `time()` |
+    | year | `year()` |
+    | month | `month()` |
+    | day_of_month | `day_of_month()` |
+    | day_of_week | `day_of_week()` |
+    | day_of_year | `day_of_year()` |
+    | days_in_month | `days_in_month()` |
+    | hour | `hour()` |
+    | minute | `minute()` |
     | abs                | `abs(metric)`                     |
     | ceil               | `ceil(metric)`                    |
     | exp                | `exp(metric)`                     |
@@ -241,6 +265,12 @@ None
     | timestamp          | `timestamp(metric)`               |
     | sort               | `sort(http_requests_total)`       |
     | sort_desc          | `sort_desc(http_requests_total)`  |
+    | histogram_fraction | `histogram_fraction(0, 1, request_duration)` |
+    | histogram_count | `histogram_count(request_duration)` |
+    | histogram_sum | `histogram_sum(request_duration)` |
+    | histogram_avg | `histogram_avg(request_duration)` |
+    | histogram_stddev | `histogram_stddev(request_duration)` |
+    | histogram_stdvar | `histogram_stdvar(request_duration)` |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
     | predict_linear     | `predict_linear(metric[5m], 120)` |
     | absent             | `absent(nonexistent{job="myjob"})`|
@@ -253,19 +283,22 @@ None
     | clamp_max          | `clamp_max(metric, 12)`           |
     | clamp_min          | `clamp_min(metric, 0)`            |
 
-
-- Unsupported:
-    | Function                   | Progress / Example |
-    | :------------------------- | :----------------- |
-    | *other multiple input fns* | TBD                |
-
 ### Range Functions
+
+See [Known differences in v1.3.0](#known-differences-in-v130) for `absent_over_time` behavior and the unimplemented `first_over_time`.
 
 - Supported:
     | Function           | Example                        |
     | :----------------- | :----------------------------- |
     | idelta             | `idelta(metric[5m])`           |
-    | \<aggr\>_over_time | `count_over_time(metric[5m])`  |
+    | avg_over_time | `avg_over_time(metric[5m])` |
+    | min_over_time | `min_over_time(metric[5m])` |
+    | max_over_time | `max_over_time(metric[5m])` |
+    | sum_over_time | `sum_over_time(metric[5m])` |
+    | count_over_time | `count_over_time(metric[5m])` |
+    | last_over_time | `last_over_time(metric[5m])` |
+    | present_over_time | `present_over_time(metric[5m])` |
+    | quantile_over_time | `quantile_over_time(0.9, metric[5m])` |
     | stddev_over_time   | `stddev_over_time(metric[5m])` |
     | stdvar_over_time   | `stdvar_over_time(metric[5m])` |
     | changes            | `changes(metric[5m])`          |
@@ -276,10 +309,6 @@ None
     | irate              | `irate(metric[5m])`            |
     | resets             | `resets(metric[5m])`           |
 
-- Unsupported:
-
-None
-
 ### Label & Other Functions
 
 - Supported:
@@ -289,7 +318,3 @@ None
     | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`            |
     | sort_by_label | `sort_by_label(metric, "foo", "bar")`            |
     | sort_by_label_desc | `sort_by_label_desc(metric, "foo", "bar")`            |
-
-- Unsupported:
-
-None
