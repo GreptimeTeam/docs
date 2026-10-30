@@ -24,8 +24,14 @@ still queried frequently.
 ### Create a table
 
 When creating a table, you can declare a JSON2 column with the `JSON2` type.
-Currently, JSON2 can only be used in append-only tables, so you must set
-`'append_mode' = 'true'` when creating the table.
+JSON2 columns can be used in both append-only and non-append-only tables. In
+non-append-only tables, they support the `last_row` (default) and
+`last_non_null` merge modes. JSON2 columns cannot be primary keys.
+
+With `last_non_null`, GreptimeDB merges a JSON2 column as a whole value, not by
+individual JSON paths. A newer JSON object replaces the previous object
+entirely; only SQL `NULL` allows an earlier non-`NULL` object to be retained. An
+empty object is a non-`NULL` value and replaces the previous object.
 
 ```sql
 CREATE TABLE application_logs (
@@ -394,7 +400,7 @@ FROM application_logs;
 
 JSON2 is currently in Beta and has the following limitations:
 
-- JSON2 columns can only be used in append-only tables.
+- JSON2 columns cannot be primary keys.
 - The JSON root must be an object. Root arrays, strings, numbers, booleans, and
   the JSON literal `null` are not supported.
 - Type hints support only the types listed above and cannot traverse arrays.

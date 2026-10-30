@@ -86,7 +86,7 @@ GreptimeDB 提供构建恢复方案所需的组件，但仅使用对象存储并
 GreptimeDB 提供两种 JSON 列类型：
 
 - 实验性的 [`JSON`](/reference/sql/data-types.md#json-type-experimental) 类型用于存储通用 JSON 值，可以使用 [JSON 函数](/reference/sql/functions/json.md)读取和处理。
-- [`JSON2`](/user-guide/logs/json2.md) 从 v1.2 开始提供，目前处于 Beta 阶段。它面向 logs 和其他半结构化数据，以结构化列式形式保存子路径，支持点号路径、`json_get` 和可选的 type hint。目前 JSON2 只能用于 append-only 表。
+- [`JSON2`](/user-guide/logs/json2.md) 从 v1.2 开始提供，目前处于 Beta 阶段。它面向 logs 和其他半结构化数据，以结构化列式形式保存子路径，支持点号路径、`json_get` 和可选的 type hint。非 append-only 表中的 JSON2 列支持 `last_row` 和 `last_non_null` merge mode，但不能用作主键。
 
 JSON2 支持为显式声明 type hint 的子路径配置[倒排索引](/user-guide/logs/json2.md#子路径倒排索引)，用于加速常见过滤查询。`JSON` 类型仍不支持子路径索引。如果属性需要全文索引或 skipping index，应将其存入有明确类型的普通列。详见[索引](/user-guide/manage-data/data-index.md)。
 

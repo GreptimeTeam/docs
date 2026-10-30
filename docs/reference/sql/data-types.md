@@ -300,8 +300,11 @@ literally named `service.name`, respectively.
 
 `JSON2` stores fields from JSON objects in a structured, columnar layout while
 preserving fields with dynamic schemas. It is intended for frequently queried
-logs and other semi-structured data. JSON2 columns currently require an
-append-only table, and each non-NULL root value must be a JSON object.
+logs and other semi-structured data. JSON2 columns support `last_row` and
+`last_non_null` merge modes on non-append-only tables, but cannot be primary
+keys. In `last_non_null` mode, a non-NULL JSON object replaces the entire
+previous JSON2 value; only SQL `NULL` allows the previous value to be retained.
+Each non-NULL root value must be a JSON object.
 
 For table syntax, type hints, path access, array subscripts, storage settings,
 and current limitations, see the [JSON2 type documentation](/user-guide/logs/json2.md).
