@@ -283,10 +283,10 @@ curl -N -X POST 'http://127.0.0.1:4000/v1/sql/analyze/stream' \
 
 | 事件 | 行为 |
 | --- | --- |
-| `metrics` | 完整指标快照，`partial = true`。 |
-| `final` | 成功结束，`partial = false`，`output` 包含分析结果。 |
-| `error` | 执行失败，`partial = false`，`reason` 和 `code` 给出错误信息与 GreptimeDB 状态码。 |
-| `canceled` | 查询取消，`partial = false`，包含 `reason` 和 `code`。 |
+| `metrics` | 完整指标快照。 |
+| `final` | 查询完成。 |
+| `error` | 查询失败。 |
+| `canceled` | 查询取消。 |
 
 `final`、`error` 和 `canceled` 都是终止事件。快速完成的查询可能直接返回 `final`。建立事件流前的校验错误返回普通 JSON 错误响应。
 客户端断开连接后，服务端尽力取消查询；断开连接的客户端不会收到 `canceled` 事件。浏览器原生 `EventSource` 不支持此 POST 接口，需要使用支持流式响应的 HTTP 客户端。

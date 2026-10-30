@@ -283,10 +283,10 @@ Snapshots contain all collected metrics, not deltas; values can change during co
 
 | Event | Behavior |
 | --- | --- |
-| `metrics` | A complete metrics snapshot with `partial = true`. Slow clients can skip intermediate snapshots, so `seq` is not necessarily consecutive. |
-| `final` | Successful completion with `partial = false`; `output` contains the analysis result. |
-| `error` | Execution failure with `partial = false`; `reason` and `code` contain the error message and GreptimeDB status code. |
-| `canceled` | Query cancellation with `partial = false`, `reason`, and `code`. |
+| `metrics` | A complete metrics snapshot. Slow clients can skip intermediate snapshots, so `seq` is not necessarily consecutive. |
+| `final` | Query completed. |
+| `error` | Query failed. |
+| `canceled` | Query canceled. |
 
 `final`, `error`, and `canceled` are terminal events. A short query can return `final` without a metrics event. Validation failures before streaming return a regular JSON error response.
 On client disconnect, the server makes a best-effort attempt to cancel the query; the disconnected client receives no `canceled` event. Browser `EventSource` does not support this POST endpoint. Use an HTTP client that supports streaming responses.

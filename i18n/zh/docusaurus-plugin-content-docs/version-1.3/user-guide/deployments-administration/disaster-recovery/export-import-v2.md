@@ -134,7 +134,7 @@ greptime cli data import-v2 \
 
 ## 使用 Metric packed 快照
 
-当 Metric 逻辑表数量多、单表数据量小时，packed 导出可减少重复扫描和对象存储请求。它将独立的 Parquet 数据流打包到共享对象中，每张逻辑表仍保留自己的 schema。较大的逻辑表和普通表使用独立 Parquet 对象。打包可能增加内存使用。
+packed 导出将较小的 Metric 逻辑表打包到共享对象中，可减少重复扫描和对象存储请求。每张表保留自己的 schema，较大的逻辑表和普通表使用独立对象。打包可能增加内存使用。
 
 普通 Metric 表导出按逻辑表分别写入，支持 Parquet、CSV 和 JSON。`--experimental-metric-export` 仅支持 Parquet，即使未启用 packed 布局。使用支持 packed 快照的 CLI 和服务端。创建或续传 packed 快照前，CLI 会检查服务端是否支持 packed 导出。
 
@@ -168,7 +168,7 @@ greptime cli data import-v2 \
   --from file:///tmp/greptime-snapshots/metric-packed
 ```
 
-目标端必须支持 packed 导入。若目标端缺少 packed 导入能力，导入会在执行目标端 DDL 或写入数据前停止，不会自动转换为普通导入。
+目标端必须支持 packed 导入，否则导入会在执行 DDL 或写入数据前停止。
 
 ### 快照版本兼容性
 
@@ -182,7 +182,7 @@ greptime cli data import-v2 \
 
 `--schema-only` 与 `--experimental-metric-export --metric-data-layout packed` 同时使用时，仍生成 manifest v1。该组合不要求 packed 数据能力。
 
-新 importer 可读取 manifest v1 和 v2。仅支持 manifest v1 的旧 importer 会在执行目标端 DDL 前拒绝 v2。恢复 packed 快照前，请先升级 importer 和目标服务端。续传会保留原有 manifest 版本和布局，不会把已有快照转换为 packed 格式。
+恢复 packed 快照需要支持 manifest v2 的 importer，它也能读取 v1 快照。仅支持 v1 的旧 importer 会在执行 DDL 前拒绝 v2。
 
 ## 导出指定 schemas
 
@@ -305,8 +305,6 @@ data/public/3/host_metrics.parquet
 
 ## 恢复中断的导出或导入
 
-Export/Import V2 设计上支持恢复中断的工作。
-
 :::warning
 
 HTTP 超时或 CLI 退出，并不代表服务端请求或存储写入已经停止。在续传、清理未完成输出或使用 `--force` 前，必须确认原导出/导入请求及其写入已经结束。不要对同一快照或恢复目标并发重试。
@@ -326,9 +324,9 @@ greptime cli data export-v2 create \
   --to file:///tmp/greptime-snapshots/demo
 ```
 
-确认上一次请求已经结束后，再次运行同一条命令继续。已有 packed 快照会从 manifest 自动确定布局，续传时可省略 `--metric-data-layout packed`，但仍须传入 `--experimental-metric-export`，且源服务端须启用实验性导出并支持 packed 导出。v1 快照不能在续传时切换为 packed 布局；如需创建 packed 快照，使用新的快照位置。
+续传保留快照原有布局。对于 packed 快照，续传时可省略 `--metric-data-layout packed`，但仍须传入 `--experimental-metric-export`，且源服务端须启用实验性导出并支持 packed 导出。将 v1 快照改为 packed 布局，需要在新位置重新创建快照。
 
-重试只清理属于该导出的未完成输出，保留已完成的 chunks；未完成 chunk 中若存在意外文件，清理会失败。重试期间，源数据和 DDL 必须保持不变。
+重试会清理未完成输出，保留已完成的 chunks。未完成 chunk 中存在无法识别的文件时，清理会失败。重试期间，源数据和表定义必须保持不变。
 
 对于导入，导入运行时进度会保存在 state 文件中。默认情况下，state 文件位于 `~/.greptime/import_state`。如果希望使用显式的 state 文件位置，可以用 `--state-path` 覆盖：
 
@@ -341,7 +339,7 @@ greptime cli data import-v2 \
 
 `--dry-run` 不会创建 import state 文件。真正的导入如果失败或中断，会保留 state 文件，因此下一次运行可以恢复已完成的数据任务。导入成功后，import-v2 会自动删除 state 文件，因为已经没有需要恢复的剩余工作。相同前缀的 `.lock` 文件可能保留下来；它是锁文件，不是导入状态内容。
 
-整个恢复过程不具备事务原子性。后续步骤失败时，之前的 DDL 批次和已写入的数据可能仍保留在目标端。完成状态按 schema/chunk 数据任务记录，不按逻辑表记录；重试未完成任务可能重放已经写入的行。若 DDL 阶段尚未完成，恢复时也可能重放之前的 DDL。请在重试前检查目标端状态。
+导入失败后，已完成的 DDL 和已写入的数据会保留在目标端。续传可能重新执行 DDL 和未完成的 schema/chunk 数据任务，包括已写入的行。重试前检查目标端状态。
 
 如果需要从头恢复，先确认原请求已经结束并准备干净的目标端，再使用新的 `--state-path` 或删除旧 state 文件。仅更换 state 文件不会清除已部分恢复的数据。
 
@@ -367,7 +365,7 @@ greptime cli data export-v2 verify \
   --snapshot file:///tmp/greptime-snapshots/demo
 ```
 
-`verify` 检查快照的结构和完整性。对于 packed 快照，还会检查 DDL 与索引中的表是否对应、对象引用、字节范围和对象长度。它不会逐值解码比对，也不提供完整的内容或校验和验证。请按恢复要求另行验证导入后的数据。
+`verify` 检查快照结构和完整性，包括 packed 索引和对象字节范围，不比对数据值或验证内容校验和。导入后的数据需另行验证。
 
 列出父路径下的快照，查看已完成 chunk 数量，以及根据 manifest 得出的状态（`complete`、`incomplete`、`schema-only` 或 `unsupported`）：
 
@@ -492,7 +490,7 @@ Import 会从 state 文件恢复。如果之前的导入已经将任务标记为
 
 - Export/Import V2 快照与 legacy export/import 输出不是同一种格式。
 - 导出及续传期间，所选源数据和表定义必须保持稳定。这不是跨表或跨 chunk 的事务一致性在线备份。导入期间保持快照文件不变，并避免并发修改目标表。
-- packed 快照只在同一 schema 和时间 chunk 内打包；列不同的逻辑表也可以共享对象。8 MiB 限制针对单次数据写入或 multipart part，并非整个 pack、对象或逻辑表的大小上限。
+- packed 导出的单次数据写入或 multipart part 最大为 8 MiB；整个打包对象和逻辑表不受此大小限制。
 - Schema filter 的粒度是 schema-level。该命令不覆盖 table-level filter。
 - Time-range chunking 面向时间序列数据设计。稀疏数据可能需要更大的 chunk window。
 - Schema-only 快照不包含数据文件。

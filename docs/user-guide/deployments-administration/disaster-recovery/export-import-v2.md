@@ -134,7 +134,7 @@ For AWS S3, use the same `--s3` options but omit `--s3-endpoint` unless you use 
 
 ## Use Metric packed snapshots
 
-For many small Metric logical tables, packed export can reduce repeated scans and object-store requests. It groups independent Parquet streams into shared objects while preserving each logical table's schema. Large logical tables and ordinary tables use standalone Parquet objects. Packing can increase memory usage.
+Packed export groups small Metric logical tables into shared objects and can reduce repeated scans and object-store requests. Each table retains its schema. Large logical tables and ordinary tables use separate objects. Packing can increase memory usage.
 
 Ordinary Metric table export writes each logical table separately and supports Parquet, CSV, and JSON. Use a CLI and servers that support packed snapshots. The CLI checks for packed-export capability before creating or resuming a packed snapshot.
 
@@ -161,7 +161,7 @@ greptime cli data import-v2 \
   --from file:///tmp/greptime-snapshots/metric-packed
 ```
 
-The target must support packed import. Missing packed-import capability stops the import before target DDL or data writes. There is no automatic conversion to ordinary import.
+The target must support packed import; otherwise, import stops before executing DDL or writing data.
 
 ### Snapshot version compatibility
 
@@ -175,7 +175,7 @@ The `v2` in the command names is separate from the manifest version:
 
 `--schema-only` still produces manifest v1 when combined with `--pack-metric-data`. This combination does not require packed-data capability.
 
-New importers read manifest versions 1 and 2. Older importers that support only manifest v1 reject v2 before executing target DDL. Upgrade the importer and target server before restoring a packed snapshot. Resuming an export preserves its original manifest version and layout; it does not convert an existing snapshot to packed format.
+Use an importer that supports manifest v2 to restore packed snapshots. It also reads v1 snapshots; older v1-only importers reject v2 before executing DDL.
 
 ## Export selected schemas
 
@@ -298,8 +298,6 @@ Increase these values gradually and monitor GreptimeDB, object storage, and netw
 
 ## Resume an interrupted export or import
 
-Export/Import V2 is designed to resume interrupted work.
-
 :::warning
 
 An HTTP timeout or a stopped CLI does not prove that the server request or storage writes have stopped. Before resuming, deleting incomplete output, or using `--force`, confirm that the original export/import request and its writes have ended. Do not run overlapping attempts against the same snapshot or restore destination.
@@ -319,9 +317,9 @@ greptime cli data export-v2 create \
   --to file:///tmp/greptime-snapshots/demo
 ```
 
-After confirming the previous attempt has ended, run the same command again to resume. An existing packed snapshot supplies its layout from the manifest, so you can omit `--pack-metric-data` when resuming. The source server must still support packed export. A v1 snapshot cannot switch to packed layout when resumed; use a new snapshot location to create a packed snapshot.
+Resume retains the snapshot layout. For packed snapshots, you can omit `--pack-metric-data` when resuming. The source server must still support packed export. To switch a v1 snapshot to packed layout, create a new snapshot at a different location.
 
-Retry removes only owned incomplete output and preserves completed chunks; unexpected files in an incomplete chunk cause cleanup to fail. Keep the source data and DDL unchanged across attempts.
+Retry cleans incomplete output and keeps completed chunks. Unrecognized files in an incomplete chunk cause cleanup to fail. Keep source data and table definitions unchanged across attempts.
 
 For import, progress is stored in a state file while the import is running. By default, the state file is under `~/.greptime/import_state`. Override it with `--state-path` when you want an explicit state location:
 
@@ -334,7 +332,7 @@ greptime cli data import-v2 \
 
 `--dry-run` does not create an import state file. A real import keeps the state file if it fails or is interrupted, so the next run can resume completed data tasks. After a successful import, import-v2 automatically deletes the state file because there is no remaining work to resume. A `.lock` file with the same prefix can remain; it is a lock file, not the import state content.
 
-Import is not transactional across the restore. Earlier DDL batches and inserted rows can remain after a later failure. Completion is recorded per schema/chunk data task, not per logical table; retrying an unfinished task can replay rows already inserted. If DDL did not finish, a resume can replay earlier DDL as well. Check the destination before retrying.
+Import failures leave completed DDL and inserted rows in the target. Resume can re-execute DDL and unfinished schema/chunk data tasks, including rows already written. Check the target before retrying.
 
 For a fresh restore, first confirm the original requests have ended and prepare a clean destination, then use a new `--state-path` or remove the old state file. Changing the state file alone does not remove partially restored data.
 
@@ -360,7 +358,7 @@ greptime cli data export-v2 verify \
   --snapshot file:///tmp/greptime-snapshots/demo
 ```
 
-`verify` checks snapshot structure and completeness. For packed snapshots, this includes DDL/index table membership, object references, byte ranges and object lengths. It does not decode and compare every value or provide full content/checksum validation. Validate restored data separately for your recovery requirements.
+`verify` checks snapshot structure and completeness, including packed indexes and object byte ranges. It does not compare data values or verify content checksums. Validate restored data separately.
 
 List snapshots under a parent location to see completed chunk counts and the manifest-derived status (`complete`, `incomplete`, `schema-only`, or `unsupported`):
 
@@ -485,7 +483,7 @@ Do not import a snapshot that fails verification. The snapshot may be incomplete
 
 - Export/Import V2 snapshots are not the same format as the legacy export/import output.
 - Keep the selected source data and table definitions stable throughout export and any resume. This is not a transactionally consistent online backup across tables or chunks. Keep snapshot files unchanged during import and avoid concurrent changes to the target tables.
-- Packed snapshots combine streams only within one schema and time chunk; logical tables with different columns can share an object. The 8 MiB bound applies to each data write or multipart part, not the entire pack, object, or logical table.
+- For packed export, each data write or multipart part is at most 8 MiB. This is not a size limit on the packed object or logical table.
 - Schema filtering is schema-level. Table-level filtering is not covered by this command.
 - Time-range chunking is designed for time-series data. Sparse data may need a larger chunk window.
 - Schema-only snapshots do not contain data files.
