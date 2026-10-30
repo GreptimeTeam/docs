@@ -266,7 +266,20 @@ curl -N -X POST 'http://127.0.0.1:4000/v1/sql/analyze/stream' \
   --data-urlencode 'snapshot_interval_ms=1000'
 ```
 
-每个事件的 `data` 是 JSON 对象，包含 `seq`、`state`、`partial` 和 `elapsed_ms`。存在执行计划时还包含 `metrics`。
+每个事件由 `event:` 行和包含 JSON 的 `data:` 行组成，事件之间以空行分隔。连接保持期间，每 15 秒发送一行 keep-alive 注释。
+
+| 字段 | 类型 | 描述 |
+| --- | --- | --- |
+| `seq` | 整数 | 单调递增的事件序号。 |
+| `state` | 字符串 | `metrics`、`final`、`canceled` 或 `error`。 |
+| `partial` | 布尔值 | `metrics` 事件为 `true`，终止事件为 `false`。 |
+| `elapsed_ms` | 整数 | 自请求开始以来的毫秒数。 |
+| `metrics` | 数组 | 可用时返回 `stage` / `node` / `plan` 快照。周期性事件包含紧凑执行拓扑和运行时指标；终止事件包含详细计划。 |
+| `output` | 对象 | 最终查询结果，仅出现在 `final` 事件中。 |
+| `reason` | 字符串 | 错误或取消原因，仅出现在 `error` 和 `canceled` 事件中。 |
+| `code` | 整数 | GreptimeDB 状态码，仅出现在 `error` 和 `canceled` 事件中；取消状态码为 `1005`（`Cancelled`）。 |
+
+快照包含已收集的完整指标，不是增量；收集期间指标值可能变化。快照会被限流，但不会被截断。
 
 | 事件 | 行为 |
 | --- | --- |
@@ -277,6 +290,7 @@ curl -N -X POST 'http://127.0.0.1:4000/v1/sql/analyze/stream' \
 
 `final`、`error` 和 `canceled` 都是终止事件。快速完成的查询可能直接返回 `final`。建立事件流前的校验错误返回普通 JSON 错误响应。
 客户端断开连接后，服务端尽力取消查询；断开连接的客户端不会收到 `canceled` 事件。浏览器原生 `EventSource` 不支持此 POST 接口，需要使用支持流式响应的 HTTP 客户端。
+事件仅发送到当前连接，不支持断线续传、自动重连或脱离连接执行。
 
 ## 协议端点
 

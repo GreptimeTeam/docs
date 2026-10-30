@@ -7,7 +7,7 @@ description: Describes how to export, verify, manage, and import GreptimeDB snap
 
 Export/Import V2 creates portable snapshots of GreptimeDB data. Use it to back up data, restore data, or migrate data between GreptimeDB instances.
 
-A V2 snapshot contains schema metadata, a manifest, and data files. Data files are split into chunks so interrupted export and import jobs can resume from the previous progress.
+An Export/Import V2 snapshot contains schema metadata, a manifest, and data files. Data files are split into chunks so interrupted export and import jobs can resume from the previous progress.
 
 This guide uses the following commands:
 
@@ -39,18 +39,18 @@ The snapshot URI, such as `s3://my-bucket/snapshots/prod`, identifies the snapsh
 
 ## Quick start with local filesystem
 
-Use a local filesystem snapshot only when the path is shared by the CLI client and the GreptimeDB server. For example, this works for a local standalone server when the CLI runs on the same host.
+The examples in this guide use a source standalone instance at `127.0.0.1:4000` and a separate restore target at `127.0.0.1:4100`. Prepare a clean target; import does not clear existing data. If both instances run on the same host, use separate data directories and listening ports. Replace these addresses with your own source and target endpoints.
 
-The examples in this guide store snapshots under `/tmp/greptime-snapshots`. Set this directory as the server's copy root in the GreptimeDB configuration file and restart the server:
+For local filesystem snapshots, the CLI, source, and target must all access the same files.
+
+The examples in this guide store snapshots under `/tmp/greptime-snapshots`. Set this directory as the copy root in both instances' GreptimeDB configuration files and restart both instances:
 
 ```toml
 [storage]
 copy_root = "/tmp/greptime-snapshots"
 ```
 
-Alternatively, keep the default copy root and use a snapshot path under `<storage.data_home>/copy`, such as `file:///path/to/data_home/copy/demo`.
-
-Create the parent directory so that both the server and the CLI can access it:
+Create the parent directory so that the CLI and both instances can access it:
 
 ```bash
 mkdir -p /tmp/greptime-snapshots
@@ -75,7 +75,7 @@ Import from the snapshot:
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo
 ```
 
@@ -91,7 +91,7 @@ Use the S3 backend for AWS S3 and S3-compatible services such as MinIO.
 
 ### S3-compatible endpoint
 
-For MinIO, pass `--s3-endpoint`:
+For MinIO, pass `--s3-endpoint`. Set `S3_ACCESS_KEY_ID` and `S3_SECRET_ACCESS_KEY` in your shell to credentials for your bucket before running these examples:
 
 ```bash
 greptime cli data export-v2 create \
@@ -100,8 +100,8 @@ greptime cli data export-v2 create \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id superpower_ci_user \
-  --s3-secret-access-key superpower_password \
+  --s3-access-key-id "${S3_ACCESS_KEY_ID}" \
+  --s3-secret-access-key "${S3_SECRET_ACCESS_KEY}" \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
@@ -113,24 +113,76 @@ greptime cli data export-v2 verify \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id superpower_ci_user \
-  --s3-secret-access-key superpower_password \
+  --s3-access-key-id "${S3_ACCESS_KEY_ID}" \
+  --s3-secret-access-key "${S3_SECRET_ACCESS_KEY}" \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from s3://greptime/snapshots/local-test \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id superpower_ci_user \
-  --s3-secret-access-key superpower_password \
+  --s3-access-key-id "${S3_ACCESS_KEY_ID}" \
+  --s3-secret-access-key "${S3_SECRET_ACCESS_KEY}" \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
 For AWS S3, use the same `--s3` options but omit `--s3-endpoint` unless you use a custom endpoint. If your environment uses instance profiles or another credential provider, explicit access keys may not be required. The S3 backend still requires `--s3` and `--s3-region`.
+
+## Use Metric packed snapshots
+
+For many small Metric logical tables, packed export can reduce repeated scans and object-store requests. It groups independent Parquet streams into shared objects while preserving each logical table's schema. Large logical tables and ordinary tables use standalone Parquet objects. Packing can increase memory usage.
+
+Ordinary Metric table export writes each logical table separately and supports Parquet, CSV, and JSON. `--experimental-metric-export` requires Parquet, even without packed layout. Use a CLI and servers that support packed snapshots. The CLI checks for packed-export capability before creating or resuming a packed snapshot.
+
+Enable experimental export at the top level of the source frontend or standalone configuration file, then restart the service:
+
+```toml
+experimental_metric_export = true
+```
+
+With the local copy root configured as in the quick start, export the `public` schema with `--experimental-metric-export --metric-data-layout packed` to enable shared Metric scans and packed output:
+
+```bash
+greptime cli data export-v2 create \
+  --addr 127.0.0.1:4000 \
+  --to file:///tmp/greptime-snapshots/metric-packed \
+  --schemas public \
+  --experimental-metric-export \
+  --metric-data-layout packed
+```
+
+For S3 or MinIO, add `--experimental-metric-export --metric-data-layout packed` to the [remote export example](#s3-compatible-endpoint), using a new snapshot prefix. The storage options and copy-root requirements are unchanged. Packed export supports only Parquet, the default `--format`; CSV and JSON require ordinary export.
+
+Verify and import with the existing commands; import selects the layout from the manifest and needs no packed-mode flag:
+
+```bash
+greptime cli data export-v2 verify \
+  --snapshot file:///tmp/greptime-snapshots/metric-packed
+
+greptime cli data import-v2 \
+  --addr 127.0.0.1:4100 \
+  --from file:///tmp/greptime-snapshots/metric-packed
+```
+
+The target must support packed import. Missing packed-import capability stops the import before target DDL or data writes. There is no automatic conversion to ordinary import.
+
+### Snapshot version compatibility
+
+The `v2` in the command names is separate from the manifest version:
+
+| Export selection | Manifest version | Data layout |
+| --- | --- | --- |
+| Default export | 1 | Standalone files |
+| `--experimental-metric-export --metric-data-layout packed` (data export) | 2 | Packed and standalone Parquet objects with indexes |
+| `--schema-only` | 1 | No data files |
+
+`--schema-only` still produces manifest v1 when combined with `--experimental-metric-export --metric-data-layout packed`. This combination does not require packed-data capability.
+
+New importers read manifest versions 1 and 2. Older importers that support only manifest v1 reject v2 before executing target DDL. Upgrade the importer and target server before restoring a packed snapshot. Resuming an export preserves its original manifest version and layout; it does not convert an existing snapshot to packed format.
 
 ## Export selected schemas
 
@@ -159,7 +211,7 @@ When importing, `--schemas` selects a subset from the snapshot:
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/observability \
   --schemas public
 ```
@@ -181,35 +233,9 @@ Importing a schema-only snapshot restores the schema but does not import data ch
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/schema-only
 ```
-
-## Metric table export and packed layout
-
-Metric table export writes each logical table separately and supports Parquet, CSV, and JSON. `--experimental-metric-export` enables shared physical-table scans and requires Parquet.
-
-`--metric-data-layout packed` writes independent logical-table Parquet streams into shared objects and uses manifest v2. Omitting this option retains separate files for logical tables. Schema-only snapshots retain manifest v1.
-
-Enable experimental export at the top level of the source frontend or standalone configuration file, then restart the service:
-
-```toml
-experimental_metric_export = true
-```
-
-```bash
-greptime cli data export-v2 create \
-  --addr 127.0.0.1:4000 \
-  --to file:///tmp/greptime-snapshots/metric-packed \
-  --format parquet \
-  --experimental-metric-export \
-  --metric-data-layout packed
-```
-
-The local path must meet this page's shared-filesystem and `storage.copy_root` requirements. For a bounded time range, the start must precede the end.
-Use a CLI that supports manifest v2 for `verify` and `import-v2`. Import reads the layout from the manifest and requires no export flag.
-
-Before resuming an export, confirm that the previous export and its storage writes have ended. An HTTP timeout does not establish this. Retain the original export parameters and storage configuration when resuming.
 
 ## Choose the data file format
 
@@ -238,16 +264,16 @@ greptime cli data export-v2 create \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id superpower_ci_user \
-  --s3-secret-access-key superpower_password \
+  --s3-access-key-id "${S3_ACCESS_KEY_ID}" \
+  --s3-secret-access-key "${S3_SECRET_ACCESS_KEY}" \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
-`--chunk-time-window` requires both `--start-time` and `--end-time`.
+`--chunk-time-window` requires both `--start-time` and `--end-time`. For packed export, the start must precede the end.
 
 Chunks are created by time window. For example, a 15-minute range with `--chunk-time-window 5m` creates 3 chunks. During import, data tasks are scheduled per chunk and per schema. If the snapshot contains 3 chunks and 2 schemas with data, import schedules 6 data tasks.
 
-Snapshot data files are also organized by schema and chunk. For example, a multi-chunk snapshot can contain paths such as:
+For the default standalone-file layout, snapshot data files are organized by schema and chunk. For example, a multi-chunk snapshot can contain paths such as:
 
 ```text
 data/logs/1/app_logs.parquet
@@ -281,6 +307,12 @@ Increase these values gradually and monitor GreptimeDB, object storage, and netw
 
 Export/Import V2 is designed to resume interrupted work.
 
+:::warning
+
+An HTTP timeout or a stopped CLI does not prove that the server request or storage writes have stopped. Before resuming, deleting incomplete output, or using `--force`, confirm that the original export/import request and its writes have ended. Do not run overlapping attempts against the same snapshot or restore destination.
+
+:::
+
 For export:
 
 - If the target snapshot does not exist, `export-v2 create` creates it.
@@ -294,20 +326,24 @@ greptime cli data export-v2 create \
   --to file:///tmp/greptime-snapshots/demo
 ```
 
-Run the same command again to resume after interruption.
+After confirming the previous attempt has ended, run the same command again to resume. An existing packed snapshot supplies its layout from the manifest, so you can omit `--metric-data-layout packed` when resuming. Keep `--experimental-metric-export` enabled; the source server must enable experimental export and support packed export. A v1 snapshot cannot switch to packed layout when resumed; use a new snapshot location to create a packed snapshot.
+
+Retry removes only owned incomplete output and preserves completed chunks; unexpected files in an incomplete chunk cause cleanup to fail. Keep the source data and DDL unchanged across attempts.
 
 For import, progress is stored in a state file while the import is running. By default, the state file is under `~/.greptime/import_state`. Override it with `--state-path` when you want an explicit state location:
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo \
   --state-path /tmp/greptime-import-demo.state
 ```
 
 `--dry-run` does not create an import state file. A real import keeps the state file if it fails or is interrupted, so the next run can resume completed data tasks. After a successful import, import-v2 automatically deletes the state file because there is no remaining work to resume. A `.lock` file with the same prefix can remain; it is a lock file, not the import state content.
 
-If you intentionally want to rerun an import from scratch after a failed or interrupted run, use a different `--state-path` or remove the previous state file after confirming that doing so is safe.
+Import is not transactional across the restore. Earlier DDL batches and inserted rows can remain after a later failure. Completion is recorded per schema/chunk data task, not per logical table; retrying an unfinished task can replay rows already inserted. If DDL did not finish, a resume can replay earlier DDL as well. Check the destination before retrying.
+
+For a fresh restore, first confirm the original requests have ended and prepare a clean destination, then use a new `--state-path` or remove the old state file. Changing the state file alone does not remove partially restored data.
 
 ## Dry-run an import
 
@@ -315,7 +351,7 @@ Use `--dry-run` to validate the snapshot and import plan without executing DDL o
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo \
   --dry-run
 ```
@@ -331,7 +367,9 @@ greptime cli data export-v2 verify \
   --snapshot file:///tmp/greptime-snapshots/demo
 ```
 
-List snapshots under a parent location:
+`verify` checks snapshot structure and completeness. For packed snapshots, this includes DDL/index table membership, object references, byte ranges and object lengths. It does not decode and compare every value or provide full content/checksum validation. Validate restored data separately for your recovery requirements.
+
+List snapshots under a parent location to see completed chunk counts and the manifest-derived status (`complete`, `incomplete`, `schema-only`, or `unsupported`):
 
 ```bash
 greptime cli data export-v2 list \
@@ -354,8 +392,8 @@ greptime cli data export-v2 delete \
   --s3 \
   --s3-bucket greptime \
   --s3-region us-west-2 \
-  --s3-access-key-id superpower_ci_user \
-  --s3-secret-access-key superpower_password \
+  --s3-access-key-id "${S3_ACCESS_KEY_ID}" \
+  --s3-secret-access-key "${S3_SECRET_ACCESS_KEY}" \
   --s3-endpoint http://127.0.0.1:9000
 ```
 
@@ -363,13 +401,13 @@ greptime cli data export-v2 delete \
 
 If the GreptimeDB instance has basic authentication enabled, pass credentials with `--auth-basic <username>:<password>`.
 
-Set request timeout with `--timeout`, for example `--timeout 60s` or `--timeout 5m`.
+The CLI request timeout defaults to `60s`. Set it with `--timeout`, for example `--timeout 5m`, allowing enough time for a data task. A timeout does not confirm cancellation; follow the [resume precautions](#resume-an-interrupted-export-or-import) before retrying.
 
 For commands that connect to the GreptimeDB HTTP endpoint, such as `export-v2 create` and `import-v2`, use `--proxy` to set an HTTP proxy, or `--no-proxy` to disable proxy usage:
 
 ```bash
 greptime cli data import-v2 \
-  --addr 127.0.0.1:4000 \
+  --addr 127.0.0.1:4100 \
   --from file:///tmp/greptime-snapshots/demo \
   --no-proxy
 ```
@@ -427,7 +465,7 @@ The failed run leaves a partial snapshot on disk, and `export-v2 verify` reports
 
 ### `--chunk-time-window` fails validation
 
-`--chunk-time-window` requires both `--start-time` and `--end-time`. Add a bounded time range or remove `--chunk-time-window`.
+`--chunk-time-window` requires both `--start-time` and `--end-time`. For packed export, the start must precede the end. Add a bounded time range or remove `--chunk-time-window`.
 
 ### S3 or MinIO reports `NoSuchBucket` or `NoSuchKey`
 
@@ -453,6 +491,8 @@ Do not import a snapshot that fails verification. The snapshot may be incomplete
 ## Limitations
 
 - Export/Import V2 snapshots are not the same format as the legacy export/import output.
+- Keep the selected source data and table definitions stable throughout export and any resume. This is not a transactionally consistent online backup across tables or chunks. Keep snapshot files unchanged during import and avoid concurrent changes to the target tables.
+- Packed snapshots combine streams only within one schema and time chunk; logical tables with different columns can share an object. The 8 MiB bound applies to each data write or multipart part, not the entire pack, object, or logical table.
 - Schema filtering is schema-level. Table-level filtering is not covered by this command.
 - Time-range chunking is designed for time-series data. Sparse data may need a larger chunk window.
 - Schema-only snapshots do not contain data files.

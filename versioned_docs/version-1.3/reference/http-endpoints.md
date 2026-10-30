@@ -266,7 +266,20 @@ curl -N -X POST 'http://127.0.0.1:4000/v1/sql/analyze/stream' \
   --data-urlencode 'snapshot_interval_ms=1000'
 ```
 
-Each event's `data` is a JSON object with `seq`, `state`, `partial`, and `elapsed_ms`. It also includes `metrics` when an execution plan is available.
+Each event has an `event:` line and a `data:` line containing JSON, separated from the next event by a blank line. The server sends a keep-alive comment every 15 seconds while the connection remains open.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `seq` | Integer | Monotonically increasing event sequence number. |
+| `state` | String | `metrics`, `final`, `canceled`, or `error`. |
+| `partial` | Boolean | `true` for `metrics` events; `false` for terminal events. |
+| `elapsed_ms` | Integer | Milliseconds since the request started. |
+| `metrics` | Array | A `stage` / `node` / `plan` snapshot, when available. Periodic events contain compact execution topology and runtime metrics; terminal events include verbose plan details. |
+| `output` | Object | Final query result, present only in `final` events. |
+| `reason` | String | Failure or cancellation reason, present only in `error` and `canceled` events. |
+| `code` | Integer | GreptimeDB status code, present only in `error` and `canceled` events; cancellation uses `1005` (`Cancelled`). |
+
+Snapshots contain all collected metrics, not deltas; values can change during collection. Snapshots are throttled but never truncated.
 
 | Event | Behavior |
 | --- | --- |
@@ -277,6 +290,7 @@ Each event's `data` is a JSON object with `seq`, `state`, `partial`, and `elapse
 
 `final`, `error`, and `canceled` are terminal events. A short query can return `final` without a metrics event. Validation failures before streaming return a regular JSON error response.
 On client disconnect, the server makes a best-effort attempt to cancel the query; the disconnected client receives no `canceled` event. Browser `EventSource` does not support this POST endpoint. Use an HTTP client that supports streaming responses.
+Events are delivered only to the current connection. The stream does not support resume, reconnect, or detached execution.
 
 ## Protocol Endpoints
 
