@@ -280,3 +280,91 @@ GROUP BY
 ```
 The following diagram shows the state creation, quantile calculation, and merge operations:
 ![UDDSketch Usage Flowchart](/udd.svg)
+
+## Mergeable Population Standard Deviation (Welford)
+
+The following functions compute the population standard deviation from mergeable intermediate states. They use [Welford's online algorithm](https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_online_algorithm), making them useful when you need to persist statistics for smaller time windows and combine them later without reading the raw samples again. Unlike the approximate algorithms described above, these functions produce the same population standard deviation as `stddev_pop` within floating-point precision.
+
+Treat the binary states as opaque values. Create, merge, and read them only with the functions in this section.
+
+### `stddev_pop_state`
+
+`stddev_pop_state(value)` is an aggregate function that creates a mergeable state from a `DOUBLE` expression and returns it as `BINARY`.
+
+- The function ignores `NULL` samples.
+- The input and all intermediate arithmetic must be finite. Non-finite input or arithmetic causes the query to fail.
+- If there are no non-`NULL` samples, the function returns an empty state. Passing that state to `stddev_pop_calc` returns `NULL`.
+
+### `stddev_pop_merge`
+
+`stddev_pop_merge(state)` is an aggregate function that combines `BINARY` states created by `stddev_pop_state` and returns a merged `BINARY` state. It ignores `NULL` states. A malformed or incompatible state causes the query to fail.
+
+Use this function to combine persisted states from different time windows, partitions, or data sources before calculating the final standard deviation.
+
+### `stddev_pop_calc`
+
+`stddev_pop_calc(state)` is a scalar function that reads a state created by `stddev_pop_state` or `stddev_pop_merge` and returns the population standard deviation as `DOUBLE`.
+
+The function returns:
+
+- `0.0` for a state containing one sample;
+- `NULL` for an empty, `NULL`, malformed, or incompatible state;
+- the population standard deviation for any other valid state.
+
+### Full Usage Example
+
+The following example persists one state per minute and then merges three minute-level states. The merged result matches `stddev_pop` calculated directly from the raw samples.
+
+```sql
+CREATE TABLE welford_raw (
+    id INT PRIMARY KEY,
+    value DOUBLE,
+    ts TIMESTAMP TIME INDEX
+);
+
+INSERT INTO welford_raw VALUES
+    (1, 1.0,  '2024-01-01 00:01:05'),
+    (2, 2.0,  '2024-01-01 00:01:20'),
+    (3, 3.0,  '2024-01-01 00:01:50'),
+    (4, 10.0, '2024-01-01 00:02:10'),
+    (5, 20.0, '2024-01-01 00:02:40'),
+    (6, 4.0,  '2024-01-01 00:03:05'),
+    (7, 8.0,  '2024-01-01 00:03:15'),
+    (8, 12.0, '2024-01-01 00:03:35'),
+    (9, 16.0, '2024-01-01 00:03:55');
+
+CREATE TABLE welford_minute_states (
+    minute_ts TIMESTAMP TIME INDEX,
+    state BINARY
+);
+
+INSERT INTO welford_minute_states (minute_ts, state)
+SELECT
+    date_bin(INTERVAL '1 minute', ts) AS minute_ts,
+    stddev_pop_state(value) AS state
+FROM welford_raw
+GROUP BY minute_ts;
+
+WITH direct AS (
+    SELECT stddev_pop(value) AS stddev
+    FROM welford_raw
+    WHERE ts >= '2024-01-01 00:01:00'
+      AND ts <  '2024-01-01 00:04:00'
+), merged AS (
+    SELECT stddev_pop_calc(stddev_pop_merge(state)) AS stddev
+    FROM welford_minute_states
+    WHERE minute_ts >= '2024-01-01 00:01:00'
+      AND minute_ts <  '2024-01-01 00:04:00'
+)
+SELECT
+    direct.stddev AS direct_stddev,
+    merged.stddev AS merged_stddev,
+    abs(direct.stddev - merged.stddev) AS difference
+FROM direct CROSS JOIN merged;
+
++------------------+------------------+------------+
+| direct_stddev    | merged_stddev    | difference |
++------------------+------------------+------------+
+| 6.25586144900411 | 6.25586144900411 | 0.0        |
++------------------+------------------+------------+
+```
