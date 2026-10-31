@@ -232,6 +232,8 @@ api_server_addr = "127.0.0.1:4006"
 [grpc]
 bind_addr = "127.0.0.1:4001"
 runtime_size = 8
+enable_cors = false
+# cors_allowed_origins = ["https://example.com"]  # 可选：自定义允许的来源
 
 [grpc.tls]
 mode = "disable"
@@ -305,6 +307,8 @@ OTLP/HTTP 累积或增量指数直方图。
 | grpc       |                    |        | gRPC 服务器选项                                              |
 |            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
+|            | enable_cors        | 布尔值 | 是否为对外 gRPC 服务器启用浏览器 gRPC-Web 客户端的 CORS 支持，默认为 false。内部 gRPC 服务器始终禁用 CORS。 |
+|            | cors_allowed_origins | 数组 | gRPC CORS 允许的来源。默认为空列表；启用 CORS 时，空列表允许任意来源。可设置特定来源以限制浏览器访问。 |
 |            | max_connection_age   | 字符串  | gRPC 连接在服务端保持的最长时间。参见 ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/)。默认不设置。示例："1h" 表示 1 小时，"30m" 表示 30 分钟 |
 |            | flight_compression   | 字符串  | Frontend 的 Arrow IPC 服务的压缩模式。可用选项：`none`：禁用所有压缩，`transport`：仅启用 gRPC 传输压缩（zstd），`arrow_ipc`：仅启用 Arrow IPC 压缩（lz4），`all`：启用所有压缩。默认值为 `none`。|
 | mysql      |                    |        | MySQL 服务器选项                                             |
