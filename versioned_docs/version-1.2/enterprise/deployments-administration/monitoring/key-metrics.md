@@ -25,7 +25,7 @@ The following reference alert rules are **not built in** to GreptimeDB and need 
 | `sum by (instance, pod, region_id) (rate(greptime_mito_region_query_scanned_bytes{instance=~"$frontend"}[$__rate_interval]))` | Per-region scanned bytes during queries | Use for read-load hotspot analysis after enabling `logging.enable_per_region_metrics`; avoid broad alerting because this metric has high cardinality |
 | `sum by(instance, pod, path, method, code) (rate(greptime_servers_http_requests_elapsed_count{path!~"/health\|/metrics"}[$__rate_interval]))` | HTTP request count and response codes | HTTP 200 request count below threshold for n minutes or non-200 response count above normal threshold for n minutes |
 | `sum by (instance, pod) (rate(greptime_mito_write_rows_total{instance=~"$datanode"}[$__rate_interval]))` | Storage engine write row count | Below normal threshold for n minutes |
-| `up{job="greptimedb-instance"}` | Instance availability | Equals 0 for more than 1 minute |
+| `up{job="greptimedb-instance"}` | Instance availability. Replace `greptimedb-instance` with the job name in your scrape configuration. | Equals 0 for more than 1 minute |
 | `sum by (instance) (changes(process_start_time_seconds[5m]))` | Instance restarts | Greater than 0 in the last 5 minutes |
 | `sum by (instance) (rate(greptime_servers_http_requests_elapsed_count{path=~"/v1/.*", code!~"2.."}[5m]))` | Non-2xx HTTP responses | Greater than 0 for more than 5 minutes |
 | `histogram_quantile(0.99, sum by (le, instance) (rate(greptime_servers_http_requests_elapsed_bucket{path=~"/v1/.*"}[5m])))` | HTTP request latency | p99 above 5s for more than 5 minutes |
@@ -41,7 +41,7 @@ The following reference alert rules are **not built in** to GreptimeDB and need 
 | `sum by (instance) (increase(greptime_trigger_send_alert_failure_count[5m]))` | Trigger alert sending failures | Greater than 0 in the last 5 minutes |
 | `sum by (instance) (increase(greptime_trigger_save_alert_record_failure_count[5m]))` | Trigger alert record saving failures | Greater than 0 in the last 5 minutes |
 | `sum by (instance) (increase(greptime_pending_rows_flush_failures[5m]) + increase(greptime_pending_rows_flush_dropped_rows[5m]))` | Buffered ingestion data loss | Greater than 0 in the last 5 minutes |
-| `sum by (instance) (greptime_prom_store_pending_rows)` | Prometheus remote-write batching buffer size | Near `max_batch_rows` (default 100000) for more than 5 minutes |
+| `sum by (instance) (greptime_prom_store_pending_rows)` | Rows pending in Prometheus remote-write batching, summed across batches | Keeps growing across several flush intervals, or stays above a baseline measured for your workload |
 
 We also recommend configuring disk alerts at the Pod level to trigger when disk usage exceeds a certain threshold.
 Additionally, you can monitor the following events based on keywords from error logs listed in the operational [key logs](key-logs.md):
