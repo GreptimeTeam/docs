@@ -24,7 +24,9 @@ To apply `ALTER` / table-option changes, run SQL via the `greptimedb-mcp-server`
 tool if available, a **MySQL**/**PostgreSQL** client, the built-in
 [GreptimeDB Dashboard](https://docs.greptime.com/getting-started/installation/greptimedb-dashboard/),
 or (Enterprise) the [Management Console](https://docs.greptime.com/enterprise/console-ui/).
-Config-file (`toml`) changes require a restart. See defaults in
+MCP `execute_sql` rejects `ALTER` unless the server was started with `--allow-write true` (or
+`GREPTIMEDB_ALLOW_WRITE=true`); otherwise present the SQL for the user to run, or use another
+client. Config-file (`toml`) changes require a restart. See defaults in
 https://docs.greptime.com/user-guide/deployments-administration/configuration/.
 
 ### Phase 2. Cache sizing
@@ -112,6 +114,31 @@ If flush is slow or one region/datanode takes most writes, repartition instead â
   improve scan performance. `flat` is the default; the only reason to set `sst_format='flat'`
   manually is upgrading from an old version whose default was the legacy `primary_key` format.
   These are schema-level concerns â€” see `greptimedb-table-design`.
+
+### Phase 5. Scan and query memory (v1.3 and later)
+
+Since v1.3, a scan-memory limit shared by all table scans on a node is enabled by default,
+and a scan that exceeds it fails immediately:
+
+```toml
+[[region_engine]]
+[region_engine.mito]
+# Default 25% of cgroup memory (host memory without a cgroup limit). "0" or
+# "unlimited" disables the limit and restores the file-count check
+# (`max_concurrent_scan_files`).
+scan_memory_limit = "25%"
+# "basic" (default) counts projected Parquet row-group decoding; "extended" also
+# counts streamed batches until the scan ends, so the same limit rejects more scans.
+scan_memory_mode = "basic"
+# Only "fail" is effective; legacy "wait" / "wait(<duration>)" load with a warning
+# and behave as "fail".
+scan_memory_on_exhausted = "fail"
+```
+
+Internal series merges during scans use `query.memory_pool_size` (default `0`, unlimited)
+instead, sharing that pool with aggregation, sort, and join on the same node. If queries hit
+memory limits, review both settings and query concurrency together; neither limits total
+process memory. Raise a limit only after checking the node's memory headroom.
 
 ## Escalation
 

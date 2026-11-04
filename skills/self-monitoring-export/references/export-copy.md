@@ -47,6 +47,8 @@ GreptimeDB HTTP port export is preferred when the HTTP port is reachable, especi
 
 Critical location rule: `COPY TO '<path>'` writes on the self-monitoring GreptimeDB server-side or pod-local filesystem. It does not write to the agent/client local filesystem. The local artifact directory receives exported data files only when the confirmed mode includes `kubectl cp` retrieval. Otherwise, the local artifact directory contains scripts, manifest entries, expected remote paths, and user download instructions, but not the remote data files.
 
+Path rule for a v1.3 or later self-monitoring instance: standalone accepts local `COPY TO` paths only inside `storage.copy_root` (default `<storage.data_home>/copy`). Relative paths resolve below that directory; absolute paths outside it, including the `/tmp/...` examples in these references, fail with `Local filesystem path '...' is outside the configured copy root or is unsafe`. A distributed self-monitoring cluster rejects local paths entirely. Check the self-monitoring version first; on v1.3 or later, use a relative path such as `greptimedb-incident-export/<incident-id>/<file>.parquet`, derive the absolute pod path from `storage.data_home` for `kubectl cp`, and use HTTP port export when local file access is unavailable.
+
 Use [`sql-cheatsheet.md`](sql-cheatsheet.md) for common `COPY TO` Parquet, row-count, and caution templates before searching docs or launching subagents for syntax.
 
 If interactive controls are supported, present the three supported modes as a single-select picker and ask only the selected mode's required values with true free-text/textbox controls. If no true textbox exists, ask plain text questions for those values.

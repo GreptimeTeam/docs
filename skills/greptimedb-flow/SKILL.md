@@ -49,9 +49,11 @@ does not exist, but manual creation keeps full control over:
 - **Column order and type** — must line up with the SELECT in the flow query.
 - **Time index** — `TIME INDEX` is typically the column produced by the time
   window function (e.g. `date_bin(...) AS time_window`).
-- **`update_at` column** — the Flow engine automatically appends the update
-  time to the end of each computation result row. The sink table schema must
-  include an `update_at` column.
+- **`update_at` column** — an auto-created batching SQL sink gets an
+  `update_at` column for the update time; a TQL sink follows the query output
+  and gets none. A pre-created SQL sink either matches the query output width
+  or adds one extra trailing timestamp column (such as `update_at`) for the
+  update time.
 - **Primary key / tags** — use `PRIMARY KEY` to declare tag columns; together
   with the time index they form the unique key the Flow engine uses to
   insert or update rows.
@@ -121,7 +123,10 @@ Important caveats:
 If greptimedb-mcp-server is available, we can use its `execute_sql` tools to
 execute the DDL. Try to generate some sample data, insert into source table,
 then verify the sink table via SQL SELECT statements. We can use MySQL style
-SELECT statements on GreptimeDB for most cases.
+SELECT statements on GreptimeDB for most cases. `execute_sql` is read-only
+unless the server was started with `--allow-write true` (or
+`GREPTIMEDB_ALLOW_WRITE=true`); otherwise give the DDL and `INSERT` statements
+to the user, or run them through a MySQL/PostgreSQL client.
 
 ## Reference
 

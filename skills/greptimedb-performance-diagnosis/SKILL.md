@@ -58,6 +58,7 @@ Route to the matching phase based on what the user reports:
 | Ingestion is slow / latency high / writes stall or get rejected | Phase 4 |
 | A node has high CPU or memory (cause unclear) | Phase 5 |
 | Cache seems ineffective / lots of object-store reads | Phase 6 |
+| Queries fail with memory-limit errors (often after upgrading to v1.3) | Phase 7 |
 
 If the user is unsure, start from the broadest available signal (ingestion rate, request
 latency, CPU/memory) and narrow down.
@@ -168,6 +169,24 @@ types include `file`, `index`, `sst_meta`, `page`, `vector`, `selector_result`,
 
 A low hit ratio with high miss/eviction on a near-full cache → hand off to **Tuning** to
 resize that specific cache.
+
+### Phase 7. Diagnose memory-limit query failures
+
+v1.3 enables a scan-memory limit by default (`region_engine.mito.scan_memory_limit = "25%"`),
+and a scan that exceeds it fails immediately. Queries that succeeded before the upgrade can
+fail with:
+
+- `Exceeded memory limit: ... requested, ... used globally (...%), ... used by this stream, hard limit: ...`
+  — the scan-memory limit. Check `greptime_mito_scan_memory_usage_bytes`,
+  `greptime_mito_scan_memory_exhausted_total`, and
+  `greptime_mito_scan_requests_rejected_total` on the datanode (or standalone).
+- `Resources exhausted: Failed to allocate additional ...` — the `query.memory_pool_size` pool,
+  which since v1.3 is also used by internal series merges during scans. Check
+  `greptime_query_memory_pool_usage_bytes` and `greptime_query_memory_pool_rejected_total`.
+
+Also record `scan_memory_mode` (`extended` rejects more scans than `basic` at the same limit)
+and the number of concurrent queries. Hand off to **Tuning** (Phase 5) to adjust the limits,
+or narrow the query's time range and projected columns.
 
 ## Escalation
 

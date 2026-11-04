@@ -20,6 +20,9 @@ To run the SQL in this guide (`CREATE TABLE`, `ALTER TABLE`, `SHOW CREATE TABLE`
 a **MySQL** or **PostgreSQL** client; the built-in
 [GreptimeDB Dashboard](https://docs.greptime.com/getting-started/installation/greptimedb-dashboard/);
 or (Enterprise) the [Management Console](https://docs.greptime.com/enterprise/console-ui/).
+MCP `execute_sql` rejects `CREATE`/`ALTER`/`INSERT` unless the server was started with
+`--allow-write true` (or `GREPTIMEDB_ALLOW_WRITE=true`); otherwise present the SQL for the
+user to run, or use another client.
 
 ## The workflow
 
@@ -70,7 +73,7 @@ ORDER BY), and whether updates/deletes are needed. Then decide:
 | Index | Best for |
 |---|---|
 | Inverted (`INVERTED INDEX`) | Filtering low-cardinality columns; supports `=`, `<`, `<=`, `>`, `>=`, `IN`, `BETWEEN`, `~` |
-| Skipping (`SKIPPING INDEX`) | Precise filtering of high-cardinality columns; equality only; low storage/memory overhead |
+| Skipping (`SKIPPING INDEX`) | Precise filtering of high-cardinality columns; equality and `IN` (or `OR`-ed equalities) only; low storage/memory overhead |
 | Full-text (`FULLTEXT INDEX`) | Tokenized text search in unstructured message bodies |
 
 Primary key and index are complementary: the primary key gives ordering/locality and enables
@@ -109,10 +112,19 @@ Be explicit about the constraints. The highest-impact choices are fixed at `CREA
 
 **Not alterable** (require recreating the table):
 
-- Primary key
+- Existing primary-key columns: they cannot be dropped, reordered, or have their type changed,
+  and an existing field cannot become a tag. The only primary-key change is appending a new
+  tag (below).
 - `merge_mode`
 
 **Alterable on a live table:**
+
+- Append a new tag column to the end of the primary key. The column must be nullable or have
+  a default; existing rows get NULL or the default:
+
+  ```sql
+  ALTER TABLE my_table ADD COLUMN app STRING DEFAULT 'shop' PRIMARY KEY;
+  ```
 
 - Add/drop **indexes** via `ALTER TABLE`. Explain that this only affects newly flushed data:
   the index is built for SST files produced by subsequent flushes and is not added to existing

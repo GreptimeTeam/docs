@@ -127,6 +127,24 @@ name is used unchanged.
 math, conditional logic, array reshaping), use the `vrl` processor. See the
 VRL reference for the language.
 
+Since v1.3.0, VRL host access is disabled by default
+(`pipeline.allow_vrl_host_access = false`), and pipelines that use the
+following fail to compile. Do not use them:
+
+- Functions `get_env_var`, `get_hostname`, `get_timezone_name`,
+  `http_request`, `dns_lookup`, `reverse_dns`, `encode_proto`, `parse_proto`,
+  `parse_etld`, `validate_json_schema`, and `log`.
+- A nonempty `alias_sources` in `parse_groks` (inline `aliases` are allowed).
+- A `timezone` argument to `parse_timestamp` / `format_timestamp` that is not a
+  constant named timezone such as `"UTC"` or `"Asia/Shanghai"`: `"local"`, an
+  empty string, and dynamic values such as event fields are rejected. Without
+  `timezone`, both functions use UTC.
+
+Stored pipelines that use these also fail when reloaded after an upgrade to
+v1.3. Setting `[pipeline] allow_vrl_host_access = true` in the frontend or
+standalone config re-enables them; that is an operator decision, so suggest it
+only when the user controls the server and trusts all pipeline authors.
+
 **Dryrun.** If the `greptimedb-mcp-server` is available, use its
 `dryrun_pipeline` tool to test pipeline definition + sample data against
 GreptimeDB without persisting. It accepts either inline YAML (`pipeline=`)
