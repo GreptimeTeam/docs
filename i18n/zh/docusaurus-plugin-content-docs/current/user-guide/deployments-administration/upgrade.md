@@ -521,6 +521,7 @@ SELECT * FROM table;
 - [ ] 如果升级到 v1.2，把 PromQL 中的 `holt_winters(...)` 调用改名为 `double_exponential_smoothing(...)`
 - [ ] 如果升级到 v1.2，重写使用 `fill`、`fill_left` 或 `fill_right` 的 PromQL 查询
 - [ ] 如果升级到 v1.2，更新依赖整数回绕的 pipeline，并在需要时显式设置 `on_failure` 策略
+- [ ] 如果升级到 v1.3，对设置了 `service.namespace` 的 OTLP 资源，更新匹配 `job` 标签的 dashboard 选择器和告警规则
 - [ ] 更新使用有序集聚合的 SQL 查询以使用 `WITHIN GROUP (ORDER BY ...)`
 - [ ] 更新使用 `---` 注释的 SQL 脚本改用 `--`
 - [ ] 更新访问嵌套 JSON 字段的查询以使用点号表示法

@@ -547,6 +547,7 @@ Before upgrading to your target version, complete the following checklist:
 - [ ] If upgrading to v1.2, rename PromQL `holt_winters(...)` calls to `double_exponential_smoothing(...)`
 - [ ] If upgrading to v1.2, rewrite PromQL queries that use `fill`, `fill_left`, or `fill_right`
 - [ ] If upgrading to v1.2, update pipelines that relied on integer wraparound and set an explicit `on_failure` policy when needed
+- [ ] If upgrading to v1.3, update dashboard selectors and alert rules that match the OTLP `job` label for resources with `service.namespace`
 - [ ] Update SQL queries with ordered-set aggregates to use `WITHIN GROUP (ORDER BY ...)`
 - [ ] Update SQL scripts using `---` comments to use `--`
 - [ ] Update queries that access nested JSON fields to use dot notation

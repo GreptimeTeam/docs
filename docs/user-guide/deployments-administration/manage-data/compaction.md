@@ -68,7 +68,7 @@ It assigns files to be compacted into different time windows. For each window, T
 For window assignment, SST files may span multiple time windows. TWCS assigns SSTs based on their maximum timestamps to ensure they are not affected by stale data. In time-series workloads, out-of-order writes are infrequent, and even when they occur, recent data's query performance is more critical than that of stale data.
 
 
-TWCS uses separate compaction triggers for the active window and inactive windows. The active window is the window of the SST file with the highest sequence number, that is, the window that contains the most recently flushed data. All other windows are inactive. The active window changes only when newer data is flushed into another window, so it remains active after writes stop.
+TWCS uses separate compaction triggers for the active window and inactive windows. The active window is the window that contains the most recently flushed data. All other windows are inactive. The active window changes only when newer data is flushed into another window, so it remains active after writes stop.
 
 Common TWCS table options include:
 - `active_window.trigger_file_num`: number of L0 files in the active window to trigger a compaction (default 4). `trigger_file_num` is an alias of this option.
