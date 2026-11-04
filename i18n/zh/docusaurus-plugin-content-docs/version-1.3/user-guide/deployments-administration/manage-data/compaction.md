@@ -66,18 +66,17 @@ TWCS 将要压缩的文件分配到不同的时间窗口。对于每个窗口，
 
 对于窗口分配，SST 文件可能跨越多个时间窗口。为了确保不受陈旧数据影响，TWCS 根据 SST 的最大时间戳来进行分配。在时间序列工作负载中，无序写入很少发生，即使发生了，最近数据的查询性能也比陈旧数据更为重要。
 
+TWCS 对活跃窗口和非活跃窗口分别设置 compaction 触发条件。活跃窗口是序列号（sequence）最大的 SST 文件所在的窗口，即包含最近一次刷盘数据的窗口，其余窗口均为非活跃窗口。只有更新的数据刷盘到其他窗口时，活跃窗口才会改变；写入停止后，活跃窗口也保持不变。
+
 常用的 TWCS 表级参数包括：
-- `trigger_file_num`: 单一时间窗口中触发 compaction 的文件数量（默认为 4）
+- `active_window.trigger_file_num`: 活跃窗口中触发 compaction 的 L0 文件数量（默认为 4）。`trigger_file_num` 是该参数的别名。
+- `active_window.l1_merge_trigger`: 活跃窗口中触发 L1 文件合并的 L1 文件数量（默认为 16），取值不能小于 2。
+- `inactive_window.trigger_file_num`: 非活跃窗口中触发 compaction 的文件数量（默认为 2）。
+- `inactive_window.l1_merge_trigger`: 非活跃窗口中触发 compaction 的 L1 文件数量（默认为 8），取值不能小于 2。
 - `time_window`: TWCS compaction 的时间窗口大小
 - `max_output_file_size`: compaction 产生文件的最大大小（默认 512MB）
 
-以下图表显示了当 `trigger_file_num`为 3 时，窗口中的文件如何被压缩：
-- 在 A 中，有两个 SST 文件 `[0, 3]` 和 `[5, 6, 9]`，但只有一个有序组，因为这两个文件的时间范围不重叠。
-- 在 B 中，一个新的 SST 文件 `[1, 4]` 被写入，因此形成了两个有序组。然后将 `[0, 3]` 和 `[1, 4]` 合并为 `[0, 1, 3, 4]`。
-- 在 C 中，一个新的 SST 文件 `[9, 10]` 被写入，它将与 `[5, 6, 10]` 合并以创建 `[5, 6, 9, 10]`，经过压缩后文件将变成 D 中的样子。
-- 在 E 中，一个新文件 `[11, 12]` 被写入。尽管仍然只有一个有序组，但文件数量达到了 `trigger_file_num`（3），因此将会把 `[5, 6, 9，10]` 与 `[11，12]` 合并形成 `[5，6，9，10，11，12 ]`.
-
-![compaction-trigger-file-num.png](/compaction-trigger-file-num.png)
+同时指定 `trigger_file_num` 和 `active_window.trigger_file_num` 且取值不同时，语句会报错。`SHOW CREATE TABLE` 和 `SHOW CREATE DATABASE` 将活跃窗口的触发文件数显示为 `compaction.twcs.trigger_file_num`。
 
 ### 指定 TWCS 参数
 

@@ -35,7 +35,11 @@ Currently following options are supported:
   - If `ttl` was previously set and is unset using `ALTER`, new data will no longer be deleted. However, data that was previously deleted due to the retention policy cannot be restored.
 - `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy. The value should be a [time duration string](/reference/time-durations.md). Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
 - `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy. Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
-- `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction. Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
+- `compaction.twcs.active_window.trigger_file_num`: the number of L0 files in the active time window to trigger a compaction. Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
+- `compaction.twcs.trigger_file_num`: alias of `compaction.twcs.active_window.trigger_file_num`. Specifying both options with different values returns an error. Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
+- `compaction.twcs.active_window.l1_merge_trigger`: the number of L1 files in the active time window to trigger a compaction of those L1 files. The value must be at least 2. Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
+- `compaction.twcs.inactive_window.trigger_file_num`: the number of files in an inactive time window to trigger a compaction. Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
+- `compaction.twcs.inactive_window.l1_merge_trigger`: the number of L1 files in an inactive time window to trigger a compaction. The value must be at least 2. Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
 
 ### Examples
 
@@ -243,7 +247,11 @@ Currently following options are supported:
 - `append_mode`: whether the table is append-only. You can change it from `false` to `true`, but not from `true` to `false`.
 - `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy. The value should be a [time duration string](/reference/time-durations.md).
 - `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy.
-- `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction.
+- `compaction.twcs.active_window.trigger_file_num`: the number of L0 files in the active time window to trigger a compaction.
+- `compaction.twcs.trigger_file_num`: alias of `compaction.twcs.active_window.trigger_file_num`. Specifying both options with different values returns an error.
+- `compaction.twcs.active_window.l1_merge_trigger`: the number of L1 files in the active time window to trigger a compaction of those L1 files. The value must be at least 2.
+- `compaction.twcs.inactive_window.trigger_file_num`: the number of files in an inactive time window to trigger a compaction.
+- `compaction.twcs.inactive_window.l1_merge_trigger`: the number of L1 files in an inactive time window to trigger a compaction. The value must be at least 2.
 - `sst_format`: the SST format of the table. The value can be `flat` or `primary_key`. A table supports changing the format in both directions: `primary_key` to `flat` and `flat` to `primary_key`.
 - `write_buffer_size`: the per-region write buffer stall threshold of the table. For a positive value such as `512MB`, GreptimeDB schedules a flush when mutable memtable usage reaches half the value, stalls writes at the value, and rejects writes at twice the value. The table option overrides `region_engine.mito.default_region_write_buffer_size`. Setting it to `0` explicitly disables the per-region limit even when the engine default is nonzero. Unsetting it removes the table override and falls back to the engine default.
 - `auto_flush_interval`: how long a region of this table may go without a flush before one is triggered. The value is a [time duration string](/reference/time-durations.md) and must be greater than zero. The table option overrides the engine-wide `region_engine.mito.auto_flush_interval`.

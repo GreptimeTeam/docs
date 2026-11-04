@@ -188,6 +188,7 @@ The Prometheus-compatible OTLP metrics data model is mapped to the GreptimeDB da
 
 - The name of the Metric will be used as the name of the GreptimeDB table, and the table will be automatically created if it does not exist.
 - Only selected resource attributes are kept by default. See above for details and configuration options. Attributes are used as tag columns in the GreptimeDB table.
+- The `service.name` and `service.instance.id` resource attributes are also written as the `job` and `instance` labels. When `service.namespace` is nonempty, `job` is `<service.namespace>/<service.name>`; otherwise, `job` is the value of `service.name`. A resource without `service.name` gets no `job` label, and a resource without `service.instance.id` gets no `instance` label.
 - You can refer to the [Prometheus Data Model](./prometheus.md#data-model) for other details.
 - Cumulative `ExponentialHistogram` metrics are supported by default via OTLP/HTTP.
   Each point is stored as a native histogram in a Struct field named

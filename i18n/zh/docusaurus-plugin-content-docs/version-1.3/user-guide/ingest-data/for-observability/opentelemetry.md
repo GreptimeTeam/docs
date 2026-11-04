@@ -188,6 +188,7 @@ GreptimeDB 的 `increase()` 会对区间值求和，`rate()` 则将该总和除�
 
 - Metric 的名称将被作为 GreptimeDB 表的名称，当表不存在时会自动创建。
 - 只有特定 resource 属性会被默认保留。详情和配置选项见上一小节。属性在 GreptimeDB 表中会被作为 tag 列。
+- resource 属性 `service.name` 和 `service.instance.id` 还会分别写入 `job` 和 `instance` 标签。`service.namespace` 非空时，`job` 的值为 `<service.namespace>/<service.name>`，否则为 `service.name` 的值。resource 中没有 `service.name` 时不写入 `job` 标签，没有 `service.instance.id` 时不写入 `instance` 标签。
 - 参考 [Prometheus 数据模型](./prometheus.md#数据模型)了解更多数据模型信息。
 - 默认支持通过 OTLP/HTTP 写入累积（cumulative temporality）的 `ExponentialHistogram` 指标。
   每个数据点以原生直方图的形式存储在 Struct 字段中，字段名默认为 `greptime_native_histogram`，

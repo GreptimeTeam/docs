@@ -15,25 +15,23 @@ AI 函数根据自然语言提示词评估文本。SQL 函数名不绑定特定�
 | [`ai_score(text, prompt, criteria)`](./functions.md#ai_score) | 根据有序等级对文本评分 | 包含 `score`、`confidence` 和 `probabilities` 的 JSONB 对象 |
 
 :::warning 实验功能的可用范围
-这些函数处于实验阶段，后续可能发生变化，需要使用包含
-[GreptimeDB PR #9300](https://github.com/GreptimeTeam/greptimedb/pull/9300) 的构建。
+这些函数处于实验阶段，后续可能发生变化，从 GreptimeDB v1.3.0 开始提供。
 它们替代了尚未发布的 `jev(text, statement, threshold)` API，`jev` 不再注册。
 需要布尔过滤时，请使用 `ai_match(text, prompt) >= threshold`。
 :::
 
 ## 启用 API 调用
 
-**默认启用的 Cargo feature `ai_functions`** 会编译并注册这三个函数，但不会自动允许调用外部 API。
+**默认启用的 Cargo feature `ai_functions`** 会编译并注册这三个函数，Linux、macOS 和 Windows 的发布版二进制均包含该 feature，但不会自动允许调用外部 API。
 需要在 GreptimeDB 进程中单独启用 Jev 后端：
 
 ```shell
 export GREPTIMEDB_EXPERIMENTAL_JEV=true
 export JEV_API_KEY='<your TypeSafe API key>'
-cargo run -p cmd -- standalone start
+./greptime standalone start
 ```
 
-在包含该实现的 GreptimeDB 源码目录中运行上述命令。
-如果需要显式启用 Cargo feature，可在 `--` 之前添加 `--features ai_functions`。
+从源码构建时如果使用了 `--no-default-features`，需要通过 `--features ai_functions` 显式启用。
 虽然 SQL 函数名不再绑定后端，运行时环境变量仍保留 Jev 名称。
 
 | 环境变量 | 默认值 | 说明 |
