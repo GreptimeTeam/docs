@@ -55,17 +55,19 @@ without an additional GreptimeDB configuration option. Remote Write 1.0 requests
 containing native histograms are rejected.
 
 Prometheus uses Remote Write 1.0 by default. To send native histograms that Prometheus
-has collected, select Remote Write 2.0 in `prometheus.yml`:
+has collected, configure Remote Write 2.0 and enable native histogram sending in
+`prometheus.yml`:
 
 ```yaml
 remote_write:
 - url: http://localhost:4000/v1/prometheus/write?db=public
   protobuf_message: io.prometheus.write.v2.Request
+  send_native_histograms: true
 ```
 
-With this message format, Prometheus always sends native histograms; setting
-`send_native_histograms` is unnecessary. See the
-[Prometheus remote write configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write).
+Set `send_native_histograms: true` explicitly. Selecting the v2 message format alone
+does not enable native histogram sending. See the
+[Prometheus native histogram documentation](https://prometheus.io/docs/specs/native_histograms/#remote-write--remote-read).
 
 Query native histograms with GreptimeDB's PromQL API. Prometheus Remote Read
 currently returns scalar samples only and does not return native histograms.

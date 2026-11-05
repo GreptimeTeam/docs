@@ -55,16 +55,17 @@ GreptimeDB 默认支持通过 Prometheus Remote Write 2.0 写入原生直方图�
 包含原生直方图的 Remote Write 1.0 请求会被拒绝。
 
 Prometheus 默认使用 Remote Write 1.0。要发送 Prometheus 已采集的原生直方图，
-请在 `prometheus.yml` 中选择 Remote Write 2.0：
+请在 `prometheus.yml` 中选择 Remote Write 2.0 并启用原生直方图发送：
 
 ```yaml
 remote_write:
 - url: http://localhost:4000/v1/prometheus/write?db=public
   protobuf_message: io.prometheus.write.v2.Request
+  send_native_histograms: true
 ```
 
-使用此消息格式时，Prometheus 始终发送原生直方图，无需设置 `send_native_histograms`。
-详见 [Prometheus 远程写入配置](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write)。
+请显式设置 `send_native_histograms: true`，仅选择 v2 消息格式不会启用原生直方图发送。
+详见 [Prometheus 原生直方图文档](https://prometheus.io/docs/specs/native_histograms/#remote-write--remote-read)。
 
 请使用 GreptimeDB 的 PromQL API 查询原生直方图。Prometheus Remote Read 目前仅返回标量样本，不返回原生直方图。
 
