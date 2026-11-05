@@ -292,7 +292,7 @@ WITH (FORMAT = 'parquet');
 
 ## Local/server-side Parquet path
 
-`COPY TO` writes on the GreptimeDB server node, not the agent/client machine.
+`COPY TO` writes on the GreptimeDB server node, not the agent/client machine. On a v1.3 or later self-monitoring instance, the path must be inside `storage.copy_root`; see the path rule in [`export-copy.md`](export-copy.md).
 
 ```sql
 COPY (

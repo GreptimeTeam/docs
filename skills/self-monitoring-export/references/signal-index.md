@@ -52,11 +52,10 @@ Log keywords:
 - `Leader(Writable)`
 - `Partition expr version mismatch`
 - `write reject`
-- `handle write`
 - `bulk insert`
 - `Failed to open region`
 - `Failed to catchup region`
-- `Region not found, ignore it`
+- `Region not found`
 - `Failed to set region to ready`
 - `Failed to insert data into flownode`
 - `Failed to create table`
@@ -65,7 +64,7 @@ Log keywords:
 - `Failed to flush region`
 - `Flush semaphore closed, flushing inline`
 - `Failed to trigger flush`
-- `Failed to flush regions in topic`
+- `Failed to handle regions in topic`
 
 Metrics:
 
@@ -92,7 +91,7 @@ Source modules:
 - `src/operator/src/insert.rs`
 - `src/operator/src/bulk_insert.rs`
 - `src/servers/src/grpc/`
-- `src/servers/src/pending_rows_batcher.rs`
+- `src/servers/src/batcher/`
 - `src/datanode/`
 - `src/datanode/src/region_server.rs`
 - `src/mito2/`
@@ -108,7 +107,6 @@ WHERE (
   lower(message) LIKE '%failed to handle request%'
   OR lower(message) LIKE '%failed to insert data%'
   OR lower(message) LIKE '%bulk insert%'
-  OR lower(message) LIKE '%handle write%'
   OR lower(err) LIKE '%retry later%'
   OR lower(err) LIKE '%leader%'
   OR lower(err) LIKE '%partition expr version mismatch%'
@@ -259,7 +257,7 @@ Log keywords:
 - `Failed to check maintenance mode`
 - `Failed to downgrade region leader`
 - `Failed to upgrade region`
-- `Failed to submit region migration procedure`
+- `Failed to wait region migration procedure`
 - `Failed to execute region failover`
 - `Deallocating regions for repartition`
 - `Failed to persist region checkpoints`
@@ -444,9 +442,8 @@ Log keywords:
 - `Applying ... to region`
 - `Successfully update manifest version`
 - `Skipping compaction for region ... in staging mode`
-- `manually compaction will be re-scheduled`
-- `Failed to continue pending manual compaction`
-- `Failed to schedule next compaction`
+- `manual compaction will be re-scheduled`
+- `Failed to schedule compaction`
 - `Failed to create RegionOptions from map`
 
 Metrics:
@@ -535,7 +532,6 @@ Log keywords:
 - `Failed to decode OTLP request`
 - `failed to widen trace columns before insert`
 - `failed to coerce trace column`
-- `Trace ingest failure message limit reached`
 - `Failed to ingest metrics from otel-arrow`
 - `failed to insert pipeline`
 - `failed to delete pipeline`
@@ -546,7 +542,6 @@ Log keywords:
 - `failed to parse loki labels`
 - `Native histograms are not supported yet, data ignored`
 - `Find metric name matchers`
-- `Updated promql`
 - `Failed to handle mysql query`
 - `Failed to handle postgres query`
 - `Failed to get trace`
@@ -647,16 +642,13 @@ Log keywords:
 - `Failed to recover flows`
 - `Failed to check flow consistent`
 - `Failed to execute query for flow`
-- `No frontend is available`
+- `No available frontend`
 - `flownode heartbeat`
-- `Flow missing`
 - `flush flow`
 
 Metrics:
 
 - `greptime_flow_task_count`
-- `greptime_flow_input_buf_size`
-- `greptime_flow_insert_elapsed`
 - `greptime_flow_batching_engine_query_time_secs`
 - `greptime_flow_batching_engine_slow_query_secs`
 - `greptime_flow_batching_engine_query_window_cnt`
@@ -665,7 +657,6 @@ Metrics:
 - `greptime_flow_batching_error_count`
 - `greptime_flow_processed_rows`
 - `greptime_flow_processing_time`
-- `greptime_flow_errors`
 - `greptime_meta_procedure_create_flow`
 - `greptime_meta_procedure_drop_flow`
 
@@ -685,7 +676,7 @@ WHERE (
   OR lower(message) LIKE '%failed to handle flow request%'
   OR lower(message) LIKE '%failed to recover flows%'
   OR lower(message) LIKE '%failed to check flow consistent%'
-  OR lower(message) LIKE '%no frontend is available%'
+  OR lower(message) LIKE '%no available frontend%'
   OR lower(target) LIKE '%flow%'
   OR lower(target) LIKE '%flownode%'
 )

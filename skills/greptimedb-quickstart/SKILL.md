@@ -266,8 +266,12 @@ config file location depends on the host:
 ```
 
 Defaults: connects to `localhost:4002` (MySQL protocol) with database
-`public`, no password. For non-default credentials, ports, HTTP server mode,
-or data-masking options, see the project README at
+`public`, no password. `execute_sql` is read-only by default and rejects
+`CREATE`, `ALTER`, `INSERT`, `DROP`, and other writes. Add `--allow-write true`
+to `args` (or set `GREPTIMEDB_ALLOW_WRITE=true`) only when the user wants the
+agent to run writes, for example on a local development instance. For
+non-default credentials, ports, HTTP server mode, or data-masking options, see
+the project README at
 <https://github.com/GreptimeTeam/greptimedb-mcp-server>.
 
 ### Query modes (without MCP)

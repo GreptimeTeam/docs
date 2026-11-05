@@ -56,7 +56,10 @@ works.
 Run an end-to-end write/read to exercise the real write path (object store + WAL), not just
 process liveness (see access methods above). Use a unique table name for each run, replace it
 consistently in every statement, and only drop the table created by this smoke test. For
-example, append the current timestamp: `_health_check_YYYYMMDD_HHMMSS`.
+example, append the current timestamp: `_health_check_YYYYMMDD_HHMMSS`. MCP `execute_sql`
+rejects these statements unless the server was started with `--allow-write true` (or
+`GREPTIMEDB_ALLOW_WRITE=true`); otherwise run them through a MySQL/PostgreSQL client or the
+Dashboard, or give them to the user to run.
 
 ```sql
 CREATE TABLE _health_check_20260706_123000 (
