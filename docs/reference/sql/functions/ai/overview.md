@@ -15,8 +15,8 @@ provider-neutral; the current backend is [TypeSafe's Jev model](https://docs.typ
 | [`ai_score(text, prompt, criteria)`](./functions.md#ai_score) | Rate text against ordered levels | JSONB object with `score`, `confidence`, and `probabilities` |
 
 :::warning Experimental availability
-These functions are experimental and may change. They are available in builds
-containing [GreptimeDB PR #9300](https://github.com/GreptimeTeam/greptimedb/pull/9300).
+These functions are experimental and may change. They are available since
+GreptimeDB v1.3.0.
 They replace the unreleased `jev(text, statement, threshold)` API; `jev` is no
 longer registered. Use `ai_match(text, prompt) >= threshold` for Boolean filtering.
 :::
@@ -24,17 +24,18 @@ longer registered. Use `ai_match(text, prompt) >= threshold` for Boolean filteri
 ## Enable API evaluation
 
 The **default-enabled Cargo feature `ai_functions`** compiles and registers all
-three functions. It does not automatically permit external API calls. Enable
-the Jev backend separately in the GreptimeDB process:
+three functions. Linux, macOS, and Windows release binaries include this feature.
+It does not automatically permit external API calls. Enable the Jev backend
+separately in the GreptimeDB process:
 
 ```shell
 export GREPTIMEDB_EXPERIMENTAL_JEV=true
 export JEV_API_KEY='<your TypeSafe API key>'
-cargo run -p cmd -- standalone start
+./greptime standalone start
 ```
 
-Run this command from a GreptimeDB source checkout containing the implementation.
-To enable the Cargo feature explicitly, use `--features ai_functions` before `--`.
+Builds from source that use `--no-default-features` must enable
+`--features ai_functions` explicitly.
 The runtime variables retain their Jev names even though the SQL names are now
 provider-neutral.
 

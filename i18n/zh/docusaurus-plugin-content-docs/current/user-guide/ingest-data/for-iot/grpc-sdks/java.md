@@ -284,7 +284,7 @@ Bulk 写入使用 Arrow Flight `DoPut`。有关通过 `insert_skip_wal` hint 禁
 1. **需要手动创建表**：Bulk API **不会**自动创建表。你必须事先创建表，使用以下方法之一：
    - 常规写入 API（支持自动创建表），或
    - SQL DDL 语句（CREATE TABLE）
-2. **Schema 匹配**：Bulk API 中的表模板必须与现有表结构完全匹配。
+2. **Schema 匹配**：表模板中的列必须符合目标表的列类型、时间索引和非空约束。服务端默认将表中不存在的模板列添加为字段列，详见 [Bulk Write schema 更新](/user-guide/protocols/grpc.md#bulk-write-schema-更新)。
 
 此 API 仅支持每个流写入一个表，并处理大数据量（每次写入可高达 200MB+），具有自适应流量控制。性能优势包括：
 - 使用 Arrow 缓冲区的堆外内存管理减少不必要的内置拷贝

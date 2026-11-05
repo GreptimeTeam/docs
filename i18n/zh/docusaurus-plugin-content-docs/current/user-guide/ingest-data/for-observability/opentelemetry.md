@@ -185,6 +185,7 @@ GreptimeDB 保存原始区间值，并添加 `otlp_aggregation_temporality="delt
 
 - Metric 的名称将被作为 GreptimeDB 表的名称，当表不存在时会自动创建。
 - 只有特定 resource 属性会被默认保留。详情和配置选项见上一小节。属性在 GreptimeDB 表中会被作为 tag 列。
+- resource 属性 `service.name` 和 `service.instance.id` 还会分别写入 `job` 和 `instance` 标签。`service.namespace` 非空时，`job` 的值为 `<service.namespace>/<service.name>`，否则为 `service.name` 的值。resource 中没有 `service.name` 时不写入 `job` 标签，没有 `service.instance.id` 时不写入 `instance` 标签。
 - 参考 [Prometheus 数据模型](./prometheus.md#数据模型)了解更多数据模型信息。
 - 显式 `Histogram` 数据点存储为 `_bucket`、`_sum` 和 `_count` 序列。
   每个数据点内的桶计数会转换为前缀和，增量数据点也遵循此规则。

@@ -68,19 +68,17 @@ It assigns files to be compacted into different time windows. For each window, T
 For window assignment, SST files may span multiple time windows. TWCS assigns SSTs based on their maximum timestamps to ensure they are not affected by stale data. In time-series workloads, out-of-order writes are infrequent, and even when they occur, recent data's query performance is more critical than that of stale data.
 
 
+TWCS uses separate compaction triggers for the active window and inactive windows. The active window is the window that contains the most recently flushed data. All other windows are inactive. The active window changes only when newer data is flushed into another window, so it remains active after writes stop.
+
 Common TWCS table options include:
-- `trigger_file_num`: number of files in a specific time window to trigger a compaction (default 4).
+- `active_window.trigger_file_num`: number of L0 files in the active window to trigger a compaction (default 4). `trigger_file_num` is an alias of this option.
+- `active_window.l1_merge_trigger`: number of L1 files in the active window to trigger a compaction of those L1 files (default 16). The value must be at least 2.
+- `inactive_window.trigger_file_num`: number of files in an inactive window to trigger a compaction (default 2).
+- `inactive_window.l1_merge_trigger`: number of L1 files in an inactive window to trigger a compaction (default 8). The value must be at least 2.
 - `time_window`: time window size for TWCS compaction.
 - `max_output_file_size`: max allowed compaction output file size (default 512MB).
 
-
-Following diagrams show how files in a window get compacted when `trigger_file_num = 3`:
-- In A, there're two SST files `[0, 3]` and `[5, 6, 9]` but there's only one sorted run since those two files have disjoint time ranges. 
-- In B, a new SST file `[1, 4]` is flushed therefore forms two sorted runs that exceeds the threshold. Then `[0, 3]` and `[1, 4]` are merged to `[0, 1, 3, 4]`.
-- In C, a new SST file `[9, 10]` is flushed, and it will be merged with `[5, 6, 10]` to create `[5, 6, 9, 10]`, and after compaction the files will be like D.
-- In E, a new file `[11, 12]` is flushed. Though there's still only one sorted run, but the number of files reaches `trigger_file_num`(3), so `[5, 6, 9, 10]` will be merged with `[11, 12]` to form `[5, 6, 9, 10, 11, 12]`.
-
-![compaction-trigger-file-num.png](/compaction-trigger-file-num.png)
+Specifying `trigger_file_num` and `active_window.trigger_file_num` with different values returns an error. `SHOW CREATE TABLE` and `SHOW CREATE DATABASE` display the active-window trigger as `compaction.twcs.trigger_file_num`.
 
 ### Specifying TWCS parameters
 

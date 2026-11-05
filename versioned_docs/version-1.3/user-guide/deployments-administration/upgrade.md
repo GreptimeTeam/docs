@@ -88,6 +88,8 @@ v1.3 Frontend write retries depend on per-entry Datanode results. Mixing them wi
 | PostgreSQL result metadata reports OID aliases such as `REGCLASS` and `REGTYPE`. | Check client handling of result types. |
 | `json_get*` and JSON2 field access return errors for invalid JSONPath expressions. | Use `$` or an empty string for the root; replace invalid paths such as `.` and `$.`. `json_path_match` still returns NULL for invalid paths. |
 | SQL expression depth above `128` fails planning. | Simplify deeply nested generated queries. |
+| PromQL vector matching derives result labels from `on`, `ignoring`, `group_left`, and `group_right`. A query fails when a match group has more than one series on the side that must be unique, or when matching produces duplicate result series. Comparison operators without `bool` keep `__name__`, except one-to-one `on(...)` matches that do not list `__name__`. | Review vector-matching queries, recording rules, and alert label templates. |
+| OTLP metrics with a nonempty `service.namespace` use `job="<service.namespace>/<service.name>"` instead of the `service.name` value. This also applies when `otlp.experimental_enable_resource_info` is disabled. Existing rows are not relabeled. | Update dashboard selectors and alert rules. Queries that span the upgrade may need to match both label values. |
 
 #### Write requests and JSON2
 
@@ -98,6 +100,10 @@ Compressed gRPC requests reserve `max_recv_message_size` before decoding. Size c
 JSON2 type hints no longer accept `nullable` or `default`. Hinted fields are nullable, and missing values return NULL.
 Supported types are `STRING`, `BIGINT`, `BIGINT UNSIGNED`, `DOUBLE`, and `BOOLEAN`, with aliases `INT64`, `UINT64`, and `FLOAT64`. Remove the old options and replace unsupported types.
 JSON2 uses flat SSTs; CREATE and ALTER reject incompatible SST formats.
+
+Bulk inserts, including Arrow Flight `DoPut`, are checked against the region schema before WAL persistence. Batches with mismatched Arrow types, nulls in non-nullable columns, or duplicate or unknown columns are rejected.
+Regions in the primary-key SST format previously converted some representations, such as `LargeUtf8` for a string field, `LargeBinary` for a binary field, or a timestamp with a time zone. These batches are now rejected. Send each column with the region's declared Arrow type.
+Bulk inserts into JSON2 columns are not supported and are rejected before WAL persistence.
 
 #### Flow mirror write limits
 
@@ -532,6 +538,7 @@ Before upgrading to your target version, complete the following checklist:
 - [ ] If upgrading to v1.0, update metric engine configuration if needed (`sparse_primary_key_encoding`)
 - [ ] If upgrading to v1.2, remove the now-ignored `sparse_primary_key_encoding` and `experimental_sparse_primary_key_encoding` overrides
 - [ ] If upgrading to v1.3, review `scan_memory_limit`, `scan_memory_mode`, and `scan_memory_on_exhausted` as described in [Scan memory accounting changes](#scan-memory-accounting-changes)
+- [ ] If upgrading to v1.3, move `prom_validation_mode` from `[http]` to `[prom_store]`
 - [ ] Update pipeline configurations (remove `flatten_json_object`, add `max_nested_levels` if needed)
 - [ ] If upgrading to v1.2 standalone deployments, set `storage.copy_root` if the default sandbox path does not fit your workflow
 
@@ -540,6 +547,7 @@ Before upgrading to your target version, complete the following checklist:
 - [ ] If upgrading to v1.2, rename PromQL `holt_winters(...)` calls to `double_exponential_smoothing(...)`
 - [ ] If upgrading to v1.2, rewrite PromQL queries that use `fill`, `fill_left`, or `fill_right`
 - [ ] If upgrading to v1.2, update pipelines that relied on integer wraparound and set an explicit `on_failure` policy when needed
+- [ ] If upgrading to v1.3, update dashboard selectors and alert rules that match the OTLP `job` label for resources with `service.namespace`
 - [ ] Update SQL queries with ordered-set aggregates to use `WITHIN GROUP (ORDER BY ...)`
 - [ ] Update SQL scripts using `---` comments to use `--`
 - [ ] Update queries that access nested JSON fields to use dot notation
@@ -557,6 +565,7 @@ Before upgrading to your target version, complete the following checklist:
   - Nested JSON data access
   - Metric queries (if affected by TSID change)
 - [ ] Plan for rolling upgrade or maintenance window
+- [ ] If upgrading to v1.3, keep Metasrv maintenance mode enabled during the rollout and upgrade all Datanodes before Frontends, as described in [Cluster upgrade and rollback order](#cluster-upgrade-and-rollback-order)
 - [ ] Prepare rollback plan in case of issues
 - [ ] Monitor system behavior after upgrade
 

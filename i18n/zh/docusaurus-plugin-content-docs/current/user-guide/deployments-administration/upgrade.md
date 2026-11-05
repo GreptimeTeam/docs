@@ -83,6 +83,8 @@ v1.3 Frontend 的写入重试依赖 Datanode 返回逐条写入结果，与旧 D
 | PostgreSQL 结果元数据返回 `REGCLASS`、`REGTYPE` 等 OID 别名。 | 检查客户端对结果类型的处理。 |
 | `json_get*` 和 JSON2 字段访问遇到非法 JSONPath 时返回错误。 | 根路径可使用 `$` 或空字符串；替换 `.`、`$.` 等非法路径。`json_path_match` 对非法路径仍返回 NULL。 |
 | SQL 表达式深度超过 `128` 时规划失败。 | 简化深度嵌套的生成式查询。 |
+| PromQL 向量匹配根据 `on`、`ignoring`、`group_left` 和 `group_right` 推导结果标签。若某个匹配组在要求唯一的一侧有多条序列，或匹配后产生重复的结果序列，查询会失败。不带 `bool` 的比较运算会保留 `__name__`，但未列出 `__name__` 的一对一 `on(...)` 匹配除外。 | 检查使用向量匹配的查询、recording rule 和告警标签模板。 |
+| `service.namespace` 非空的 OTLP 指标使用 `job="<service.namespace>/<service.name>"`，不再只使用 `service.name` 的值。即使禁用 `otlp.experimental_enable_resource_info`，该变化同样生效。已有数据不会重新打标签。 | 更新仪表盘选择器和告警规则。跨越升级时间点的查询可能需要同时匹配新旧两种标签值。 |
 
 #### 写入请求和 JSON2
 
@@ -93,6 +95,10 @@ Prometheus Remote Read、Remote Write 和 Loki protobuf/Snappy push 请求的解
 JSON2 type hint 不再接受 `nullable` 和 `default`。指定类型的字段均可为 NULL，缺失值返回 NULL。
 支持的类型为 `STRING`、`BIGINT`、`BIGINT UNSIGNED`、`DOUBLE`、`BOOLEAN`，以及别名 `INT64`、`UINT64`、`FLOAT64`。移除旧选项，并替换不受支持的类型。
 JSON2 使用 flat SST；CREATE 和 ALTER 拒绝不兼容的 SST 格式。
+
+Bulk 写入（包括 Arrow Flight `DoPut`）在写入 WAL 前按 region schema 校验。Arrow 类型不匹配、非空列含 NULL、列重复或列不存在的批次会被拒绝。
+主键格式 SST 的 region 以前会转换部分数据表示，例如字符串字段使用 `LargeUtf8`、二进制字段使用 `LargeBinary`、时间戳带时区等，这类批次现在会被拒绝。每列都应使用 region 声明的 Arrow 类型发送。
+Bulk 写入不支持 JSON2 列，这类批次在写入 WAL 前被拒绝。
 
 #### Flow 镜像写入限制
 
@@ -506,6 +512,7 @@ SELECT * FROM table;
 - [ ] 如果升级到 v1.0，按需更新 metric engine 配置（`sparse_primary_key_encoding`）
 - [ ] 如果升级到 v1.2，移除已被忽略的 `sparse_primary_key_encoding` 和 `experimental_sparse_primary_key_encoding` 覆盖项
 - [ ] 如果升级到 v1.3，按照[扫描内存计量变更](#扫描内存计量变更)检查 `scan_memory_limit`、`scan_memory_mode` 和 `scan_memory_on_exhausted`
+- [ ] 如果升级到 v1.3，将 `prom_validation_mode` 从 `[http]` 移到 `[prom_store]`
 - [ ] 更新 pipeline 配置（移除 `flatten_json_object`，如需要添加 `max_nested_levels`）
 - [ ] 如果升级到 v1.2 且为单机部署，在默认沙箱路径不适用时设置 `storage.copy_root`
 
@@ -514,6 +521,7 @@ SELECT * FROM table;
 - [ ] 如果升级到 v1.2，把 PromQL 中的 `holt_winters(...)` 调用改名为 `double_exponential_smoothing(...)`
 - [ ] 如果升级到 v1.2，重写使用 `fill`、`fill_left` 或 `fill_right` 的 PromQL 查询
 - [ ] 如果升级到 v1.2，更新依赖整数回绕的 pipeline，并在需要时显式设置 `on_failure` 策略
+- [ ] 如果升级到 v1.3，对设置了 `service.namespace` 的 OTLP 资源，更新匹配 `job` 标签的 dashboard 选择器和告警规则
 - [ ] 更新使用有序集聚合的 SQL 查询以使用 `WITHIN GROUP (ORDER BY ...)`
 - [ ] 更新使用 `---` 注释的 SQL 脚本改用 `--`
 - [ ] 更新访问嵌套 JSON 字段的查询以使用点号表示法
@@ -531,6 +539,7 @@ SELECT * FROM table;
   - 嵌套 JSON 数据访问
   - 指标查询（如果受 TSID 变更影响）
 - [ ] 规划滚动升级或维护窗口
+- [ ] 如果升级到 v1.3，在升级期间保持 Metasrv 维护模式开启，并先升级全部 Datanode 再升级 Frontend，详见[集群升级和回滚顺序](#集群升级和回滚顺序)
 - [ ] 准备回滚计划以防出现问题
 - [ ] 升级后监控系统行为
 
