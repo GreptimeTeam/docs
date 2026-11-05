@@ -25,7 +25,7 @@ description: 监控 GreptimeDB 集群的关键指标，包括 CPU、内存、磁
 | `sum by (instance, pod, region_id) (rate(greptime_mito_region_query_scanned_bytes{instance=~"$frontend"}[$__rate_interval]))` | Region 维度查询扫描字节数 | 启用 `logging.enable_per_region_metrics` 后用于分析读负载热点；该指标基数较高，不建议直接作为大范围告警指标 |
 | `sum by(instance, pod, path, method, code) (rate(greptime_servers_http_requests_elapsed_count{path!~"/health\|/metrics"}[$__rate_interval]))` | HTTP 请求数和返回的响应码 | 响应码 200 的请求数量持续 n 分钟低于阈值或者响应码非 200 的请求数量持续 n 分钟大于正常阈值 |
 | `sum by (instance, pod) (rate(greptime_mito_write_rows_total{instance=~"$datanode"}[$__rate_interval]))` | 存储引擎写入行数 | 持续 n 分钟低于正常阈值 |
-| `up{job="greptimedb-instance"}` | 实例存活状态 | 等于 0 超过 1 分钟 |
+| `up{job="greptimedb-instance"}` | 实例存活状态。将 `greptimedb-instance` 替换为抓取配置中的 job 名称。 | 等于 0 超过 1 分钟 |
 | `sum by (instance) (changes(process_start_time_seconds[5m]))` | 实例重启 | 最近 5 分钟内大于 0 |
 | `sum by (instance) (rate(greptime_servers_http_requests_elapsed_count{path=~"/v1/.*", code!~"2.."}[5m]))` | HTTP 非 2xx 响应 | 大于 0 超过 5 分钟 |
 | `histogram_quantile(0.99, sum by (le, instance) (rate(greptime_servers_http_requests_elapsed_bucket{path=~"/v1/.*"}[5m])))` | HTTP 请求延迟 | p99 大于 5s 超过 5 分钟 |
@@ -41,7 +41,7 @@ description: 监控 GreptimeDB 集群的关键指标，包括 CPU、内存、磁
 | `sum by (instance) (increase(greptime_trigger_send_alert_failure_count[5m]))` | Trigger 告警发送失败 | 最近 5 分钟内大于 0 |
 | `sum by (instance) (increase(greptime_trigger_save_alert_record_failure_count[5m]))` | Trigger 告警记录保存失败 | 最近 5 分钟内大于 0 |
 | `sum by (instance) (increase(greptime_pending_rows_flush_failures[5m]) + increase(greptime_pending_rows_flush_dropped_rows[5m]))` | 缓冲数据丢失 | 最近 5 分钟内大于 0 |
-| `sum by (instance) (greptime_prom_store_pending_rows)` | Prometheus remote-write 批处理缓冲区大小 | 接近 `max_batch_rows`（默认 100000）超过 5 分钟 |
+| `sum by (instance) (greptime_prom_store_pending_rows)` | Prometheus remote-write 批处理中待写入的行数（所有批次之和） | 在多个 flush 周期内持续增长，或持续高于按业务负载测得的基线 |
 
 Pod 维度还建议配置磁盘告警，当磁盘水位超过某个阈值后进行告警。
 此外，也可以根据运维[关键日志](key-logs.md)中所列举的错误日志中的关键字监控以下事件：
