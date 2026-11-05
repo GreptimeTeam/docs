@@ -33,7 +33,17 @@ jobs:
         with:
           commit-message: "version docs to ${{ github.event.inputs.version }}"
           title: "chore: bump version ${{ github.event.inputs.version }}"
-          body: "This PR updates the docs to version ${{ github.event.inputs.version }}."
+          body: |
+            This PR updates the docs to version ${{ github.event.inputs.version }}.
+
+            Before merging, complete the upgrade-guidance review in CONTRIBUTING.md:
+
+            - [ ] Check Nightly upgrade entries against the target GreptimeDB release and record the release evidence below.
+            - [ ] Move applicable entries into release-specific sections in both Nightly and versioned English/Chinese guides; update Nightly-only wording and related links. State the first applicable patch release for backports.
+            - [ ] Keep unreleased features in Nightly only and exclude them from the target versioned guide.
+            - [ ] Preserve published anchors and pass both strict locale link checks after updating the guides.
+
+            Review outcome: <!-- List entries moved, retained as unreleased, or excluded, with release evidence; explicitly state if no changes are needed. -->
           branch: "version-docs-${{ github.event.inputs.version }}"
           base: main
           delete-branch: true

@@ -77,6 +77,12 @@ must not touch lockfiles.
 - Edit `skills/<name>/SKILL.md`, not generated files under `static/skills/` or
   `static/SKILL.md`. Do not edit `build/`, `.docusaurus/`, or JavaScript
   transpiled from tracked TypeScript.
+- When cutting a documentation version, promoting it to a stable release, or
+  backporting a feature, review the Nightly upgrade guide against the target
+  GreptimeDB release. Move applicable unreleased entries into release-specific
+  sections in both Nightly and versioned English/Chinese guides; keep features
+  absent from the release out of its guide. Record the first applicable patch
+  release for backports. Follow the release review checklist in CONTRIBUTING.md.
 - Run `pnpm backport:dry` before `pnpm backport` and inspect the result. The
   script cannot decide whether a change is valid for a released version.
 

@@ -107,6 +107,36 @@ creating a version, keep `versions.json`, `versioned_docs/`,
 `versioned_sidebars/`, the matching Chinese directory and sidebar JSON, and
 `variables/variables-<version>.ts` consistent.
 
+## Review upgrade guidance when releasing or backporting
+
+Run this review when cutting a documentation version, promoting a pre-release
+to stable, or documenting a feature backported from Nightly. Copying the
+Nightly tree or changing the version variable does not verify release coverage.
+
+- [ ] Read the English Nightly upgrade guide at
+  `docs/user-guide/deployments-administration/upgrade.md` and its Chinese
+  counterpart under `i18n/zh/docusaurus-plugin-content-docs/current/`, especially
+  entries under "Unreleased Nightly" or with Nightly-only wording.
+- [ ] Verify each entry against the target GreptimeDB release tag, release-branch
+  implementation, or authoritative release notes. A merge to `main` does not
+  prove inclusion in a stable release. Record the evidence in the PR description.
+- [ ] For included changes, move the entry into the appropriate release-specific
+  upgrade section in **both the Nightly guide and the target versioned guide**,
+  in English and Chinese. Replace Nightly-only wording with the applicable
+  release and update related configuration references and links. For a backport,
+  state the first patch release that includes the change; do not imply it applies
+  to earlier patches covered by the same documentation version.
+- [ ] Leave changes that are not included under Nightly, and remove any such
+  entries copied into the target versioned guide. If inclusion is uncertain,
+  resolve it before publishing the release guidance rather than guessing.
+- [ ] Preserve published heading anchors when moving or renaming sections. Remove
+  an empty unreleased section only after handling its published anchors and
+  inbound links according to the links-and-anchors guidance below.
+- [ ] Review the final English and Chinese guides together and run both strict
+  link checks, which also build the affected locales. In the PR description,
+  summarize which entries were moved, retained as unreleased, or excluded from
+  the target version; explicitly note if no changes were needed.
+
 ## Reference snippets
 
 Add an English Nightly category to `sidebars.ts`:
@@ -232,6 +262,8 @@ pnpm backport
 Run the dry run first and inspect the result. The script cannot determine
 whether a change is valid for the target release. Use `pnpm backport --help`
 for additional options.
+Apply the upgrade-guidance review above even when the backported diff does not
+include the upgrade guide itself.
 
 ## Before opening a pull request
 
