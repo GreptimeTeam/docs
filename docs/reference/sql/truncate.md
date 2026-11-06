@@ -10,8 +10,10 @@ description: Describes the TRUNCATE TABLE statement for efficiently removing all
 ## Syntax
 
 ```sql
-TRUNCATE TABLE table_name [ WITH (option = value, ...) ]
+TRUNCATE [TABLE] table_name [ WITH (WAIT = ..., TIMEOUT = '...') ]
 ```
+
+`WAIT` and `TIMEOUT` are both optional and can be specified independently.
 
 - `table_name`: The name of the table to truncate.
 - `WAIT`: Whether to wait for completion. Defaults to `true`. When `true`, the statement waits for completion and reports zero affected rows. When `false`, it returns a result set with a single `Procedure ID` column after successful submission, and the operation continues in the background. Use the returned `procedure_id` with `ADMIN procedure_state(procedure_id)` to check its status (see [ADMIN](/reference/sql/admin.md)).

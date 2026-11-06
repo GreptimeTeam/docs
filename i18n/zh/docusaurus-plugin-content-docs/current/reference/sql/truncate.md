@@ -10,8 +10,10 @@ description: 介绍保留表定义并高效删除全部数据行的 `TRUNCATE TA
 ## 语法
 
 ```sql
-TRUNCATE TABLE table_name [ WITH (option = value, ...) ]
+TRUNCATE [TABLE] table_name [ WITH (WAIT = ..., TIMEOUT = '...') ]
 ```
+
+`WAIT` 和 `TIMEOUT` 均为可选项，可以单独设置。
 
 - `table_name`：要清空的表名。
 - `WAIT`：是否等待操作完成，默认为 `true`。设为 `true` 时，语句会等待操作完成，并报告受影响行数为 0。设为 `false` 时，提交成功后会返回仅包含 `Procedure ID` 列的结果集，操作则在后台继续执行。可将返回的 `procedure_id` 传入 `ADMIN procedure_state(procedure_id)` 查询状态（参见 [ADMIN](/reference/sql/admin.md)）。
