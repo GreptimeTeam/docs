@@ -7,14 +7,19 @@ description: Describes the TRUNCATE TABLE statement for efficiently removing all
 
 `TRUNCATE TABLE` removes all rows from a table while retaining its definition. It is much more efficient than `DELETE FROM table`.
 
-By default, `TRUNCATE TABLE` waits for the operation to complete and times out after 60 seconds. Use `WITH` to set the `wait` and `timeout` options:
+## Syntax
 
 ```sql
-TRUNCATE TABLE monitor WITH (wait = false, timeout = '30s');
+TRUNCATE TABLE table_name [ WITH (option = value, ...) ]
 ```
 
-- `wait` defaults to `true`. When `true`, the statement waits for completion and returns `Affected Rows: 0`. When `false`, it returns a Procedure ID after the operation is submitted successfully; the operation continues in the background.
-- `timeout` sets the time limit for metadata checks, submission, and, when `wait` is `true`, waiting for completion. It defaults to `60s`. A timeout returns an error; if the operation has already been submitted, it is not canceled and continues in the background.
+- `table_name`: The name of the table to truncate.
+- `WAIT`: Whether to wait for completion. Defaults to `true`. When `true`, the statement waits for completion and reports zero affected rows. When `false`, it returns a result set with a single `Procedure ID` column after successful submission, and the operation continues in the background. Use the returned `procedure_id` with `ADMIN procedure_state(procedure_id)` to check its status (see [ADMIN](/reference/sql/admin.md)).
+- `TIMEOUT`: The total time limit for metadata checks, submission, and, when `WAIT` is `true`, waiting for completion. Defaults to `'60s'`. It does not limit the execution time of the truncate operation itself. On timeout, the statement returns an error; an already-submitted operation is not canceled and continues in the background.
+
+## Examples
+
+Truncate the table `monitor` and wait for completion:
 
 ```sql
 TRUNCATE TABLE monitor;
@@ -22,4 +27,10 @@ TRUNCATE TABLE monitor;
 
 ```sql
 Query OK, 0 rows affected (0.02 sec)
+```
+
+Submit the operation without waiting for completion, with a 30-second timeout for metadata checks and submission:
+
+```sql
+TRUNCATE TABLE monitor WITH (WAIT = false, TIMEOUT = '30s');
 ```
