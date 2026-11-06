@@ -227,7 +227,7 @@ curl -X GET 'http://localhost:4000/admin/procedure/status?procedure_id=a3b9f746-
 {"procedure_id":"a3b9f746-81c2-4e65-9d07-6f2c8b104ea5","status":"Done","error":null}
 ```
 
-`status` is one of `Running`, `Done`, `Retrying`, `Failed`, `PrepareRollback`, `RollingBack`, or `Poisoned`. `error` holds the failure message while the procedure is failing or after it failed, and is `null` otherwise. A drain that gives up on specific regions lists them in `error`; a drain that ends as `Done` reports no count.
+`status` is one of `Running`, `Done`, `Retrying`, `Failed`, `PrepareRollback`, `RollingBack`, or `Poisoned`. `error` holds the failure message while the procedure is failing or after it failed, and is `null` otherwise. A drain that gives up on specific regions lists them in `error`; a drain that ends as `Done` reports no count. `Done` only means the drain has no further migrations to dispatch: after a Metasrv restart, recovered migrations may still be running, so verify region placement as described in [Drain a Datanode](/user-guide/deployments-administration/maintenance/drain-datanode.md) before taking the node offline.
 
 The endpoint requires the leader Metasrv and is independent of the procedure-manager pause switch.
 

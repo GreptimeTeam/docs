@@ -63,13 +63,28 @@ curl -X GET 'http://localhost:4000/admin/procedure/status?procedure_id=a3b9f746-
 {"procedure_id":"a3b9f746-81c2-4e65-9d07-6f2c8b104ea5","status":"Done","error":null}
 ```
 
-`status` is `Running` while migrations are in progress. It becomes `Done` once no leader region of the node is left. If the procedure stops with regions still on the node, it ends as `Failed`. When the drain gives up on specific regions, `error` lists them; regions that already migrated stay migrated.
+`status` is `Running` while migrations are in progress. If the procedure stops with regions still on the node, it ends as `Failed`. When the drain gives up on specific regions, `error` lists them; regions that already migrated stay migrated.
 
-`Done` does not include a migrated count. To inspect placement, use the query in [Region Migration](/user-guide/deployments-administration/manage-data/region-migration.md); a region whose leader peer still lists the drained node was not migrated.
+`Done` means the drain has no further migrations to dispatch. It does not by itself prove that the node leads no region:
+
+- After a Metasrv restart, recovered region migrations continue independently. The drain leaves regions that already have a running migration alone, so it can report `Done` while those migrations are still `Running`.
+- `Done` reports no migrated count.
 
 If the drain failed, remove the cause and submit the drain again. The new procedure rescans the node's remaining leader regions and skips the regions that already moved. A drain that fails on a few regions therefore does not start over.
 
-## Step 4: Restore scheduling
+## Step 4: Verify that no leader region remains
+
+Scheduling status and procedure status do not report placement. Query the leader peers of the node across all tables:
+
+```sql
+SELECT table_schema, table_name, region_id
+FROM information_schema.region_peers
+WHERE peer_id = 1 AND is_leader = 'Yes';
+```
+
+The result must be empty before you take the node offline. `region_peers` lists every peer of every table, so rows with `is_leader = 'No'` are the follower replicas that stay on the node and do not block shutdown. A region still migrating off the node is still led by it, so wait for the query to return no rows instead of relying on `Done`.
+
+## Step 5: Restore scheduling
 
 After the maintenance window, or when the node should receive regions again, restore placement explicitly:
 

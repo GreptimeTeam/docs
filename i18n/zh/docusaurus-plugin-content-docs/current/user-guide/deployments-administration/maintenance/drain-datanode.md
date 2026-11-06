@@ -63,13 +63,28 @@ curl -X GET 'http://localhost:4000/admin/procedure/status?procedure_id=a3b9f746-
 {"procedure_id":"a3b9f746-81c2-4e65-9d07-6f2c8b104ea5","status":"Done","error":null}
 ```
 
-迁移进行中 `status` 为 `Running`，当该节点不再有 leader region 时变为 `Done`。如果 procedure 结束时节点上仍有 region，`status` 为 `Failed`。当 drain 放弃某些 region 时，它们会列在 `error` 中；已经迁移成功的 region 保持迁移后的状态。
+迁移进行中 `status` 为 `Running`。如果 procedure 结束时节点上仍有 region，`status` 为 `Failed`。当 drain 放弃某些 region 时，它们会列在 `error` 中；已经迁移成功的 region 保持迁移后的状态。
 
-`Done` 不包含迁移数量。需要查看分布时，可使用 [Region Migration](/user-guide/deployments-administration/manage-data/region-migration.md) 中的查询；如果某个 region 的 leader peer 仍是该节点，说明它没有被迁移。
+`Done` 只表示 drain 没有更多需要提交的迁移，不能单独证明该节点已不承载任何 leader region：
+
+- Metasrv 重启后，已恢复的 Region 迁移会独立继续执行。drain 不会处理已有迁移在运行的 region，因此可能在这些迁移仍为 `Running` 时报告 `Done`。
+- `Done` 不包含迁移数量。
 
 如果 drain 失败，排除原因后重新提交即可。新的 procedure 会重新扫描该节点剩余的 leader region，并跳过已经迁走的 region，不会从头再来。
 
-## 步骤 4：恢复调度
+## 步骤 4：确认节点上没有 leader region
+
+调度状态和 procedure 状态都不反映 region 分布。请在所有表中查询该节点的 leader peer：
+
+```sql
+SELECT table_schema, table_name, region_id
+FROM information_schema.region_peers
+WHERE peer_id = 1 AND is_leader = 'Yes';
+```
+
+在将节点下线之前，该查询必须返回空结果。`region_peers` 会列出所有表的所有 peer，因此 `is_leader = 'No'` 的行是仍留在该节点上的 follower 副本，它们不阻碍下线。仍在迁移中的 region 依然由该节点担任 leader，因此应等待查询返回空结果，而不是只看 `Done`。
+
+## 步骤 5：恢复调度
 
 维护窗口结束，或需要让该节点重新承载 region 时，显式恢复调度：
 

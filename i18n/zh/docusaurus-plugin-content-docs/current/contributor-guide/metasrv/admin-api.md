@@ -227,7 +227,7 @@ curl -X GET 'http://localhost:4000/admin/procedure/status?procedure_id=a3b9f746-
 {"procedure_id":"a3b9f746-81c2-4e65-9d07-6f2c8b104ea5","status":"Done","error":null}
 ```
 
-`status` 取值为 `Running`、`Done`、`Retrying`、`Failed`、`PrepareRollback`、`RollingBack` 或 `Poisoned`。procedure 正在失败或已经失败时，`error` 包含失败信息，其他情况下为 `null`。当 drain 放弃某些 region 时，它们会列在 `error` 中；以 `Done` 结束的 drain 不报告迁移数量。
+`status` 取值为 `Running`、`Done`、`Retrying`、`Failed`、`PrepareRollback`、`RollingBack` 或 `Poisoned`。procedure 正在失败或已经失败时，`error` 包含失败信息，其他情况下为 `null`。当 drain 放弃某些 region 时，它们会列在 `error` 中；以 `Done` 结束的 drain 不报告迁移数量。`Done` 只表示 drain 没有更多需要提交的迁移：Metasrv 重启后，已恢复的迁移可能仍在运行，因此在将节点下线前，请按[迁移 Datanode 上的 Region](/user-guide/deployments-administration/maintenance/drain-datanode.md)中的步骤确认 region 分布。
 
 该端点必须发送到 leader Metasrv，且不受 Procedure Manager 暂停开关影响。
 
