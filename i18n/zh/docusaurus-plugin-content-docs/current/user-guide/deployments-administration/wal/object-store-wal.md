@@ -24,9 +24,11 @@ description: 介绍如何在 GreptimeDB 单机模式下使用实验性的对象�
 
 ### 受支持的对象存储
 
-每个 WAL 文件都通过条件创建写入，`type = "S3"` 发送的是 `If-None-Match: *`。有些对象存储接受这个条件却不执行，直接覆盖已有对象。在这样的存储上，WAL 可能覆盖自己的文件，丢失已确认的写入，而且不报任何错误。
+每个 WAL 文件都通过条件创建写入；使用 `type = "S3"` 时，GreptimeDB 发送的条件是 `If-None-Match: *`。有些对象存储接受这个条件却不执行，直接覆盖已有对象。在这样的存储上，WAL 可能覆盖自己的文件，丢失已确认的写入，而且不报任何错误。
 
-GreptimeDB 在启动时、读取 WAL 之前检查这一点：在 `<prefix>/datanodes/<node_id>/epochs/<generation>/probes/` 下用唯一的名字创建同一个对象两次，对象存储必须拒绝第二次创建，然后删除这个对象。如果对象存储接受了第二次创建，GreptimeDB 拒绝启动，报 `Invalid WAL object store` 错误，说明对象存储在条件创建时覆盖了已有对象。每次启动这项检查需要两次写入和一次删除。如果删除失败，GreptimeDB 会记录一条警告，对象会留下来；GreptimeDB 不会读取它，可以手动删除。这项检查能发现忽略条件的存储，但发现不了只在部分情况下执行条件的存储，所以还请核对下面的版本要求。
+GreptimeDB 在启动时、读取 WAL 之前检查这一点：在 `<prefix>/datanodes/<node_id>/epochs/<generation>/probes/` 下创建一个名字唯一的对象，然后再创建一次，对象存储必须拒绝第二次创建；之后删除这个对象。如果对象存储接受了第二次创建，GreptimeDB 拒绝启动，报 `Invalid WAL object store` 错误，说明对象存储在条件创建时覆盖了已有对象。每次启动时这项检查需要两次写入和一次删除。如果删除失败，GreptimeDB 会记录一条警告，对象会保留下来；GreptimeDB 不会读取它，可以手动删除。这项检查能发现忽略条件的存储，但发现不了只在部分情况下遵守条件的存储，所以还请核对下面的版本要求。
+
+凭证和 bucket 策略必须允许访问整个 `<prefix>/`，而不只是 `objects/`；否则第一次创建就会失败，GreptimeDB 拒绝启动，报错 `Failed to write WAL object, path: .../probes/<uuid>`。
 
 已知支持条件创建的对象存储：
 
@@ -36,18 +38,18 @@ GreptimeDB 在启动时、读取 WAL 之前检查这一点：在 `<prefix>/datan
 | Cloudflare R2 | `S3` | |
 | Azure Blob Storage | `Azblob` | |
 | Google Cloud Storage | `Gcs` | 请使用 `type = "Gcs"`。它的 S3 兼容端点会忽略条件。 |
-| 阿里云 OSS | `Oss` | 使用未开启版本控制的 bucket。 |
-| MinIO | `S3` | RELEASE.2024-05-07T06-41-25Z 及以后的版本。 |
-| Ceph RGW | `S3` | 未开启版本控制的 bucket；开启版本控制的 bucket 需要 Tentacle v20.2.1 及以后的版本。 |
-| SeaweedFS | `S3` | 4.18 及以后的版本；有多个 filer 时需要 4.46 及以后的版本。 |
-| OpenStack Swift（s3api） | `S3` | 2.36.0 及以后的版本。 |
+| 阿里云 OSS | `Oss` | 使用未开启版本控制的 bucket，参见 [PutObject](https://help.aliyun.com/zh/oss/developer-reference/putobject)。 |
+| MinIO | `S3` | [RELEASE.2024-05-07T06-41-25Z](https://github.com/minio/minio/releases/tag/RELEASE.2024-05-07T06-41-25Z)（[minio/minio#19682](https://github.com/minio/minio/pull/19682)）及以后的版本。另请参见下面关于读 quorum 的说明。 |
+| Ceph RGW | `S3` | 未开启版本控制的 bucket；开启版本控制的 bucket 需要 Tentacle v20.2.1 及以后的版本（[ceph/ceph#63348](https://github.com/ceph/ceph/pull/63348)）。 |
+| SeaweedFS | `S3` | 4.18 及以后的版本（[seaweedfs/seaweedfs#8802](https://github.com/seaweedfs/seaweedfs/pull/8802)）；有多个 filer 时需要 4.46 及以后的版本（[seaweedfs/seaweedfs#11109](https://github.com/seaweedfs/seaweedfs/pull/11109)）。 |
+| OpenStack Swift（s3api） | `S3` | 2.36.0（[release notes](https://docs.openstack.org/releasenotes/swift/2025.2.html)）及以后的版本。 |
 
-其他对象存储和版本的已知限制：
+各存储和版本的已知注意事项：
 
-- 以下存储会忽略条件、直接覆盖对象：通过 S3 兼容端点访问的 Google Cloud Storage、NetApp StorageGRID 12.0 及更早版本、Garage、Scality CloudServer、RELEASE.2024-05-07T06-41-25Z 之前的 MinIO，以及 Tentacle v20.2.1 之前 Ceph RGW 开启版本控制的 bucket。
-- 以下存储会拒绝条件，GreptimeDB 因此无法启动：通过 `type = "S3"` 访问的阿里云 OSS，以及 2.36.0 之前的 OpenStack Swift s3api。
+- 以下存储会忽略条件、直接覆盖对象，GreptimeDB 因此拒绝启动，报错 `Invalid WAL object store`：通过 S3 兼容端点访问的 Google Cloud Storage（[request preconditions](https://docs.cloud.google.com/storage/docs/request-preconditions)、[ClickHouse/ClickHouse#115266](https://github.com/ClickHouse/ClickHouse/issues/115266)）、NetApp StorageGRID 12.0 及更早版本（[PutObject](https://docs.netapp.com/us-en/storagegrid-120/s3/put-object.html)）、Garage、Scality CloudServer、RELEASE.2024-05-07T06-41-25Z 之前的 MinIO，以及 Tentacle v20.2.1 之前 Ceph RGW 开启版本控制的 bucket。
+- 以下存储会拒绝条件，检查中的第一次创建就会失败，GreptimeDB 因此拒绝启动，报错 `Failed to write WAL object, path: .../probes/<uuid>`：通过 `type = "S3"` 访问的阿里云 OSS（[错误 0017-00000245](https://help.aliyun.com/zh/oss/user-guide/0017-00000245)），以及 2.36.0 之前的 OpenStack Swift s3api。
 - 阿里云 OSS、腾讯云 COS 和火山引擎 TOS 的文档说明，它们各自的禁止覆盖请求头在开启版本控制的 bucket 上不起作用。`type = "Oss"` 时 GreptimeDB 发送的就是 OSS 的这个请求头，因此不要使用开启版本控制的 bucket。
-- MinIO 社区版在拿不到读 quorum 时可能跳过条件。修复（[minio/minio#21653](https://github.com/minio/minio/pull/21653)）没有进入任何社区版二进制发布。
+- MinIO 社区版在拿不到读 quorum 时可能跳过条件（[minio/minio#21603](https://github.com/minio/minio/issues/21603)）。修复（[minio/minio#21653](https://github.com/minio/minio/pull/21653)）没有进入任何社区版二进制发布。
 
 ## 配置
 
@@ -94,7 +96,7 @@ accept_missing_history = false
 wal/datanodes/0/epochs/0/objects/
 ```
 
-通用格式为 `<prefix>/datanodes/<node_id>/epochs/<generation>/objects/`。该路径下的文件由 GreptimeDB 自行创建和删除，请勿手动修改或删除。
+通用格式为 `<prefix>/datanodes/<node_id>/epochs/<generation>/objects/`。该路径下的文件由 GreptimeDB 自行创建和删除，请勿手动修改或删除。[受支持的对象存储](#受支持的对象存储)中的启动检查使用 `objects/` 旁边的 `probes/` 目录，因此访问权限必须覆盖整个 `<prefix>/`。
 
 ## 迁移 WAL
 
