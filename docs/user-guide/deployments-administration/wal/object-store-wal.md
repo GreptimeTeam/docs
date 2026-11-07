@@ -19,8 +19,37 @@ The provider is named `experimental_object_store`. It is supported only in stand
 Check the following before you enable the object store WAL:
 
 - **A new instance**: enable it when you create a standalone instance. A table keeps the WAL provider and `prefix` it was created with, so the tables of an existing instance fail to open after the instance switches to this provider, even if they were flushed first. See [Limitations](#limitations).
-- **A supported object store**: the object store that holds the WAL must support conditional writes (if-not-exists) and strongly consistent listing. S3, Google Cloud Storage, Azure Blob Storage and MinIO meet both requirements. An S3-compatible store that lacks either one is not supported. The local file system storage (`type = "File"`) does not provide the guarantees described on this page. By default the WAL uses the storage configured in `[storage]`, so that storage must be one of these object stores unless you set `storage_provider`.
+- **A supported object store**: the object store that holds the WAL must support conditional create, which writes an object only if it does not exist yet, and strongly consistent listing. See [Supported object stores](#supported-object-stores). An S3-compatible store that lacks either one is not supported. The local file system storage (`type = "File"`) does not provide the guarantees described on this page. By default the WAL uses the storage configured in `[storage]`, so that storage must meet these requirements unless you set `storage_provider`.
 - **Its own location**: each standalone instance needs its own WAL location. Do not let two GreptimeDB instances use the same storage provider and `prefix`.
+
+### Supported object stores
+
+Every WAL file is written with a conditional create; with `type = "S3"`, GreptimeDB sends the condition as `If-None-Match: *`. Some object stores accept this condition but ignore it and overwrite the existing object. On such a store, the WAL can overwrite its own files and lose acknowledged writes without any error.
+
+GreptimeDB checks this at startup, before it reads the WAL. It creates an object with a unique name under `<prefix>/datanodes/<node_id>/epochs/<generation>/probes/` twice, and the object store must refuse the second create. Then GreptimeDB deletes the object. If the object store accepts the second create, GreptimeDB refuses to start with an `Invalid WAL object store` error that says the object store overwrote an existing object on a conditional create. The check costs two writes and one delete per start. If the delete fails, GreptimeDB logs a warning and the object stays; GreptimeDB never reads it, and you can delete it. The check finds a store that ignores the condition, but not one that enforces it only some of the time, so also check the versions below.
+
+Credentials and bucket policies must allow access to the whole `<prefix>/`, not only `objects/`. Otherwise the first create fails and GreptimeDB refuses to start with `Failed to write WAL object, path: .../probes/<uuid>`.
+
+The following object stores are known to support conditional create:
+
+| Object store | `type` | Notes |
+| --- | --- | --- |
+| Amazon S3 | `S3` | Not S3 on Outposts. |
+| Cloudflare R2 | `S3` | |
+| Azure Blob Storage | `Azblob` | |
+| Google Cloud Storage | `Gcs` | Use `type = "Gcs"`. Its S3-compatible endpoint ignores the condition. |
+| Alibaba Cloud OSS | `Oss` | A bucket without versioning, see [PutObject](https://www.alibabacloud.com/help/en/oss/developer-reference/putobject). |
+| MinIO | `S3` | [RELEASE.2024-05-07T06-41-25Z](https://github.com/minio/minio/releases/tag/RELEASE.2024-05-07T06-41-25Z) ([minio/minio#19682](https://github.com/minio/minio/pull/19682)) or later. See the read-quorum caveat below. |
+| Ceph RGW | `S3` | Buckets without versioning, or versioned buckets from Tentacle v20.2.1 ([ceph/ceph#63348](https://github.com/ceph/ceph/pull/63348)). |
+| SeaweedFS | `S3` | 4.18 ([seaweedfs/seaweedfs#8802](https://github.com/seaweedfs/seaweedfs/pull/8802)) or later, or 4.46 ([seaweedfs/seaweedfs#11109](https://github.com/seaweedfs/seaweedfs/pull/11109)) or later with more than one filer. |
+| OpenStack Swift (s3api) | `S3` | 2.36.0 ([release notes](https://docs.openstack.org/releasenotes/swift/2025.2.html)) or later. |
+
+Known caveats by store and version:
+
+- These ignore the condition and overwrite the object, so GreptimeDB refuses to start with `Invalid WAL object store`: Google Cloud Storage through its S3-compatible endpoint ([request preconditions](https://docs.cloud.google.com/storage/docs/request-preconditions), [ClickHouse/ClickHouse#115266](https://github.com/ClickHouse/ClickHouse/issues/115266)), NetApp StorageGRID 12.0 and earlier ([PutObject](https://docs.netapp.com/us-en/storagegrid-120/s3/put-object.html)), Garage, Scality CloudServer, MinIO before RELEASE.2024-05-07T06-41-25Z, and Ceph RGW versioned buckets before Tentacle v20.2.1.
+- These reject the condition, so the first create of the check fails and GreptimeDB refuses to start with `Failed to write WAL object, path: .../probes/<uuid>`: Alibaba Cloud OSS through `type = "S3"` ([error 0017-00000245](https://www.alibabacloud.com/help/en/oss/user-guide/0017-00000245)), and OpenStack Swift s3api before 2.36.0.
+- Alibaba Cloud OSS, Tencent Cloud COS and Volcengine TOS document that their own no-overwrite headers have no effect on versioned buckets. GreptimeDB sends the OSS header for `type = "Oss"`, so do not use a versioned bucket there.
+- MinIO community releases can skip the condition when they cannot reach a read quorum ([minio/minio#21603](https://github.com/minio/minio/issues/21603)). The fix ([minio/minio#21653](https://github.com/minio/minio/pull/21653)) is not in any community binary release.
 
 ## Configuration
 
@@ -67,7 +96,7 @@ With the default `prefix`, a standalone instance stores its WAL under the follow
 wal/datanodes/0/epochs/0/objects/
 ```
 
-The general form is `<prefix>/datanodes/<node_id>/epochs/<generation>/objects/`. GreptimeDB creates and deletes the files under this path itself. Do not modify or delete them manually.
+The general form is `<prefix>/datanodes/<node_id>/epochs/<generation>/objects/`. GreptimeDB creates and deletes the files under this path itself. Do not modify or delete them manually. The startup check in [Supported object stores](#supported-object-stores) uses the `probes/` directory next to `objects/`, so access must cover the whole `<prefix>/`.
 
 ## Move the WAL
 
