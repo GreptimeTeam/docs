@@ -90,6 +90,13 @@ CREATE TABLE sensor_data (
 
 Skipping index can't handle complex filter conditions, and usually has a lower filtering performance compared to inverted index or full-text index.
 
+JSON2 supports Bloom filter skipping indexes on subpaths with explicit type
+hints. Add `SKIPPING INDEX` after the path's type, optionally followed by
+`WITH (granularity = '8192', false_positive_rate = '0.01')`. These indexes
+accelerate equality and `IN` predicates, rather than range comparisons. See
+[Skipping indexes on subpaths](/user-guide/logs/json2.md#skipping-indexes-on-subpaths)
+for examples.
+
 ### Full-Text Index
 
 Full-text index is designed for text search operations on string columns. It enables efficient searching of text content using word-based matching and text search capabilities. You can query text data with flexible keywords, phrases, or pattern matching queries.
@@ -109,6 +116,12 @@ CREATE TABLE logs (
 ```
 
 #### Configuration Options
+
+JSON2 also supports `FULLTEXT INDEX` on subpaths with explicit `STRING` type
+hints. Both backends and the options below apply to these paths. Use
+`matches_term` or eligible `LIKE` predicates with `bloom`, and `matches()` with
+`tantivy`. See
+[Full-text indexes on subpaths](/user-guide/logs/json2.md#full-text-indexes-on-subpaths).
 
 When creating or modifying a full-text index, you can specify the following options using `FULLTEXT INDEX WITH`:
 
@@ -198,6 +211,11 @@ ADMIN BUILD_INDEX('logs');
 ```
 
 This command also rebuilds Bloom full-text indexes with an outdated format version. See [Build Index](/reference/sql/admin.md#build-index) for details.
+
+JSON2 subpath indexes are excluded from manual and schema-change index
+rebuilds. A rebuild that replaces an SST's index file for other indexes can
+remove its existing subpath indexes. See
+[Combine and maintain subpath indexes](/user-guide/logs/json2.md#combine-and-maintain-subpath-indexes).
 
 #### Examples
 
