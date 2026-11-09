@@ -144,14 +144,21 @@ curl -X GET http://localhost:4000/admin/node-lease
 ```bash
 curl -X POST 'http://localhost:4000/admin/datanode/drain' \
   -H 'Content-Type: application/json' \
-  -d '{"node_id": 1, "target_node_id": 2}'
+  -d '{"node_id": 1, "target_node_id": 2, "parallelism": 8, "strategy": "fail_fast", "timeout": "30m"}'
 ```
 
 ```json
 {"procedure_id":"a3b9f746-81c2-4e65-9d07-6f2c8b104ea5"}
 ```
 
-`target_node_id` 是可选的。省略时由 selector 为每个 region 选择目标；指定时不能与 `node_id` 相同。drain 以 procedure 形式运行，因此响应会立即返回 procedure ID。
+drain 请求支持以下可选字段：
+
+- `target_node_id`：目标 Datanode。省略时由 selector 为每个 region 选择目标；指定时不能与 `node_id` 相同。
+- `parallelism`：同时执行的 leader region 迁移数量，取值为 1 到 32，默认为 `4`。
+- `strategy`：`try_all`（默认）在迁移失败后继续迁移剩余 region，并报告放弃的 region；`fail_fast` 在出现失败的那一批之后停止。
+- `timeout`：整个 drain 的时间预算，从提交时刻开始计算。支持 `"30m"`、`"1h 30m"` 这类可读时长，默认为 `20m`。
+
+省略字段即使用默认值。`parallelism`、`strategy` 和 `timeout` 显式传入 `null` 会被拒绝。drain 以 procedure 形式运行，因此响应会立即返回 procedure ID。
 
 ```bash
 curl -X POST 'http://localhost:4000/admin/datanode/mark-schedulable' \
@@ -177,7 +184,7 @@ curl -X GET 'http://localhost:4000/admin/datanode/scheduling/status?node_id=1'
 - 同一 Datanode 已有 drain 在跟踪时，再次提交 drain（包括完全相同的请求）会被拒绝。应通过 `/procedure/status` 跟踪正在运行的 procedure。
 - 同一节点正在 drain 时，`mark-schedulable` 会被拒绝。
 - Metasrv 重启后尚未完成 procedure 恢复时，drain 提交和 `mark-schedulable` 都会被拒绝。
-- drain 的时间预算为提交后 20 分钟，最多同时迁移 4 个 leader region。HTTP API 不提供这些默认值的配置项。
+- drain 的时间预算默认为提交后 20 分钟，最多同时迁移 4 个 leader region。可通过 `timeout` 和 `parallelism` 按请求覆盖这些默认值。
 
 ## /maintenance HTTP 端点
 
@@ -276,5 +283,5 @@ curl -X POST \
 ```
 
 - `1006`（`IllegalState`，HTTP `500`）：请求打到了 follower Metasrv；该节点已有 drain 在运行；恢复调度时该节点正在 drain；或 Metasrv 尚未完成 procedure 恢复。
-- `1004`（`InvalidArguments`，HTTP `400`）：drain 的目标节点与源节点相同，或 `procedure_id` 格式不合法、不存在。
-- HTTP `422`：JSON 请求体缺少必填字段，或字段类型错误。
+- `1004`（`InvalidArguments`，HTTP `400`）：drain 的目标节点与源节点相同；`parallelism` 超出 1–32；`timeout` 为零或大到无法调度；或 `procedure_id` 格式不合法、不存在。
+- HTTP `422`：JSON 请求体无法反序列化，例如缺少必填字段、`strategy` 取值未知或 `timeout` 时长格式错误。能正常反序列化但未通过校验的取值（例如 `parallelism` 超出 1–32）返回 HTTP `400`。

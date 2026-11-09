@@ -42,14 +42,21 @@ curl -X GET 'http://localhost:4000/admin/datanode/scheduling/status?node_id=1'
 ```bash
 curl -X POST 'http://localhost:4000/admin/datanode/drain' \
   -H 'Content-Type: application/json' \
-  -d '{"node_id": 1, "target_node_id": 2}'
+  -d '{"node_id": 1, "target_node_id": 2, "parallelism": 8, "strategy": "fail_fast", "timeout": "30m"}'
 ```
 
 ```json
 {"procedure_id":"a3b9f746-81c2-4e65-9d07-6f2c8b104ea5"}
 ```
 
-省略 `target_node_id` 时由 selector 选择目标。目标节点不能与被 drain 的节点相同，否则请求会以 HTTP `400` 拒绝。
+请求支持以下可选字段：
+
+- `target_node_id`：目标 Datanode。省略时由 selector 为每个 region 选择目标。目标节点不能与被 drain 的节点相同，否则请求会以 HTTP `400` 拒绝。
+- `parallelism`：同时执行的 leader region 迁移数量，取值为 1 到 32，默认为 `4`。
+- `strategy`：`try_all` 在迁移失败后继续迁移剩余 region，并报告放弃的 region；`fail_fast` 在一批迁移出现失败后停止 drain。默认为 `try_all`。
+- `timeout`：整个 drain 的时间预算，从提交时刻开始计算。支持 `"30m"`、`"1h 30m"` 这类可读时长，默认为 `20m`。
+
+省略字段即使用默认值。`parallelism`、`strategy` 和 `timeout` 显式传入 `null` 会被拒绝。
 
 当该节点已有 drain 在运行时，对同一节点的任何 drain 请求（包括内容完全相同的请求）都会返回 HTTP `500` 和错误码 `1006`。此时应跟踪正在运行的 procedure，而不是重试请求。
 
@@ -63,7 +70,7 @@ curl -X GET 'http://localhost:4000/admin/procedure/status?procedure_id=a3b9f746-
 {"procedure_id":"a3b9f746-81c2-4e65-9d07-6f2c8b104ea5","status":"Done","error":null}
 ```
 
-迁移进行中 `status` 为 `Running`。如果 procedure 结束时节点上仍有 region，`status` 为 `Failed`。当 drain 放弃某些 region 时，它们会列在 `error` 中；已经迁移成功的 region 保持迁移后的状态。
+迁移进行中 `status` 为 `Running`。当 drain 放弃部分 leader region 迁移，或因无法恢复的错误停止时，`status` 为 `Failed`；失败信息写在 `error` 中，放弃的 region 也会列在那里。已经迁移成功的 region 保持迁移后的状态。
 
 `Done` 只表示 drain 没有更多需要提交的迁移，不能单独证明该节点已不承载任何 leader region：
 
@@ -82,7 +89,9 @@ FROM information_schema.region_peers
 WHERE peer_id = 1 AND is_leader = 'Yes';
 ```
 
-在将节点下线之前，该查询必须返回空结果。`region_peers` 会列出所有表的所有 peer，因此 `is_leader = 'No'` 的行是仍留在该节点上的 follower 副本，它们不阻碍下线。仍在迁移中的 region 依然由该节点担任 leader，因此应等待查询返回空结果，而不是只看 `Done`。
+在将节点下线之前，该查询必须返回空结果。`region_peers` 会列出查询所在 catalog 中所有表的所有 peer，因此 `is_leader = 'No'` 的行是仍留在该节点上的 follower 副本，它们不阻碍下线。仍在迁移中的 region 依然由该节点担任 leader，因此应等待查询返回空结果，而不是只看 `Done`。
+
+该表按 catalog 划分。请对集群中的每个 catalog 分别执行查询，并要求每个结果都为空；通过 `greptime.information_schema.region_peers` 这样的限定名可以查询指定 catalog。某个 catalog 返回空结果，并不代表其他 catalog 中没有该节点担任 leader 的 region。
 
 ## 步骤 5：恢复调度
 
@@ -102,9 +111,9 @@ curl -X POST 'http://localhost:4000/admin/datanode/mark-schedulable' \
 
 ## 行为与限制
 
-- Drain 的时间预算是 20 分钟，从提交时刻开始计算。超过预算的 drain 以 `Failed` 结束。
-- 最多同时迁移 4 个 leader region。单个 region 迁移失败不会中断其余迁移，所有失败会在 procedure 结束时一并报告。
-- HTTP API 不提供预算、并发度和错误处理策略的设置，使用上述默认值。
+- Drain 的时间预算默认为 20 分钟，从提交时刻开始计算，可通过 `timeout` 为单次请求调整。超过预算的 drain 以 `Failed` 结束。
+- 默认最多同时迁移 4 个 leader region，可通过 `parallelism` 设置为 1 到 32。
+- `strategy` 决定迁移失败后的处理方式：`try_all`（默认）继续迁移剩余 region；`fail_fast` 在出现失败的那一批之后停止。
 - Procedure 不会把 Datanode 移出集群，也不会迁移 follower 副本。如果节点上仍有 follower 副本就将其下线，依赖这些副本的读请求会受影响。
 
 ## 响应与错误
@@ -116,5 +125,5 @@ curl -X POST 'http://localhost:4000/admin/datanode/mark-schedulable' \
 ```
 
 - `1006`（`IllegalState`，HTTP `500`）：请求打到了 follower Metasrv；该节点已有 drain 在运行；恢复调度时该节点正在 drain；或 Metasrv 尚未完成 procedure 恢复。
-- `1004`（`InvalidArguments`，HTTP `400`）：drain 的目标节点与源节点相同，或 `procedure_id` 格式不合法、不存在。
-- HTTP `422`：JSON 请求体缺少必填字段，或字段类型错误。
+- `1004`（`InvalidArguments`，HTTP `400`）：drain 的目标节点与源节点相同；`parallelism` 超出 1–32；`timeout` 为零或大到无法调度；或 `procedure_id` 格式不合法、不存在。
+- HTTP `422`：JSON 请求体无法反序列化，例如缺少必填字段、`strategy` 取值未知或 `timeout` 时长格式错误。能正常反序列化但未通过校验的取值（例如 `parallelism` 超出 1–32）返回 HTTP `400`。

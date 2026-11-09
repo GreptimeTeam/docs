@@ -144,14 +144,21 @@ The `/drain` and `/mark-schedulable` endpoints accept a JSON body, and `/schedul
 ```bash
 curl -X POST 'http://localhost:4000/admin/datanode/drain' \
   -H 'Content-Type: application/json' \
-  -d '{"node_id": 1, "target_node_id": 2}'
+  -d '{"node_id": 1, "target_node_id": 2, "parallelism": 8, "strategy": "fail_fast", "timeout": "30m"}'
 ```
 
 ```json
 {"procedure_id":"a3b9f746-81c2-4e65-9d07-6f2c8b104ea5"}
 ```
 
-`target_node_id` is optional. When it is omitted, the selector chooses a destination for each region; when it is set, it must differ from `node_id`. The drain runs as a procedure, so the response returns its ID immediately.
+The drain request accepts these optional fields:
+
+- `target_node_id`: the destination Datanode. When it is omitted, the selector chooses a destination for each region; when it is set, it must differ from `node_id`.
+- `parallelism`: how many leader-region migrations run concurrently, from 1 to 32. Defaults to `4`.
+- `strategy`: `try_all` (default) keeps migrating the remaining regions after a failure and reports the regions it gives up on; `fail_fast` stops after a batch with a failed migration.
+- `timeout`: the budget of the whole drain, measured from submission. It accepts human-readable durations such as `"30m"` or `"1h 30m"` and defaults to `20m`.
+
+Omit a field to use its default; an explicit `null` is rejected for `parallelism`, `strategy`, and `timeout`. The drain runs as a procedure, so the response returns its ID immediately.
 
 ```bash
 curl -X POST 'http://localhost:4000/admin/datanode/mark-schedulable' \
@@ -177,7 +184,7 @@ Behaviour to keep in mind:
 - A second drain request for the same Datanode, including an identical one, is rejected while the tracked drain runs. Use `/procedure/status` to follow it instead.
 - `mark-schedulable` is rejected while a drain of the same node runs.
 - Drain submission and `mark-schedulable` are rejected while the Metasrv has not completed procedure recovery after a restart.
-- The drain budget is 20 minutes from submission, and up to four leader regions migrate concurrently. The HTTP API exposes no settings for these defaults.
+- The drain budget defaults to 20 minutes from submission, and up to four leader regions migrate concurrently. `timeout` and `parallelism` override these defaults per request.
 
 ## /maintenance HTTP endpoint
 
@@ -276,5 +283,5 @@ The `/datanode` and `/procedure/status` endpoints return the shared JSON error b
 ```
 
 - `1006` (`IllegalState`, HTTP `500`): the request reached a follower Metasrv, a drain of the node is already running, a drain is in progress when scheduling is restored, or the Metasrv has not completed procedure recovery.
-- `1004` (`InvalidArguments`, HTTP `400`): the drain target equals the source node, or the `procedure_id` is malformed or unknown.
-- HTTP `422`: the JSON body is missing a required field or has a field of the wrong type.
+- `1004` (`InvalidArguments`, HTTP `400`): the drain target equals the source node, `parallelism` is outside 1–32, `timeout` is zero or too large to schedule, or the `procedure_id` is malformed or unknown.
+- HTTP `422`: the JSON body cannot be deserialized, for example a missing required field, an unknown `strategy` value, or a malformed `timeout` duration. Values that deserialize but fail validation, such as `parallelism` outside 1–32, return HTTP `400`.
