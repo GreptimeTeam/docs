@@ -133,10 +133,10 @@ curl -X GET http://localhost:4000/admin/node-lease
 
 ## /datanode HTTP endpoints
 
-These endpoints drain a Datanode and control whether Metasrv may place regions on it. They are intended for planned node removal and maintenance. Follow [Drain a Datanode](/user-guide/deployments-administration/maintenance/drain-datanode.md) for the full workflow.
+These endpoints drain a Datanode and control whether Metasrv may place Regions on it. They are intended for planned node removal and maintenance. Follow [Drain a Datanode](/user-guide/deployments-administration/maintenance/drain-datanode.md) for the full workflow.
 
-- `POST /admin/datanode/drain`: submit an asynchronous drain of the Datanode's leader regions.
-- `POST /admin/datanode/mark-schedulable`: allow new region placement on the Datanode again.
+- `POST /admin/datanode/drain`: submit an asynchronous drain of the Datanode's Leader Regions.
+- `POST /admin/datanode/mark-schedulable`: allow new Region placement on the Datanode again.
 - `GET /admin/datanode/scheduling/status`: query whether the Datanode is schedulable.
 
 The `/drain` and `/mark-schedulable` endpoints accept a JSON body, and `/scheduling/status` accepts the `node_id` query string parameter:
@@ -151,14 +151,7 @@ curl -X POST 'http://localhost:4000/admin/datanode/drain' \
 {"procedure_id":"a3b9f746-81c2-4e65-9d07-6f2c8b104ea5"}
 ```
 
-The drain request accepts these optional fields:
-
-- `target_node_id`: the destination Datanode. When it is omitted, the selector chooses a destination for each region; when it is set, it must differ from `node_id`.
-- `parallelism`: how many leader-region migrations run concurrently, from 1 to 32. Defaults to `4`.
-- `strategy`: `try_all` (default) keeps migrating the remaining regions after a failure and reports the regions it gives up on; `fail_fast` stops after a batch with a failed migration.
-- `timeout`: the budget of the whole drain, measured from submission. It accepts human-readable durations such as `"30m"` or `"1h 30m"` and defaults to `20m`.
-
-Omit a field to use its default; an explicit `null` is rejected for `parallelism`, `strategy`, and `timeout`. The drain runs as a procedure, so the response returns its ID immediately.
+The request accepts optional `target_node_id`, `parallelism` (1–32, default `4`), `strategy` (`try_all` by default, or `fail_fast`), and `timeout` (default `20m`). An explicit `null` is rejected for `parallelism`, `strategy`, and `timeout`. [Drain a Datanode](/user-guide/deployments-administration/maintenance/drain-datanode.md) describes each field. The drain runs as a procedure, so the response returns its ID immediately.
 
 ```bash
 curl -X POST 'http://localhost:4000/admin/datanode/mark-schedulable' \
@@ -176,15 +169,15 @@ Both scheduling requests return:
 
 `scheduling/status` reports the current state. `mark-schedulable` restores placement, succeeds when repeated, and returns `"schedulable": true`.
 
-Behaviour to keep in mind:
+These endpoints behave as follows:
 
 - All three endpoints must reach the leader Metasrv. A follower returns HTTP `500` with error code `1006`.
 - Draining marks the node unschedulable before migrating. The node stays unschedulable after the procedure ends, whether it succeeded or failed, until `mark-schedulable` succeeds.
-- Only leader regions migrate; follower replicas stay on the node, and draining does not stop the Datanode process.
+- Only Leader Regions migrate; Follower Regions stay on the node, and draining does not stop the Datanode process.
 - A second drain request for the same Datanode, including an identical one, is rejected while the tracked drain runs. Use `/procedure/status` to follow it instead.
 - `mark-schedulable` is rejected while a drain of the same node runs.
 - Drain submission and `mark-schedulable` are rejected while the Metasrv has not completed procedure recovery after a restart.
-- The drain budget defaults to 20 minutes from submission, and up to four leader regions migrate concurrently. `timeout` and `parallelism` override these defaults per request.
+- The drain budget defaults to 20 minutes from submission, and up to four Leader Regions migrate concurrently. `timeout` and `parallelism` override these defaults per request.
 
 ## /maintenance HTTP endpoint
 
@@ -234,7 +227,7 @@ curl -X GET 'http://localhost:4000/admin/procedure/status?procedure_id=a3b9f746-
 {"procedure_id":"a3b9f746-81c2-4e65-9d07-6f2c8b104ea5","status":"Done","error":null}
 ```
 
-`status` is one of `Running`, `Done`, `Retrying`, `Failed`, `PrepareRollback`, `RollingBack`, or `Poisoned`. `error` holds the failure message while the procedure is failing or after it failed, and is `null` otherwise. A drain that gives up on specific regions lists them in `error`; a drain that ends as `Done` reports no count. `Done` only means the drain has no further migrations to dispatch: after a Metasrv restart, recovered migrations may still be running, so verify region placement as described in [Drain a Datanode](/user-guide/deployments-administration/maintenance/drain-datanode.md) before taking the node offline.
+`status` is one of `Running`, `Done`, `Retrying`, `Failed`, `PrepareRollback`, `RollingBack`, or `Poisoned`. `error` holds the failure message while the procedure is failing or after it failed, and is `null` otherwise. When a drain cannot migrate some Regions, it lists them in `error`; a drain that ends as `Done` reports no count. `Done` only means the drain has no further migrations to dispatch. After a Metasrv restart, recovered migrations may still be running, so verify Region placement as described in [Drain a Datanode](/user-guide/deployments-administration/maintenance/drain-datanode.md) before taking the node offline.
 
 The endpoint requires the leader Metasrv and is independent of the procedure-manager pause switch.
 
@@ -284,4 +277,4 @@ The `/datanode` and `/procedure/status` endpoints return the shared JSON error b
 
 - `1006` (`IllegalState`, HTTP `500`): the request reached a follower Metasrv, a drain of the node is already running, a drain is in progress when scheduling is restored, or the Metasrv has not completed procedure recovery.
 - `1004` (`InvalidArguments`, HTTP `400`): the drain target equals the source node, `parallelism` is outside 1–32, `timeout` is zero or too large to schedule, or the `procedure_id` is malformed or unknown.
-- HTTP `422`: the JSON body cannot be deserialized, for example a missing required field, an unknown `strategy` value, or a malformed `timeout` duration. Values that deserialize but fail validation, such as `parallelism` outside 1–32, return HTTP `400`.
+- HTTP `422`: the JSON body cannot be parsed, for example a missing required field, an unknown `strategy` value, or a malformed `timeout` duration. A request that parses but fails validation, such as `parallelism` outside 1–32, returns HTTP `400`.

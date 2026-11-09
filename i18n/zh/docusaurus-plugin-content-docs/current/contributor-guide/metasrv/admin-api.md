@@ -1,6 +1,6 @@
 ---
-keywords: [Admin API, 健康检查, leader 查询, 心跳检测, 维护模式, 恢复模式, table id sequence, Datanode drain, Procedure 状态]
-description: 介绍 Metasrv 用于状态检查、集群控制、Datanode drain 和元数据恢复的 Admin API。
+keywords: [Admin API, 健康检查, leader 查询, 心跳检测, 维护模式, 恢复模式, table id sequence, Drain Datanode, Procedure 状态]
+description: 介绍 Metasrv 用于状态检查、集群控制、Drain Datanode 和元数据恢复的 Admin API。
 ---
 
 # Admin API
@@ -133,10 +133,10 @@ curl -X GET http://localhost:4000/admin/node-lease
 
 ## /datanode HTTP 端点
 
-这些端点用于 drain 一个 Datanode，并控制 Metasrv 是否可以向该节点放置 region。它们面向计划内的节点下线与维护，完整流程请参阅 [迁移 Datanode 上的 Region](/user-guide/deployments-administration/maintenance/drain-datanode.md)。
+这些端点用于对 Datanode 执行 Drain，并控制 Metasrv 是否可以向该节点放置 Region。它们面向计划内的节点下线与维护，完整流程请参阅 [Drain Datanode](/user-guide/deployments-administration/maintenance/drain-datanode.md)。
 
-- `POST /admin/datanode/drain`：提交一个异步 procedure，迁移该 Datanode 上的 leader region。
-- `POST /admin/datanode/mark-schedulable`：允许 Metasrv 再次向该 Datanode 放置 region。
+- `POST /admin/datanode/drain`：提交一个异步 Procedure，迁移该 Datanode 上的 Leader Region。
+- `POST /admin/datanode/mark-schedulable`：允许 Metasrv 再次向该 Datanode 放置 Region。
 - `GET /admin/datanode/scheduling/status`：查询该 Datanode 是否可调度。
 
 `/drain` 和 `/mark-schedulable` 接受 JSON 请求体，`/scheduling/status` 接受 `node_id` 查询字符串参数：
@@ -151,14 +151,7 @@ curl -X POST 'http://localhost:4000/admin/datanode/drain' \
 {"procedure_id":"a3b9f746-81c2-4e65-9d07-6f2c8b104ea5"}
 ```
 
-drain 请求支持以下可选字段：
-
-- `target_node_id`：目标 Datanode。省略时由 selector 为每个 region 选择目标；指定时不能与 `node_id` 相同。
-- `parallelism`：同时执行的 leader region 迁移数量，取值为 1 到 32，默认为 `4`。
-- `strategy`：`try_all`（默认）在迁移失败后继续迁移剩余 region，并报告放弃的 region；`fail_fast` 在出现失败的那一批之后停止。
-- `timeout`：整个 drain 的时间预算，从提交时刻开始计算。支持 `"30m"`、`"1h 30m"` 这类可读时长，默认为 `20m`。
-
-省略字段即使用默认值。`parallelism`、`strategy` 和 `timeout` 显式传入 `null` 会被拒绝。drain 以 procedure 形式运行，因此响应会立即返回 procedure ID。
+请求支持可选字段 `target_node_id`、`parallelism`（1–32，默认 `4`）、`strategy`（默认 `try_all`，可选 `fail_fast`）和 `timeout`（默认 `20m`）。`parallelism`、`strategy` 和 `timeout` 显式传入 `null` 会被拒绝；各字段的含义参见[Drain Datanode](/user-guide/deployments-administration/maintenance/drain-datanode.md)。Drain 以 Procedure 形式运行，因此响应会立即返回 `procedure_id`。
 
 ```bash
 curl -X POST 'http://localhost:4000/admin/datanode/mark-schedulable' \
@@ -179,12 +172,12 @@ curl -X GET 'http://localhost:4000/admin/datanode/scheduling/status?node_id=1'
 使用时的注意事项：
 
 - 三个端点都必须发送到 leader Metasrv。在 follower 上调用会返回 HTTP `500` 和错误码 `1006`。
-- drain 会先标记节点不可调度，再开始迁移。无论 procedure 成功还是失败，结束后节点都保持不可调度，直到 `mark-schedulable` 成功。
-- 只迁移 leader region；follower 副本留在该节点上，drain 也不会停止 Datanode 进程。
-- 同一 Datanode 已有 drain 在跟踪时，再次提交 drain（包括完全相同的请求）会被拒绝。应通过 `/procedure/status` 跟踪正在运行的 procedure。
-- 同一节点正在 drain 时，`mark-schedulable` 会被拒绝。
-- Metasrv 重启后尚未完成 procedure 恢复时，drain 提交和 `mark-schedulable` 都会被拒绝。
-- drain 的时间预算默认为提交后 20 分钟，最多同时迁移 4 个 leader region。可通过 `timeout` 和 `parallelism` 按请求覆盖这些默认值。
+- Drain 会先标记节点不可调度，再开始迁移。无论 Procedure 成功还是失败，结束后节点都保持不可调度，直到 `mark-schedulable` 成功。
+- 只迁移 Leader Region；Follower Region 留在该节点上，Drain 也不会停止 Datanode 进程。
+- 同一 Datanode 已有 Drain 在跟踪时，再次提交 Drain（包括完全相同的请求）会被拒绝。应通过 `/procedure/status` 跟踪正在运行的 Procedure。
+- 同一节点正在 Drain 时，`mark-schedulable` 会被拒绝。
+- Metasrv 重启后尚未完成 Procedure 恢复时，Drain 提交和 `mark-schedulable` 都会被拒绝。
+- Drain 的时间预算默认为提交后 20 分钟，最多同时迁移 4 个 Leader Region。可通过 `timeout` 和 `parallelism` 按请求覆盖这些默认值。
 
 ## /maintenance HTTP 端点
 
@@ -224,7 +217,7 @@ curl -X GET 'http://localhost:4000/admin/datanode/scheduling/status?node_id=1'
 
 ## /procedure/status HTTP 端点
 
-`GET /admin/procedure/status?procedure_id=<uuid>` 返回提交到 leader Metasrv 的 procedure 状态，可用于跟踪 `/datanode/drain` 发起的 drain。SQL 函数 `ADMIN procedure_state` 返回相同的状态。
+`GET /admin/procedure/status?procedure_id=<uuid>` 返回提交到 leader Metasrv 的 Procedure 状态，可用于跟踪 `/datanode/drain` 发起的 Drain。SQL 函数 `ADMIN procedure_state` 返回相同的状态。
 
 ```bash
 curl -X GET 'http://localhost:4000/admin/procedure/status?procedure_id=a3b9f746-81c2-4e65-9d07-6f2c8b104ea5'
@@ -234,7 +227,7 @@ curl -X GET 'http://localhost:4000/admin/procedure/status?procedure_id=a3b9f746-
 {"procedure_id":"a3b9f746-81c2-4e65-9d07-6f2c8b104ea5","status":"Done","error":null}
 ```
 
-`status` 取值为 `Running`、`Done`、`Retrying`、`Failed`、`PrepareRollback`、`RollingBack` 或 `Poisoned`。procedure 正在失败或已经失败时，`error` 包含失败信息，其他情况下为 `null`。当 drain 放弃某些 region 时，它们会列在 `error` 中；以 `Done` 结束的 drain 不报告迁移数量。`Done` 只表示 drain 没有更多需要提交的迁移：Metasrv 重启后，已恢复的迁移可能仍在运行，因此在将节点下线前，请按[迁移 Datanode 上的 Region](/user-guide/deployments-administration/maintenance/drain-datanode.md)中的步骤确认 region 分布。
+`status` 取值为 `Running`、`Done`、`Retrying`、`Failed`、`PrepareRollback`、`RollingBack` 或 `Poisoned`。Procedure 正在失败或已经失败时，`error` 包含失败信息，其他情况下为 `null`。当 Drain 无法迁移部分 Region 时，它们会列在 `error` 中；以 `Done` 结束的 Drain 不报告迁移数量。`Done` 只表示 Drain 没有更多需要提交的迁移。Metasrv 重启后，已恢复的迁移可能仍在运行，因此在将节点下线前，请按[Drain Datanode](/user-guide/deployments-administration/maintenance/drain-datanode.md)中的步骤确认 Region 分布。
 
 该端点必须发送到 leader Metasrv，且不受 Procedure Manager 暂停开关影响。
 
@@ -282,6 +275,6 @@ curl -X POST \
 {"code":1006,"error":"Another drain procedure is running for datanode: 1","execution_time_ms":0}
 ```
 
-- `1006`（`IllegalState`，HTTP `500`）：请求打到了 follower Metasrv；该节点已有 drain 在运行；恢复调度时该节点正在 drain；或 Metasrv 尚未完成 procedure 恢复。
-- `1004`（`InvalidArguments`，HTTP `400`）：drain 的目标节点与源节点相同；`parallelism` 超出 1–32；`timeout` 为零或大到无法调度；或 `procedure_id` 格式不合法、不存在。
-- HTTP `422`：JSON 请求体无法反序列化，例如缺少必填字段、`strategy` 取值未知或 `timeout` 时长格式错误。能正常反序列化但未通过校验的取值（例如 `parallelism` 超出 1–32）返回 HTTP `400`。
+- `1006`（`IllegalState`，HTTP `500`）：请求打到了 follower Metasrv；该节点已有 Drain 在运行；恢复调度时该节点正在 Drain；或 Metasrv 尚未完成 Procedure 恢复。
+- `1004`（`InvalidArguments`，HTTP `400`）：Drain 的目标节点与源节点相同；`parallelism` 超出 1–32；`timeout` 为零或大到无法调度；或 `procedure_id` 格式不合法、不存在。
+- HTTP `422`：JSON 请求体无法解析，例如缺少必填字段、`strategy` 取值未知或 `timeout` 时长格式错误。能正常解析但未通过校验的取值（例如 `parallelism` 超出 1–32）返回 HTTP `400`。
