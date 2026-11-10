@@ -440,6 +440,7 @@ const sidebars: SidebarsConfig = {
               label: 'Maintenance',
               items: [
                 'user-guide/deployments-administration/maintenance/maintenance-mode',
+                'user-guide/deployments-administration/maintenance/drain-datanode',
                 'user-guide/deployments-administration/maintenance/recovery-mode',
                 'user-guide/deployments-administration/maintenance/prevent-metadata-changes',
                 'user-guide/deployments-administration/maintenance/sequence-management',
