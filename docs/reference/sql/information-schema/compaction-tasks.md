@@ -162,7 +162,7 @@ The function returns:
 
 A pending task can be cancelled without cancelling the active task. Cancelling an active task preserves other pending manual work unless a pending DDL operation takes precedence. A stale task ID cannot cancel a replacement task.
 
-Cancellation is cooperative. It does not roll back committed work, and units that have already entered commit may still finish. A task that is too late to cancel returns an error. Remote compaction cancellation is not supported. Cancellation does not disable subsequent automatic compaction for the region.
+Cancellation is cooperative. It does not roll back committed work, and units that have already entered commit may still finish. A task that is too late to cancel returns an error. Remote compaction cancellation is not supported. Internal metric metadata-region tasks remain visible in this table, but cancelling them returns an unsupported-operation error before region routing. Cancellation does not disable subsequent automatic compaction for the region.
 
 Query the same task ID again to check whether it has left the live task set:
 
