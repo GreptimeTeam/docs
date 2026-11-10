@@ -56,6 +56,7 @@ The tables below distinguish implemented metadata tables from compatibility tabl
 | Table Name | Description |
 | --- | --- |
 | [`BUILD_INFO`](./build-info.md) | Provides the system build info. |
+| [`COMPACTION_TASKS`](./compaction-tasks.md) | Provides the state, phase, and parameters of current compaction tasks. |
 | [`REGION_PEERS`](./region-peers.md) | Provides details about where regions are stored. |
 | [`REGION_INFO`](./region-info.md) | Provides Region runtime and manifest metadata, such as role and state, sequences, manifest version, Region options, SST format, and node ownership. |
 | [`REGION_STATISTICS`](./region-statistics.md) | Provides details about region statistics info, such as disk size, etc. |

@@ -211,3 +211,7 @@ The strict window compaction strategy will assign the file `[3, 8]` that covers 
 Figure B shows the final compaction result with three files: `[0, 3]`, `[4, 7]`, and `[8, 10]`. These files do not overlap with each other.
 
 ![compaction-strict-window.jpg](/compaction-strict-window.jpg)
+
+## Monitor and cancel compaction tasks
+
+Query [`information_schema.compaction_tasks`](/reference/sql/information-schema/compaction-tasks.md) to inspect the state, phase, and parameters of current compaction tasks. Use the returned `region_id` and `task_id` with `ADMIN cancel_region_compaction(region_id, task_id)` to request cancellation of a specific task. See the reference page for cancellation limits and return values.

@@ -721,6 +721,7 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/collations',
                 'reference/sql/information-schema/collation-character-set-applicability',
                 'reference/sql/information-schema/columns',
+                'reference/sql/information-schema/compaction-tasks',
                 'reference/sql/information-schema/engines',
                 'reference/sql/information-schema/key-column-usage',
                 'reference/sql/information-schema/partitions',

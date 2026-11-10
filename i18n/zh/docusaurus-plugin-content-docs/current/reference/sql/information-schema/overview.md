@@ -56,6 +56,7 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 |表名 | 描述|
 | --- | --- |
 | [`BUILD_INFO`](./build-info.md) | 提供了系统构建的信息。 |
+| [`COMPACTION_TASKS`](./compaction-tasks.md) | 提供当前压缩任务的状态、阶段和参数。 |
 | [`REGION_PEERS`](./region-peers.md) | 提供了表的 Region 存储的详细信息。 |
 | [`REGION_INFO`](./region-info.md) | 提供 Region 的运行时和 manifest 元数据，例如角色和状态、序列号、manifest 版本、Region 选项、SST 格式以及节点归属。 |
 | [`REGION_STATISTICS`](./region-statistics.md) | 提供 Region 的详细统计信息，例如行数等。 |

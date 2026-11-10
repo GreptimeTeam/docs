@@ -21,6 +21,7 @@ GreptimeDB provides some administration functions to manage the database and dat
 * `discard_unflushed(table_name_or_region_id)` to permanently discard unflushed data from every physical region of a table or from one region.
 * `compact_table(table_name, [type], [options])` to schedule a compaction task for a table by table name, read [compaction](/user-guide/deployments-administration/manage-data/compaction.md#strict-window-compaction-strategy-swcs-and-manual-compaction) for more details.
 * `compact_region(region_id)` to schedule a compaction task for a region by region id.
+* `cancel_region_compaction(region_id, task_id)` to request cancellation of a specific compaction task in a region. See [COMPACTION_TASKS](./information-schema/compaction-tasks.md) for task IDs and cancellation behavior.
 * `build_index(table_name)` to build missing physical indexes for a table's existing SST files after adding or changing index definitions.
 * `migrate_region(region_id, from_peer, to_peer, [timeout])` to migrate regions between datanodes, please read the [Region Migration](/user-guide/deployments-administration/manage-data/region-migration.md).
 * `procedure_state(procedure_id)` to query a procedure state by its id.
