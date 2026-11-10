@@ -20,6 +20,7 @@ GreptimeDB 提供了一些管理函数来管理数据库和数据：
 * `discard_unflushed(table_name_or_region_id)` 永久丢弃表中所有物理 Region 或指定 Region 的未刷盘数据。
 * `compact_table(table_name, [type], [options])` 为表启动一个 compaction 任务，详细信息请阅读 [compaction](/user-guide/deployments-administration/manage-data/compaction.md#严格窗口压缩策略swcs和手动压缩)。
 * `compact_region(region_id)` 为 Region 启动一个 compaction 任务。
+* `cancel_region_compaction(region_id, task_id)` 请求取消指定 Region 的某个压缩任务。任务 ID 和取消行为请参阅 [COMPACTION_TASKS](./information-schema/compaction-tasks.md)。
 * `build_index(table_name)` 在新增或修改索引定义后，为表已有的 SST 文件补建缺失的物理索引。
 * `migrate_region(region_id, from_peer, to_peer, [timeout])` 在 Datanode 之间迁移 Region，请阅读 [Region Migration](/user-guide/deployments-administration/manage-data/region-migration.md)。
 * `procedure_state(procedure_id)` 根据 ID 查询 Procedure 状态。
