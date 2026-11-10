@@ -214,4 +214,4 @@ Figure B shows the final compaction result with three files: `[0, 3]`, `[4, 7]`,
 
 ## Monitor and cancel compaction tasks
 
-Query [`information_schema.compaction_tasks`](/reference/sql/information-schema/compaction-tasks.md) to inspect the state, phase, and parameters of current compaction tasks. Use the returned `region_id` and `task_id` with `ADMIN cancel_region_compaction(region_id, task_id)` to request cancellation of a specific task. See the reference page for cancellation limits and return values.
+Query [`information_schema.compaction_tasks`](/reference/sql/information-schema/compaction-tasks.md) to inspect the state, phase, and parameters of current compaction tasks. Use the returned `region_id` and `task_id` with `ADMIN CANCEL_REGION_COMPACTION(region_id, task_id)` to request cancellation of a specific task. See the reference page for cancellation limits and return values.

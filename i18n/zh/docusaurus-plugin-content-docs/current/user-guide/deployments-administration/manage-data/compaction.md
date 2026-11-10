@@ -212,4 +212,4 @@ ADMIN COMPACT_TABLE(
 
 ## 查看和取消压缩任务
 
-查询 [`information_schema.compaction_tasks`](/reference/sql/information-schema/compaction-tasks.md) 可以查看当前压缩任务的状态、阶段和参数。使用查询结果中的 `region_id` 和 `task_id`，可通过 `ADMIN cancel_region_compaction(region_id, task_id)` 请求取消指定任务。取消条件和返回值请参阅该系统表的参考文档。
+查询 [`information_schema.compaction_tasks`](/reference/sql/information-schema/compaction-tasks.md) 可以查看当前压缩任务的状态、阶段和参数。使用查询结果中的 `region_id` 和 `task_id`，可通过 `ADMIN CANCEL_REGION_COMPACTION(region_id, task_id)` 请求取消指定任务。取消条件和返回值请参阅该系统表的参考文档。
