@@ -248,18 +248,15 @@ WHERE json_get(attrs, 'http.status') IN (400, 404, 500);
 
 #### 子路径跳数索引
 
-在 type hint 后添加 `SKIPPING INDEX`，可以为该路径创建 Bloom filter 跳数索引。
-这类索引可以加速等值和 `IN` 过滤，也支持同一路径上多个等值条件的 `OR` 组合，
-但不能加速范围比较。
+在 type hint 后添加 `SKIPPING INDEX`，可以加速该路径上的等值和 `IN` 过滤，
+例如查找指定服务或状态码的日志。
 
 ```sql
 CREATE TABLE skipping_logs (
     ts TIMESTAMP TIME INDEX,
     attrs JSON2 (
         service.name STRING SKIPPING INDEX,
-        http.status BIGINT SKIPPING INDEX WITH (
-            granularity = '8192', false_positive_rate = '0.01'
-        )
+        http.status BIGINT SKIPPING INDEX
     )
 ) WITH ('append_mode' = 'true');
 
@@ -269,23 +266,18 @@ SELECT * FROM skipping_logs
 WHERE json_get(attrs, 'http.status') IN (400, 404, 500);
 ```
 
-`WITH` 选项与普通列相同，包括 `type`（仅支持 `BLOOM`）、`granularity`（默认
-`10240`）和 `false_positive_rate`（默认 `0.01`）。详见
-[跳数索引](/user-guide/manage-data/data-index.md#跳数索引)。
+配置选项和使用详情见[跳数索引](/user-guide/manage-data/data-index.md#跳数索引)。
 
 #### 子路径全文索引
 
-在 `STRING` 类型的 type hint 后添加 `FULLTEXT INDEX`，可以为该路径的文本创建
-全文索引。其他 type hint 类型不支持全文索引。支持 `bloom`（默认）和 `tantivy`
-两种后端，[配置选项](/user-guide/manage-data/data-index.md#配置选项)与普通字符串列相同。
-
-Bloom 后端用于加速 `matches_term` 和符合条件的 `LIKE` 查询：
+在 `STRING` 类型的 type hint 后添加 `FULLTEXT INDEX`，可以加速该路径上的
+文本搜索，例如查找日志中的错误信息。全文索引仅支持 `STRING` 类型的 type hint。
 
 ```sql
 CREATE TABLE fulltext_logs (
     ts TIMESTAMP TIME INDEX,
     attrs JSON2 (
-        message STRING FULLTEXT INDEX WITH (backend = 'bloom')
+        message STRING FULLTEXT INDEX
     )
 ) WITH ('append_mode' = 'true');
 
@@ -293,44 +285,10 @@ SELECT * FROM fulltext_logs WHERE matches_term(attrs.message, 'error');
 
 SELECT * FROM fulltext_logs
 WHERE matches_term(json_get(attrs, 'message'), 'error');
-
-SELECT * FROM fulltext_logs WHERE attrs.message LIKE '%disk quota exceeded%';
 ```
 
-上述 `LIKE` 示例可以利用中间的完整词项 `quota` 进行剪枝。`LIKE '%error%'`
-等无法保证词边界的模式不能使用 Bloom 全文索引剪枝。限制详见
-[LIKE 查询](/user-guide/manage-data/data-index.md#like-查询)。
-
-Tantivy 后端用于加速 `matches()` 查询：
-
-```sql
-CREATE TABLE fulltext_tantivy_logs (
-    ts TIMESTAMP TIME INDEX,
-    attrs JSON2 (
-        message STRING FULLTEXT INDEX WITH (backend = 'tantivy')
-    )
-) WITH ('append_mode' = 'true');
-
-SELECT * FROM fulltext_tantivy_logs WHERE matches(attrs.message, 'error');
-```
-
-`matches_term` 不使用 Tantivy 索引，而是通过扫描执行。
-
-#### 组合与维护子路径索引
-
-同一路径可以启用多种索引。例如，字符串路径可以声明
-`STRING FULLTEXT INDEX SKIPPING INDEX INVERTED INDEX`。
-
-子路径索引在 flush 和 compaction 时构建。修改 type hint 或索引选项后，只有当
-已有 SST 文件保存的元数据和索引与查询兼容时，才能使用该路径的索引；否则
-GreptimeDB 会扫描数据。
-
-:::warning
-手动重建索引（`ADMIN BUILD_INDEX`）以及 schema 变更触发的索引重建会跳过 JSON
-子路径索引。如果重建过程为其他索引写入了替换索引文件，可能会移除该 SST 文件中
-已有的 JSON 子路径索引。后续 flush 和 compaction 会按当前 type hint 构建
-子路径索引，手动重建无法恢复这些索引。
-:::
+查询语法和匹配规则见[全文搜索](/user-guide/logs/fulltext-search.md)。索引配置和
+使用详情见[全文索引](/user-guide/manage-data/data-index.md#全文索引)。
 
 ### 控制路径自动展开
 
@@ -357,10 +315,6 @@ CREATE TABLE application_logs (
 
 已有 JSON2 列的配置可以通过 `ALTER TABLE ... MODIFY COLUMN` 修改，详见
 [修改 JSON2 配置](/reference/sql/alter.md#修改-json2-配置)。
-
-也可以通过该语句添加、修改或删除 type hint 上声明的索引。新配置会替换 JSON2
-列的全部配置，因此需要保留的 type hint、索引声明和选项都必须重新写出。历史文件
-遵循[子路径索引维护规则](#组合与维护子路径索引)。
 
 ## 查询 JSON2
 

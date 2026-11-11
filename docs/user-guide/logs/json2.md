@@ -263,19 +263,15 @@ Inverted indexes support filters such as equality, range comparisons, `BETWEEN`,
 
 #### Skipping indexes on subpaths
 
-Add `SKIPPING INDEX` to a type hint to create a Bloom filter skipping index on
-that path. These indexes accelerate equality and `IN` predicates, including
-`OR` combinations of equality predicates on the same path. They do not
-accelerate range comparisons.
+Add `SKIPPING INDEX` to a type hint to accelerate equality and `IN` filters on
+that path, such as finding logs for a specific service or status code.
 
 ```sql
 CREATE TABLE skipping_logs (
     ts TIMESTAMP TIME INDEX,
     attrs JSON2 (
         service.name STRING SKIPPING INDEX,
-        http.status BIGINT SKIPPING INDEX WITH (
-            granularity = '8192', false_positive_rate = '0.01'
-        )
+        http.status BIGINT SKIPPING INDEX
     )
 ) WITH ('append_mode' = 'true');
 
@@ -285,25 +281,20 @@ SELECT * FROM skipping_logs
 WHERE json_get(attrs, 'http.status') IN (400, 404, 500);
 ```
 
-The `WITH` options are the same as for regular columns: `type` (only `BLOOM`),
-`granularity` (default `10240`), and `false_positive_rate` (default `0.01`). See
+For configuration options and usage details, see
 [Skipping Index](/user-guide/manage-data/data-index.md#skipping-index).
 
 #### Full-text indexes on subpaths
 
-Add `FULLTEXT INDEX` to a `STRING` type hint to index text on that path.
-Full-text indexes are not supported on other type-hint data types. Both `bloom`
-(the default) and `tantivy` backends are supported, with the same
-[configuration options](/user-guide/manage-data/data-index.md#configuration-options)
-as regular string columns.
-
-Use the Bloom backend for `matches_term` and eligible `LIKE` predicates:
+Add `FULLTEXT INDEX` to a `STRING` type hint to accelerate text searches on that
+path, such as finding error messages in logs. Full-text indexes are only
+supported on `STRING` type hints.
 
 ```sql
 CREATE TABLE fulltext_logs (
     ts TIMESTAMP TIME INDEX,
     attrs JSON2 (
-        message STRING FULLTEXT INDEX WITH (backend = 'bloom')
+        message STRING FULLTEXT INDEX
     )
 ) WITH ('append_mode' = 'true');
 
@@ -311,48 +302,12 @@ SELECT * FROM fulltext_logs WHERE matches_term(attrs.message, 'error');
 
 SELECT * FROM fulltext_logs
 WHERE matches_term(json_get(attrs, 'message'), 'error');
-
-SELECT * FROM fulltext_logs WHERE attrs.message LIKE '%disk quota exceeded%';
 ```
 
-The `LIKE` example can use the complete middle term `quota` for pruning.
-Patterns such as `LIKE '%error%'` cannot use Bloom full-text pruning because
-they do not guarantee word boundaries. See
-[LIKE queries](/user-guide/manage-data/data-index.md#like-queries) for the
-restrictions.
-
-Use the Tantivy backend for `matches()` queries:
-
-```sql
-CREATE TABLE fulltext_tantivy_logs (
-    ts TIMESTAMP TIME INDEX,
-    attrs JSON2 (
-        message STRING FULLTEXT INDEX WITH (backend = 'tantivy')
-    )
-) WITH ('append_mode' = 'true');
-
-SELECT * FROM fulltext_tantivy_logs WHERE matches(attrs.message, 'error');
-```
-
-`matches_term` does not use the Tantivy index and executes by scanning.
-
-#### Combine and maintain subpath indexes
-
-A path can have multiple index types. For example, a string path can declare
-`STRING FULLTEXT INDEX SKIPPING INDEX INVERTED INDEX`.
-
-Subpath indexes are built during flush and compaction. After changing the type
-hints or index options, an existing SST file can use a path index only when its
-saved metadata and index are compatible with the query. Otherwise, GreptimeDB
-scans the data.
-
-:::warning
-Manual index rebuilds (`ADMIN BUILD_INDEX`) and schema-change index rebuilds
-skip JSON subpath indexes. If a rebuild writes a replacement index file for
-other indexes, it can remove existing JSON subpath indexes from that SST file.
-Subsequent flushes and compactions build subpath indexes using the current
-type hints; manual rebuilds cannot restore them.
-:::
+For query syntax and matching rules, see
+[Full-Text Search](/user-guide/logs/fulltext-search.md). For index configuration
+and usage details, see
+[Full-Text Index](/user-guide/manage-data/data-index.md#full-text-index).
 
 ### Control automatic path expansion
 
@@ -382,11 +337,6 @@ layout and performance, not the logical JSON schema.
 The settings of an existing JSON2 column can be changed with
 `ALTER TABLE ... MODIFY COLUMN`. See
 [Modify JSON2 settings](/reference/sql/alter.md#modify-json2-settings).
-
-This also lets you add, change, or remove indexes declared on type hints.
-The new settings replace all settings for the JSON2 column, so include every
-type hint, index declaration, and option you want to retain. Historical files
-follow the [subpath index maintenance rules](#combine-and-maintain-subpath-indexes).
 
 ## Query JSON2
 

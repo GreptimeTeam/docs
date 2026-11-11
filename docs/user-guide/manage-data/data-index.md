@@ -212,11 +212,6 @@ ADMIN BUILD_INDEX('logs');
 
 This command also rebuilds Bloom full-text indexes with an outdated format version. See [Build Index](/reference/sql/admin.md#build-index) for details.
 
-JSON2 subpath indexes are excluded from manual and schema-change index
-rebuilds. A rebuild that replaces an SST's index file for other indexes can
-remove its existing subpath indexes. See
-[Combine and maintain subpath indexes](/user-guide/logs/json2.md#combine-and-maintain-subpath-indexes).
-
 #### Examples
 
 **Creating a Table with Full-Text Index**
