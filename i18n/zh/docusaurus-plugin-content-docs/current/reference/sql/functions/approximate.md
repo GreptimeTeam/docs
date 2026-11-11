@@ -292,12 +292,13 @@ GROUP BY
 `stddev_pop_state(value)` 是聚合函数，它基于 `DOUBLE` 表达式创建可合并状态，并以 `BINARY` 类型返回。
 
 - 函数忽略值为 `NULL` 的样本。
+- 不支持 `DISTINCT`；使用 `stddev_pop_state(DISTINCT value)` 会导致查询失败。
 - 输入值和所有中间计算结果都必须是有限值。输入或计算产生非有限值时，查询将失败。
 - 如果没有非 `NULL` 样本，函数返回空状态。将空状态传给 `stddev_pop_calc` 会返回 `NULL`。
 
 ### `stddev_pop_merge`
 
-`stddev_pop_merge(state)` 是聚合函数，它合并由 `stddev_pop_state` 创建的多个 `BINARY` 状态，并返回合并后的 `BINARY` 状态。函数忽略值为 `NULL` 的状态；如果状态格式错误或不兼容，查询将失败。
+`stddev_pop_merge(state)` 是聚合函数，它合并由 `stddev_pop_state` 创建的多个 `BINARY` 状态，并返回合并后的 `BINARY` 状态。函数忽略值为 `NULL` 的状态；如果状态格式错误或不兼容，查询将失败。不支持 `DISTINCT`；使用 `stddev_pop_merge(DISTINCT state)` 会导致查询失败。
 
 在计算最终标准差之前，可使用此函数合并来自不同时间窗口、分区或数据源的持久化状态。
 

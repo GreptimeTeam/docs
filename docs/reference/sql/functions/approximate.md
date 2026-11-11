@@ -292,12 +292,13 @@ Treat the binary states as opaque values. Create, merge, and read them only with
 `stddev_pop_state(value)` is an aggregate function that creates a mergeable state from a `DOUBLE` expression and returns it as `BINARY`.
 
 - The function ignores `NULL` samples.
+- `DISTINCT` is not supported; `stddev_pop_state(DISTINCT value)` causes the query to fail.
 - The input and all intermediate arithmetic must be finite. Non-finite input or arithmetic causes the query to fail.
 - If there are no non-`NULL` samples, the function returns an empty state. Passing that state to `stddev_pop_calc` returns `NULL`.
 
 ### `stddev_pop_merge`
 
-`stddev_pop_merge(state)` is an aggregate function that combines `BINARY` states created by `stddev_pop_state` and returns a merged `BINARY` state. It ignores `NULL` states. A malformed or incompatible state causes the query to fail.
+`stddev_pop_merge(state)` is an aggregate function that combines `BINARY` states created by `stddev_pop_state` and returns a merged `BINARY` state. It ignores `NULL` states. A malformed or incompatible state causes the query to fail. `DISTINCT` is not supported; `stddev_pop_merge(DISTINCT state)` causes the query to fail.
 
 Use this function to combine persisted states from different time windows, partitions, or data sources before calculating the final standard deviation.
 
