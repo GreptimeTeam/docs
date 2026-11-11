@@ -1,0 +1,25 @@
+docs/user-guide/ingest-data/for-observability/prometheus.md
+  s_322b9d6c5e4402::t_cf74a2840589a2 38,47-49
+docs/user-guide/protocols/grpc.md
+  s_322b9d6c5e4402::t_75b7c0e777d647 14
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/ingest-data/for-observability/prometheus.md
+  s_322b9d6c5e4402::t_febe716d8bcb9a 39,48-50
+i18n/zh/docusaurus-plugin-content-docs/current/user-guide/protocols/grpc.md
+  s_322b9d6c5e4402::t_73ba6e360524bc 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4df050ee402c737b81379bd058cf2267f949f938",
+  "prompts": {},
+  "sessions": {
+    "s_322b9d6c5e4402": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0c45a-04f4-7030-b37b-3727a0dc196b",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
