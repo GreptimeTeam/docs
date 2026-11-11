@@ -1,6 +1,6 @@
 ---
 keywords: [JSON2, JSON, logs, structured logs, type hints, json_get]
-description: Learn how to use the JSON2 type in GreptimeDB, including table creation, type hints, subpath inverted indexes, JSON field access, and current limitations.
+description: Learn how to use the JSON2 type in GreptimeDB, including table creation, type hints, subpath indexes, JSON field access, and current limitations.
 ---
 
 # JSON2 Type
@@ -175,6 +175,8 @@ The syntax for declaring type hints is:
 ```sql
 json_column JSON2 (
     path.to.field DATA_TYPE [INVERTED INDEX]
+        [SKIPPING INDEX [WITH (option = value, ...)]]
+        [FULLTEXT INDEX [WITH (option = value, ...)]]
 )
 ```
 
@@ -258,6 +260,54 @@ WHERE json_get(attrs, 'http.status') IN (400, 404, 500);
 
 Inverted indexes support filters such as equality, range comparisons, `BETWEEN`,
 `IN`, and string regular expression matching with `~`.
+
+#### Skipping indexes on subpaths
+
+Add `SKIPPING INDEX` to a type hint to accelerate equality and `IN` filters on
+that path, such as finding logs for a specific service or status code.
+
+```sql
+CREATE TABLE skipping_logs (
+    ts TIMESTAMP TIME INDEX,
+    attrs JSON2 (
+        service.name STRING SKIPPING INDEX,
+        http.status BIGINT SKIPPING INDEX
+    )
+) WITH ('append_mode' = 'true');
+
+SELECT * FROM skipping_logs WHERE attrs.service.name = 'api';
+
+SELECT * FROM skipping_logs
+WHERE json_get(attrs, 'http.status') IN (400, 404, 500);
+```
+
+For configuration options and usage details, see
+[Skipping Index](/user-guide/manage-data/data-index.md#skipping-index).
+
+#### Full-text indexes on subpaths
+
+Add `FULLTEXT INDEX` to a `STRING` type hint to accelerate text searches on that
+path, such as finding error messages in logs. Full-text indexes are only
+supported on `STRING` type hints.
+
+```sql
+CREATE TABLE fulltext_logs (
+    ts TIMESTAMP TIME INDEX,
+    attrs JSON2 (
+        message STRING FULLTEXT INDEX
+    )
+) WITH ('append_mode' = 'true');
+
+SELECT * FROM fulltext_logs WHERE matches_term(attrs.message, 'error');
+
+SELECT * FROM fulltext_logs
+WHERE matches_term(json_get(attrs, 'message'), 'error');
+```
+
+For query syntax and matching rules, see
+[Full-Text Search](/user-guide/logs/fulltext-search.md). For index configuration
+and usage details, see
+[Full-Text Index](/user-guide/manage-data/data-index.md#full-text-index).
 
 ### Control automatic path expansion
 

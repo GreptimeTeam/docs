@@ -92,6 +92,12 @@ CREATE TABLE sensor_data (
 
 然而，跳数索引无法处理复杂的过滤条件，并且其过滤性能通常不如倒排索引或全文索引。
 
+JSON2 支持为显式声明 type hint 的子路径创建 Bloom filter 跳数索引。在路径类型
+后添加 `SKIPPING INDEX`，也可以附加
+`WITH (granularity = '8192', false_positive_rate = '0.01')`。这类索引可以
+加速等值和 `IN` 过滤，但不能加速范围比较。示例见
+[子路径跳数索引](/user-guide/logs/json2.md#子路径跳数索引)。
+
 ### 全文索引
 
 全文索引专门用于优化字符串列的文本搜索操作。它支持基于词的匹配和文本搜索功能，能够实现对文本内容的高效检索。你可以使用灵活的关键词、短语或模式匹配来查询文本数据。
@@ -111,6 +117,11 @@ CREATE TABLE logs (
 ```
 
 #### 配置选项
+
+JSON2 也支持为显式声明 `STRING` type hint 的子路径创建 `FULLTEXT INDEX`。
+两种后端及下列选项都适用于这些路径。`bloom` 用于加速 `matches_term` 和符合
+条件的 `LIKE` 查询，`tantivy` 用于加速 `matches()` 查询。详见
+[子路径全文索引](/user-guide/logs/json2.md#子路径全文索引)。
 
 在创建或修改全文索引时，您可以使用 `FULLTEXT INDEX WITH` 指定以下选项：
 

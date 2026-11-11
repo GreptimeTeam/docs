@@ -1,6 +1,6 @@
 ---
 keywords: [JSON2, JSON, logs, structured logs, type hints, json_get]
-description: 介绍 GreptimeDB 中 JSON2 类型的使用方式，包括建表、type hint、子路径倒排索引、JSON 字段读取以及当前限制。
+description: 介绍 GreptimeDB 中 JSON2 类型的使用方式，包括建表、type hint、子路径索引、JSON 字段读取以及当前限制。
 ---
 
 # JSON2 类型
@@ -165,6 +165,8 @@ JSON2 支持使用 type hint 为指定的子路径声明确定的数据类型。
 ```sql
 json_column JSON2 (
     path.to.field DATA_TYPE [INVERTED INDEX]
+        [SKIPPING INDEX [WITH (option = value, ...)]]
+        [FULLTEXT INDEX [WITH (option = value, ...)]]
 )
 ```
 
@@ -243,6 +245,50 @@ WHERE json_get(attrs, 'http.status') IN (400, 404, 500);
 ```
 
 倒排索引支持等值、范围、`BETWEEN`、`IN` 和字符串正则匹配 `~` 等过滤条件。
+
+#### 子路径跳数索引
+
+在 type hint 后添加 `SKIPPING INDEX`，可以加速该路径上的等值和 `IN` 过滤，
+例如查找指定服务或状态码的日志。
+
+```sql
+CREATE TABLE skipping_logs (
+    ts TIMESTAMP TIME INDEX,
+    attrs JSON2 (
+        service.name STRING SKIPPING INDEX,
+        http.status BIGINT SKIPPING INDEX
+    )
+) WITH ('append_mode' = 'true');
+
+SELECT * FROM skipping_logs WHERE attrs.service.name = 'api';
+
+SELECT * FROM skipping_logs
+WHERE json_get(attrs, 'http.status') IN (400, 404, 500);
+```
+
+配置选项和使用详情见[跳数索引](/user-guide/manage-data/data-index.md#跳数索引)。
+
+#### 子路径全文索引
+
+在 `STRING` 类型的 type hint 后添加 `FULLTEXT INDEX`，可以加速该路径上的
+文本搜索，例如查找日志中的错误信息。全文索引仅支持 `STRING` 类型的 type hint。
+
+```sql
+CREATE TABLE fulltext_logs (
+    ts TIMESTAMP TIME INDEX,
+    attrs JSON2 (
+        message STRING FULLTEXT INDEX
+    )
+) WITH ('append_mode' = 'true');
+
+SELECT * FROM fulltext_logs WHERE matches_term(attrs.message, 'error');
+
+SELECT * FROM fulltext_logs
+WHERE matches_term(json_get(attrs, 'message'), 'error');
+```
+
+查询语法和匹配规则见[全文搜索](/user-guide/logs/fulltext-search.md)。索引配置和
+使用详情见[全文索引](/user-guide/manage-data/data-index.md#全文索引)。
 
 ### 控制路径自动展开
 
