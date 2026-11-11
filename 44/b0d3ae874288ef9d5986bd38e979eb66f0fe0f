@@ -1,0 +1,23 @@
+docs/contributor-guide/metasrv/admin-api.md
+  s_322b9d6c5e4402::t_18649cf2158fc1 2-3,19,22,134-181,218-233,269-280
+i18n/zh/docusaurus-plugin-content-docs/current/contributor-guide/metasrv/admin-api.md
+  s_322b9d6c5e4402::t_a89de93d64c5dd 2-3,19,22,134-181,218-233,269-280
+sidebars.ts
+  s_322b9d6c5e4402::t_3bf8d1c00d45c0 443
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "44b0d3ae874288ef9d5986bd38e979eb66f0fe0f",
+  "prompts": {},
+  "sessions": {
+    "s_322b9d6c5e4402": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0c45a-04f4-7030-b37b-3727a0dc196b",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "WenyXu <wenymedia@gmail.com>"
+    }
+  }
+}
