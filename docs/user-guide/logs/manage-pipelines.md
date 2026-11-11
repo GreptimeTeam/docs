@@ -38,7 +38,7 @@ The last uploaded version is used by default if no version is specified.
 After successfully uploading a pipeline, the response will include version information:
 
 ```json
-{"name":"test","version":"2024-06-27 12:02:34.257312110Z"}
+{"pipelines":[{"name":"test","version":"<version>"}],"execution_time_ms":6}
 ```
 
 The version is a timestamp in UTC format that indicates when the pipeline was created.
