@@ -41,7 +41,7 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/test" \
 成功上传 pipeline 后，响应将包含版本信息：
 
 ```json
-{"name":"test","version":"2024-06-27 12:02:34.257312110Z"}
+{"pipelines":[{"name":"test","version":"<version>"}],"execution_time_ms":6}
 ```
 
 版本是 UTC 格式的时间戳，表示 pipeline 的创建时间。
