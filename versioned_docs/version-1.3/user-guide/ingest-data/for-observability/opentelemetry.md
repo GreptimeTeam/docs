@@ -209,28 +209,31 @@ If you are using a table that was created by an older OTLP metrics ingestion for
 ### Delta Metric Compatibility
 
 Since v1.3.0, `otlp_aggregation_temporality` is reserved for OTLP ingestion.
-For attributes selected for storage, GreptimeDB checks the final label name
-**after** name translation and scope prefixing. For example, a data-point
-attribute named `otlp.aggregation.temporality` conflicts with the reserved label
-under the default translation strategy. Rename or remove conflicting attributes
-in the exporter or collector before sending them. Such a collision can reject the
-request, even for cumulative metrics or gauges.
+For attributes selected for storage, GreptimeDB checks the label name after
+name translation and scope prefixing. Under the default translation strategy,
+a data-point attribute named `otlp.aggregation.temporality` becomes the reserved
+name. This collision can cause GreptimeDB to reject the request, even for
+cumulative metrics or gauges.
+Rename or remove conflicting attributes in the exporter or collector before
+sending them.
 
-For a fixed-schema destination, define `otlp_aggregation_temporality` as a nullable
-`STRING` tag (part of the primary key) before sending delta metrics. Cumulative
-and unspecified `Sum` and explicit `Histogram` points omit this tag, so it must
-allow `NULL` for those points to coexist with delta points. If automatic schema
-evolution is disabled and the tag is missing, delta writes fail. Automatic table
-creation or schema evolution can add the missing tag when delta data arrives;
-upgrading alone does not add it. Inspect the destination with `SHOW CREATE TABLE` and, if
-its schema is incompatible, direct writes to a new table with the required schema.
+Before sending delta metrics to a table with a fixed schema, check that
+`otlp_aggregation_temporality` is a nullable `STRING` tag in its primary key.
+`Sum` and explicit `Histogram` points with cumulative or unspecified temporality
+omit this tag. Allowing `NULL` lets them share the table with delta points.
 
-For float series, `rate()` and `increase()` select raw-delta behavior from this
-stored tag, including for historical samples and data ingested through other
-protocols. Before upgrading, check whether existing series already carry
-`otlp_aggregation_temporality="delta"` for another purpose. Renaming an attribute
-at the sender only changes future writes; it does not repair stored labels.
-See the [v1.3 upgrade guidance](/user-guide/deployments-administration/upgrade.md#upgrading-from-v12-to-v13)
+Delta writes fail if the tag is missing and automatic schema evolution is
+disabled. Automatic table creation or schema evolution can add the missing tag
+when delta data arrives; upgrading alone does not. Use `SHOW CREATE TABLE` to
+check the destination. If its schema is incompatible, send writes to a new table
+with the required schema.
+
+`rate()` and `increase()` use raw-delta math for any float series with
+`otlp_aggregation_temporality="delta"`, including historical samples and data
+ingested through other protocols. Before upgrading, check whether this label
+already has a different meaning in your data. Renaming it at the sender affects
+future writes only; stored labels stay unchanged. See the
+[v1.3 upgrade guidance](/user-guide/deployments-administration/upgrade.md#otlp-delta-metrics-and-the-reserved-temporality-label)
 for handling existing series.
 
 ## Logs

@@ -106,25 +106,27 @@ infinities explicitly, and check the sign separately if signed zero matters.
 #### OTLP delta metrics and the reserved temporality label
 
 Delta metrics use the reserved tag `otlp_aggregation_temporality="delta"`.
-Before upgrading, check these three compatibility cases:
+Check the names of OTLP attributes selected for storage after translation and
+scope prefixing. Under the default translation strategy,
+`otlp.aggregation.temporality` becomes the reserved name and is rejected, even
+on cumulative metrics or gauges. Rename or remove conflicting attributes in
+your exporter or collector before upgrading.
 
-- **OTLP attributes:** Check the final names of attributes selected for storage,
-  after translation and scope prefixing. Under the default translation strategy,
-  `otlp.aggregation.temporality` becomes the reserved name and is rejected, even
-  on cumulative metrics or gauges. Rename or remove conflicting attributes in
-  your exporter or collector.
-- **Fixed-schema destinations:** Before enabling delta writes, ensure the primary
-  key includes a nullable `STRING` tag named `otlp_aggregation_temporality`.
-  Inspect existing tables with `SHOW CREATE TABLE`; upgrading alone does not add
-  it. If the schema cannot evolve, create a compatible destination table and
-  redirect writes before enabling delta export. Cumulative points leave the tag NULL.
-- **Historical series:** Any float series already carrying this exact tag with
-  value `delta`, including non-OTLP data, uses raw-delta semantics in `rate()` and
-  `increase()` after upgrading. `increase()` sums the samples in the range;
-  `rate()` divides that sum by the range duration in seconds. Check existing
-  label values and queries. If those samples are cumulative counters, migrate
-  the affected history to a table using a non-reserved label name and update
-  queries before upgrading. Renaming the label only on new writes does not change stored history.
+With automatic schema evolution enabled, GreptimeDB adds the tag when delta
+data arrives. If schema evolution is disabled, use `SHOW CREATE TABLE` to check
+that the primary key includes a nullable `STRING` tag named
+`otlp_aggregation_temporality` before enabling delta writes. Cumulative points
+leave the tag NULL. If the schema is incompatible, create a table with the
+required schema and redirect writes before enabling delta export. Upgrading
+alone does not add the tag.
+
+After upgrading, `rate()` and `increase()` use raw-delta math for any float
+series with `otlp_aggregation_temporality="delta"`, including historical samples
+and non-OTLP data. `increase()` sums the samples in the range; `rate()` divides
+that sum by the range duration in seconds. Check existing label values and
+queries. If those samples are cumulative counters, migrate the affected history
+to a table using a non-reserved label name and update queries before upgrading.
+Renaming the label only on new writes does not change stored history.
 
 See [Delta Metric Compatibility](/user-guide/ingest-data/for-observability/opentelemetry.md#delta-metric-compatibility)
 for the schema and label rules.

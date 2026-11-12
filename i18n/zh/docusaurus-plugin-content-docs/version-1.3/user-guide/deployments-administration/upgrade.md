@@ -100,23 +100,23 @@ v1.3 Frontend 的写入重试依赖 Datanode 返回逐条写入结果，与旧 D
 #### OTLP 增量指标和保留的 temporality 标签
 
 增量指标使用保留标签 `otlp_aggregation_temporality="delta"`。
-升级前，请检查以下三种兼容性情况：
+请检查要保存的 OTLP 属性经过名称转换和 scope 前缀处理后的名称。
+默认转换策略会将 `otlp.aggregation.temporality` 转为保留名称，因而被拒绝，
+累积指标和 gauge 也不例外。升级前，请在 exporter 或 collector 中重命名或
+移除冲突属性。
 
-- **OTLP 属性：** 检查被选中存储的属性经过名称转换和 scope 前缀处理后的
-  最终名称。默认转换策略会将 `otlp.aggregation.temporality` 转为保留名称，
-  因而被拒绝，累计指标和 gauge 也不例外。请在 exporter 或 collector 中
-  重命名或移除冲突属性。
-- **固定 schema 的目标表：** 启用增量写入前，确认主键中包含名为
-  `otlp_aggregation_temporality` 的可空 `STRING` tag 列。通过
-  `SHOW CREATE TABLE` 检查已有表；仅升级版本不会添加该列。如果 schema
-  无法演进，请先创建兼容的目标表并切换写入，再启用增量导出。累计数据点
-  的该标签为 NULL。
-- **历史序列：** 已有浮点序列只要携带这个名称和值均相同的标签，升级后的
-  `rate()` 和 `increase()` 就会按原始增量处理，包括非 OTLP 数据。
-  `increase()` 对范围内的样本求和，`rate()` 再除以范围时长（秒）。
-  请检查已有标签值和查询。如果这些样本实际是累计计数器，应在升级前将
-  受影响的历史数据迁移到使用非保留标签名的表，并更新查询。仅修改新写入
-  的标签不会改变已存储的历史数据。
+启用自动表结构演进时，GreptimeDB 会在增量数据到达时添加该标签列。
+如果禁用了自动表结构演进，启用增量写入前，请通过 `SHOW CREATE TABLE`
+确认主键中包含名为 `otlp_aggregation_temporality` 的可空 `STRING` tag 列。
+累积数据点的该标签为 NULL。如果表结构不兼容，请先创建符合要求的表并
+切换写入，再启用增量导出。仅升级版本不会添加该标签列。
+
+升级后，只要浮点序列带有 `otlp_aggregation_temporality="delta"`，
+`rate()` 和 `increase()` 就会按原始增量处理，历史样本和非 OTLP 数据也一样。
+`increase()` 对范围内的样本求和，`rate()` 再除以范围时长（秒）。
+请检查已有标签值和查询。如果这些样本实际是累积计数器，应在升级前将
+受影响的历史数据迁移到使用非保留标签名的表，并更新查询。
+仅修改新写入的标签不会改变已存储的历史数据。
 
 schema 和标签规则详见[增量指标兼容性](/user-guide/ingest-data/for-observability/opentelemetry.md#增量指标兼容性)。
 
