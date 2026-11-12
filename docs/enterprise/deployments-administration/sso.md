@@ -5,14 +5,44 @@ description: Set up Okta SSO for GreptimeDB Enterprise, provision database users
 
 # SSO Authentication
 
-Use Okta single sign-on (SSO) to access the GreptimeDB Enterprise Dashboard.
-Users sign in with their Okta accounts; database access is controlled by
-GreptimeDB privileges and ACLs. Password login remains available alongside SSO.
+Use OpenID Connect (OIDC) single sign-on (SSO) with Okta to access the
+GreptimeDB Enterprise Dashboard. The Dashboard completes the Authorization
+Code + PKCE flow and sends the resulting access token to GreptimeDB.
+GreptimeDB verifies the token with Okta, maps it to a database user, and
+applies that user's privileges and ACLs. Password login remains available
+alongside SSO.
 
 :::note Version compatibility
 These instructions apply to Nightly. Use GreptimeDB Enterprise and Dashboard
 builds that support SSO; older builds may not support this configuration.
 :::
+
+## How It Works
+
+1. The Dashboard requests the unauthenticated `GET /v1/auth/config` endpoint
+   to discover the available login methods. When GreptimeDB serves the
+   Dashboard directly, the Dashboard calls this endpoint on GreptimeDB itself;
+   through dashboard-apiserver it uses
+   `/api/v1/instances/<instance>/greptime/v1/auth/config`.
+2. The Dashboard and GreptimeDB use `<issuer>/.well-known/openid-configuration`
+   to discover the OIDC endpoints. The Dashboard starts Authorization Code +
+   PKCE login at the discovered authorization endpoint; `jwks_url` is not a
+   login endpoint and is not used in this configuration.
+3. After login, the browser sends the **access token**, not the ID token, as a
+   Bearer credential. dashboard-apiserver forwards the credential unchanged.
+4. With only `issuer` and `client_id` configured—without `secret`,
+   `public_key`, or `jwks_url`—GreptimeDB verifies the token remotely. It uses
+   Okta introspection to check that the token is active, unexpired, issued by
+   the configured issuer to the configured client, and has the `Bearer` type
+   and `openid` scope. It then reads UserInfo and obtains the database username
+   from `preferred_username` by default.
+5. GreptimeDB resolves that username to a database user and returns the user
+   information through `/v1/users/current`. Subsequent Dashboard requests use
+   the same Bearer credential and are verified the same way on every request,
+   while privileges and ACLs remain under GreptimeDB's control.
+
+This remote OIDC mode also supports opaque access tokens; neither the
+Dashboard nor GreptimeDB needs to parse the access token as a JWT.
 
 ## Prerequisites
 
@@ -22,7 +52,9 @@ builds that support SSO; older builds may not support this configuration.
 - Use an SSO-capable Dashboard and, if deployed, a dashboard-apiserver that
   supports Bearer authentication.
 - Serve the Dashboard over HTTPS. Both the browser and GreptimeDB must be able
-  to access Okta over HTTPS with trusted certificates.
+  to access Okta over HTTPS with trusted certificates. GreptimeDB must reach
+  Okta's discovery, introspection, and UserInfo endpoints, and the public Okta
+  application must support introspection without a client secret.
 - Have permission to create an Okta application and assign users or groups.
 
 ## Configure Okta
@@ -76,13 +108,18 @@ Restart the affected processes or roll out the Frontend changes, and confirm
 that every replica is ready. Updating a ConfigMap alone does not reload the
 configuration.
 
+GreptimeDB performs OIDC discovery at startup. Startup fails if discovery is
+unreachable or invalid, if the discovered issuer differs from `jwt_auth.issuer`,
+or if the introspection and UserInfo endpoints are not on the issuer's origin.
+It does not silently disable SSO and continue with password-only authentication.
+
 ### Optional Settings and Defaults
 
 Add optional settings to the same `[[plugins]]` entry:
 
 | Option | Default | Usage |
 | --- | --- | --- |
-| `jwt_auth.username_claim` | `"preferred_username"` | Username field supplied by Okta. Keep the default for the app's native username mapping. |
+| `jwt_auth.username_claim` | `"preferred_username"` | Top-level UserInfo field used as the database username. There is no fallback to `email` or `sub` if the selected field is missing or empty. |
 | `jwt_auth.scopes` | `["openid", "profile", "email"]` | Requested login scopes; must include `openid`. |
 | `jwt_auth.display_name` | `"SSO"` | Name displayed on the login button, for example `"Okta"`. |
 | `jwt_auth.auto_provision` | `false` | Create missing users on first SSO login. |
@@ -122,6 +159,11 @@ This grants new users read-only access to all tables in `public`. Both lists
 must be non-empty; `Admin` is not allowed. Database entries can be exact names
 or `~regex:<pattern>` selectors that match the entire database name.
 
+In this remote OIDC mode, the configured issuer and client ID are the admission
+boundary. Anyone who can obtain a valid token for that issuer and client can be
+provisioned, so restrict the Okta application's assignments and access policies
+to the intended users.
+
 Automatic provisioning creates users only in the default catalog, `greptime`.
 Existing users keep their current privileges and ACLs. An administrator can
 adjust permissions later through the Dashboard or user API.
@@ -155,14 +197,32 @@ existing SQL connections may remain open after access is revoked in Okta.
 ### Enable Session Renewal
 
 If users should stay signed in when their access token expires, enable the
-Okta app's **Refresh Token** grant and add `offline_access` to the scopes in the
-same plugin:
+Okta app's **Refresh Token** grant and refresh token rotation, and add
+`offline_access` to the scopes in the same plugin:
 
 ```toml
 jwt_auth.scopes = ["openid", "profile", "email", "offline_access"]
 ```
 
 Without a refresh token, or if renewal fails, users must sign in again.
+
+### Verify the Configuration
+
+1. Before signing in, inspect `/v1/auth/config` directly or through the
+   dashboard-apiserver path shown in [How It Works](#how-it-works). The response
+   should contain an `oidc` method with the expected `issuer`, `client_id`, and
+   `scopes`, followed by the `password` method. The endpoint is public but must
+   not expose a client secret or other credentials.
+2. Complete Okta login and confirm that `/v1/users/current` returns the
+   intended database username and catalog.
+3. Run a permitted query, such as `SELECT 1`, and verify that an operation
+   outside the user's privileges or database ACLs is denied.
+4. If automatic provisioning is enabled, use a new Okta user to confirm that
+   the created account has only the configured initial privileges and database
+   access. Also verify that an unassigned Okta user cannot sign in.
+
+Do not include access tokens in screenshots, logs, or support requests while
+performing these checks.
 
 ## Programmatic and SQL Clients
 
@@ -178,16 +238,46 @@ Use an **access token**, not an ID token, with these clients:
 Any proxy must preserve the Bearer authentication header. Never share tokens,
 passwords, or client secrets in logs, screenshots, or support requests.
 
+## Network, Certificates, and Availability
+
+- Use trusted HTTPS certificates for browser and GreptimeDB connections to
+  Okta. The discovered issuer must exactly match `jwt_auth.issuer`, and the
+  introspection and UserInfo endpoints must have the same origin as the issuer.
+  GreptimeDB does not follow redirects for these requests.
+- The remote OIDC client uses the system trust roots. `jwks_ca_cert_path`
+  applies only to an explicit JWKS configuration; it does not add a private CA
+  for remote discovery, introspection, or UserInfo. Do not disable TLS
+  verification to work around certificate errors.
+- Every request that authenticates with the token triggers these calls: each
+  Dashboard HTTP request and each new SQL connection performs one
+  introspection and one UserInfo request, and successful tokens are not
+  cached. Account for Okta availability, latency, and rate limits; validation
+  cost grows with the request rate, not with the number of logins. This mode
+  is intended for interactive SSO rather than high-throughput machine
+  ingestion.
+- Endpoint failures reject new authentication attempts; GreptimeDB does not
+  fall back to unverified access. Revoking a token affects its next
+  authentication, but does not disconnect an already authenticated SQL
+  connection.
+
 ## Troubleshooting
 
 | Symptom | Check |
 | --- | --- |
-| Only password login appears | Confirm that Dashboard and GreptimeDB support SSO, the instance points to the correct Frontend, and every Frontend has restarted with the issuer and client ID configured. |
-| Okta redirects fail | Check the SPA application type, Client authentication = None, user assignment, exact callback URI, Trusted Origins, and HTTPS certificates. |
-| Login is rejected | Check the application's username mapping and matching database user, or enable restricted automatic provisioning. Also check token expiry and connectivity to Okta. |
-| Login succeeds but queries are denied | Review the user's privileges and database/table ACLs. Do not grant `Admin` merely to bypass an expected denial. |
-| Users must sign in again after token expiry | Enable Refresh Token grant and request `offline_access` if session renewal is required. |
+| Only password login appears | Inspect the raw `auth/config` response directly and through dashboard-apiserver. Confirm that the Dashboard and GreptimeDB support SSO, the instance targets the correct Frontend, and every Frontend has restarted with the issuer and client ID configured. |
+| `auth/config` returns `404`, `401`/`403`, HTML, or an error | Any failed fetch — `404`, another error status, or a network failure — makes the Dashboard silently fall back to password login, so judge the configuration from the raw response instead of the login page. For `404`, check the GreptimeDB version and proxy route; an older server does not provide this endpoint. A gateway must not require authentication for this public endpoint. HTML usually indicates an incorrect proxy route or SPA fallback rather than a valid JSON response. |
+| `auth/config` returns only `password` | Check the effective configuration on every serving Frontend, including the actual mounted file and environment overrides. Confirm that `greptime_ee_user_provider`, one valid `jwt_auth` plugin, `issuer`, and `client_id` are loaded, and inspect startup logs for OIDC discovery failures. |
+| GreptimeDB fails to start after OIDC is configured | Check issuer discovery connectivity, the exact issuer match, same-origin endpoints, and TLS certificates. Remove JWT-only options such as `audience`, `algorithm`, and JWKS refresh settings from this remote configuration. |
+| Okta redirects or authorization-code exchange fails | Check the SPA application type, Client authentication = None, Authorization Code + PKCE, user assignment, exact callback URI, Trusted Origins, and HTTPS certificates. Do not put a client secret in the browser. |
+| Okta login succeeds but GreptimeDB returns `401` | Confirm that the client sends the access token rather than the ID token and that proxies preserve the Bearer scheme. Check introspection and UserInfo connectivity, token issuer/client/scope/expiry, the selected UserInfo username field, and the matching database user or restricted automatic provisioning. |
+| Login succeeds but queries are denied | Review the user's privileges and database/table ACLs. Existing users keep their permissions when automatic provisioning is enabled. Do not grant `Admin` merely to bypass an expected denial. |
+| Users must sign in again after token expiry | Enable the Refresh Token grant and rotation, request `offline_access`, and confirm that Okta actually returns a refresh token. |
 
-Only one identity provider is supported by this configuration. Do not assume
-that other OIDC providers support the same setup. Keep TLS verification enabled
-when troubleshooting connection or certificate issues.
+Only one identity provider is supported by this configuration. Another OIDC
+provider must support the same public-client discovery, introspection without a
+client secret, and UserInfo behavior; do not assume that Okta-specific setup
+instructions apply unchanged.
+
+The Dashboard stores OIDC tokens in sessionStorage, not localStorage. Closing a
+tab or clearing browser storage removes only the local copy and does not revoke
+the token.
