@@ -86,6 +86,53 @@ v1.3 Frontend 的写入重试依赖 Datanode 返回逐条写入结果，与旧 D
 | PromQL 向量匹配根据 `on`、`ignoring`、`group_left` 和 `group_right` 推导结果标签。若某个匹配组在要求唯一的一侧有多条序列，或匹配后产生重复的结果序列，查询会失败。不带 `bool` 的比较运算会保留 `__name__`，但未列出 `__name__` 的一对一 `on(...)` 匹配除外。 | 检查使用向量匹配的查询、recording rule 和告警标签模板。 |
 | `service.namespace` 非空的 OTLP 指标使用 `job="<service.namespace>/<service.name>"`，不再只使用 `service.name` 的值。即使禁用 `otlp.experimental_enable_resource_info`，该变化同样生效。已有数据不会重新打标签。 | 更新仪表盘选择器和告警规则。跨越升级时间点的查询可能需要同时匹配新旧两种标签值。 |
 
+#### Prometheus HTTP API 样本字符串
+
+有限浮点样本值改用 ryu 的最短往返格式。字符串可能发生变化，例如
+`"1"` 变为 `"1.0"`、`"-0"` 变为 `"-0.0"`、`"0.000001"` 变为 `"1e-6"`。
+将新字符串解析为 `f64` 后，数值保持不变，包括负零的符号。
+非有限值的字符串 `"NaN"`、`"inf"` 和 `"-inf"` 保持不变。
+
+升级前，检查依赖样本字符串精确比较的客户端和快照测试。对有限样本，
+应解析后比较数值；对 NaN 和无穷值保留专门处理。如果应用需要区分正零
+和负零，还应单独检查符号。
+
+#### OTLP 增量指标和保留的 temporality 标签
+
+增量指标使用保留标签 `otlp_aggregation_temporality="delta"`。
+升级前，请检查以下三种兼容性情况：
+
+- **OTLP 属性：** 检查被选中存储的属性经过名称转换和 scope 前缀处理后的
+  最终名称。默认转换策略会将 `otlp.aggregation.temporality` 转为保留名称，
+  因而被拒绝，累计指标和 gauge 也不例外。请在 exporter 或 collector 中
+  重命名或移除冲突属性。
+- **固定 schema 的目标表：** 启用增量写入前，确认主键中包含名为
+  `otlp_aggregation_temporality` 的可空 `STRING` tag 列。通过
+  `SHOW CREATE TABLE` 检查已有表；仅升级版本不会添加该列。如果 schema
+  无法演进，请先创建兼容的目标表并切换写入，再启用增量导出。累计数据点
+  的该标签为 NULL。
+- **历史序列：** 已有浮点序列只要携带这个名称和值均相同的标签，升级后的
+  `rate()` 和 `increase()` 就会按原始增量处理，包括非 OTLP 数据。
+  `increase()` 对范围内的样本求和，`rate()` 再除以范围时长（秒）。
+  请检查已有标签值和查询。如果这些样本实际是累计计数器，应在升级前将
+  受影响的历史数据迁移到使用非保留标签名的表，并更新查询。仅修改新写入
+  的标签不会改变已存储的历史数据。
+
+schema 和标签规则详见[增量指标兼容性](/user-guide/ingest-data/for-observability/opentelemetry.md#增量指标兼容性)。
+
+#### 分区列的类型变更
+
+`ALTER TABLE ... MODIFY COLUMN` 拒绝修改持久化分区表达式所引用列的类型，
+唯一例外是拓宽时间戳单位且所有分区边界仍可表示。GreptimeDB 在修改任何
+region 前检查全部 region；不兼容的表达式会使 ALTER 失败，错误信息会指出
+对应的 region 和列。
+
+升级前，请检查 schema 变更脚本，并通过 `SHOW CREATE TABLE` 查看所有分区
+边界。公元 3000 年的边界能用毫秒和微秒表示，但会超出纳秒范围，即使已存储
+的行都是近期数据也一样。请保留兼容的单位，或先重新设计目标表的分区，再
+迁移数据。还需单独检查已存储的时间戳：更精细的单位可表示的范围更小。
+限制和示例详见[修改列类型](/reference/sql/alter.md#修改列类型)。
+
 #### 写入请求和 JSON2
 
 Prometheus Remote Read、Remote Write 和 Loki protobuf/Snappy push 请求的解压后正文超过 512 MiB 时返回 HTTP 400。该解压限制不适用于 Loki JSON push 路径。

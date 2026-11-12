@@ -207,6 +207,33 @@ table's time-index precision. New logical tables inherit the physical table's
 precision; automatically created physical tables use milliseconds. Without the
 metric engine, OTLP metrics use millisecond timestamps.
 
+### Delta Metric Compatibility
+
+Since v1.3.0, `otlp_aggregation_temporality` is reserved for OTLP ingestion.
+For attributes selected for storage, GreptimeDB checks the final label name
+**after** name translation and scope prefixing. For example, a data-point
+attribute named `otlp.aggregation.temporality` conflicts with the reserved label
+under the default translation strategy. Rename or remove conflicting attributes
+in the exporter or collector before sending them. The affected points are rejected,
+including cumulative metric and gauge points.
+
+For a fixed-schema destination, define `otlp_aggregation_temporality` as a nullable
+`STRING` tag (part of the primary key) before sending delta metrics. Cumulative
+and unspecified `Sum` and explicit `Histogram` points omit this tag, so it must
+allow `NULL` for those points to coexist with delta points. If automatic schema
+evolution is disabled and the tag is missing, delta writes fail. Automatic table
+creation or schema evolution can add the missing tag when delta data arrives;
+upgrading alone does not add it. Inspect the destination with `SHOW CREATE TABLE` and, if
+its schema is incompatible, direct writes to a new table with the required schema.
+
+For float series, `rate()` and `increase()` select raw-delta behavior from this
+stored tag, including for historical samples and data ingested through other
+protocols. Before upgrading, check whether existing series already carry
+`otlp_aggregation_temporality="delta"` for another purpose. Renaming an attribute
+at the sender only changes future writes; it does not repair stored labels.
+See the [v1.3 upgrade guidance](/user-guide/deployments-administration/upgrade.md#upgrading-from-v12-to-v13)
+for handling existing series.
+
 ### Query Delta Exponential Histograms
 
 Each delta exponential histogram stores one interval's count, sum, and buckets.

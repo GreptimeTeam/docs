@@ -167,7 +167,36 @@ The time index column is the exception: you can widen its timestamp unit to a fi
 ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
 ```
 
-Widening the time index unit is lossless — existing data is read in the new unit without rewriting, and new writes can use the finer precision. Narrowing the unit (for example, from microseconds back to milliseconds) or changing the time index to a non-timestamp type is not allowed. This operation is not supported on tables using the [metric engine](/reference/about-greptimedb-engines.md).
+Existing data is converted to the new unit on read without rewriting, and new writes can use the finer precision. Finer units have a smaller representable timestamp range: check that existing timestamps fit the target unit before widening, because overflowing values can read back as `NULL`. Narrowing the unit (for example, from microseconds back to milliseconds) or changing the time index to a non-timestamp type is not allowed. This operation is not supported on tables using the [metric engine](/reference/about-greptimedb-engines.md).
+
+Since v1.3.0, a column referenced by a persisted partition expression cannot change type, except for timestamp unit widening that keeps every partition boundary representable when compared with the new column type. This restriction also rejects non-timestamp widening such as `INT` to `BIGINT`. GreptimeDB checks the persisted expressions of all regions before modifying any region; an incompatible expression causes the `ALTER` to fail with the affected region and column in the error.
+
+For example, this table has a year-3000 partition boundary, even though its only row is from 2024:
+
+```sql
+CREATE TABLE ts_bound_overflow (host STRING, ts TIMESTAMP TIME INDEX)
+PARTITION ON COLUMNS (ts) (
+  ts < '2024-01-01 00:00:00',
+  ts >= '2024-01-01 00:00:00' AND ts < '3000-01-01 00:00:00',
+  ts >= '3000-01-01 00:00:00'
+);
+
+INSERT INTO ts_bound_overflow VALUES ("a", "2024-06-01 12:00:00");
+```
+
+The following statement is rejected because the year-3000 boundary overflows nanoseconds. The table schema and stored data remain unchanged:
+
+```sql
+ALTER TABLE ts_bound_overflow MODIFY COLUMN ts TIMESTAMP_NS;
+```
+
+Widening to microseconds succeeds because all boundaries in this example fit that unit:
+
+```sql
+ALTER TABLE ts_bound_overflow MODIFY COLUMN ts TIMESTAMP_US;
+```
+
+Check both the stored timestamps and all partition boundaries before choosing a finer unit. A successful partition-boundary check does not guarantee that every stored timestamp fits the new unit.
 
 ### Modify JSON2 settings
 

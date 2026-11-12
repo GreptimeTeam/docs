@@ -203,6 +203,26 @@ OTel Arrow 的传输格式缺少 `zero_threshold`，因此不支持指数直方�
 - 所有的 Attribute，包含 resource 级别、scope 级别和 data_point 级别，都被作为 GreptimeDB 表的 tag 列。
 - Summary 类型的每个 quantile 被作为单独的数据列，列名 `greptime_pxx`，其中 xx 是 quantile 的数据，如 90 / 99 等。
 
+### 增量指标兼容性
+
+从 v1.3.0 开始，`otlp_aggregation_temporality` 是 OTLP 写入的保留标签。
+对于选中保存的属性，GreptimeDB 会在名称转换和 scope 前缀处理**之后**检查最终标签名。
+例如，在默认转换策略下，名为 `otlp.aggregation.temporality` 的数据点属性会与保留标签冲突。
+发送前，请在 exporter 或 collector 中重命名或移除冲突属性。即使是累积指标或 gauge，这类冲突也可能导致请求被拒绝。
+
+对于固定表结构的目标表，请在发送增量指标前，将 `otlp_aggregation_temporality`
+定义为可空的 `STRING` tag 列（主键的一部分）。累积或未指定时序的 `Sum` 和显式
+`Histogram` 数据点不携带此标签，因此该列需要允许 `NULL`，才能同时接收这些数据点和增量数据点。
+如果禁用了自动表结构演进且缺少该标签列，增量写入会失败。自动建表或表结构演进可以在增量数据到达时
+添加缺失的标签列；升级本身不会添加。请使用 `SHOW CREATE TABLE` 检查目标表；
+如果表结构不兼容，可以将写入切换到具有所需表结构的新表。
+
+对于浮点序列，`rate()` 和 `increase()` 根据已存储的该标签选择原始增量算法，
+历史样本和通过其他协议写入的数据也受影响。升级前，请检查已有序列是否将
+`otlp_aggregation_temporality="delta"` 用于其他业务含义。
+在发送端重命名属性只影响后续写入，不会修正已存储的标签。
+已有序列的处理方式见 [v1.3 升级说明](/user-guide/deployments-administration/upgrade.md#从-v12-升级到-v13)。
+
 ## Logs
 
 GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) 协议原生地消费 OpenTelemetry 日志。
