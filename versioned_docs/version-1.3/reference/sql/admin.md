@@ -7,6 +7,8 @@ description: Describes the `ADMIN` statement used to run administration function
 
 `ADMIN` is used to run administration functions.
 
+Starting with v1.3.1, executing administration functions requires `ADMIN` statement privileges. This check also applies to administration functions that allow invocation through `SELECT`.
+
 ```sql
 ADMIN function(arg1, arg2, ...)
 ```

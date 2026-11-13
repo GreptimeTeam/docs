@@ -26,7 +26,8 @@ This interface accepts the following parameters:
 - `table`: The name of the table.
 - `pipeline_name`: The name of the [pipeline](./pipeline-config.md).
 - `version`: The version of the pipeline. Optional, default use the latest one.
-- `skip_error`: Whether to skip errors when writing logs. Optional, defaults to `false`. When set to `true`, GreptimeDB will skip individual log entries that encounter errors and continue processing the remaining logs. This prevents the entire request from failing due to a single problematic log entry.
+- `ignore_errors`: Whether to ignore input parsing errors. Optional; defaults to the server's `pipeline.ignore_errors` setting. For `application/x-ndjson`, `true` skips lines that fail parsing and continues with the remaining lines; `false` fails the request on a parsing error.
+- `skip_error`: Whether to skip log entries that fail during pipeline execution. Optional, defaults to `false`. This parameter does not control input JSON parsing errors.
 
 ### `Content-Type` and body format
 
@@ -36,6 +37,8 @@ GreptimeDB uses `Content-Type` header to decide how to decode the payload body. 
 - `text/plain`: multiple log lines separated by line breaks.
 
 #### `application/json` and `application/x-ndjson` format
+
+Starting with v1.3.1, JSON log parsing retries invalid UTF-8 input after replacing invalid bytes with the Unicode replacement character (`U+FFFD`). Recovery applies only to UTF-8 errors. Malformed escapes, out-of-range numbers, and nesting deeper than 1,024 levels remain parsing errors handled by `ignore_errors`.
 
 Here is an example of JSON format body payload
 

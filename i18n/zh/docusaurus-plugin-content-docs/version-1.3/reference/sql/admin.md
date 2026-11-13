@@ -7,6 +7,8 @@ description: ADMIN 语句用于运行管理函数，包括刷盘、丢弃未刷�
 
 `ADMIN` 语句用于运行管理函数：
 
+从 v1.3.1 开始，执行管理函数需要 `ADMIN` 语句权限。对于允许通过 `SELECT` 调用的管理函数，该权限检查同样生效。
+
 ```sql
 ADMIN function(arg1, arg2, ...)
 ```

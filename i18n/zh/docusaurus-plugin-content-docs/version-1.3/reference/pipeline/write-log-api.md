@@ -27,7 +27,8 @@ curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&
 - `table`：表名称。
 - `pipeline_name`：[Pipeline](./pipeline-config.md) 名称。
 - `version`：Pipeline 版本号。可选，默认使用最新版本。
-- `skip_error`：写入日志时是否跳过错误。可选，默认为 `false`。当设置为 `true` 时，GreptimeDB 会跳过遇到错误的单条日志项并继续处理剩余的日志，不会因为一条日志项的错误导致整个请求失败。
+- `ignore_errors`：是否忽略输入解析错误。可选，未指定时使用服务端 `pipeline.ignore_errors` 配置。对于 `application/x-ndjson`，设为 `true` 时跳过解析失败的行并继续处理其他行；设为 `false` 时解析错误会使请求失败。
+- `skip_error`：是否跳过 Pipeline 执行失败的日志。可选，默认为 `false`。该参数不控制输入 JSON 的解析错误。
 
 ### `Content-Type` 和 Body 数据格式
 
@@ -37,6 +38,8 @@ GreptimeDB 使用 `Content-Type` header 来决定如何解码请求体内容。�
 - `text/plain`: 通过换行符分割的多行日志文本行。
 
 #### `application/json` 和 `application/x-ndjson` 格式
+
+从 v1.3.1 开始，JSON 日志解析遇到非法 UTF-8 时，会将非法字节替换为 Unicode 替换字符（`U+FFFD`）后重试。该恢复仅适用于 UTF-8 错误；非法转义、超出范围的数值和超过 1,024 层的嵌套仍按 `ignore_errors` 策略处理。
 
 以下是一份 JSON 格式请求体内容的示例：
 

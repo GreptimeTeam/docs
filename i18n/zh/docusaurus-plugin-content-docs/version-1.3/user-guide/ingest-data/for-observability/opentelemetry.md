@@ -253,7 +253,7 @@ GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/
 
 OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
-新建表的默认表结构：
+从 v1.3.1 开始，未指定 Pipeline 的 OTLP 日志写入会为自动创建的新表使用 `greptime_log_v1` 模型，并设置 `table_data_model=greptime_log_v1` 和 `greptime.semantic.pipeline=greptime_log_v1` 表选项。默认表结构如下：
 
 ```sql
 +-----------------------+---------------------+------+------+---------+---------------+
@@ -267,14 +267,17 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 | body                  | String              |      | YES  |         | FIELD         |
 | log_attributes        | Json                |      | YES  |         | FIELD         |
 | trace_flags           | Int32               |      | YES  |         | FIELD         |
+| service_name          | String              | PRI  | YES  |         | TAG           |
 | scope_name            | String              | PRI  | YES  |         | TAG           |
 | scope_version         | String              |      | YES  |         | FIELD         |
 | scope_attributes      | Json                |      | YES  |         | FIELD         |
 | scope_schema_url      | String              |      | YES  |         | FIELD         |
 | resource_attributes   | Json                |      | YES  |         | FIELD         |
 | resource_schema_url   | String              |      | YES  |         | FIELD         |
+| event_name            | String              |      | YES  |         | FIELD         |
+| observed_timestamp    | TimestampNanosecond |      | YES  |         | FIELD         |
 +-----------------------+---------------------+------+------+---------+---------------+
-14 rows in set (0.00 sec)
+17 rows in set (0.00 sec)
 ```
 
 - 您可以使用 `X-Greptime-Log-Table-Name` 指定存储日志的表名。如果未提供，默认表名为 `opentelemetry_logs`。
@@ -284,6 +287,17 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
   后端，默认的 `granularity` 为 `10240`，默认的 `false_positive_rate` 为
   `0.01`。更多信息请参考[全文索引文档](/user-guide/manage-data/data-index.md#全文索引)。
 - 日志的时间戳将用作 GreptimeDB 中的时间戳索引，列名为 `timestamp`。建议使用 `time_unix_nano` 作为时间戳列。如果未提供 `time_unix_nano`，将使用 `observed_time_unix_nano`。
+
+- `service_name` 来自资源属性 `service.name`。默认主键为 `(service_name, scope_name)`；通过 `X-Greptime-Log-Extract-Keys` 提取的其他属性也会成为 tag。
+- `trace_id` 默认创建 skipping 索引。
+- `event_name` 保存 OTLP LogRecord 的事件名，空字符串存为 NULL。
+- `observed_timestamp` 保存 `observed_time_unix_nano`，精度为纳秒；值为 `0` 时存为 NULL。该列不是时间索引。
+
+在 `X-Greptime-Log-Extract-Keys` 中指定 `service_name` 时，提取值填入内置列，优先级依次为日志属性、scope 属性、资源属性，最后回退到资源属性 `service.name`。指定 `event_name` 或 `observed_timestamp` 不会覆盖对应的 LogRecord 字段，也不会创建重复列；原始属性仍保留在属性 JSON 中。
+
+已有且不带 `greptime_log_v1` 模型标记的表继续使用旧映射，不会自动添加上述列、主键或索引。通过 `CREATE TABLE` 创建的表不会自动采用该模型。使用新模型时，通过 `X-Greptime-Log-Table-Name` 指定尚不存在的表名，由写入接口创建表。Pipeline 定义的表不受影响。
+
+滚动升级期间，避免新旧 Frontend 并发创建同一张日志表。新 Frontend 查询表是否存在与实际建表之间存在时间窗口；若旧 Frontend 或 `CREATE TABLE` 在此期间创建了旧 schema 的表，后续写入可能将 v1 列添加到该表。应在全部写入 Frontend 升级完成后启用新的目标表。
 
 ### Append-only 模式
 
