@@ -105,8 +105,8 @@ v1.3 Frontend 的写入重试依赖 Datanode 返回逐条写入结果，与旧 D
 累积指标和 gauge 也不例外。升级前，请在 exporter 或 collector 中重命名或
 移除冲突属性。
 
-启用自动表结构演进时，GreptimeDB 会在增量数据到达时添加该标签列。
-如果禁用了自动表结构演进，启用增量写入前，请通过 `SHOW CREATE TABLE`
+启用自动添加列时，GreptimeDB 会在增量数据到达时添加该标签列。
+如果禁用了自动添加列，启用增量写入前，请通过 `SHOW CREATE TABLE`
 确认主键中包含名为 `otlp_aggregation_temporality` 的可空 `STRING` tag 列。
 累积数据点的该标签为 NULL。如果表结构不兼容，请先创建符合要求的表并
 切换写入，再启用增量导出。仅升级版本不会添加该标签列。

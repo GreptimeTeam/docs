@@ -222,11 +222,11 @@ Before sending delta metrics to a table with a fixed schema, check that
 `Sum` and explicit `Histogram` points with cumulative or unspecified temporality
 omit this tag. Allowing `NULL` lets them share the table with delta points.
 
-Delta writes fail if the tag is missing and automatic schema evolution is
-disabled. Automatic table creation or schema evolution can add the missing tag
-when delta data arrives; upgrading alone does not. Use `SHOW CREATE TABLE` to
-check the destination. If its schema is incompatible, send writes to a new table
-with the required schema.
+Delta writes fail if the tag is missing and automatic column addition is
+disabled. When delta data arrives, GreptimeDB can create the table with this tag
+or add it to an existing table. Upgrading alone does not add the tag. Use
+`SHOW CREATE TABLE` to check the destination. If its schema is incompatible, send
+writes to a new table with the required schema.
 
 `rate()` and `increase()` use raw-delta math for any float series with
 `otlp_aggregation_temporality="delta"`, including historical samples and data

@@ -112,8 +112,8 @@ scope prefixing. Under the default translation strategy,
 on cumulative metrics or gauges. Rename or remove conflicting attributes in
 your exporter or collector before upgrading.
 
-With automatic schema evolution enabled, GreptimeDB adds the tag when delta
-data arrives. If schema evolution is disabled, use `SHOW CREATE TABLE` to check
+With automatic column addition enabled, GreptimeDB adds the tag when delta
+data arrives. If column addition is disabled, use `SHOW CREATE TABLE` to check
 that the primary key includes a nullable `STRING` tag named
 `otlp_aggregation_temporality` before enabling delta writes. Cumulative points
 leave the tag NULL. If the schema is incompatible, create a table with the
