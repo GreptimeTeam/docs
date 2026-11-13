@@ -7,50 +7,34 @@ date: 2026-11-13
 
 Release date: November 13, 2026
 
-GreptimeDB v1.3.1 fixes write durability, region recovery, database authorization, credential exposure, and SQL and PromQL correctness issues. It also reduces repeated storage reads and bundles Dashboard v0.14.6.
+GreptimeDB v1.3.1 fixes write durability, database authorization, credential exposure, and query correctness issues. It also bundles Dashboard v0.14.6.
 
 ### 👍 Highlights
 
-#### Preserve writes during repartition staging
+#### Write durability
 
-Rows written while a region is staging remain in the WAL until staging ends. This prevents those rows from being lost when a staging operation rolls back, the region is downgraded, or the datanode restarts. Staging writes remain readable from memory; pressure limits and manual flushes can return retryable errors while staging is active. ([#10253](https://github.com/GreptimeTeam/greptimedb/pull/10253))
+Fixes potential data loss during repartition rollback or datanode restart, and restores periodic local WAL sync with the default `sync_write = false` setting. ([#10253](https://github.com/GreptimeTeam/greptimedb/pull/10253), [#9715](https://github.com/GreptimeTeam/greptimedb/pull/9715))
 
-#### Restore periodic local WAL durability
+#### Database authorization and credential protection
 
-Periodic raft-engine WAL sync now performs an actual filesystem sync when `sync_write = false`, the default. Previously, the raft-engine empty-batch path returned before syncing, so the periodic task did not provide the intended durability. The configured `wal.sync_period` continues to control the interval. ([#9715](https://github.com/GreptimeTeam/greptimedb/pull/9715))
+Database selection through HTTP, MySQL, and PostgreSQL checks access permissions, and administrative functions require `ADMIN` privileges even through `SELECT`. Diagnostic configuration and startup logs redact credentials. ([#10378](https://github.com/GreptimeTeam/greptimedb/pull/10378), [#10382](https://github.com/GreptimeTeam/greptimedb/pull/10382), [#10120](https://github.com/GreptimeTeam/greptimedb/pull/10120), [#10115](https://github.com/GreptimeTeam/greptimedb/pull/10115), [#10381](https://github.com/GreptimeTeam/greptimedb/pull/10381))
 
-#### Check permissions when selecting a database
+#### Prepared query correctness
 
-HTTP database overrides and MySQL/PostgreSQL database selection authorize the destination before using it. Administrative functions require `ADMIN` privileges even when invoked through `SELECT`; deployments without a configured permission checker retain their existing behavior. ([#10378](https://github.com/GreptimeTeam/greptimedb/pull/10378), [#10382](https://github.com/GreptimeTeam/greptimedb/pull/10382), [#10120](https://github.com/GreptimeTeam/greptimedb/pull/10120))
-
-#### Keep prepared queries correct after partition changes
-
-MySQL and PostgreSQL prepared statements use current partition-column information when deciding whether aggregates, sorting, and limits can run on individual regions. This prevents incorrect results after partition columns change, including incorrect rows written by prepared `INSERT ... SELECT` statements. ([#10244](https://github.com/GreptimeTeam/greptimedb/pull/10244))
+Fixes incorrect results from MySQL and PostgreSQL prepared statements after partition columns change, including incorrect rows written by prepared `INSERT ... SELECT` statements. ([#10244](https://github.com/GreptimeTeam/greptimedb/pull/10244))
 
 #### Dashboard v0.14.6
 
-**Table Query** and **Metrics Query** paginate their sidebars instead of loading every table or metric at once. Table pickers search names, the SQL builder preserves the selected database across resets and mode changes, and **Logs Query** defaults to a multi-column layout. Log and trace views retain column-display preferences, with the timestamp pinned in log tables. ([Dashboard #673](https://github.com/GreptimeTeam/dashboard/pull/673), [Dashboard #674](https://github.com/GreptimeTeam/dashboard/pull/674))
+**Table Query** and **Metrics Query** paginate their sidebars, and table pickers search by name. The SQL builder preserves the selected database, while log and trace views retain column-display preferences. ([Dashboard #673](https://github.com/GreptimeTeam/dashboard/pull/673), [Dashboard #674](https://github.com/GreptimeTeam/dashboard/pull/674))
 
-### Upgrade notes
+### Upgrade and compatibility notes
 
-- Keep datanode clocks synchronized and stop an old process before starting another with the same node ID. Process fencing takes full effect after all metasrv nodes are upgraded; datanode startup now reads the recorded epoch and fails if that metadata read fails. ([#9878](https://github.com/GreptimeTeam/greptimedb/pull/9878), [#9984](https://github.com/GreptimeTeam/greptimedb/pull/9984))
-- A distributed write whose leader lease expires during the WAL append can return a retryable error even though it was applied. Retrying can duplicate rows in append-only tables; standalone behavior is unchanged. ([#9904](https://github.com/GreptimeTeam/greptimedb/pull/9904))
-- Diagnostic configuration and startup logs redact or omit credentials, including inline user-provider passwords, Kafka passwords, OTLP headers, metadata-store credentials, and Azure SAS tokens. Keep the original configuration and secrets separately; serialized diagnostic output is not a credential backup. ([#10115](https://github.com/GreptimeTeam/greptimedb/pull/10115), [#10381](https://github.com/GreptimeTeam/greptimedb/pull/10381))
-- Newly auto-created direct-OTLP log tables use the `greptime_log_v1` schema, with a `service_name` tag, a skipping index on `trace_id`, and `event_name` and `observed_timestamp` fields. Existing legacy tables and pipeline-defined tables are unchanged in the normal path; use a new destination table to adopt the schema, and avoid concurrent legacy-table creation by older frontends during a rolling upgrade. ([#10207](https://github.com/GreptimeTeam/greptimedb/pull/10207))
-- Compressed manifest cache entries from older versions are evicted and refetched when decoding fails; no manual cache clearing is required. The payload portion of `manifest_cache_size` now consistently accounts for stored, compressed bytes when compression is enabled. ([#10179](https://github.com/GreptimeTeam/greptimedb/pull/10179))
-- Background bulk-memtable compaction now shares one engine-wide `max_background_compactions` budget instead of one budget per worker. Review ingestion behavior under sustained load; SST compaction retains a separate budget. ([#10022](https://github.com/GreptimeTeam/greptimedb/pull/10022))
-- Cluster-wide `SHOW PROCESSLIST` reports an error if a frontend management RPC fails instead of returning a partial list. With a dedicated internal gRPC listener, process identifiers use the advertised internal address; configure the management listener on each frontend. ([#9999](https://github.com/GreptimeTeam/greptimedb/pull/9999), [#10153](https://github.com/GreptimeTeam/greptimedb/pull/10153))
-- Downstream Rust integrations must update permission-checker interfaces and retain one `CompactionRegionOpener` per exclusively owned auxiliary directory for the remote executor's lifetime. Creating an opener for each compaction request does not provide the file-lifetime fix. ([#10084](https://github.com/GreptimeTeam/greptimedb/pull/10084), [#10046](https://github.com/GreptimeTeam/greptimedb/pull/10046))
-
-### Breaking changes
-
-- Manually configured sparse primary keys must follow the metric-engine schema contract, including reserved column IDs, types, and primary-key order. Audit tables using `primary_key_encoding = 'sparse'` or the legacy `memtable.partition_tree.primary_key_encoding` setting before upgrading; this release does not migrate unsupported schemas, and metadata-rebuilding operations can reject them. ([#10020](https://github.com/GreptimeTeam/greptimedb/pull/10020))
-- Prometheus Remote Read rejects non-string label columns, excluding timestamp and sample-value columns from that restriction. It also uses full-string regular-expression matching and treats missing or NULL labels as empty strings. ([#9633](https://github.com/GreptimeTeam/greptimedb/pull/9633))
-- JSON log ingestion rejects malformed escapes, out-of-range numbers, and nesting deeper than 1,024 levels that older parsers could accept. Invalid UTF-8 is repaired before retrying; other errors continue to follow the configured `ignore_errors` policy. ([#10245](https://github.com/GreptimeTeam/greptimedb/pull/10245), [#10302](https://github.com/GreptimeTeam/greptimedb/pull/10302))
-- MySQL clients that omit a database can connect without a selected schema when the default is missing or unauthorized; statements requiring one return error 1046 until an authorized database is selected. PostgreSQL `SET search_path` selects the first authorized, existing candidate and clears the current schema if none is usable; GreptimeDB still keeps one effective schema rather than a PostgreSQL-style search list. ([#10382](https://github.com/GreptimeTeam/greptimedb/pull/10382))
-
-* fix!: enforce sparse primary key schema by [@shuiyisong](https://github.com/shuiyisong) in [#10020](https://github.com/GreptimeTeam/greptimedb/pull/10020)
-* fix(config)!: redact credentials from diagnostic TOML by [@killme2008](https://github.com/killme2008) in [#10381](https://github.com/GreptimeTeam/greptimedb/pull/10381)
+- **Prometheus Remote Read:** Tables with non-string label columns now return an error; timestamp and sample-value columns are exempt. Label matching follows Prometheus semantics: regular expressions match the full string, and missing or NULL labels match as empty strings. ([#9633](https://github.com/GreptimeTeam/greptimedb/pull/9633))
+- **Database selection:** MySQL connections without a usable default database must select an authorized database before running statements that require one (error 1046). PostgreSQL `SET search_path` selects the first authorized, existing database and clears the selection if none qualifies. ([#10382](https://github.com/GreptimeTeam/greptimedb/pull/10382))
+- **JSON log ingestion:** Malformed escapes, out-of-range numbers, and nesting deeper than 1,024 levels are rejected under the configured `ignore_errors` policy. Invalid UTF-8 remains recoverable. ([#10245](https://github.com/GreptimeTeam/greptimedb/pull/10245), [#10302](https://github.com/GreptimeTeam/greptimedb/pull/10302))
+- **OTLP log tables:** Direct OTLP ingestion auto-creates tables with the `greptime_log_v1` schema; use a new destination table to adopt it, as existing tables retain their schema. During a rolling upgrade, avoid concurrent creation of the same destination table by old and new frontends; pipeline-defined tables are unchanged. ([#10207](https://github.com/GreptimeTeam/greptimedb/pull/10207))
+- **Distributed deployments:** Keep datanode clocks synchronized and stop the old process before reusing its node ID; process fencing takes full effect after all metasrv nodes are upgraded. A write whose leader lease expires during WAL append can return a retryable error after being applied, so retries can duplicate rows in append-only tables. ([#9878](https://github.com/GreptimeTeam/greptimedb/pull/9878), [#9984](https://github.com/GreptimeTeam/greptimedb/pull/9984), [#9904](https://github.com/GreptimeTeam/greptimedb/pull/9904))
+- **Manually configured sparse encoding:** Before upgrading, check tables with `primary_key_encoding = 'sparse'` or the legacy `memtable.partition_tree.primary_key_encoding` setting against the requirements in [#10020](https://github.com/GreptimeTeam/greptimedb/pull/10020); unsupported schemas can fail validation and are not migrated automatically. Tables created normally by the metric engine and ordinary dense tables are unaffected.
 
 ### 🚀 Features
 
@@ -61,6 +45,8 @@ MySQL and PostgreSQL prepared statements use current partition-column informatio
 
 ### 🐛 Bug Fixes
 
+* fix!: enforce sparse primary key schema by [@shuiyisong](https://github.com/shuiyisong) in [#10020](https://github.com/GreptimeTeam/greptimedb/pull/10020)
+* fix(config)!: redact credentials from diagnostic TOML by [@killme2008](https://github.com/killme2008) in [#10381](https://github.com/GreptimeTeam/greptimedb/pull/10381)
 * fix: bound metric snapshot memory and reduce export overhead by [@fengjiachun](https://github.com/fengjiachun) in [#9505](https://github.com/GreptimeTeam/greptimedb/pull/9505)
 * fix(prom): align remote read label matcher semantics by [@fengys1996](https://github.com/fengys1996) in [#9633](https://github.com/GreptimeTeam/greptimedb/pull/9633)
 * fix(mito2): restore source splitting for cross-range series merges by [@WenyXu](https://github.com/WenyXu) in [#9818](https://github.com/GreptimeTeam/greptimedb/pull/9818)
