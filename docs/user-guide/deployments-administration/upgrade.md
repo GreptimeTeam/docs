@@ -69,49 +69,41 @@ If you are running a version earlier than v0.16, you must first upgrade to v0.16
 
 ### Upgrading to v1.3.1
 
-These changes first apply in v1.3.1. For upgrades from v1.2 or earlier, also review the v1.3 changes below.
+These changes apply from v1.3.1. Upgrades from v1.2 or earlier also require the v1.3 checks.
 
 #### OTLP log tables
 
-Direct OTLP log ingestion auto-creates new tables with the `greptime_log_v1` model: a `service_name` tag before `scope_name`, a skipping index on `trace_id`, and the `event_name` and `observed_timestamp` fields. Existing tables without the model marker retain their legacy mapping; pipeline-defined tables are unchanged.
-
-To adopt the model, select a new destination table with `X-Greptime-Log-Table-Name` after all ingestion Frontends have been upgraded. Avoid concurrent creation of the same destination table by old and new Frontends or by `CREATE TABLE`. See the [OTLP log data model](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model-1) for the schema and creation-race limitation.
+New auto-created log tables use `greptime_log_v1`; existing tables keep their mapping. After upgrading all ingestion Frontends, select a new table with `X-Greptime-Log-Table-Name` to adopt the [new schema](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model-1). Avoid concurrent creation by old and new Frontends or by `CREATE TABLE`.
 
 #### Prometheus Remote Read
 
-Remote Read rejects tables with non-string label columns; timestamp and sample-value columns are exempt. Review tables queried through Remote Read before upgrading.
-
-Label regular expressions match the full string, and missing or NULL labels match as empty strings. Check selectors that relied on substring matching or excluded missing labels. See [Remote Read label matching](/user-guide/ingest-data/for-observability/prometheus.md#remote-read-label-matching).
+Check tables for non-string label columns, which Remote Read rejects; timestamp and sample-value columns are exempt. Review selectors against the [full-string and empty-label matching rules](/user-guide/ingest-data/for-observability/prometheus.md#remote-read-label-matching).
 
 #### Database selection and administration privileges
 
-HTTP database overrides and MySQL/PostgreSQL database selection check access permissions. Review client database names and the corresponding grants.
+HTTP database overrides and MySQL/PostgreSQL database selection check access permissions. Review client database names and grants:
 
-- MySQL connections without a usable default database must select an authorized database before executing statements that require one; otherwise, the server returns error `1046`.
-- PostgreSQL `SET search_path` selects the first authorized, existing database. If none qualifies, it clears the current database selection.
-- Administration functions require `ADMIN` statement privileges, including when invoked through `SELECT`. Update permissions for scripts that call these functions.
+- MySQL returns error `1046` for statements requiring a database when no usable default is selected. Select an authorized database first.
+- PostgreSQL `SET search_path` selects the first authorized, existing database, or clears the selection if none qualifies.
+- Administration functions require `ADMIN` privileges, including through `SELECT`. Check permissions for scripts that call them.
 
 #### JSON log parsing
 
-JSON log ingestion rejects malformed escapes, out-of-range numbers, and nesting deeper than 1,024 levels according to the `ignore_errors` policy. Invalid UTF-8 can be recovered by replacement and reparsing. `skip_error` controls pipeline execution errors separately. Check ingestion error handling against the [log API parameters](/reference/pipeline/write-log-api.md#request-parameters).
+Malformed JSON follows the `ignore_errors` policy; `skip_error` controls pipeline execution errors separately. Check ingestion error handling against the [log API](/reference/pipeline/write-log-api.md#request-parameters).
 
 #### Distributed deployments and write retries
 
-Keep Datanode clocks synchronized. Stop an old Datanode process before starting a replacement with the same node ID. Process fencing takes full effect only after all Metasrv nodes have been upgraded.
+Keep Datanode clocks synchronized and stop an old process before reusing its node ID. Process fencing takes full effect after all Metasrv nodes are upgraded.
 
-A write whose leader lease expires during WAL append can return a retryable error even after the write has been applied. Retrying can produce duplicate rows in append-only tables; account for this in application retry and deduplication logic.
-
-v1.3.1 also restores periodic local WAL synchronization when `sync_write = false`. This does not make each write synchronously durable.
+A write whose leader lease expires during WAL append can return a retryable error after being applied. Handle possible duplicates when retrying writes to append-only tables.
 
 #### Manually configured sparse primary keys
 
-Before upgrading, identify tables manually configured with `primary_key_encoding = 'sparse'` or the legacy `memtable.partition_tree.primary_key_encoding = 'sparse'` option. These settings require the metric-engine sparse schema: the primary key starts with the reserved `__table_id` and `__tsid` columns, using their reserved column IDs, non-nullable `UInt32` and `UInt64` types, respectively. Remaining primary-key columns must be string tags with non-reserved IDs.
-
-Nonconforming schemas can fail validation during creation, schema changes, or reopening paths that rebuild metadata. The upgrade does not migrate data or convert primary-key encoding. Assess and test migration of manually configured ordinary sparse tables to a supported table configuration before upgrading. Tables managed normally by the metric engine and ordinary dense tables are unaffected. See the [sparse-schema validation change](https://github.com/GreptimeTeam/greptimedb/pull/10020) for details.
+Before upgrading, check tables using `primary_key_encoding = 'sparse'` or the legacy `memtable.partition_tree.primary_key_encoding = 'sparse'` against the [supported schema](https://github.com/GreptimeTeam/greptimedb/pull/10020). Nonconforming schemas can fail validation during schema changes or reopening. Test migration to a supported configuration before upgrading; data and primary-key encoding are not migrated automatically. Normally managed metric-engine tables and ordinary dense tables are unaffected.
 
 #### Credential redaction
 
-Diagnostic configuration output and startup logs redact or omit credentials. Serialized diagnostic configuration cannot serve as a credential backup. Preserve the original configuration and secrets for recovery; configuration input syntax is unchanged.
+Diagnostic configuration and startup logs redact or omit credentials. Preserve the original configuration and secrets for recovery; diagnostic output is not a credential backup.
 
 ### Upgrading from v1.2 to v1.3
 

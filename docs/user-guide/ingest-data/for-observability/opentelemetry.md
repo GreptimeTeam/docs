@@ -344,7 +344,6 @@ Starting with v1.3.1, direct OTLP log ingestion without a pipeline uses the `gre
   `0.01`. For details, see the [fulltext index
   documentation](/user-guide/manage-data/data-index.md#full-text-index).
 - The timestamp of the log will be used as the timestamp index in GreptimeDB, with the column name `timestamp`. It is preferred to use `time_unix_nano` as the timestamp column. If `time_unix_nano` is not provided, `observed_time_unix_nano` will be used instead.
-
 - `service_name` comes from the resource attribute `service.name`. The default primary key is `(service_name, scope_name)`; additional attributes selected by `X-Greptime-Log-Extract-Keys` also become tags.
 - `trace_id` has a skipping index by default.
 - `event_name` stores the OTLP LogRecord event name. An empty string is stored as NULL.
@@ -352,9 +351,9 @@ Starting with v1.3.1, direct OTLP log ingestion without a pipeline uses the `gre
 
 When `X-Greptime-Log-Extract-Keys` includes `service_name`, the extracted value fills the built-in column. Log attributes take precedence over scope attributes, then resource attributes, with the resource attribute `service.name` as the fallback. Extract keys named `event_name` or `observed_timestamp` do not override the LogRecord fields or create duplicate columns; the original attributes remain in the attribute JSON.
 
-Existing tables without the `greptime_log_v1` model marker keep the legacy mapping. Ingestion does not automatically add the new columns, primary key, or index. Tables created with `CREATE TABLE` do not automatically use this model. To adopt it, set `X-Greptime-Log-Table-Name` to a table name that does not exist and let ingestion create the table. Pipeline-defined tables are unchanged.
+Existing tables without the `greptime_log_v1` marker keep the legacy mapping without adding the new columns, primary key, or index. Tables created with `CREATE TABLE` do not automatically adopt this model; pipeline-defined tables are unchanged.
 
-During a rolling upgrade, avoid concurrent creation of the same log table by old and new Frontends. If an old Frontend or `CREATE TABLE` creates a legacy table after a new Frontend checks for its existence but before auto-creation, subsequent ingestion can add v1 columns to that table. Start writing to a new destination table after all ingestion Frontends have been upgraded.
+After upgrading all ingestion Frontends, set `X-Greptime-Log-Table-Name` to a name that does not exist and let ingestion create the table. Avoid concurrent creation by old and new Frontends or by `CREATE TABLE`, which can add v1 columns to a legacy table.
 
 ### Append Only
 

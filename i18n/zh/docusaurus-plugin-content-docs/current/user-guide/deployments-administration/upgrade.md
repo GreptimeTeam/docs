@@ -64,49 +64,41 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 
 ### 升级到 v1.3.1
 
-以下变更从 v1.3.1 开始生效。从 v1.2 或更早版本升级时，还需查看下方的 v1.3 变更。
+以下变更从 v1.3.1 开始生效。从 v1.2 或更早版本升级时，还需完成 v1.3 的升级检查。
 
 #### OTLP 日志表
 
-直接通过 OTLP 写入日志时，自动创建的新表采用 `greptime_log_v1` 模型：在 `scope_name` 前添加 `service_name` tag，为 `trace_id` 创建 skipping 索引，并添加 `event_name` 和 `observed_timestamp` 字段。不带该模型标记的已有表保留旧映射；Pipeline 定义的表不变。
-
-使用新模型时，在全部写入 Frontend 升级完成后，通过 `X-Greptime-Log-Table-Name` 指定新的目标表。避免新旧 Frontend 或 `CREATE TABLE` 并发创建同一张目标表。表结构和并发建表限制见 [OTLP 日志数据模型](/user-guide/ingest-data/for-observability/opentelemetry.md#数据模型-1)。
+自动创建的新日志表采用 `greptime_log_v1`，已有表保留原有映射。全部写入 Frontend 升级完成后，通过 `X-Greptime-Log-Table-Name` 指定新表以采用[新 schema](/user-guide/ingest-data/for-observability/opentelemetry.md#数据模型-1)。避免新旧 Frontend 或 `CREATE TABLE` 并发创建同一张表。
 
 #### Prometheus Remote Read
 
-Remote Read 拒绝包含非字符串标签列的表，时间戳列和样本值列除外。升级前检查通过 Remote Read 查询的表。
-
-标签正则表达式匹配整个字符串，缺失或 NULL 标签按空字符串参与匹配。检查依赖子串匹配或排除缺失标签的选择器。详情见 [Remote Read 标签匹配](/user-guide/ingest-data/for-observability/prometheus.md#remote-read-标签匹配)。
+检查表中是否有非字符串标签列，Remote Read 会拒绝这类表；时间戳列和样本值列除外。按[完整字符串和空标签匹配规则](/user-guide/ingest-data/for-observability/prometheus.md#remote-read-标签匹配)检查选择器。
 
 #### 数据库选择和管理权限
 
-HTTP 请求覆盖数据库选择，以及 MySQL/PostgreSQL 的数据库选择操作，均检查访问权限。检查客户端配置的数据库名称及对应授权。
+HTTP 请求覆盖数据库选择，以及 MySQL/PostgreSQL 的数据库选择操作，均检查访问权限。检查客户端的数据库名称和授权：
 
-- MySQL 连接没有可用的默认数据库时，必须先选择一个有访问权限的数据库，才能执行依赖数据库选择的语句；否则返回错误 `1046`。
-- PostgreSQL `SET search_path` 选择第一个存在且有访问权限的数据库。没有符合条件的数据库时，清除当前数据库选择。
-- 执行管理函数需要 `ADMIN` 语句权限，通过 `SELECT` 调用时也会检查。检查并更新调用这些函数的脚本所使用的权限。
+- MySQL 未选择可用数据库时，依赖数据库选择的语句返回错误 `1046`。执行前需选择有访问权限的数据库。
+- PostgreSQL `SET search_path` 选择第一个存在且有访问权限的数据库；没有符合条件的数据库时，清除当前选择。
+- 管理函数需要 `ADMIN` 权限，通过 `SELECT` 调用时也会检查。检查调用脚本的权限。
 
 #### JSON 日志解析
 
-JSON 日志写入中的非法转义、超出范围的数值和超过 1,024 层的嵌套均为解析错误，按 `ignore_errors` 策略处理。非法 UTF-8 可通过替换非法字节后重新解析来恢复。`skip_error` 单独控制 Pipeline 执行错误。按[日志 API 参数](/reference/pipeline/write-log-api.md#请求参数)检查写入端的错误处理。
+JSON 解析错误按 `ignore_errors` 策略处理，`skip_error` 单独控制 Pipeline 执行错误。按[日志 API](/reference/pipeline/write-log-api.md#请求参数)检查写入端的错误处理。
 
 #### 分布式部署和写入重试
 
-保持 Datanode 时钟同步。以相同节点 ID 启动替代进程前，先停止旧 Datanode 进程。进程 fencing 在全部 Metasrv 节点升级后才完全生效。
+保持 Datanode 时钟同步，复用节点 ID 前先停止旧进程。全部 Metasrv 节点升级后，进程 fencing 才完全生效。
 
-写入在追加 WAL 期间若遇到 leader lease 过期，即使已经应用，也可能返回可重试错误。重试可能在 append-only 表中产生重复行；应用的重试和去重逻辑需要处理这种情况。
-
-v1.3.1 还恢复了 `sync_write = false` 时本地 WAL 的周期性同步。这不代表每次写入都会同步持久化。
+写入在追加 WAL 期间遇到 leader lease 过期时，可能在已应用后返回可重试错误。向 append-only 表重试写入时，需处理可能产生的重复行。
 
 #### 手动配置的 sparse 主键
 
-升级前检查手动设置了 `primary_key_encoding = 'sparse'` 或旧选项 `memtable.partition_tree.primary_key_encoding = 'sparse'` 的表。这些设置要求使用 Metric Engine 的 sparse schema：主键以保留列 `__table_id` 和 `__tsid` 开头，使用各自的保留列 ID，类型分别为非空的 `UInt32` 和 `UInt64`。其余主键列必须为字符串 tag，且不能使用保留列 ID。
-
-不符合要求的 schema 可能在建表、schema 变更或重建元数据的重新打开路径中校验失败。升级不会迁移数据或转换主键编码。对手动配置 sparse 编码的普通表，应在升级前评估并测试迁移到受支持的表配置。由 Metric Engine 正常管理的表和普通 dense 表不受影响。详情见 [sparse schema 校验变更](https://github.com/GreptimeTeam/greptimedb/pull/10020)。
+升级前，按[受支持的 schema](https://github.com/GreptimeTeam/greptimedb/pull/10020)检查设置了 `primary_key_encoding = 'sparse'` 或旧选项 `memtable.partition_tree.primary_key_encoding = 'sparse'` 的表。不符合要求的 schema 可能在 schema 变更或重新打开时校验失败。升级前需测试迁移到受支持的配置；数据和主键编码不会自动迁移。由 Metric Engine 正常管理的表和普通 dense 表不受影响。
 
 #### 凭据脱敏
 
-诊断配置输出和启动日志会对凭据脱敏或省略凭据。序列化后的诊断配置不能用作凭据备份。恢复时需使用保存的原始配置和密钥；配置输入语法不变。
+诊断配置和启动日志会对凭据脱敏或省略凭据。保留原始配置和密钥用于恢复，诊断输出不能用作凭据备份。
 
 ### 从 v1.2 升级到 v1.3
 
