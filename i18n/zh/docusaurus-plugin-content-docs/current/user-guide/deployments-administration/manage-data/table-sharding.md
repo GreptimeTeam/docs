@@ -61,7 +61,7 @@ PARTITION ON COLUMNS (<COLUMN LIST>) (
 
 1. `PARTITION ON COLUMNS` 后跟一个用逗号分隔的列名列表，指定了将用于分区的列。目前，表中定义的任意列都可以作为分区列。请注意，所有分区的范围必须**不能**重叠。
 
-2. `RULE LIST` 是多个分区规则的列表。每个规则是一个分区条件，GreptimeDB 会为这些规则生成 `p0`、`p1` 等分区名称。这里的表达式可以使用 `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, 列名和字面量。
+2. `RULE LIST` 是多个分区规则的列表。每个规则是一个分区条件，GreptimeDB 会为这些规则生成 `p0`、`p1` 等分区名称。这里的表达式可以使用 `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, 列名和字面量。比较的列一侧也可以用 `iceberg_hash(...)` 包裹列名，详见下文的[哈希分区](#哈希分区)。
 
 :::tip 选择分区列
 建议使用 Tag 列（主键列）进行分区。对于**不是** append-only 的表（启用了去重）尤其重要：分区列应该是主键列的子集。这样具有相同主键的行会始终进入同一个分区，从而保证去重和合并可以正确工作。
@@ -69,6 +69,52 @@ PARTITION ON COLUMNS (<COLUMN LIST>) (
 
 :::tip 提示
 `PARTITION ON COLUMNS` 括号里只能写列名（如 `device_id`、`area`），不支持表达式。GreptimeDB 不支持 MySQL 的 `PARTITION BY RANGE` 语法。
+:::
+
+## 哈希分区
+
+:::note 可用版本
+使用 `iceberg_hash` 规则的哈希分区目前仅在 Nightly 版本中提供，不包含在 GreptimeDB v1.3.0 和 v1.3.1 中。
+:::
+
+对原始值写范围规则需要手工划定区间，而且各分区的均衡程度取决于值的分布。规则也可以改为比较分区列的哈希值与 `INT32` 字面量：用 `iceberg_hash(...)` 包裹列名，把哈希空间切成等宽的桶。这通常能让不同的键值均匀分布，但相同键值的行始终进入同一个桶，因此热点键值或大量重复值仍可能造成热点分区。
+
+```sql
+CREATE TABLE requests (
+    host STRING,
+    ts TIMESTAMP DEFAULT current_timestamp(),
+    v DOUBLE,
+    TIME INDEX (ts),
+    PRIMARY KEY (host)
+)
+PARTITION ON COLUMNS (host) (
+  iceberg_hash(host) < -1073741824,
+  iceberg_hash(host) >= -1073741824 AND iceberg_hash(host) < 0,
+  iceberg_hash(host) >= 0 AND iceberg_hash(host) < 1073741824,
+  iceberg_hash(host) >= 1073741824
+);
+```
+
+`iceberg_hash` 是 Iceberg 规范定义的 32 位 Murmur3 哈希，可应用于 `STRING` 和整数列。`NULL` 哈希后仍为 `NULL`，因此被哈希列为 `NULL` 的行总是落入第一个分区。`PARTITION ON COLUMNS` 的列名列表仍然填写原始列名，哈希只出现在规则内部。
+
+哈希断点无需手工计算，[分区函数](/reference/sql/functions/partition.md)可以自动生成：
+
+```sql
+SELECT iceberg_hash_ranges_sql('host', 4);
+```
+
+输出就是完整的规则列表，可直接粘贴到表定义中：
+
+```sql
+iceberg_hash("host") < -1073741824,
+iceberg_hash("host") >= -1073741824 AND iceberg_hash("host") < 0,
+iceberg_hash("host") >= 0 AND iceberg_hash("host") < 1073741824,
+iceberg_hash("host") >= 1073741824
+```
+
+:::warning 限制
+- 对被哈希分区列的过滤条件不会裁剪 region：形如 `WHERE host = 'x'` 的查询会扫描所有哈希区间；其他列上的条件仍会裁剪。
+- 使用 `iceberg_hash` 规则创建的表要求集群中所有节点都运行支持 `iceberg_hash` 的版本；旧版本节点无法读取此类分区元数据。
 :::
 
 ## 创建分区表

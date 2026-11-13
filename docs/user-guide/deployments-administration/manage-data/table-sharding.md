@@ -59,7 +59,7 @@ The syntax mainly consists of two parts:
 
 1. `PARTITION ON COLUMNS` followed by a comma-separated list of column names. This specifies which columns will be used for partitioning. Currently, any column defined in the table can be used as a partition column. Note that the ranges of all partitions must **not** overlap.
 
-2. `RULE LIST` is a list of multiple partition rules. Each rule is a partition condition, and GreptimeDB generates partition names such as `p0`, `p1`, and so on for these rules. The expressions here can use `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, column names, and literals.
+2. `RULE LIST` is a list of multiple partition rules. Each rule is a partition condition, and GreptimeDB generates partition names such as `p0`, `p1`, and so on for these rules. The expressions here can use `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, column names, and literals. The column side of a comparison can also wrap the column in `iceberg_hash(...)`; see [Hash partitioning](#hash-partitioning) below.
 
 :::tip Choosing partition columns
 We recommend partitioning on Tag columns (the primary key columns). This matters most for tables that are **not** append-only (deduplication is enabled): the partition columns should be a subset of the primary key columns. That way, rows with the same primary key always go to the same partition, so deduplication and merging keep working correctly.
@@ -67,6 +67,52 @@ We recommend partitioning on Tag columns (the primary key columns). This matters
 
 :::tip Note
 The parentheses in `PARTITION ON COLUMNS (...)` only accept column names (e.g., `device_id`, `area`), not expressions like `device_id + 1`. GreptimeDB does not support MySQL's `PARTITION BY RANGE` syntax.
+:::
+
+## Hash partitioning
+
+:::note Availability
+Hash partitioning with `iceberg_hash` rules is available in Nightly builds. It is not included in GreptimeDB v1.3.0 or v1.3.1.
+:::
+
+Range rules on raw values need hand-written ranges, and how evenly rows spread across them depends on the value distribution. A rule can instead compare the hash of a partition column against `INT32` literals: wrap the column in `iceberg_hash(...)` and split the hash space into equal-width buckets. This usually distributes distinct keys evenly, but rows with the same key always share a bucket, so hot or frequently repeated keys can still create hot partitions.
+
+```sql
+CREATE TABLE requests (
+    host STRING,
+    ts TIMESTAMP DEFAULT current_timestamp(),
+    v DOUBLE,
+    TIME INDEX (ts),
+    PRIMARY KEY (host)
+)
+PARTITION ON COLUMNS (host) (
+  iceberg_hash(host) < -1073741824,
+  iceberg_hash(host) >= -1073741824 AND iceberg_hash(host) < 0,
+  iceberg_hash(host) >= 0 AND iceberg_hash(host) < 1073741824,
+  iceberg_hash(host) >= 1073741824
+);
+```
+
+`iceberg_hash` is the 32-bit Murmur3 hash defined by the Iceberg specification and can be applied to `STRING` and integer columns. `NULL` hashes to `NULL`, so rows with `NULL` in the hashed column always land in the first partition. The column list in `PARTITION ON COLUMNS` still names the raw column; the hash only appears inside the rules.
+
+You do not need to compute the hash breakpoints by hand. The [partitioning functions](/reference/sql/functions/partition.md) generate them for you:
+
+```sql
+SELECT iceberg_hash_ranges_sql('host', 4);
+```
+
+The output is the complete rule list, ready to paste into the table definition:
+
+```sql
+iceberg_hash("host") < -1073741824,
+iceberg_hash("host") >= -1073741824 AND iceberg_hash("host") < 0,
+iceberg_hash("host") >= 0 AND iceberg_hash("host") < 1073741824,
+iceberg_hash("host") >= 1073741824
+```
+
+:::warning Limitations
+- Filters on a hashed partition column do not prune regions: a query such as `WHERE host = 'x'` scans every hash range. Conditions on other columns still prune.
+- Tables created with `iceberg_hash` rules require every node in the cluster to run a version that supports `iceberg_hash`; older nodes cannot read such partition metadata.
 :::
 
 ## Create a partitioned table
