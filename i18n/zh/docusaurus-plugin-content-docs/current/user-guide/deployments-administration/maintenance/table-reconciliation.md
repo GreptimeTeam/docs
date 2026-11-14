@@ -93,6 +93,8 @@ ADMIN procedure_state('procedure_id')
 
 当 `procedure_state` 返回 Done 时，标识修复任务完成。
 
+GreptimeDB 还会把每个修复任务记录到 `greptime_private.events`。参见[表元数据修复事件](/user-guide/deployments-administration/monitoring/events/maintenance-events.md#表元数据修复)，查看任务的请求参数和实际修改。
+
 ## 注意事项
 
 在执行表元数据修复操作时，请注意以下几点：

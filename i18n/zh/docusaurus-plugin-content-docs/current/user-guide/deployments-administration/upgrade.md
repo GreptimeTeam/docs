@@ -121,6 +121,7 @@ v1.3 Frontend 的写入重试依赖 Datanode 返回逐条写入结果，与旧 D
 | PostgreSQL 结果元数据返回 `REGCLASS`、`REGTYPE` 等 OID 别名。 | 检查客户端对结果类型的处理。 |
 | `json_get*` 和 JSON2 字段访问遇到非法 JSONPath 时返回错误。 | 根路径可使用 `$` 或空字符串；替换 `.`、`$.` 等非法路径。`json_path_match` 对非法路径仍返回 NULL。 |
 | SQL 表达式深度超过 `128` 时规划失败。 | 简化深度嵌套的生成式查询。 |
+| Prometheus HTTP API 响应中有限样本值的文本格式可能变化，例如 `1` 变为 `1.0`，或切换到科学计数法的阈值不同。解析后的浮点数值不变，非有限值的字符串也不变。 | 测试和客户端应比较解析后的数值，不要比较响应中的原始字符串。 |
 | PromQL 向量匹配根据 `on`、`ignoring`、`group_left` 和 `group_right` 推导结果标签。若某个匹配组在要求唯一的一侧有多条序列，或匹配后产生重复的结果序列，查询会失败。不带 `bool` 的比较运算会保留 `__name__`，但未列出 `__name__` 的一对一 `on(...)` 匹配除外。 | 检查使用向量匹配的查询、recording rule 和告警标签模板。 |
 | `service.namespace` 非空的 OTLP 指标使用 `job="<service.namespace>/<service.name>"`，不再只使用 `service.name` 的值。即使禁用 `otlp.experimental_enable_resource_info`，该变化同样生效。已有数据不会重新打标签。 | 更新仪表盘选择器和告警规则。跨越升级时间点的查询可能需要同时匹配新旧两种标签值。 |
 
