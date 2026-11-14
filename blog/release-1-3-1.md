@@ -39,8 +39,7 @@ Fixes incorrect results from MySQL and PostgreSQL prepared statements after part
 ### 🚀 Features
 
 * feat(otlp): add v1 schema for auto-created OTLP log tables by [@killme2008](https://github.com/killme2008) in [#10207](https://github.com/GreptimeTeam/greptimedb/pull/10207)
-* feat: update dashboard to v0.14.5 by [@sunchanglong](https://github.com/sunchanglong) in [#10270](https://github.com/GreptimeTeam/greptimedb/pull/10270)
-* feat: update dashboard to v0.14.6 by [@sunchanglong](https://github.com/sunchanglong) in [#10365](https://github.com/GreptimeTeam/greptimedb/pull/10365)
+* feat: update dashboard to v0.14.6 by [@sunchanglong](https://github.com/sunchanglong) in [#10270](https://github.com/GreptimeTeam/greptimedb/pull/10270), [#10365](https://github.com/GreptimeTeam/greptimedb/pull/10365)
 * feat(query): serialize remote dynamic membership by [@discord9](https://github.com/discord9) in [#10341](https://github.com/GreptimeTeam/greptimedb/pull/10341)
 
 ### 🐛 Bug Fixes
