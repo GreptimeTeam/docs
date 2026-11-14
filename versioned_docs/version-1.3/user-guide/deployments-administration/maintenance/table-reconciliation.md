@@ -94,6 +94,8 @@ ADMIN procedure_state('procedure_id')
 
 When `procedure_state` returns Done, it indicates that the repair task has completed.
 
+GreptimeDB also records each repair task in `greptime_private.events`. See [Table reconciliation events](/user-guide/deployments-administration/monitoring/events/maintenance-events.md#table-reconciliation) to inspect what a task was asked to do and what it changed.
+
 ## Important Notes
 
 When performing table metadata repair operations, please note the following:

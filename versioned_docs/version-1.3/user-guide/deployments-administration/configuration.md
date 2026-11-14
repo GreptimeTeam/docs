@@ -619,7 +619,8 @@ create_database, alter_database, drop_database,
 create_flow, drop_flow,
 create_table, create_logical_tables, alter_table, alter_logical_tables,
 drop_table, undrop_table, purge_dropped_table, truncate_table,
-create_view, drop_view, admin_function
+create_view, drop_view, admin_function,
+reconcile_catalog, reconcile_database, reconcile_table, reconcile_logical_tables
 ```
 
 `undrop_table` and `purge_dropped_table` require GreptimeDB Enterprise.
@@ -640,7 +641,8 @@ create_table, create_logical_tables, alter_table, alter_logical_tables,
 drop_table, undrop_table, purge_dropped_table, truncate_table,
 create_view, drop_view,
 repartition, repartition_group,
-batch_gc, wal_prune
+batch_gc, wal_prune,
+reconcile_catalog, reconcile_database, reconcile_table, reconcile_logical_tables
 ```
 
 `undrop_table` and `purge_dropped_table` require GreptimeDB Enterprise.
@@ -679,6 +681,7 @@ sst_write_buffer_size = "8MB"
 max_concurrent_scan_files = 384
 
 [region_engine.mito.index]
+build_mode = "sync"
 aux_path = ""
 staging_size = "2GB"
 staging_ttl = "7d"
@@ -735,6 +738,7 @@ Available options:
 | `experimental_series_scan_v2`       | Bool    | `false`      | Whether to enable the experimental two-phase mode for series scans of metric engine physical regions. When disabled, these scans use the legacy mode. Other series scans always use the legacy mode.                                                                                                                                                                                                                                           |
 | `scan_parallelism`                       | Integer | `0`           | (Deprecated, use `max_concurrent_scan_files` instead) Legacy option for scan parallelism.                                                                                                                                                                                                                                                                                                              |
 | `index`                                  | --      | --            | The options for index in Mito engine.                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `index.build_mode` | String | `sync` | When to build indexes for new SST files.<br/>- `sync`: Build indexes while writing SST files during flush and compaction.<br/>- `async`: Build indexes in the background after the SST files are written. Queries read these files without indexes until the build finishes. |
 | `index.aux_path`                         | String  | `""`          | Auxiliary directory path for the index in the filesystem. This path is used to store intermediate files for creating the index and staging files for searching the index. It defaults to `{data_home}/index_intermediate`. The default name for this directory is `index_intermediate` for backward compatibility. This path contains two subdirectories: `__intm` for storing intermediate files used during index creation, and `staging` for storing staging files used during index searching. |
 | `index.staging_size`                     | String  | `2GB`         | The maximum capacity of the staging directory.                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `index.staging_ttl`                      | String  | `7d`          | TTL for staging directory. Defaults to 7 days. Setting to "0s" disables TTL.                                                                                                                                                                                                                                                                                                                                                                                                                                                     |

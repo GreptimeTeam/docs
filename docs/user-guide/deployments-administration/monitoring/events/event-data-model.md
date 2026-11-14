@@ -160,6 +160,9 @@ value in one of these columns is normal when it does not apply.
   `source_region_number`, `source_partition_expr`, `target_region_id`,
   `target_region_number`, and `target_partition_expr` describe the affected
   Regions and partition expressions.
+- **Table reconciliation:** `catalog_name`, `schema_name`, `table_name`,
+  `table_id`, and `physical_table_id` identify the reconciled catalog, database,
+  or table. See [Maintenance events](/user-guide/deployments-administration/monitoring/events/maintenance-events.md#table-reconciliation).
 - **Batch GC:** `region_id`, `region_number`, and `gc_report` describe the
   Regions processed and their GC result.
 - **WAL pruning:** `topic_name`, `prunable_entry_id`, and `latest_offset`

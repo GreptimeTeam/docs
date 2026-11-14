@@ -149,6 +149,8 @@ ORDER BY timestamp;
   `source_region_id`、`source_region_number`、`source_partition_expr`、
   `target_region_id`、`target_region_number` 和 `target_partition_expr` 描述源和目标
   Region 及其分区表达式。
+- **表元数据修复：** `catalog_name`、`schema_name`、`table_name`、`table_id` 和
+  `physical_table_id` 标识被修复的 catalog、数据库或表。参见[维护事件](/user-guide/deployments-administration/monitoring/events/maintenance-events.md#表元数据修复)。
 - **批量 GC：** `region_id`、`region_number` 和 `gc_report` 记录处理的 Region 及 GC 结果。
 - **WAL 清理：** `topic_name`、`prunable_entry_id` 和 `latest_offset` 分别表示 topic、
   请求的清理边界和排他的最新 offset。

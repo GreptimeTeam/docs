@@ -620,7 +620,8 @@ create_database, alter_database, drop_database,
 create_flow, drop_flow,
 create_table, create_logical_tables, alter_table, alter_logical_tables,
 drop_table, undrop_table, purge_dropped_table, truncate_table,
-create_view, drop_view, admin_function
+create_view, drop_view, admin_function,
+reconcile_catalog, reconcile_database, reconcile_table, reconcile_logical_tables
 ```
 
 `undrop_table` 和 `purge_dropped_table` 仅 GreptimeDB 企业版支持。
@@ -641,7 +642,8 @@ create_table, create_logical_tables, alter_table, alter_logical_tables,
 drop_table, undrop_table, purge_dropped_table, truncate_table,
 create_view, drop_view,
 repartition, repartition_group,
-batch_gc, wal_prune
+batch_gc, wal_prune,
+reconcile_catalog, reconcile_database, reconcile_table, reconcile_logical_tables
 ```
 
 `undrop_table` 和 `purge_dropped_table` 仅 GreptimeDB 企业版支持。
@@ -682,6 +684,7 @@ sst_write_buffer_size = "8MB"
 max_concurrent_scan_files = 384
 
 [region_engine.mito.index]
+build_mode = "sync"
 aux_path = ""
 staging_size = "2GB"
 staging_ttl = "7d"
@@ -738,6 +741,7 @@ Mito 根据表选项和 SST format 为每个 Region 选择 memtable 实现。`de
 | `experimental_series_scan_v2`       | 布尔值 | `false`       | 是否为 metric 引擎物理 region 的 series scan 启用实验性的 two-phase 模式。禁用时这些 scan 使用 legacy 模式；其他 series scan 始终使用 legacy 模式。 |
 | `scan_parallelism`                       | 整数   | `0`           | （已弃用，请使用 `max_concurrent_scan_files`）旧版扫描并发度选项。                                                |
 | `index` | -- | -- | Mito 引擎中索引的选项。 |
+| `index.build_mode` | 字符串 | `sync` | 何时为新的 SST 文件构建索引。<br/>- `sync`: 在 flush 和 compaction 写入 SST 文件的同时构建索引。<br/>- `async`: SST 文件写入后在后台构建索引。构建完成前，查询读取这些文件时不使用索引。 |
 | `index.aux_path` | 字符串 | `""` | 文件系统中索引的辅助目录路径，用于存储创建索引的中间文件和搜索索引的暂存文件，默认为 `{data_home}/index_intermediate`。为了向后兼容，该目录的默认名称为 `index_intermediate`。此路径包含两个子目录：- `__intm`: 用于存储创建索引时使用的中间文件。- `staging`: 用于存储搜索索引时使用的暂存文件。 |
 | `index.staging_size` | 字符串 | `2GB` | 暂存目录的最大容量。 |
 | `index.staging_ttl` | 字符串 | `7d` | 暂存目录的 TTL。默认为 7 天。设为 "0s" 可禁用 TTL。 |
