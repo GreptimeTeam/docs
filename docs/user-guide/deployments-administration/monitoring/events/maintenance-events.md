@@ -106,7 +106,8 @@ The `Submitted` row records the request, and the terminal row records the result
 - `is_subprocedure` is `true` when a parent reconciliation started the procedure.
 - `complete` is `true` only when the procedure succeeded.
 - `metadata_state` is `consistent` or `inconsistent`.
-- `last_completed_phase` is `start`, `resolve_column_metadata`, `reconcile_regions`, or `update_table_info`. Use it to see how far a failed table reconciliation went.
+- `last_completed_phase` is `start`, `resolve_column_metadata`, `reconcile_regions`, or `update_table_info`.
+- `metadata_state`, `resolution_strategy_applied`, `resolved_column_count`, and `last_completed_phase` are JSON `null` until the task reaches the step that sets them, for example when it fails early.
 - For `reconcile_logical_tables`, `processed_table_count` is the number of logical tables in the request, including tables whose reconciliation did not finish. `create_table_count` is the number of tables identified for creation.
 
-The counts are best-effort. They are collected in memory and reset when a procedure recovers after a restart, so use `procedure_state` to decide whether a task succeeded.
+The terminal payload is a best-effort summary, not a complete execution history. It is kept in memory and reset when a procedure recovers after a restart, so a recovered task can succeed with zero counts and `null` state and phase fields. Use `procedure_state` to decide whether a task succeeded.

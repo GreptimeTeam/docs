@@ -106,7 +106,8 @@ ORDER BY timestamp;
 - 由上层修复任务启动的 Procedure，`is_subprocedure` 为 `true`。
 - 只有 Procedure 成功时 `complete` 才为 `true`。
 - `metadata_state` 取值为 `consistent` 或 `inconsistent`。
-- `last_completed_phase` 取值为 `start`、`resolve_column_metadata`、`reconcile_regions` 或 `update_table_info`，可用来判断失败的表修复执行到了哪一步。
+- `last_completed_phase` 取值为 `start`、`resolve_column_metadata`、`reconcile_regions` 或 `update_table_info`。
+- `metadata_state`、`resolution_strategy_applied`、`resolved_column_count` 和 `last_completed_phase` 在任务执行到对应步骤之前为 JSON `null`，例如任务在早期失败时。
 - `reconcile_logical_tables` 的 `processed_table_count` 是请求中逻辑表的数量，包含未完成修复的表；`create_table_count` 是判定需要创建的表的数量。
 
-这些计数只是尽力而为的统计：它们保存在内存中，Procedure 在重启后恢复时会重置。判断任务是否成功请以 `procedure_state` 为准。
+终态 payload 只是尽力而为的结果摘要，不是完整的执行历史。它保存在内存中，Procedure 在重启后恢复时会重置，因此恢复后的任务即使成功，计数也可能为零，状态和阶段字段也可能为 `null`。判断任务是否成功请以 `procedure_state` 为准。
