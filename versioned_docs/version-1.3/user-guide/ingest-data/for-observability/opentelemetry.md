@@ -206,6 +206,36 @@ If you are using a table that was created by an older OTLP metrics ingestion for
 - All attributes, including resource attributes, scope attributes, and data point attributes, will be used as tag columns of the GreptimeDB table.
 - Each quantile of the Summary data type will be used as a separated data column of GreptimeDB, and the column name is `greptime_pxx`, where xx is the quantile, such as 90/99, etc.
 
+### Delta Metric Compatibility
+
+Since v1.3.0, `otlp_aggregation_temporality` is reserved for OTLP ingestion.
+For attributes selected for storage, GreptimeDB checks the label name after
+name translation and scope prefixing. Under the default translation strategy,
+a data-point attribute named `otlp.aggregation.temporality` becomes the reserved
+name. This collision can cause GreptimeDB to reject the request, even for
+cumulative metrics or gauges.
+Rename or remove conflicting attributes in the exporter or collector before
+sending them.
+
+Before sending delta metrics to a table with a fixed schema, check that
+`otlp_aggregation_temporality` is a nullable `STRING` tag in its primary key.
+`Sum` and explicit `Histogram` points with cumulative or unspecified temporality
+omit this tag. Allowing `NULL` lets them share the table with delta points.
+
+Delta writes fail if the tag is missing and automatic column addition is
+disabled. When delta data arrives, GreptimeDB can create the table with this tag
+or add it to an existing table. Upgrading alone does not add the tag. Use
+`SHOW CREATE TABLE` to check the destination. If its schema is incompatible, send
+writes to a new table with the required schema.
+
+`rate()` and `increase()` use raw-delta math for any float series with
+`otlp_aggregation_temporality="delta"`, including historical samples and data
+ingested through other protocols. Before upgrading, check whether this label
+already has a different meaning in your data. Renaming it at the sender affects
+future writes only; stored labels stay unchanged. See the
+[v1.3 upgrade guidance](/user-guide/deployments-administration/upgrade.md#otlp-delta-metrics-and-the-reserved-temporality-label)
+for handling existing series.
+
 ## Logs
 
 GreptimeDB consumes OpenTelemetry Logs natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.

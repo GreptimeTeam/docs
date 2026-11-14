@@ -129,6 +129,62 @@ v1.3 Frontend write retries depend on per-entry Datanode results. Mixing them wi
 | PromQL vector matching derives result labels from `on`, `ignoring`, `group_left`, and `group_right`. A query fails when a match group has more than one series on the side that must be unique, or when matching produces duplicate result series. Comparison operators without `bool` keep `__name__`, except one-to-one `on(...)` matches that do not list `__name__`. | Review vector-matching queries, recording rules, and alert label templates. |
 | OTLP metrics with a nonempty `service.namespace` use `job="<service.namespace>/<service.name>"` instead of the `service.name` value. This also applies when `otlp.experimental_enable_resource_info` is disabled. Existing rows are not relabeled. | Update dashboard selectors and alert rules. Queries that span the upgrade may need to match both label values. |
 
+#### Prometheus HTTP API sample strings
+
+Finite floating-point sample values now use ryu's shortest-roundtrip formatting.
+Their text can change, for example from `"1"` to `"1.0"`, `"-0"` to `"-0.0"`,
+or `"0.000001"` to `"1e-6"`. Parsing the new text as `f64` preserves the value,
+including the sign of negative zero. The non-finite strings `"NaN"`, `"inf"`, and
+`"-inf"` are unchanged.
+
+Before upgrading, review clients and snapshot tests that compare sample strings
+exactly. Parse finite samples and compare their numeric values; handle NaN and
+infinities explicitly, and check the sign separately if signed zero matters.
+
+#### OTLP delta metrics and the reserved temporality label
+
+Delta metrics use the reserved tag `otlp_aggregation_temporality="delta"`.
+Check the names of OTLP attributes selected for storage after translation and
+scope prefixing. Under the default translation strategy,
+`otlp.aggregation.temporality` becomes the reserved name and is rejected, even
+on cumulative metrics or gauges. Rename or remove conflicting attributes in
+your exporter or collector before upgrading.
+
+With automatic column addition enabled, GreptimeDB adds the tag when delta
+data arrives. If column addition is disabled, use `SHOW CREATE TABLE` to check
+that the primary key includes a nullable `STRING` tag named
+`otlp_aggregation_temporality` before enabling delta writes. Cumulative points
+leave the tag NULL. If the schema is incompatible, create a table with the
+required schema and redirect writes before enabling delta export. Upgrading
+alone does not add the tag.
+
+After upgrading, `rate()` and `increase()` use raw-delta math for any float
+series with `otlp_aggregation_temporality="delta"`, including historical samples
+and non-OTLP data. `increase()` sums the samples in the range; `rate()` divides
+that sum by the range duration in seconds. Check existing label values and
+queries. If those samples are cumulative counters, migrate the affected history
+to a table using a non-reserved label name and update queries before upgrading.
+Renaming the label only on new writes does not change stored history.
+
+See [Delta Metric Compatibility](/user-guide/ingest-data/for-observability/opentelemetry.md#delta-metric-compatibility)
+for the schema and label rules.
+
+#### Type changes on partition columns
+
+`ALTER TABLE ... MODIFY COLUMN` rejects type changes to columns referenced by
+persisted partition expressions, except for timestamp unit widening whose
+boundaries remain representable. All regions are checked before any region is
+modified. An incompatible expression rejects the ALTER and identifies the region
+and column in the error.
+
+Before upgrading, review schema-change scripts and use `SHOW CREATE TABLE` to
+inspect every partition boundary. A year-3000 boundary fits milliseconds and
+microseconds but overflows nanoseconds, even if all stored rows are recent.
+Keep a compatible unit or redesign the destination table's partitioning before
+migrating data. Check stored timestamps separately: finer units have a smaller
+range. See [Modify column type](/reference/sql/alter.md#modify-column-type)
+for restrictions and an example.
+
 #### Write requests and JSON2
 
 Prometheus Remote Read, Remote Write, and Loki protobuf/Snappy push requests return HTTP 400 when their decompressed bodies exceed 512 MiB. This decompression limit does not apply to the Loki JSON push path.

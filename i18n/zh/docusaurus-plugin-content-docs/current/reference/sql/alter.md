@@ -167,7 +167,36 @@ ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
 ```
 
-拓宽时间索引单位是无损的——已有数据在读取时按新单位解释，无需重写；新写入的数据可以使用更精细的精度。但收窄单位（例如从微秒改回毫秒）或将时间索引改为非时间戳类型是不允许的。该操作不支持使用 [metric engine](/reference/about-greptimedb-engines.md) 的表。
+已有数据在读取时转换为新单位，无需重写；新写入的数据可以使用更精细的精度。更精细的单位可表示的时间范围更小，因此拓宽前应检查已有时间戳是否在目标单位的范围内，否则溢出的值可能在读取时返回 `NULL`。收窄单位（例如从微秒改回毫秒）或将时间索引改为非时间戳类型是不允许的。该操作不支持使用 [metric engine](/reference/about-greptimedb-engines.md) 的表。
+
+从 v1.3.0 开始，持久化分区表达式引用的列不允许修改类型，唯一的例外是拓宽时间戳单位，且所有分区边界在与新列类型比较时仍可表示。即使是 `INT` 到 `BIGINT` 这样的非时间戳类型拓宽，也会被拒绝。GreptimeDB 会在修改任何 region 之前检查所有 region 的持久化分区表达式；如果存在不兼容的表达式，`ALTER` 会失败，错误信息会指出对应的 region 和列。
+
+例如，下面的表有一个公元 3000 年的分区边界，尽管表中唯一一行数据的时间戳在 2024 年：
+
+```sql
+CREATE TABLE ts_bound_overflow (host STRING, ts TIMESTAMP TIME INDEX)
+PARTITION ON COLUMNS (ts) (
+  ts < '2024-01-01 00:00:00',
+  ts >= '2024-01-01 00:00:00' AND ts < '3000-01-01 00:00:00',
+  ts >= '3000-01-01 00:00:00'
+);
+
+INSERT INTO ts_bound_overflow VALUES ("a", "2024-06-01 12:00:00");
+```
+
+以下语句会被拒绝，因为公元 3000 年的边界超出了纳秒时间戳的范围。表结构和已存储的数据保持不变：
+
+```sql
+ALTER TABLE ts_bound_overflow MODIFY COLUMN ts TIMESTAMP_NS;
+```
+
+改为微秒单位则可以成功，因为本例中的所有分区边界都在该单位的范围内：
+
+```sql
+ALTER TABLE ts_bound_overflow MODIFY COLUMN ts TIMESTAMP_US;
+```
+
+选择更精细的单位前，应同时检查已存储的时间戳和所有分区边界。分区边界检查通过，并不代表所有已存储的时间戳都能用新单位表示。
 
 ### 修改 JSON2 配置
 
