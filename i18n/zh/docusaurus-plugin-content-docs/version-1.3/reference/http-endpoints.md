@@ -109,7 +109,7 @@ greptime_meta_create_catalog_bucket{le="0.1"} 1
 curl http://localhost:4000/config
 ```
 
-输出包含 GreptimeDB 服务器的配置信息。
+从 v1.3.1 开始，响应中的凭据会被脱敏或省略。该输出用于诊断，不能用作完整的配置备份；恢复时需使用原始配置和密钥。
 
 ```toml
 enable_telemetry = true

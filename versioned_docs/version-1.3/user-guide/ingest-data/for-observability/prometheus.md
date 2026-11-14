@@ -48,6 +48,12 @@ This header applies to Remote Write 1.0 and 2.0, including writes batched by Gre
 When WAL is disabled, unflushed data is lost if the process restarts.
 See [Disable WAL for a single write request](/user-guide/protocols/http.md#disable-wal-for-a-single-write-request) for details.
 
+### Remote Read label matching
+
+Starting with v1.3.1, Prometheus Remote Read requires label columns to have a string type. Timestamp and sample-value columns are exempt. Requests fail if the table contains other non-string columns.
+
+Regular expressions match the entire label value: `job=~"api"` matches `api`, but not `api-server`. Use `job=~".*api.*"` for a substring match. Missing label columns and NULL label values match as empty strings. For example, `label=""` and `label=~".*"` can match missing or NULL labels, while `label!=""` excludes them.
+
 ### Native histograms
 
 GreptimeDB accepts native histograms through Prometheus Remote Write 2.0 by default,

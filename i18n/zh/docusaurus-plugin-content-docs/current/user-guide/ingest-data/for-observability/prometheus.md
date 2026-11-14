@@ -49,6 +49,12 @@ remote_write:
 禁用 WAL 后，进程重启会导致尚未刷盘的数据丢失。
 详情请参阅[为单个写入请求禁用 WAL](/user-guide/protocols/http.md#为单个写入请求禁用-wal)。
 
+### Remote Read 标签匹配
+
+从 v1.3.1 开始，Prometheus Remote Read 要求标签列为字符串类型，时间戳列和样本值列除外。存在其他非字符串列时，请求返回错误。
+
+正则表达式匹配整个标签值，例如 `job=~"api"` 只匹配 `api`，不匹配 `api-server`；子串匹配应使用 `job=~".*api.*"`。缺失的标签列和 NULL 标签值按空字符串参与匹配，因此 `label=""` 和 `label=~".*"` 可以匹配缺失或 NULL 的标签，`label!=""` 则会排除它们。
+
 ### 原生直方图
 
 GreptimeDB 默认支持通过 Prometheus Remote Write 2.0 写入原生直方图，无需额外的 GreptimeDB 配置。

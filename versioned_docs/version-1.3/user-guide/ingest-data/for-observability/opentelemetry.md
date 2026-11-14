@@ -256,7 +256,7 @@ When `X-Greptime-Pipeline-Name` is provided, GreptimeDB converts each OTLP log r
 
 The OTLP logs data model is mapped to the GreptimeDB data model according to the following rules:
 
-Default schema for a newly created table:
+Starting with v1.3.1, direct OTLP log ingestion without a pipeline uses the `greptime_log_v1` model for newly auto-created tables. These tables have the options `table_data_model=greptime_log_v1` and `greptime.semantic.pipeline=greptime_log_v1`. The default schema is:
 
 ```sql
 +-----------------------+---------------------+------+------+---------+---------------+
@@ -270,14 +270,17 @@ Default schema for a newly created table:
 | body                  | String              |      | YES  |         | FIELD         |
 | log_attributes        | Json                |      | YES  |         | FIELD         |
 | trace_flags           | Int32               |      | YES  |         | FIELD         |
+| service_name          | String              | PRI  | YES  |         | TAG           |
 | scope_name            | String              | PRI  | YES  |         | TAG           |
 | scope_version         | String              |      | YES  |         | FIELD         |
 | scope_attributes      | Json                |      | YES  |         | FIELD         |
 | scope_schema_url      | String              |      | YES  |         | FIELD         |
 | resource_attributes   | Json                |      | YES  |         | FIELD         |
 | resource_schema_url   | String              |      | YES  |         | FIELD         |
+| event_name            | String              |      | YES  |         | FIELD         |
+| observed_timestamp    | TimestampNanosecond |      | YES  |         | FIELD         |
 +-----------------------+---------------------+------+------+---------+---------------+
-14 rows in set (0.00 sec)
+17 rows in set (0.00 sec)
 ```
 
 - You can use `X-Greptime-Log-Table-Name` to specify the table name for storing the logs. If not provided, the default table name is `opentelemetry_logs`.
@@ -289,6 +292,16 @@ Default schema for a newly created table:
   `0.01`. For details, see the [fulltext index
   documentation](/user-guide/manage-data/data-index.md#full-text-index).
 - The timestamp of the log will be used as the timestamp index in GreptimeDB, with the column name `timestamp`. It is preferred to use `time_unix_nano` as the timestamp column. If `time_unix_nano` is not provided, `observed_time_unix_nano` will be used instead.
+- `service_name` comes from the resource attribute `service.name`. The default primary key is `(service_name, scope_name)`; additional attributes selected by `X-Greptime-Log-Extract-Keys` also become tags.
+- `trace_id` has a skipping index by default.
+- `event_name` stores the OTLP LogRecord event name. An empty string is stored as NULL.
+- `observed_timestamp` stores `observed_time_unix_nano` at nanosecond precision. A value of `0` is stored as NULL. This column is not the time index.
+
+When `X-Greptime-Log-Extract-Keys` includes `service_name`, the extracted value fills the built-in column. Log attributes take precedence over scope attributes, then resource attributes, with the resource attribute `service.name` as the fallback. Extract keys named `event_name` or `observed_timestamp` do not override the LogRecord fields or create duplicate columns; the original attributes remain in the attribute JSON.
+
+Existing tables without the `greptime_log_v1` marker keep the legacy mapping without adding the new columns, primary key, or index. Tables created with `CREATE TABLE` do not automatically adopt this model; pipeline-defined tables are unchanged.
+
+After upgrading all ingestion Frontends, set `X-Greptime-Log-Table-Name` to a name that does not exist and let ingestion create the table. Avoid concurrent creation by old and new Frontends or by `CREATE TABLE`, which can add v1 columns to a legacy table.
 
 ### Append Only
 

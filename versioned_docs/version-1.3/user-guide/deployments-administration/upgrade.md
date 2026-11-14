@@ -67,6 +67,44 @@ If you are running a version earlier than v0.16, you must first upgrade to v0.16
 
 ## Breaking Changes by Version
 
+### Upgrading to v1.3.1
+
+These changes apply from v1.3.1. Upgrades from v1.2 or earlier also require the v1.3 checks.
+
+#### OTLP log tables
+
+New auto-created log tables use `greptime_log_v1`; existing tables keep their mapping. After upgrading all ingestion Frontends, select a new table with `X-Greptime-Log-Table-Name` to adopt the [new schema](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model-1). Avoid concurrent creation by old and new Frontends or by `CREATE TABLE`.
+
+#### Prometheus Remote Read
+
+Check tables for non-string label columns, which Remote Read rejects; timestamp and sample-value columns are exempt. Review selectors against the [full-string and empty-label matching rules](/user-guide/ingest-data/for-observability/prometheus.md#remote-read-label-matching).
+
+#### Database selection and administration privileges
+
+HTTP database overrides and MySQL/PostgreSQL database selection check access permissions. Review client database names and grants:
+
+- MySQL returns error `1046` for statements requiring a database when no usable default is selected. Select an authorized database first.
+- PostgreSQL `SET search_path` selects the first authorized, existing database, or clears the selection if none qualifies.
+- Administration functions require `ADMIN` privileges, including through `SELECT`. Check permissions for scripts that call them.
+
+#### JSON log parsing
+
+Malformed JSON follows the `ignore_errors` policy; `skip_error` controls pipeline execution errors separately. Check ingestion error handling against the [log API](/reference/pipeline/write-log-api.md#request-parameters).
+
+#### Distributed deployments and write retries
+
+Keep Datanode clocks synchronized and stop an old process before reusing its node ID. Process fencing takes full effect after all Metasrv nodes are upgraded.
+
+A write whose leader lease expires during WAL append can return a retryable error after being applied. Handle possible duplicates when retrying writes to append-only tables.
+
+#### Manually configured sparse primary keys
+
+Before upgrading, check tables using `primary_key_encoding = 'sparse'` or the legacy `memtable.partition_tree.primary_key_encoding = 'sparse'` against the [supported schema](https://github.com/GreptimeTeam/greptimedb/pull/10020). Nonconforming schemas can fail validation during schema changes or reopening. Test migration to a supported configuration before upgrading; data and primary-key encoding are not migrated automatically. Normally managed metric-engine tables and ordinary dense tables are unaffected.
+
+#### Credential redaction
+
+Diagnostic configuration and startup logs redact or omit credentials. Preserve the original configuration and secrets for recovery; diagnostic output is not a credential backup.
+
 ### Upgrading from v1.2 to v1.3
 
 #### Cluster upgrade and rollback order

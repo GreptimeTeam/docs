@@ -109,7 +109,7 @@ For example:
 curl http://localhost:4000/config
 ```
 
-The output contains the configuration information of the GreptimeDB server.
+The response redacts or omits credentials. This diagnostic output is not a complete configuration backup. Preserve the original configuration and secrets for recovery.
 
 ```toml
 enable_telemetry = true
