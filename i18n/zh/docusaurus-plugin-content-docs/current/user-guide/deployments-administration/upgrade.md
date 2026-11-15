@@ -88,24 +88,23 @@ v1.3 Frontend 的写入重试依赖 Datanode 返回逐条写入结果，与旧 D
 
 #### Prometheus HTTP API 样本字符串
 
-Prometheus HTTP API 的样本字符串格式可能变化，例如 `"1"` 变为 `"1.0"`，
-有限浮点数的数值保持不变。检查按字符串比较样本的客户端和快照测试，
-改为解析后比较数值。
+Prometheus HTTP API 返回的样本值字符串格式可能变化，例如 `"1"` 变为 `"1.0"`，但有限浮点数的数值不变。
+依赖字符串比较的客户端和快照测试应改为先解析样本值，再比较数值。
 
 #### OTLP 增量指标和保留的 temporality 标签
 
-升级前，检查 OTLP 属性是否与保留标签 `otlp_aggregation_temporality` 冲突。
-使用固定表结构的目标表时，请检查[表结构和标签要求](/user-guide/ingest-data/for-observability/opentelemetry.md#增量指标兼容性)。
+升级前应检查 OTLP 属性名是否与保留标签 `otlp_aggregation_temporality` 冲突。
+向固定表结构写入增量指标时，还需满足[表结构和标签要求](/user-guide/ingest-data/for-observability/opentelemetry.md#增量指标兼容性)。
 
-如果已有浮点序列带有 `otlp_aggregation_temporality="delta"`，升级后的
-`rate()` 和 `increase()` 会将其按增量处理，非 OTLP 数据也一样。
-升级前请检查这些序列的标签和查询；修改后续写入不会改变已存储的标签。
+如果已有浮点序列带有 `otlp_aggregation_temporality="delta"` 标签，升级后的 `rate()` 和 `increase()`
+会按增量值计算，包括通过其他协议写入的数据。
+升级前应检查这些序列的标签和查询；修改后续写入不会改变已存储的标签。
 
 #### 分区列的类型变更
 
-检查修改持久化分区表达式所引用列的 schema 变更脚本。除拓宽时间戳单位且
-所有分区边界仍可表示的情况外，其他类型变更都会被拒绝。请检查已存储的
-时间戳和所有分区边界是否在目标单位的范围内，具体限制见[修改列类型](/reference/sql/alter.md#修改列类型)。
+升级前应检查涉及分区列类型变更的脚本。持久化分区表达式中使用的列不允许修改类型，
+但可以提高时间戳精度，前提是所有分区边界均未超出新单位可表示的范围。
+修改前应同时检查已有时间戳和分区边界是否超出范围，具体限制见[修改列类型](/reference/sql/alter.md#修改列类型)。
 
 #### 写入请求和 JSON2
 

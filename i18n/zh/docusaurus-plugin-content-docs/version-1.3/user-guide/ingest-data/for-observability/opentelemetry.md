@@ -205,19 +205,21 @@ OTel Arrow 的传输格式缺少 `zero_threshold`，因此不支持指数直方�
 
 ### 增量指标兼容性
 
-从 v1.3.0 开始，`otlp_aggregation_temporality` 是 OTLP 写入的保留标签。GreptimeDB 会在名称转换和
-scope 前缀处理后检查要保存的属性名；默认转换策略会将数据点属性 `otlp.aggregation.temporality`
-转为此名称。这种冲突可能导致请求被拒绝，累积指标和 gauge 也不例外。
-写入前，请重命名或移除冲突属性。
+从 v1.3.0 开始，OTLP 写入保留 `otlp_aggregation_temporality` 标签，用于标识增量指标。
+需要存储的属性名经过名称转换和 scope 前缀处理后，不得与该标签重名。
+例如，默认转换策略会将数据点属性 `otlp.aggregation.temporality` 转换为这个保留名称。
+这类冲突可能导致整个写入请求被拒绝，累积指标和 gauge 同样受此限制。冲突属性需在写入前重命名或移除。
 
-对于固定表结构，请用 `SHOW CREATE TABLE` 确认主键包含
-`otlp_aggregation_temporality`，且它是可空的 `STRING` tag 列。
-累积或未指定时序的 `Sum` 和显式 `Histogram` 数据点不携带此标签，因此该列必须允许 `NULL`。
-如果缺少该列且禁用了自动添加列，增量写入会失败。自动建表或自动添加列可以在增量数据到达时补充该列；仅升级版本不会添加。
+向固定表结构写入增量指标前，应通过 `SHOW CREATE TABLE` 确认表中存在
+`otlp_aggregation_temporality` 列，类型为可空的 `STRING`，且属于主键（tag 列）。
+累积或未指定 temporality 的 `Sum` 和显式 `Histogram` 数据点不携带此标签，对应列的值为 `NULL`。
 
-如果已有浮点序列将 `otlp_aggregation_temporality="delta"` 用于其他业务含义，
-`rate()` 和 `increase()` 会将这些样本按原始增量处理，包括历史数据和非 OTLP 数据。
-修改后续写入不会修正已存储的标签。
+如果表中缺少该列，且禁用了自动添加列，增量指标写入会失败。
+自动建表或自动添加列可在写入增量指标时创建该列；仅升级版本不会创建该列。
+
+对于带有 `otlp_aggregation_temporality="delta"` 标签的浮点序列，`rate()` 和 `increase()`
+按增量值计算，包括历史数据和通过其他协议写入的数据。
+如果已有序列将该标签用于其他含义，需要处理已存储的标签；仅修改后续写入不能消除对历史数据的影响。
 
 ## Logs
 
