@@ -202,6 +202,24 @@ OTel Arrow 的传输格式缺少 `zero_threshold`，因此不支持指数直方�
 新建逻辑表继承物理表的精度；自动创建的物理表使用毫秒精度。
 未启用 metric engine 时，OTLP 指标使用毫秒时间戳。
 
+### 增量指标兼容性
+
+从 v1.3.0 开始，OTLP 写入保留 `otlp_aggregation_temporality` 标签，用于标识增量指标。
+需要存储的属性名经过名称转换和 scope 前缀处理后，不得与该标签重名。
+例如，默认转换策略会将数据点属性 `otlp.aggregation.temporality` 转换为这个保留名称。
+GreptimeDB 会拒绝对应的数据点，累积指标和 gauge 同样受此限制。冲突属性需在写入前重命名或移除。
+
+向固定表结构写入增量指标前，应通过 `SHOW CREATE TABLE` 确认表中存在
+`otlp_aggregation_temporality` 列，类型为可空的 `STRING`，且属于主键（tag 列）。
+累积或未指定 temporality 的 `Sum` 和显式 `Histogram` 数据点不携带此标签，对应列的值为 `NULL`。
+
+如果表中缺少该列，且禁用了自动添加列，增量指标写入会失败。
+自动建表或自动添加列可在写入增量指标时创建该列；仅升级版本不会创建该列。
+
+对于带有 `otlp_aggregation_temporality="delta"` 标签的浮点序列，`rate()` 和 `increase()`
+按增量值计算，包括历史数据和通过其他协议写入的数据。
+如果已有序列将该标签用于其他含义，需要处理已存储的标签；仅修改后续写入不能消除对历史数据的影响。
+
 ### 查询增量指数直方图
 
 每个增量指数直方图保存一个区间内的计数、总和与桶数据。

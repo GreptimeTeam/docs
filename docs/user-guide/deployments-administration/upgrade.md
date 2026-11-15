@@ -129,6 +129,31 @@ v1.3 Frontend write retries depend on per-entry Datanode results. Mixing them wi
 | PromQL vector matching derives result labels from `on`, `ignoring`, `group_left`, and `group_right`. A query fails when a match group has more than one series on the side that must be unique, or when matching produces duplicate result series. Comparison operators without `bool` keep `__name__`, except one-to-one `on(...)` matches that do not list `__name__`. | Review vector-matching queries, recording rules, and alert label templates. |
 | OTLP metrics with a nonempty `service.namespace` use `job="<service.namespace>/<service.name>"` instead of the `service.name` value. This also applies when `otlp.experimental_enable_resource_info` is disabled. Existing rows are not relabeled. | Update dashboard selectors and alert rules. Queries that span the upgrade may need to match both label values. |
 
+#### Prometheus HTTP API sample strings
+
+Prometheus HTTP API sample strings may change, for example from `"1"` to `"1.0"`,
+while finite numeric values remain unchanged. Update clients and snapshot tests
+that compare sample strings to compare parsed numeric values instead.
+
+#### OTLP delta metrics and the reserved temporality label
+
+Before upgrading, check OTLP attributes for conflicts with the reserved
+`otlp_aggregation_temporality` label. For fixed-schema destinations, check the
+[schema and label requirements](/user-guide/ingest-data/for-observability/opentelemetry.md#delta-metric-compatibility).
+
+If existing float series already carry `otlp_aggregation_temporality="delta"`,
+`rate()` and `increase()` will treat them as deltas after upgrading, including
+non-OTLP data. Review their labels and queries before upgrading; changing future
+writes does not change stored labels.
+
+#### Type changes on partition columns
+
+Review schema-change scripts that modify columns used in persisted partition
+expressions. Type changes are rejected except for timestamp unit widening that
+keeps all partition boundaries representable. Check both stored timestamps and
+partition boundaries against the target unit's range. See
+[Modify column type](/reference/sql/alter.md#modify-column-type) for the restrictions.
+
 #### Write requests and JSON2
 
 Prometheus Remote Read, Remote Write, and Loki protobuf/Snappy push requests return HTTP 400 when their decompressed bodies exceed 512 MiB. This decompression limit does not apply to the Loki JSON push path.

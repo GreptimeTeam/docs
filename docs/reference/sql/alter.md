@@ -167,7 +167,11 @@ The time index column is the exception: you can widen its timestamp unit to a fi
 ALTER TABLE monitor MODIFY COLUMN ts TIMESTAMP_US;
 ```
 
-Widening the time index unit is lossless — existing data is read in the new unit without rewriting, and new writes can use the finer precision. Narrowing the unit (for example, from microseconds back to milliseconds) or changing the time index to a non-timestamp type is not allowed. This operation is not supported on tables using the [metric engine](/reference/about-greptimedb-engines.md).
+Existing data is converted to the new unit on read without rewriting, and new writes can use the finer precision. Finer units have a smaller representable timestamp range: check that existing timestamps fit the target unit before widening, because overflowing values can read back as `NULL`. Narrowing the unit (for example, from microseconds back to milliseconds) or changing the time index to a non-timestamp type is not allowed. This operation is not supported on tables using the [metric engine](/reference/about-greptimedb-engines.md).
+
+Since v1.3.0, a column referenced by a persisted partition expression cannot change type, except for timestamp unit widening that keeps every partition boundary representable when compared with the new column type. This restriction also rejects non-timestamp widening such as `INT` to `BIGINT`.
+
+Before widening, check both stored timestamps and all partition boundaries. A year-3000 boundary fits milliseconds and microseconds but overflows nanoseconds, even if all stored timestamps are recent.
 
 ### Modify JSON2 settings
 

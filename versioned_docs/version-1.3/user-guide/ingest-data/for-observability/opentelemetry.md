@@ -206,6 +206,28 @@ If you are using a table that was created by an older OTLP metrics ingestion for
 - All attributes, including resource attributes, scope attributes, and data point attributes, will be used as tag columns of the GreptimeDB table.
 - Each quantile of the Summary data type will be used as a separated data column of GreptimeDB, and the column name is `greptime_pxx`, where xx is the quantile, such as 90/99, etc.
 
+### Delta Metric Compatibility
+
+Since v1.3.0, OTLP ingestion reserves `otlp_aggregation_temporality`. GreptimeDB
+checks attribute names selected for storage after translation and scope prefixing.
+Default translation turns the data-point attribute `otlp.aggregation.temporality`
+into this name. Such conflicts can reject the request, even for cumulative
+metrics or gauges.
+Rename or remove conflicting attributes before ingestion.
+
+For fixed schemas, check with `SHOW CREATE TABLE` that the primary key includes
+`otlp_aggregation_temporality` as a nullable `STRING` tag. `Sum` and explicit
+`Histogram` points with cumulative or unspecified temporality omit the tag, so
+it must allow `NULL`.
+With automatic column addition disabled, delta writes fail if the tag is missing.
+Automatic table creation or column addition can supply it when delta data arrives;
+upgrading alone does not.
+
+If existing float series already use `otlp_aggregation_temporality="delta"` for
+another purpose, `rate()` and `increase()` interpret those samples as raw deltas,
+including historical and non-OTLP data. Changing future writes does not repair
+stored labels.
+
 ## Logs
 
 GreptimeDB consumes OpenTelemetry Logs natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.

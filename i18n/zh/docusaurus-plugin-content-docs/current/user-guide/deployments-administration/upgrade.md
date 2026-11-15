@@ -124,6 +124,26 @@ v1.3 Frontend 的写入重试依赖 Datanode 返回逐条写入结果，与旧 D
 | PromQL 向量匹配根据 `on`、`ignoring`、`group_left` 和 `group_right` 推导结果标签。若某个匹配组在要求唯一的一侧有多条序列，或匹配后产生重复的结果序列，查询会失败。不带 `bool` 的比较运算会保留 `__name__`，但未列出 `__name__` 的一对一 `on(...)` 匹配除外。 | 检查使用向量匹配的查询、recording rule 和告警标签模板。 |
 | `service.namespace` 非空的 OTLP 指标使用 `job="<service.namespace>/<service.name>"`，不再只使用 `service.name` 的值。即使禁用 `otlp.experimental_enable_resource_info`，该变化同样生效。已有数据不会重新打标签。 | 更新仪表盘选择器和告警规则。跨越升级时间点的查询可能需要同时匹配新旧两种标签值。 |
 
+#### Prometheus HTTP API 样本字符串
+
+Prometheus HTTP API 返回的样本值字符串格式可能变化，例如 `"1"` 变为 `"1.0"`，但有限浮点数的数值不变。
+依赖字符串比较的客户端和快照测试应改为先解析样本值，再比较数值。
+
+#### OTLP 增量指标和保留的 temporality 标签
+
+升级前应检查 OTLP 属性名是否与保留标签 `otlp_aggregation_temporality` 冲突。
+向固定表结构写入增量指标时，还需满足[表结构和标签要求](/user-guide/ingest-data/for-observability/opentelemetry.md#增量指标兼容性)。
+
+如果已有浮点序列带有 `otlp_aggregation_temporality="delta"` 标签，升级后的 `rate()` 和 `increase()`
+会按增量值计算，包括通过其他协议写入的数据。
+升级前应检查这些序列的标签和查询；修改后续写入不会改变已存储的标签。
+
+#### 分区列的类型变更
+
+升级前应检查涉及分区列类型变更的脚本。持久化分区表达式中使用的列不允许修改类型，
+但可以提高时间戳精度，前提是所有分区边界均未超出新单位可表示的范围。
+修改前应同时检查已有时间戳和分区边界是否超出范围，具体限制见[修改列类型](/reference/sql/alter.md#修改列类型)。
+
 #### 写入请求和 JSON2
 
 Prometheus Remote Read、Remote Write 和 Loki protobuf/Snappy push 请求的解压后正文超过 512 MiB 时返回 HTTP 400。该解压限制不适用于 Loki JSON push 路径。
