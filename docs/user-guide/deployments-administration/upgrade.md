@@ -93,59 +93,28 @@ v1.3 Frontend write retries depend on per-entry Datanode results. Mixing them wi
 
 #### Prometheus HTTP API sample strings
 
-Finite floating-point sample values now use ryu's shortest-roundtrip formatting.
-Their text can change, for example from `"1"` to `"1.0"`, `"-0"` to `"-0.0"`,
-or `"0.000001"` to `"1e-6"`. Parsing the new text as `f64` preserves the value,
-including the sign of negative zero. The non-finite strings `"NaN"`, `"inf"`, and
-`"-inf"` are unchanged.
-
-Before upgrading, review clients and snapshot tests that compare sample strings
-exactly. Parse finite samples and compare their numeric values; handle NaN and
-infinities explicitly, and check the sign separately if signed zero matters.
+Prometheus HTTP API sample strings may change, for example from `"1"` to `"1.0"`,
+while finite numeric values remain unchanged. Update clients and snapshot tests
+that compare sample strings to compare parsed numeric values instead.
 
 #### OTLP delta metrics and the reserved temporality label
 
-Delta metrics use the reserved tag `otlp_aggregation_temporality="delta"`.
-Check the names of OTLP attributes selected for storage after translation and
-scope prefixing. Under the default translation strategy,
-`otlp.aggregation.temporality` becomes the reserved name and is rejected, even
-on cumulative metrics or gauges. Rename or remove conflicting attributes in
-your exporter or collector before upgrading.
+Before upgrading, check OTLP attributes for conflicts with the reserved
+`otlp_aggregation_temporality` label. For fixed-schema destinations, check the
+[schema and label requirements](/user-guide/ingest-data/for-observability/opentelemetry.md#delta-metric-compatibility).
 
-With automatic column addition enabled, GreptimeDB adds the tag when delta
-data arrives. If column addition is disabled, use `SHOW CREATE TABLE` to check
-that the primary key includes a nullable `STRING` tag named
-`otlp_aggregation_temporality` before enabling delta writes. Cumulative points
-leave the tag NULL. If the schema is incompatible, create a table with the
-required schema and redirect writes before enabling delta export. Upgrading
-alone does not add the tag.
-
-After upgrading, `rate()` and `increase()` use raw-delta math for any float
-series with `otlp_aggregation_temporality="delta"`, including historical samples
-and non-OTLP data. `increase()` sums the samples in the range; `rate()` divides
-that sum by the range duration in seconds. Check existing label values and
-queries. If those samples are cumulative counters, migrate the affected history
-to a table using a non-reserved label name and update queries before upgrading.
-Renaming the label only on new writes does not change stored history.
-
-See [Delta Metric Compatibility](/user-guide/ingest-data/for-observability/opentelemetry.md#delta-metric-compatibility)
-for the schema and label rules.
+If existing float series already carry `otlp_aggregation_temporality="delta"`,
+`rate()` and `increase()` will treat them as deltas after upgrading, including
+non-OTLP data. Review their labels and queries before upgrading; changing future
+writes does not change stored labels.
 
 #### Type changes on partition columns
 
-`ALTER TABLE ... MODIFY COLUMN` rejects type changes to columns referenced by
-persisted partition expressions, except for timestamp unit widening whose
-boundaries remain representable. All regions are checked before any region is
-modified. An incompatible expression rejects the ALTER and identifies the region
-and column in the error.
-
-Before upgrading, review schema-change scripts and use `SHOW CREATE TABLE` to
-inspect every partition boundary. A year-3000 boundary fits milliseconds and
-microseconds but overflows nanoseconds, even if all stored rows are recent.
-Keep a compatible unit or redesign the destination table's partitioning before
-migrating data. Check stored timestamps separately: finer units have a smaller
-range. See [Modify column type](/reference/sql/alter.md#modify-column-type)
-for restrictions and an example.
+Review schema-change scripts that modify columns used in persisted partition
+expressions. Type changes are rejected except for timestamp unit widening that
+keeps all partition boundaries representable. Check both stored timestamps and
+partition boundaries against the target unit's range. See
+[Modify column type](/reference/sql/alter.md#modify-column-type) for the restrictions.
 
 #### Write requests and JSON2
 

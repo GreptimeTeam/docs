@@ -88,50 +88,24 @@ v1.3 Frontend 的写入重试依赖 Datanode 返回逐条写入结果，与旧 D
 
 #### Prometheus HTTP API 样本字符串
 
-有限浮点样本值改用 ryu 的最短往返格式。字符串可能发生变化，例如
-`"1"` 变为 `"1.0"`、`"-0"` 变为 `"-0.0"`、`"0.000001"` 变为 `"1e-6"`。
-将新字符串解析为 `f64` 后，数值保持不变，包括负零的符号。
-非有限值的字符串 `"NaN"`、`"inf"` 和 `"-inf"` 保持不变。
-
-升级前，检查依赖样本字符串精确比较的客户端和快照测试。对有限样本，
-应解析后比较数值；对 NaN 和无穷值保留专门处理。如果应用需要区分正零
-和负零，还应单独检查符号。
+Prometheus HTTP API 的样本字符串格式可能变化，例如 `"1"` 变为 `"1.0"`，
+有限浮点数的数值保持不变。检查按字符串比较样本的客户端和快照测试，
+改为解析后比较数值。
 
 #### OTLP 增量指标和保留的 temporality 标签
 
-增量指标使用保留标签 `otlp_aggregation_temporality="delta"`。
-请检查要保存的 OTLP 属性经过名称转换和 scope 前缀处理后的名称。
-默认转换策略会将 `otlp.aggregation.temporality` 转为保留名称，因而被拒绝，
-累积指标和 gauge 也不例外。升级前，请在 exporter 或 collector 中重命名或
-移除冲突属性。
+升级前，检查 OTLP 属性是否与保留标签 `otlp_aggregation_temporality` 冲突。
+使用固定表结构的目标表时，请检查[表结构和标签要求](/user-guide/ingest-data/for-observability/opentelemetry.md#增量指标兼容性)。
 
-启用自动添加列时，GreptimeDB 会在增量数据到达时添加该标签列。
-如果禁用了自动添加列，启用增量写入前，请通过 `SHOW CREATE TABLE`
-确认主键中包含名为 `otlp_aggregation_temporality` 的可空 `STRING` tag 列。
-累积数据点的该标签为 NULL。如果表结构不兼容，请先创建符合要求的表并
-切换写入，再启用增量导出。仅升级版本不会添加该标签列。
-
-升级后，只要浮点序列带有 `otlp_aggregation_temporality="delta"`，
-`rate()` 和 `increase()` 就会按原始增量处理，历史样本和非 OTLP 数据也一样。
-`increase()` 对范围内的样本求和，`rate()` 再除以范围时长（秒）。
-请检查已有标签值和查询。如果这些样本实际是累积计数器，应在升级前将
-受影响的历史数据迁移到使用非保留标签名的表，并更新查询。
-仅修改新写入的标签不会改变已存储的历史数据。
-
-schema 和标签规则详见[增量指标兼容性](/user-guide/ingest-data/for-observability/opentelemetry.md#增量指标兼容性)。
+如果已有浮点序列带有 `otlp_aggregation_temporality="delta"`，升级后的
+`rate()` 和 `increase()` 会将其按增量处理，非 OTLP 数据也一样。
+升级前请检查这些序列的标签和查询；修改后续写入不会改变已存储的标签。
 
 #### 分区列的类型变更
 
-`ALTER TABLE ... MODIFY COLUMN` 拒绝修改持久化分区表达式所引用列的类型，
-唯一例外是拓宽时间戳单位且所有分区边界仍可表示。GreptimeDB 在修改任何
-region 前检查全部 region；不兼容的表达式会使 ALTER 失败，错误信息会指出
-对应的 region 和列。
-
-升级前，请检查 schema 变更脚本，并通过 `SHOW CREATE TABLE` 查看所有分区
-边界。公元 3000 年的边界能用毫秒和微秒表示，但会超出纳秒范围，即使已存储
-的行都是近期数据也一样。请保留兼容的单位，或先重新设计目标表的分区，再
-迁移数据。还需单独检查已存储的时间戳：更精细的单位可表示的范围更小。
-限制和示例详见[修改列类型](/reference/sql/alter.md#修改列类型)。
+检查修改持久化分区表达式所引用列的 schema 变更脚本。除拓宽时间戳单位且
+所有分区边界仍可表示的情况外，其他类型变更都会被拒绝。请检查已存储的
+时间戳和所有分区边界是否在目标单位的范围内，具体限制见[修改列类型](/reference/sql/alter.md#修改列类型)。
 
 #### 写入请求和 JSON2
 
