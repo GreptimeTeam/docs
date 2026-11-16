@@ -10,6 +10,8 @@ import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
 **GreptimeDB** is an open-source [observability database](/user-guide/concepts/why-greptimedb.md#what-an-observability-database-is) that stores metrics, logs, and traces in one engine. Run it as the single OpenTelemetry backend in place of Prometheus, Loki, and Elasticsearch, keep the data on object storage, and query all of it with [SQL](/user-guide/query-data/sql.md) and [PromQL](/user-guide/query-data/promql.md).
 
+**Try it in the browser.** The [live demo](https://live.greptime.cloud/) is a GreptimeDB instance that receives metrics, logs, and traces from the [OpenTelemetry Demo](https://opentelemetry.io/docs/demo/) continuously. Query it from the built-in dashboard, with no installation or sign-up.
+
 <HomeCards>
 
 - **[Getting Started](/getting-started/overview.md)**

@@ -12,6 +12,7 @@ import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
 立即开始使用 GreptimeDB！
 
+- [在线 Demo](https://live.cloud.greptime.cn/)：无需安装，直接查询一个持续接收 OpenTelemetry Demo 数据的 GreptimeDB 实例。
 - [安装](./installation/overview.md)：安装 GreptimeDB 单机模式或分布式集群。
 - [快速开始](./quick-start.md)：使用你熟悉的协议或语言快速上手 GreptimeDB。
 - [For AI Agents](../faq-and-others/vibecoding.md)：通过 MCP Server、Skills 和机器可读文档，让 AI agent 使用 GreptimeDB。

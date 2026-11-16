@@ -10,6 +10,8 @@ import AgentOnboarding from '@site/src/components/AgentOnboarding';
 
 **GreptimeDB** 是一个开源[可观测性数据库](/user-guide/concepts/why-greptimedb.md#什么是可观测性数据库)，用一个引擎存储指标、日志和链路追踪。它可以作为唯一的 OpenTelemetry 后端，替代 Prometheus、Loki 和 Elasticsearch，数据放在对象存储上，用 [SQL](/user-guide/query-data/sql.md) 和 [PromQL](/user-guide/query-data/promql.md) 查询。
 
+**在浏览器中体验。** [在线 Demo](https://live.cloud.greptime.cn/) 是一个持续运行的 GreptimeDB 实例，[OpenTelemetry Demo](https://opentelemetry.io/docs/demo/) 不断向它写入指标、日志和链路追踪数据。在内置控制台中直接查询，无需安装或注册。
+
 <HomeCards>
 
 - **[立即开始](/getting-started/overview.md)**
