@@ -108,8 +108,8 @@ inputs = [ "my_source_id" ]
 endpoint = "http://<host>:4000/v1/prometheus/write?db=<dbname>"
 compression = "snappy"
 auth = { strategy = "basic", user = "<username>", password = "<password>" }
-# GreptimeDB accepts only POST on the write endpoint, so the GET health check fails.
-healthcheck.enabled = false
+# The write endpoint accepts only POST, so send the GET health check to /health instead.
+healthcheck.uri = "http://<host>:4000/health"
 ```
 
 ## Writing Logs Data
