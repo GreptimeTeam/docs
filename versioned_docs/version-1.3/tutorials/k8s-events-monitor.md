@@ -56,6 +56,8 @@ greptimedb-frontend.greptime-cluster.svc.cluster.local:4000
 
 If you use a different name or namespace, replace this address in every configuration in this guide.
 
+The examples on this page are tested with Kubernetes v1.30.0 and the OpenTelemetry Collector Helm chart 0.178.3 (Collector v0.163.2).
+
 ## Create the Pipeline
 
 The `k8s_objects` receiver puts the whole watch notification in the log body:
