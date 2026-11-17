@@ -72,7 +72,8 @@ remote_write:
 ```
 
 Set `send_native_histograms: true` explicitly. Selecting the v2 message format alone
-does not enable native histogram sending. See the
+does not enable native histogram sending. Prometheus scrapes native histograms only
+when `scrape_native_histograms: true` is set in the global or scrape config. See the
 [Prometheus native histogram documentation](https://prometheus.io/docs/specs/native_histograms/#remote-write--remote-read).
 
 Query native histograms with GreptimeDB's PromQL API. Prometheus Remote Read

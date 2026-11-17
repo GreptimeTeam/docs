@@ -286,6 +286,12 @@ Vector 批量发送时事件之间没有分隔符，所以在 raw 端点上一�
 [`splunk_hec` exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/splunkhecexporter/README.md) 的配置方式类似：
 
 ```yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
 exporters:
   splunk_hec:
     endpoint: "http://localhost:4000/v1/splunk/services/collector"

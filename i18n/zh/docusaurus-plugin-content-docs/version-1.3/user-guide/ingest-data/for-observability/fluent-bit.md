@@ -9,6 +9,8 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
 
 你可以将 Fluent Bit 数据转发到 GreptimeDB。本文档介绍如何配置 Fluent Bit 以将日志、指标和跟踪发送到 GreptimeDB。
 
+本文示例已在 Fluent Bit v5.2.0 上测试。
+
 ## HTTP
 
 使用 Fluent Bit 的 [HTTP 输出插件](https://docs.fluentbit.io/manual/pipeline/outputs/http)，你可以将日志发送到 GreptimeDB。Http 接口目前支持日志的写入。
@@ -64,7 +66,7 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header X-Greptime-DB-Name "<dbname>"
+    Header X-Greptime-DB-Name <dbname>
 
 # 仅用于 logs
 [OUTPUT]
@@ -77,9 +79,9 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header X-Greptime-Log-Table-Name "<log_table_name>"
-    Header X-Greptime-Pipeline-Name "<pipeline_name>"
-    Header X-Greptime-DB-Name "<dbname>"
+    Header X-Greptime-Log-Table-Name <log_table_name>
+    Header X-Greptime-Pipeline-Name <pipeline_name>
+    Header X-Greptime-DB-Name <dbname>
 
 # 仅用于 traces
 [OUTPUT]
@@ -92,8 +94,8 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header X-Greptime-Pipeline-Name "greptime_trace_v1"
-    Header X-Greptime-DB-Name "<dbname>"
+    Header X-Greptime-Pipeline-Name greptime_trace_v1
+    Header X-Greptime-DB-Name <dbname>
 ```
 
 - `Metrics_uri`、`Logs_uri` 和 `Traces_uri`：分别用于发送 metrics、logs 和 traces 的端点。

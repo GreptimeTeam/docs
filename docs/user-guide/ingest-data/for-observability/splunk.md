@@ -286,6 +286,12 @@ Vector concatenates batched events with no separator, so on the raw endpoint a w
 The [`splunk_hec` exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/splunkhecexporter/README.md) is configured the same way:
 
 ```yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
 exporters:
   splunk_hec:
     endpoint: "http://localhost:4000/v1/splunk/services/collector"

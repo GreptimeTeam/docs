@@ -8,6 +8,8 @@ description: 介绍了如何将 GreptimeDB 配置为 Grafana Alloy 的数据接�
 [Grafana Alloy](https://grafana.com/docs/alloy/latest/) 是一个用于 OpenTelemetry (OTel)、Prometheus、Pyroscope、Loki 等其他指标、日志、追踪和分析工具的可观测性数据管道。
 你可以将 GreptimeDB 集成为 Alloy 的数据接收端。
 
+本文示例已在 Grafana Alloy v1.22.0 上测试。
+
 ## Prometheus Remote Write
 
 将 GreptimeDB 配置为远程写入目标：
@@ -62,6 +64,8 @@ otelcol.auth.basic "credentials" {
 - `GREPTIME_HOST`: GreptimeDB 主机地址，例如 `localhost`。
 - `GREPTIME_DB`: GreptimeDB 数据库名称，默认是 `public`。
 - `GREPTIME_USERNAME` 和 `GREPTIME_PASSWORD`: GreptimeDB 的[鉴权认证信息](/user-guide/deployments-administration/authentication/static.md)。
+
+GreptimeDB 未开启认证时，删除 `otelcol.auth.basic` 块和 exporter 中的 `auth` 属性。凭据为空时 Alloy 会拒绝加载该配置。
 
 有关从 OpenTelemetry 到 GreptimeDB 的指标数据模型转换的详细信息，请参阅 OpenTelemetry 指南中的[数据模型](/user-guide/ingest-data/for-observability/opentelemetry.md#数据模型)部分。
 
@@ -124,6 +128,8 @@ otelcol.exporter.otlphttp "greptimedb_logs" {
 - `GREPTIME_LOG_TABLE_NAME`: 目标日志表名，默认为 `demo_logs`。
 - `GREPTIME_USERNAME` 和 `GREPTIME_PASSWORD`: GreptimeDB 的[鉴权认证信息](/user-guide/deployments-administration/authentication/static.md)。
 - `X-Greptime-Log-Extract-Keys`: 从 OTLP 日志属性中提取的键。详情请参阅 [OTLP/HTTP API 文档](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-1)。
+
+GreptimeDB 未开启认证时，删除 `otelcol.auth.basic` 块和 exporter 中的 `auth` 属性。凭据为空时 Alloy 会拒绝加载该配置。
 
 有关从 OpenTelemetry 到 GreptimeDB 的日志数据模型转换的详细信息，请参阅 OpenTelemetry 指南中的[数据模型](/user-guide/ingest-data/for-observability/opentelemetry.md#数据模型-1)部分。
 

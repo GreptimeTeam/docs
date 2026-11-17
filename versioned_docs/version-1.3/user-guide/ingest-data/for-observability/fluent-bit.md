@@ -9,6 +9,8 @@ description: Instructions on integrating GreptimeDB with Fluent bit for Promethe
 
 You can forward Fluent Bit data to GreptimeDB. This document describes how to configure Fluent Bit to send logs, metrics, and traces to GreptimeDB.
 
+The examples on this page are tested with Fluent Bit v5.2.0.
+
 ## HTTP
 
 Using Fluent Bit's [HTTP Output Plugin](https://docs.fluentbit.io/manual/pipeline/outputs/http), you can send logs to GreptimeDB.
@@ -65,7 +67,7 @@ Use a separate output for each signal because GreptimeDB uses signal-specific he
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header X-Greptime-DB-Name "<dbname>"
+    Header X-Greptime-DB-Name <dbname>
 
 # Only for logs
 [OUTPUT]
@@ -78,9 +80,9 @@ Use a separate output for each signal because GreptimeDB uses signal-specific he
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header X-Greptime-Log-Table-Name "<log_table_name>"
-    Header X-Greptime-Pipeline-Name "<pipeline_name>"
-    Header X-Greptime-DB-Name "<dbname>"
+    Header X-Greptime-Log-Table-Name <log_table_name>
+    Header X-Greptime-Pipeline-Name <pipeline_name>
+    Header X-Greptime-DB-Name <dbname>
 
 # Only for traces
 [OUTPUT]
@@ -93,8 +95,8 @@ Use a separate output for each signal because GreptimeDB uses signal-specific he
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header X-Greptime-Pipeline-Name "greptime_trace_v1"
-    Header X-Greptime-DB-Name "<dbname>"
+    Header X-Greptime-Pipeline-Name greptime_trace_v1
+    Header X-Greptime-DB-Name <dbname>
 ```
 
 - `Metrics_uri`, `Logs_uri`, and `Traces_uri`: The endpoints for metrics, logs, and traces.

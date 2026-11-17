@@ -132,8 +132,11 @@ curl 'http://localhost:4000/v1/influxdb/write?db=public&u=<username>&p=<password
 
 ### Telegraf
 
+以下示例已在 Telegraf v1.40.3 上测试。
+
 GreptimeDB 支持 [InfluxDB 行协议](../for-iot/influxdb-line-protocol.md)也意味着 GreptimeDB 与 Telegraf 兼容。
-要配置 Telegraf，只需将 GreptimeDB 的 URL 添加到 Telegraf 配置中：
+要配置 Telegraf，只需将 GreptimeDB 的 URL 添加到 Telegraf 配置中。
+`bucket` 或 `database` 指定的数据库需要事先存在，可以用 `CREATE DATABASE <db-name>;` 创建，或使用 `public`。
 
 <Tabs>
 
@@ -158,6 +161,8 @@ GreptimeDB 支持 [InfluxDB 行协议](../for-iot/influxdb-line-protocol.md)也�
   database = "<db-name>"
   username = "<greptime_user>"
   password = "<greptimedb_password>"
+  ## GreptimeDB does not support creating databases through the InfluxDB API
+  skip_database_creation = true
 ```
 
 </TabItem>
@@ -178,7 +183,7 @@ GreptimeDB 的[数据模型](/user-guide/concepts/data-model.md) 是值得了解
   在 GreptimeDB 中，它被表示为时间序列表中的一行数据。
   表名对应于 measurement，列由三种类型组成：Tag、Field 和 Timestamp。
 - GreptimeDB 使用 `TimestampNanosecond` 作为来自 [InfluxDB 行协议 API](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md) 的时间戳数据类型。
-- GreptimeDB 使用 `Float64` 作为来自 InfluxDB 行协议 API 的数值数据类型。
+- GreptimeDB 按以下规则映射 InfluxDB 字段类型：浮点数映射为 `Float64`，整数（`i` 后缀）映射为 `Int64`，无符号整数（`u` 后缀）映射为 `UInt64`，字符串映射为 `String`，布尔值映射为 `Boolean`。
 
 以 InfluxDB 文档中的[示例数据](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data)为例：
 

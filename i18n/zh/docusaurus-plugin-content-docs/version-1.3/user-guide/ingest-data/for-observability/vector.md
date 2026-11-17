@@ -6,7 +6,7 @@ description: 介绍如何使用 Vector 将数据写入 GreptimeDB，包括最小
 # Vector
 
 :::tip 注意
-本文档基于 Vector v0.49.0 版本编写。
+本文档基于 Vector v0.62.0 版本编写。
 以下的所有示例配置均基于此版本。对于各个 sink 的 host 和 port 配置请根据自己 GreptimeDB 实例的实际情况进行调整。
 下文中的所有 port 值均为默认值。
 :::
@@ -56,15 +56,15 @@ Vector 使用 gRPC 与 GreptimeDB 进行通信，因此 Vector sink 的默认端
 我们使用这样的规则将 Vector 指标存入 GreptimeDB：
 
 - 使用 `<metric namespace>_<metric name>` 作为 GreptimeDB 的表名，例如 `host_cpu_seconds_total`；
-- 将指标中的时间戳作为 GreptimeDB 的时间索引，默认列名 `ts`；
+- 将指标中的时间戳作为 GreptimeDB 的时间索引。`new_naming = true` 时（如上面的示例）列名为 `greptime_timestamp`，否则为 `ts`；
 - 指标所关联的 tag 列将被作为 GreptimeDB 的 tag 字段；
 - Vector 的指标，和其他指标类似，有多种子类型：
-  - Counter 和 Gauge 类型的指标，数值直接被存入 `val` 列；
-  - Set 类型，我们将集合的数据个数存入 `val` 列；
+  - Counter 和 Gauge 类型的指标，数值直接被存入 `greptime_value` 列（`new_naming` 为 false 时为 `val`）；
+  - Set 类型，我们将集合的数据个数存入 `greptime_value` 列（`new_naming` 为 false 时为 `val`）；
   - Distribution 类型，各个百分位数值点分别存入 `pxx` 列，其中 xx 是 quantile 数值，此外我们还会记录 `min/max/avg/sum/count` 列；
   - AggregatedHistoragm 类型，每个 bucket 的数值将被存入 `bxx` 列，其中 xx 是 bucket 数值的上限，此外我们还会记录 `sum/count` 列；
   - AggregatedSummary 类型，各个百分位数值点分别存入 `pxx` 列，其中 xx 是 quantile 数值，此外我们还会记录 `sum/count` 列；
-  - Sketch 类型，各个百分位数值点分别存入 `pxx` 列，其中 xx 是 quantile 数值，此外我们还会记录 `min/max/avg/sum` 列；
+  - Sketch 类型，各个百分位数值点分别存入 `pxx` 列，其中 xx 是 quantile 数值，此外我们还会记录 `count/min/max/avg/sum` 列；
 
 ### 使用 InfluxDB 行协议格式
 
@@ -81,18 +81,20 @@ type = "internal_metrics"
 [sinks.my_sink_id]
 type = "influxdb_metrics"
 inputs = [ "my_source_id" ]
+version = "2"
 bucket = "public"
 endpoint = "http://<host>:4000/v1/influxdb"
 org = ""
 token = ""
 ```
 
-上述配置使用的是 InfluxDB 行协议的 v2 版本。Vector 会根据 TOML 配置中的字段来判断 InfluxDB 协议的版本，所以请务必确保配置中存在 `bucket`、`org` 和 `token` 字段。具体字段的解释如下：
+上述配置通过 `version = "2"` 使用 InfluxDB 行协议的 v2 版本。具体字段的解释如下：
 
 - `type`: InfluxDB 行协议的值为 `influxdb_metrics`.
+- `version`: InfluxDB API 版本。Vector v0.60.0 起为必填项。
 - `bucket`: GreptimeDB 中的 database 名称。
 - `org`: GreptimeDB 中的组织名称（需置空）。
-- `token`: 用于身份验证的令牌（需置空）。由于 Influx 行协议的 token 有特殊形式，必须以 `Token ` 开头。这和 GreptimeDB 的鉴权方式有所不同，且目前不兼容。如果使用的是含有鉴权的 GreptimeDB 实例，请使用 `greptimedb_metrics`。
+- `token`: GreptimeDB 的认证信息，格式为 `<username>:<password>`。未开启认证时置空。
 
 更多细节请参考 [InfluxDB Line Protocol 文档](../for-iot/influxdb-line-protocol.md) 了解如何使用 InfluxDB Line Protocol 将数据写入到 GreptimeDB。
 
@@ -111,7 +113,9 @@ type = "prometheus_remote_write"
 inputs = [ "my_source_id" ]
 endpoint = "http://<host>:4000/v1/prometheus/write?db=<dbname>"
 compression = "snappy"
-auth = { strategy = "basic", username = "<username>", password = "<password>" }
+auth = { strategy = "basic", user = "<username>", password = "<password>" }
+# 写入接口只接受 POST，健康检查的 GET 请求改发到 /v1/health。
+healthcheck.uri = "http://<host>:4000/v1/health"
 ```
 
 ## 写入日志数据
