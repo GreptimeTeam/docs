@@ -8,6 +8,8 @@ description: Instructions on integrating GreptimeDB with Grafana Alloy for Prome
 [Grafana Alloy](https://grafana.com/docs/alloy/latest/) is an observability data pipeline for OpenTelemetry (OTel), Prometheus, Pyroscope, Loki, and many other metrics, logs, traces, and profiling tools.
 You can integrate GreptimeDB as a data sink for Alloy.
 
+The examples on this page are tested with Grafana Alloy v1.22.0.
+
 ## Prometheus Remote Write
 
 Configure GreptimeDB as remote write target:

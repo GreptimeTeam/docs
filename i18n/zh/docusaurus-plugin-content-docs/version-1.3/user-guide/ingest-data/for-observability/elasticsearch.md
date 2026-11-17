@@ -152,6 +152,8 @@ setup.template.enabled: false
 
 ### Telegraf
 
+以下示例已在 Telegraf v1.40.3 上测试。
+
 如果你正在使用 [Telegraf](https://github.com/influxdata/telegraf) 来收集日志，你可以使用其 Elasticsearch 插件来将数据写入到 GreptimeDB，如下所示：
 
 ```toml

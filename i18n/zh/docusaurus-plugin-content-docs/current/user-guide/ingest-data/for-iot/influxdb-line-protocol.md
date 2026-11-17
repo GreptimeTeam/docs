@@ -132,6 +132,8 @@ curl 'http://localhost:4000/v1/influxdb/write?db=public&u=<username>&p=<password
 
 ### Telegraf
 
+以下示例已在 Telegraf v1.40.3 上测试。
+
 GreptimeDB 支持 [InfluxDB 行协议](../for-iot/influxdb-line-protocol.md)也意味着 GreptimeDB 与 Telegraf 兼容。
 要配置 Telegraf，只需将 GreptimeDB 的 URL 添加到 Telegraf 配置中。
 `bucket` 或 `database` 指定的数据库需要事先存在，可以用 `CREATE DATABASE <db-name>;` 创建，或使用 `public`。

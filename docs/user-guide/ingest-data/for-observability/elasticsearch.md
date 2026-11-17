@@ -159,6 +159,8 @@ Please pay attention to the following GreptimeDB-related configurations:
 
 ### Telegraf
 
+The following example is tested with Telegraf v1.40.3.
+
 If you are using [Telegraf](https://github.com/influxdata/telegraf) to collect logs, you can use its Elasticsearch plugin to write data to GreptimeDB, as shown below:
 
 ```toml

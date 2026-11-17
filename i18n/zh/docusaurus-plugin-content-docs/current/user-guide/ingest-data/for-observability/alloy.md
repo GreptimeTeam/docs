@@ -8,6 +8,8 @@ description: 介绍了如何将 GreptimeDB 配置为 Grafana Alloy 的数据接�
 [Grafana Alloy](https://grafana.com/docs/alloy/latest/) 是一个用于 OpenTelemetry (OTel)、Prometheus、Pyroscope、Loki 等其他指标、日志、追踪和分析工具的可观测性数据管道。
 你可以将 GreptimeDB 集成为 Alloy 的数据接收端。
 
+本文示例已在 Grafana Alloy v1.22.0 上测试。
+
 ## Prometheus Remote Write
 
 将 GreptimeDB 配置为远程写入目标：
