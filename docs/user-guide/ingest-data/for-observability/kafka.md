@@ -8,7 +8,7 @@ description: Learn how to ingest observability data from Kafka into GreptimeDB w
 Data in Kafka or a Kafka-compatible message queue reaches GreptimeDB through one of two paths:
 
 - The [GreptimeDB sink connector for Kafka Connect](/user-guide/integrations/kafka.md) writes structured records, such as JSON, Avro, or Protobuf, to tables. The connector configuration maps record fields to the time index, tags, and fields.
-- Vector consumes metrics in InfluxDB line protocol, and logs that a pipeline parses. This page covers the Vector configuration.
+- Vector decodes and transforms messages before writing them, for example InfluxDB line protocol metrics, and logs reshaped with VRL or parsed by a pipeline. This page covers the Vector configuration.
 
 ## Metrics
 

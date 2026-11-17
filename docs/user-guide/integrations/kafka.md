@@ -14,8 +14,9 @@ columns automatically.
 The connector requires Java 8 or later and is tested with Kafka Connect 3.9 and
 GreptimeDB v1.3.
 
-To transport InfluxDB line protocol metrics, or logs that a
-[pipeline](/user-guide/logs/use-custom-pipelines.md) parses, use Vector instead.
+When messages need decoding or transformation before they are written, use
+Vector instead. Examples are InfluxDB line protocol metrics, and logs reshaped
+with VRL or parsed by a [pipeline](/user-guide/logs/use-custom-pipelines.md).
 See [Ingest Data via Kafka](/user-guide/ingest-data/for-observability/kafka.md).
 
 ## Install the connector

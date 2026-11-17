@@ -12,8 +12,9 @@ description: 使用 GreptimeDB 的 Kafka Connect sink connector 将 Kafka 记录
 
 Connector 运行需要 Java 8 或更高版本，已在 Kafka Connect 3.9 和 GreptimeDB v1.3 上测试。
 
-InfluxDB 行协议格式的指标，以及需要用 [pipeline](/user-guide/logs/use-custom-pipelines.md)
-解析的日志，改用 Vector 写入，参见[通过 Kafka 写入数据](/user-guide/ingest-data/for-observability/kafka.md)。
+消息在写入前需要解码或加工时，改用 Vector 写入，例如 InfluxDB 行协议格式的指标，
+以及需要用 VRL 改写或用 [pipeline](/user-guide/logs/use-custom-pipelines.md) 解析的日志。
+参见[通过 Kafka 写入数据](/user-guide/ingest-data/for-observability/kafka.md)。
 
 ## 安装 connector
 

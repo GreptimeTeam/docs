@@ -8,7 +8,7 @@ description: 了解如何使用 Kafka Connect 或 Vector 将可观察性数据�
 Kafka 或兼容 Kafka 的消息队列中的数据可以通过两种方式写入 GreptimeDB：
 
 - [GreptimeDB Kafka Connect sink connector](/user-guide/integrations/kafka.md) 把 JSON、Avro、Protobuf 等结构化记录写入表，记录字段与 time index、tag、field 的对应关系在 connector 配置中指定。
-- Vector 适合 InfluxDB 行协议格式的指标，以及需要用 pipeline 解析的日志。本文介绍 Vector 的配置。
+- Vector 在写入前对消息解码和加工，例如解析 InfluxDB 行协议格式的指标、用 VRL 改写或用 pipeline 解析日志。本文介绍 Vector 的配置。
 
 ## 指标
 
