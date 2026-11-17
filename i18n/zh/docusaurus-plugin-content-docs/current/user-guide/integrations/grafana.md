@@ -42,13 +42,13 @@ Grafana。如果需要与自己 Grafana `root_url` 绑定的签名版本，请[�
 
 ### Connection 配置
 
-在 GreptimeDB server URL 中填写以下地址：
+在 **Server address** 中填写以下地址：
 
 ```txt
 http://<host>:4000
 ```
 
-在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户名和密码。未设置可留空：
+GreptimeDB 开启认证时，在 **Authentication** 部分选择 **Basic authentication**，并填写用户名和密码：
 
 - User: `<username>`
 - Password: `<password>`
@@ -113,7 +113,7 @@ ORDER BY time;
 |:--------|:------------|
 | **Time** | 选择时间列 |
 | **Columns** | 选择标签列（如 `host`、`region`） |
-| **Aggregate functions** | 对数值列使用 AVG / MAX / MIN / SUM / COUNT |
+| **Aggregates** | 对数值列使用 AVG / MAX / MIN / SUM / COUNT |
 | **Group By** | 选择分组列 |
 | **Filters** | 可选条件：`=`、`!=`、`>`、`<`、`LIKE`、`IN`、`IS NULL`，以及 AND/OR |
 
@@ -159,7 +159,7 @@ ORDER BY time;
 
 | 主要设置项 | 对应值 |
 |-----------|---------------------|
-| Trace Model | 选择 `Trace Search` 以查询 Trace 列表
+| Trace Mode | 选择 `Trace Search` 以查询 Trace 列表
 | Trace Id Column | 初始值 `trace_id`
 | Span Id Column | 初始值 `span_id`
 | Parent Span ID Column | 初始值 `parent_span_id`
@@ -189,17 +189,17 @@ ORDER BY time;
 | `$__timeFilter_ms(col)` | 同上（毫秒精度） |
 | `$__fromTime` | 开始时间的 ISO 字符串 |
 | `$__toTime` | 结束时间的 ISO 字符串 |
-| `$fromTime_ms` | 开始时间的毫秒 ISO 字符串 |
-| `$toTime_ms` | 结束时间的毫秒 ISO 字符串 |
+| `$__fromTime_ms` | 开始时间的毫秒 ISO 字符串 |
+| `$__toTime_ms` | 结束时间的毫秒 ISO 字符串 |
 
 #### 时间间隔
 
 | Macro | 展开为 |
 |-------|-----------|
-| `$__timeInterval(col)` | `date_bin('<interval>', "col")` |
+| `$__timeInterval(col)` | `date_bin('<interval>', col)` |
 | `$__timeInterval_ms(col)` | `date_bin('<interval>', "col")`（毫秒） |
 | `$__interval` | 面板间隔字面量（如 `15s`） |
-| `$interval_s` | 面板间隔秒数（如 `15`） |
+| `$__interval_s` | 面板间隔秒数（如 `15`） |
 
 #### 日期过滤
 
@@ -213,7 +213,7 @@ ORDER BY time;
 
 | Macro | 展开为 |
 |-------|-----------|
-| `$__conditionalAll(col)` | 全选 → `1=1`；否则 → `col IN (values)` |
+| `$__conditionalAll(condition, $var)` | `$var` 为 All 或空时展开为 `1=1`；否则原样保留 `condition`，例如 `$__conditionalAll(host IN (${host:singlequote}), $host)` |
 
 #### 标识符引用
 
@@ -235,26 +235,26 @@ ORDER BY time;
 
 | 字段 | 用途 | 示例（OTel） |
 |-------|---------|----------------|
-| Default Table | 默认日志表 | `genai_conversations` |
+| Default log table | 默认日志表 | `genai_conversations` |
 | Time Column | 时间戳列 | `timestamp` |
-| Message Column | 日志正文列 | `body` |
-| Level Column | 日志级别列 | `severity_text` |
+| Log Message Column | 日志正文列 | `body` |
+| Log Level Column | 日志级别列 | `severity_text` |
 | Trace ID Column | 用于关联的 Trace ID | `trace_id` |
 | Context Columns | 展开日志行时额外显示的列 | `scope_name`, `trace_id` |
 
-启用 **Select context columns** 可在日志查询中自动包含这些列。
+启用 **Auto-Select Columns** 可在日志查询中自动包含这些列。
 
 #### Traces 配置
 
 | 字段 | 用途 | 示例（OTel） |
 |-------|---------|----------------|
-| Default Table | 默认 Trace 表 | `opentelemetry_traces` |
+| Default trace table | 默认 Trace 表 | `opentelemetry_traces` |
 | Trace ID Column | Trace ID | `trace_id` |
 | Span ID Column | Span ID | `span_id` |
 | Parent Span ID Column | Parent Span ID | `parent_span_id` |
 | Service Name Column | 服务名 | `service_name` |
 | Operation Name Column | Span/操作名 | `span_name` |
-| Duration Column | 耗时值 | `duration_nano` |
+| Duration Time Column | 耗时值 | `duration_nano` |
 | Duration Unit | 耗时列单位 | `nanoseconds` |
 | Start Time Column | Span 开始时间 | `timestamp` |
 | Tags Column | Span attributes 前缀 | `span_attributes` |
@@ -305,18 +305,18 @@ ORDER BY time;
 
 单击 Add data source 按钮，然后选择 Prometheus 作为类型。
 
-在 HTTP 中填写 Prometheus server URL
+在 **Connection** 部分的 **Prometheus server URL** 中填写：
 
 ```txt
 http://<host>:4000/v1/prometheus
 ```
 
-在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户名和密码：
+GreptimeDB 开启认证时，在 **Authentication** 部分选择 **Basic authentication**，并填写用户名和密码：
 
 - User: `<username>`
 - Password: `<password>`
 
-在 Custom HTTP Headers 部分中点击 Add header:
+在 **HTTP headers** 部分添加一个 header：
 
 - Header: `x-greptime-db-name`
 - Value: `<dbname>`
@@ -327,13 +327,13 @@ http://<host>:4000/v1/prometheus
 
 ## MySQL 数据源
 
-单击 Add data source 按钮，然后选择 MySQL 作为类型。在 MySQL Connection 中填写以下信息：
+单击 Add data source 按钮，然后选择 MySQL 作为类型。填写以下配置，其中 **Session Timezone** 位于 **Additional settings** 中：
 
-- Host: `<host>:4002`
+- Host URL: `<host>:4002`
 - Database: `<dbname>`
-- User: `<username>`
+- Username: `<username>`
 - Password: `<password>`
-- Session timezone: `UTC`
+- Session Timezone: `UTC`
 
 然后单击 Save & Test 按钮以测试连接。
 

@@ -12,13 +12,19 @@ To use GreptimeDB data in your application, you will need to create a SQL
 connection. Thanks to GreptimeDB's [MySQL protocol compatibility](/user-guide/protocols/mysql.md),
 you can treat GreptimeDB as MySQL when connecting to it.
 
+Install Streamlit, SQLAlchemy, and the PyMySQL driver:
+
+```shell
+pip install streamlit sqlalchemy pymysql
+```
+
 Here is an example code snippet to connect to GreptimeDB from Streamlit:
 
 ```python
 import streamlit as st
 
 st.title('GreptimeDB Streamlit Demo')
-conn = st.connection("greptimedb", type="sql", url="mysql://<username>:<password>@<host>:4002/<dbname>")
+conn = st.connection("greptimedb", type="sql", url="mysql+pymysql://<username>:<password>@<host>:4002/<dbname>")
 
 df = conn.query("SELECT * FROM ...")
 ```

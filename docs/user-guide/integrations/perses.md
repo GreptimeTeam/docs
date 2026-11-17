@@ -10,7 +10,7 @@ description: Configure GreptimeDB as a datasource in Perses using the GreptimeDB
 - **GreptimeDB datasource** — run SQL against metrics, logs, and traces tables
 - **Prometheus datasource** — run PromQL against GreptimeDB's Prometheus-compatible API
 
-The [GreptimeDB plugin](https://github.com/perses/plugins/tree/main/schemas/datasources/greptimedb) is part of the CNCF Perses plugin repository. Together, these plugins let you build unified observability dashboards on top of GreptimeDB's single-database storage. See [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) for the unified data model.
+The [GreptimeDB plugin](https://github.com/perses/plugins/tree/main/greptimedb) is part of the CNCF Perses plugin repository. Together, these plugins let you build unified observability dashboards on top of GreptimeDB's single-database storage. See [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) for the unified data model.
 
 GreptimeDB also embeds Perses in the [built-in Dashboard](/getting-started/installation/greptimedb-dashboard.md) (**Visualization** menu). Open `http://localhost:4000/dashboard`, click **Visualization**, and use the same datasource plugins described below. You can also configure GreptimeDB in a [standalone Perses deployment](#prerequisites).
 
@@ -45,7 +45,7 @@ The GreptimeDB datasource plugin sends SQL queries to GreptimeDB over HTTP.
 
 ### Connection settings
 
-In Perses, go to **Settings → Datasources → Add**. Select **GreptimeDB Datasource** as the plugin, set **Access Type** to **Direct access**, and fill in the URL:
+In Perses, open your project, go to the **Datasources** tab, and click **Add Datasource**. Set **Source** to **GreptimeDB Datasource**, select **Direct access** under **HTTP Settings**, and fill in the URL:
 
 ```txt
 http://<host>:4000
@@ -107,7 +107,7 @@ The Prometheus datasource plugin queries GreptimeDB through its Prometheus-compa
 
 ### Connection settings
 
-In Perses, go to **Settings → Datasources → Add**. Select **Prometheus** as the plugin, set **Access Type** to **Direct access**, and fill in the URL:
+In Perses, open your project, go to the **Datasources** tab, and click **Add Datasource**. Set **Source** to **Prometheus Datasource**, select **Direct access** under **HTTP Settings**, and fill in the URL:
 
 ```txt
 http://<host>:4000/v1/prometheus

@@ -23,7 +23,7 @@ description: 介绍如何将 GreptimeDB 作为 Apache Superset 的数据源，�
 greptimedb-sqlalchemy
 ```
 
-启动 Supertset 服务：
+启动 Superset 服务：
 
 ```bash
 docker compose -f docker-compose-non-dev.yml up
@@ -59,5 +59,5 @@ greptimedb://<username>:<password>@<host>:<port>/<database>
 
 - 如果没有启动[认证](/user-guide/deployments-administration/authentication/overview.md)，可以忽略
   `<username>:<password>@` 部分。
-- 默认端口 `4003` （我们用 PostgresSQL 协议通信）。
-- 默认数据库 `public`。如果是使用 GreptimeCloud 实例，可以从控制台复制数据库名称。
+- 默认端口 `4003` （我们用 PostgreSQL 协议通信）。
+- 默认数据库 `public`。

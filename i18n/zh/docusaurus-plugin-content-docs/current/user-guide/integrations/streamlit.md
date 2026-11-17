@@ -11,13 +11,19 @@ description: 使用 GreptimeDB 和 Streamlit 构建数据应用的说明，包�
 你需要创建一个 SQL 连接在应用程序中使用 GreptimeDB 数据。
 由于 GreptimeDB 的 [MySQL 协议兼容性](/user-guide/protocols/mysql.md)，你可以在连接时将 GreptimeDB 视为 MySQL。
 
+安装 Streamlit、SQLAlchemy 和 PyMySQL 驱动：
+
+```shell
+pip install streamlit sqlalchemy pymysql
+```
+
 以下是从 Streamlit 连接到 GreptimeDB 的示例代码片段：
 
 ```python
 import streamlit as st
 
 st.title('GreptimeDB Streamlit 演示')
-conn = st.connection("greptimedb", type="sql", url="mysql://<username>:<password>@<host>:4002/<dbname>")
+conn = st.connection("greptimedb", type="sql", url="mysql+pymysql://<username>:<password>@<host>:4002/<dbname>")
 
 df = conn.query("SELECT * FROM ...")
 ```

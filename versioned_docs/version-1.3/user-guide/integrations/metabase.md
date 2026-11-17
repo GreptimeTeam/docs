@@ -19,8 +19,8 @@ discovered by Metabase automatically.
 
 ## Add GreptimeDB as database
 
-To add GreptimeDB database, select *Settings* / *Admin Settings* / *Databases*,
-click *Add Database* button and select GreptimeDB from *Database type*.
+To add GreptimeDB database, select *Settings* / *Admin* / *Databases*,
+click *Add database* button and select GreptimeDB from *Database type*.
 
 You will be asked to provide host, port, database name and authentication
 information.
@@ -29,5 +29,4 @@ information.
   defaults, use your own settings.
 - Username and password are optional if you didn't enable
   [authentication](/user-guide/deployments-administration/authentication/overview.md).
-- Use `public` as default *Database name*. When using GreptimeCloud instance,
-  use the database name from your instance.
+- Use `public` as default *Database name*.

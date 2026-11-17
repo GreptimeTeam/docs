@@ -5,7 +5,7 @@ description: Guide to configuring GreptimeDB as a database in Apache Superset, i
 
 # Superset
 
-[Apache Superset](https://superset.apache.org) is an open source BI tool that
+[Apache Superset](https://superset.apache.org) is an open source BI tool
 written in Python. To configure GreptimeDB as a database in Superset, you can
 follow this guide.
 
@@ -64,5 +64,4 @@ greptimedb://<username>:<password>@<host>:<port>/<database>
 - Ignore `<username>:<password>@` if you don't have
   [authentication](/user-guide/deployments-administration/authentication/overview.md) enabled.
 - Use `4003` for default port (this extension uses Postgres protocol).
-- Use `public` as default `database`. When using GreptimeCloud instance, use the
-  database name from your instance.
+- Use `public` as default `database`.

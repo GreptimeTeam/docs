@@ -18,13 +18,11 @@ description: 介绍如何将 GreptimeDB 添加到 Metabase 作为数据源，包
 
 ## 添加 GreptimeDB 数据库
 
-选择 *设置* / *管理员设置* / *数据库*, 点击  *添加数据库* 按钮并选择 GreptimeDB
-作为 *数据库类型*.
+选择 *设置* / *管理员* / *数据库*，点击 *添加数据库* 按钮并选择 GreptimeDB 作为 *数据库类型*。
 
 进一步添加其他数据库信息：
 
 - 端口请填写 GreptimeDB 的 Postgres 协议端口 `4003`。
 - 如果没有开启[认证](/user-guide/deployments-administration/authentication/overview.md)，用户名和密码字段
   是可选的。
-- 默认填写 `public` 作为 *数据库名*。如果是使用 GreptimeCloud 的实例，可以从控制
-  台复制数据库名称。
+- 默认填写 `public` 作为 *数据库名*。
