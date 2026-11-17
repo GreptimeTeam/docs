@@ -10,7 +10,7 @@ description: 在 Perses 中将 GreptimeDB 配置为数据源，使用 GreptimeDB
 - **GreptimeDB 数据源** — 对 metrics、logs、traces 表执行 SQL 查询
 - **Prometheus 数据源** — 通过 GreptimeDB 的 Prometheus 兼容 API 执行 PromQL 查询
 
-[GreptimeDB 插件](https://github.com/perses/plugins/tree/main/schemas/datasources/greptimedb) 已纳入 CNCF Perses 官方插件仓库。两个插件配合使用，可在 GreptimeDB 统一存储之上构建可观测性大盘。统一数据模型见 [为什么选择 GreptimeDB](/user-guide/concepts/why-greptimedb.md)。
+[GreptimeDB 插件](https://github.com/perses/plugins/tree/main/greptimedb) 已纳入 CNCF Perses 官方插件仓库。两个插件配合使用，可在 GreptimeDB 统一存储之上构建可观测性大盘。统一数据模型见 [为什么选择 GreptimeDB](/user-guide/concepts/why-greptimedb.md)。
 
 GreptimeDB [内置控制台](/getting-started/installation/greptimedb-dashboard.md) 也嵌入了 Perses（**Visualization** 菜单）。打开 `http://localhost:4000/dashboard`，点击 **Visualization**，即可使用下文相同的数据源插件。你也可以在[独立 Perses 部署](#前置条件)中配置 GreptimeDB。
 
@@ -45,7 +45,7 @@ GreptimeDB 数据源插件通过 HTTP 向 GreptimeDB 发送 SQL 查询。
 
 ### Connection 配置
 
-在 Perses 中进入 **Settings → Datasources → Add**。选择 **GreptimeDB Datasource** 插件，将 **Access Type** 设为 **Direct access**，填写 URL：
+在 Perses 中打开项目，进入 **Datasources** 标签页，点击 **Add Datasource**。将 **Source** 设为 **GreptimeDB Datasource**，在 **HTTP Settings** 下选择 **Direct access**，填写 URL：
 
 ```txt
 http://<host>:4000
@@ -107,7 +107,7 @@ Prometheus 数据源插件通过 GreptimeDB 的 Prometheus 兼容 HTTP API 查�
 
 ### Connection 配置
 
-在 Perses 中进入 **Settings → Datasources → Add**。选择 **Prometheus** 插件，将 **Access Type** 设为 **Direct access**，填写 URL：
+在 Perses 中打开项目，进入 **Datasources** 标签页，点击 **Add Datasource**。将 **Source** 设为 **Prometheus Datasource**，在 **HTTP Settings** 下选择 **Direct access**，填写 URL：
 
 ```txt
 http://<host>:4000/v1/prometheus

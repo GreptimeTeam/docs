@@ -46,13 +46,13 @@ Note that you may need to restart your grafana server after installing the plugi
 
 ### Connection settings
 
-Fill in the following URL in the GreptimeDB server URL:
+Fill in the following URL in **Server address**:
 
 ```txt
 http://<host>:4000
 ```
 
-In the Auth section, click basic auth, and fill in the username and password for GreptimeDB in the Basic Auth Details section (not set by default, no need to fill in).
+If authentication is enabled in GreptimeDB, select **Basic authentication** in the **Authentication** section and fill in the username and password:
 - User: `<username>`
 - Password: `<password>`
 
@@ -119,7 +119,7 @@ dashboard time range. See [SQL Macros](#sql-macros) for more macros.
 |:--------|:------------|
 | **Time** | Select the time column. |
 | **Columns** | Select label columns (e.g. `host`, `region`). |
-| **Aggregate functions** | AVG / MAX / MIN / SUM / COUNT on value columns. |
+| **Aggregates** | AVG / MAX / MIN / SUM / COUNT on value columns. |
 | **Group By** | Select columns to group by. |
 | **Filters** | Optional conditions: `=`, `!=`, `>`, `<`, `LIKE`, `IN`, `IS NULL`, AND/OR. |
 
@@ -171,7 +171,7 @@ Select the `Traces` query type for distributed tracing data.
 
 | Main Setting          | Description                                                                                             |
 | :-------------------- | :------------------------------------------------------------------------------------------------------ |
-| **Trace Model** | Select `Trace Search` to query a list of traces.                                                        |
+| **Trace Mode** | Select `Trace Search` to query a list of traces.                                                        |
 | **Trace Id Column** | Default value: `trace_id`                                                                               |
 | **Span Id Column** | Default value: `span_id`                                                                                |
 | **Parent Span ID Column** | Default value: `parent_span_id`                                                                       |
@@ -205,17 +205,17 @@ GreptimeDB-compatible SQL.
 | `$__timeFilter_ms(col)` | Same (ms precision) |
 | `$__fromTime` | Start time as ISO string |
 | `$__toTime` | End time as ISO string |
-| `$fromTime_ms` | Start time as ms ISO string |
-| `$toTime_ms` | End time as ms ISO string |
+| `$__fromTime_ms` | Start time as ms ISO string |
+| `$__toTime_ms` | End time as ms ISO string |
 
 #### Time Interval
 
 | Macro | Expands To |
 |-------|-----------|
-| `$__timeInterval(col)` | `date_bin('<interval>', "col")` |
+| `$__timeInterval(col)` | `date_bin('<interval>', col)` |
 | `$__timeInterval_ms(col)` | `date_bin('<interval>', "col")` (ms) |
 | `$__interval` | Panel interval literal (e.g. `15s`) |
-| `$interval_s` | Panel interval in seconds (e.g. `15`) |
+| `$__interval_s` | Panel interval in seconds (e.g. `15`) |
 
 #### Date Filters
 
@@ -229,7 +229,7 @@ GreptimeDB-compatible SQL.
 
 | Macro | Expands To |
 |-------|-----------|
-| `$__conditionalAll(col)` | All selected → `1=1`; otherwise → `col IN (values)` |
+| `$__conditionalAll(condition, $var)` | `1=1` when `$var` is All or empty; otherwise `condition` as written, e.g. `$__conditionalAll(host IN (${host:singlequote}), $host)` |
 
 #### Identifier Quoting
 
@@ -255,26 +255,26 @@ the fields to your own column names.
 
 | Field | Purpose | Example (OTel) |
 |-------|---------|----------------|
-| Default Table | Default log table | `genai_conversations` |
+| Default log table | Default log table | `genai_conversations` |
 | Time Column | Timestamp column | `timestamp` |
-| Message Column | Log body column | `body` |
-| Level Column | Log severity/level column | `severity_text` |
+| Log Message Column | Log body column | `body` |
+| Log Level Column | Log severity/level column | `severity_text` |
 | Trace ID Column | Trace ID for linking | `trace_id` |
 | Context Columns | Extra columns shown on log line expand | `scope_name`, `trace_id` |
 
-Enable **Select context columns** to automatically include them in log queries.
+Enable **Auto-Select Columns** to automatically include them in log queries.
 
 #### Traces Config
 
 | Field | Purpose | Example (OTel) |
 |-------|---------|----------------|
-| Default Table | Default trace table | `opentelemetry_traces` |
+| Default trace table | Default trace table | `opentelemetry_traces` |
 | Trace ID Column | Trace ID | `trace_id` |
 | Span ID Column | Span ID | `span_id` |
 | Parent Span ID Column | Parent Span ID | `parent_span_id` |
 | Service Name Column | Service name | `service_name` |
 | Operation Name Column | Span/operation name | `span_name` |
-| Duration Column | Duration value | `duration_nano` |
+| Duration Time Column | Duration value | `duration_nano` |
 | Duration Unit | Unit of duration column | `nanoseconds` |
 | Start Time Column | Span start time | `timestamp` |
 | Tags Column | Span attributes prefix | `span_attributes` |
@@ -329,18 +329,18 @@ Sample data for these dashboards can be written into GreptimeDB via the [genai-o
 
 Click the "Add data source" button and select Prometheus as the type.
 
-Fill in Prometheus server URL in HTTP:
+Fill in **Prometheus server URL** in the **Connection** section:
 
 ```txt
 http://<host>:4000/v1/prometheus
 ```
 
-Click basic auth in the Auth section and fill in your GreptimeDB username and password in Basic Auth Details:
+If authentication is enabled in GreptimeDB, select **Basic authentication** in the **Authentication** section and fill in the username and password:
 
 - User: `<username>`
 - Password: `<password>`
 
-Click Custom HTTP Headers and add one header:
+In the **HTTP headers** section, add one header:
 
 - Header: `x-greptime-db-name`
 - Value: `<dbname>`
@@ -351,13 +351,13 @@ For how to query data with PromQL, please refer to the [Prometheus Query Languag
 
 ## MySQL data source
 
-Click the "Add data source" button and select MySQL as the type. Fill in the following information in MySQL Connection:
+Click the "Add data source" button and select MySQL as the type. Fill in the following settings. **Session Timezone** is under **Additional settings**:
 
-- Host: `<host>:4002`
+- Host URL: `<host>:4002`
 - Database: `<dbname>`
-- User: `<username>`
+- Username: `<username>`
 - Password: `<password>`
-- Session timezone: `UTC`
+- Session Timezone: `UTC`
 
 Then click "Save & Test" button to test the connection.
 
