@@ -43,7 +43,6 @@ endpoint = "<host>:4001"
 dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
-tls = {}
 ```
 
 For details on how InfluxDB line protocol metrics are mapped to GreptimeDB data, please refer to the [Data Model](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#data-model) section in the InfluxDB line protocol documentation.

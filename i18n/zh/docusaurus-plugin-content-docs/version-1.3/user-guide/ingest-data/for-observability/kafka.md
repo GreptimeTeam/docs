@@ -43,7 +43,6 @@ endpoint = "<host>:4001"
 dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
-tls = {}
 ```
 
 有关 InfluxDB 行协议指标如何映射到 GreptimeDB 数据的详细信息，请参阅 InfluxDB 行协议文档中的[数据模型](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#数据模型)部分。
