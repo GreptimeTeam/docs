@@ -114,8 +114,8 @@ inputs = [ "my_source_id" ]
 endpoint = "http://<host>:4000/v1/prometheus/write?db=<dbname>"
 compression = "snappy"
 auth = { strategy = "basic", user = "<username>", password = "<password>" }
-# 写入接口只接受 POST，健康检查的 GET 请求改发到 /health。
-healthcheck.uri = "http://<host>:4000/health"
+# 写入接口只接受 POST，健康检查的 GET 请求改发到 /v1/health。
+healthcheck.uri = "http://<host>:4000/v1/health"
 ```
 
 ## 写入日志数据
