@@ -128,8 +128,8 @@ transform:
 
 - `Body` 和 `ObservedTimestamp` 是 [OTLP 日志 Pipeline 输入](/user-guide/ingest-data/for-observability/opentelemetry.md#自定义-pipeline-输入)中的字段，`Body` 是 JSON 字符串形式的 watch 通知。
 - [`vrl` 处理器](/reference/pipeline/pipeline-config.md#vrl)解析 body，并用选出的字段替换整个 Pipeline 上下文，因此 `managedFields` 等不需要的字段不会被存储。
-- `timestamp` 是 Collector 收到通知的时间。重复发生的事件会更新同一个 Event 对象，每次重复都会以 `MODIFIED` 通知的形式到达，并带有新的时间戳。
-- `count` 是该事件截至目前的发生次数。通过 `events.k8s.io/v1` API 写入的事件把次数记录在 `series.count` 中，通过核心 `v1` API 写入的事件（例如 kubelet 产生的事件）记录在 `deprecatedCount` 中。两个字段都没有时，`count` 为 `1`。
+- `timestamp` 是 Collector 收到通知的时间。事件重复发生时，Kubernetes 会更新已有的 Event 对象，更新以 `MODIFIED` 通知的形式到达。事件记录器会对这些更新做批量写回、聚合或限流，因此一条通知可能对应多次发生，部分发生也可能没有对应的通知。
+- `count` 是发送通知时 Event 对象中记录的发生次数。通过 `events.k8s.io/v1` API 写入的事件把次数记录在 `series.count` 中，通过核心 `v1` API 写入的事件（例如 kubelet 产生的事件）记录在 `deprecatedCount` 中。两个字段都没有时，`count` 为 `1`。由于上述批量写回，该值可能落后于实际发生次数。
 - `k8s_namespace`、`object_kind` 和 `event_type` 是 tag，它们的基数较低。
 - `object_name` 使用跳数索引，`reason` 使用倒排索引，`note` 使用全文索引。
 
@@ -304,29 +304,30 @@ LIMIT 5;
 +----------------------------+---------------+-------------+---------------------------+--------+-------------------------------------------------------------+
 ```
 
-统计最近一小时内各原因的 Warning 事件数量：
+统计最近一小时内各原因的 `Warning` 通知数量。
+每一行对应收到的一条通知，而不是事件的一次发生：
 
 ```sql
-SELECT reason, object_kind, count(*) AS occurrences
+SELECT reason, object_kind, count(*) AS notifications
 FROM k8s_events
 WHERE event_type = 'Warning'
   AND timestamp > now() - INTERVAL '1' HOUR
 GROUP BY reason, object_kind
-ORDER BY occurrences DESC;
+ORDER BY notifications DESC;
 ```
 
 ```sql
-+--------+-------------+-------------+
-| reason | object_kind | occurrences |
-+--------+-------------+-------------+
-| Failed | Pod         |           9 |
-+--------+-------------+-------------+
++--------+-------------+---------------+
+| reason | object_kind | notifications |
++--------+-------------+---------------+
+| Failed | Pod         |             9 |
++--------+-------------+---------------+
 ```
 
-按分钟统计各命名空间的 Warning 事件数量：
+按分钟统计各命名空间的 `Warning` 通知数量：
 
 ```sql
-SELECT date_bin(INTERVAL '1' MINUTE, timestamp) AS minute, k8s_namespace, count(*) AS warnings
+SELECT date_bin(INTERVAL '1' MINUTE, timestamp) AS minute, k8s_namespace, count(*) AS notifications
 FROM k8s_events
 WHERE event_type = 'Warning'
 GROUP BY minute, k8s_namespace
@@ -334,11 +335,11 @@ ORDER BY minute;
 ```
 
 ```sql
-+---------------------+---------------+----------+
-| minute              | k8s_namespace | warnings |
-+---------------------+---------------+----------+
-| 2026-11-17 12:38:00 | default       |        9 |
-+---------------------+---------------+----------+
++---------------------+---------------+---------------+
+| minute              | k8s_namespace | notifications |
++---------------------+---------------+---------------+
+| 2026-11-17 12:38:00 | default       |             9 |
++---------------------+---------------+---------------+
 ```
 
 使用[全文搜索](/user-guide/logs/fulltext-search.md)检索事件消息：
@@ -393,7 +394,7 @@ ORDER BY timestamp;
 GreptimeDB 自带的 Web Dashboard 提供 Logs Query 视图。
 保持[创建 Pipeline](#创建-pipeline) 中的端口转发运行，打开 [http://localhost:4000/dashboard](http://localhost:4000/dashboard)，
 在侧边栏选择 **Logs Query**，然后选择 `k8s_events` 表。
-该视图会显示所选时间范围内事件数量随时间的变化，以及具体的事件记录。
+该视图会显示所选时间范围内的行数随时间的变化，以及具体的事件记录。
 
 ![GreptimeDB Dashboard 中的 Kubernetes 事件](/k8s-events-dashboard-logs-query.png)
 

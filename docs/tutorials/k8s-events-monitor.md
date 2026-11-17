@@ -128,8 +128,8 @@ The pipeline works as follows:
 
 - `Body` and `ObservedTimestamp` are fields of the [pipeline input for OTLP logs](/user-guide/ingest-data/for-observability/opentelemetry.md#custom-pipeline-input). `Body` holds the watch notification as a JSON string.
 - The [`vrl` processor](/reference/pipeline/pipeline-config.md#vrl) parses the body and replaces the pipeline context with the selected fields, so `managedFields` and other unused fields are not stored.
-- `timestamp` is the time the collector observed the notification. A repeated event updates the same Event object, so each repetition arrives as a `MODIFIED` notification with a new timestamp.
-- `count` is the number of occurrences of the event so far. Events written through the `events.k8s.io/v1` API store it in `series.count`, and events written through the core `v1` API (for example, by kubelet) store it in `deprecatedCount`. If neither field is set, `count` is `1`.
+- `timestamp` is the time the collector received the notification. When an event repeats, Kubernetes updates the existing Event object, and the update arrives as a `MODIFIED` notification. Event recorders batch, aggregate, or rate-limit these updates, so one notification can cover several occurrences, and some occurrences produce no notification.
+- `count` is the occurrence count stored in the Event object when the notification was sent. Events written through the `events.k8s.io/v1` API store it in `series.count`, and events written through the core `v1` API (for example, by kubelet) store it in `deprecatedCount`. If neither field is set, `count` is `1`. Because of the batching described for `timestamp`, the value can lag behind the actual number of occurrences.
 - `k8s_namespace`, `object_kind`, and `event_type` are tags. Their cardinality is low.
 - `object_name` has a skipping index, `reason` has an inverted index, and `note` has a full-text index.
 
@@ -304,29 +304,30 @@ LIMIT 5;
 +----------------------------+---------------+-------------+---------------------------+--------+-------------------------------------------------------------+
 ```
 
-Count warnings by reason in the last hour:
+Count `Warning` notifications by reason in the last hour.
+Each row is one received notification, not one occurrence of the event:
 
 ```sql
-SELECT reason, object_kind, count(*) AS occurrences
+SELECT reason, object_kind, count(*) AS notifications
 FROM k8s_events
 WHERE event_type = 'Warning'
   AND timestamp > now() - INTERVAL '1' HOUR
 GROUP BY reason, object_kind
-ORDER BY occurrences DESC;
+ORDER BY notifications DESC;
 ```
 
 ```sql
-+--------+-------------+-------------+
-| reason | object_kind | occurrences |
-+--------+-------------+-------------+
-| Failed | Pod         |           9 |
-+--------+-------------+-------------+
++--------+-------------+---------------+
+| reason | object_kind | notifications |
++--------+-------------+---------------+
+| Failed | Pod         |             9 |
++--------+-------------+---------------+
 ```
 
 Count warnings per minute in each namespace:
 
 ```sql
-SELECT date_bin(INTERVAL '1' MINUTE, timestamp) AS minute, k8s_namespace, count(*) AS warnings
+SELECT date_bin(INTERVAL '1' MINUTE, timestamp) AS minute, k8s_namespace, count(*) AS notifications
 FROM k8s_events
 WHERE event_type = 'Warning'
 GROUP BY minute, k8s_namespace
@@ -334,11 +335,11 @@ ORDER BY minute;
 ```
 
 ```sql
-+---------------------+---------------+----------+
-| minute              | k8s_namespace | warnings |
-+---------------------+---------------+----------+
-| 2026-11-17 12:38:00 | default       |        9 |
-+---------------------+---------------+----------+
++---------------------+---------------+---------------+
+| minute              | k8s_namespace | notifications |
++---------------------+---------------+---------------+
+| 2026-11-17 12:38:00 | default       |             9 |
++---------------------+---------------+---------------+
 ```
 
 Search event messages with [full-text search](/user-guide/logs/fulltext-search.md):
@@ -394,7 +395,7 @@ ORDER BY timestamp;
 GreptimeDB includes a web dashboard with a Logs Query view.
 With the port-forward from [Create the Pipeline](#create-the-pipeline) running, open [http://localhost:4000/dashboard](http://localhost:4000/dashboard),
 select **Logs Query** in the sidebar, and select the `k8s_events` table.
-The view shows the number of events over time and the event rows in the selected time range.
+The view shows the number of rows over time and the event rows in the selected time range.
 
 ![Kubernetes events in the GreptimeDB Dashboard](/k8s-events-dashboard-logs-query.png)
 
