@@ -6,7 +6,7 @@ description: Instructions for integrating Vector with GreptimeDB, including conf
 # Vector
 
 :::tip NOTE
-This document is based on Vector v0.49.0. All example configurations below are based on this version. Please adjust the host and port configurations for each sink according to your actual GreptimeDB instance. All port values below are defaults.
+This document is based on Vector v0.62.0. All example configurations below are based on this version. Please adjust the host and port configurations for each sink according to your actual GreptimeDB instance. All port values below are defaults.
 :::
 
 Vector is a high-performance observability data pipeline. It natively supports GreptimeDB as a metrics data receiver. Through Vector, you can receive metrics data from various sources including Prometheus, OpenTelemetry, StatsD, etc. GreptimeDB can serve as a sink component for Vector to receive metrics data.
@@ -50,15 +50,15 @@ For more requirements, please visit [Vector GreptimeDB Configuration](https://ve
 The following rules are used when storing Vector metrics into GreptimeDB:
 
 - Use `<metric namespace>_<metric name>` as the table name in GreptimeDB, for example, `host_cpu_seconds_total`;
-- Use the timestamp of the metric as the time index of GreptimeDB, the column name is `ts`;
+- Use the timestamp of the metric as the time index of GreptimeDB. The column name is `greptime_timestamp` when `new_naming = true`, as in the example above, or `ts` otherwise;
 - Use the tags of the metric as GreptimeDB tags;
 - For Vector metrics which have multiple subtypes:
-  - For Counter and Gauge metrics, the values are stored in the `val` column;
-  - For Set metrics, the number of data points are stored in the `val` column;
+  - For Counter and Gauge metrics, the values are stored in the `greptime_value` column (`val` when `new_naming` is false);
+  - For Set metrics, the number of data points are stored in the `greptime_value` column (`val` when `new_naming` is false);
   - For Distribution metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `min/max/avg/sum/count` columns are also stored;
   - For AggregatedHistogram metrics, the values of each bucket are stored in the `bxx` column, where xx is the upper limit of the bucket, and the `sum/count` columns are also stored;
   - For AggregatedSummary metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `sum/count` columns are also stored;
-  - For Sketch metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `min/max/avg/sum` columns are also stored;
+  - For Sketch metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `count/min/max/avg/sum` columns are also stored;
 
 ### Using InfluxDB Line Protocol Format
 
@@ -75,18 +75,20 @@ type = "internal_metrics"
 [sinks.my_sink_id]
 type = "influxdb_metrics"
 inputs = [ "my_source_id" ]
+version = "2"
 bucket = "public"
 endpoint = "http://<host>:4000/v1/influxdb"
 org = ""
 token = ""
 ```
 
-The above configuration uses v2 version of InfluxDB line protocol. Vector determines the InfluxDB protocol version based on fields in the TOML configuration, so please ensure the configuration contains `bucket`, `org`, and `token` fields. Specific field explanations:
+The above configuration uses v2 of the InfluxDB line protocol, selected by `version = "2"`. Specific field explanations:
 
 - `type`: Value for InfluxDB line protocol is `influxdb_metrics`.
+- `version`: InfluxDB API version. Required since Vector v0.60.0.
 - `bucket`: Database name in GreptimeDB.
 - `org`: Organization name in GreptimeDB (needs to be empty).
-- `token`: Token for authentication (needs to be empty). Since Influx line protocol token has special format and must start with `Token `, this differs from GreptimeDB's authentication method and is currently not compatible. If using GreptimeDB instance with authentication, please use `greptimedb_metrics`.
+- `token`: GreptimeDB credentials in the form `<username>:<password>`. Leave it empty when authentication is disabled.
 
 For more details, please refer to [InfluxDB Line Protocol documentation](../for-iot/influxdb-line-protocol.md) to learn how to write data to GreptimeDB using InfluxDB Line Protocol.
 
@@ -105,7 +107,9 @@ type = "prometheus_remote_write"
 inputs = [ "my_source_id" ]
 endpoint = "http://<host>:4000/v1/prometheus/write?db=<dbname>"
 compression = "snappy"
-auth = { strategy = "basic", username = "<username>", password = "<password>" }
+auth = { strategy = "basic", user = "<username>", password = "<password>" }
+# GreptimeDB accepts only POST on the write endpoint, so the GET health check fails.
+healthcheck.enabled = false
 ```
 
 ## Writing Logs Data

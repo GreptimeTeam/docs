@@ -92,12 +92,12 @@ We will see the following results:
 
 ```
 mysql> SELECT * FROM es_test;
-+------+------+----------------------------+
-| age  | name | greptime_timestamp         |
-+------+------+----------------------------+
-|   30 | John | 2025-01-15 08:26:06.516665 |
-|   25 | Jane | 2025-01-15 08:26:06.521510 |
-+------+------+----------------------------+
++----------------------------+------+------+
+| greptime_timestamp         | age  | name |
++----------------------------+------+------+
+| 2025-01-15 08:26:06.516665 |   30 | John |
+| 2025-01-15 08:26:06.521510 |   25 | Jane |
++----------------------------+------+------+
 2 rows in set (0.13 sec)
 ```
 
@@ -174,12 +174,12 @@ If you are using [Telegraf](https://github.com/influxdata/telegraf) to collect l
   namepass = ["tail"]
 
  [outputs.elasticsearch.headers]
-    "X-GREPTIME-DB-NAME" = "public"
-    "X-GREPTIME-PIPELINE-NAME" = "greptime_identity"
+    "X-GREPTIME-DB-NAME" = ["public"]
+    "X-GREPTIME-PIPELINE-NAME" = ["greptime_identity"]
 
 [[inputs.tail]]
   files = ["/tmp/test.log"]
-  from_beginning = true
+  initial_read_offset = "beginning"
   data_format = "value"
   data_type = "string"
   character_encoding = "utf-8"
@@ -194,4 +194,4 @@ Please pay attention to the following GreptimeDB-related configurations:
   
 - `index_name`: Specifies the table name that will be written to.
   
-- `outputs.elasticsearch.header`: Specifies the HTTP Header for writing, where the example above specifies two parameters: `X-GREPTIME-DB-NAME` and `X-GREPTIME-PIPELINE-NAME`.
+- `outputs.elasticsearch.headers`: Specifies the HTTP Header for writing, where the example above specifies two parameters: `X-GREPTIME-DB-NAME` and `X-GREPTIME-PIPELINE-NAME`.

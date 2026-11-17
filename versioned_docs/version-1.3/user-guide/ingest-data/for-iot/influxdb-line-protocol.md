@@ -133,7 +133,8 @@ curl 'http://localhost:4000/v1/influxdb/write?db=public&u=<username>&p=<password
 ### Telegraf
 
 GreptimeDB's support for the [InfluxDB line protocol](../for-iot/influxdb-line-protocol.md) ensures its compatibility with Telegraf.
-To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
+To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations.
+The database set in `bucket` or `database` must exist before Telegraf writes to it. Create it with `CREATE DATABASE <db-name>;`, or use `public`.
 
 <Tabs>
 
@@ -158,6 +159,8 @@ To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
   database = "<db-name>"
   username = "<greptime_user>"
   password = "<greptimedb_password>"
+  ## GreptimeDB does not support creating databases through the InfluxDB API
+  skip_database_creation = true
 ```
 
 </TabItem>
@@ -178,7 +181,7 @@ In GreptimeDB, it is represented as a row of data in the time-series table,
 where the table name aligns with the measurement,
 and the columns are divided into three types: Tag, Field, and Timestamp.
 - GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md).
-- GreptimeDB uses `Float64` as the data type for numeric data from the InfluxDB line protocol API.
+- GreptimeDB maps InfluxDB field types as follows: floats to `Float64`, integers (`i` suffix) to `Int64`, unsigned integers (`u` suffix) to `UInt64`, strings to `String`, and booleans to `Boolean`.
 
 Consider the following [sample data](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data) borrowed from InfluxDB docs as an example:
 

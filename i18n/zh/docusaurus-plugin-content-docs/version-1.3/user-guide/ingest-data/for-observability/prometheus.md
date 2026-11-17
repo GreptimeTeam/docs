@@ -71,6 +71,7 @@ remote_write:
 ```
 
 请显式设置 `send_native_histograms: true`，仅选择 v2 消息格式不会启用原生直方图发送。
+Prometheus 只有在 global 或 scrape 配置中设置 `scrape_native_histograms: true` 时才会采集原生直方图。
 详见 [Prometheus 原生直方图文档](https://prometheus.io/docs/specs/native_histograms/#remote-write--remote-read)。
 
 请使用 GreptimeDB 的 PromQL API 查询原生直方图。Prometheus Remote Read 目前仅返回标量样本，不返回原生直方图。

@@ -46,10 +46,8 @@ instance, which will listen on ports `4317` (gRPC) and `4318` (HTTP):
 ```shell
 docker run --rm \
   --network host \
-  -p 4317:4317 \
-  -p 4318:4318 \
   -v $(pwd)/config.yaml:/etc/otelcol-contrib/config.yaml \
-  otel/opentelemetry-collector-contrib:0.159.0
+  otel/opentelemetry-collector-contrib:0.165.0
 ```
 
 The content of the `config.yaml` file is as follows:
