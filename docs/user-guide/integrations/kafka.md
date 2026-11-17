@@ -11,7 +11,7 @@ which record fields become the time index, tags, and fields, as defined in the
 [data model](/user-guide/concepts/data-model.md). GreptimeDB creates tables and
 columns automatically.
 
-The connector targets Java 8 and is tested with Kafka Connect 3.9 and
+The connector requires Java 8 or later and is tested with Kafka Connect 3.9 and
 GreptimeDB v1.3.
 
 To transport InfluxDB line protocol metrics, or logs that a
@@ -61,11 +61,12 @@ curl -X PUT -H 'Content-Type: application/json' \
 }'
 ```
 
-`greptimedb.endpoints` is the GreptimeDB gRPC endpoint, whose default port is
-`4001`, as reached from the Connect workers.
+Set `greptimedb.endpoints` to a GreptimeDB gRPC address that the Connect workers
+can reach. The default gRPC port is `4001`.
 
-For the following record, the connector creates table `kafka_sensor` with `ts` as
-the time index, `device` as a tag, and `temperature` as a `DOUBLE` field:
+When the following record arrives on topic `sensor`, the connector creates table
+`kafka_sensor` with `ts` as the time index, `device` as a tag, and `temperature`
+as a `DOUBLE` field:
 
 ```json
 {"ts": 1700000000000, "device": "d1", "temperature": 21.5}
@@ -93,15 +94,18 @@ that runs Kafka, a Connect worker, and GreptimeDB locally.
 ## Limitations
 
 - The first write creates the table and fixes its tags and column types.
-  Changing `tag.fields` later does not change an existing table, and a value of
-  a different type is rejected. In schemaless JSON, `20` is an integer and
-  `20.5` is a float.
+  Changing `tag.fields` later does not change an existing table.
+- A value whose type differs from the column type is rejected. In schemaless
+  JSON, `20` is an integer and `20.5` is a float, so write floating-point values
+  with a decimal point, such as `20.0`.
 - The time index must be an integer epoch value or a Connect `Timestamp`.
   Convert string timestamps with the `TimestampConverter` transform.
 - Nested `STRUCT`, `MAP`, and `ARRAY` values are not supported. Exclude them with
   `field.exclude`, or flatten structs and maps with the `Flatten` transform.
 - Records that cannot be written follow the Kafka Connect `errors.tolerance`
-  setting: by default they fail the task; with `errors.tolerance=all` they go to
-  the dead letter queue, or are skipped when none is set. Transient write errors are retried and never skipped.
+  setting. By default, such a record fails the task. With `errors.tolerance=all`,
+  it goes to the dead letter queue, or is dropped when none is configured.
+- When GreptimeDB is unreachable or busy, the connector retries the batch and
+  does not drop it.
 - Delivery is at-least-once. A replayed row overwrites the row with the same
   tags and time index, unless the table uses `append_mode = 'true'`.
