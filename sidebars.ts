@@ -459,7 +459,8 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Tutorials',
       items: [
-        'tutorials/k8s-metrics-monitor'
+        'tutorials/k8s-metrics-monitor',
+        'tutorials/k8s-events-monitor'
       ]
     },
     {

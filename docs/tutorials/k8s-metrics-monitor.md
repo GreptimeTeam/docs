@@ -44,7 +44,7 @@ The monitoring architecture consists of the following components:
 
 Before starting, ensure you have:
 
-- A running Kubernetes cluster (version >= 1.18)
+- A running Kubernetes cluster (version >= 1.25)
 - `kubectl` configured to access your cluster
 - [Helm](https://helm.sh/docs/intro/install/) v3.0.0 or higher installed
 - Sufficient cluster resources (at least 2 CPU cores and 4GB memory available)
@@ -193,17 +193,11 @@ prometheus:
     remoteWrite:
       - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write
 
-# Configure Grafana to use GreptimeDB as the default Prometheus data source
+# Point Grafana's default Prometheus data source to GreptimeDB
 grafana:
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
-      datasources:
-        - name: Prometheus
-          type: prometheus
-          url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus
-          access: proxy
-          editable: true
+  sidecar:
+    datasources:
+      url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus
 ```
 
 This configuration file specifies [the GreptimeDB service address](#prometheus-urls-in-greptimedb) for:
