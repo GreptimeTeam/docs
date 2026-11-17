@@ -46,7 +46,7 @@ Kubernetes 主要监控以下信息：
 
 在开始之前，确保你拥有：
 
-- 一个运行中的 Kubernetes 集群（版本 >= 1.18）
+- 一个运行中的 Kubernetes 集群（版本 >= 1.25）
 - 已配置 `kubectl` 以访问你的集群
 - 已安装 [Helm](https://helm.sh/docs/intro/install/) v3.0.0 或更高版本
 - 足够的集群资源（至少 2 个 CPU 核心和 4GB 可用内存）
@@ -199,17 +199,11 @@ prometheus:
     remoteWrite:
       - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write
 
-# 配置 Grafana 使用 GreptimeDB 作为默认 Prometheus 数据源
+# 将 Grafana 默认的 Prometheus 数据源指向 GreptimeDB
 grafana:
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
-      datasources:
-        - name: Prometheus
-          type: prometheus
-          url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus
-          access: proxy
-          editable: true
+  sidecar:
+    datasources:
+      url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus
 ```
 
 此配置文件为以下用途指定了[GreptimeDB 服务地址](#greptimedb-中的-prometheus-url)：
