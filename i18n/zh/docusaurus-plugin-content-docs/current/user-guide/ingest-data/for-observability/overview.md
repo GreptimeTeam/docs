@@ -35,4 +35,4 @@ trace 的存储，以及用 SQL 和 Jaeger 兼容接口查询，见[链路追踪
 - [Vector](vector.md)——指标用 `greptimedb_metrics` sink，日志用 `greptimedb_logs`，没有 trace sink。
 - [Fluent Bit](fluent-bit.md)——日志用 HTTP output；指标、日志和 trace 用 OpenTelemetry output；指标还可以用 Prometheus Remote Write。
 - [Grafana Alloy](alloy.md)——通过 Remote Write、OpenTelemetry 或 Loki 写入。
-- [Kafka](kafka.md)——经 Vector 中转写入。
+- [Kafka](kafka.md)——通过 Kafka Connect sink connector 写入，或经 Vector 中转写入。

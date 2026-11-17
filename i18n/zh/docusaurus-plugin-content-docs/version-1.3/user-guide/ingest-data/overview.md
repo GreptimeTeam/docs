@@ -22,6 +22,7 @@ GreptimeDB 支持多种常见的可观测性和数据库协议，多数数据源
 | Splunk 采集端 | HTTP Event Collector（HEC） | [Splunk](./for-observability/splunk.md) |
 | Vector | `greptimedb_metrics` 或 `greptimedb_logs` sink | [Vector](./for-observability/vector.md) |
 | Fluent Bit | 日志用 HTTP output，三类信号用 OpenTelemetry output | [Fluent Bit](./for-observability/fluent-bit.md) |
+| Kafka topic | GreptimeDB Kafka Connect sink connector | [Kafka Connect](/user-guide/integrations/kafka.md) |
 | Kafka topic | 经 Vector 中转 | [Kafka](./for-observability/kafka.md) |
 | Telegraf 或 InfluxDB 客户端 | InfluxDB 行协议 | [InfluxDB 行协议](./for-iot/influxdb-line-protocol.md) |
 | OpenTSDB 客户端 | `/v1/opentsdb/api/put` | [OpenTSDB](./for-iot/opentsdb.md) |

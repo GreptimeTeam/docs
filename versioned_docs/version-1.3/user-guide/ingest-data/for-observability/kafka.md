@@ -1,14 +1,14 @@
 ---
-keywords: [Kafka, data ingestion, observability, metrics, logs, JSON logs, text logs, Vector, InfluxDB line protocol]
-description: Learn how to ingest observability data from Kafka into GreptimeDB using Vector. This guide covers metrics and logs ingestion, including JSON and text log formats, with detailed configuration examples.
+keywords: [Kafka, Kafka Connect, data ingestion, observability, metrics, logs, JSON logs, text logs, Vector, InfluxDB line protocol]
+description: Learn how to ingest observability data from Kafka into GreptimeDB with Kafka Connect or Vector. This guide covers metrics and logs ingestion, including JSON and text log formats, with detailed configuration examples.
 ---
 
 # Kafka
 
-If you are using Kafka or Kafka-compatible message queue for observability data
-transporting, it's possible to ingest data into GreptimeDB directly.
+Data in Kafka or a Kafka-compatible message queue reaches GreptimeDB through one of two paths:
 
-Here we are using Vector as the tool to transport data from Kafka to GreptimeDB.
+- The [GreptimeDB sink connector for Kafka Connect](/user-guide/integrations/kafka.md) writes structured records, such as JSON, Avro, or Protobuf, to tables. The connector configuration maps record fields to the time index, tags, and fields.
+- Vector consumes metrics in InfluxDB line protocol, and logs that a pipeline parses. This page covers the Vector configuration.
 
 ## Metrics
 
