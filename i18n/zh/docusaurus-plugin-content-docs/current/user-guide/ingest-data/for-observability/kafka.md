@@ -1,13 +1,14 @@
 ---
-keywords: [Kafka, 数据提取, 可观察性, 指标, 日志, JSON 日志, 文本日志, Vector, InfluxDB 行协议]
-description: 了解如何使用 Vector 将可观察性数据从 Kafka 写入到 GreptimeDB。本指南涵盖指标和日志提取，包括 JSON 和文本日志格式，并附有详细的配置示例。
+keywords: [Kafka, Kafka Connect, 数据提取, 可观察性, 指标, 日志, JSON 日志, 文本日志, Vector, InfluxDB 行协议]
+description: 了解如何使用 Kafka Connect 或 Vector 将可观察性数据从 Kafka 写入到 GreptimeDB。本指南涵盖指标和日志提取，包括 JSON 和文本日志格式，并附有详细的配置示例。
 ---
 
 # Kafka
 
-如果你使用 Kafka 或兼容 Kafka 的消息队列进行可观测性数据传输，可以直接将数据写入到 GreptimeDB 中。
+Kafka 或兼容 Kafka 的消息队列中的数据可以通过两种方式写入 GreptimeDB：
 
-这里我们使用 Vector 作为工具将数据从 Kafka 传输到 GreptimeDB。
+- [GreptimeDB Kafka Connect sink connector](/user-guide/integrations/kafka.md) 把 JSON、Avro、Protobuf 等结构化记录写入表，记录字段与 time index、tag、field 的对应关系在 connector 配置中指定。
+- Vector 在写入前对消息解码和加工，例如解析 InfluxDB 行协议格式的指标、用 VRL 改写或用 pipeline 解析日志。本文介绍 Vector 的配置。
 
 ## 指标
 
@@ -42,7 +43,6 @@ endpoint = "<host>:4001"
 dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
-tls = {}
 ```
 
 有关 InfluxDB 行协议指标如何映射到 GreptimeDB 数据的详细信息，请参阅 InfluxDB 行协议文档中的[数据模型](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#数据模型)部分。

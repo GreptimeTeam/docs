@@ -35,4 +35,4 @@ These sit between the source and GreptimeDB, writing through an exporter, sink, 
 - [Vector](vector.md) — metrics through the `greptimedb_metrics` sink, logs through `greptimedb_logs`. No traces sink.
 - [Fluent Bit](fluent-bit.md) — logs through the HTTP output; metrics, logs, and traces through the OpenTelemetry output; metrics also through Prometheus Remote Write.
 - [Grafana Alloy](alloy.md) — writes through Remote Write, OpenTelemetry, or Loki.
-- [Kafka](kafka.md) — consumed into GreptimeDB with Vector as the transport.
+- [Kafka](kafka.md) — consumed into GreptimeDB with the Kafka Connect sink connector or with Vector as the transport.

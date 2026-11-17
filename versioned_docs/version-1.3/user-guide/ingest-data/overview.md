@@ -22,6 +22,7 @@ GreptimeDB accepts data through established observability and database protocols
 | Splunk shippers | HTTP Event Collector (HEC) | [Splunk](./for-observability/splunk.md) |
 | Vector | `greptimedb_metrics` or `greptimedb_logs` sink | [Vector](./for-observability/vector.md) |
 | Fluent Bit | HTTP output for logs, OpenTelemetry output for all three signals | [Fluent Bit](./for-observability/fluent-bit.md) |
+| Kafka topics | GreptimeDB sink connector for Kafka Connect | [Kafka Connect](/user-guide/integrations/kafka.md) |
 | Kafka topics | Vector as the transport | [Kafka](./for-observability/kafka.md) |
 | Telegraf or InfluxDB clients | InfluxDB line protocol | [InfluxDB Line Protocol](./for-iot/influxdb-line-protocol.md) |
 | OpenTSDB clients | `/v1/opentsdb/api/put` | [OpenTSDB](./for-iot/opentsdb.md) |

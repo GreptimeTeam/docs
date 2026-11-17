@@ -9,6 +9,7 @@ IoT data reaches GreptimeDB from devices, brokers, and applications. [Ingest Dat
 
 - [gRPC SDKs](./grpc-sdks/overview.md) — clients for Go, Java, Rust, .NET, Erlang, and TypeScript.
 - [EMQX](emqx.md) — MQTT devices, written through an EMQX data integration.
+- [Kafka](/user-guide/integrations/kafka.md) — Kafka topics, written through the GreptimeDB sink connector for Kafka Connect.
 - [InfluxDB Line Protocol](influxdb-line-protocol.md) — the path for migrating off InfluxDB, and for Telegraf. This page also covers the Telegraf configuration.
 - [OpenTSDB](opentsdb.md) — the `/v1/opentsdb/api/put` HTTP endpoint.
 - [SQL](sql.md) — `INSERT` statements over the MySQL or PostgreSQL protocol.

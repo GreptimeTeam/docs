@@ -9,6 +9,7 @@ description: 物联网场景写入 GreptimeDB 的路径，覆盖设备协议、�
 
 - [gRPC SDK](./grpc-sdks/overview.md)——提供 Go、Java、Rust、.NET、Erlang 和 TypeScript 客户端。
 - [EMQX](emqx.md)——MQTT 设备，通过 EMQX 的数据集成写入。
+- [Kafka](/user-guide/integrations/kafka.md)——Kafka topic，通过 GreptimeDB Kafka Connect sink connector 写入。
 - [InfluxDB 行协议](influxdb-line-protocol.md)——从 InfluxDB 迁移时走这条路径，也适用于 Telegraf，该页同时包含 Telegraf 的配置方式。
 - [OpenTSDB](opentsdb.md)——通过 `/v1/opentsdb/api/put` HTTP 接口写入。
 - [SQL](sql.md)——通过 MySQL 或 PostgreSQL 协议执行 `INSERT`。
