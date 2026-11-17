@@ -63,7 +63,7 @@ otelcol.auth.basic "credentials" {
 - `GREPTIME_DB`: GreptimeDB database name, default is `public`.
 - `GREPTIME_USERNAME` and `GREPTIME_PASSWORD`: The [authentication credentials](/user-guide/deployments-administration/authentication/static.md) for GreptimeDB.
 
-If authentication is disabled in GreptimeDB, remove the `otelcol.auth.basic` block and the `auth` attribute of the exporter. Alloy fails to start when the credentials are empty.
+If authentication is disabled in GreptimeDB, remove the `otelcol.auth.basic` block and the `auth` attribute of the exporter. Alloy rejects the configuration when the credentials are empty.
 
 For details on the metrics data model transformation from OpenTelemetry to GreptimeDB, refer to the [Data Model](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model) section in the OpenTelemetry guide.
 
@@ -125,9 +125,9 @@ otelcol.exporter.otlphttp "greptimedb_logs" {
 - `GREPTIME_DB`: GreptimeDB database name, default is `public`.
 - `GREPTIME_LOG_TABLE_NAME`: Target log table name, default is `demo_logs`.
 - `GREPTIME_USERNAME` and `GREPTIME_PASSWORD`: The [authentication credentials](/user-guide/deployments-administration/authentication/static.md) for GreptimeDB.
-
-If authentication is disabled in GreptimeDB, remove the `otelcol.auth.basic` block and the `auth` attribute of the exporter. Alloy fails to start when the credentials are empty.
 - `X-Greptime-Log-Extract-Keys`: Keys extracted from OTLP log attributes. See the [OTLP/HTTP API documentation](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-1) for details.
+
+If authentication is disabled in GreptimeDB, remove the `otelcol.auth.basic` block and the `auth` attribute of the exporter. Alloy rejects the configuration when the credentials are empty.
 
 For details on the log data model transformation from OpenTelemetry to GreptimeDB, refer to the [Data Model](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model-1) section in the OpenTelemetry guide.
 
