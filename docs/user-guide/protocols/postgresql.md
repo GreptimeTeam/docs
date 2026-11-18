@@ -24,7 +24,7 @@ Please refer to [Table Management](/user-guide/deployments-administration/manage
 
 ## Ingest data
 
-Use [SQL INSERT](/user-guide/ingest-data/for-iot/sql.md) to write rows, or [PostgreSQL COPY FROM STDIN](postgresql-copy-in.md) to stream CSV, InfluxDB line protocol, Arrow IPC, OTLP, or Prometheus Remote Write data over the same connection.
+Use [SQL INSERT](/user-guide/ingest-data/for-iot/sql.md) to write rows, or [PostgreSQL COPY FROM STDIN](postgresql-copy-in.md) to stream CSV, JSONL, InfluxDB line protocol, Arrow IPC, OTLP, or Prometheus Remote Write data over the same connection.
 
 ## Query data
 

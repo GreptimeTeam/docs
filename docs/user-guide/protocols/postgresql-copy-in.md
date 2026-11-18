@@ -5,20 +5,25 @@ description: Stream data into GreptimeDB over a PostgreSQL connection using COPY
 
 # PostgreSQL COPY FROM STDIN
 
-`COPY FROM STDIN` reads data from the PostgreSQL **client**, not from a file on the server. Use it to send CSV rows or to reuse an InfluxDB, Arrow, OTLP, or Prometheus payload without switching from PostgreSQL to HTTP or gRPC. The connection supplies the database and credentials. Options that the ingestion interface would normally receive as headers or query parameters go in `WITH`, using the option names listed below.
+If your application can reach GreptimeDB only through a database protocol, `COPY FROM STDIN` lets it stream data from a PostgreSQL client without opening an HTTP or gRPC connection. It also avoids converting each batch into SQL `INSERT` statements. In a [GreptimeDB ingestion benchmark](https://github.com/GreptimeTeam/greptimedb/pull/9297), COPY sustained 841,000 rows/s with 1,000-row batches versus 49,000 rows/s for PostgreSQL `INSERT` on the same workload: more than 10× the throughput. Results depend on the workload and batch size.
+
+[PostgreSQL developers have been working on extensible COPY formats](https://www.postgresql.org/message-id/20231204.153548.2126325458835528809.kou%40clear-code.com). GreptimeDB puts that idea into practice: an exporter can send an OTLP or Arrow payload through an existing PostgreSQL driver instead of implementing another transport. This gives client and tool authors a way to test new integrations without waiting for upstream PostgreSQL to support these formats.
+
+`STDIN` means the data comes from the client, not from a file on the server. The connection supplies the database and credentials. Options normally passed as HTTP headers or query parameters go in `WITH`.
 
 Send the `COPY` statement on its own, then write the payload through the client's COPY API and finish the copy. Specify `FORMAT` explicitly: neither PostgreSQL's default `text` format nor its native `binary` row format is supported. Use `option value`, not `option = value`. Enclose string values in single quotes. A boolean option written without a value means `true` (for example, `HEADER`). Unknown or duplicate options are rejected. On success the server returns `COPY n`, where `n` is the count reported by that ingestion interface.
 
-| `FORMAT` | What to send | What follows `COPY` |
-| --- | --- | --- |
-| `csv` | CSV text | Existing table, optionally followed by a column list |
-| `jsonl` (pending) | One JSON object per line | Existing table, optionally followed by a column list |
-| `influxdb` | Line protocol text | No table; each measurement names its table |
-| `arrow` | One Arrow IPC stream | Existing table; IPC field names identify the columns |
-| `otlp` | One uncompressed protobuf export request | No table for metrics; optional table for logs or traces |
-| `promwrite` | One compressed Remote Write protobuf request | No table; the series identify the metric tables |
+| `FORMAT` | What to send | Table name after `COPY` | Create the table first? |
+| --- | --- | --- | --- |
+| `csv` | CSV text | Required; optional column list | Yes |
+| `jsonl` | One JSON object per line | Required; optional column list | Yes |
+| `influxdb` | Line protocol text | Not supported; the measurement names the table | No, by default |
+| `arrow` | One Arrow IPC stream | Required; no column list | Yes, even with `auto_create_table true` |
+| `otlp` (metrics) | One uncompressed metrics export request | Not supported; the metric name determines the table | No, by default |
+| `otlp` (logs or traces) | One uncompressed logs or traces export request | Optional; no column list | No, by default (including named targets) |
+| `promwrite` | One compressed Remote Write protobuf request | Not supported; each series identifies its metric table | No, by default |
 
-InfluxDB, OTLP, and Remote Write buffer **one request per COPY**, up to 64 MiB of payload. The shared request-memory limit can reject a smaller request. For larger imports, send multiple complete requests in separate COPY operations; splitting the same payload across network writes does not bypass the limit. CSV and Arrow instead write batches as they arrive. If a later batch fails, earlier batches can remain in the table.
+InfluxDB, OTLP, and Remote Write buffer **one request per COPY**, up to 64 MiB of payload. The shared request-memory limit can reject a smaller request. For larger imports, send multiple complete requests in separate COPY operations; splitting the same payload across network writes does not bypass the limit. CSV, JSONL, and Arrow instead write batches as they arrive. If a later batch fails, earlier batches can remain in the table.
 
 ## Python client example (Psycopg 3)
 
@@ -45,7 +50,7 @@ Use `copy.write()` for data already encoded in the chosen format, not `copy.writ
 
 ## CSV
 
-Try this in `psql`. The line containing `\.` ends client input. `HEADER` skips the first record; it does not use the header names to reorder columns. List the columns in input order, or omit the list to use table order.
+Create the destination table first, then name it after `COPY`, as in this `psql` example. The line containing `\.` ends client input. `HEADER` skips the first record; it does not use the header names to reorder columns. List the columns in input order, or omit the list to use table order.
 
 ```sql
 CREATE TABLE readings (ts TIMESTAMP TIME INDEX, host STRING, temperature DOUBLE);
@@ -68,9 +73,7 @@ Use date/time strings for timestamps. Strings without an offset use the session 
 
 ## JSON Lines (JSONL)
 
-**Availability:** JSONL requires a build with [GreptimeDB PR #10109](https://github.com/GreptimeTeam/greptimedb/pull/10109), which has not yet merged into Nightly.
-
-Send one JSON object per line to an existing table. Keys match columns by name, not by position. For example, with the `readings` table from the CSV example, the second record sets `temperature` to NULL because the key is absent:
+Name an existing table after `COPY` and send one JSON object per line. Keys match columns by name, not by position. For example, with the `readings` table from the CSV example, the second record sets `temperature` to NULL because the key is absent:
 
 ```sql
 COPY readings (ts, host, temperature) FROM STDIN WITH (FORMAT jsonl);
@@ -83,7 +86,7 @@ COPY readings (ts, host, temperature) FROM STDIN WITH (FORMAT jsonl);
 
 ## InfluxDB line protocol
 
-Send the same text as an InfluxDB write body. `influxdb_line` is an alias for `influxdb`. This `psql` example writes to the `cpu` measurement:
+Do not name a table after `COPY`. Each line names its measurement, and GreptimeDB creates missing measurement tables by default. Send the same text as an InfluxDB write body. `influxdb_line` is an alias for `influxdb`. This `psql` example writes to the `cpu` measurement:
 
 ```sql
 COPY FROM STDIN WITH (FORMAT influxdb, precision 'ms');
@@ -97,7 +100,7 @@ cpu,host=web01 usage=0.75 1735689600000
 
 ## Arrow IPC
 
-Send an Arrow IPC **stream** (schema followed by record batches), not an IPC file or a Flight protobuf envelope. GreptimeDB uses the Arrow Flight bulk write path and matches fields by name. Do not supply a COPY column list.
+Send an Arrow IPC **stream** (schema followed by record batches), not an IPC file or a Flight protobuf envelope. Name an existing table after `COPY`. GreptimeDB uses the Arrow Flight bulk write path and matches fields by name. Do not supply a COPY column list.
 
 ```sql
 COPY readings FROM STDIN WITH (FORMAT arrow, auto_create_table true, insert_skip_wal false);
@@ -134,7 +137,7 @@ with cur.copy("COPY app_logs FROM STDIN WITH (FORMAT otlp, signal 'logs')") as c
 | `pipeline_params` | Logs, traces | String, e.g. `'key1=value1&key2=value2'`. Passes parameters like `x-greptime-pipeline-params`. |
 | `extract_keys` | Logs | Comma-separated string, e.g. `'host,env'`. Like `x-greptime-log-extract-keys`, promotes attributes to tags when not using a pipeline. |
 
-Metrics route by metric name. For example, to send the equivalent of the HTTP header `x-greptime-otlp-metric-promote-resource-attrs: service.name;host.id`:
+For metrics, do not name a table after `COPY`. GreptimeDB routes by metric name and creates missing tables by default. For example, to send the equivalent of the HTTP header `x-greptime-otlp-metric-promote-resource-attrs: service.name;host.id`:
 
 ```sql
 COPY FROM STDIN WITH (FORMAT otlp, signal 'metrics', resource_attrs 'service.name;host.id');
@@ -148,7 +151,7 @@ COPY app_traces FROM STDIN WITH (FORMAT otlp, signal 'traces', pipeline_name 'gr
 
 ## Prometheus Remote Write
 
-Send the same compressed protobuf body that you would POST to `/v1/prometheus/write`. Set `version` and `zstd` to match the bytes the client has already encoded.
+Do not name a table after `COPY`. The metric name in each series determines the logical table; GreptimeDB creates missing metric tables by default. Use `physical_table` to select the backing table, not to override the series name. Send the same compressed protobuf body that you would POST to `/v1/prometheus/write`. Set `version` and `zstd` to match the bytes the client has already encoded.
 
 ```sql
 COPY FROM STDIN WITH (FORMAT promwrite, version 2, zstd, physical_table 'metrics');

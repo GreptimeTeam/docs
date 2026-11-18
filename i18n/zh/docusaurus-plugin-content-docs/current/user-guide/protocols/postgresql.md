@@ -23,7 +23,7 @@ psql -h <host> -p 4003 -U <username> -d public
 
 ## 写入数据
 
-可以使用 [SQL INSERT](/user-guide/ingest-data/for-iot/sql.md) 写入行数据，也可以在同一连接上使用 [PostgreSQL COPY FROM STDIN](postgresql-copy-in.md) 传输 CSV、InfluxDB 行协议、Arrow IPC、OTLP 或 Prometheus Remote Write 数据。
+可以使用 [SQL INSERT](/user-guide/ingest-data/for-iot/sql.md) 写入行数据，也可以在同一连接上使用 [PostgreSQL COPY FROM STDIN](postgresql-copy-in.md) 传输 CSV、JSONL、InfluxDB 行协议、Arrow IPC、OTLP 或 Prometheus Remote Write 数据。
 
 ## 读取数据
 

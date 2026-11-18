@@ -5,20 +5,25 @@ description: 通过 PostgreSQL 连接使用 COPY FROM STDIN 向 GreptimeDB 写�
 
 # PostgreSQL COPY FROM STDIN
 
-`COPY FROM STDIN` 从 PostgreSQL **客户端**读取数据，而不是读取服务器上的文件。除了 CSV 行数据，还可以通过同一连接发送 InfluxDB、Arrow、OTLP 或 Prometheus 数据，无需切换到 HTTP 或 gRPC。数据库和身份凭据由连接指定。原写入接口通过请求头或 URL 参数接收的选项，在 `WITH` 子句中使用下文列出的名称传入。
+如果应用只能通过数据库协议访问 GreptimeDB，可以用 `COPY FROM STDIN` 从 PostgreSQL 客户端流式写入数据，无需另建 HTTP 或 gRPC 连接，也不用把每批数据转换成 SQL `INSERT` 语句。在 [GreptimeDB 的写入基准测试](https://github.com/GreptimeTeam/greptimedb/pull/9297)中，每批写入 1,000 行时，COPY 的吞吐量为每秒 84.1 万行，而相同负载下通过 PostgreSQL 协议执行 `INSERT` 为每秒 4.9 万行，前者是后者的 10 倍以上。实际吞吐量取决于负载和批次大小。
+
+[PostgreSQL 社区正在探索如何让 COPY 支持可扩展的格式](https://www.postgresql.org/message-id/20231204.153548.2126325458835528809.kou%40clear-code.com)。GreptimeDB 把这个想法付诸实践：例如，导出工具可以用已有的 PostgreSQL 驱动直接发送 OTLP 或 Arrow 数据，无需再实现一套传输协议。客户端和工具开发者不必等待 PostgreSQL 上游支持这些格式，就可以开发并验证新的集成方式。
+
+`STDIN` 表示数据来自客户端，而不是服务器上的文件。数据库和身份凭据由连接指定，原本通过 HTTP 请求头或 URL 参数传入的选项写在 `WITH` 子句中。
 
 单独执行一条 `COPY` 语句，然后通过客户端的 COPY API 发送数据并结束传输。必须显式指定 `FORMAT`：目前不支持 PostgreSQL 默认的 `text` 格式和原生的 `binary` 行格式。选项写作 `选项名 值`，中间不加等号。字符串值用单引号括起。布尔选项可以省略值，表示 `true`（例如 `HEADER`）。未知选项或重复指定的选项会导致报错。成功后服务器返回 `COPY n`，其中 `n` 为相应写入接口返回的计数。
 
-| `FORMAT` | 发送的数据 | `COPY` 后如何指定目标 |
-| --- | --- | --- |
-| `csv` | CSV 文本 | 必须指定已有表，可附带列名列表 |
-| `jsonl`（尚未合入） | 每行一个 JSON 对象 | 必须指定已有表，可附带列名列表 |
-| `influxdb` | 行协议文本 | 不指定表，由每条记录的 measurement 决定表名 |
-| `arrow` | 一个 Arrow IPC 流 | 必须指定已有表，列名由 IPC 字段名决定 |
-| `otlp` | 一条未经压缩的 protobuf 导出请求 | 指标不能指定表，日志和链路可以指定表 |
-| `promwrite` | 一条压缩后的 Remote Write protobuf 请求 | 不指定表，由时间序列决定指标表 |
+| `FORMAT` | 发送的数据 | `COPY` 后是否指定表名 | 是否需要提前建表 |
+| --- | --- | --- | --- |
+| `csv` | CSV 文本 | 必须指定，可附带列名列表 | 需要 |
+| `jsonl` | 每行一个 JSON 对象 | 必须指定，可附带列名列表 | 需要 |
+| `influxdb` | 行协议文本 | 不支持，由 measurement 决定表名 | 默认不需要 |
+| `arrow` | 一个 Arrow IPC 流 | 必须指定，不支持列名列表 | 需要，即使设置了 `auto_create_table true` |
+| `otlp`（指标） | 一条未经压缩的指标导出请求 | 不支持，由指标名称决定表名 | 默认不需要 |
+| `otlp`（日志或链路） | 一条未经压缩的日志或链路导出请求 | 可选，不支持列名列表 | 默认不需要，指定表名时也一样 |
+| `promwrite` | 一条压缩后的 Remote Write protobuf 请求 | 不支持，由各时间序列的指标名称决定表名 | 默认不需要 |
 
-对于 InfluxDB、OTLP 和 Remote Write，**每次 COPY 缓冲一个完整请求**，发送的数据最多为 64 MiB。共享的请求内存限额也可能使较小的请求被拒绝。数据量较大时，请拆成多个完整请求，分别执行 COPY；将同一请求分多次发送不能绕过限制。CSV 和 Arrow 则按批次写入，后续批次失败时，先前的批次可能已经写入表中。
+对于 InfluxDB、OTLP 和 Remote Write，**每次 COPY 缓冲一个完整请求**，发送的数据最多为 64 MiB。共享的请求内存限额也可能使较小的请求被拒绝。数据量较大时，请拆成多个完整请求，分别执行 COPY；将同一请求分多次发送不能绕过限制。CSV、JSONL 和 Arrow 则按批次写入，后续批次失败时，先前的批次可能已经写入表中。
 
 ## Python 客户端示例（Psycopg 3）
 
@@ -45,7 +50,7 @@ with psycopg.connect("postgresql://greptime@localhost:4003/public", autocommit=T
 
 ## CSV
 
-在 `psql` 中运行以下示例，单独一行 `\.` 表示输入结束。`HEADER` 会跳过首条记录，但不会按表头名称调整列顺序。请按输入顺序指定列名；省略列名列表时，使用表定义中的列顺序。
+先创建目标表，再在 `COPY` 后指定表名，如下方的 `psql` 示例所示。单独一行 `\.` 表示输入结束。`HEADER` 会跳过首条记录，但不会按表头名称调整列顺序。请按输入顺序指定列名；省略列名列表时，使用表定义中的列顺序。
 
 ```sql
 CREATE TABLE readings (ts TIMESTAMP TIME INDEX, host STRING, temperature DOUBLE);
@@ -68,9 +73,7 @@ SELECT * FROM readings;
 
 ## JSON Lines（JSONL）
 
-**可用范围：** JSONL 需要使用包含 [GreptimeDB PR #10109](https://github.com/GreptimeTeam/greptimedb/pull/10109) 的构建版本。该 PR 尚未合入 Nightly。
-
-向已有表写入数据，每行发送一个 JSON 对象。键名与列名匹配，键的顺序不影响写入。以下示例沿用 CSV 示例中的 `readings` 表。第二条记录没有 `temperature` 键，因此该列写入 NULL：
+在 `COPY` 后指定一张已有的表，每行发送一个 JSON 对象。键名与列名匹配，键的顺序不影响写入。以下示例沿用 CSV 示例中的 `readings` 表。第二条记录没有 `temperature` 键，因此该列写入 NULL：
 
 ```sql
 COPY readings (ts, host, temperature) FROM STDIN WITH (FORMAT jsonl);
@@ -83,7 +86,7 @@ COPY readings (ts, host, temperature) FROM STDIN WITH (FORMAT jsonl);
 
 ## InfluxDB 行协议
 
-发送与 InfluxDB 写入请求体相同的文本。`influxdb_line` 是 `influxdb` 的别名。以下示例在 `psql` 中向 `cpu` 写入一条记录：
+不能在 `COPY` 后指定表名。每行数据中的 measurement 就是目标表名；表不存在时，GreptimeDB 默认会自动建表。发送与 InfluxDB 写入请求体相同的文本。`influxdb_line` 是 `influxdb` 的别名。以下示例在 `psql` 中向 `cpu` 写入一条记录：
 
 ```sql
 COPY FROM STDIN WITH (FORMAT influxdb, precision 'ms');
@@ -97,7 +100,7 @@ cpu,host=web01 usage=0.75 1735689600000
 
 ## Arrow IPC
 
-发送 Arrow IPC **流**（先发送 schema，再发送记录批次），而不是 IPC 文件或 Flight protobuf 消息。GreptimeDB 使用 Arrow Flight 批量写入接口，按 IPC 字段名匹配目标列。不支持在 COPY 语句中指定列名列表。
+发送 Arrow IPC **流**（先发送 schema，再发送记录批次），而不是 IPC 文件或 Flight protobuf 消息。必须在 `COPY` 后指定已有表。GreptimeDB 使用 Arrow Flight 批量写入接口，按 IPC 字段名匹配目标列。不支持在 COPY 语句中指定列名列表。
 
 ```sql
 COPY readings FROM STDIN WITH (FORMAT arrow, auto_create_table true, insert_skip_wal false);
@@ -134,7 +137,7 @@ with cur.copy("COPY app_logs FROM STDIN WITH (FORMAT otlp, signal 'logs')") as c
 | `pipeline_params` | 日志、链路 | 字符串，例如 `'key1=value1&key2=value2'`。传递 Pipeline 参数，对应 `x-greptime-pipeline-params`。 |
 | `extract_keys` | 日志 | 用逗号分隔的字符串，例如 `'host,env'`。对应 `x-greptime-log-extract-keys`，不使用 Pipeline 时将列出的属性提取为标签。 |
 
-指标按指标名称写入对应的表。例如，HTTP 请求头 `x-greptime-otlp-metric-promote-resource-attrs: service.name;host.id` 可改写为：
+写入指标时不能在 `COPY` 后指定表名。GreptimeDB 按指标名称选择目标表，默认会在表不存在时创建它。例如，HTTP 请求头 `x-greptime-otlp-metric-promote-resource-attrs: service.name;host.id` 可改写为：
 
 ```sql
 COPY FROM STDIN WITH (FORMAT otlp, signal 'metrics', resource_attrs 'service.name;host.id');
@@ -148,7 +151,7 @@ COPY app_traces FROM STDIN WITH (FORMAT otlp, signal 'traces', pipeline_name 'gr
 
 ## Prometheus Remote Write
 
-发送与 HTTP POST 到 `/v1/prometheus/write` 相同的压缩 protobuf 请求体。`version` 和 `zstd` 必须与客户端实际使用的编码一致。
+不能在 `COPY` 后指定表名。每个时间序列的指标名称决定其逻辑表；指标表不存在时，GreptimeDB 默认会自动建表。`physical_table` 选项用于选择底层物理表，不会覆盖时间序列的名称。发送与 HTTP POST 到 `/v1/prometheus/write` 相同的压缩 protobuf 请求体。`version` 和 `zstd` 必须与客户端实际使用的编码一致。
 
 ```sql
 COPY FROM STDIN WITH (FORMAT promwrite, version 2, zstd, physical_table 'metrics');
