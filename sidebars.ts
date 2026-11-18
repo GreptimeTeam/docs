@@ -197,6 +197,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/protocols/opentelemetry',
             'user-guide/protocols/mysql',
             'user-guide/protocols/postgresql',
+            'user-guide/protocols/postgresql-copy-in',
             'user-guide/protocols/http',
             'user-guide/protocols/grpc',
             'user-guide/protocols/opentsdb',
