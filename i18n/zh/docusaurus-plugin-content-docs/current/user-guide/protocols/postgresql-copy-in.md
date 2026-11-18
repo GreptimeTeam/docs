@@ -1,5 +1,5 @@
 ---
-keywords: [PostgreSQL, COPY FROM STDIN, CSV, InfluxDB, Arrow IPC, OTLP, Prometheus Remote Write]
+keywords: [PostgreSQL, COPY FROM STDIN, CSV, JSONL, InfluxDB, Arrow IPC, OTLP, Prometheus Remote Write]
 description: 通过 PostgreSQL 连接使用 COPY FROM STDIN 向 GreptimeDB 写入数据，了解各格式的数据编码、目标表和写入选项。
 ---
 
@@ -12,6 +12,7 @@ description: 通过 PostgreSQL 连接使用 COPY FROM STDIN 向 GreptimeDB 写�
 | `FORMAT` | 发送的数据 | `COPY` 后如何指定目标 |
 | --- | --- | --- |
 | `csv` | CSV 文本 | 必须指定已有表，可附带列名列表 |
+| `jsonl`（尚未合入） | 每行一个 JSON 对象 | 必须指定已有表，可附带列名列表 |
 | `influxdb` | 行协议文本 | 不指定表，由每条记录的 measurement 决定表名 |
 | `arrow` | 一个 Arrow IPC 流 | 必须指定已有表，列名由 IPC 字段名决定 |
 | `otlp` | 一条未经压缩的 protobuf 导出请求 | 指标不能指定表，日志和链路可以指定表 |
@@ -65,9 +66,24 @@ SELECT * FROM readings;
 
 时间戳请使用日期时间字符串。未指定偏移量时使用会话时区。CSV 不支持写入 JSON 列和二进制列。
 
+## JSON Lines（JSONL）
+
+**可用范围：** JSONL 需要使用包含 [GreptimeDB PR #10109](https://github.com/GreptimeTeam/greptimedb/pull/10109) 的构建版本。该 PR 尚未合入 Nightly。
+
+向已有表写入数据，每行发送一个 JSON 对象。键名与列名匹配，键的顺序不影响写入。以下示例沿用 CSV 示例中的 `readings` 表。第二条记录没有 `temperature` 键，因此该列写入 NULL：
+
+```sql
+COPY readings (ts, host, temperature) FROM STDIN WITH (FORMAT jsonl);
+{"host":"web01","temperature":22.5,"ts":"2025-01-01T00:01:00Z"}
+{"host":"web02","ts":"2025-01-01T00:01:00Z"}
+\.
+```
+
+`json` 是 `jsonl` 的别名，同样不接受由多条记录组成的 JSON 数组。`WITH` 子句中除 `FORMAT` 外没有其他选项。数据按目标列类型直接解析，不经过 Pipeline。时间戳字符串未指定偏移量时使用会话时区。不支持写入 JSON 列和二进制列。
+
 ## InfluxDB 行协议
 
-发送与 InfluxDB 写入请求体相同的文本。例如，HTTP 查询参数 `?precision=ms` 对应 COPY 选项 `precision 'ms'`。以下示例在 `psql` 中向 `cpu` 写入一条记录：
+发送与 InfluxDB 写入请求体相同的文本。`influxdb_line` 是 `influxdb` 的别名。以下示例在 `psql` 中向 `cpu` 写入一条记录：
 
 ```sql
 COPY FROM STDIN WITH (FORMAT influxdb, precision 'ms');
@@ -75,7 +91,9 @@ cpu,host=web01 usage=0.75 1735689600000
 \.
 ```
 
-`precision` 支持 `ns`（默认）或 `n`、`us` 或 `u`、`ms`、`s`、`m` 和 `h`。`influxdb_line` 是 `influxdb` 的别名。
+| 选项 | 取值与默认值 | 含义 |
+| --- | --- | --- |
+| `precision` | `'ns'`（默认）或 `'n'`、`'us'` 或 `'u'`、`'ms'`、`'s'`、`'m'`、`'h'` | 输入时间戳的单位。例如，HTTP 查询参数 `?precision=ms` 对应 COPY 选项 `precision 'ms'`。 |
 
 ## Arrow IPC
 

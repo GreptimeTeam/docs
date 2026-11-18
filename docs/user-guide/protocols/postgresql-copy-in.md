@@ -1,5 +1,5 @@
 ---
-keywords: [PostgreSQL, COPY FROM STDIN, CSV, InfluxDB, Arrow IPC, OTLP, Prometheus Remote Write]
+keywords: [PostgreSQL, COPY FROM STDIN, CSV, JSONL, InfluxDB, Arrow IPC, OTLP, Prometheus Remote Write]
 description: Stream data into GreptimeDB over a PostgreSQL connection using COPY FROM STDIN. Choose a payload format, destination, and ingestion options.
 ---
 
@@ -12,6 +12,7 @@ Send the `COPY` statement on its own, then write the payload through the client'
 | `FORMAT` | What to send | What follows `COPY` |
 | --- | --- | --- |
 | `csv` | CSV text | Existing table, optionally followed by a column list |
+| `jsonl` (pending) | One JSON object per line | Existing table, optionally followed by a column list |
 | `influxdb` | Line protocol text | No table; each measurement names its table |
 | `arrow` | One Arrow IPC stream | Existing table; IPC field names identify the columns |
 | `otlp` | One uncompressed protobuf export request | No table for metrics; optional table for logs or traces |
@@ -65,9 +66,24 @@ SELECT * FROM readings;
 
 Use date/time strings for timestamps. Strings without an offset use the session time zone. JSON and binary columns are not supported by the CSV decoder.
 
+## JSON Lines (JSONL)
+
+**Availability:** JSONL requires a build with [GreptimeDB PR #10109](https://github.com/GreptimeTeam/greptimedb/pull/10109), which has not yet merged into Nightly.
+
+Send one JSON object per line to an existing table. Keys match columns by name, not by position. For example, with the `readings` table from the CSV example, the second record sets `temperature` to NULL because the key is absent:
+
+```sql
+COPY readings (ts, host, temperature) FROM STDIN WITH (FORMAT jsonl);
+{"host":"web01","temperature":22.5,"ts":"2025-01-01T00:01:00Z"}
+{"host":"web02","ts":"2025-01-01T00:01:00Z"}
+\.
+```
+
+`json` is an alias for `jsonl`; it does not accept a JSON array of records. There are no `WITH` options beyond `FORMAT`. Values are decoded directly into the target columns without a pipeline. Timestamp strings without an offset use the session time zone. JSON and binary target columns are not supported.
+
 ## InfluxDB line protocol
 
-Send the same text as an InfluxDB write body. For example, the HTTP query parameter `?precision=ms` becomes `precision 'ms'`. This `psql` example writes to the `cpu` measurement:
+Send the same text as an InfluxDB write body. `influxdb_line` is an alias for `influxdb`. This `psql` example writes to the `cpu` measurement:
 
 ```sql
 COPY FROM STDIN WITH (FORMAT influxdb, precision 'ms');
@@ -75,7 +91,9 @@ cpu,host=web01 usage=0.75 1735689600000
 \.
 ```
 
-`precision` accepts `ns` (default) or `n`, `us` or `u`, `ms`, `s`, `m`, and `h`. `influxdb_line` is an alias for `influxdb`.
+| Option | Value and default | Meaning |
+| --- | --- | --- |
+| `precision` | `'ns'` (default) or `'n'`, `'us'` or `'u'`, `'ms'`, `'s'`, `'m'`, `'h'` | Unit of timestamps in the input. For example, the HTTP query parameter `?precision=ms` becomes `precision 'ms'`. |
 
 ## Arrow IPC
 
