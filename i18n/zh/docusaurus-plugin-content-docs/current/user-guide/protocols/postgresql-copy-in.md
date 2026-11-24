@@ -64,9 +64,9 @@ SELECT * FROM readings;
 | 选项 | 取值与默认值 | 含义 |
 | --- | --- | --- |
 | `HEADER` | 布尔值，默认 `false` | 跳过首条输入记录。 |
-| `DELIMITER` | 单字节字符，默认 `','` | 字段分隔符，不能与 `QUOTE` 相同。 |
-| `QUOTE` | 单字节字符，默认 `'"'` | 用于包围字段的引号字符。 |
-| `ESCAPE` | 单字节字符，默认为 `QUOTE` 的值 | 用于转义字段内部的引号。 |
+| `DELIMITER` | 单个可打印 ASCII 字符或制表符，默认 `','` | 字段分隔符，不能与 `QUOTE` 相同。 |
+| `QUOTE` | 单个可打印 ASCII 字符或制表符，默认 `'"'` | 用于包围字段的引号字符。 |
+| `ESCAPE` | 单个可打印 ASCII 字符或制表符，默认为 `QUOTE` 的值 | 用于转义字段内部的引号。 |
 | `NULL` | 仅支持 `''`（默认） | 空字段（包括 `""`）会被解析为 NULL。不支持自定义 NULL 标记。 |
 
 时间戳请使用日期时间字符串。未指定偏移量时使用会话时区。CSV 不支持写入 JSON 列和二进制列。
@@ -78,7 +78,7 @@ SELECT * FROM readings;
 ```sql
 COPY readings (ts, host, temperature) FROM STDIN WITH (FORMAT jsonl);
 {"host":"web01","temperature":22.5,"ts":"2025-01-01T00:01:00Z"}
-{"host":"web02","ts":"2025-01-01T00:01:00Z"}
+{"host":"web02","ts":"2025-01-01T00:01:01Z"}
 \.
 ```
 
@@ -135,7 +135,7 @@ with cur.copy("COPY app_logs FROM STDIN WITH (FORMAT otlp, signal 'logs')") as c
 | `pipeline_name` | 日志、链路 | 字符串。选择 Pipeline，对应 `x-greptime-pipeline-name`。写入链路时必须指定；直接写入日志时可省略。 |
 | `pipeline_version` | 日志、链路 | 字符串。选择 Pipeline 版本，对应 `x-greptime-pipeline-version`。 |
 | `pipeline_params` | 日志、链路 | 字符串，例如 `'key1=value1&key2=value2'`。传递 Pipeline 参数，对应 `x-greptime-pipeline-params`。 |
-| `extract_keys` | 日志 | 用逗号分隔的字符串，例如 `'host,env'`。对应 `x-greptime-log-extract-keys`，不使用 Pipeline 时将列出的属性提取为标签。 |
+| `extract_keys` | 日志 | 用逗号分隔的字符串，例如 `'host,env'`。对应 `x-greptime-log-extract-keys`，在直接写入日志时提取指定属性。新建的列为标签列；已有列保留原有角色，例如已有的 `host` 字段列不会变成标签列。 |
 
 写入指标时不能在 `COPY` 后指定表名。GreptimeDB 按指标名称选择目标表，默认会在表不存在时创建它。例如，HTTP 请求头 `x-greptime-otlp-metric-promote-resource-attrs: service.name;host.id` 可改写为：
 
@@ -165,4 +165,4 @@ COPY FROM STDIN WITH (FORMAT promwrite, version 2, zstd, physical_table 'metrics
 | `pipeline_name` | 可选字符串 | 为 v1 选择 Pipeline。 |
 | `pipeline_version` | 可选字符串 | 为 v1 选择 Pipeline 版本。 |
 
-与 HTTP 接口一样，v2 不执行 Pipeline，如果请求中包含 exemplar，同时指定 Pipeline 选项会导致报错。
+与 HTTP 接口一样，v2 不执行 Pipeline。若 v2 请求包含 exemplar，指定 `pipeline_name` 会导致请求被拒绝。仅指定 `pipeline_version` 不会触发这项检查。

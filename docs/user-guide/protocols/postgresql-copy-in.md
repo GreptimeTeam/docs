@@ -64,9 +64,9 @@ SELECT * FROM readings;
 | Option | Value and default | Meaning |
 | --- | --- | --- |
 | `HEADER` | Boolean; default `false` | Skip the first input record. |
-| `DELIMITER` | Single-byte character; default `','` | Field separator. Must differ from `QUOTE`. |
-| `QUOTE` | Single-byte character; default `'"'` | Encloses a quoted field. |
-| `ESCAPE` | Single-byte character; defaults to `QUOTE` | Escapes a quote inside a quoted field. |
+| `DELIMITER` | One printable ASCII character or a tab; default `','` | Field separator. Must differ from `QUOTE`. |
+| `QUOTE` | One printable ASCII character or a tab; default `'"'` | Encloses a quoted field. |
+| `ESCAPE` | One printable ASCII character or a tab; defaults to `QUOTE` | Escapes a quote inside a quoted field. |
 | `NULL` | Only `''` (default) | An empty field, even `""`, is NULL. Custom NULL markers are not supported. |
 
 Use date/time strings for timestamps. Strings without an offset use the session time zone. JSON and binary columns are not supported by the CSV decoder.
@@ -78,7 +78,7 @@ Name an existing table after `COPY` and send one JSON object per line. Keys matc
 ```sql
 COPY readings (ts, host, temperature) FROM STDIN WITH (FORMAT jsonl);
 {"host":"web01","temperature":22.5,"ts":"2025-01-01T00:01:00Z"}
-{"host":"web02","ts":"2025-01-01T00:01:00Z"}
+{"host":"web02","ts":"2025-01-01T00:01:01Z"}
 \.
 ```
 
@@ -135,7 +135,7 @@ with cur.copy("COPY app_logs FROM STDIN WITH (FORMAT otlp, signal 'logs')") as c
 | `pipeline_name` | Logs, traces | String. Selects a pipeline, like `x-greptime-pipeline-name`. Required for traces; omit for direct log ingestion. |
 | `pipeline_version` | Logs, traces | String. Selects a pipeline version, like `x-greptime-pipeline-version`. |
 | `pipeline_params` | Logs, traces | String, e.g. `'key1=value1&key2=value2'`. Passes parameters like `x-greptime-pipeline-params`. |
-| `extract_keys` | Logs | Comma-separated string, e.g. `'host,env'`. Like `x-greptime-log-extract-keys`, promotes attributes to tags when not using a pipeline. |
+| `extract_keys` | Logs | Comma-separated string, e.g. `'host,env'`. Like `x-greptime-log-extract-keys`, extracts attributes during direct log ingestion. New columns are tags; existing columns keep their role (for example, a `host` field remains a field). |
 
 For metrics, do not name a table after `COPY`. GreptimeDB routes by metric name and creates missing tables by default. For example, to send the equivalent of the HTTP header `x-greptime-otlp-metric-promote-resource-attrs: service.name;host.id`:
 
@@ -165,4 +165,4 @@ COPY FROM STDIN WITH (FORMAT promwrite, version 2, zstd, physical_table 'metrics
 | `pipeline_name` | Optional string | Selects a pipeline for v1. |
 | `pipeline_version` | Optional string | Selects the pipeline version for v1. |
 
-As on the HTTP endpoint, v2 does not apply pipelines, and supplying pipeline options with exemplars is rejected.
+As on the HTTP endpoint, v2 does not apply pipelines. A v2 request with exemplars is rejected if `pipeline_name` is set. Setting only `pipeline_version` does not trigger this check.
