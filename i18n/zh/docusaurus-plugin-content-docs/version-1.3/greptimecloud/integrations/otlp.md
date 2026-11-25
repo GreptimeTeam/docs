@@ -42,7 +42,7 @@ exporters:
       authenticator: basicauth/client
     headers:
       x-greptime-db-name: '<dbname>'
-      x-greptime-pipeline-name: 'greptime_trace_v1'
+      x-greptime-pipeline-name: 'greptime_trace_v2'
   otlphttp/logs:
     endpoint: 'https://<host>/v1/otlp'
     auth:

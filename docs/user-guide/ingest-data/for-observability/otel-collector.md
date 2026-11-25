@@ -30,7 +30,7 @@ exporters:
     #   authenticator: basicauth/client
     headers:
       # x-greptime-db-name: '<your_db_name>'
-      x-greptime-pipeline-name: 'greptime_trace_v1'
+      x-greptime-pipeline-name: 'greptime_trace_v2'
     tls:
       insecure: true
   otlp_http/logs:

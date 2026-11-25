@@ -21,14 +21,15 @@ the moment, only built-in pipelines are supported.
 
 First, the data types and features in GreptimeDB are evolving. For
 forward-compatibility, we use the pipeline name for data model
-versioning. Currently we have the following built-in pipeline for trace:
+versioning. Currently we have the following built-in pipelines for traces:
 
-- `greptime_trace_v1`: Flattens attributes into individual table columns.
 - `greptime_trace_v2`: Stores attributes in three fixed `JSON2` columns.
+- `greptime_trace_v1`: Flattens attributes into individual table columns.
 
 Specify the data model in OpenTelemetry OTLP/HTTP requests with the
-`x-greptime-pipeline-name` header. Choose v1 for flattened attribute columns,
-or v2 for JSON2 attributes without adding a table column for every attribute key.
+`x-greptime-pipeline-name` header. Choose `greptime_trace_v2` for JSON2 attributes
+without adding a table column for every attribute key, or `greptime_trace_v1` for
+flattened attribute columns.
 
 We may introduce new data models by adding new available pipeline names. Note
 that a new pipeline may not be compatible with previous ones, so you are
@@ -58,10 +59,11 @@ Unlike v1, v2 keeps `service.name` in `resource_attributes` as well as extractin
 it into `service_name`. If the resource does not provide a usable service name,
 the tag is `NULL`.
 
-The table is created automatically on the first write. The default table name
-is still `opentelemetry_traces`. V2 uses the same trace-ID partitioning, skipping
-indexes on `service_name`, `trace_id`, and `parent_span_id`, append-only mode,
-and auxiliary service/operation tables described below.
+The table is created automatically on the first write. By default, trace data is
+stored in `opentelemetry_traces`; set the `x-greptime-trace-table-name` header in
+OTLP/HTTP requests to customize the table name. V2 uses the trace-ID partitioning,
+skipping indexes on `service_name`, `trace_id`, and `parent_span_id`, append-only
+mode, and auxiliary service/operation tables described below.
 
 Use a new table when switching from v1 to v2. Changing the pipeline header does
 not migrate existing data: writes using v2 are rejected for a table marked as
@@ -224,7 +226,7 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
 
 ## Shared Table Behavior
 
-The following behavior applies to both v1 and v2.
+The following behavior applies to both v2 and v1.
 
 ### Partition Rules
 

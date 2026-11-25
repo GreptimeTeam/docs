@@ -21,10 +21,10 @@ description: 介绍 Trace 数据如何存入 GreptimeDB.
 GreptimeDB 本身的数据类型和相关功能在持续演化。为了实现向后兼容，我们使用
 Pipeline 的名称来作为数据模型的版本。目前可用的内置 Pipeline 为：
 
-- `greptime_trace_v1`：将属性打平为独立的表列。
 - `greptime_trace_v2`：将属性存储在三个固定的 `JSON2` 列中。
+- `greptime_trace_v1`：将属性打平为独立的表列。
 
-在使用 OTLP/HTTP 协议写入数据时，需要通过 `x-greptime-pipeline-name` HTTP 头指定数据模型。需要打平属性列时选择 v1；希望使用 JSON2 存储属性、避免每个属性键都新增表列时选择 v2。
+在使用 OTLP/HTTP 协议写入数据时，需要通过 `x-greptime-pipeline-name` HTTP 头指定数据模型。希望使用 JSON2 存储属性、避免每个属性键都新增表列时选择 `greptime_trace_v2`；需要打平属性列时选择 `greptime_trace_v1`。
 
 在未来我们可能引入新的 Pipeline 名称，即数据模型版本。新的 Pipeline 可能与老版本不兼容，因此建议创建新的数据表来使用。
 
@@ -50,9 +50,10 @@ v2 模型将每个 Span 存储为一行，固定包含 19 列。属性使用
 与 v1 不同，v2 在提取 `service_name` 的同时，也会在 `resource_attributes` 中保留
 `service.name`。如果 Resource 未提供可用的服务名称，Tag 值为 `NULL`。
 
-首次写入时会自动建表，默认表名仍为 `opentelemetry_traces`。v2 沿用下文介绍的
-Trace ID 分区规则、`service_name`、`trace_id` 和 `parent_span_id` 上的跳数索引、
-Append-only 模式，以及服务和操作辅助表。
+首次写入时会自动建表，默认表名为 `opentelemetry_traces`，可通过 OTLP/HTTP 请求中的
+`x-greptime-trace-table-name` 请求头自定义表名。v2 使用下文介绍的 Trace ID 分区规则、
+`service_name`、`trace_id` 和 `parent_span_id` 上的跳数索引、Append-only 模式，
+以及服务和操作辅助表。
 
 从 v1 切换到 v2 时，请使用新表。修改 Pipeline 请求头不会迁移已有数据：标记为 v1 的表会拒绝 v2 写入，反之亦然。已有 v1 表可以继续使用 v1 Pipeline。配置和 SQL 示例请参阅[写入与查询](./read-write.md)。
 
@@ -194,11 +195,11 @@ Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (              
 
 ## 通用表行为
 
-以下内容适用于 v1 和 v2。
+以下内容适用于 v2 和 v1。
 
 ### 列存储选项
 
-OTLP 自动创建的 v1 和 v2 Trace 表使用以下列选项：
+OTLP 自动创建的 v2 和 v1 Trace 表使用以下列选项：
 
 - `span_id` 和 `parent_span_id`：`encoding='plain'`、`page_size='64KiB'`。
 - `timestamp_end`：`encoding='delta_binary_packed'`。

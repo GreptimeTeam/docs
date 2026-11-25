@@ -35,6 +35,8 @@ Trace 也是 OpenTelemetry 中最广为接受的子协议，包含了良好的�
 立的用于收集和处理 OpenTelemetry 数据的服务。本文我们将介绍如何使用
 OpenTelemetry Collector 将 traces 数据写入到 GreptimeDB。
 
+<AnchorAlias id="使用-greptime_trace_v2-写入" />
+
 #### 启动 OpenTelemetry Collector
 
 你可以使用如下命令来快速启动一个 OpenTelemetry Collector 实例，此时 collector 会监听 `4317`（gRPC） 和 `4318`（HTTP） 端口：
@@ -61,7 +63,7 @@ exporters:
   otlp_http:
     endpoint: "http://greptimedb:4000/v1/otlp" # GreptimeDB 的 OTLP 路径
     headers:
-      x-greptime-pipeline-name: "greptime_trace_v1"
+      x-greptime-pipeline-name: "greptime_trace_v2"
       #authorization: "Basic <base64(username:password)>"
     tls:
       insecure: true
@@ -73,25 +75,29 @@ service:
       exporters: [otlp_http]
 ```
 
-#### 使用 greptime_trace_v2 写入
+按下文发送 Trace 后，GreptimeDB 会自动创建 `opentelemetry_traces` 表，并将属性存储为
+`JSON2`。如果 `opentelemetry_traces` 已作为 v1 表存在，请同时设置
+`x-greptime-trace-table-name`（例如 `"opentelemetry_traces_v2"`），将 v2 数据写入新表。
+SDK 直接写入时也使用相同的请求头。
 
-上面的完整配置使用 v1。要使用 v2，请将其中的 `exporters` 配置替换为以下内容，
-其余 receivers 和 service 配置保持不变：
+#### 使用 greptime_trace_v1 写入
+
+上面的完整配置使用 `greptime_trace_v2`。如果需要打平属性列，请将其中的 `exporters`
+配置替换为以下内容，其余 receivers 和 service 配置保持不变：
 
 ```yaml
 exporters:
   otlp_http:
     endpoint: "http://greptimedb:4000/v1/otlp"
     headers:
-      x-greptime-pipeline-name: "greptime_trace_v2"
-      x-greptime-trace-table-name: "opentelemetry_traces_v2"
+      x-greptime-pipeline-name: "greptime_trace_v1"
+      x-greptime-trace-table-name: "opentelemetry_traces_v1"
       #authorization: "Basic <base64(username:password)>"
     tls:
       insecure: true
 ```
 
-请使用新表，避免向已有 v1 表写入 v2 数据。按下文发送 Trace 后，GreptimeDB 会自动
-创建 `opentelemetry_traces_v2`，并将属性存储为 JSON2。SDK 直接写入时也使用相同的请求头。
+请使用独立的表，避免在同一张表中混写 v1 和 v2 数据。
 两个模型的差异请参阅[数据模型版本机制](./data-model.md#数据模型版本机制)。
 
 #### 将 Trace 数据写入到 OpenTelemetry Collector
@@ -133,7 +139,7 @@ GreptimeDB 的 OTEL 端点支持 Basic 认证。详情请参考 [鉴权](/user-g
 
 在 OTLP 接口中，我们要求 HTTP 头 `x-greptime-pipeline-name` 作为必选参数。在这里
 我们复用了日志接口中 Pipeline 的概念作为数据转化的机制。Trace 数据应使用内置的
-`greptime_trace_v1`（打平属性列）或 `greptime_trace_v2`（JSON2 属性）。
+`greptime_trace_v2`（JSON2 属性）或 `greptime_trace_v1`（打平属性列）。
 有关模型差异和表选项，请参阅 [Trace 数据模型](./data-model.md)。切换模型时请使用独立的表。
 自定义的 Pipeline 暂不支持。
 
@@ -159,16 +165,45 @@ GreptimeDB 内置的 Jaeger 兼容层使得用户可以直接复用市面上的 
 
 ### SQL
 
-#### greptime_trace_v1
+Trace 数据可以通过 SQL 查询。默认情况下，Trace 数据写入 `opentelemetry_traces` 表，
+也可在写入时通过 `x-greptime-trace-table-name` 指定表名。
 
-Trace 数据也可以通过 SQL 查询。默认 Trace 数据会写入 `opentelemetry_traces` 表中，
-这个表名也可以在写入时通过 `x-greptime-trace-table-name` 来指定。通过 SQL 查询：
+#### greptime_trace_v2
+
+OpenTelemetry 属性键通常包含点号。请用双引号包住完整的键名，将其作为字面键读取，
+而不是嵌套路径：
 
 ```sql
-SELECT * FROM public.opentelemetry_traces \G
+SELECT * FROM public.opentelemetry_traces LIMIT 10;
+
+SELECT
+    timestamp,
+    trace_id,
+    service_name,
+    span_attributes."http.request.method"::STRING AS method,
+    span_attributes."http.response.status_code"::BIGINT AS status,
+    resource_attributes."service.name"::STRING AS resource_service
+FROM public.opentelemetry_traces
+WHERE span_attributes."http.response.status_code"::BIGINT >= 500
+ORDER BY timestamp DESC
+LIMIT 20;
 ```
 
-使用上面的 v1 配置时，输出示例如下：
+例如，`span_attributes."http.request.method"` 读取键 `http.request.method`，而
+`span_attributes.http.request.method` 读取嵌套对象。v1 中的
+`"span_attributes.http.request.method"` 表示打平后的表列，不适用于 v2。
+更多示例请参阅 [JSON2 查询语法](/user-guide/logs/json2.md#点号语法)。
+事件和链接仍使用 [JSON 函数](/reference/sql/functions/json.md)查询。
+
+#### greptime_trace_v1
+
+使用上面的 `greptime_trace_v1` 配置时，属性被打平为独立的列：
+
+```sql
+SELECT * FROM public.opentelemetry_traces_v1 \G
+```
+
+输出示例如下：
 
 ```
 *************************** 1. row ***************************
@@ -192,32 +227,5 @@ span_attributes.http.request.method: POST
                         span_links: []
 ...
 ```
-
-#### greptime_trace_v2
-
-OpenTelemetry 属性键通常包含点号。请用双引号包住完整的键名，将其作为字面键读取，
-而不是嵌套路径：
-
-```sql
-SELECT * FROM public.opentelemetry_traces_v2 LIMIT 10;
-
-SELECT
-    timestamp,
-    trace_id,
-    service_name,
-    span_attributes."http.request.method"::STRING AS method,
-    span_attributes."http.response.status_code"::BIGINT AS status,
-    resource_attributes."service.name"::STRING AS resource_service
-FROM public.opentelemetry_traces_v2
-WHERE span_attributes."http.response.status_code"::BIGINT >= 500
-ORDER BY timestamp DESC
-LIMIT 20;
-```
-
-例如，`span_attributes."http.request.method"` 读取键 `http.request.method`，而
-`span_attributes.http.request.method` 读取嵌套对象。v1 中的
-`"span_attributes.http.request.method"` 表示打平后的表列，不适用于 v2。
-更多示例请参阅 [JSON2 查询语法](/user-guide/logs/json2.md#点号语法)。
-事件和链接仍使用 [JSON 函数](/reference/sql/functions/json.md)查询。
 
 在下一节[数据模型](./data-model.md) 中我们会对这个表结构做详细介绍。
