@@ -71,9 +71,9 @@ service:
 In the above configuration, we define a receiver `otlp` that can receive data from OpenTelemetry. We also define three exporters: `otlp_http/traces`, `otlp_http/logs`, and `otlp_http/metrics`, which send data to the OTLP endpoint of GreptimeDB.
 
 Based on the OTLP/HTTP protocol, we have added some headers to specify certain parameters, such as `x-greptime-pipeline-name` and `x-greptime-log-table-name`:
-* The `x-greptime-pipeline-name` header is used to specify the pipeline name to use, and,
-* the `x-greptime-pipeline-params` header is used to pass parameters to the pipeline, and,
-* the `x-greptime-log-table-name` header is used to specify the table name in GreptimeDB where the data will be written.
+* The `x-greptime-pipeline-name` header selects the pipeline. For traces, see [trace data model versions](/user-guide/traces/data-model.md#data-model-versioning).
+* The `x-greptime-pipeline-params` header passes parameters to the pipeline.
+* The `x-greptime-log-table-name` header specifies the table name in GreptimeDB where the data will be written.
 
 If you have enabled [authentication](/user-guide/deployments-administration/authentication/overview.md) in GreptimeDB, you need to use the `basicauth/client` extension to handle basic authentication.
 

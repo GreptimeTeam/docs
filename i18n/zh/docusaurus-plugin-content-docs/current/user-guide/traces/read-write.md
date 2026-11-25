@@ -92,6 +92,7 @@ exporters:
 
 请使用新表，避免向已有 v1 表写入 v2 数据。按下文发送 Trace 后，GreptimeDB 会自动
 创建 `opentelemetry_traces_v2`，并将属性存储为 JSON2。SDK 直接写入时也使用相同的请求头。
+两个模型的差异请参阅[数据模型版本机制](./data-model.md#数据模型版本机制)。
 
 #### 将 Trace 数据写入到 OpenTelemetry Collector
 
@@ -133,7 +134,7 @@ GreptimeDB 的 OTEL 端点支持 Basic 认证。详情请参考 [鉴权](/user-g
 在 OTLP 接口中，我们要求 HTTP 头 `x-greptime-pipeline-name` 作为必选参数。在这里
 我们复用了日志接口中 Pipeline 的概念作为数据转化的机制。Trace 数据应使用内置的
 `greptime_trace_v1`（打平属性列）或 `greptime_trace_v2`（JSON2 属性）。
-有关模型差异和表选项，请参阅[Trace 数据模型](./data-model.md)。切换模型时请使用独立的表。
+有关模型差异和表选项，请参阅 [Trace 数据模型](./data-model.md)。切换模型时请使用独立的表。
 自定义的 Pipeline 暂不支持。
 
 ### Append-only 模式

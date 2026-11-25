@@ -17,7 +17,7 @@ description: 哪些数据无需配置即可进入语义图、如何在自己的�
 
 ### OTLP trace 表
 
-`table_data_model` 为 `greptime_trace_v1` 或 `greptime_trace_v2` 的表都会自动获得以下实体声明，无需额外的实体选项。v1 从打平的属性列读取值；v2 从 JSON2 属性中读取值，使用相同的声明名称：
+`table_data_model` 为 `greptime_trace_v1` 或 `greptime_trace_v2`（见 [Trace 数据模型的版本差异](/user-guide/traces/data-model.md#数据模型版本机制)）的表都会自动获得以下实体声明，无需额外的实体选项。v1 从打平的属性列读取值；v2 从 JSON2 属性中读取值，使用相同的声明名称：
 
 | 实体 | 标识列 | 描述列 |
 | --- | --- | --- |

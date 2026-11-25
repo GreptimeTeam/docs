@@ -132,7 +132,7 @@ with cur.copy("COPY app_logs FROM STDIN WITH (FORMAT otlp, signal 'logs')") as c
 | `promote_scope_attrs` | Metrics | Boolean, default `false`. Promote scope attributes. |
 | `translation_strategy` | Metrics | String, default `'UnderscoreEscapingWithSuffixes'`. See [accepted metric and label name translation strategies](/user-guide/ingest-data/for-observability/opentelemetry.md#prometheus-compatibility). |
 | `table_name` | Logs, traces | String. Overrides the destination, like `x-greptime-log-table-name` or `x-greptime-trace-table-name`. See the routing rules below. |
-| `pipeline_name` | Logs, traces | String. Selects a pipeline, like `x-greptime-pipeline-name`. Required for traces; omit for direct log ingestion. |
+| `pipeline_name` | Logs, traces | String. Selects a pipeline, like `x-greptime-pipeline-name`. Required for traces; omit for direct log ingestion. See [trace data model versions](/user-guide/traces/data-model.md#data-model-versioning). |
 | `pipeline_version` | Logs, traces | String. Selects a pipeline version, like `x-greptime-pipeline-version`. |
 | `pipeline_params` | Logs, traces | String, e.g. `'key1=value1&key2=value2'`. Passes parameters like `x-greptime-pipeline-params`. |
 | `extract_keys` | Logs | Comma-separated string, e.g. `'host,env'`. Like `x-greptime-log-extract-keys`, extracts attributes during direct log ingestion. New columns are tags; existing columns keep their role (for example, a `host` field remains a field). |

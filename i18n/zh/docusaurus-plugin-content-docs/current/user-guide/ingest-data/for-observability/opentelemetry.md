@@ -381,7 +381,7 @@ GreptimeDB 支持直接写入 OpenTelemetry 协议的 traces 数据，并内置 
   - `Authorization`: `Basic` 认证。
   - `X-Greptime-DB-Name`: `<dbname>`
   - `X-Greptime-Trace-Table-Name`: `<table_name>`（可选）- 存储 traces 的表名。如果未提供，默认表名为 `opentelemetry_traces`。
-  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1` 或 `greptime_trace_v2`（必选）- 处理 traces 的 pipeline 名称。
+  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1` 或 `greptime_trace_v2`（必选）- 处理 traces 的 pipeline 名称，详见 [Trace 数据模型的版本差异](/user-guide/traces/data-model.md#数据模型版本机制)。
 
 GreptimeDB 会通过 **HTTP 协议** 接受 **protobuf 编码的 traces 数据**。
 
@@ -391,7 +391,7 @@ GreptimeDB 会通过 **HTTP 协议** 接受 **protobuf 编码的 traces 数据**
 
 ### 数据模型
 
-Trace 数据模型的表结构、属性存储方式和表选项统一介绍于[Trace 数据模型](/user-guide/traces/data-model.md)。该页分别说明 `greptime_trace_v1` 和 `greptime_trace_v2`。
+Trace 数据模型的表结构、属性存储方式和表选项统一介绍于 [Trace 数据模型](/user-guide/traces/data-model.md)。该页分别说明 `greptime_trace_v1` 和 `greptime_trace_v2`。
 
 ### Schema 演进与 Partial Success
 

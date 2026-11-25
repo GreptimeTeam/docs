@@ -97,6 +97,7 @@ exporters:
 Use a new table to avoid sending v2 data to an existing v1 table. Sending traces
 as described below automatically creates `opentelemetry_traces_v2` with JSON2
 attributes. Use the same headers when writing directly from an SDK.
+See [how the trace data models differ](./data-model.md#data-model-versioning).
 
 #### Write Trace Data to OpenTelemetry Collector
 
