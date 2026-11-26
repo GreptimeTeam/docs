@@ -30,7 +30,7 @@ exporters:
     #   authenticator: basicauth/client
     headers:
       # x-greptime-db-name: '<your_db_name>'
-      x-greptime-pipeline-name: 'greptime_trace_v1'
+      x-greptime-pipeline-name: 'greptime_trace_v2'
     tls:
       insecure: true
   otlp_http/logs:
@@ -68,11 +68,13 @@ service:
       exporters: [otlp_http/metrics]
 ```
 
+如果 `opentelemetry_traces` 是 v1 表，请[将 v2 数据写入新表](/user-guide/traces/read-write.md#existing-v1-trace-tables)。
+
 在上面的配置中，我们定义了一个接收器 `otlp`，它可以接收来自 OpenTelemetry 的数据。我们还定义了三个导出器 `otlp_http/traces`、`otlp_http/logs` 和 `otlp_http/metrics`，它们将数据发送到 GreptimeDB 的 OTLP 路径。
 
-基于 OTLP/HTTP 协议，我们增加了一些 header 用来指定参数，比如 `x-greptime-pipeline-name` 和 `x-greptime-log-table-name`:
-* `x-greptime-pipeline-name` 用来指定要使用的 pipeline 名称
-* `x-greptime-pipeline-params` 用来向 pipeline 传入参数
+基于 OTLP/HTTP 协议，我们增加了一些 header 用来指定参数，比如 `x-greptime-pipeline-name` 和 `x-greptime-log-table-name`：
+* `x-greptime-pipeline-name` 用来指定要使用的 pipeline 名称。写入 traces 数据时，可参考 [Trace 数据模型的版本差异](/user-guide/traces/data-model.md#数据模型版本机制)。
+* `x-greptime-pipeline-params` 用来向 pipeline 传入参数。
 * `x-greptime-log-table-name` 用来指定数据将要写入 GreptimeDB 的表名。
 
 如果你在 GreptimeDB 设置了[鉴权](/user-guide/deployments-administration/authentication/overview.md)。则需要使用 `basicauth/client` 扩展来处理基本的身份验证。

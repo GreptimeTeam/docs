@@ -132,7 +132,7 @@ with cur.copy("COPY app_logs FROM STDIN WITH (FORMAT otlp, signal 'logs')") as c
 | `promote_scope_attrs` | 指标 | 布尔值，默认 `false`。指定是否保留 scope 属性。 |
 | `translation_strategy` | 指标 | 字符串，默认 `'UnderscoreEscapingWithSuffixes'`。可选值见[指标和标签名称的转换策略](/user-guide/ingest-data/for-observability/opentelemetry.md#兼容-prometheus)。 |
 | `table_name` | 日志、链路 | 字符串。覆盖目标表名，对应 `x-greptime-log-table-name` 或 `x-greptime-trace-table-name`。目标表的选择规则见下文。 |
-| `pipeline_name` | 日志、链路 | 字符串。选择 Pipeline，对应 `x-greptime-pipeline-name`。写入链路时必须指定；直接写入日志时可省略。 |
+| `pipeline_name` | 日志、链路 | 字符串。选择 Pipeline，对应 `x-greptime-pipeline-name`。写入链路时必须指定；直接写入日志时可省略。链路 Pipeline 的选择请参阅 [Trace 数据模型的版本差异](/user-guide/traces/data-model.md#数据模型版本机制)。 |
 | `pipeline_version` | 日志、链路 | 字符串。选择 Pipeline 版本，对应 `x-greptime-pipeline-version`。 |
 | `pipeline_params` | 日志、链路 | 字符串，例如 `'key1=value1&key2=value2'`。传递 Pipeline 参数，对应 `x-greptime-pipeline-params`。 |
 | `extract_keys` | 日志 | 用逗号分隔的字符串，例如 `'host,env'`。对应 `x-greptime-log-extract-keys`，在直接写入日志时提取指定属性。新建的列为标签列；已有列保留原有角色，例如已有的 `host` 字段列不会变成标签列。 |

@@ -6,7 +6,8 @@ description: 介绍如何将 GreptimeDB 配置为 Grafana 数据源，包括使�
 # Grafana
 
 GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/grafana/latest/datasources/add-a-data-source/)。
-你可以选择使用以下三个数据源之一连接 GreptimeDB 与 Grafana：[GreptimeDB](#greptimedb-数据源插件)、[Prometheus](#prometheus-数据源) 或 [MySQL](#mysql-数据源)。
+你可以使用 [GreptimeDB 插件](#greptimedb-数据源插件)、[Prometheus](#prometheus-数据源)或 [MySQL](#mysql-数据源)连接 GreptimeDB 与 Grafana。
+如需在 Grafana 中搜索和查看 Trace，请使用 [Jaeger 数据源](/user-guide/query-data/jaeger.md#配置-jaeger-插件)。
 
 ## GreptimeDB 数据源插件
 
@@ -95,11 +96,11 @@ GreptimeDB 开启认证时，在 **Authentication** 部分选择 **Basic authent
 并将每个时间戳映射到最近区间的起点，从而把行归入时间窗口，再对每个窗口应用
 聚合或选择函数。
 
-示例（或原始 SQL）：
+以下原始 SQL 查询按时间窗口汇总 `greptime_trace_v2` 表中的输入 token 数。
 
 ```sql
 SELECT date_bin('$__interval', timestamp) AS time,
-       SUM(`span_attributes.gen_ai.usage.input_tokens`) AS input_tokens
+       SUM(span_attributes."gen_ai.usage.input_tokens"::BIGINT) AS input_tokens
 FROM opentelemetry_traces
 WHERE $__timeFilter(timestamp)
 GROUP BY time
@@ -157,6 +158,9 @@ ORDER BY time;
 
 ### Traces 查询
 
+在 GreptimeDB 插件中，选择 `Traces` 查询类型即可查看 Trace。对于 `greptime_trace_v2` 表，
+可使用 Grafana 的 [Jaeger 数据源](/user-guide/query-data/jaeger.md#配置-jaeger-插件)查看 Span 及其属性。
+
 | 主要设置项 | 对应值 |
 |-----------|---------------------|
 | Trace Mode | 选择 `Trace Search` 以查询 Trace 列表
@@ -168,14 +172,15 @@ ORDER BY time;
 | Start Time Column | 初始值 `timestamp`
 | Duration Time Column | 初始值 `duration_nano`
 | Duration Unit | 初始值 `nanoseconds`
-| Tags Column | 可多选，对应以 `span_attributes` 开头的列
-| Service Tags Column| 可多选，对应以 `resource_attributes` 开头的列
+| Tags Column | 可从 `greptime_trace_v1` 表中选择一个或多个打平后的 Span 属性列，例如 `span_attributes.http.request.method`。 |
+| Service Tags Column | 可从 `greptime_trace_v1` 表中选择一个或多个打平后的 Resource 属性列，例如 `resource_attributes.host.name`。 |
 
 ![Traces](/grafana/traceconfig.png)
 
 #### Attribute 自动发现
 
-当 Trace ID 查询使用 `SELECT *` 时，插件会自动发现所有以 `span_attributes.` 和 `resource_attributes.` 开头的列，并在瀑布图中作为可展开标签展示，无需手动枚举每个 attribute 列。
+对于 `greptime_trace_v1` 表，如果 Trace ID 查询使用 `SELECT *`，插件会将以
+`span_attributes.` 和 `resource_attributes.` 开头的列作为可展开的标签显示在瀑布图中。
 
 ### SQL Macros
 
@@ -257,8 +262,8 @@ ORDER BY time;
 | Duration Time Column | 耗时值 | `duration_nano` |
 | Duration Unit | 耗时列单位 | `nanoseconds` |
 | Start Time Column | Span 开始时间 | `timestamp` |
-| Tags Column | Span attributes 前缀 | `span_attributes` |
-| Service Tags Column | Resource attributes 前缀 | `resource_attributes` |
+| Tags Column | `greptime_trace_v1` 打平后的 Span 属性列前缀 | `span_attributes` |
+| Service Tags Column | `greptime_trace_v1` 打平后的 Resource 属性列前缀 | `resource_attributes` |
 
 #### OTel 预设
 

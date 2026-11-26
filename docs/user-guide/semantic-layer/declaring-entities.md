@@ -17,9 +17,10 @@ Conventions ship with the binary and are not configurable. An explicit declarati
 
 ### OTLP trace tables
 
-Tables with `table_data_model` set to `greptime_trace_v1` or `greptime_trace_v2`
-receive the following entity declarations without additional entity options. V1
-reads flattened attribute columns; v2 reads JSON2 attributes using the same
+Tables with `table_data_model` set to the `greptime_trace_v2` or `greptime_trace_v1`
+[trace data model](/user-guide/traces/data-model.md#data-model-versioning)
+receive the following entity declarations without additional entity options. V2
+reads JSON2 attributes and v1 reads flattened attribute columns, using the same
 declaration names:
 
 | Entity | Identifying columns | Descriptive columns |

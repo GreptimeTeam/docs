@@ -95,15 +95,17 @@ Use a separate output for each signal because GreptimeDB uses signal-specific he
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header X-Greptime-Pipeline-Name greptime_trace_v1
+    Header X-Greptime-Pipeline-Name greptime_trace_v2
     Header X-Greptime-DB-Name <dbname>
 ```
+
+If `opentelemetry_traces` is a v1 table, [send v2 traces to a new table](/user-guide/traces/read-write.md#existing-v1-trace-tables).
 
 - `Metrics_uri`, `Logs_uri`, and `Traces_uri`: The endpoints for metrics, logs, and traces.
 - `Match`: The signal-specific tag configured on the corresponding Fluent Bit input.
 - `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments-administration/authentication/static.md) for GreptimeDB. Add them to each output when authentication is enabled.
 
-In this example, the OpenTelemetry OTLP/HTTP API is used. For signal-specific headers and options, see the OpenTelemetry API sections for [metrics](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api), [logs](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-1), and [traces](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-2).
+In this example, the OpenTelemetry OTLP/HTTP API is used. For signal-specific headers and options, see the OpenTelemetry API sections for [metrics](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api), [logs](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-1), and [traces](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-2). The trace output above uses `greptime_trace_v2`; see [trace data model versions](/user-guide/traces/data-model.md#data-model-versioning) to compare it with `greptime_trace_v1`.
 
 ## Prometheus Remote Write
 

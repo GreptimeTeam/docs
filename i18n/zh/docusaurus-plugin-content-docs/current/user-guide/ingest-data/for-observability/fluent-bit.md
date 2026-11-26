@@ -94,15 +94,17 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header X-Greptime-Pipeline-Name greptime_trace_v1
+    Header X-Greptime-Pipeline-Name greptime_trace_v2
     Header X-Greptime-DB-Name <dbname>
 ```
+
+如果 `opentelemetry_traces` 是 v1 表，请[将 v2 数据写入新表](/user-guide/traces/read-write.md#existing-v1-trace-tables)。
 
 - `Metrics_uri`、`Logs_uri` 和 `Traces_uri`：分别用于发送 metrics、logs 和 traces 的端点。
 - `Match`：在对应 Fluent Bit input 中配置的 signal tag。
 - `http_user` 和 `http_passwd`：GreptimeDB 的[认证凭据](/user-guide/deployments-administration/authentication/static.md)。启用鉴权时，请将它们添加到每个 output 中。
 
-本示例使用的是 OpenTelemetry OTLP/HTTP API。不同 signal 支持的 header 和选项不同，具体请分别参考 OpenTelemetry API 的 [metrics](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api)、[logs](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-1) 和 [traces](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-2) 部分。
+本示例使用的是 OpenTelemetry OTLP/HTTP API。不同 signal 支持的 header 和选项不同，具体请分别参考 OpenTelemetry API 的 [metrics](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api)、[logs](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-1) 和 [traces](/user-guide/ingest-data/for-observability/opentelemetry.md#otlphttp-api-2) 部分。上方 traces 示例使用了 `greptime_trace_v2`，它与 `greptime_trace_v1` 的区别请参阅 [Trace 数据模型的版本差异](/user-guide/traces/data-model.md#数据模型版本机制)。
 
 ## Prometheus Remote Write
 

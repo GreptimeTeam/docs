@@ -6,7 +6,9 @@ description: Steps to configure GreptimeDB as a data source in Grafana using dif
 # Grafana
 
 GreptimeDB can be configured as a [Grafana data source](https://grafana.com/docs/grafana/latest/datasources/add-a-data-source/).
-You have the option to connect GreptimeDB with Grafana using one of three data sources: [GreptimeDB](#greptimedb-data-source-plugin), [Prometheus](#prometheus-data-source), or [MySQL](#mysql-data-source).
+Connect using the [GreptimeDB plugin](#greptimedb-data-source-plugin), [Prometheus](#prometheus-data-source),
+or [MySQL](#mysql-data-source). To search for and view traces, use Grafana's
+[Jaeger data source](/user-guide/query-data/jaeger.md#configure-the-grafana-jaeger-plugin).
 
 ## GreptimeDB data source plugin
 
@@ -101,11 +103,11 @@ series data: it calculates time intervals and returns the start of the interval
 nearest to each timestamp, so rows are grouped into time-based bins (windows).
 Apply an aggregate or selector function to each window.
 
-Example (or raw SQL):
+This raw SQL query sums input tokens per time bucket from a `greptime_trace_v2` table.
 
 ```sql
 SELECT date_bin('$__interval', timestamp) AS time,
-       SUM(`span_attributes.gen_ai.usage.input_tokens`) AS input_tokens
+       SUM(span_attributes."gen_ai.usage.input_tokens"::BIGINT) AS input_tokens
 FROM opentelemetry_traces
 WHERE $__timeFilter(timestamp)
 GROUP BY time
@@ -167,7 +169,9 @@ Performs an approximate time range query based on the value of context columns i
 
 ### Traces Query
 
-Select the `Traces` query type for distributed tracing data.
+Select the `Traces` query type to view traces with the GreptimeDB plugin.
+For `greptime_trace_v2` tables, use Grafana's
+[Jaeger data source](/user-guide/query-data/jaeger.md#configure-the-grafana-jaeger-plugin) to view spans and their attributes.
 
 | Main Setting          | Description                                                                                             |
 | :-------------------- | :------------------------------------------------------------------------------------------------------ |
@@ -180,17 +184,16 @@ Select the `Traces` query type for distributed tracing data.
 | **Start Time Column** | Default value: `timestamp`                                                                              |
 | **Duration Time Column** | Default value: `duration_nano`                                                                          |
 | **Duration Unit** | Default value: `nanoseconds`                                                                           |
-| **Tags Column** | Multiple selections allowed. Corresponds to columns starting with `span_attributes` (e.g., `span_attributes.http.method`). |
-| **Service Tags Column** | Multiple selections allowed. Corresponds to columns starting with `resource_attributes` (e.g., `resource_attributes.host.name`). |
+| **Tags Column** | For `greptime_trace_v1`, select one or more flattened span attribute columns, such as `span_attributes.http.request.method`. |
+| **Service Tags Column** | For `greptime_trace_v1`, select one or more flattened resource attribute columns, such as `resource_attributes.host.name`. |
 
 ![Traces](/grafana/traceconfig.png)
 
 #### Attribute Auto-Discovery
 
-When the Trace ID query uses `SELECT *`, the plugin automatically discovers
-all columns starting with `span_attributes.` and `resource_attributes.` and
-includes them as expandable tags in the waterfall view. No need to manually
-enumerate every attribute column.
+For `greptime_trace_v1` tables, when the Trace ID query uses `SELECT *`, the plugin
+shows columns with the `span_attributes.` and `resource_attributes.` prefixes as
+expandable tags in the waterfall.
 
 ### SQL Macros
 
@@ -277,8 +280,8 @@ Enable **Auto-Select Columns** to automatically include them in log queries.
 | Duration Time Column | Duration value | `duration_nano` |
 | Duration Unit | Unit of duration column | `nanoseconds` |
 | Start Time Column | Span start time | `timestamp` |
-| Tags Column | Span attributes prefix | `span_attributes` |
-| Service Tags Column | Resource attributes prefix | `resource_attributes` |
+| Tags Column | Prefix for flattened span attributes in `greptime_trace_v1` | `span_attributes` |
+| Service Tags Column | Prefix for flattened resource attributes in `greptime_trace_v1` | `resource_attributes` |
 
 #### OTel Preset
 

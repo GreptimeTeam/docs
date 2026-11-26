@@ -336,7 +336,9 @@ GreptimeDB 支持直接写入 OpenTelemetry 协议的 traces 数据，并内置 
   - `Authorization`: `Basic` 认证。
   - `X-Greptime-DB-Name`: `<dbname>`
   - `X-Greptime-Trace-Table-Name`: `<table_name>`（可选）- 存储 traces 的表名。如果未提供，默认表名为 `opentelemetry_traces`。
-  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1` 或 `greptime_trace_v2`（必选）- 处理 traces 的 pipeline 名称。
+  - `X-Greptime-Pipeline-Name`: `greptime_trace_v2` 或 `greptime_trace_v1`（必选）- 处理 traces 的 pipeline 名称，详见 [Trace 数据模型的版本差异](/user-guide/traces/data-model.md#数据模型版本机制)。
+
+如果 `opentelemetry_traces` 是 v1 表，请[将 v2 数据写入新表](/user-guide/traces/read-write.md#existing-v1-trace-tables)。
 
 GreptimeDB 会通过 **HTTP 协议** 接受 **protobuf 编码的 traces 数据**。
 
@@ -346,11 +348,11 @@ GreptimeDB 会通过 **HTTP 协议** 接受 **protobuf 编码的 traces 数据**
 
 ### 数据模型
 
-Trace 数据模型的表结构、属性存储方式和表选项统一介绍于[Trace 数据模型](/user-guide/traces/data-model.md)。该页分别说明 `greptime_trace_v1` 和 `greptime_trace_v2`。
+Trace 数据模型的表结构、属性存储方式和表选项统一介绍于 [Trace 数据模型](/user-guide/traces/data-model.md)。该页分别说明 `greptime_trace_v2` 和 `greptime_trace_v1`。
 
 ### Schema 演进与 Partial Success
 
-`greptime_trace_v1` 模型会自动添加新的打平 attribute 列。当 trace 表已经存在时，GreptimeDB 会根据已有表结构协调新写入 attribute 的值类型。兼容的标量值可以转换为已有列类型；当已有 `Int64` attribute 列后续收到整数和浮点数混合写入时，该列可能会被扩展为 `Float64`。
+`greptime_trace_v2` 模型将属性存储在 `JSON2` 列中，新增属性键不会增加表列。如果使用 `greptime_trace_v1` 模型，GreptimeDB 会自动添加新的打平 attribute 列，并根据已有表结构协调新写入 attribute 的值类型：兼容的标量值可以转换为已有列类型；当已有 `Int64` attribute 列后续收到整数和浮点数混合写入时，该列可能会被扩展为 `Float64`。
 
 如果一次 trace 请求中有部分 span 因 schema 或值不兼容而无法写入，GreptimeDB 仍可能接受其他 span，并返回包含 `rejected_spans` 和 `error_message` 的 OTLP `partial_success` 响应。如果所有 span 都被拒绝，接口会返回 `400 Bad Request`。
 

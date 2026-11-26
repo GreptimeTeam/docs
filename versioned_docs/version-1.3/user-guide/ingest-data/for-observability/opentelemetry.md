@@ -346,7 +346,9 @@ To send OpenTelemetry traces data to GreptimeDB through OpenTelemetry SDK librar
   - `Authorization`: `Basic` authentication.
   - `X-Greptime-DB-Name`: `<dbname>`
   - `X-Greptime-Trace-Table-Name`: `<table_name>` (optional) - The table name to store the traces. If not provided, the default table name is `opentelemetry_traces`.
-  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1` or `greptime_trace_v2` (required) - The pipeline name to process the traces.
+  - `X-Greptime-Pipeline-Name`: `greptime_trace_v2` or `greptime_trace_v1` (required) - The pipeline name to process the traces; see [trace data model versions](/user-guide/traces/data-model.md#data-model-versioning).
+
+If `opentelemetry_traces` is a v1 table, [send v2 traces to a new table](/user-guide/traces/read-write.md#existing-v1-trace-tables).
 
 GreptimeDB accepts **protobuf encoded traces data** via **HTTP protocol**.
 
@@ -357,11 +359,11 @@ You can directly send OpenTelemetry traces data to GreptimeDB, or use OpenTeleme
 ### Data Model
 
 See [Trace Data Modeling](/user-guide/traces/data-model.md) for table schemas,
-attribute storage, and table options for `greptime_trace_v1` and `greptime_trace_v2`.
+attribute storage, and table options for `greptime_trace_v2` and `greptime_trace_v1`.
 
 ### Schema Evolution and Partial Success
 
-The `greptime_trace_v1` model automatically adds new flattened attribute columns. When a trace table already exists, GreptimeDB reconciles incoming attribute value types with the existing table schema. Compatible scalar values can be coerced to the existing column type, and existing `Int64` attribute columns may be widened to `Float64` when incoming values contain both integers and floats.
+The `greptime_trace_v2` model stores attributes in `JSON2` columns without adding table columns for new attribute keys. If you use `greptime_trace_v1`, GreptimeDB automatically adds new flattened attribute columns and reconciles incoming attribute value types with the existing table schema: compatible scalar values can be coerced to the existing column type, and existing `Int64` attribute columns may be widened to `Float64` when incoming values contain both integers and floats.
 
 If some spans in a trace request cannot be written because of incompatible schema or values, GreptimeDB may still accept the other spans and return an OTLP `partial_success` response with `rejected_spans` and `error_message`. If all spans are rejected, the endpoint returns a `400 Bad Request` response.
 

@@ -44,7 +44,7 @@ exporters:
       authenticator: basicauth/client
     headers:
       x-greptime-db-name: '<dbname>'
-      x-greptime-pipeline-name: 'greptime_trace_v1'
+      x-greptime-pipeline-name: 'greptime_trace_v2'
   otlphttp/logs:
     endpoint: 'https://<host>/v1/otlp'
     auth:
@@ -73,6 +73,8 @@ service:
       receivers: [otlp]
       exporters: [otlphttp/metrics]
 ```
+
+If `opentelemetry_traces` is a v1 table, [send v2 traces to a new table](https://docs.greptime.com/user-guide/traces/read-write/#existing-v1-trace-tables).
 
 ## Grafana Alloy
 
