@@ -99,6 +99,8 @@ Use a separate output for each signal because GreptimeDB uses signal-specific he
     Header X-Greptime-DB-Name <dbname>
 ```
 
+If `opentelemetry_traces` is a v1 table, [send v2 traces to a new table](/user-guide/traces/read-write.md#existing-v1-trace-tables).
+
 - `Metrics_uri`, `Logs_uri`, and `Traces_uri`: The endpoints for metrics, logs, and traces.
 - `Match`: The signal-specific tag configured on the corresponding Fluent Bit input.
 - `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments-administration/authentication/static.md) for GreptimeDB. Add them to each output when authentication is enabled.

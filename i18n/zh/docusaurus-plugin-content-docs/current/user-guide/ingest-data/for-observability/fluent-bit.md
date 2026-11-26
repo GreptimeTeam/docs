@@ -98,6 +98,8 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Header X-Greptime-DB-Name <dbname>
 ```
 
+如果 `opentelemetry_traces` 是 v1 表，请[将 v2 数据写入新表](/user-guide/traces/read-write.md#existing-v1-trace-tables)。
+
 - `Metrics_uri`、`Logs_uri` 和 `Traces_uri`：分别用于发送 metrics、logs 和 traces 的端点。
 - `Match`：在对应 Fluent Bit input 中配置的 signal tag。
 - `http_user` 和 `http_passwd`：GreptimeDB 的[认证凭据](/user-guide/deployments-administration/authentication/static.md)。启用鉴权时，请将它们添加到每个 output 中。

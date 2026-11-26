@@ -338,6 +338,8 @@ GreptimeDB 支持直接写入 OpenTelemetry 协议的 traces 数据，并内置 
   - `X-Greptime-Trace-Table-Name`: `<table_name>`（可选）- 存储 traces 的表名。如果未提供，默认表名为 `opentelemetry_traces`。
   - `X-Greptime-Pipeline-Name`: `greptime_trace_v2` 或 `greptime_trace_v1`（必选）- 处理 traces 的 pipeline 名称，详见 [Trace 数据模型的版本差异](/user-guide/traces/data-model.md#数据模型版本机制)。
 
+如果 `opentelemetry_traces` 是 v1 表，请[将 v2 数据写入新表](/user-guide/traces/read-write.md#existing-v1-trace-tables)。
+
 GreptimeDB 会通过 **HTTP 协议** 接受 **protobuf 编码的 traces 数据**。
 
 ### 示例代码

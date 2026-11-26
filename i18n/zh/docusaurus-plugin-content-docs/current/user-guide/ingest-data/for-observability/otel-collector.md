@@ -68,6 +68,8 @@ service:
       exporters: [otlp_http/metrics]
 ```
 
+如果 `opentelemetry_traces` 是 v1 表，请[将 v2 数据写入新表](/user-guide/traces/read-write.md#existing-v1-trace-tables)。
+
 在上面的配置中，我们定义了一个接收器 `otlp`，它可以接收来自 OpenTelemetry 的数据。我们还定义了三个导出器 `otlp_http/traces`、`otlp_http/logs` 和 `otlp_http/metrics`，它们将数据发送到 GreptimeDB 的 OTLP 路径。
 
 基于 OTLP/HTTP 协议，我们增加了一些 header 用来指定参数，比如 `x-greptime-pipeline-name` 和 `x-greptime-log-table-name`：

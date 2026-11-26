@@ -72,6 +72,7 @@ service:
       exporters: [otlphttp/metrics]
 ```
 
+如果 `opentelemetry_traces` 是 v1 表，请[将 v2 数据写入新表](/user-guide/traces/read-write.md#existing-v1-trace-tables)。
 
 ## Grafana Alloy
 

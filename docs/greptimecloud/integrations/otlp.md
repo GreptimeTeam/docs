@@ -74,6 +74,8 @@ service:
       exporters: [otlphttp/metrics]
 ```
 
+If `opentelemetry_traces` is a v1 table, [send v2 traces to a new table](/user-guide/traces/read-write.md#existing-v1-trace-tables).
+
 ## Grafana Alloy
 
 If you prefer to use [Grafana Alloy](https://grafana.com/docs/alloy/latest/)'s OpenTelemetry exporter, you can use the following configuration to send your data.

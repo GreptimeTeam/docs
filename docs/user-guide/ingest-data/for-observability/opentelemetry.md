@@ -400,6 +400,8 @@ To send OpenTelemetry traces data to GreptimeDB through OpenTelemetry SDK librar
   - `X-Greptime-Trace-Table-Name`: `<table_name>` (optional) - The table name to store the traces. If not provided, the default table name is `opentelemetry_traces`.
   - `X-Greptime-Pipeline-Name`: `greptime_trace_v2` or `greptime_trace_v1` (required) - The pipeline name to process the traces; see [trace data model versions](/user-guide/traces/data-model.md#data-model-versioning).
 
+If `opentelemetry_traces` is a v1 table, [send v2 traces to a new table](/user-guide/traces/read-write.md#existing-v1-trace-tables).
+
 GreptimeDB accepts **protobuf encoded traces data** via **HTTP protocol**.
 
 ### Example Code

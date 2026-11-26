@@ -48,7 +48,7 @@ docker run --rm \
   otel/opentelemetry-collector-contrib:0.165.0
 ```
 
-其中 `config.yaml` 文件内容如下：
+使用以下 `config.yaml` 配置首次向新数据库写入 Trace 时，GreptimeDB 会创建 `opentelemetry_traces` 表，并将属性存储在 `JSON2` 列中。
 
 ```yaml
 receivers:
@@ -75,10 +75,15 @@ service:
       exporters: [otlp_http]
 ```
 
-按下文发送 Trace 后，GreptimeDB 会自动创建 `opentelemetry_traces` 表，并将属性存储为
-`JSON2`。如果 `opentelemetry_traces` 已作为 v1 表存在，请同时设置
-`x-greptime-trace-table-name`（例如 `"opentelemetry_traces_v2"`），将 v2 数据写入新表。
-SDK 直接写入时也使用相同的请求头。
+#### 已有的 v1 Trace 表 {#existing-v1-trace-tables}
+
+:::warning
+
+如果 `opentelemetry_traces` 由 `greptime_trace_v1` 创建，GreptimeDB 会拒绝向该表写入 v2 数据。
+将 `x-greptime-pipeline-name` 改为 `greptime_trace_v2` 时，请同时将 `x-greptime-trace-table-name`
+设为新表名，例如 `opentelemetry_traces_v2`。通过 SDK 直接写入时也应设置这两个请求头。
+
+:::
 
 #### 使用 greptime_trace_v1 写入
 

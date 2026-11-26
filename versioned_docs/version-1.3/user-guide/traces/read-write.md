@@ -52,7 +52,8 @@ docker run --rm \
   otel/opentelemetry-collector-contrib:0.165.0
 ```
 
-The content of the `config.yaml` file is as follows:
+With the following `config.yaml`, the first write to a new database creates
+`opentelemetry_traces` with `JSON2` attribute columns.
 
 ```yaml
 receivers:
@@ -79,11 +80,16 @@ service:
       exporters: [otlp_http]
 ```
 
-Sending traces as described below automatically creates `opentelemetry_traces`
-with `JSON2` attributes. If `opentelemetry_traces` already exists as a v1 table,
-also set `x-greptime-trace-table-name` (for example `"opentelemetry_traces_v2"`)
-so v2 writes go to a new table. Use the same headers when writing directly from
-an SDK.
+#### Existing v1 trace tables
+
+:::warning
+
+If `greptime_trace_v1` created `opentelemetry_traces`, GreptimeDB rejects v2 writes
+to that table. When you set `x-greptime-pipeline-name` to `greptime_trace_v2`,
+also set `x-greptime-trace-table-name` to a new table name such as
+`opentelemetry_traces_v2`. Use both headers for direct SDK writes as well.
+
+:::
 
 #### Ingest with greptime_trace_v1
 

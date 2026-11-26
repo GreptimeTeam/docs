@@ -68,6 +68,8 @@ service:
       exporters: [otlp_http/metrics]
 ```
 
+If `opentelemetry_traces` is a v1 table, [send v2 traces to a new table](/user-guide/traces/read-write.md#existing-v1-trace-tables).
+
 In the above configuration, we define a receiver `otlp` that can receive data from OpenTelemetry. We also define three exporters: `otlp_http/traces`, `otlp_http/logs`, and `otlp_http/metrics`, which send data to the OTLP endpoint of GreptimeDB.
 
 Based on the OTLP/HTTP protocol, we have added some headers to specify certain parameters, such as `x-greptime-pipeline-name` and `x-greptime-log-table-name`:
