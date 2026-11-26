@@ -74,7 +74,7 @@ service:
       exporters: [otlphttp/metrics]
 ```
 
-If `opentelemetry_traces` is a v1 table, [send v2 traces to a new table](/user-guide/traces/read-write.md#existing-v1-trace-tables).
+If `opentelemetry_traces` is a v1 table, [send v2 traces to a new table](https://docs.greptime.com/user-guide/traces/read-write/#existing-v1-trace-tables).
 
 ## Grafana Alloy
 
